@@ -1,0 +1,16 @@
+*~
+*.o
+*.a
+*.x
+*.mod
+*.dat
+*.log
+*.out
+*.pyf
+*.pyc
+*.swp
+*.data
+*.optrpt
+*.dSYM
+.DS_Store
+fort.*
