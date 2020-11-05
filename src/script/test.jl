@@ -1,1 +1,4 @@
-println("hello world!")
+
+include("util.jl")
+
+check_version()
