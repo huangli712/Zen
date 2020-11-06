@@ -1,0 +1,9 @@
+case = "SrVO3"
+
+[dft]
+
+[dmft]
+
+[solver]
+
+[impurity]
