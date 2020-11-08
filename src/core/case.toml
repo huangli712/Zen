@@ -1,6 +1,12 @@
 case = "SrVO3"
 
 [dft]
+engine = "vasp"
+lproj = false
+lspinorb = false
+nproj = 1
+proj_window = [-10.0,10.0]
+proj_scheme = ["P1"]
 
 [dmft]
 
