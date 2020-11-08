@@ -6,4 +6,6 @@ case = "SrVO3"
 
 [solver]
 
+[adaptor]
+
 [impurity]
