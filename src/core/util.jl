@@ -1,8 +1,3 @@
-module ZenUtil
-
-
-export check_version
-
 """
     check_version()
 
@@ -15,6 +10,4 @@ function check_version()
 end
 
 function check_zen_home()
-end
-
 end
