@@ -1,10 +1,6 @@
 
-include("util.jl")
-include("parser.jl")
-
-using .ZenUtil
-using .ZenParser
-
+include("zen.jl")
+using .Zen
 
 check_version()
 parse_zen_config("case.toml")
