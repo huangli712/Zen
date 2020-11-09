@@ -6,6 +6,7 @@ const authors = "Li Huang"
 include("util.jl")
 export check_version
 export check_home
+export check_toml
 export welcome
 export goodbye
 

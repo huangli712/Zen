@@ -26,6 +26,11 @@ function check_home()
     end
 end
 
+function check_toml()
+    nargs = length(ARGS)
+    println(nargs)
+end
+
 """
     welcome()
 
