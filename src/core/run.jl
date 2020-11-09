@@ -1,3 +1,5 @@
+#!/usr/bin/env julia
+
 include("zen.jl")
 using .Zen
 
