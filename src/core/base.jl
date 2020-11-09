@@ -12,8 +12,14 @@ function make_trees(d::Dict{String,Any})
     end
 end
 
-function dft_driver(d::Dict{String,Any})
+function dft_driver(it::IterInfo, d::Dict{String,Any})
     cd("dft")
+
+    println(it.dft_iter)
+    println(it.dmft_iter)
+    println(it.dft_dmft_iter)
+
+    it.dft_iter += 1
 
     cd("..")
 end

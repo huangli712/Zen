@@ -9,19 +9,11 @@ toml = check_toml()
 
 case, dft, dmft, solver, impurity, dft_dmft = parse_config(toml)
 
-@show case
-@show dft
-@show dmft
-@show solver
-@show impurity
-@show dft_dmft
-
 make_trees(impurity)
 
 it = IterInfo(0, 0, 0)
 
-println(it.dft_iter)
-
-dft_driver(dft)
+dft_driver(it, dft)
+@show it.dft_iter
 
 goodbye()
