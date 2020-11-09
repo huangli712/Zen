@@ -13,4 +13,7 @@ export goodbye
 include("parser.jl")
 export parse_config
 
+include("base.jl")
+export make_trees
+
 end
