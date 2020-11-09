@@ -1,3 +1,5 @@
 mutable struct IterInfo
-    iter
+    dft_iter
+    dmft_iter
+    dft_dmft_iter
 end

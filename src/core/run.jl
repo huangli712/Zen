@@ -18,9 +18,9 @@ case, dft, dmft, solver, impurity, dft_dmft = parse_config(toml)
 
 make_trees(impurity)
 
-it = IterInfo(0)
+it = IterInfo(0, 0, 0)
 
-println(it.iter)
+println(it.dft_iter)
 
 dft_driver(dft)
 
