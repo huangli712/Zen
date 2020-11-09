@@ -1,3 +1,3 @@
 mutable struct IterInfo
-    iter
+    it
 end
