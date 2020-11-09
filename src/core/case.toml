@@ -2,16 +2,34 @@ case = "SrVO3"
 
 [dft]
 engine = "vasp"
-lproj = false
+niter = 100
 lspinorb = false
+lproj = false
 nproj = 1
-proj_window = [-10.0,10.0]
-proj_scheme = ["P1"]
+sproj = ["P1"]
 
 [dmft]
+niter = 1
+dcount = 1
+nominal = 3.0
+lforce = false
+lcharge = true
+lenergy = true
 
 [solver]
+engine = "ct_hub1"
+atomic = ""
+params = []
 
 [adaptor]
+lortho = true
 
 [impurity]
+nimp = 1
+atoms = ["V"]
+equiv = [[1]]
+shell = ["d"]
+ising = [true]
+upara = [4.0]
+jpara = [0.7]
+lpara = [0.0]

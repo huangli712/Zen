@@ -43,5 +43,4 @@ end
 
 Print the goodbye messages to the screen
 """
-function goodbye()
-end
+function goodbye() end
