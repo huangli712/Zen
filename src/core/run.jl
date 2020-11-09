@@ -3,4 +3,4 @@ include("zen.jl")
 using .Zen
 
 check_version()
-parse_config("case.toml")
+case, dft, dmft, solver, adaptor, impurity = parse_config("case.toml")
