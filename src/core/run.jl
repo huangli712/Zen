@@ -5,10 +5,9 @@ welcome()
 
 check_version()
 
-check_toml()
-exit(-1)
+toml = check_toml()
 
-case, dft, dmft, solver, impurity, dft_dmft = parse_config("case.toml")
+case, dft, dmft, solver, impurity, dft_dmft = parse_config(toml)
 
 @show case
 @show dft
