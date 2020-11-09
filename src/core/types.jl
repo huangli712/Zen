@@ -1,3 +1,3 @@
-struct IterInfo
-    iter :: UInt64
+mutable struct IterInfo
+    iter
 end
