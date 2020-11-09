@@ -2,7 +2,8 @@ include("zen.jl")
 using .Zen
 
 check_version()
-check_home()
+home = check_home()
+@show home
 
 
 case, dft, dmft, solver, adaptor, impurity = parse_config("case.toml")
