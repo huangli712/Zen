@@ -1,6 +1,7 @@
 include("zen.jl")
 using .Zen
 
+welcome()
 check_version()
 home = check_home()
 

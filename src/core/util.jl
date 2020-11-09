@@ -27,6 +27,10 @@ function check_home()
 end
 
 function welcome()
+    println("ZEN")
+    println("")
+    println("version: $version")
+    println("authors: $authors")
 end
 
 function goodbye()
