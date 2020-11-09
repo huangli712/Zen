@@ -26,6 +26,11 @@ function check_home()
     end
 end
 
+"""
+    welcome()
+
+Print out the welcome messages to the screen
+"""
 function welcome()
     println("ZEN")
     println("")
@@ -33,5 +38,10 @@ function welcome()
     println("authors: $authors")
 end
 
+"""
+    goodbye()
+
+Print the goodbye messages to the screen
+"""
 function goodbye()
 end
