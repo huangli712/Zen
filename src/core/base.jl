@@ -21,6 +21,10 @@ function dft_driver(it::IterInfo, d::Dict{String,Any})
     cd("dft")
 
     if it.dft_iter == 0
+        cp("../INCAR", pwd() * "/INCAR")
+        cp("../POSCAR", pwd() * "/POSCAR")
+        cp("../POTCAR", pwd() * "/POTCAR")
+        cp("../KPOINTS", pwd() * "/KPOINTS")
     else
     end
 
