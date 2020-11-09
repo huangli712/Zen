@@ -9,5 +9,13 @@ function check_version()
     end
 end
 
-function check_zen_home()
+function check_home()
+    try
+        home = ENV["ZEN_HOME"]
+    catch e
+        if isa(e, KeyError)
+            error("Please setup the envirnoment variable ZEN_HOME correctly")
+        end
+    end
+    home
 end
