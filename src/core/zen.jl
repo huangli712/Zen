@@ -16,5 +16,6 @@ export parse_config
 include("base.jl")
 export make_trees
 export dft_driver
+export dmft_driver
 
 end
