@@ -12,12 +12,17 @@ function make_trees(d::Dict{String,Any})
     end
 end
 
+"""
+    dft_driver(IterInfo, Dict{String,Any})
+
+Drive the engine of density functional theory to carry out calculations
+"""
 function dft_driver(it::IterInfo, d::Dict{String,Any})
     cd("dft")
 
-    println(it.dft_iter)
-    println(it.dmft_iter)
-    println(it.dft_dmft_iter)
+    if it.dft_iter == 0
+    else
+    end
 
     it.dft_iter += 1
 
