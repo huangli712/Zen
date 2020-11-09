@@ -16,4 +16,5 @@ case, dft, dmft, solver, impurity, dft_dmft = parse_config(toml)
 @show impurity
 @show dft_dmft
 
+make_trees(impurity)
 goodbye()
