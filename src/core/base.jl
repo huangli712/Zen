@@ -28,9 +28,12 @@ function dft_driver(it::IterInfo, d::Dict{String,Any})
     else
     end
 
-    mpi_prefix = "mpiexec -n 4"
+    mpi_prefix = "mpiexec"
+    mpi_options = "-n" 
+    mpi_ncpu = "4"
     vasp_exec = "/home/soft/vasp/vasp.6.1.1/vasp.6.1.1/bin/vasp_std"
-    run(`$vasp_exec`)
+
+    run(`$mpi_prefix $mpi_options $mpi_ncpu $vasp_exec`)
 
     it.dft_iter += 1
 
