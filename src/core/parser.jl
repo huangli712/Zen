@@ -1,11 +1,11 @@
 using TOML
 
 """
-    parse_zen_config(f::AbstractString)
+    parse_config(f::AbstractString)
 
 Parse the configuration file (toml format)
 """
-function parse_zen_config(f::AbstractString)
+function parse_config(f::AbstractString)
     dict = TOML.parsefile(f)
     case = dict["case"]
     dft = dict["dft"]
