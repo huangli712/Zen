@@ -5,6 +5,7 @@ const authors = "Li Huang"
 
 include("types.jl")
 export IterInfo
+sys.exit(-1)
 
 include("util.jl")
 export check_version
