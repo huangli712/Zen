@@ -26,9 +26,18 @@ function check_home()
     end
 end
 
+"""
+    check_toml()
+
+Check whether a case.toml file is provided
+"""
 function check_toml()
     nargs = length(ARGS)
-    println(nargs)
+    if nargs < 1
+       error("Please provide a case.toml file to configure your calculation")
+    else
+       ARGS[1]
+    end
 end
 
 """
