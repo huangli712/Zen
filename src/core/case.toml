@@ -3,6 +3,7 @@ case = "SrVO3"
 [dft]
 engine = "vasp"
 niter = 100
+lortho = true
 lspinorb = false
 lproj = false
 nproj = 1
@@ -12,17 +13,10 @@ sproj = ["P1"]
 niter = 1
 dcount = 1
 nominal = 3.0
-lforce = false
-lcharge = true
-lenergy = true
 
 [solver]
 engine = "ct_hub1"
-atomic = ""
 params = []
-
-[adaptor]
-lortho = true
 
 [impurity]
 nimp = 1
@@ -33,3 +27,15 @@ ising = [true]
 upara = [4.0]
 jpara = [0.7]
 lpara = [0.0]
+
+[dft_dmft]
+axis = 1
+beta = 40.0
+niter = 60
+mixer = 0.5
+cc = 1.0E-4
+ec = 1.0E-4
+fc = 1.0E-4
+lforce = false
+lcharge = true
+lenergy = true
