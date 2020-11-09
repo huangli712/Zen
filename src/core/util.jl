@@ -25,3 +25,9 @@ function check_home()
         end
     end
 end
+
+function welcome()
+end
+
+function goodbye()
+end
