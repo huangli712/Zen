@@ -38,15 +38,14 @@ end
 Print out the welcome messages to the screen
 """
 function welcome()
-    printstyled("====== ====== ==   ==\n", color = :green)
-    printstyled("     / |      | \\   |\n", color = :green) 
-    printstyled(" /==/  ====== |  \\  |\n", color = :green)
-    printstyled("/      |      |   \\ |\n", color = :green)
-    printstyled("====== ====== ==   ==\n", color = :green)
-    println("")
-
-    println("version: $version")
-    println("authors: $authors")
+    printstyled("                       |\n", color = :green)
+    printstyled("====== ====== ==   ==  | A Modern DFT + DMFT Simulation Framework\n", color = :green)
+    printstyled("     / |      | n   |  |\n", color = :green) 
+    printstyled(" /zz/  eeeeee |  n  |  |\n", color = :green)
+    printstyled("/      |      |   n |  | Version: $version\n", color = :green)
+    printstyled("====== ====== ==   ==  | Authors: $authors\n", color = :green)
+    printstyled("                       |\n", color = :green)
+    println()
 end
 
 """
