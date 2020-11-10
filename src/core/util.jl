@@ -32,10 +32,14 @@ function check_toml()
     end
 end
 
+"""
+    check_dft(dft::Dict{String,Any})
+
+Return the home directory of dft engine
+"""
 function check_dft(dft::Dict{String,Any})
-    @show dft
     if dft["engine"] == "vasp"
-        println("wa")
+        ENV["VASP_HOME"]
     else
         sorry()
     end
