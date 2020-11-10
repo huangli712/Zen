@@ -38,7 +38,7 @@ end
 Print out the welcome messages to the screen
 """
 function welcome()
-    println("ZEN")
+    printstyled("ZEN", color = :green)
     println("")
     println("version: $version")
     println("authors: $authors")

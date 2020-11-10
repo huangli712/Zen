@@ -16,6 +16,7 @@ ZEN_HOME = check_home()
 # check the file case.toml, which contains the configuration 
 toml = check_toml()
 
+# print the welcome message 
 welcome()
 
 
