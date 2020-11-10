@@ -11,16 +11,14 @@ using .Zen
 check_version()
 
 # check whether the environment variable ZEN_HOME is on  
-check_home()
+ZEN_HOME = check_home()
 
-println("here")
-exit(-1)
-
+# check the file case.toml, which contains the configuration 
+toml = check_toml()
 
 welcome()
 
 
-toml = check_toml()
 
 case, dft, dmft, solver, impurity, dft_dmft = parse_config(toml)
 
