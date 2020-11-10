@@ -32,6 +32,14 @@ function check_toml()
     end
 end
 
+function check_dft(dft::Dict{String,Any})
+    @show dft
+    if dft["engine"] == "vasp"
+        println("wa")
+    else
+    end
+end
+
 """
     welcome()
 
