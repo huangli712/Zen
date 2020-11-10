@@ -37,6 +37,7 @@ function check_dft(dft::Dict{String,Any})
     if dft["engine"] == "vasp"
         println("wa")
     else
+        sorry()
     end
 end
 
@@ -63,4 +64,8 @@ Print the goodbye messages to the screen
 """
 function goodbye() 
     println("See you later")
+end
+
+function sorry()
+    error("Sorry, this feature has not been implemented")
 end

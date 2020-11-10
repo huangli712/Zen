@@ -13,6 +13,7 @@ export check_toml
 export check_dft
 export welcome
 export goodbye
+export sorry
 
 include("parser.jl")
 export parse_config
