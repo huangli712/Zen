@@ -1,11 +1,24 @@
 #!/usr/bin/env julia
 
+#=
+
+=#
+
 include("zen.jl")
 using .Zen
 
+# check the version of julia runtime environment
+check_version()
+
+# check whether the environment variable ZEN_HOME is on  
+check_home()
+
+println("here")
+exit(-1)
+
+
 welcome()
 
-check_version()
 
 toml = check_toml()
 

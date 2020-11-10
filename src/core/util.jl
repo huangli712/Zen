@@ -15,15 +15,7 @@ end
 Check the home directory for zen
 """
 function check_home()
-    try
-        home = ENV["ZEN_HOME"]
-    catch e
-        if isa(e, KeyError)
-            error("Please setup the envirnoment variable ZEN_HOME correctly")
-        else
-            home
-        end
-    end
+    ENV["ZEN_HOME"]
 end
 
 """
