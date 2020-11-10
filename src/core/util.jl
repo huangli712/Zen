@@ -35,7 +35,7 @@ end
 """
     check_dft(dft::Dict{String,Any})
 
-Return the home directory of dft engine
+Return the home directory of the dft engine
 """
 function check_dft(dft::Dict{String,Any})
     if dft["engine"] == "vasp"

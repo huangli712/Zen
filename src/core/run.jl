@@ -10,9 +10,6 @@ using .Zen
 # check the version of julia runtime environment
 check_version()
 
-# check whether the environment variable ZEN_HOME is on  
-ZEN_HOME = check_home()
-
 # check the file case.toml, which contains the configuration 
 toml = check_toml()
 
@@ -28,15 +25,11 @@ case, dft, dmft, solver, impurity, dft_dmft = parse_config(toml)
 # print the job's summary 
 # plug your codes here
 
+# check whether the environment variable ZEN_HOME is on  
+ZEN_HOME = check_home()
+
 # check the dft engine
-check_dft(dft)
-exit(-1)
-
-# check the dmft engine
-# plug your codes here
-
-# check the quantum impurity solvers
-# plug your codes here
+DFT_HOME = check_dft(dft)
 
 # prepare the working directories
 make_trees(impurity)
