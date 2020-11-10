@@ -38,8 +38,13 @@ end
 Print out the welcome messages to the screen
 """
 function welcome()
-    printstyled("ZEN", color = :green)
+    printstyled("====== ====== ==   ==\n", color = :green)
+    printstyled("     / |      | \\   |\n", color = :green) 
+    printstyled(" /==/  ====== |  \\  |\n", color = :green)
+    printstyled("/      |      |   \\ |\n", color = :green)
+    printstyled("====== ====== ==   ==\n", color = :green)
     println("")
+
     println("version: $version")
     println("authors: $authors")
 end
