@@ -32,7 +32,7 @@ DFT_HOME = check_dft(dft)
 check_inputs(dft)
 
 # prepare the working directories
-make_trees(impurity)
+make_trees(dmft["impurity"])
 
 it = IterInfo(0, 0, 0)
 

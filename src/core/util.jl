@@ -54,7 +54,7 @@ function check_inputs(dft::Dict{String,Any})
     if dft["engine"] == "vasp"
         if !isfile("POSCAR") || !isfile("POTCAR")
             error("Please provide both POSCAR and POTCAR files")
-        endif
+        end
     else
         sorry()
     end
