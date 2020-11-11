@@ -46,6 +46,21 @@ function check_dft(dft::Dict{String,Any})
 end
 
 """
+    check_inputs(dft::Dict{String,Any})
+
+Check whether the essential input files exist
+"""
+function check_inputs(dft::Dict{String,Any})
+    if dft["engine"] == "vasp"
+        if !isfile("POSCAR") || !isfile("POTCAR")
+            error("Please provide both POSCAR and POTCAR files")
+        endif
+    else
+        sorry()
+    end
+end
+
+"""
     welcome()
 
 Print out the welcome messages to the screen
