@@ -22,14 +22,14 @@ case, dft, dmft, dft_dmft = parse_config(toml)
 # validate the parameters
 # plug your codes here
 
-# print the job's summary 
-# plug your codes here
-
-# check whether the environment variable ZEN_HOME is on  
+# check the zen engine 
 ZEN_HOME = check_home()
 
 # check the dft engine
 DFT_HOME = check_dft(dft)
+
+# check the input files (which are essential for the dft engine)
+check_inputs(dft)
 
 # prepare the working directories
 make_trees(impurity)
