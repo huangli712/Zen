@@ -2,23 +2,21 @@ case = "SrVO3"
 
 [dft]
 engine = "vasp"
-niter = 100
-lortho = true
 lspinorb = false
-lproj = false
+
+[dft.adaptor]
+lortho = true
+
+[dft.projector]
+lproj = true
 nproj = 1
 sproj = ["P1"]
 
 [dmft]
-niter = 1
 dcount = 1
 nominal = 3.0
 
-[solver]
-engine = "ct_hub1"
-params = []
-
-[impurity]
+[dmft.impurity]
 nimp = 1
 atoms = ["V"]
 equiv = [[1]]
@@ -28,7 +26,12 @@ upara = [4.0]
 jpara = [0.7]
 lpara = [0.0]
 
+[dmft.solver]
+engine = "ct_hub1"
+params = []
+
 [dft_dmft]
+mode = 1
 axis = 1
 beta = 40.0
 niter = 60
