@@ -11,6 +11,7 @@ export check_version
 export check_home
 export check_toml
 export check_dft
+export check_inputs
 export welcome
 export goodbye
 export sorry
