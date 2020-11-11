@@ -51,13 +51,15 @@ end
 Print out the welcome messages to the screen
 """
 function welcome()
-    printstyled("                       |\n", color = :green)
-    printstyled("====== ====== ==   ==  | A Modern DFT + DMFT Simulation Framework\n", color = :green)
-    printstyled("     / |      | n   |  |\n", color = :green) 
-    printstyled(" /zz/  eeeeee |  n  |  |\n", color = :green)
-    printstyled("/      |      |   n |  | Version: $version\n", color = :green)
-    printstyled("====== ====== ==   ==  | Authors: $authors\n", color = :green)
-    printstyled("                       |\n", color = :green)
+    printstyled("                                   |\n", color = :green)
+    printstyled("========== ========== ===     ===  | A Modern DFT + DMFT Simulation Framework\n", color = :green)
+    printstyled("        // ||         || n     ||  |\n", color = :green)
+    printstyled("       //  ||         ||  n    ||  |\n", color = :green)
+    printstyled("  //zz//   ||eeeeeeee ||   n   ||  |\n", color = :green)
+    printstyled(" //        ||         ||    n  ||  | Version: 0.0.1\n", color = :green)
+    printstyled("//         ||         ||     n ||  | Release: 20-11\n", color = :green)
+    printstyled("========== ========== ===     ===  | Powered by the julia programming language\n", color = :green)
+    printstyled("                                   |\n", color = :green)
     println()
 end
 
