@@ -1,1 +1,3 @@
-println("hello world!")
+"""
+Adaptor
+"""

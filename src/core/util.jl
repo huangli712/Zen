@@ -10,15 +10,6 @@ function check_version()
 end
 
 """
-    check_home()
-
-Check the home directory for zen
-"""
-function check_home()
-    ENV["ZEN_HOME"]
-end
-
-"""
     check_toml()
 
 Check whether a case.toml file is provided
@@ -30,6 +21,15 @@ function check_toml()
     else
        ARGS[1]
     end
+end
+
+"""
+    check_home()
+
+Check the home directory for zen
+"""
+function check_home()
+    ENV["ZEN_HOME"]
 end
 
 """
