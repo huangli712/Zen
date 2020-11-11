@@ -11,9 +11,7 @@ function parse_config(f::AbstractString)
     case = dict["case"]
     dft = dict["dft"]
     dmft = dict["dmft"]
-    solver = dict["solver"]
-    impurity = dict["impurity"]
     dft_dmft = dict["dft_dmft"]
 
-    return case, dft, dmft, solver, impurity, dft_dmft
+    return case, dft, dmft, dft_dmft
 end
