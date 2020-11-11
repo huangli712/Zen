@@ -18,7 +18,6 @@ welcome()
 
 # parse the file case.toml to extract parameters
 case, dft, dmft, dft_dmft = parse_config(toml)
-@show dft
 
 # validate the parameters
 # plug your codes here
