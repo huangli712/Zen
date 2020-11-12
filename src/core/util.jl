@@ -28,11 +28,11 @@ function check_toml()
 end
 
 """
-    check_home()
+    check_zen()
 
 Check the home directory for zen
 """
-function check_home()
+function check_zen()
     ENV["ZEN_HOME"]
 end
 
@@ -75,7 +75,7 @@ function welcome()
     printstyled("        // ||         || n     ||  |\n", color = :green)
     printstyled("       //  ||         ||  n    ||  |\n", color = :green)
     printstyled("  //zz//   ||eeeeeeee ||   n   ||  |\n", color = :green)
-    printstyled(" //        ||         ||    n  ||  | Version: 0.0.1@d\n", color = :green)
+    printstyled(" //        ||         ||    n  ||  | Version: 0.0.2@d\n", color = :green)
     printstyled("//         ||         ||     n ||  | Release: 2020/11\n", color = :green)
     printstyled("========== ========== ===     ===  | Powered by the julia programming language\n", color = :green)
     printstyled("                                   |\n", color = :green)
