@@ -1,5 +1,0 @@
-System  = SrVO3                        # system name         
-NBANDS = 36                            # small number  of bands  
-ISMEAR = 0                             # Gaussian smearing  
-EDIFF = 1E-8                           # high precision for groundstate calculation
-KPAR = 2                               # parallelization of k-points in two groups  
