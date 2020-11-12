@@ -66,8 +66,8 @@ function dft_init(it::IterInfo, case::String, d::Dict{String,Any})
     # check essential input files
     if it.dft_dmft_iter >= 1
         if d["engine"] == "vasp"
-            if !isfile("INCAR") || !isfile("KPOINTS") || !isfile("POSCAR") || !isfile("POTCAR")
-                error("Please make sure the existence of following files: INCAR, KPOINTS, POSCAR, and POTCAR")
+            if !isfile("INCAR") || !isfile("POSCAR") || !isfile("POTCAR")
+                error("Please make sure the existence of following files: INCAR, POSCAR, and POTCAR")
             end
         else
            sorry()
