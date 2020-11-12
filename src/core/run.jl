@@ -22,7 +22,7 @@ dft_dmft = parse_config(check_toml(), "dft_dmft")
 # validate the parameters
 # plug your codes here
 
-# check the input files (which are essential for the dft engine)
+# check the input files (which are essential for the calculation)
 check_inputs(dft)
 
 # prepare the working directories
