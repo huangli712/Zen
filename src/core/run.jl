@@ -17,7 +17,12 @@ toml = check_toml()
 welcome()
 
 # parse the file case.toml to extract parameters
-case, dft, dmft, dft_dmft = parse_config(toml)
+case = parse_config(toml, "case") 
+dft = parse_config(toml, "dft")
+dmft = parse_config(toml, "dmft")
+dft_dmft = parse_config(toml, "dft_dmft")
+@show dft_dmft
+exit(-1)
 
 # validate the parameters
 # plug your codes here
