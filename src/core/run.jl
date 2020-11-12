@@ -40,7 +40,7 @@ it = IterInfo(0, 0, 0, 0)
 if dft_dmft["mode"] == 1
 
     dft_init(it, case, dft)
-    exit(-1)
+    dft_run(it, dft, DFT_HOME)
     for iter in 1:dft_dmft["niter"]
         println("iter: $iter")
     end
