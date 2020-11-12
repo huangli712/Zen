@@ -103,36 +103,25 @@ function dft_run(it::IterInfo, d::Dict{String,Any})
     cd("..")
 end
 
-function dft_save()
-end
-
-"""
-    dft_driver(IterInfo, Dict{String,Any})
-
-Drive the engine of density functional theory to carry out calculations
-"""
-function dft_driver(it::IterInfo, d::Dict{String,Any})
+function dft_save(it::IterInfo, d::Dict{String,Any})
     cd("dft")
 
-    if it.dft_iter == 0
-        cp("../INCAR", pwd() * "/INCAR")
-        cp("../POSCAR", pwd() * "/POSCAR")
-        cp("../POTCAR", pwd() * "/POTCAR")
-        cp("../KPOINTS", pwd() * "/KPOINTS")
+    if d["engine"] == "vasp"
+        if it.dft_dmft_iter == 0
+            cp("INCAR", "INCAR.$(it.dft_dmft_iter)")
+            cp("CHGCAR", "CHGCAR.$(it.dft_dmft_iter)")
+            cp("OUTCAR", "OUTCAR.$(it.dft_dmft_iter)")
+            cp("PROJCAR", "PROJCAR.$(it.dft_dmft_iter)")
+            cp("LOCPROJ", "LOCPROJ.$(it.dft_dmft_iter)")
+            cp("EIGENVAL", "EIGENVAL.$(it.dft_dmft_iter)")
+            cp("vasp.out", "vasp.out.$(it.dft_dmft_iter)")
+            cp("vasprun.xml", "vasprun.xml.$(it.dft_dmft_iter)")
+        else
+            sorry()
+        end
     else
+        sorry()
     end
 
-    mpi_prefix = "mpiexec"
-    mpi_options = "-n" 
-    mpi_ncpu = "4"
-    vasp_exec = "/home/soft/vasp/vasp.6.1.1/vasp.6.1.1/bin/vasp_std"
-
-    run(`$mpi_prefix $mpi_options $mpi_ncpu $vasp_exec`)
-
-    it.dft_iter += 1
-
     cd("..")
-end
-
-function dmft_driver(d::Dict{String,Any})
 end

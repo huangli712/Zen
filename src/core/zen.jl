@@ -1,8 +1,5 @@
 module Zen
 
-const version = v"0.0.1"
-const authors = "Li Huang" 
-
 include("types.jl")
 export IterInfo
 
@@ -23,8 +20,6 @@ include("base.jl")
 export make_trees
 export dft_init
 export dft_run
-export dft_end
-export dft_driver
-export dmft_driver
+export dft_save
 
 end
