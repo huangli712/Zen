@@ -5,8 +5,8 @@ export IterInfo
 
 include("util.jl")
 export check_version
-export check_home
 export check_toml
+export check_zen
 export check_dft
 export check_inputs
 export welcome
@@ -15,6 +15,7 @@ export sorry
 
 include("parser.jl")
 export parse_config
+export parse_mpi
 
 include("base.jl")
 export make_trees
