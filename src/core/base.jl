@@ -12,7 +12,13 @@ function make_trees(d::Dict{String,Any})
     end
 end
 
-function dft_init(it::IterInfo, d::Dict{String,Any})
+function make_incar()
+end
+
+function make_kpoints()
+end
+
+function dft_init(it::IterInfo, case::String, d::Dict{String,Any})
     cd("dft")
 
     # copy essential input files
