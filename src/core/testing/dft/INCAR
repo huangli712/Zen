@@ -1,8 +1,0 @@
-System   = SrVO3 
-PREF     = Accurate 
-EDIFF    = 1E-8 
-ALGO     = Normal 
-ISMEAR   = 0 
-LASPH    = .TRUE. 
-KSPACING = 0.5 
-LOCPROJ  = 2 : d : Pr
