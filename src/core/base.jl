@@ -15,32 +15,30 @@ end
 function make_incar(case::String, d::Dict{String,Any})
     ios = open("INCAR", "w")
 
-    write(ios,"System = $case \n")
-    write(ios,"PREF   = Accurate \n")
-    write(ios,"EDIFF  = 1E-8 \n")
-    write(ios,"ALGO   = Normal \n")
-    write(ios,"ISMEAR = 0 \n")
-    write(ios,"LASPH  = .TRUE. \n")
+    write(ios,"System   = $case \n")
+    write(ios,"PREF     = Accurate \n")
+    write(ios,"EDIFF    = 1E-8 \n")
+    write(ios,"ALGO     = Normal \n")
+    write(ios,"ISMEAR   = 0 \n")
+    write(ios,"LASPH    = .TRUE. \n")
+    write(ios,"KSPACING = 0.5 \n")
 
     if d["lspins"]
-        write(ios,"ISPIN  = .TRUE. \n")
+        write(ios,"ISPIN    = .TRUE. \n")
     end
 
     if d["lspinorb"] 
-        write(ios,"LSORBIT= .TRUE. \n")
+        write(ios,"LSORBIT  = .TRUE. \n")
     end
 
     if d["projector"]["lproj"]
         for p in 1:d["projector"]["nproj"]
             str = d["projector"]["sproj"][p]
-            write(ios, "LOCPROJ= $str")
+            write(ios, "LOCPROJ  = $str")
         end
     end
 
     close(ios)
-end
-
-function make_kpoints()
 end
 
 function dft_init(it::IterInfo, case::String, d::Dict{String,Any})
@@ -60,7 +58,6 @@ function dft_init(it::IterInfo, case::String, d::Dict{String,Any})
     if it.dft_dmft_iter == 0
         if d["engine"] == "vasp"
             make_incar(case, d)
-            make_kpoints()
         else
             sorry()
         end
