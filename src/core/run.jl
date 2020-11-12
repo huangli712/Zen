@@ -34,9 +34,17 @@ check_inputs(dft)
 # prepare the working directories
 make_trees(dmft["impurity"])
 
-it = IterInfo(0, 0, 0)
+# create a IterInfo object
+it = IterInfo(0, 0, 0, 0)
 
-dft_driver(it, dft)
-@show it.dft_iter
+if dft_dmft["mode"] == 1
+
+    for iter in 1:dft_dmft["niter"]
+        println("iter: $iter")
+    end
+
+else
+    sorry()
+end
 
 goodbye()
