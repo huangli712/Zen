@@ -15,13 +15,20 @@ end
 function make_incar(case::String, d::Dict{String,Any})
     ios = open("INCAR", "w")
     @show d
-    write(ios,"System = $case")
-    write(ios,"PREF   = Accurate")
-    write(ios,"EDIFF  = 1E-8")
-    write(ios,"ALGO   = Fast")
-    write(ios,"ISMEAR = 0")
+
+    write(ios,"System = $case \n")
+    write(ios,"PREF   = Accurate \n")
+    write(ios,"EDIFF  = 1E-8 \n")
+    write(ios,"ALGO   = Fast \n")
+    write(ios,"ISMEAR = 0 \n")
     if d["lspinorb"] 
-        write(ios,"LSORBIT= .TRUE.")
+        write(ios,"LSORBIT= .TRUE. \n")
+    end
+    if d["projector"]["lproj"]
+        for p in 1:d["projector"]["nproj"]
+            str = d["projector"]["sproj"][p]
+            write(ios, "LOCPROJ=$str")
+        end
     end
     close(ios)
 end
