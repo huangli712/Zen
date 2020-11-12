@@ -26,6 +26,6 @@ function parse_mpi(key::AbstractString)
             error("Do not have this key: $key")
         end
     else
-        ""
+        nothing
     end
 end
