@@ -15,6 +15,11 @@ function parse_config(f::AbstractString, key::AbstractString)
     end
 end
 
+"""
+    parse_mpi(key::AbstractString)
+
+Parse the file MPI.toml to get parallel setting
+"""
 function parse_mpi(key::AbstractString)
     f = "MPI.toml"
     if isfile(f)
