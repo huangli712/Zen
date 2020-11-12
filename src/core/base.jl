@@ -12,6 +12,11 @@ function make_trees(d::Dict{String,Any})
     end
 end
 
+"""
+    make_incar(case::String, d::Dict{String,Any})
+
+Make an INCAR for vasp, which is suitable for an initial self-consistent run
+"""
 function make_incar(case::String, d::Dict{String,Any})
     ios = open("INCAR", "w")
 
@@ -41,6 +46,11 @@ function make_incar(case::String, d::Dict{String,Any})
     close(ios)
 end
 
+"""
+    dft_init(it::IterInfo, case::String, d::Dict{String,Any})
+
+To examine whether the dft runtime environment is ready
+"""
 function dft_init(it::IterInfo, case::String, d::Dict{String,Any})
     cd("dft")
 
@@ -77,6 +87,11 @@ function dft_init(it::IterInfo, case::String, d::Dict{String,Any})
     cd("..")
 end
 
+"""
+    dft_run(it::IterInfo, d::Dict{String,Any})
+
+Execute the desired dft engine parallelly or sequentially
+"""
 function dft_run(it::IterInfo, d::Dict{String,Any})
     dft_home = check_dft(d)
     mpi_prefix = parse_mpi("dft") 
@@ -103,6 +118,11 @@ function dft_run(it::IterInfo, d::Dict{String,Any})
     cd("..")
 end
 
+"""
+    dft_save(it::IterInfo, d::Dict{String,Any})
+
+Backup the essential dft calculated results for next iterations
+"""
 function dft_save(it::IterInfo, d::Dict{String,Any})
     cd("dft")
 
