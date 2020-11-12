@@ -12,6 +12,41 @@ function make_trees(d::Dict{String,Any})
     end
 end
 
+function dft_init(it::IterInfo, d::Dict{String,Any})
+    cd("dft")
+
+    # copy essential input files
+    if it.dft_dmft_iter == 0
+        if d["engine"] == "vasp"
+           cp("../POTCAR", pwd() * "/POTCAR")
+           cp("../POSCAR", pwd() * "/POSCAR")
+        else
+           sorry()
+        end
+    end
+
+    # generate essential input files
+
+    # check essential input files
+    if it.dft_dmft_iter >= 1
+        if d["engine"] == "vasp"
+            if !isfile("INCAR") || !isfile("KPOINTS") || !isfile("POSCAR") || !isfile("POTCAR")
+                error("Please make sure the existence of following files: INCAR, KPOINTS, POSCAR, and POTCAR")
+            end
+        else
+           sorry()
+        end
+    end
+
+    cd("..")
+end
+
+function dft_run()
+end
+
+function dft_save()
+end
+
 """
     dft_driver(IterInfo, Dict{String,Any})
 
