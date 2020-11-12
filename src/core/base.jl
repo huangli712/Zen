@@ -26,6 +26,14 @@ function dft_init(it::IterInfo, d::Dict{String,Any})
     end
 
     # generate essential input files
+    if it.dft_dmft_iter == 0
+        if d["engine"] == "vasp"
+            make_incar()
+            make_kpoints()
+        else
+            sorry()
+        end
+    end
 
     # check essential input files
     if it.dft_dmft_iter >= 1
