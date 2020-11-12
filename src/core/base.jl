@@ -80,6 +80,8 @@ end
 function dft_run(it::IterInfo, d::Dict{String,Any})
     dft_home = check_dft(d)
     mpi_prefix = parse_mpi("dft") 
+    @show dft_home, mpi_prefix
+    exit(-1)
 
     cd("dft")
 
