@@ -27,7 +27,7 @@ function make_incar(case::String, d::Dict{String,Any})
     if d["projector"]["lproj"]
         for p in 1:d["projector"]["nproj"]
             str = d["projector"]["sproj"][p]
-            write(ios, "LOCPROJ=$str")
+            write(ios, "LOCPROJ= $str")
         end
     end
     close(ios)
