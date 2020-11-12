@@ -12,7 +12,18 @@ function make_trees(d::Dict{String,Any})
     end
 end
 
-function make_incar()
+function make_incar(case::String, d::Dict{String,Any})
+    ios = open("INCAR", "w")
+    @show d
+    write(ios,"System = $case")
+    write(ios,"PREF   = Accurate")
+    write(ios,"EDIFF  = 1E-8")
+    write(ios,"ALGO   = Fast")
+    write(ios,"ISMEAR = 0")
+    if d["lspinorb"] 
+        write(ios,"LSORBIT= .TRUE.")
+    end
+    close(ios)
 end
 
 function make_kpoints()
@@ -34,7 +45,7 @@ function dft_init(it::IterInfo, case::String, d::Dict{String,Any})
     # generate essential input files
     if it.dft_dmft_iter == 0
         if d["engine"] == "vasp"
-            make_incar()
+            make_incar(case, d)
             make_kpoints()
         else
             sorry()
