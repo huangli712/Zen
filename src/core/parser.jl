@@ -16,11 +16,16 @@ function parse_config(f::AbstractString, key::AbstractString)
 end
 
 function parse_mpi(key::AbstractString)
-    dict = TOML.parsefile("MPI.toml")
+    f = "MPI.toml"
+    if isfile(f)
+        dict = TOML.parsefile("MPI.toml")
 
-    if haskey(dict, key)
-        dict[key]
+        if haskey(dict, key)
+            dict[key]
+        else
+            error("Do not have this key: $key")
+        end
     else
-        error("Do not have this key: $key")
+        ""
     end
 end

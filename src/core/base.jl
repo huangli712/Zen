@@ -80,8 +80,6 @@ end
 function dft_run(it::IterInfo, d::Dict{String,Any})
     dft_home = check_dft(d)
     mpi_prefix = parse_mpi("dft") 
-    @show dft_home, mpi_prefix
-    exit(-1)
 
     cd("dft")
 
@@ -93,6 +91,8 @@ function dft_run(it::IterInfo, d::Dict{String,Any})
             global vasp_exec = "$dft_home/vasp_std"
         end
         vasp_cmd = split("$mpi_prefix $vasp_exec", " ")
+        @show `$vasp_cmd`
+        exit(-1)
         run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
     else
         sorry()
