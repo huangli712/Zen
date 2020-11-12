@@ -78,6 +78,8 @@ function dft_init(it::IterInfo, case::String, d::Dict{String,Any})
 end
 
 function dft_run(it::IterInfo, d::Dict{String,Any}, dft_home::String)
+    cd("dft")
+
     if d["engine"] == "vasp"
         vasp_exec = ""
         if d["lspinorb"]
@@ -85,10 +87,12 @@ function dft_run(it::IterInfo, d::Dict{String,Any}, dft_home::String)
         else
             global vasp_exec = "$dft_home/vasp_std"
         end
-        @show vasp_exec, isfile(vasp_exec)
+        run(`$vasp_exec`)
     else
         sorry()
     end
+
+    cd("..")
 end
 
 function dft_save()
