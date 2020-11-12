@@ -19,7 +19,11 @@ function check_toml()
     if nargs < 1
        error("Please provide a case.toml file to configure your calculation")
     else
-       ARGS[1]
+       if isfile(ARGS[1])
+           ARGS[1]
+       else
+           error("Please make sure config file $(ARGS[1]) exists")
+       end
     end
 end
 
