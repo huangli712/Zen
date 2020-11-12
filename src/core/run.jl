@@ -22,12 +22,6 @@ case, dft, dmft, dft_dmft = parse_config(toml)
 # validate the parameters
 # plug your codes here
 
-# check the zen engine 
-ZEN_HOME = check_home()
-
-# check the dft engine
-DFT_HOME = check_dft(dft)
-
 # check the input files (which are essential for the dft engine)
 check_inputs(dft)
 
@@ -40,7 +34,7 @@ it = IterInfo(0, 0, 0, 0)
 if dft_dmft["mode"] == 1
 
     dft_init(it, case, dft)
-    dft_run(it, dft, DFT_HOME)
+    dft_run(it, dft)
     for iter in 1:dft_dmft["niter"]
         println("iter: $iter")
     end

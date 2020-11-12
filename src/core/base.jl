@@ -77,11 +77,13 @@ function dft_init(it::IterInfo, case::String, d::Dict{String,Any})
     cd("..")
 end
 
-function dft_run(it::IterInfo, d::Dict{String,Any}, dft_home::String)
+function dft_run(it::IterInfo, d::Dict{String,Any})
+    dft_home = check_dft(d)
+    mpi_prefix = 
+
     cd("dft")
 
     if d["engine"] == "vasp"
-        mpi_prefix = "mpiexec -n 4"
         vasp_exec = ""
         if d["lspinorb"]
             global vasp_exec = "$dft_home/vasp_ncl"

@@ -1,17 +1,26 @@
 using TOML
 
 """
-    parse_config(f::AbstractString)
+    parse_config(f::AbstractString, key::AbstractString)
 
 Parse the configuration file (toml format)
 """
-function parse_config(f::AbstractString)
+function parse_config(f::AbstractString, key::AbstractString)
     dict = TOML.parsefile(f)
 
-    case = dict["case"]
-    dft = dict["dft"]
-    dmft = dict["dmft"]
-    dft_dmft = dict["dft_dmft"]
+    if haskey(dict, key)
+        dict[key]
+    else
+        error("Do not have this key: $key")
+    end
+end
 
-    return case, dft, dmft, dft_dmft
+function parse_mpi(key::AbstractString)
+    dict = TOML.parsefile("MPI.toml")
+
+    if haskey(dict, key)
+        dict[key]
+    else
+        error("Do not have this key: $key")
+    end
 end
