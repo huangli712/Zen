@@ -81,13 +81,15 @@ function dft_run(it::IterInfo, d::Dict{String,Any}, dft_home::String)
     cd("dft")
 
     if d["engine"] == "vasp"
+        mpi_prefix = "mpiexec -n 4"
         vasp_exec = ""
         if d["lspinorb"]
             global vasp_exec = "$dft_home/vasp_ncl"
         else
             global vasp_exec = "$dft_home/vasp_std"
         end
-        run(`$vasp_exec`)
+        vasp_cmd = split("$mpi_prefix $vasp_exec", " ")
+        run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
     else
         sorry()
     end

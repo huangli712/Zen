@@ -12,5 +12,6 @@
 *.data
 *.optrpt
 *.dSYM
+.nfs*
 .DS_Store
 fort.*
