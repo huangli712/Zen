@@ -10,7 +10,7 @@ lortho = true
 [dft.projector]
 lproj = true
 nproj = 1
-sproj = ["P1"]
+sproj = ["2 : d : Pr"]
 
 [dmft]
 dcount = 1
