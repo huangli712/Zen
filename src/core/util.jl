@@ -28,11 +28,11 @@ function check_toml()
 end
 
 """
-    check_zen()
+    query_zen()
 
-Check the home directory for zen
+Query the home directory for zen
 """
-function check_zen()
+function query_zen()
     ENV["ZEN_HOME"]
 end
 
