@@ -5,7 +5,7 @@ Check the version of julia runtime environment
 """
 function require()
     if VERSION < v"1.5-"
-        error("Please use julia v1.5.0+")
+        error("Please upgrade your julia to v1.5.0 or higher")
     end
 end
 
