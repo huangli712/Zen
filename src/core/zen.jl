@@ -4,7 +4,7 @@ include("types.jl")
 export IterInfo
 
 include("util.jl")
-export check_version
+export require
 export check_toml
 export check_zen
 export check_dft

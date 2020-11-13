@@ -1,14 +1,10 @@
 #!/usr/bin/env julia
 
-#=
-
-=#
-
 include("zen.jl")
 using .Zen
 
 # check the version of julia runtime environment
-check_version()
+require()
 
 # print the welcome message 
 welcome()
