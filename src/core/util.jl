@@ -12,7 +12,7 @@ end
 """
     query_args()
 
-Check whether a configuration file (case.toml) is provided
+Check whether the configuration file (case.toml) is provided
 """
 function query_args()
     nargs = length(ARGS)
