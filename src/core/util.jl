@@ -24,6 +24,21 @@ function query_args()
 end
 
 """
+    query_cars(dft::Dict{String,Any})
+
+Check whether the essential input files exist
+"""
+function query_cars(dft::Dict{String,Any})
+    if dft["engine"] == "vasp"
+        if !isfile("POSCAR") || !isfile("POTCAR")
+            error("Please provide both POSCAR and POTCAR files")
+        end
+    else
+        sorry()
+    end
+end
+
+"""
     query_zen()
 
 Query the home directory for zen
@@ -40,21 +55,6 @@ Query the home directory of the dft engine
 function query_dft(dft::Dict{String,Any})
     if dft["engine"] == "vasp"
         ENV["VASP_HOME"]
-    else
-        sorry()
-    end
-end
-
-"""
-    check_inputs(dft::Dict{String,Any})
-
-Check whether the essential input files exist
-"""
-function check_inputs(dft::Dict{String,Any})
-    if dft["engine"] == "vasp"
-        if !isfile("POSCAR") || !isfile("POTCAR")
-            error("Please provide both POSCAR and POTCAR files")
-        end
     else
         sorry()
     end
