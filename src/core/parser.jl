@@ -1,7 +1,7 @@
 using TOML
 
 """
-    parse_toml(f::AbstractString, key::AbstractString)
+    parse_toml(f::AbstractString, key::AbstractString, necessary::Bool)
 
 Parse the configuration file (toml format)
 """
