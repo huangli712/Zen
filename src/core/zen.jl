@@ -7,7 +7,7 @@ include("util.jl")
 export require
 export query_args
 export query_zen
-export check_dft
+export query_dft
 export check_inputs
 export welcome
 export goodbye

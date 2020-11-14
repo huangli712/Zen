@@ -93,7 +93,7 @@ end
 Execute the desired dft engine parallelly or sequentially
 """
 function dft_run(it::IterInfo, d::Dict{String,Any})
-    dft_home = check_dft(d)
+    dft_home = query_dft(d)
     mpi_prefix = parse_mpi("dft") 
 
     cd("dft")
