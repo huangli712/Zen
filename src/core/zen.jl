@@ -14,8 +14,7 @@ export goodbye
 export sorry
 
 include("parser.jl")
-export parse_config
-export parse_mpi
+export parse_toml
 
 include("base.jl")
 export make_trees
