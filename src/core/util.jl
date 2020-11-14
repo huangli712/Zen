@@ -10,20 +10,16 @@ function require()
 end
 
 """
-    check_toml()
+    query_args()
 
 Check whether a case.toml file is provided
 """
-function check_toml()
+function query_args()
     nargs = length(ARGS)
     if nargs < 1
        error("Please provide a case.toml file to configure your calculation")
     else
-       if isfile(ARGS[1])
-           ARGS[1]
-       else
-           error("Please make sure config file $(ARGS[1]) exists")
-       end
+       ARGS[1]
     end
 end
 
