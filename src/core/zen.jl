@@ -6,9 +6,9 @@ export IterInfo
 include("util.jl")
 export require
 export query_args
+export check_cars
 export query_zen
 export query_dft
-export check_inputs
 export welcome
 export goodbye
 export sorry
