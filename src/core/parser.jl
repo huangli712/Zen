@@ -1,11 +1,11 @@
 using TOML
 
 """
-    parse_config(f::AbstractString, key::AbstractString)
+    parse_toml(f::AbstractString, key::AbstractString)
 
 Parse the configuration file (toml format)
 """
-function parse_config(f::AbstractString, key::AbstractString)
+function parse_toml(f::AbstractString, key::AbstractString)
     dict = TOML.parsefile(f)
 
     if haskey(dict, key)
@@ -22,6 +22,7 @@ Parse the file MPI.toml to get parallel setting
 """
 function parse_mpi(key::AbstractString)
     f = "MPI.toml"
+
     if isfile(f)
         dict = TOML.parsefile("MPI.toml")
 
