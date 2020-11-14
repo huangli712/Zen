@@ -19,7 +19,7 @@ dft_dmft = parse_config(query_args(), "dft_dmft")
 # plug your codes here
 
 # check the input files (which are essential for the calculation)
-check_inputs(dft)
+query_cars(dft)
 
 # prepare the working directories
 make_trees(dmft["impurity"])
