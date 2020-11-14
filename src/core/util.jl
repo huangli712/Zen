@@ -12,12 +12,12 @@ end
 """
     query_args()
 
-Check whether a case.toml file is provided
+Check whether a configuration file (case.toml) is provided
 """
 function query_args()
     nargs = length(ARGS)
     if nargs < 1
-       error("Please provide a case.toml file to configure your calculation")
+       error("Please specify the configuration file at least")
     else
        ARGS[1]
     end

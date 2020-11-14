@@ -5,7 +5,7 @@ export IterInfo
 
 include("util.jl")
 export require
-export check_toml
+export query_args
 export query_zen
 export check_dft
 export check_inputs
