@@ -10,10 +10,10 @@ require()
 welcome()
 
 # parse the file case.toml to extract parameters
-case = parse_config(query_args(), "case") 
-dft = parse_config(query_args(), "dft")
-dmft = parse_config(query_args(), "dmft")
-dft_dmft = parse_config(query_args(), "dft_dmft")
+case = parse_toml(query_args(), "case", true) 
+dft = parse_toml(query_args(), "dft", true)
+dmft = parse_toml(query_args(), "dmft", true)
+dft_dmft = parse_toml(query_args(), "dft_dmft", true)
 
 # validate the parameters
 # plug your codes here
