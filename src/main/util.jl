@@ -44,7 +44,11 @@ end
 Query the home directory for zen
 """
 function query_zen()
-    ENV["ZEN_HOME"]
+    if haskey(ENV, "ZEN_HOME")
+        ENV["ZEN_HOME"]
+    else
+        error("ZEN_HOME is undefined")
+    end
 end
 
 """
