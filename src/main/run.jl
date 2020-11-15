@@ -20,9 +20,11 @@ dft_dmft = parse_toml(query_args(), "dft_dmft", true)
 # plug your codes here
 
 # check the input files (which are essential for the calculation)
+message("zen", "examine the essential input files")
 query_cars(dft)
 
 # prepare the working directories
+message("zen", "create the working directories")
 make_trees(dmft["impurity"])
 
 # create a IterInfo object
