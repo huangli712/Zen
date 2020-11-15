@@ -4,3 +4,7 @@ mutable struct IterInfo
     dmft2_iter
     dft_dmft_iter
 end
+
+function IterInfo(iter::Int64 = 0)
+    IterInfo(iter, iter, iter, iter)
+end
