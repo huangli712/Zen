@@ -34,11 +34,17 @@ it = IterInfo()
 
 if dft_dmft["mode"] == 1
 
+    message("zen", "enter one-shot mode")
+    message("zen", "begin < dft block >")
+    message("zen", "dft -> init")
     dft_init(it, case, dft)
+    message("zen", "dft -> run")
     dft_run(it, dft)
+    message("zen", "dft -> save")
+    message("zen", "e_n_d < dft block >")
     dft_save(it, dft)
     for iter in 1:dft_dmft["niter"]
-        println("iter: $iter")
+        message("zen", "dft_dmft_iter -> 0  dmft1_iter -> $iter dmft2_iter -> 0")
     end
 
 else
