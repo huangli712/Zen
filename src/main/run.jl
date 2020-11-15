@@ -17,6 +17,7 @@ dmft = parse_toml(query_args(), "dmft", true)
 dft_dmft = parse_toml(query_args(), "dft_dmft", true)
 
 # validate the parameters
+message("zen", "check the configuration parameters")
 # plug your codes here
 
 # check the input files (which are essential for the calculation)
@@ -28,6 +29,7 @@ message("zen", "create the working directories")
 make_trees(dmft["impurity"])
 
 # create a IterInfo object
+message("zen", "make the instance of iterator")
 it = IterInfo()
 
 if dft_dmft["mode"] == 1
