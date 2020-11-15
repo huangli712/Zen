@@ -1,5 +1,5 @@
 """
-    make_trees()
+    make_trees(d:Dict{String,Any})
 
 Build the working directories at advance 
 """
@@ -15,7 +15,7 @@ end
 """
     make_incar(case::String, d::Dict{String,Any})
 
-Make an INCAR for vasp, which is suitable for an initial self-consistent run
+Generate an INCAR for vasp, which is only suitable for an initial self-consistent run
 """
 function make_incar(case::String, d::Dict{String,Any})
     ios = open("INCAR", "w")
