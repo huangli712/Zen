@@ -25,7 +25,7 @@ query_cars(dft)
 make_trees(dmft["impurity"])
 
 # create a IterInfo object
-it = IterInfo(0, 0, 0, 0)
+it = IterInfo()
 
 if dft_dmft["mode"] == 1
 
