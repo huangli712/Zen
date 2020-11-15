@@ -12,6 +12,7 @@ export query_dft
 export welcome
 export goodbye
 export sorry
+export message
 
 include("parser.jl")
 export parse_toml

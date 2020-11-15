@@ -10,6 +10,7 @@ require()
 welcome()
 
 # parse the file case.toml to extract parameters
+message("zen", "parse the configuration")
 case = parse_toml(query_args(), "case", true) 
 dft = parse_toml(query_args(), "dft", true)
 dmft = parse_toml(query_args(), "dmft", true)
