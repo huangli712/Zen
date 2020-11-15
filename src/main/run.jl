@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 
-include("zen.jl")
+include("Zen.jl")
 using .Zen
 
 # check the version of julia runtime environment
