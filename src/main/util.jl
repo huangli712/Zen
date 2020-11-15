@@ -58,7 +58,11 @@ Query the home directory of the dft engine
 """
 function query_dft(dft::Dict{String,Any})
     if dft["engine"] == "vasp"
-        ENV["VASP_HOME"]
+        if haskey(ENV, "VASP_HOME")
+            ENV["VASP_HOME"]
+        else
+            error("VASP_HOME is undefined")
+        end
     else
         sorry()
     end
