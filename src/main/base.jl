@@ -29,7 +29,7 @@ function make_incar(case::String, d::Dict{String,Any})
     write(ios,"KSPACING = 0.5 \n")
 
     if d["lspins"]
-        write(ios,"ISPIN    = .TRUE. \n")
+        write(ios,"ISPIN    = 2 \n")
     end
 
     if d["lspinorb"] 
