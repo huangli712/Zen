@@ -1,5 +1,7 @@
 #!/usr/bin/env julia
 
+using Printf
+
 include("Zen.jl")
 using .Zen
 
@@ -20,8 +22,28 @@ dft_dmft = parse_toml(query_args(), "dft_dmft", true)
 message("zen", "check the configuration parameters")
 # plug your codes here
 
-
-
+@printf("%s\n", "------"^8)
+@printf("%s %s\n", "case ->", case)
+@printf("%s\n", "------"^8)
+@printf("%s %s\n", "dft  -> engine    ->", dft["engine"])
+@printf("%s %s\n", "dft  -> lspins    ->", dft["lspins"])
+@printf("%s %s\n", "dft  -> lspinorb  ->", dft["lspinorb"])
+@printf("%s %s\n", "dft  -> adaptor   -> lortho ->", dft["adaptor"]["lortho"])
+@printf("%s %s\n", "dft  -> projector -> lproj  ->", dft["projector"]["lproj"])
+@printf("%s %s\n", "dft  -> projector -> nproj  ->", dft["projector"]["nproj"])
+@printf("%s %s\n", "dft  -> projector -> sproj  ->", dft["projector"]["sproj"])
+@printf("%s\n", "------"^8)
+@printf("%s %s\n", "dmft -> dcount    ->", dmft["dcount"])
+@printf("%s %s\n", "dmft -> nominal   ->", dmft["nominal"])
+@printf("%s %s\n", "dmft -> impurity  -> nimp   ->", dmft["impurity"]["nimp"])
+@printf("%s %s\n", "dmft -> impurity  -> atoms  ->", dmft["impurity"]["atoms"])
+@printf("%s %s\n", "dmft -> impurity  -> equiv  ->", dmft["impurity"]["equiv"])
+@printf("%s %s\n", "dmft -> impurity  -> shell  ->", dmft["impurity"]["shell"])
+@printf("%s %s\n", "dmft -> impurity  -> upara  ->", dmft["impurity"]["upara"])
+@printf("%s %s\n", "dmft -> impurity  -> jpara  ->", dmft["impurity"]["jpara"])
+@printf("%s %s\n", "dmft -> impurity  -> lpara  ->", dmft["impurity"]["lpara"])
+@printf("%s\n", "------"^8)
+exit(-1)
 
 
 # check the input files (which are essential for the calculation)
