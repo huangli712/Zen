@@ -68,6 +68,11 @@ function query_dft(dft::Dict{String,Any})
     end
 end
 
+"""
+    param_case(case::String)
+
+Print the parameters to stdout
+"""
 function param_case(case::String)
     println()
     println("case summary:")
@@ -75,6 +80,11 @@ function param_case(case::String)
     println("case -> ", case)
 end
 
+"""
+    param_dft(dft::Dict{String,Any})
+
+Print the parameters to stdout
+"""
 function param_dft(dft::Dict{String,Any})
     println()
     println("dft parameters:")
@@ -88,6 +98,11 @@ function param_dft(dft::Dict{String,Any})
     println("dft  -> projector -> sproj  -> ", dft["projector"]["sproj"])
 end
 
+"""
+    param_dmft(dmft::Dict{String,Any})
+
+Print the parameters to stdout
+"""
 function param_dmft(dmft::Dict{String,Any})
     println()
     println("dmft parameters:")
@@ -104,6 +119,11 @@ function param_dmft(dmft::Dict{String,Any})
     println("dmft -> solver    -> engine -> ", dmft["solver"]["engine"])
 end
 
+"""
+    param_dft_dmft(dft_dmft::Dict{String,Any})
+
+Print the parameters to stdout
+"""
 function param_dft_dmft(dft_dmft::Dict{String,Any})
     println()
     println("dft_dmft parameters:")
