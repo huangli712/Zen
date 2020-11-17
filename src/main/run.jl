@@ -25,8 +25,9 @@ message("zen", "check the configuration parameters")
 
 # write the parameters to stdout
 println()
-println("case -> ", case)
+println("case summary:")
 println("------"^8)
+println("case -> ", case)
 
 println()
 println("dft parameters:")
