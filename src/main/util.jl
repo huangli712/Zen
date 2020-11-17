@@ -75,8 +75,7 @@ Print the parameters to stdout
 """
 function param_case(case::String)
     println()
-    println("case summary:")
-    println("------"^8)
+    message("case summary")
     println("case -> ", case)
     println()
 end
@@ -87,8 +86,7 @@ end
 Print the parameters to stdout
 """
 function param_dft(dft::Dict{String,Any})
-    println("dft parameters:")
-    println("------"^8)
+    message("dft parameters")
     println("dft  -> engine    -> ", dft["engine"])
     println("dft  -> lspins    -> ", dft["lspins"])
     println("dft  -> lspinorb  -> ", dft["lspinorb"])
@@ -105,8 +103,7 @@ end
 Print the parameters to stdout
 """
 function param_dmft(dmft::Dict{String,Any})
-    println("dmft parameters:")
-    println("------"^8)
+    message("dmft parameters")
     println("dmft -> dcount    -> ", dmft["dcount"])
     println("dmft -> nominal   -> ", dmft["nominal"])
     println("dmft -> impurity  -> nimp   -> ", dmft["impurity"]["nimp"])
@@ -126,8 +123,7 @@ end
 Print the parameters to stdout
 """
 function param_dft_dmft(dft_dmft::Dict{String,Any})
-    println("dft_dmft parameters:")
-    println("------"^8)
+    message("dft_dmft parameters")
     println("dft_dmft -> mode    -> ", dft_dmft["mode"])
     println("dft_dmft -> axis    -> ", dft_dmft["axis"])
     println("dft_dmft -> beta    -> ", dft_dmft["beta"])
@@ -176,4 +172,8 @@ end
 function message(from::String, msg::String)
     printstyled("["*from*"]: ", color = :green)
     println(msg)
+end
+
+function message(from::String)
+    message(from,"")
 end

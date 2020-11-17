@@ -22,11 +22,11 @@ message("zen", "check the configuration parameters")
 # plug your codes here
 
 # write the parameters to stdout
+message("zen", "display the configuration parameters")
 param_case(case)
 param_dft(dft)
 param_dmft(dmft)
 param_dft_dmft(dft_dmft)
-exit(-1)
 
 # check the input files (which are essential for the calculation)
 message("zen", "examine the essential input files")
