@@ -10,7 +10,7 @@ require()
 welcome()
 
 # parse the file case.toml to extract parameters
-message("zen", "parse the configuration")
+message("zen", "parse the configuration file")
 cfg = parse_toml(query_args(), true)
 case = cfg["case"]
 dft = cfg["dft"]

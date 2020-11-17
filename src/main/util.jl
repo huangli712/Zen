@@ -78,6 +78,7 @@ function param_case(case::String)
     println("case summary:")
     println("------"^8)
     println("case -> ", case)
+    println()
 end
 
 """
@@ -86,7 +87,6 @@ end
 Print the parameters to stdout
 """
 function param_dft(dft::Dict{String,Any})
-    println()
     println("dft parameters:")
     println("------"^8)
     println("dft  -> engine    -> ", dft["engine"])
@@ -96,6 +96,7 @@ function param_dft(dft::Dict{String,Any})
     println("dft  -> projector -> lproj  -> ", dft["projector"]["lproj"])
     println("dft  -> projector -> nproj  -> ", dft["projector"]["nproj"])
     println("dft  -> projector -> sproj  -> ", dft["projector"]["sproj"])
+    println()
 end
 
 """
@@ -104,7 +105,6 @@ end
 Print the parameters to stdout
 """
 function param_dmft(dmft::Dict{String,Any})
-    println()
     println("dmft parameters:")
     println("------"^8)
     println("dmft -> dcount    -> ", dmft["dcount"])
@@ -117,6 +117,7 @@ function param_dmft(dmft::Dict{String,Any})
     println("dmft -> impurity  -> jpara  -> ", dmft["impurity"]["jpara"])
     println("dmft -> impurity  -> lpara  -> ", dmft["impurity"]["lpara"])
     println("dmft -> solver    -> engine -> ", dmft["solver"]["engine"])
+    println()
 end
 
 """
@@ -125,7 +126,6 @@ end
 Print the parameters to stdout
 """
 function param_dft_dmft(dft_dmft::Dict{String,Any})
-    println()
     println("dft_dmft parameters:")
     println("------"^8)
     println("dft_dmft -> mode    -> ", dft_dmft["mode"])
@@ -139,6 +139,7 @@ function param_dft_dmft(dft_dmft::Dict{String,Any})
     println("dft_dmft -> lforce  -> ", dft_dmft["lforce"])
     println("dft_dmft -> lcharge -> ", dft_dmft["lcharge"])
     println("dft_dmft -> lenergy -> ", dft_dmft["lenergy"])
+    println()
 end
 
 """
