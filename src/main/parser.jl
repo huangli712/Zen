@@ -43,5 +43,14 @@ end
 function parse_poscar()
 end
 
-function parse_procar()
+function parse_projcar()
+end
+
+function parse_locproj()
+end
+
+function parse_ibzkpt()
+end
+
+function parse_eigenval()
 end
