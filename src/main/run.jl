@@ -13,15 +13,17 @@ welcome()
 
 # parse the file case.toml to extract parameters
 message("zen", "parse the configuration")
-case = parse_toml(query_args(), "case", true) 
-dft = parse_toml(query_args(), "dft", true)
-dmft = parse_toml(query_args(), "dmft", true)
-dft_dmft = parse_toml(query_args(), "dft_dmft", true)
+cfg = parse_toml(query_args(), true)
+case = cfg["case"]
+dft = cfg["dft"]
+dmft = cfg["dmft"]
+dft_dmft = cfg["dft_dmft"]
 
 # validate the parameters
 message("zen", "check the configuration parameters")
 # plug your codes here
 
+# write the parameters to stdout
 @printf("%s\n", "------"^8)
 @printf("%s %s\n", "case ->", case)
 @printf("%s\n", "------"^8)
