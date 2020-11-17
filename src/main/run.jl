@@ -1,7 +1,5 @@
 #!/usr/bin/env julia
 
-using Printf
-
 include("Zen.jl")
 using .Zen
 

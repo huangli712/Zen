@@ -68,6 +68,22 @@ function query_dft(dft::Dict{String,Any})
     end
 end
 
+function param_case(case::String)
+    println()
+    println("case summary:")
+    println("------"^8)
+    println("case -> ", case)
+end
+
+function param_dft()
+end
+
+function param_dmft()
+end
+
+function param_dft_dmft()
+end
+
 """
     welcome()
 
