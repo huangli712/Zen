@@ -22,3 +22,20 @@ function parse_toml(f::AbstractString, key::AbstractString, necessary::Bool)
         end
     end
 end
+
+"""
+    parse_toml(f::AbstractString, necessary::Bool)
+
+Parse the configuration file (toml format)
+"""
+function parse_toml(f::AbstractString, necessary::Bool)
+    if isfile(f)
+        dict = TOML.parsefile(f)
+    else
+        if necessary
+            error("Please make sure that the file $f really exists")
+        else
+            nothing
+        end
+    end
+end
