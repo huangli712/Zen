@@ -39,3 +39,9 @@ function parse_toml(f::AbstractString, necessary::Bool)
         end
     end
 end
+
+function parse_poscar()
+end
+
+function parse_procar()
+end
