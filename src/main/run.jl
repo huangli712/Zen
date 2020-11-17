@@ -24,9 +24,9 @@ message("zen", "check the configuration parameters")
 # plug your codes here
 
 # write the parameters to stdout
-@printf("%s\n", "------"^8)
 @printf("%s %s\n", "case ->", case)
-@printf("%s\n", "------"^8)
+
+println()
 @printf("%s %s\n", "dft  -> engine    ->", dft["engine"])
 @printf("%s %s\n", "dft  -> lspins    ->", dft["lspins"])
 @printf("%s %s\n", "dft  -> lspinorb  ->", dft["lspinorb"])
@@ -34,7 +34,9 @@ message("zen", "check the configuration parameters")
 @printf("%s %s\n", "dft  -> projector -> lproj  ->", dft["projector"]["lproj"])
 @printf("%s %s\n", "dft  -> projector -> nproj  ->", dft["projector"]["nproj"])
 @printf("%s %s\n", "dft  -> projector -> sproj  ->", dft["projector"]["sproj"])
-@printf("%s\n", "------"^8)
+
+
+println()
 @printf("%s %s\n", "dmft -> dcount    ->", dmft["dcount"])
 @printf("%s %s\n", "dmft -> nominal   ->", dmft["nominal"])
 @printf("%s %s\n", "dmft -> impurity  -> nimp   ->", dmft["impurity"]["nimp"])
@@ -45,7 +47,8 @@ message("zen", "check the configuration parameters")
 @printf("%s %s\n", "dmft -> impurity  -> jpara  ->", dmft["impurity"]["jpara"])
 @printf("%s %s\n", "dmft -> impurity  -> lpara  ->", dmft["impurity"]["lpara"])
 @printf("%s %s\n", "dmft -> solver    -> engine ->", dmft["solver"]["engine"])
-@printf("%s\n", "------"^8)
+
+println()
 @printf("%s %s\n", "dft_dmft -> mode    ->", dft_dmft["mode"])
 @printf("%s %s\n", "dft_dmft -> axis    ->", dft_dmft["axis"])
 @printf("%s %s\n", "dft_dmft -> beta    ->", dft_dmft["beta"])
@@ -57,7 +60,6 @@ message("zen", "check the configuration parameters")
 @printf("%s %s\n", "dft_dmft -> lforce  ->", dft_dmft["lforce"])
 @printf("%s %s\n", "dft_dmft -> lcharge ->", dft_dmft["lcharge"])
 @printf("%s %s\n", "dft_dmft -> lenergy ->", dft_dmft["lenergy"])
-@printf("%s\n", "------"^8)
 exit(-1)
 
 
