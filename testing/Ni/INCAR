@@ -1,0 +1,9 @@
+  SYSTEM = fcc Ni
+  ISTART = 0
+  ICHARG = 11
+  ENCUT  = 270
+  ISMEAR = 1
+  SIGMA  = 0.2
+  LORBIT = 11
+  ISPIN  = 2
+  MAGMOM = 1
