@@ -1,0 +1,45 @@
+case = "Ni"
+
+[dft]
+engine = "vasp"
+lspins = true
+lspinorb = false
+
+[dft.adaptor]
+lortho = true
+
+[dft.projector]
+lproj = true
+nproj = 1
+sproj = ["1 : d : Pr"]
+
+[dmft]
+dcount = 1
+nominal = 8.0
+
+[dmft.impurity]
+nimp = 1
+atoms = ["Ni"]
+equiv = [[1]]
+shell = ["d"]
+ising = [true]
+upara = [4.0]
+jpara = [0.7]
+lpara = [0.0]
+
+[dmft.solver]
+engine = "ct_hub1"
+params = []
+
+[dft_dmft]
+mode = 1
+axis = 1
+beta = 40.0
+niter = 60
+mixer = 0.5
+cc = 1.0E-4
+ec = 1.0E-4
+fc = 1.0E-4
+lforce = false
+lcharge = true
+lenergy = true
