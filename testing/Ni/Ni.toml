@@ -1,8 +1,8 @@
-case = "SrVO3"
+case = "Ni"
 
 [dft]
 engine = "vasp"
-lspins = false
+lspins = true
 lspinorb = false
 
 [dft.adaptor]
@@ -11,15 +11,15 @@ lortho = true
 [dft.projector]
 lproj = true
 nproj = 1
-sproj = ["2 : d : Pr"]
+sproj = ["1 : d : Pr"]
 
 [dmft]
 dcount = 1
-nominal = 3.0
+nominal = 8.0
 
 [dmft.impurity]
 nimp = 1
-atoms = ["V"]
+atoms = ["Ni"]
 equiv = [[1]]
 shell = ["d"]
 ising = [true]
