@@ -1,9 +1,9 @@
-case = "Ni"
+case = "Ce"
 
 [dft]
 engine = "vasp"
-lspins = true
-lspinorb = false
+lspins = false
+lspinorb = true
 
 [dft.adaptor]
 lortho = true
@@ -11,19 +11,19 @@ lortho = true
 [dft.projector]
 lproj = true
 nproj = 1
-sproj = ["1 : d : Pr"]
+sproj = ["1 : f : Pr"]
 
 [dmft]
 dcount = 1
-nominal = 8.0
+nominal = 1.0
 
 [dmft.impurity]
 nimp = 1
-atoms = ["Ni"]
+atoms = ["Ce"]
 equiv = [[1]]
-shell = ["d"]
-ising = [true]
-upara = [4.0]
+shell = ["f"]
+ising = [false]
+upara = [6.0]
 jpara = [0.7]
 lpara = [0.0]
 
