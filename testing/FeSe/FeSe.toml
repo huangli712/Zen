@@ -1,4 +1,4 @@
-case = "SrVO3"
+case = "FeSe"
 
 [dft]
 engine = "vasp"
@@ -10,21 +10,21 @@ lortho = true
 
 [dft.projector]
 lproj = true
-nproj = 1
-sproj = ["2 : d : Pr"]
+nproj = 2
+sproj = ["1 : d : Pr", "2 : d : Pr"]
 
 [dmft]
 dcount = 1
-nominal = 3.0
+nominal = 6.0
 
 [dmft.impurity]
-nimp = 1
-atoms = ["V"]
-equiv = [[1]]
-shell = ["d"]
-ising = [true]
-upara = [4.0]
-jpara = [0.7]
+nimp = 2
+atoms = ["Fe", "Fe"]
+equiv = [[1, 2]]
+shell = ["d", "d"]
+ising = [true, true]
+upara = [5.0, 5.0]
+jpara = [0.8, 0.8]
 lpara = [0.0]
 
 [dmft.solver]
