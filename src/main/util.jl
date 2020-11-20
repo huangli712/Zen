@@ -145,7 +145,7 @@ Print out the welcome messages to the screen
 """
 function welcome()
     printstyled("                                   |\n", color = :green)
-    printstyled("========== ========== ===     ===  | A Modern DFT + DMFT Simulation Framework\n", color = :green)
+    printstyled("========== ========== ===     ===  | A Modern DFT + DMFT Computation Framework\n", color = :green)
     printstyled("        // ||         || n     ||  |\n", color = :green)
     printstyled("       //  ||         ||  n    ||  |\n", color = :green)
     printstyled("  //zz//   ||eeeeeeee ||   n   ||  |\n", color = :green)
