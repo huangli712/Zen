@@ -12,7 +12,7 @@ lspinorb = false
 lortho = true
 
 [dft.projector]
-lopt = true
+lopt = false
 ewindow = [6.0, 9.0]
 lproj = true
 nproj = 1
