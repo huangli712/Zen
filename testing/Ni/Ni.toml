@@ -2,6 +2,9 @@ case = "Ni"
 
 [dft]
 engine = "vasp"
+magnetic = "fm"
+kgrid = "medium"
+lsymm = true
 lspins = true
 lspinorb = false
 
@@ -9,6 +12,8 @@ lspinorb = false
 lortho = true
 
 [dft.projector]
+lopt = true
+ewindow = [6.0, 9.0]
 lproj = true
 nproj = 1
 sproj = ["1 : d : Pr"]
