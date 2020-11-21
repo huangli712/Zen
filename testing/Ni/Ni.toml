@@ -2,8 +2,8 @@ case = "Ni"
 
 [dft]
 engine = "vasp"
-magnetic = "fm"
 kgrid = "medium"
+magmom = "1.0"
 lsymm = true
 lspins = true
 lspinorb = false
