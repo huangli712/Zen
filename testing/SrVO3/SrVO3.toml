@@ -2,7 +2,6 @@ case = "SrVO3"
 
 [dft]
 engine = "vasp"
-magnetic = "pm"
 kgrid = "medium"
 lsymm = true
 lspins = false
