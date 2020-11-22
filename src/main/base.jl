@@ -4,10 +4,25 @@
 Build the working directories at advance 
 """
 function make_trees(d::Dict{String,Any})
+    if isdir("dft")
+        rm("dft", force = true, recursive = true)
+    end
     mkdir("dft")
+
+    if isdir("dmft1")
+        rm("dmft1", force = true, recursive = true)
+    end
     mkdir("dmft1")
+
+    if isdir("dmft2")
+        rm("dmft2", force = true, recursive = true)
+    end
     mkdir("dmft2")
+
     for i = 1:d["nimp"]
+        if isdir("impurity.$i")
+            rm("impurity.$i", force = true, recursive = true)
+        end
         mkdir("impurity.$i")
     end
 end
