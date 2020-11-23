@@ -1,5 +1,3 @@
-using TOML
-
 """
     parse_toml(f::AbstractString, key::AbstractString, necessary::Bool)
 

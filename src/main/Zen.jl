@@ -1,5 +1,7 @@
 module Zen
 
+using TOML
+
 include("types.jl")
 export IterInfo
 
