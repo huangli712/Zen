@@ -12,3 +12,9 @@ end
 
 function from_eigenval()
 end
+
+function from_chgcar()
+end
+
+function to_chgcar()
+end
