@@ -3,6 +3,9 @@ module Zen
 include("types.jl")
 export IterInfo
 
+include("parser.jl")
+export parse_toml
+
 include("util.jl")
 export require
 export query_args
@@ -18,8 +21,7 @@ export goodbye
 export sorry
 export message
 
-include("parser.jl")
-export parse_toml
+include("adaptor.jl")
 
 include("base.jl")
 export make_trees
