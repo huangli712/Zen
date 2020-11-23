@@ -2,7 +2,7 @@ case = "SrVO3"
 
 [dft]
 engine = "vasp"
-kgrid = "medium"
+kgrid = "accurate"
 lsymm = true
 lspins = false
 lspinorb = false
