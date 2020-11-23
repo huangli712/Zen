@@ -39,18 +39,3 @@ function parse_toml(f::AbstractString, necessary::Bool)
         end
     end
 end
-
-function parse_poscar()
-end
-
-function parse_projcar()
-end
-
-function parse_locproj()
-end
-
-function parse_ibzkpt()
-end
-
-function parse_eigenval()
-end
