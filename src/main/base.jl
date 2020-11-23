@@ -39,9 +39,20 @@ function make_incar(case::String, d::Dict{String,Any})
     write(ios,"PREF     = Accurate \n")
     write(ios,"EDIFF    = 1E-8 \n")
     write(ios,"ALGO     = Normal \n")
-    write(ios,"ISMEAR   = 0 \n")
     write(ios,"LASPH    = .TRUE. \n")
-    write(ios,"KSPACING = 0.5 \n")
+
+    # customize your INCAR according to the case.toml
+    write(ios,"ISMEAR   = 0 \n")
+
+    if d["kgrid"] == "accurate"
+        write(ios,"KSPACING = 0.1 \n")
+    elseif d["kgrid"] == "medium"
+        write(ios,"KSPACING = 0.2 \n")
+    elseif d["kgrid"] == "coarse"
+        write(ios,"KSPACING = 0.4 \n")
+    else 
+        write(ios,"KSPACING = 0.5 \n")
+    end
 
     if d["lspins"]
         write(ios,"ISPIN    = 2 \n")
