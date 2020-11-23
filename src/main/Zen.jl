@@ -24,6 +24,13 @@ export sorry
 export message
 
 include("adaptor.jl")
+export from_poscar
+export from_projcar
+export from_locproj
+export from_ibzkpt
+export from_eigenval
+export from_chgcar
+export to_chgcar
 
 include("base.jl")
 export make_trees
