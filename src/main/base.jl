@@ -37,11 +37,12 @@ end
 """
     make_incar(case::String, d::Dict{String,Any})
 
-Generate an INCAR for vasp, which is only suitable for an initial self-consistent run
+Generate an INCAR for vasp, which is suitable for an initial self-consistent run
 """
 function make_incar(case::String, d::Dict{String,Any})
     ios = open("INCAR", "w")
 
+    # standard part
     write(ios,"System   = $case \n")
     write(ios,"PREF     = Accurate \n")
     write(ios,"EDIFF    = 1E-8 \n")
@@ -49,7 +50,17 @@ function make_incar(case::String, d::Dict{String,Any})
     write(ios,"LASPH    = .TRUE. \n")
 
     # customize your INCAR according to the case.toml
-    write(ios,"ISMEAR   = 0 \n")
+    #
+    # for ismear
+    if d["smear"] == "m-p"       # metal
+        write(ios,"ISMEAR   = 2 \n")
+    elseif d["smear"] == "gauss" # metal, semiconductor or insulator
+        write(ios,"ISMEAR   = 0 \n")
+    elseif d["smear"] == "tetra" # insulator
+        write(ios,"ISMEAR   = -5 \n")
+    else                         # metal, actually m-p scheme
+        write(ios,"ISMEAR   = 1 \n")
+    end
 
     if d["kgrid"] == "accurate"
         write(ios,"KSPACING = 0.1 \n")
