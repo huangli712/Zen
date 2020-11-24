@@ -91,10 +91,11 @@ function make_incar(case::String, d::Dict{String,Any})
         write(ios,"LSORBIT  = .TRUE. \n")
     end
 
+    # for local orbitals and projectors
     if d["projector"]["lproj"]
         for p in 1:d["projector"]["nproj"]
             str = d["projector"]["sproj"][p]
-            write(ios, "LOCPROJ  = $str\n")
+            write(ios, "LOCPROJ  = $str \n")
         end
     end
 
