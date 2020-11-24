@@ -2,6 +2,7 @@ case = "SrVO3"
 
 [dft]
 engine = "vasp"
+smear = "m-p"
 kgrid = "accurate"
 lsymm = true
 lspins = false
