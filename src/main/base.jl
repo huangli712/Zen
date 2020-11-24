@@ -73,17 +73,22 @@ function make_incar(case::String, d::Dict{String,Any})
         write(ios,"KSPACING = 0.5 \n")
     end
 
+    # for symmetry
+    if d["lsymm"] # turn on  symmetry
+        write(ios,"ISYM     = 2 \n")
+    else          # turn off symmetry
+        write(ios,"ISYM     = 0 \n")
+    end
+
     # for spin polarizations
-    if d["lspins"]
+    # if spin-orbit coupling is on, then spins must be polarized
+    if d["lspins"] || d["lspinorb"]
         write(ios,"ISPIN    = 2 \n")
     end
 
     # for spin-orbit coupling
-    if d["lspinorb"] 
+    if d["lspinorb"]
         write(ios,"LSORBIT  = .TRUE. \n")
-        if !d["lspins"]
-            write(ios,"ISPIN    = 2 \n")
-        end
     end
 
     if d["projector"]["lproj"]
