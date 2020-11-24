@@ -51,7 +51,7 @@ function make_incar(case::String, d::Dict{String,Any})
 
     # customize your INCAR according to the case.toml
     #
-    # for ismear
+    # for smearing
     if d["smear"] == "m-p"       # metal
         write(ios,"ISMEAR   = 2 \n")
     elseif d["smear"] == "gauss" # metal, semiconductor or insulator
@@ -62,6 +62,7 @@ function make_incar(case::String, d::Dict{String,Any})
         write(ios,"ISMEAR   = 1 \n")
     end
 
+    # for k-mesh density 
     if d["kgrid"] == "accurate"
         write(ios,"KSPACING = 0.1 \n")
     elseif d["kgrid"] == "medium"
@@ -72,12 +73,17 @@ function make_incar(case::String, d::Dict{String,Any})
         write(ios,"KSPACING = 0.5 \n")
     end
 
+    # for spin polarizations
     if d["lspins"]
         write(ios,"ISPIN    = 2 \n")
     end
 
+    # for spin-orbit coupling
     if d["lspinorb"] 
         write(ios,"LSORBIT  = .TRUE. \n")
+        if !d["lspins"]
+            write(ios,"ISPIN    = 2 \n")
+        end
     end
 
     if d["projector"]["lproj"]
