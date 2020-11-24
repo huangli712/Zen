@@ -99,6 +99,14 @@ function make_incar(case::String, d::Dict{String,Any})
         end
     end
 
+    if d["lopt"]
+        write(ios,"LORBIT   = 14 \n")
+        emin = d["projector"]["window"][1]
+        write(ios,"EMIN     = $emin \n")
+        emax = d["projector"]["window"][2]
+        write(ios,"EMAX     = $emax \n")
+    end
+
     close(ios)
 end
 
