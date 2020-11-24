@@ -1,24 +1,31 @@
 """
     make_trees(d:Dict{String,Any})
 
-Build the working directories at advance 
+Prepare the working directories at advance 
 """
 function make_trees(d::Dict{String,Any})
+    # the working directories include dft, dmft1, dmft2, and impurity.i
+    # if they exist already, we will remove them at first
+    #
+    # for dft
     if isdir("dft")
         rm("dft", force = true, recursive = true)
     end
     mkdir("dft")
 
+    # for dmft1
     if isdir("dmft1")
         rm("dmft1", force = true, recursive = true)
     end
     mkdir("dmft1")
 
+    # for dmft2
     if isdir("dmft2")
         rm("dmft2", force = true, recursive = true)
     end
     mkdir("dmft2")
 
+    # for impurity.i
     for i = 1:d["nimp"]
         if isdir("impurity.$i")
             rm("impurity.$i", force = true, recursive = true)
