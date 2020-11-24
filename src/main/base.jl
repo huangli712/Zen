@@ -52,13 +52,17 @@ function make_incar(case::String, d::Dict{String,Any})
     # customize your INCAR according to the case.toml
     #
     # for smearing
-    if d["smear"] == "m-p"       # metal
+    # ismear ==  2: m-p scheme -> metal
+    # ismear ==  0: gauss scheme -> metal, semiconductor or insulator
+    # ismear == -5: tetrahedron scheme with correction -> insulator
+    # ismear ==  1: m-p scheme -> metal
+    if d["smear"] == "m-p"
         write(ios,"ISMEAR   = 2 \n")
-    elseif d["smear"] == "gauss" # metal, semiconductor or insulator
+    elseif d["smear"] == "gauss"
         write(ios,"ISMEAR   = 0 \n")
-    elseif d["smear"] == "tetra" # insulator
+    elseif d["smear"] == "tetra"
         write(ios,"ISMEAR   = -5 \n")
-    else                         # metal, actually m-p scheme
+    else
         write(ios,"ISMEAR   = 1 \n")
     end
 
@@ -69,14 +73,16 @@ function make_incar(case::String, d::Dict{String,Any})
         write(ios,"KSPACING = 0.2 \n")
     elseif d["kgrid"] == "coarse"
         write(ios,"KSPACING = 0.4 \n")
-    else 
+    else # very coarse 
         write(ios,"KSPACING = 0.5 \n")
     end
 
     # for symmetry
-    if d["lsymm"] # turn on  symmetry
+    # isym == 2: turn on  symmetry
+    # isym == 0: turn off symmetry
+    if d["lsymm"]
         write(ios,"ISYM     = 2 \n")
-    else          # turn off symmetry
+    else
         write(ios,"ISYM     = 0 \n")
     end
 
@@ -99,7 +105,8 @@ function make_incar(case::String, d::Dict{String,Any})
         end
     end
 
-    if d["lopt"]
+    # for optimized projectors
+    if d["projector"]["lopt"]
         write(ios,"LORBIT   = 14 \n")
         emin = d["projector"]["window"][1]
         write(ios,"EMIN     = $emin \n")
