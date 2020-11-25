@@ -120,7 +120,6 @@ function make_incar(case::String, d::Dict{String,Any})
     else
         write(ios,"LSORBIT  = .FALSE. \n")
     end
-    exit(-1)
 
     # for local orbitals and projectors
     if d["projector"]["lproj"]
