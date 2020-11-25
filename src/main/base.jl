@@ -53,7 +53,7 @@ function make_incar(case::String, d::Dict{String,Any})
     #
     # for smearing
     # ismear ==  2: m-p scheme -> metal
-    # ismear ==  1: m-p scheme -> metal
+    # ismear ==  1: m-p scheme -> metal (default)
     # ismear ==  0: gauss scheme -> metal, semiconductor or insulator
     # ismear == -5: tetrahedron scheme with correction -> insulator
     if haskey(d, "smear")
@@ -71,14 +71,18 @@ function make_incar(case::String, d::Dict{String,Any})
     end
     exit(-1)
 
-    # for k-mesh density 
-    if d["kgrid"] == "accurate"
-        write(ios,"KSPACING = 0.1 \n")
-    elseif d["kgrid"] == "medium"
-        write(ios,"KSPACING = 0.2 \n")
-    elseif d["kgrid"] == "coarse"
-        write(ios,"KSPACING = 0.4 \n")
-    else # very coarse 
+    # for k-mesh density
+    if haskey(d, "kgrid")
+        if d["kgrid"] == "accurate"
+            write(ios,"KSPACING = 0.1 \n")
+        elseif d["kgrid"] == "medium"
+            write(ios,"KSPACING = 0.2 \n")
+        elseif d["kgrid"] == "coarse"
+            write(ios,"KSPACING = 0.4 \n")
+        else # very coarse 
+            write(ios,"KSPACING = 0.5 \n")
+        end
+    else
         write(ios,"KSPACING = 0.5 \n")
     end
 
