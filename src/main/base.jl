@@ -5,7 +5,7 @@ Prepare the working directories at advance
 """
 function make_trees(d::Dict{String,Any})
     # the working directories include dft, dmft1, dmft2, and impurity.i
-    # if they exist already, we will remove them at first
+    # if they exist already, we have to remove them at first
     #
     # for dft
     if isdir("dft")
@@ -65,6 +65,7 @@ function make_incar(case::String, d::Dict{String,Any})
     else
         write(ios,"ISMEAR   = 1 \n")
     end
+    exit(-1)
 
     # for k-mesh density 
     if d["kgrid"] == "accurate"
