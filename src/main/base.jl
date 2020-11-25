@@ -97,18 +97,30 @@ function make_incar(case::String, d::Dict{String,Any})
     else
         write(ios,"ISYM     = 0 \n")
     end
-    exit(-1)
 
     # for spin polarizations
     # if spin-orbit coupling is on, then spins must be polarized
-    if d["lspins"] || d["lspinorb"]
-        write(ios,"ISPIN    = 2 \n")
+    if haskey(d, "lspins")
+        if d["lspins"]
+            write(ios,"ISPIN    = 2 \n")
+        else
+            write(ios,"ISPIN    = 1 \n")
+        end
+    else
+        write(ios,"ISPIN    = 1 \n")
     end
 
     # for spin-orbit coupling
-    if d["lspinorb"]
-        write(ios,"LSORBIT  = .TRUE. \n")
+    if haskey(d, "lspinorb")
+        if d["lspinorb"]
+            write(ios,"LSORBIT  = .TRUE. \n")
+        else
+            write(ios,"LSORBIT  = .FALSE. \n")
+        end
+    else
+        write(ios,"LSORBIT  = .FALSE. \n")
     end
+    exit(-1)
 
     # for local orbitals and projectors
     if d["projector"]["lproj"]
