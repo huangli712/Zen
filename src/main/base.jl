@@ -88,11 +88,16 @@ function make_incar(case::String, d::Dict{String,Any})
     # for symmetry
     # isym == 2: turn on  symmetry
     # isym == 0: turn off symmetry
-    if d["lsymm"]
-        write(ios,"ISYM     = 2 \n")
+    if haskey(d, "lsymm")
+        if d["lsymm"]
+            write(ios,"ISYM     = 2 \n")
+        else
+            write(ios,"ISYM     = 0 \n")
+        end
     else
         write(ios,"ISYM     = 0 \n")
     end
+    exit(-1)
 
     # for spin polarizations
     # if spin-orbit coupling is on, then spins must be polarized
