@@ -2,7 +2,8 @@ case = "NiO"
 
 [dft]
 engine = "vasp"
-kgrid = "medium"
+smear = "tetra"
+kgrid = "accurate"
 magmom = "2.0 -2.0 0.0 0.0"
 lsymm = true
 lspins = true
