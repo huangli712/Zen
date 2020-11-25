@@ -69,7 +69,6 @@ function make_incar(case::String, d::Dict{String,Any})
     else
         write(ios,"ISMEAR   = 1 \n")
     end
-    exit(-1)
 
     # for k-mesh density
     if haskey(d, "kgrid")
