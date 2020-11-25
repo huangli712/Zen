@@ -53,15 +53,19 @@ function make_incar(case::String, d::Dict{String,Any})
     #
     # for smearing
     # ismear ==  2: m-p scheme -> metal
+    # ismear ==  1: m-p scheme -> metal
     # ismear ==  0: gauss scheme -> metal, semiconductor or insulator
     # ismear == -5: tetrahedron scheme with correction -> insulator
-    # ismear ==  1: m-p scheme -> metal
-    if d["smear"] == "m-p"
-        write(ios,"ISMEAR   = 2 \n")
-    elseif d["smear"] == "gauss"
-        write(ios,"ISMEAR   = 0 \n")
-    elseif d["smear"] == "tetra"
-        write(ios,"ISMEAR   = -5 \n")
+    if haskeys(d, "smear")
+        if d["smear"] == "m-p"
+            write(ios,"ISMEAR   = 2 \n")
+        elseif d["smear"] == "gauss"
+            write(ios,"ISMEAR   = 0 \n")
+        elseif d["smear"] == "tetra"
+            write(ios,"ISMEAR   = -5 \n")
+        else
+            write(ios,"ISMEAR   = 1 \n")
+        end
     else
         write(ios,"ISMEAR   = 1 \n")
     end
