@@ -2,6 +2,7 @@ case = "Ni"
 
 [dft]
 engine = "vasp"
+smear = "m-p"
 kgrid = "medium"
 magmom = "1.0"
 lsymm = true
