@@ -4,6 +4,8 @@ using TOML
 
 include("types.jl")
 export IterInfo
+export Lattice
+export DFTData
 
 include("parser.jl")
 export parse_toml
