@@ -128,10 +128,16 @@ function make_incar(case::String, d::Dict{String,Any})
     end
 
     # for local orbitals and projectors
-    if d["projector"]["lproj"]
-        for p in 1:d["projector"]["nproj"]
-            str = d["projector"]["sproj"][p]
-            write(ios, "LOCPROJ  = $str \n")
+    if haskey(d, "projector")
+        if haskey(d["projector"], "lproj") && 
+           haskey(d["projector"], "nproj") && 
+           haskey(d["projector"], "sproj")
+            if d["projector"]["lproj"]
+                for p in 1:d["projector"]["nproj"]
+                    str = d["projector"]["sproj"][p]
+                    write(ios, "LOCPROJ  = $str \n")
+                end
+            end
         end
     end
 
