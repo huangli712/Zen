@@ -142,12 +142,16 @@ function make_incar(case::String, d::Dict{String,Any})
     end
 
     # for optimized projectors
-    if d["projector"]["lopt"]
-        write(ios,"LORBIT   = 14 \n")
-        emin = d["projector"]["window"][1]
-        write(ios,"EMIN     = $emin \n")
-        emax = d["projector"]["window"][2]
-        write(ios,"EMAX     = $emax \n")
+    if haskey(d, "projector")
+        if haskey(d["projector"], "lopt") && haskey(d["projector"], "window")
+            if d["projector"]["lopt"]
+                write(ios,"LORBIT   = 14 \n")
+                emin = d["projector"]["window"][1]
+                write(ios,"EMIN     = $emin \n")
+                emax = d["projector"]["window"][2]
+                write(ios,"EMAX     = $emax \n")
+            end
+        end
     end
 
     close(ios)
