@@ -3,7 +3,7 @@ case = "SrVO3"
 [dft]
 engine = "vasp"
 smear = "m-p"
-kgrid = "accurate"
+kgrid = "medium"
 lsymm = true
 lspins = false
 lspinorb = false
