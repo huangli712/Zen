@@ -143,7 +143,8 @@ function make_incar(case::String, d::Dict{String,Any})
 
     # for optimized projectors
     if haskey(d, "projector")
-        if haskey(d["projector"], "lopt") && haskey(d["projector"], "window")
+        if haskey(d["projector"], "lopt") && 
+           haskey(d["projector"], "window")
             if d["projector"]["lopt"]
                 write(ios,"LORBIT   = 14 \n")
                 emin = d["projector"]["window"][1]
