@@ -2,6 +2,7 @@ case = "Ce"
 
 [dft]
 engine = "vasp"
+smear = "m-p"
 kgrid = "medium"
 lsymm = true
 lspins = false
