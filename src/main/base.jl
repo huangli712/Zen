@@ -85,6 +85,12 @@ function make_incar(case::String, d::Dict{String,Any})
         write(ios,"KSPACING = 0.5 \n")
     end
 
+    # for magnetic moment
+    if haskey(d, "magmom")
+        str = d["magmom"]
+        write(ios,"MAGMOM   = $str \n")
+    end
+
     # for symmetry
     # isym == 2: turn on  symmetry
     # isym == 0: turn off symmetry
@@ -95,7 +101,7 @@ function make_incar(case::String, d::Dict{String,Any})
             write(ios,"ISYM     = 0 \n")
         end
     else
-        write(ios,"ISYM     = 0 \n")
+        write(ios,"ISYM     = 2 \n")
     end
 
     # for spin polarizations
