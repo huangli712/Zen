@@ -15,18 +15,18 @@ Dictionary for parameters: density functional theory calculations
 """
 PDFT  = Dict{String,Any}
         (
-            "engine" => [],
-            "smear"  => [],
-            "kmesh"  => [],
-            "magmom" => [],
-            "lsymm"  => [],
-            "lspins" => [],
-            "lspinorb" => [],
-            "window" => [],
-            "loptim" => [],
-            "lproj"  => [],
-            "nproj"  => [],
-            "sproj"  => []
+            "engine"   => ["unknown", "engine for density functional theory calculations"],
+            "smear"    => ["unknown", "scheme for smearing"],
+            "kmesh"    => ["unknown", "density of k-mesh sampling in the brillouin zone"],
+            "magmom"   => ["unknown", "initial magnetic moment"],
+            "lsymm"    => ["unknown", "whether the symmetry is considered"],
+            "lspins"   => ["unknown", "whether the spin polarization is considered"],
+            "lspinorb" => ["unknown", "whether the spin-orbit coupling is considered"],
+            "window"   => ["unknown", "energy window for generating optimal projectors"],
+            "loptim"   => ["unknown", "try to optimize the generated projectors"],
+            "lproj"    => ["unknown", "try to generate projectors"],
+            "nproj"    => ["unknown", "number of projections"],
+            "sproj"    => ["unknown", "scheme for generating projectors"]
         )
 
 """
