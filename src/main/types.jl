@@ -5,7 +5,7 @@ Dictionary for parameters: case
 """
 PCASE = Dict{String,Any}
         (
-            "case" => ["unknown", "system's name"]
+            "case"     => ["unknown", "system's name"]
         )
 
 """
@@ -36,24 +36,34 @@ Dictionary for parameters: dynamical mean-field theory calculations
 """
 PDMFT = Dict{String,Any}
         (
-            "mode"   => [],
-            "axis"   => [],
-            "beta"   => [],
-            "niter"  => [],
-            "mixer"  => [],
-            "dcount" => [],
-            "nominal" => [],
-            "cc" => [],
-            "ec" => [],
-            "fc" => [],
-            "lforce" => [],
-            "lcharge" => [],
-            "lenergy" => []
+            "mode"     => [],
+            "axis"     => [],
+            "beta"     => [],
+            "niter"    => [],
+            "mixer"    => [],
+            "dcount"   => [],
+            "nominal"  => [],
+            "cc"       => [],
+            "ec"       => [],
+            "fc"       => [],
+            "lforce"   => [],
+            "lcharge"  => [],
+            "lenergy"  => []
         )
 
+"""
+    PIMP
+
+Dictionary for parameters: quantum impurity problems
+"""
 PIMP  = Dict{String,Any}
         ()
 
+"""
+    PSOLVER
+
+Dictionary for parameters: quantum impurity solvers
+"""
 PSOLVER = Dict{String,Any}
         ()
 
