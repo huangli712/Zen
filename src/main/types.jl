@@ -25,7 +25,7 @@ PDFT  = Dict{String,Any}
             "window"   => ["unknown", "energy window for generating optimal projectors"],
             "loptim"   => ["unknown", "try to optimize the generated projectors"],
             "lproj"    => ["unknown", "try to generate projectors"],
-            "nproj"    => ["unknown", "number of projections"],
+            "nproj"    => ["unknown", "number of types of projectors"],
             "sproj"    => ["unknown", "scheme for generating projectors"]
         )
 
@@ -45,6 +45,10 @@ PDMFT = Dict{String,Any}
             "nominal" => [],
             "cc" => [],
             "ec" => [],
+            "fc" => [],
+            "lforce" => [],
+            "lcharge" => [],
+            "lenergy" => []
         )
 
 PIMP  = Dict{String,Any}
