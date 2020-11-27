@@ -8,13 +8,8 @@ magmom = "2.0 -2.0 0.0 0.0"
 lsymm = true
 lspins = true
 lspinorb = false
-
-[dft.adaptor]
-lortho = true
-
-[dft.projector]
-lopt = false
 window = [6.0, 9.0]
+lopt = false
 lproj = true
 nproj = 2
 sproj = ["1 : d : Pr", "2 : d : Pr"]
