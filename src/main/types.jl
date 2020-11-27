@@ -36,16 +36,16 @@ Dictionary for parameters: dynamical mean-field theory calculations
 """
 PDMFT = Dict{String,Any}
         (
+            "dcount" => [],
+            "nominal" => [],
+            
         )
 
-"""
-    PCORE
+PIMP  = Dict{String,Any}
+        ()
 
-Dictionary for parameters: self-consistent calculations
-"""
-PCORE = Dict{String,Any}
-        (
-        )
+PSOLVER = Dict{String,Any}
+        ()
 
 
 mutable struct IterInfo
