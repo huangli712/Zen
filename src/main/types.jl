@@ -1,3 +1,13 @@
+PCASE = Dict{String,Any}
+        (
+            "case" => ["case", "system's name"]
+        )
+PDFT
+PDMFT 
+PCORE
+
+
+
 mutable struct IterInfo
     total_iter
     dmft1_iter
