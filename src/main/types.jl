@@ -2,10 +2,21 @@ PCASE = Dict{String,Any}
         (
             "case" => ["case", "system's name"]
         )
-PDFT
-PDMFT 
-PCORE
 
+PDFT  = Dict{String,Any}
+        (
+            "engine" => [],
+            "smear"  => [],
+            "kmesh"  => [],
+        )
+
+PDMFT = Dict{String,Any}
+        (
+        )
+
+PCORE = Dict{String,Any}
+        (
+        )
 
 
 mutable struct IterInfo
