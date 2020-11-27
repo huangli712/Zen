@@ -1,6 +1,11 @@
+"""
+    PCASE
+
+Dictionary for parameters: case
+"""
 PCASE = Dict{String,Any}
         (
-            "case" => ["case", "system's name"]
+            "case" => ["unknown", "system's name"]
         )
 
 PDFT  = Dict{String,Any}
