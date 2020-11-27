@@ -8,6 +8,11 @@ PCASE = Dict{String,Any}
             "case" => ["unknown", "system's name"]
         )
 
+"""
+    PDFT
+
+Dictionary for parameters: density functional theory calculations
+"""
 PDFT  = Dict{String,Any}
         (
             "engine" => [],
@@ -24,10 +29,20 @@ PDFT  = Dict{String,Any}
             "sproj"  => []
         )
 
+"""
+    PDMFT
+
+Dictionary for parameters: dynamical mean-field theory calculations
+"""
 PDMFT = Dict{String,Any}
         (
         )
 
+"""
+    PCORE
+
+Dictionary for parameters: self-consistent calculations
+"""
 PCORE = Dict{String,Any}
         (
         )
