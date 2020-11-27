@@ -36,9 +36,15 @@ Dictionary for parameters: dynamical mean-field theory calculations
 """
 PDMFT = Dict{String,Any}
         (
+            "mode"   => [],
+            "axis"   => [],
+            "beta"   => [],
+            "niter"  => [],
+            "mixer"  => [],
             "dcount" => [],
             "nominal" => [],
-            
+            "cc" => [],
+            "ec" => [],
         )
 
 PIMP  = Dict{String,Any}
