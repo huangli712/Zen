@@ -127,30 +127,23 @@ function make_incar(case::String, d::Dict{String,Any})
         write(ios,"LSORBIT  = .FALSE. \n")
     end
 
-    # for local orbitals and projectors
-    if haskey(d, "projector")
-        if haskey(d["projector"], "lproj") && 
-           haskey(d["projector"], "nproj") && 
-           haskey(d["projector"], "sproj")
-            if d["projector"]["lproj"]
-                for p in 1:d["projector"]["nproj"]
-                    str = d["projector"]["sproj"][p]
-                    write(ios, "LOCPROJ  = $str \n")
-                end
-            end
+    # for optimized projectors
+    if haskey(d, "lopt") && haskey(d, "window")
+        if d["lopt"]
+            write(ios,"LORBIT   = 14 \n")
+            emin = d["window"][1]
+            write(ios,"EMIN     = $emin \n")
+            emax = d["window"][2]
+            write(ios,"EMAX     = $emax \n")
         end
     end
 
-    # for optimized projectors
-    if haskey(d, "projector")
-        if haskey(d["projector"], "lopt") && 
-           haskey(d["projector"], "window")
-            if d["projector"]["lopt"]
-                write(ios,"LORBIT   = 14 \n")
-                emin = d["projector"]["window"][1]
-                write(ios,"EMIN     = $emin \n")
-                emax = d["projector"]["window"][2]
-                write(ios,"EMAX     = $emax \n")
+    # for local orbitals and projectors
+    if haskey(d, "lproj") && haskey(d, "nproj") && haskey(d, "sproj")
+        if d["lproj"]
+            for p in 1:d["nproj"]
+                str = d["sproj"][p]
+                write(ios, "LOCPROJ  = $str \n")
             end
         end
     end
