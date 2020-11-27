@@ -75,6 +75,8 @@ Dictionary for parameters: quantum impurity solvers
 """
 PSOLVER = Dict{String,Any}
         (
+            "engine"   => [],
+            "params"   => []
         )
 
 
