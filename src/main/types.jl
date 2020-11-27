@@ -57,7 +57,16 @@ PDMFT = Dict{String,Any}
 Dictionary for parameters: quantum impurity problems
 """
 PIMP  = Dict{String,Any}
-        ()
+        (
+            "nsite"    => [],
+            "atoms"    => [],
+            "equiv"    => [],
+            "shell"    => [],
+            "ising"    => [],
+            "upara"    => [],
+            "jpara"    => [],
+            "lpara"    => []
+        )
 
 """
     PSOLVER
@@ -65,7 +74,8 @@ PIMP  = Dict{String,Any}
 Dictionary for parameters: quantum impurity solvers
 """
 PSOLVER = Dict{String,Any}
-        ()
+        (
+        )
 
 
 mutable struct IterInfo
