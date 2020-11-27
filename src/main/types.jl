@@ -8,6 +8,15 @@ PDFT  = Dict{String,Any}
             "engine" => [],
             "smear"  => [],
             "kmesh"  => [],
+            "magmom" => [],
+            "lsymm"  => [],
+            "lspins" => [],
+            "lspinorb" => [],
+            "window" => [],
+            "loptim" => [],
+            "lproj"  => [],
+            "nproj"  => [],
+            "sproj"  => []
         )
 
 PDMFT = Dict{String,Any}
