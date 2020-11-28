@@ -36,19 +36,19 @@ Dictionary for parameters: dynamical mean-field theory calculations
 """
 PDMFT = Dict{String,Any}
         (
-            "mode"     => [],
-            "axis"     => [],
-            "beta"     => [],
-            "niter"    => [],
-            "mixer"    => [],
-            "dcount"   => [],
-            "nominal"  => [],
-            "cc"       => [],
-            "ec"       => [],
-            "fc"       => [],
-            "lforce"   => [],
-            "lcharge"  => [],
-            "lenergy"  => []
+            "mode"     => [missing],
+            "axis"     => [missing],
+            "beta"     => [missing],
+            "niter"    => [missing],
+            "mixer"    => [missing],
+            "dcount"   => [missing],
+            "nominal"  => [missing],
+            "cc"       => [missing],
+            "ec"       => [missing],
+            "fc"       => [missing],
+            "lforce"   => [missing],
+            "lcharge"  => [missing],
+            "lenergy"  => [missing]
         )
 
 """
@@ -58,14 +58,14 @@ Dictionary for parameters: quantum impurity problems
 """
 PIMP  = Dict{String,Any}
         (
-            "nsite"    => [],
-            "atoms"    => [],
-            "equiv"    => [],
-            "shell"    => [],
-            "ising"    => [],
-            "upara"    => [],
-            "jpara"    => [],
-            "lpara"    => []
+            "nsite"    => [missing],
+            "atoms"    => [missing],
+            "equiv"    => [missing],
+            "shell"    => [missing],
+            "ising"    => [missing],
+            "upara"    => [missing],
+            "jpara"    => [missing],
+            "lpara"    => [missing]
         )
 
 """
@@ -75,10 +75,9 @@ Dictionary for parameters: quantum impurity solvers
 """
 PSOLVER = Dict{String,Any}
         (
-            "engine"   => [],
-            "params"   => []
+            "engine"   => [missing],
+            "params"   => [missing]
         )
-
 
 mutable struct IterInfo
     total_iter
