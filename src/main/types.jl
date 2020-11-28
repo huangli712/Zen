@@ -5,7 +5,7 @@ Dictionary for parameters: case summary
 """
 PCASE = Dict{String,Any}
         (
-            "case"     => [nothing, "system's name"]
+            "case"     => [missing, "system's name"]
         )
 
 """
@@ -15,18 +15,18 @@ Dictionary for parameters: density functional theory calculations
 """
 PDFT  = Dict{String,Any}
         (
-            "engine"   => [nothing, "engine for density functional theory calculations"],
-            "smear"    => [nothing, "scheme for smearing"],
-            "kmesh"    => [nothing, "density of k-mesh sampling in the brillouin zone"],
-            "magmom"   => [nothing, "initial magnetic moment"],
-            "lsymm"    => [nothing, "whether the symmetry is considered"],
-            "lspins"   => [nothing, "whether the spin polarization is considered"],
-            "lspinorb" => [nothing, "whether the spin-orbit coupling is considered"],
-            "window"   => [nothing, "energy window for generating optimal projectors"],
-            "loptim"   => [nothing, "try to optimize the generated projectors"],
-            "lproj"    => [nothing, "try to generate projectors"],
-            "nproj"    => [nothing, "number of types of projectors"],
-            "sproj"    => [nothing, "scheme for generating projectors"]
+            "engine"   => [missing, "engine for density functional theory calculations"],
+            "smear"    => [missing, "scheme for smearing"],
+            "kmesh"    => [missing, "density of k-mesh sampling in the brillouin zone"],
+            "magmom"   => [missing, "initial magnetic moment"],
+            "lsymm"    => [missing, "whether the symmetry is considered"],
+            "lspins"   => [missing, "whether the spin polarization is considered"],
+            "lspinorb" => [missing, "whether the spin-orbit coupling is considered"],
+            "window"   => [missing, "energy window for generating optimal projectors"],
+            "loptim"   => [missing, "try to optimize the generated projectors"],
+            "lproj"    => [missing, "try to generate projectors"],
+            "nproj"    => [missing, "number of types of projectors"],
+            "sproj"    => [missing, "scheme for generating projectors"]
         )
 
 """
