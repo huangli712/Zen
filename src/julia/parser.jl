@@ -84,31 +84,41 @@ function parse_dict(cfg::Dict{String,Any})
     end
 end
 
+"""
+    validate_params()
+
+Validate the correctness and consistency of parameters
+"""
 function validate_params()
+    # check case block
     for key in keys(PCASE)
         if isa(PCASE[key][1], Missing) && PCASE[key][2] > 0
             error("Sorry, $key shoule be set")
         end
     end
 
+    # check dft block
     for key in keys(PDFT)
         if isa(PDFT[key][1], Missing) && PDFT[key][2] > 0
             error("Sorry, $key shoule be set")
         end
     end
 
+    # check dmft block
     for key in keys(PDMFT)
         if isa(PDMFT[key][1], Missing) && PDMFT[key][2] > 0
             error("Sorry, $key shoule be set")
         end
     end
 
+    # check impurity block
     for key in keys(PIMP)
         if isa(PIMP[key][1], Missing) && PIMP[key][2] > 0
             error("Sorry, $key shoule be set")
         end
     end
 
+    # check solver block
     for key in keys(PSOLVER)
         if isa(PSOLVER[key][1], Missing) && PSOLVER[key][2] > 0
             error("Sorry, $key shoule be set")
