@@ -40,4 +40,4 @@ lpara = [0.0]
 
 [solver]
 engine = "ct_hub1"
-params = []
+params = [""]
