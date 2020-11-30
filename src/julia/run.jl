@@ -13,11 +13,11 @@ welcome()
 message("zen", "parse the configuration file")
 cfg = parse_toml(query_args(), true)
 parse_dict(cfg)
-exit(-1)
 
 # validate the parameters
 message("zen", "check the configuration parameters")
-# plug your codes here
+validate_params()
+exit(-1)
 
 # write the parameters to stdout
 message("zen", "display the configuration parameters")

@@ -15,6 +15,7 @@ export DFTData
 include("parser.jl")
 export parse_toml
 export parse_dict
+export validate_params
 
 include("util.jl")
 export require

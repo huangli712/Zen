@@ -83,3 +83,7 @@ function parse_dict(cfg::Dict{String,Any})
         end
     end
 end
+
+function validate_params()
+    println("here")
+end
