@@ -25,11 +25,11 @@ view_dft()
 view_dmft()
 view_impurity()
 view_solver()
-exit(-1)
 
 # check the input files (which are essential for the calculation)
 message("zen", "examine the essential input files")
 query_cars(dft)
+exit(-1)
 
 # prepare the working directories
 message("zen", "create the working directories")
