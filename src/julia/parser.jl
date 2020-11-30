@@ -37,3 +37,14 @@ function parse_toml(f::AbstractString, necessary::Bool)
         end
     end
 end
+
+"""
+    parse_dict(cfg::Dict{String,Any})
+"""
+function parse_dict(cfg::Dict{String,Any})
+    case = cfg["case"]
+    dft = cfg["dft"]
+    dmft = cfg["dmft"]
+    impurity = cfg["impurity"]
+    solver = cfg["solver"]
+end
