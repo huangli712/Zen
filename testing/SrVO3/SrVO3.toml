@@ -3,26 +3,37 @@ case = "SrVO3"
 [dft]
 engine = "vasp"
 smear = "m-p"
-kgrid = "medium"
+kmesh = "medium"
 lsymm = true
 lspins = false
 lspinorb = false
 window = [6.0, 9.0]
-lopt = true
+loptim = true
 lproj = true
 nproj = 1
 sproj = ["2 : d : Pr"]
 
 [dmft]
-dcount = 1
-nominal = 3.0
+mode = 1
+axis = 1
+beta = 40.0
+niter = 60
+mixer = 0.5
+dcount = "fll1"
+cc = 1.0E-4
+ec = 1.0E-4
+fc = 1.0E-4
+lcharge = true
+lenergy = true
+lforce = false
 
 [dmft.impurity]
-nimp = 1
+nsite = 1
 atoms = ["V"]
 equiv = [[1]]
 shell = ["d"]
 ising = [true]
+occup = [3.0]
 upara = [4.0]
 jpara = [0.7]
 lpara = [0.0]
@@ -30,16 +41,3 @@ lpara = [0.0]
 [dmft.solver]
 engine = "ct_hub1"
 params = []
-
-[dft_dmft]
-mode = 1
-axis = 1
-beta = 40.0
-niter = 60
-mixer = 0.5
-cc = 1.0E-4
-ec = 1.0E-4
-fc = 1.0E-4
-lforce = false
-lcharge = true
-lenergy = true
