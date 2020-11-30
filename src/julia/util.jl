@@ -130,7 +130,7 @@ end
 Print the parameters to stdout
 """
 function view_impurity()
-    message("dft_dmft parameters")
+    message("impurity parameters")
     println("dmft -> nominal -> ", Pdmft["nominal"])
     println("dmft -> impurity  -> nimp   -> ", dmft["impurity"]["nimp"])
     println("dmft -> impurity  -> atoms  -> ", dmft["impurity"]["atoms"])
