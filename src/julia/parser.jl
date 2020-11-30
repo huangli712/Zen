@@ -85,5 +85,9 @@ function parse_dict(cfg::Dict{String,Any})
 end
 
 function validate_params()
-    println("here")
+    for key in keys(PCASE)
+        if isa(PCASE[key][1], Missing)
+            error("Sorry, $key shoule be set")
+        end
+    end
 end
