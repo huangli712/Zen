@@ -146,6 +146,7 @@ end
 function view_solver()
     message("solver parameters")
     println("solver   -> engine -> ", PSOLVER["engine"][1])
+    println("solver   -> params -> ", PSOLVER["params"][1])
     println()
 end
 
