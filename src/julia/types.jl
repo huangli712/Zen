@@ -42,13 +42,13 @@ PDMFT = Dict{String,Any}
             "niter"    => [missing, UInt  , "number of iterations"],
             "mixer"    => [missing, Real  , "mixing factor"],
             "dcount"   => [missing, String, "scheme of double counting term"],
-            "nominal"  => [missing, Real  , ""],
-            "cc"       => [missing, Real  , ""],
-            "ec"       => [missing, Real  , ""],
-            "fc"       => [missing, Real  , ""],
-            "lforce"   => [missing, Bool  , ""],
-            "lcharge"  => [missing, Bool  , ""],
-            "lenergy"  => [missing, Bool  , ""]
+            "nominal"  => [missing, Array , "nominal impurity occupancy"],
+            "cc"       => [missing, Real  , "convergence criterion of charge"],
+            "ec"       => [missing, Real  , "convergence criterion of total energy"],
+            "fc"       => [missing, Real  , "convergence criterion of force"],
+            "lcharge"  => [missing, Bool  , "examine whether charge is converged"],
+            "lenergy"  => [missing, Bool  , "examine whether total energy is converged"],
+            "lforce"   => [missing, Bool  , "examine whether force is converged"]
         )
 
 """
