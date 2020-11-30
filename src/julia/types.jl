@@ -36,19 +36,19 @@ Dictionary for parameters: dynamical mean-field theory calculations
 """
 PDMFT = Dict{String,Any}
         (
-            "mode"     => [missing, UInt],
-            "axis"     => [missing, UInt],
-            "beta"     => [missing, Real],
-            "niter"    => [missing, UInt],
-            "mixer"    => [missing, Real],
-            "dcount"   => [missing, String],
-            "nominal"  => [missing, Real],
-            "cc"       => [missing, Real],
-            "ec"       => [missing, Real],
-            "fc"       => [missing, Real],
-            "lforce"   => [missing, Bool],
-            "lcharge"  => [missing, Bool],
-            "lenergy"  => [missing, Bool]
+            "mode"     => [missing, UInt  , ""],
+            "axis"     => [missing, UInt  , ""],
+            "beta"     => [missing, Real  , ""],
+            "niter"    => [missing, UInt  , ""],
+            "mixer"    => [missing, Real  , ""],
+            "dcount"   => [missing, String, ""],
+            "nominal"  => [missing, Real  , ""],
+            "cc"       => [missing, Real  , ""],
+            "ec"       => [missing, Real  , ""],
+            "fc"       => [missing, Real  , ""],
+            "lforce"   => [missing, Bool  , ""],
+            "lcharge"  => [missing, Bool  , ""],
+            "lenergy"  => [missing, Bool  , ""]
         )
 
 """
