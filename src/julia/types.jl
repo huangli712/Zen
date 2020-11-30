@@ -70,8 +70,8 @@ PIMP  = Dict{String,Any}(
 Dictionary for parameters: quantum impurity solvers
 """
 PSOLVER = Dict{String,Any}(
-            "engine"   => [missing, 0, String, "name of quantum impurity solver"],
-            "params"   => [missing, 0, Array , "parameters set of quantum impurity solver"]
+            "engine"   => [missing, 1, String, "name of quantum impurity solver"],
+            "params"   => [missing, 1, Array , "parameters set of quantum impurity solver"]
         )
 
 mutable struct IterInfo
