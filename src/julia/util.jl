@@ -24,12 +24,12 @@ function query_args()
 end
 
 """
-    query_cars(dft::Dict{String,Any})
+    query_cars()
 
 Check whether the essential input files exist
 """
-function query_cars(dft::Dict{String,Any})
-    if dft["engine"] == "vasp"
+function query_cars()
+    if PDFT["engine"][1] == "vasp"
         if !isfile("POSCAR") || !isfile("POTCAR")
             error("Please provide both POSCAR and POTCAR files")
         end

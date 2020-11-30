@@ -28,7 +28,7 @@ view_solver()
 
 # check the input files (which are essential for the calculation)
 message("zen", "examine the essential input files")
-query_cars(dft)
+query_cars()
 exit(-1)
 
 # prepare the working directories
