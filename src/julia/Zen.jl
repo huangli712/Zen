@@ -23,10 +23,11 @@ export query_args
 export query_cars
 export query_zen
 export query_dft
-export param_case
-export param_dft
-export param_dmft
-export param_dft_dmft
+export view_case
+export view_dft
+export view_dmft
+export view_impurity
+export view_solver
 export welcome
 export goodbye
 export sorry
