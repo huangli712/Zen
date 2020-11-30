@@ -90,4 +90,10 @@ function validate_params()
             error("Sorry, $key shoule be set")
         end
     end
+
+    for key in keys(PDFT)
+        if isa(PDFT[key][1], Missing)
+            error("Sorry, $key shoule be set")
+        end
+    end
 end
