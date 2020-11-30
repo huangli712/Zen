@@ -58,14 +58,14 @@ Dictionary for parameters: quantum impurity problems
 """
 PIMP  = Dict{String,Any}
         (
-            "nsite"    => [missing],
-            "atoms"    => [missing],
-            "equiv"    => [missing],
-            "shell"    => [missing],
-            "ising"    => [missing],
-            "upara"    => [missing],
-            "jpara"    => [missing],
-            "lpara"    => [missing]
+            "nsite"    => [missing, UInt  , ""],
+            "atoms"    => [missing, Array , ""],
+            "equiv"    => [missing, Array , ""],
+            "shell"    => [missing, Array , ""],
+            "ising"    => [missing, Array , ""],
+            "upara"    => [missing, Array , ""],
+            "jpara"    => [missing, Array , ""],
+            "lpara"    => [missing, Array , ""]
         )
 
 """
