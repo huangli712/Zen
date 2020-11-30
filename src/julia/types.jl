@@ -4,7 +4,7 @@
 Dictionary for parameters: case summary    
 """
 PCASE = Dict{String,Any}(
-            "case"     => [missing, 0, String, "system's name"]
+            "case"     => [missing, 1, String, "system's name"]
         )
 
 """
@@ -13,7 +13,7 @@ PCASE = Dict{String,Any}(
 Dictionary for parameters: density functional theory calculations
 """
 PDFT  = Dict{String,Any}(
-            "engine"   => [missing, 0, String, "engine for density functional theory calculations"],
+            "engine"   => [missing, 1, String, "engine for density functional theory calculations"],
             "smear"    => [missing, 0, String, "scheme for smearing"],
             "kmesh"    => [missing, 0, String, "density of k-mesh sampling in the brillouin zone"],
             "magmom"   => [missing, 0, String, "initial magnetic moment"],
