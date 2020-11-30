@@ -58,14 +58,14 @@ Dictionary for parameters: quantum impurity problems
 """
 PIMP  = Dict{String,Any}
         (
-            "nsite"    => [missing, UInt  , ""],
-            "atoms"    => [missing, Array , ""],
-            "equiv"    => [missing, Array , ""],
-            "shell"    => [missing, Array , ""],
-            "ising"    => [missing, Array , ""],
-            "upara"    => [missing, Array , ""],
-            "jpara"    => [missing, Array , ""],
-            "lpara"    => [missing, Array , ""]
+            "nsite"    => [missing, UInt  , "number of impurity sites"],
+            "atoms"    => [missing, Array , "chemical symbols of impurity atoms"],
+            "equiv"    => [missing, Array , "equivalency of quantum impurity atoms"],
+            "shell"    => [missing, Array , "angular momentum of correlated orbitals"],
+            "ising"    => [missing, Array , "interaction types of correlated orbitals"],
+            "upara"    => [missing, Array , "Coulomb interaction parameter"],
+            "jpara"    => [missing, Array , "Hund's coupling parameter"],
+            "lpara"    => [missing, Array , "spin-orbit coupling parameter"]
         )
 
 """
