@@ -44,9 +44,10 @@ end
 Copy parameters from cfg to PCASE, PDFT, PDMFT, PIMP, and PSOLVER
 """
 function parse_dict(cfg::Dict{String,Any})
-    case = cfg["case"]
-    PCASE["case"][1] = case
+    # for case block
+    PCASE["case"][1] = cfg["case"]
 
+    # for dft block
     dft = cfg["dft"]
     for key in keys(dft)
         if haskey(PDFT, key)
@@ -56,6 +57,7 @@ function parse_dict(cfg::Dict{String,Any})
         end
     end
 
+    # for dmft block
     dmft = cfg["dmft"]
     for key in keys(dmft)
         if haskey(PDMFT, key)
@@ -65,6 +67,7 @@ function parse_dict(cfg::Dict{String,Any})
         end
     end
 
+    # for impurity block
     impurity = cfg["impurity"]
     for key in keys(impurity)
         if haskey(PIMP, key)
@@ -74,6 +77,7 @@ function parse_dict(cfg::Dict{String,Any})
         end
     end
 
+    # for solver block
     solver = cfg["solver"]
     for key in keys(solver)
         if haskey(PSOLVER, key)
