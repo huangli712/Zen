@@ -3,6 +3,11 @@ module Zen
 using TOML
 
 include("types.jl")
+export PCASE
+export PDFT
+export PDMFT
+export PIMP
+export PSOLVER
 export IterInfo
 export Lattice
 export DFTData

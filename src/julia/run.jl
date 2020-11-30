@@ -12,7 +12,7 @@ welcome()
 # parse the file case.toml to extract parameters
 message("zen", "parse the configuration file")
 cfg = parse_toml(query_args(), true)
-@show cfg
+@show PCASE
 exit(-1)
 case = cfg["case"]
 dft = cfg["dft"]
