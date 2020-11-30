@@ -81,11 +81,11 @@ function view_case()
 end
 
 """
-    param_dft(dft::Dict{String,Any})
+    view_dft()
 
 Print the parameters to stdout
 """
-function param_dft(dft::Dict{String,Any})
+function view_dft()
     message("dft parameters")
     println("dft  -> engine   -> ", dft["engine"])
     println("dft  -> smear    -> ", dft["smear"])
