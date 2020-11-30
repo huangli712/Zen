@@ -3,8 +3,7 @@
 
 Dictionary for parameters: case summary    
 """
-PCASE = Dict{String,Any}
-        (
+PCASE = Dict{String,Any}(
             "case"     => [missing, String, "system's name"]
         )
 
@@ -13,8 +12,7 @@ PCASE = Dict{String,Any}
 
 Dictionary for parameters: density functional theory calculations
 """
-PDFT  = Dict{String,Any}
-        (
+PDFT  = Dict{String,Any}(
             "engine"   => [missing, String, "engine for density functional theory calculations"],
             "smear"    => [missing, String, "scheme for smearing"],
             "kmesh"    => [missing, String, "density of k-mesh sampling in the brillouin zone"],
@@ -34,8 +32,7 @@ PDFT  = Dict{String,Any}
 
 Dictionary for parameters: dynamical mean-field theory calculations
 """
-PDMFT = Dict{String,Any}
-        (
+PDMFT = Dict{String,Any}(
             "mode"     => [missing, UInt  , "scheme of dynamical mean-field theory calculations"],
             "axis"     => [missing, UInt  , "imaginary-time axis or real-frequency axis"],
             "beta"     => [missing, Real  , "inverse system temperature"],
@@ -55,8 +52,7 @@ PDMFT = Dict{String,Any}
 
 Dictionary for parameters: quantum impurity problems
 """
-PIMP  = Dict{String,Any}
-        (
+PIMP  = Dict{String,Any}(
             "nsite"    => [missing, UInt  , "number of impurity sites"],
             "atoms"    => [missing, Array , "chemical symbols of impurity atoms"],
             "equiv"    => [missing, Array , "equivalency of quantum impurity atoms"],
@@ -73,8 +69,7 @@ PIMP  = Dict{String,Any}
 
 Dictionary for parameters: quantum impurity solvers
 """
-PSOLVER = Dict{String,Any}
-        (
+PSOLVER = Dict{String,Any}(
             "engine"   => [missing, String, "name of quantum impurity solver"],
             "params"   => [missing, Array , "parameters set of quantum impurity solver"]
         )

@@ -13,6 +13,8 @@ welcome()
 message("zen", "parse the configuration file")
 cfg = parse_toml(query_args(), true)
 @show PCASE
+#@show PCASE["case"]
+@show PDFT["engine"]
 exit(-1)
 case = cfg["case"]
 dft = cfg["dft"]
