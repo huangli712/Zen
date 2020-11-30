@@ -103,11 +103,11 @@ function view_dft()
 end
 
 """
-    param_dmft(dmft::Dict{String,Any})
+    view_dmft()
 
 Print the parameters to stdout
 """
-function param_dmft(dmft::Dict{String,Any})
+function view_dmft()
     message("dmft parameters")
     println("dmft -> dcount    -> ", dmft["dcount"])
     println("dmft -> nominal   -> ", dmft["nominal"])
@@ -123,11 +123,11 @@ function param_dmft(dmft::Dict{String,Any})
 end
 
 """
-    param_dft_dmft(dft_dmft::Dict{String,Any})
+    view_impurity()
 
 Print the parameters to stdout
 """
-function param_dft_dmft(dft_dmft::Dict{String,Any})
+function view_impurity()
     message("dft_dmft parameters")
     println("dft_dmft -> mode    -> ", dft_dmft["mode"])
     println("dft_dmft -> axis    -> ", dft_dmft["axis"])
