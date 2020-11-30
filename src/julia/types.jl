@@ -80,10 +80,10 @@ PSOLVER = Dict{String,Any}
         )
 
 mutable struct IterInfo
-    total_iter
-    dmft1_iter
-    dmft2_iter
-    dft_dmft_iter
+    total_iter :: Integer
+    dmft1_iter :: Integer
+    dmft2_iter :: Integer
+    dft_dmft_iter :: Integer
 end
 
 function IterInfo(iter::Int64 = 0)
