@@ -86,7 +86,7 @@ mutable struct IterInfo
     dft_dmft_iter :: Integer
 end
 
-function IterInfo(iter::Int64 = 0)
+function IterInfo(iter::Integer = 0)
     IterInfo(iter, iter, iter, iter)
 end
 
