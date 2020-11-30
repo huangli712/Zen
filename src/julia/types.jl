@@ -36,12 +36,12 @@ Dictionary for parameters: dynamical mean-field theory calculations
 """
 PDMFT = Dict{String,Any}
         (
-            "mode"     => [missing, UInt  , ""],
-            "axis"     => [missing, UInt  , ""],
-            "beta"     => [missing, Real  , ""],
-            "niter"    => [missing, UInt  , ""],
-            "mixer"    => [missing, Real  , ""],
-            "dcount"   => [missing, String, ""],
+            "mode"     => [missing, UInt  , "scheme of dynamical mean-field theory calculations"],
+            "axis"     => [missing, UInt  , "imaginary-time axis or real-frequency axis"],
+            "beta"     => [missing, Real  , "inverse system temperature"],
+            "niter"    => [missing, UInt  , "number of iterations"],
+            "mixer"    => [missing, Real  , "mixing factor"],
+            "dcount"   => [missing, String, "scheme of double counting term"],
             "nominal"  => [missing, Real  , ""],
             "cc"       => [missing, Real  , ""],
             "ec"       => [missing, Real  , ""],
