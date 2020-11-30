@@ -12,11 +12,12 @@ welcome()
 # parse the file case.toml to extract parameters
 message("zen", "parse the configuration file")
 cfg = parse_toml(query_args(), true)
-exit(-1)
 case = cfg["case"]
 dft = cfg["dft"]
 dmft = cfg["dmft"]
-dft_dmft = cfg["dft_dmft"]
+impurity = cfg["impurity"]
+solver = cfg["solver"]
+exit(-1)
 
 # validate the parameters
 message("zen", "check the configuration parameters")
