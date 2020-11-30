@@ -86,13 +86,13 @@ end
 
 function validate_params()
     for key in keys(PCASE)
-        if isa(PCASE[key][1], Missing)
+        if isa(PCASE[key][1], Missing) && PCASE[key][2] > 0
             error("Sorry, $key shoule be set")
         end
     end
 
     for key in keys(PDFT)
-        if isa(PDFT[key][1], Missing)
+        if isa(PDFT[key][1], Missing) && PDFT[key][2] > 0
             error("Sorry, $key shoule be set")
         end
     end
