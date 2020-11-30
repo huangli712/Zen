@@ -53,15 +53,15 @@ PDMFT = Dict{String,Any}(
 Dictionary for parameters: quantum impurity problems
 """
 PIMP  = Dict{String,Any}(
-            "nsite"    => [missing, 0, UInt  , "number of impurity sites"],
-            "atoms"    => [missing, 0, Array , "chemical symbols of impurity atoms"],
-            "equiv"    => [missing, 0, Array , "equivalency of quantum impurity atoms"],
-            "shell"    => [missing, 0, Array , "angular momentum of correlated orbitals"],
-            "ising"    => [missing, 0, Array , "interaction types of correlated orbitals"],
-            "occup"    => [missing, 0, Array , "nominal impurity occupancy"],
-            "upara"    => [missing, 0, Array , "Coulomb interaction parameter"],
-            "jpara"    => [missing, 0, Array , "Hund's coupling parameter"],
-            "lpara"    => [missing, 0, Array , "spin-orbit coupling parameter"]
+            "nsite"    => [missing, 1, UInt  , "number of impurity sites"],
+            "atoms"    => [missing, 1, Array , "chemical symbols of impurity atoms"],
+            "equiv"    => [missing, 1, Array , "equivalency of quantum impurity atoms"],
+            "shell"    => [missing, 1, Array , "angular momentum of correlated orbitals"],
+            "ising"    => [missing, 1, Array , "interaction types of correlated orbitals"],
+            "occup"    => [missing, 1, Array , "nominal impurity occupancy"],
+            "upara"    => [missing, 1, Array , "Coulomb interaction parameter"],
+            "jpara"    => [missing, 1, Array , "Hund's coupling parameter"],
+            "lpara"    => [missing, 1, Array , "spin-orbit coupling parameter"]
         )
 
 """
