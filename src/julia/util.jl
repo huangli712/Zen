@@ -76,7 +76,7 @@ Print the parameters to stdout
 function view_case()
     println()
     message("case summary")
-    println("case -> ", PCASE["case"])
+    println("case -> ", PCASE["case"][1])
     println()
 end
 
