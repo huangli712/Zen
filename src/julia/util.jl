@@ -145,7 +145,7 @@ end
 
 function view_solver()
     message("solver parameters")
-    println("solver    -> engine -> ", dmft["solver"]["engine"])
+    println("solver   -> engine -> ", PSOLVER["engine"][1])
     println()
 end
 
