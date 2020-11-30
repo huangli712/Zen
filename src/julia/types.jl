@@ -75,8 +75,8 @@ Dictionary for parameters: quantum impurity solvers
 """
 PSOLVER = Dict{String,Any}
         (
-            "engine"   => [missing, "name of quantum impurity solver"],
-            "params"   => [missing, "parameters set of quantum impurity solver"]
+            "engine"   => [missing, String, "name of quantum impurity solver"],
+            "params"   => [missing, Array , "parameters set of quantum impurity solver"]
         )
 
 mutable struct IterInfo
