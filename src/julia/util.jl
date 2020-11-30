@@ -140,8 +140,12 @@ function view_impurity()
     println("impurity -> upara  -> ", PIMP["upara"][1])
     println("impurity -> jpara  -> ", PIMP["jpara"][1])
     println("impurity -> lpara  -> ", PIMP["lpara"][1])
-    println("dmft -> solver    -> engine -> ", dmft["solver"]["engine"])
+    println()
+end
 
+function view_solver()
+    message("solver parameters")
+    println("solver    -> engine -> ", dmft["solver"]["engine"])
     println()
 end
 
