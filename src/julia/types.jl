@@ -33,9 +33,9 @@ PDFT  = Dict{String,Any}(
 Dictionary for parameters: dynamical mean-field theory calculations
 """
 PDMFT = Dict{String,Any}(
-            "mode"     => [missing, 0, UInt  , "scheme of dynamical mean-field theory calculations"],
-            "axis"     => [missing, 0, UInt  , "imaginary-time axis or real-frequency axis"],
-            "beta"     => [missing, 0, Real  , "inverse system temperature"],
+            "mode"     => [missing, 1, UInt  , "scheme of dynamical mean-field theory calculations"],
+            "axis"     => [missing, 1, UInt  , "imaginary-time axis or real-frequency axis"],
+            "beta"     => [missing, 1, Real  , "inverse system temperature"],
             "niter"    => [missing, 0, UInt  , "number of iterations"],
             "mixer"    => [missing, 0, Real  , "mixing factor"],
             "dcount"   => [missing, 0, String, "scheme of double counting term"],
