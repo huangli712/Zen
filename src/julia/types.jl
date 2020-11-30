@@ -14,8 +14,8 @@ Dictionary for parameters: density functional theory calculations
 """
 PDFT  = Dict{String,Any}(
             "engine"   => [missing, 1, String, "engine for density functional theory calculations"],
-            "smear"    => [missing, 0, String, "scheme for smearing"],
-            "kmesh"    => [missing, 0, String, "density of k-mesh sampling in the brillouin zone"],
+            "smear"    => [missing, 1, String, "scheme for smearing"],
+            "kmesh"    => [missing, 1, String, "density of k-mesh sampling in the brillouin zone"],
             "magmom"   => [missing, 0, String, "initial magnetic moment"],
             "lsymm"    => [missing, 0, Bool  , "whether the symmetry is considered"],
             "lspins"   => [missing, 0, Bool  , "whether the spin orientations are polarized"],
