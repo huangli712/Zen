@@ -1,11 +1,11 @@
 """
     PCASE
 
-Dictionary for parameters: case summary
+Dictionary for parameters: case summary    
 """
 PCASE = Dict{String,Any}
         (
-            "case"     => [missing, "system's name"]
+            "case"     => [missing, String, "system's name"]
         )
 
 """
@@ -15,18 +15,18 @@ Dictionary for parameters: density functional theory calculations
 """
 PDFT  = Dict{String,Any}
         (
-            "engine"   => [missing, "engine for density functional theory calculations"],
-            "smear"    => [missing, "scheme for smearing"],
-            "kmesh"    => [missing, "density of k-mesh sampling in the brillouin zone"],
-            "magmom"   => [missing, "initial magnetic moment"],
-            "lsymm"    => [missing, "whether the symmetry is considered"],
-            "lspins"   => [missing, "whether the spin orientations are polarized"],
-            "lspinorb" => [missing, "whether the spin-orbit coupling is considered"],
-            "window"   => [missing, "energy window for generating optimal projectors"],
-            "loptim"   => [missing, "try to optimize the generated projectors"],
-            "lproj"    => [missing, "try to generate projectors"],
-            "nproj"    => [missing, "number of types of projectors"],
-            "sproj"    => [missing, "scheme for generating projectors"]
+            "engine"   => [missing, String, "engine for density functional theory calculations"],
+            "smear"    => [missing, String, "scheme for smearing"],
+            "kmesh"    => [missing, String, "density of k-mesh sampling in the brillouin zone"],
+            "magmom"   => [missing, String, "initial magnetic moment"],
+            "lsymm"    => [missing, Bool  , "whether the symmetry is considered"],
+            "lspins"   => [missing, Bool  , "whether the spin orientations are polarized"],
+            "lspinorb" => [missing, Bool  , "whether the spin-orbit coupling is considered"],
+            "window"   => [missing, Array , "energy window for generating optimal projectors"],
+            "loptim"   => [missing, Bool  , "try to optimize the generated projectors"],
+            "lproj"    => [missing, Bool  , "try to generate projectors"],
+            "nproj"    => [missing, UInt  , "number of types of projectors"],
+            "sproj"    => [missing, Array , "scheme for generating projectors"]
         )
 
 """
