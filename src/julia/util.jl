@@ -69,14 +69,14 @@ function query_dft(dft::Dict{String,Any})
 end
 
 """
-    param_case(case::String)
+    view_case()
 
 Print the parameters to stdout
 """
-function param_case(case::String)
+function view_case()
     println()
     message("case summary")
-    println("case -> ", case)
+    println("case -> ", PCASE["case"])
     println()
 end
 
