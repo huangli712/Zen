@@ -36,14 +36,14 @@ PDMFT = Dict{String,Any}(
             "mode"     => [missing, 1, UInt  , "scheme of dynamical mean-field theory calculations"],
             "axis"     => [missing, 1, UInt  , "imaginary-time axis or real-frequency axis"],
             "beta"     => [missing, 1, Real  , "inverse system temperature"],
-            "niter"    => [missing, 0, UInt  , "number of iterations"],
-            "mixer"    => [missing, 0, Real  , "mixing factor"],
-            "dcount"   => [missing, 0, String, "scheme of double counting term"],
-            "cc"       => [missing, 0, Real  , "convergence criterion of charge"],
-            "ec"       => [missing, 0, Real  , "convergence criterion of total energy"],
+            "niter"    => [missing, 1, UInt  , "number of iterations"],
+            "mixer"    => [missing, 1, Real  , "mixing factor"],
+            "dcount"   => [missing, 1, String, "scheme of double counting term"],
+            "cc"       => [missing, 1, Real  , "convergence criterion of charge"],
+            "ec"       => [missing, 1, Real  , "convergence criterion of total energy"],
             "fc"       => [missing, 0, Real  , "convergence criterion of force"],
-            "lcharge"  => [missing, 0, Bool  , "examine whether charge is converged"],
-            "lenergy"  => [missing, 0, Bool  , "examine whether total energy is converged"],
+            "lcharge"  => [missing, 1, Bool  , "examine whether charge is converged"],
+            "lenergy"  => [missing, 1, Bool  , "examine whether total energy is converged"],
             "lforce"   => [missing, 0, Bool  , "examine whether force is converged"]
         )
 
