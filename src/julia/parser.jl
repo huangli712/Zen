@@ -96,4 +96,22 @@ function validate_params()
             error("Sorry, $key shoule be set")
         end
     end
+
+    for key in keys(PDMFT)
+        if isa(PDMFT[key][1], Missing) && PDMFT[key][2] > 0
+            error("Sorry, $key shoule be set")
+        end
+    end
+
+    for key in keys(PIMP)
+        if isa(PIMP[key][1], Missing) && PIMP[key][2] > 0
+            error("Sorry, $key shoule be set")
+        end
+    end
+
+    for key in keys(PSOLVER)
+        if isa(PSOLVER[key][1], Missing) && PSOLVER[key][2] > 0
+            error("Sorry, $key shoule be set")
+        end
+    end
 end
