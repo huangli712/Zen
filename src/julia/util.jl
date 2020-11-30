@@ -71,7 +71,7 @@ end
 """
     view_case()
 
-Print the parameters to stdout
+Print the parameters to stdout: for case
 """
 function view_case()
     println()
@@ -83,7 +83,7 @@ end
 """
     view_dft()
 
-Print the parameters to stdout
+Print the parameters to stdout: for dft
 """
 function view_dft()
     message("dft parameters")
@@ -105,7 +105,7 @@ end
 """
     view_dmft()
 
-Print the parameters to stdout
+Print the parameters to stdout: for dmft
 """
 function view_dmft()
     message("dmft parameters")
@@ -127,7 +127,7 @@ end
 """
     view_impurity()
 
-Print the parameters to stdout
+Print the parameters to stdout: for impurity
 """
 function view_impurity()
     message("impurity parameters")
@@ -143,6 +143,11 @@ function view_impurity()
     println()
 end
 
+"""
+    view_solver()
+
+Print the parameters to stdout: for solver
+"""
 function view_solver()
     message("solver parameters")
     println("solver   -> engine -> ", PSOLVER["engine"][1])
