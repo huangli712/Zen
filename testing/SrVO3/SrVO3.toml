@@ -27,7 +27,7 @@ lcharge = true
 lenergy = true
 lforce = false
 
-[dmft.impurity]
+[impurity]
 nsite = 1
 atoms = ["V"]
 equiv = [[1]]
@@ -38,6 +38,6 @@ upara = [4.0]
 jpara = [0.7]
 lpara = [0.0]
 
-[dmft.solver]
+[solver]
 engine = "ct_hub1"
 params = []
