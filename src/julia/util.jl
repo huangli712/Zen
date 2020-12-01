@@ -52,12 +52,12 @@ function query_zen()
 end
 
 """
-    query_dft(dft::Dict{String,Any})
+    query_dft()
 
 Query the home directory of the dft engine
 """
-function query_dft(dft::Dict{String,Any})
-    if dft["engine"] == "vasp"
+function query_dft()
+    if Param(PDFT, "engine") === "vasp"
         if haskey(ENV, "VASP_HOME")
             ENV["VASP_HOME"]
         else
