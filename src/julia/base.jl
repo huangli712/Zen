@@ -152,16 +152,17 @@ function make_incar(case::String, d::Dict{String,Any})
 end
 
 """
-    dft_init(it::IterInfo, case::String, d::Dict{String,Any})
+    dft_init(it::IterInfo)
 
 To examine whether the dft runtime environment is ready
 """
-function dft_init(it::IterInfo, case::String, d::Dict{String,Any})
+function dft_init(it::IterInfo)
+    # enter dft directory
     cd("dft")
 
     # copy essential input files
     if it.dft_dmft_iter == 0
-        if d["engine"] == "vasp"
+        if Param(PDFT, "engine") === "vasp"
            cp("../POTCAR", pwd() * "/POTCAR")
            cp("../POSCAR", pwd() * "/POSCAR")
         else
@@ -171,8 +172,8 @@ function dft_init(it::IterInfo, case::String, d::Dict{String,Any})
 
     # generate essential input files
     if it.dft_dmft_iter == 0
-        if d["engine"] == "vasp"
-            make_incar(case, d)
+        if Param(PDFT, "engine") === "vasp"
+            make_incar(case)
         else
             sorry()
         end
