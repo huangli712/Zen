@@ -38,7 +38,7 @@ make_trees()
 message("zen", "make the instance of scf-consistent iterator")
 it = IterInfo()
 
-if dft_dmft["mode"] == 1
+if Param(PDMFT, "mode") === 1
 
     message("zen", "enter one-shot mode")
     message("zen", "begin < dft block >")
