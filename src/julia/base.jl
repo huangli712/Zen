@@ -79,7 +79,7 @@ function make_incar()
     # for magnetic moment
     magmom = Param(PDFT, "magmom")
     if !isa(magmom, Missing)
-        write(ios,"MAGMOM   = $magomo \n")
+        write(ios,"MAGMOM   = $magmom \n")
     end
 
     # for symmetry
@@ -121,10 +121,13 @@ function make_incar()
     end
 
     # for local orbitals and projectors
-    if haskey(d, "lproj") && haskey(d, "nproj") && haskey(d, "sproj")
-        if d["lproj"]
-            for p in 1:d["nproj"]
-                str = d["sproj"][p]
+    lproj = Param(PDFT, "lproj")
+    nproj = Param(PDFT, "nproj")
+    sproj = Param(PDFT, "sproj")
+    if !isa(lproj, Missing) && !isa(nproj, Missing) && !isa(sproj, Missing)
+        if lproj
+            for p in 1:nproj
+                str = sproj[p]
                 write(ios, "LOCPROJ  = $str \n")
             end
         end
