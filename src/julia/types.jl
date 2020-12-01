@@ -74,7 +74,7 @@ PSOLVER = Dict{String,Any}(
             "params"   => [missing, 1, Array , "parameters set of quantum impurity solver"]
         )
 
-function P(dict::Dict{String,Any}, key::String)
+function Param(dict::Dict{String,Any}, key::String)
     dict[key][1]
 end
 

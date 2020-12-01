@@ -8,6 +8,7 @@ export PDFT
 export PDMFT
 export PIMP
 export PSOLVER
+export Param
 export IterInfo
 export Lattice
 export DFTData
