@@ -3,44 +3,42 @@ case = "NiO"
 [dft]
 engine = "vasp"
 smear = "tetra"
-kgrid = "coarse"
+kmesh = "coarse"
 magmom = "2.0 -2.0 0.0 0.0"
 lsymm = true
 lspins = true
 lspinorb = false
 window = [6.0, 9.0]
-lopt = false
+loptim = false
 lproj = true
 nproj = 2
 sproj = ["1 : d : Pr", "2 : d : Pr"]
 
 [dmft]
-dcount = 1
-nominal = 6.0
-
-[dmft.impurity]
-nimp = 2
-atoms = ["Ni", "Ni"]
-equiv = [[1, -2]]
-shell = ["d", "d"]
-ising = [true, true]
-upara = [5.0, 5.0]
-jpara = [0.8, 0.8]
-lpara = [0.0]
-
-[dmft.solver]
-engine = "ct_hub1"
-params = []
-
-[dft_dmft]
 mode = 1
 axis = 1
 beta = 40.0
 niter = 60
 mixer = 0.5
+dcount = "fll1"
 cc = 1.0E-4
 ec = 1.0E-4
 fc = 1.0E-4
-lforce = false
 lcharge = true
 lenergy = true
+lforce = false
+
+[impurity]
+nsite = 2
+atoms = ["Ni", "Ni"]
+equiv = [[1, -2]]
+shell = ["d", "d"]
+ising = ["ising", "ising"]
+occup = [6.0, 6.0]
+upara = [5.0, 5.0]
+jpara = [0.8, 0.8]
+lpara = [0.0]
+
+[solver]
+engine = "ct_hub1"
+params = [""]
