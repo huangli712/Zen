@@ -35,14 +35,15 @@ function make_trees()
 end
 
 """
-    make_incar(case::String, d::Dict{String,Any})
+    make_incar()
 
 Generate an INCAR for vasp, which is suitable for an initial self-consistent run
 """
-function make_incar(case::String, d::Dict{String,Any})
+function make_incar()
     ios = open("INCAR", "w")
 
     # standard part
+    case = Param(PCASE, "case")
     write(ios,"System   = $case \n")
     write(ios,"PREF     = Accurate \n")
     write(ios,"EDIFF    = 1E-8 \n")
@@ -56,16 +57,13 @@ function make_incar(case::String, d::Dict{String,Any})
     # ismear ==  1: m-p scheme -> metal (default)
     # ismear ==  0: gauss scheme -> metal, semiconductor or insulator
     # ismear == -5: tetrahedron scheme with correction -> insulator
-    if haskey(d, "smear")
-        if d["smear"] == "m-p"
-            write(ios,"ISMEAR   = 2 \n")
-        elseif d["smear"] == "gauss"
-            write(ios,"ISMEAR   = 0 \n")
-        elseif d["smear"] == "tetra"
-            write(ios,"ISMEAR   = -5 \n")
-        else
-            write(ios,"ISMEAR   = 1 \n")
-        end
+    smear = Param(PDFT, "smear")
+    if smear === "m-p"
+        write(ios,"ISMEAR   = 2 \n")
+    elseif smear === "gauss"
+        write(ios,"ISMEAR   = 0 \n")
+    elseif smear === "tetra"
+        write(ios,"ISMEAR   = -5 \n")
     else
         write(ios,"ISMEAR   = 1 \n")
     end
