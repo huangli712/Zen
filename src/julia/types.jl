@@ -74,6 +74,10 @@ PSOLVER = Dict{String,Any}(
             "params"   => [missing, 1, Array , "parameters set of quantum impurity solver"]
         )
 
+function P(dict::Dict{String,Any}, key::String)
+    dict[key][1]
+end
+
 mutable struct IterInfo
     total_iter :: Integer
     dmft1_iter :: Integer

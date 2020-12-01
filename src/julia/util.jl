@@ -29,7 +29,8 @@ end
 Check whether the essential input files exist
 """
 function query_cars()
-    if PDFT["engine"][1] == "vasp"
+    #if PDFT["engine"][1] == "vasp"
+    if P(PDFT, "engine") === "vasp"
         if !isfile("POSCAR") || !isfile("POTCAR")
             error("Please provide both POSCAR and POTCAR files")
         end
