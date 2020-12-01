@@ -180,11 +180,11 @@ function dft_init(it::IterInfo)
 end
 
 """
-    dft_run(it::IterInfo, d::Dict{String,Any})
+    dft_run(it::IterInfo)
 
 Execute the desired dft engine parallelly or sequentially
 """
-function dft_run(it::IterInfo, d::Dict{String,Any})
+function dft_run(it::IterInfo)
     dft_home = query_dft(d)
     mpi_prefix = parse_toml("MPI.toml", "dft", false) 
 
