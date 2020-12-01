@@ -77,9 +77,9 @@ function make_incar()
     end
 
     # for magnetic moment
-    if haskey(d, "magmom")
-        str = d["magmom"]
-        write(ios,"MAGMOM   = $str \n")
+    magmom = Param(PDFt, "magmom")
+    if !isa(magmom, Missing)
+        write(ios,"MAGMOM   = $magomo \n")
     end
 
     # for symmetry
