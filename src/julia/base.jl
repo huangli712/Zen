@@ -77,22 +77,17 @@ function make_incar()
     end
 
     # for magnetic moment
-    magmom = Param(PDFt, "magmom")
+    magmom = Param(PDFT, "magmom")
     if !isa(magmom, Missing)
         write(ios,"MAGMOM   = $magomo \n")
     end
 
     # for symmetry
-    # isym == 2: turn on  symmetry
-    # isym == 0: turn off symmetry
-    if haskey(d, "lsymm")
-        if d["lsymm"]
-            write(ios,"ISYM     = 2 \n")
-        else
-            write(ios,"ISYM     = 0 \n")
-        end
-    else
+    lsymm = Param(PDFT, "lsymm")
+    if lsymm
         write(ios,"ISYM     = 2 \n")
+    else
+        write(ios,"ISYM     = 0 \n")
     end
 
     # for spin polarizations
