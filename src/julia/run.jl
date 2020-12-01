@@ -29,11 +29,11 @@ view_solver()
 # check the input files (which are essential for the calculation)
 message("zen", "examine the essential input files")
 query_cars()
-exit(-1)
 
 # prepare the working directories
 message("zen", "create the working directories")
 make_trees(dmft["impurity"])
+exit(-1)
 
 # create a IterInfo object
 message("zen", "make the instance of iterator")
