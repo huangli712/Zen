@@ -181,7 +181,7 @@ function dft_init(it::IterInfo)
 
     # check essential input files
     if it.dft_dmft_iter >= 1
-        if d["engine"] == "vasp"
+        if Param(PDFT, "engine") === "vasp"
             if !isfile("INCAR") || !isfile("POSCAR") || !isfile("POTCAR")
                 error("Please make sure the existence of following files: INCAR, POSCAR, and POTCAR")
             end
@@ -190,6 +190,7 @@ function dft_init(it::IterInfo)
         end
     end
 
+    # enter the parent directory
     cd("..")
 end
 
