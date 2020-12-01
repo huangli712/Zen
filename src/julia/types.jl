@@ -83,9 +83,11 @@ function Param(dict::Dict{String,Any}, key::String)
     dict[key][1]
 end
 
+"""
+    IterInfo
 
-
-
+Record the iteration information
+"""
 mutable struct IterInfo
     total_iter :: Integer
     dmft1_iter :: Integer
@@ -93,6 +95,11 @@ mutable struct IterInfo
     dft_dmft_iter :: Integer
 end
 
+"""
+    IterInfo(iter::Integer = 0)
+
+Outer constructor for IterInfo struct
+"""
 function IterInfo(iter::Integer = 0)
     IterInfo(iter, iter, iter, iter)
 end

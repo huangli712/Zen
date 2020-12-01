@@ -33,10 +33,9 @@ query_cars()
 # prepare the working directories
 message("zen", "create the working directories")
 make_trees()
-exit(-1)
 
 # create a IterInfo object
-message("zen", "make the instance of iterator")
+message("zen", "make the instance of scf-consistent iterator")
 it = IterInfo()
 
 if dft_dmft["mode"] == 1
