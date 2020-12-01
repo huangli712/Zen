@@ -49,7 +49,7 @@ if Param(PDMFT, "mode") === 1
     message("zen", "dft -> save")
     message("zen", "e_n_d < dft block >")
     dft_save(it)
-    for iter in 1:dft_dmft["niter"]
+    for iter in 1:Param(PDMFT, "niter")
         message("zen", "dft_dmft_iter -> 0  dmft1_iter -> $iter dmft2_iter -> 0")
     end
 
