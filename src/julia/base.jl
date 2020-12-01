@@ -100,12 +100,9 @@ function make_incar()
     end
 
     # for spin-orbit coupling
-    if haskey(d, "lspinorb")
-        if d["lspinorb"]
-            write(ios,"LSORBIT  = .TRUE. \n")
-        else
-            write(ios,"LSORBIT  = .FALSE. \n")
-        end
+    lspinorb = Param(PDFT, "lspinorb")
+    if lspinorb
+        write(ios,"LSORBIT  = .TRUE. \n")
     else
         write(ios,"LSORBIT  = .FALSE. \n")
     end
