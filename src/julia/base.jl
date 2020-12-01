@@ -185,7 +185,7 @@ end
 Execute the desired dft engine parallelly or sequentially
 """
 function dft_run(it::IterInfo)
-    dft_home = query_dft(d)
+    dft_home = query_dft()
     mpi_prefix = parse_toml("MPI.toml", "dft", false) 
 
     cd("dft")
