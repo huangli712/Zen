@@ -74,6 +74,11 @@ PSOLVER = Dict{String,Any}(
             "params"   => [missing, 1, Array , "parameters set of quantum impurity solver"]
         )
 
+"""
+    Param(dict::Dict{String,Any}, key::String)
+
+Extract parameters from dictionary
+"""
 function Param(dict::Dict{String,Any}, key::String)
     dict[key][1]
 end
