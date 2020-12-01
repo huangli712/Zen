@@ -77,7 +77,7 @@ PSOLVER = Dict{String,Any}(
 """
     Param(dict::Dict{String,Any}, key::String)
 
-Extract parameters from dictionary
+Extract parameters from the given dictionary
 """
 function Param(dict::Dict{String,Any}, key::String)
     dict[key][1]
