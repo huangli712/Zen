@@ -53,10 +53,6 @@ function make_incar()
     # customize your INCAR according to the case.toml
     #
     # for smearing
-    # ismear ==  2: m-p scheme -> metal
-    # ismear ==  1: m-p scheme -> metal (default)
-    # ismear ==  0: gauss scheme -> metal, semiconductor or insulator
-    # ismear == -5: tetrahedron scheme with correction -> insulator
     smear = Param(PDFT, "smear")
     if smear === "m-p"
         write(ios,"ISMEAR   = 2 \n")
@@ -69,17 +65,14 @@ function make_incar()
     end
 
     # for k-mesh density
-    if haskey(d, "kgrid")
-        if d["kgrid"] == "accurate"
-            write(ios,"KSPACING = 0.1 \n")
-        elseif d["kgrid"] == "medium"
-            write(ios,"KSPACING = 0.2 \n")
-        elseif d["kgrid"] == "coarse"
-            write(ios,"KSPACING = 0.4 \n")
-        else # very coarse 
-            write(ios,"KSPACING = 0.5 \n")
-        end
-    else
+    kmesh = Param(PDFT, "kmesh")
+    if kmesh === "accurate"
+        write(ios,"KSPACING = 0.1 \n")
+    elseif kmesh === "medium"
+        write(ios,"KSPACING = 0.2 \n")
+    elseif kmesh === "coarse"
+        write(ios,"KSPACING = 0.4 \n")
+    else # very coarse 
         write(ios,"KSPACING = 0.5 \n")
     end
 
