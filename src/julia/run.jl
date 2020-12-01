@@ -32,7 +32,7 @@ query_cars()
 
 # prepare the working directories
 message("zen", "create the working directories")
-make_trees(dmft["impurity"])
+make_trees()
 exit(-1)
 
 # create a IterInfo object
