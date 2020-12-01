@@ -92,12 +92,9 @@ function make_incar()
 
     # for spin polarizations
     # if spin-orbit coupling is on, then spins must be polarized
-    if haskey(d, "lspins")
-        if d["lspins"]
-            write(ios,"ISPIN    = 2 \n")
-        else
-            write(ios,"ISPIN    = 1 \n")
-        end
+    lspins = Param(PDFT, "lspins")
+    if lspins
+        write(ios,"ISPIN    = 2 \n")
     else
         write(ios,"ISPIN    = 1 \n")
     end
