@@ -173,7 +173,7 @@ function dft_init(it::IterInfo)
     # generate essential input files
     if it.dft_dmft_iter == 0
         if Param(PDFT, "engine") === "vasp"
-            make_incar(case)
+            make_incar()
         else
             sorry()
         end
