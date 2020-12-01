@@ -211,14 +211,14 @@ function dft_run(it::IterInfo)
 end
 
 """
-    dft_save(it::IterInfo, d::Dict{String,Any})
+    dft_save(it::IterInfo)
 
 Backup the essential dft calculated results for next iterations
 """
-function dft_save(it::IterInfo, d::Dict{String,Any})
+function dft_save(it::IterInfo)
     cd("dft")
 
-    if d["engine"] == "vasp"
+    if Param(PDFT, "engine") === "vasp"
         if it.dft_dmft_iter == 0
             cp("INCAR", "INCAR.$(it.dft_dmft_iter)")
             cp("CHGCAR", "CHGCAR.$(it.dft_dmft_iter)")
