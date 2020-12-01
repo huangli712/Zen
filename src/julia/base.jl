@@ -108,12 +108,14 @@ function make_incar()
     end
 
     # for optimized projectors
-    if haskey(d, "lopt") && haskey(d, "window")
-        if d["lopt"]
+    window = Param(PDFT, "window")
+    loptim = Param(PDFT, "loptim")
+    if !isa(window, Missing) && !isa(loptim, Missing)
+        if loptim
             write(ios,"LORBIT   = 14 \n")
-            emin = d["window"][1]
+            emin = window[1]
             write(ios,"EMIN     = $emin \n")
-            emax = d["window"][2]
+            emax = window[2]
             write(ios,"EMAX     = $emax \n")
         end
     end
