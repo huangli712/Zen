@@ -151,8 +151,8 @@ Print the parameters to stdout: for solver
 """
 function view_solver()
     message("solver parameters")
-    println("solver   -> engine -> ", PSOLVER["engine"][1])
-    println("solver   -> params -> ", PSOLVER["params"][1])
+    println("solver   -> engine -> ", Param(PSOLVER, "engine"))
+    println("solver   -> params -> ", Param(PSOLVER, "params"))
     println()
 end
 
