@@ -13,6 +13,12 @@ export Lattice
 export DFTData
 export DMFTData
 
+include("params.jl")
+export parse_toml
+export parse_dict
+export validate_params
+export Param
+
 include("util.jl")
 export require
 export query_args
@@ -28,12 +34,6 @@ export welcome
 export goodbye
 export sorry
 export message
-
-include("params.jl")
-export parse_toml
-export parse_dict
-export validate_params
-export Param
 
 include("traits.jl")
 export from_poscar
