@@ -150,6 +150,11 @@ function check_params()
     end
 end
 
+"""
+    _c(key::String)
+
+Extract parameter from dict: PCASE
+"""
 @inline function _c(key::String)
     if haskey(PCASE, key)
         PCASE[key][1]
@@ -158,6 +163,11 @@ end
     end
 end
 
+"""
+    _d(key::String)
+
+Extract parameter from dict: PDFT
+"""
 @inline function _d(key::String)
     if haskey(PDFT, key)
         PDFT[key][1]
@@ -166,6 +176,11 @@ end
     end
 end
 
+"""
+    _m(key::String)
+
+Extract parameter from dict: PDMFT
+"""
 @inline function _m(key::String)
     if haskey(PDMFT, key)
         PDMFT[key][1]
@@ -174,6 +189,11 @@ end
     end
 end
 
+"""
+    _i(key::String)
+
+Extract parameter from dict: PIMP
+"""
 @inline function _i(key::String)
     if haskey(PIMP, key)
         PIMP[key][1]
@@ -182,6 +202,11 @@ end
     end
 end
 
+"""
+    _s(key::String)
+
+Extract parameter from dict: PSOLVER
+"""
 @inline function _s(key::String)
     if haskey(PSOLVER, key)
         PSOLVER[key][1]
