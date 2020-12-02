@@ -168,6 +168,11 @@ end
 end
 
 @inline function _d(key::String)
+    if haskey(PDFT, key)
+        PDFT[key][1]
+    else
+        error("Sorry, PDFT does not contain key: $key")
+    end
 end
 
 @inline function _m(key::String)
