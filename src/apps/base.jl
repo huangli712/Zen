@@ -26,7 +26,7 @@ function make_trees()
     mkdir("dmft2")
 
     # for impurity.i
-    for i = 1:Param(PIMP, "nsite")
+    for i = 1:_i("nsite")
         if isdir("impurity.$i")
             rm("impurity.$i", force = true, recursive = true)
         end
