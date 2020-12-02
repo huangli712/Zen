@@ -150,15 +150,6 @@ function check_params()
     end
 end
 
-"""
-    Param(dict::Dict{String,Any}, key::String)
-
-Extract parameters from the given dictionary
-"""
-function Param(dict::Dict{String,Any}, key::String)
-    dict[key][1]
-end
-
 @inline function _c(key::String)
     if haskey(PCASE, key)
         PCASE[key][1]
