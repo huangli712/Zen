@@ -57,11 +57,11 @@ end
 Query the home directory of the dft engine
 """
 function query_dft()
-    if Param(PDFT, "engine") === "vasp"
+    if _d("engine") === "vasp"
         if haskey(ENV, "VASP_HOME")
             ENV["VASP_HOME"]
         else
-            error("VASP_HOME is undefined")
+            error("VASP_HOME must be defined")
         end
     else
         sorry()
