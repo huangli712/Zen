@@ -147,7 +147,7 @@ function dft_init(it::IterInfo)
 
     # copy essential input files
     if it.dft_dmft_iter == 0
-        if Param(PDFT, "engine") === "vasp"
+        if _d("engine") === "vasp"
            cp("../POTCAR", pwd() * "/POTCAR")
            cp("../POSCAR", pwd() * "/POSCAR")
         else
@@ -157,7 +157,7 @@ function dft_init(it::IterInfo)
 
     # generate essential input files
     if it.dft_dmft_iter == 0
-        if Param(PDFT, "engine") === "vasp"
+        if _d("engine") === "vasp"
             make_incar()
         else
             sorry()
@@ -166,7 +166,7 @@ function dft_init(it::IterInfo)
 
     # check essential input files
     if it.dft_dmft_iter >= 1
-        if Param(PDFT, "engine") === "vasp"
+        if _d("engine") === "vasp"
             if !isfile("INCAR") || !isfile("POSCAR") || !isfile("POTCAR")
                 error("Please make sure the existence of following files: INCAR, POSCAR, and POTCAR")
             end
