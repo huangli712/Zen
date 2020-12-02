@@ -20,13 +20,19 @@ beta = 40.0
 niter = 60
 mixer = 0.5
 dcount = "fll1"
+cc = 1.0E-4
+ec = 1.0E-4
+fc = 1.0E-4
+lcharge = true
+lenergy = true
+lforce = false
 
 [impurity]
 nsite = 2
 atoms = ["Fe", "Fe"]
 equiv = [[1, 2]]
 shell = ["d", "d"]
-ising = ["true", "true"]
+ising = ["ising", "ising"]
 occup = [6.0, 6.0]
 upara = [5.0, 5.0]
 jpara = [0.8, 0.8]
@@ -35,10 +41,3 @@ lpara = [0.0, 0.0]
 [solver]
 engine = "ct_hub1"
 params = [""]
-
-cc = 1.0E-4
-ec = 1.0E-4
-fc = 1.0E-4
-lforce = false
-lcharge = true
-lenergy = true
