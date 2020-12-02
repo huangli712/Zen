@@ -110,12 +110,20 @@ function check_params()
         if isa(PDFT[key][1], Missing) && PDFT[key][2] > 0
             error("Sorry, $key shoule be set")
         end
+
+        if !isa(PDFT[key][1], PDFT[key][3])
+            error("Sorry, type of $key is wrong")
+        end
     end
 
     # check dmft block
     for key in keys(PDMFT)
         if isa(PDMFT[key][1], Missing) && PDMFT[key][2] > 0
             error("Sorry, $key shoule be set")
+        end
+
+        if !isa(PDMFT[key][1], PDMFT[key][3])
+            error("Sorry, type of $key is wrong")
         end
     end
 
@@ -124,12 +132,20 @@ function check_params()
         if isa(PIMP[key][1], Missing) && PIMP[key][2] > 0
             error("Sorry, $key shoule be set")
         end
+
+        if !isa(PIMP[key][1], PIMP[key][3])
+            error("Sorry, type of $key is wrong")
+        end
     end
 
     # check solver block
     for key in keys(PSOLVER)
         if isa(PSOLVER[key][1], Missing) && PSOLVER[key][2] > 0
             error("Sorry, $key shoule be set")
+        end
+
+        if !isa(PSOLVER[key][1], PSOLVER[key][3])
+            error("Sorry, type of $key is wrong")
         end
     end
 end
