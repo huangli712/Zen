@@ -100,7 +100,7 @@ function check_params()
             error("Sorry, $key shoule be set")
         end
 
-        if !isa(PCASE[key][1], PCASE[key][3])
+        if !isa(PCASE[key][1], Missing) && !isa(PCASE[key][1], PCASE[key][3])
             error("Sorry, type of $key is wrong")
         end
     end
@@ -123,7 +123,6 @@ function check_params()
         end
 
         if !isa(PDMFT[key][1], Missing) && !isa(PDMFT[key][1], PDMFT[key][3])
-            println(PDMFT[key])
             error("Sorry, type of $key is wrong")
         end
     end
@@ -134,7 +133,7 @@ function check_params()
             error("Sorry, $key shoule be set")
         end
 
-        if !isa(PIMP[key][1], PIMP[key][3])
+        if !isa(PIMP[key][1], Missing) && !isa(PIMP[key][1], PIMP[key][3])
             error("Sorry, type of $key is wrong")
         end
     end
@@ -145,7 +144,7 @@ function check_params()
             error("Sorry, $key shoule be set")
         end
 
-        if !isa(PSOLVER[key][1], PSOLVER[key][3])
+        if !isa(PSOLVER[key][1], Missing) && !isa(PSOLVER[key][1], PSOLVER[key][3])
             error("Sorry, type of $key is wrong")
         end
     end
