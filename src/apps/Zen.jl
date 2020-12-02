@@ -17,7 +17,11 @@ include("params.jl")
 export parse_toml
 export renew_params
 export check_params
-export Param
+export _c
+export _d
+export _m
+export _i
+export _s
 
 include("util.jl")
 export require
