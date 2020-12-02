@@ -50,6 +50,7 @@ export to_chgcar
 
 include("base.jl")
 export make_trees
+export make_incar
 export dft_init
 export dft_run
 export dft_save
