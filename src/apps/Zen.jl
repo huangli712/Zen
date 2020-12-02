@@ -29,12 +29,12 @@ export goodbye
 export sorry
 export message
 
-include("parser.jl")
+include("params.jl")
 export parse_toml
 export parse_dict
 export validate_params
 
-include("adaptor.jl")
+include("traits.jl")
 export from_poscar
 export from_projcar
 export from_locproj
