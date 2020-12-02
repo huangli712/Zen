@@ -99,6 +99,10 @@ function check_params()
         if isa(PCASE[key][1], Missing) && PCASE[key][2] > 0
             error("Sorry, $key shoule be set")
         end
+
+        if !isa(PCASE[key][1], PCASE[key][3])
+            error("Sorry, type of $key is wrong")
+        end
     end
 
     # check dft block
