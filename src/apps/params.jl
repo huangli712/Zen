@@ -192,4 +192,9 @@ end
 end
 
 @inline function _s(key::String)
+    if haskey(PSOLVER, key)
+        PSOLVER[key][1]
+    else
+        error("Sorry, PSOLVER does not contain key: $key")
+    end
 end
