@@ -176,6 +176,11 @@ end
 end
 
 @inline function _m(key::String)
+    if haskey(PDMFT, key)
+        PDMFT[key][1]
+    else
+        error("Sorry, PDMFT does not contain key: $key")
+    end
 end
 
 @inline function _i(key::String)
