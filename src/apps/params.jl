@@ -163,7 +163,7 @@ end
     if haskey(PCASE, key)
         PCASE[key][1]
     else
-        error("Sorry")
+        error("Sorry, PCASE does not contain key: $key")
     end
 end
 
