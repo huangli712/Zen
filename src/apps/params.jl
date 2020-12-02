@@ -158,3 +158,23 @@ Extract parameters from the given dictionary
 function Param(dict::Dict{String,Any}, key::String)
     dict[key][1]
 end
+
+@inline function _c(key::String)
+    if haskey(PCASE, key)
+        PCASE[key][1]
+    else
+        error("Sorry")
+    end
+end
+
+@inline function _d(key::String)
+end
+
+@inline function _m(key::String)
+end
+
+@inline function _i(key::String)
+end
+
+@inline function _s(key::String)
+end
