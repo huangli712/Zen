@@ -43,7 +43,7 @@ function make_incar()
     ios = open("INCAR", "w")
 
     # standard part
-    case = Param(PCASE, "case")
+    case = _c("case")
     write(ios,"System   = $case \n")
     write(ios,"PREF     = Accurate \n")
     write(ios,"EDIFF    = 1E-8 \n")
@@ -53,7 +53,7 @@ function make_incar()
     # customize your INCAR according to the case.toml
     #
     # for smearing
-    smear = Param(PDFT, "smear")
+    smear = _d("smear")
     if smear === "m-p"
         write(ios,"ISMEAR   = 2 \n")
     elseif smear === "gauss"
@@ -65,7 +65,7 @@ function make_incar()
     end
 
     # for k-mesh density
-    kmesh = Param(PDFT, "kmesh")
+    kmesh = _d("kmesh")
     if kmesh === "accurate"
         write(ios,"KSPACING = 0.1 \n")
     elseif kmesh === "medium"
@@ -77,13 +77,13 @@ function make_incar()
     end
 
     # for magnetic moment
-    magmom = Param(PDFT, "magmom")
+    magmom = _d("magmom")
     if !isa(magmom, Missing)
         write(ios,"MAGMOM   = $magmom \n")
     end
 
     # for symmetry
-    lsymm = Param(PDFT, "lsymm")
+    lsymm = _d("lsymm")
     if lsymm
         write(ios,"ISYM     = 2 \n")
     else
@@ -92,7 +92,7 @@ function make_incar()
 
     # for spin polarizations
     # if spin-orbit coupling is on, then spins must be polarized
-    lspins = Param(PDFT, "lspins")
+    lspins = _d("lspins")
     if lspins
         write(ios,"ISPIN    = 2 \n")
     else
@@ -100,7 +100,7 @@ function make_incar()
     end
 
     # for spin-orbit coupling
-    lspinorb = Param(PDFT, "lspinorb")
+    lspinorb = _d("lspinorb")
     if lspinorb
         write(ios,"LSORBIT  = .TRUE. \n")
     else
@@ -108,8 +108,8 @@ function make_incar()
     end
 
     # for optimized projectors
-    window = Param(PDFT, "window")
-    loptim = Param(PDFT, "loptim")
+    window = _d("window")
+    loptim = _d("loptim")
     if !isa(window, Missing) && !isa(loptim, Missing)
         if loptim
             write(ios,"LORBIT   = 14 \n")
@@ -121,9 +121,9 @@ function make_incar()
     end
 
     # for local orbitals and projectors
-    lproj = Param(PDFT, "lproj")
-    nproj = Param(PDFT, "nproj")
-    sproj = Param(PDFT, "sproj")
+    lproj = _d("lproj")
+    nproj = _d("nproj")
+    sproj = _d("sproj")
     if !isa(lproj, Missing) && !isa(nproj, Missing) && !isa(sproj, Missing)
         if lproj
             for p in 1:nproj
