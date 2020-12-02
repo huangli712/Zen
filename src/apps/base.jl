@@ -218,7 +218,7 @@ Backup the essential dft calculated results for next iterations
 function dft_save(it::IterInfo)
     cd("dft")
 
-    if Param(PDFT, "engine") === "vasp"
+    if _d("engine") === "vasp"
         if it.dft_dmft_iter == 0
             cp("INCAR", "INCAR.$(it.dft_dmft_iter)")
             cp("CHGCAR", "CHGCAR.$(it.dft_dmft_iter)")
