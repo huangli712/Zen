@@ -12,11 +12,11 @@ welcome()
 # parse the file case.toml to extract parameters
 message("zen", "parse the configuration file")
 cfg = parse_toml(query_args(), true)
-parse_dict(cfg)
+renew_params(cfg)
 
 # validate the parameters
 message("zen", "check the configuration parameters")
-validate_params()
+check_params()
 
 # write the parameters to stdout
 message("zen", "display the configuration parameters")
