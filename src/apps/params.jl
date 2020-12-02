@@ -112,7 +112,6 @@ function check_params()
         end
 
         if !isa(PDFT[key][1], Missing) && !isa(PDFT[key][1], PDFT[key][3])
-            println(PDFT[key])
             error("Sorry, type of $key is wrong")
         end
     end
@@ -123,7 +122,8 @@ function check_params()
             error("Sorry, $key shoule be set")
         end
 
-        if !isa(PDMFT[key][1], PDMFT[key][3])
+        if !isa(PDMFT[key][1], Missing) && !isa(PDMFT[key][1], PDMFT[key][3])
+            println(PDMFT[key])
             error("Sorry, type of $key is wrong")
         end
     end
