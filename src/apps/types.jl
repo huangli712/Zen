@@ -75,15 +75,6 @@ PSOLVER = Dict{String,Any}(
         )
 
 """
-    Param(dict::Dict{String,Any}, key::String)
-
-Extract parameters from the given dictionary
-"""
-function Param(dict::Dict{String,Any}, key::String)
-    dict[key][1]
-end
-
-"""
     IterInfo
 
 Record the iteration information
@@ -108,4 +99,7 @@ mutable struct Lattice
 end
 
 mutable struct DFTData
+end
+
+mutable struct DMFTData
 end

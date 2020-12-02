@@ -8,10 +8,10 @@ export PDFT
 export PDMFT
 export PIMP
 export PSOLVER
-export Param
 export IterInfo
 export Lattice
 export DFTData
+export DMFTData
 
 include("util.jl")
 export require
@@ -33,6 +33,7 @@ include("params.jl")
 export parse_toml
 export parse_dict
 export validate_params
+export Param
 
 include("traits.jl")
 export from_poscar
