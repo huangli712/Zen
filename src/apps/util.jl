@@ -29,7 +29,7 @@ end
 Check whether the essential input files exist
 """
 function query_cars()
-    if Param(PDFT, "engine") === "vasp"
+    if _d("engine") === "vasp"
         if !isfile("POSCAR") || !isfile("POTCAR")
             error("Please provide both POSCAR and POTCAR files")
         end
