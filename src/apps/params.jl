@@ -184,6 +184,11 @@ end
 end
 
 @inline function _i(key::String)
+    if haskey(PIMP, key)
+        PIMP[key][1]
+    else
+        error("Sorry, PIMP does not contain key: $key")
+    end
 end
 
 @inline function _s(key::String)
