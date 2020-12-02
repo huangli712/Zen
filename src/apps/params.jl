@@ -39,11 +39,11 @@ function parse_toml(f::AbstractString, necessary::Bool)
 end
 
 """
-    parse_dict(cfg::Dict{String,Any})
+    renew_params(cfg::Dict{String,Any})
 
 Copy parameters from cfg to PCASE, PDFT, PDMFT, PIMP, and PSOLVER
 """
-function parse_dict(cfg::Dict{String,Any})
+function renew_params(cfg::Dict{String,Any})
     # for case block
     PCASE["case"][1] = cfg["case"]
 
@@ -89,11 +89,11 @@ function parse_dict(cfg::Dict{String,Any})
 end
 
 """
-    validate_params()
+    check_params()
 
 Validate the correctness and consistency of parameters
 """
-function validate_params()
+function check_params()
     # check case block
     for key in keys(PCASE)
         if isa(PCASE[key][1], Missing) && PCASE[key][2] > 0

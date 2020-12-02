@@ -15,8 +15,8 @@ export DMFTData
 
 include("params.jl")
 export parse_toml
-export parse_dict
-export validate_params
+export renew_params
+export check_params
 export Param
 
 include("util.jl")
