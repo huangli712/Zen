@@ -29,12 +29,12 @@ lenergy = true
 lforce = false
 
 [impurity]
-nimp = 1
+nsite = 1
 atoms = ["Ni"]
 equiv = [[1]]
 shell = ["d"]
-ising = [true]
-nominal = 8.0
+ising = ["ising"]
+occup = [8.0]
 upara = [4.0]
 jpara = [0.7]
 lpara = [0.0]
