@@ -13,11 +13,6 @@ export IterInfo
 export Lattice
 export DFTData
 
-include("parser.jl")
-export parse_toml
-export parse_dict
-export validate_params
-
 include("util.jl")
 export require
 export query_args
@@ -33,6 +28,11 @@ export welcome
 export goodbye
 export sorry
 export message
+
+include("parser.jl")
+export parse_toml
+export parse_dict
+export validate_params
 
 include("adaptor.jl")
 export from_poscar
