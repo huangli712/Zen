@@ -190,8 +190,8 @@ function dft_run(it::IterInfo)
 
     cd("dft")
 
-    if Param(PDFT, "engine") === "vasp"
-        if Param(PDFT, "lspinorb")
+    if _d("engine") === "vasp"
+        if _d("lspinorb")
             vasp_exec = "$dft_home/vasp_ncl"
         else
             vasp_exec = "$dft_home/vasp_std"
