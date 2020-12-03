@@ -9,16 +9,16 @@ require()
 # print the welcome message 
 welcome()
 
-# parse the file case.toml to extract parameters
+# parse the file case.toml to extract configuration parameters
 message("zen", "parse the configuration file")
 cfg = parse_toml(query_args(), true)
-renew_params(cfg)
 
-# validate the parameters
+# validate the configuration parameters
 message("zen", "check the configuration parameters")
-check_params()
+renew_config(cfg)
+check_config()
 
-# write the parameters to stdout
+# write the configuration parameters to stdout
 message("zen", "display the configuration parameters")
 view_case()
 view_dft()
