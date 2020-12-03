@@ -86,6 +86,22 @@ mutable struct IterInfo
     dft_dmft_iter :: I64
 end
 
+mutable struct Param
+end
+
+mutable struct Lattice
+end
+
+mutable struct Mesh
+    kmesh :: Array(F64,3)
+    kweight :: Array(F64,1)
+end
+
+mutable struct KohnShamData
+    enk :: Array(F64,4)
+    psichi :: Array(C64,5)
+end
+
 """
     IterInfo(iter::I64 = 0)
 
@@ -93,13 +109,4 @@ Outer constructor for IterInfo struct
 """
 function IterInfo(iter::I64 = 0)
     IterInfo(iter, iter, iter, iter)
-end
-
-mutable struct Lattice
-end
-
-mutable struct DFTData
-end
-
-mutable struct DMFTData
 end
