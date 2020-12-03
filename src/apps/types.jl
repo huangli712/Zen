@@ -23,7 +23,7 @@ PDFT  = Dict{String,Any}(
             "window"   => [missing, 0, Array , "energy window for generating optimal projectors"],
             "loptim"   => [missing, 0, Bool  , "try to optimize the generated projectors"],
             "lproj"    => [missing, 1, Bool  , "try to generate projectors"],
-            "nproj"    => [missing, 1, Int   , "number of types of projectors"],
+            "nproj"    => [missing, 1, I64   , "number of types of projectors"],
             "sproj"    => [missing, 1, Array , "scheme for generating projectors"]
         )
 
@@ -33,10 +33,10 @@ PDFT  = Dict{String,Any}(
 Dictionary for parameters: dynamical mean-field theory calculations
 """
 PDMFT = Dict{String,Any}(
-            "mode"     => [missing, 1, Int   , "scheme of dynamical mean-field theory calculations"],
-            "axis"     => [missing, 1, Int   , "imaginary-time axis or real-frequency axis"],
+            "mode"     => [missing, 1, I64   , "scheme of dynamical mean-field theory calculations"],
+            "axis"     => [missing, 1, I64   , "imaginary-time axis or real-frequency axis"],
             "beta"     => [missing, 1, Real  , "inverse system temperature"],
-            "niter"    => [missing, 1, Int   , "number of iterations"],
+            "niter"    => [missing, 1, I64   , "number of iterations"],
             "mixer"    => [missing, 1, Real  , "mixing factor"],
             "dcount"   => [missing, 1, String, "scheme of double counting term"],
             "cc"       => [missing, 1, Real  , "convergence criterion of charge"],
@@ -53,7 +53,7 @@ PDMFT = Dict{String,Any}(
 Dictionary for parameters: quantum impurity problems
 """
 PIMP  = Dict{String,Any}(
-            "nsite"    => [missing, 1, Int   , "number of impurity sites"],
+            "nsite"    => [missing, 1, I64   , "number of impurity sites"],
             "atoms"    => [missing, 1, Array , "chemical symbols of impurity atoms"],
             "equiv"    => [missing, 1, Array , "equivalency of quantum impurity atoms"],
             "shell"    => [missing, 1, Array , "angular momentum of correlated orbitals"],
