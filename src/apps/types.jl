@@ -90,6 +90,10 @@ mutable struct Param
 end
 
 mutable struct Lattice
+    bvec :: Array(F64,2)
+    types :: Array(I64,1)
+    coord :: Array(F64,2)
+    atoms :: Array(String,1)
 end
 
 mutable struct Mesh
