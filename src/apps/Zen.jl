@@ -2,6 +2,15 @@ module Zen
 
 using TOML
 
+include("const.jl")
+export I32, I64
+export F32, F64
+export C32, C64
+export __libname__
+export __version__
+export __release__
+export __authors__
+
 include("types.jl")
 export PCASE
 export PDFT
