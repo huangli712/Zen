@@ -1,25 +1,12 @@
 module VaspAdaptor
 
-function from_poscar()
-end
-
-function from_projcar()
-end
-
-function from_locproj()
-end
-
-function from_ibzkpt()
-    println("from_ibzkpt")
-end
-
-function from_eigenval()
-end
-
-function from_chgcar()
-end
-
-function to_chgcar()
-end
+include("vasp.jl")
+export from_poscar
+export from_ibzkpt
+export from_projcar
+export from_locproj
+export from_eigenval
+export from_chgcar
+export to_chgcar
 
 end
