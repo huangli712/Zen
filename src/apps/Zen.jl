@@ -49,7 +49,7 @@ export goodbye
 export sorry
 export message
 
-include("traits.jl")
+include("adaptor.jl")
 export from_poscar
 export from_projcar
 export from_locproj
