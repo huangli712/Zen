@@ -1,7 +1,7 @@
 """
     PCASE
 
-Dictionary for parameters: case summary    
+Dictionary for configuration parameters: case summary    
 """
 PCASE = Dict{String,Any}(
             "case"     => [missing, 1, String, "system's name"]
@@ -10,7 +10,7 @@ PCASE = Dict{String,Any}(
 """
     PDFT
 
-Dictionary for parameters: density functional theory calculations
+Dictionary for configuration parameters: density functional theory calculations
 """
 PDFT  = Dict{String,Any}(
             "engine"   => [missing, 1, String, "engine for density functional theory calculations"],
@@ -30,7 +30,7 @@ PDFT  = Dict{String,Any}(
 """
     PDMFT
 
-Dictionary for parameters: dynamical mean-field theory calculations
+Dictionary for configuration parameters: dynamical mean-field theory calculations
 """
 PDMFT = Dict{String,Any}(
             "mode"     => [missing, 1, I64   , "scheme of dynamical mean-field theory calculations"],
@@ -50,7 +50,7 @@ PDMFT = Dict{String,Any}(
 """
     PIMP
 
-Dictionary for parameters: quantum impurity problems
+Dictionary for configuration parameters: quantum impurity problems
 """
 PIMP  = Dict{String,Any}(
             "nsite"    => [missing, 1, I64   , "number of impurity sites"],
@@ -67,7 +67,7 @@ PIMP  = Dict{String,Any}(
 """
     PSOLVER
 
-Dictionary for parameters: quantum impurity solvers
+Dictionary for configuration parameters: quantum impurity solvers
 """
 PSOLVER = Dict{String,Any}(
             "engine"   => [missing, 1, String, "name of quantum impurity solver"],
@@ -77,7 +77,7 @@ PSOLVER = Dict{String,Any}(
 """
     IterInfo
 
-Record the iteration information
+Record the runtime information
 """
 mutable struct IterInfo
     total_iter :: I64
@@ -86,9 +86,24 @@ mutable struct IterInfo
     dft_dmft_iter :: I64
 end
 
+"""
+    Param
+
+Essential parameters for the adaptor
+"""
 mutable struct Param
+    nspin :: I64
+    nband :: I64
+    nkpts :: I64
+    nsite :: I64
+    ncorr :: Array(I64,1)
 end
 
+"""
+    Lattice
+
+Crystallography information
+"""
 mutable struct Lattice
     bvec :: Array(F64,2)
     types :: Array(I64,1)
@@ -96,11 +111,21 @@ mutable struct Lattice
     atoms :: Array(String,1)
 end
 
-mutable struct Mesh
-    kmesh :: Array(F64,3)
-    kweight :: Array(F64,1)
+"""
+    Kmesh
+
+K-points and their weights
+"""
+mutable struct Kmesh
+    klists :: Array(F64,3)
+    weight :: Array(F64,1)
 end
 
+"""
+    KohnShamData
+
+Eigenvalues and projectors
+"""
 mutable struct KohnShamData
     enk :: Array(F64,4)
     psichi :: Array(C64,5)
