@@ -3,4 +3,4 @@
 include("Adaptor.jl")
 using .Adaptor
 
-from_ibzkpt()
+from_ibzkpt(pwd() * "/dft")
