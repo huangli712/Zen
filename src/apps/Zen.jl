@@ -23,7 +23,7 @@ export Lattice
 export Kmesh
 export KohnShamData
 
-include("params.jl")
+include("config.jl")
 export parse_toml
 export renew_params
 export check_params
