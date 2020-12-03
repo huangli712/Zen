@@ -1,4 +1,4 @@
-module VaspAdaptor
+module Adaptor
 
 include("vasp.jl")
 export from_poscar
