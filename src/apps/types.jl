@@ -95,8 +95,9 @@ mutable struct Param
     nspin :: I64
     nband :: I64
     nkpts :: I64
+    ncorr :: I64
     nsite :: I64
-    ncorr :: Array(I64,1)
+    vcorr :: Array(I64,1)
 end
 
 """
@@ -105,7 +106,7 @@ end
 Crystallography information
 """
 mutable struct Lattice
-    bvec :: Array(F64,2)
+    bvec  :: Array(F64,2)
     types :: Array(I64,1)
     coord :: Array(F64,2)
     atoms :: Array(String,1)
@@ -117,7 +118,7 @@ end
 K-points and their weights
 """
 mutable struct Kmesh
-    klists :: Array(F64,3)
+    klist  :: Array(F64,3)
     weight :: Array(F64,1)
 end
 
@@ -127,7 +128,7 @@ end
 Eigenvalues and projectors
 """
 mutable struct KohnShamData
-    enk :: Array(F64,4)
+    enk    :: Array(F64,4)
     psichi :: Array(C64,5)
 end
 
