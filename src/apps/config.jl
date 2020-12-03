@@ -39,11 +39,11 @@ function parse_toml(f::AbstractString, necessary::Bool)
 end
 
 """
-    renew_params(cfg::Dict{String,Any})
+    renew_config(cfg::Dict{String,Any})
 
-Copy parameters from cfg to PCASE, PDFT, PDMFT, PIMP, and PSOLVER
+Copy configurations from cfg to PCASE, PDFT, PDMFT, PIMP, and PSOLVER
 """
-function renew_params(cfg::Dict{String,Any})
+function renew_config(cfg::Dict{String,Any})
     # for case block
     PCASE["case"][1] = cfg["case"]
 
@@ -89,11 +89,11 @@ function renew_params(cfg::Dict{String,Any})
 end
 
 """
-    check_params()
+    check_config()
 
-Validate the correctness and consistency of parameters
+Validate the correctness and consistency of configurations
 """
-function check_params()
+function check_config()
     # check case block
     for key in keys(PCASE)
         if isa(PCASE[key][1], Missing) && PCASE[key][2] > 0
@@ -153,7 +153,7 @@ end
 """
     _c(key::String)
 
-Extract parameter from dict: PCASE
+Extract configurations from dict: PCASE
 """
 @inline function _c(key::String)
     if haskey(PCASE, key)
@@ -166,7 +166,7 @@ end
 """
     _d(key::String)
 
-Extract parameter from dict: PDFT
+Extract configurations from dict: PDFT
 """
 @inline function _d(key::String)
     if haskey(PDFT, key)
@@ -179,7 +179,7 @@ end
 """
     _m(key::String)
 
-Extract parameter from dict: PDMFT
+Extract configurations from dict: PDMFT
 """
 @inline function _m(key::String)
     if haskey(PDMFT, key)
@@ -192,7 +192,7 @@ end
 """
     _i(key::String)
 
-Extract parameter from dict: PIMP
+Extract configurations from dict: PIMP
 """
 @inline function _i(key::String)
     if haskey(PIMP, key)
@@ -205,7 +205,7 @@ end
 """
     _s(key::String)
 
-Extract parameter from dict: PSOLVER
+Extract configurations from dict: PSOLVER
 """
 @inline function _s(key::String)
     if haskey(PSOLVER, key)

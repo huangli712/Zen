@@ -25,8 +25,8 @@ export KohnShamData
 
 include("config.jl")
 export parse_toml
-export renew_params
-export check_params
+export renew_config
+export check_config
 export _c
 export _d
 export _m
