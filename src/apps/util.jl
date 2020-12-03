@@ -71,7 +71,7 @@ end
 """
     view_case()
 
-Print the parameters to stdout: for case
+Print the configuration parameters to stdout: for case
 """
 function view_case()
     println()
@@ -83,7 +83,7 @@ end
 """
     view_dft()
 
-Print the parameters to stdout: for dft
+Print the configuration parameters to stdout: for dft
 """
 function view_dft()
     message("dft parameters")
@@ -105,7 +105,7 @@ end
 """
     view_dmft()
 
-Print the parameters to stdout: for dmft
+Print the configuration parameters to stdout: for dmft
 """
 function view_dmft()
     message("dmft parameters")
@@ -127,7 +127,7 @@ end
 """
     view_impurity()
 
-Print the parameters to stdout: for impurity
+Print the configuration parameters to stdout: for impurity
 """
 function view_impurity()
     message("impurity parameters")
@@ -146,7 +146,7 @@ end
 """
     view_solver()
 
-Print the parameters to stdout: for solver
+Print the configuration parameters to stdout: for solver
 """
 function view_solver()
     message("solver parameters")
@@ -166,8 +166,8 @@ function welcome()
     printstyled("        // ||         || n     ||  |\n", color = :green)
     printstyled("       //  ||         ||  n    ||  |\n", color = :green)
     printstyled("  //zz//   ||eeeeeeee ||   n   ||  |\n", color = :green)
-    printstyled(" //        ||         ||    n  ||  | Version: 0.0.4@d\n", color = :green)
-    printstyled("//         ||         ||     n ||  | Release: 2020/12\n", color = :green)
+    printstyled(" //        ||         ||    n  ||  | Version: $__version__\n", color = :green)
+    printstyled("//         ||         ||     n ||  | Release: $__release__\n", color = :green)
     printstyled("========== ========== ===     ===  | Powered by the julia programming language\n", color = :green)
     printstyled("                                   |\n", color = :green)
     println()
