@@ -80,18 +80,18 @@ PSOLVER = Dict{String,Any}(
 Record the iteration information
 """
 mutable struct IterInfo
-    total_iter :: Integer
-    dmft1_iter :: Integer
-    dmft2_iter :: Integer
-    dft_dmft_iter :: Integer
+    total_iter :: I64
+    dmft1_iter :: I64
+    dmft2_iter :: I64
+    dft_dmft_iter :: I64
 end
 
 """
-    IterInfo(iter::Integer = 0)
+    IterInfo(iter::I64 = 0)
 
 Outer constructor for IterInfo struct
 """
-function IterInfo(iter::Integer = 0)
+function IterInfo(iter::I64 = 0)
     IterInfo(iter, iter, iter, iter)
 end
 
