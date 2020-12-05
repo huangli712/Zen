@@ -3,9 +3,6 @@
 include("Zen.jl")
 using .Zen
 
-include("Adaptor.jl")
-using .Adaptor
-
 # check the version of julia runtime environment
 require()
 
