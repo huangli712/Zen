@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 
-include("Adaptor.jl")
-using .Adaptor
+include("Zen.jl")
+using .Zen
 
 from_ibzkpt(pwd() * "/dft")
