@@ -36,7 +36,7 @@ function from_ibzkpt(f::AbstractString)
         println(subarr)
         i = i + 1
         kmesh[i,1:3] = subarr[1:3]
-        weight[i] = substr[4]
+        weight[i] = subarr[4]
         #println(kmesh[i,:], " ", weight[i])
     end
 
