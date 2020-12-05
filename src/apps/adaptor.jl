@@ -8,33 +8,41 @@ function from_locproj(f::AbstractString)
 end
 
 """
-    from_ibzkpt
+    from_ibzkpt(f::AbstractString)
 
-Reading IBZKPT, return k-mesh and k-weight
+Reading vasp's IBZKPT file, return k-mesh and k-weight. Here `f` means
+only the directory that contains IBZKPT
 """
 function from_ibzkpt(f::AbstractString)
+    # open the iostream
     fin = open(f * "/IBZKPT", "r")
 
+    # get number of k-points
     readline(fin)
     str = readline(fin)
-    nkpt = parse(Int64, str)
+    nkpt = parse(I64, str)
     readline(fin)
 
-    kmesh = zeros(Float64, nkpt, 3)
-    weight = zeros(Float64, nkpt) 
+    # create arrays 
+    kmesh = zeros(F64, nkpt, 3)
+    weight = zeros(F64, nkpt) 
 
+    # read in the k-points and their weights
     i = 0
     for line in eachline(fin)
         substr = split(line, " ", keepempty = false)
-        subarr = map(x -> parse(Float64, x),  substr[1:3]) 
+        subarr = map(x -> parse(F64, x),  substr) 
         i = i + 1
-        kmesh[i,1:3] = subarr
-        weight[i] = parse(Int64, substr[4])
+        kmesh[i,1:3] = subarr[1:3]
+        weight[i] = substr[4]
         println(kmesh[i,:], " ", weight[i])
     end
+
+    # make sure the number of k-points is correct
     @assert( i === nkpt )
     println(sum(weight))
 
+    # close the iostream
     close(fin)
 end
 
