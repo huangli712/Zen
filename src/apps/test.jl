@@ -5,7 +5,6 @@ using .Zen
 
 kmesh, weight = from_ibzkpt(pwd() * "/dft")
 
-for i in eachindex(kmesh)
-    #println(i, " ", kmesh[i,:], " ", weight[i])
-    println(i)
+for i in eachindex(weight)
+    println(i, " ", kmesh[i,:], " ", weight[i])
 end
