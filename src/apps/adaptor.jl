@@ -1,5 +1,3 @@
-
-
 function from_poscar(f::AbstractString)
 end
 
