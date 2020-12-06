@@ -21,6 +21,8 @@ function from_poscar(f::AbstractString)
     bvec[3,:] = parse.(F64, split(readline(fin), " ", keepempty = false))
 
     # get the symbol list
+    symbols = split(readline(fin), " ", keepempty = false)
+    @show symbols
 
     # close the iostream
     close(fin)
