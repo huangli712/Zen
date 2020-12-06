@@ -40,10 +40,18 @@ function from_poscar(f::AbstractString)
             atom_list[k] = curr_index
         end
     end
-    @show atom_list
+
+    # get the coordinates of atoms
+    posi_list = zeros(F64, total_atoms, 3)
+    readline(fin)
+    for i in 1:total_atoms
+        posi_list[i,:] = parse.(F64, split(readline(fin), " ", keepempty = false)[1:3])
+    end
 
     # close the iostream
     close(fin)
+
+    return symbols, atom_list, posi_list
 end
 
 function from_projcar(f::AbstractString)
