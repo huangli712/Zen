@@ -8,6 +8,18 @@ function from_poscar(f::AbstractString)
     # open the iostream
     fin = open(f * "/POSCAR", "r")
 
+    #for line in eachline(fin)
+    #    println(line, " ", typeof(line))
+    #end
+
+    # get the case
+    case = strip(readline(fin))
+
+    # get the scaling factor
+    scale = parse(F64, readline(fin))
+
+
+    println(case, " ", scale)
     # close the iostream
     close(fin)
 end
