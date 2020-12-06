@@ -1,4 +1,15 @@
+"""
+    from_poscar(f::AbstractString)
+
+Reading vasp's POSCAR file, return crystallography information. Here `f`
+means only the directory that contains POSCAR 
+"""
 function from_poscar(f::AbstractString)
+    # open the iostream
+    fin = open(f * "/POSCAR", "r")
+
+    # close the iostream
+    close(fin)
 end
 
 function from_projcar(f::AbstractString)
