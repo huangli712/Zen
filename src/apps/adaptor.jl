@@ -22,7 +22,10 @@ function from_poscar(f::AbstractString)
 
     # get the symbol list
     symbols = split(readline(fin), " ", keepempty = false)
-    @show symbols
+
+    # get the number list 
+    numbers = parse.(I64, split(readline(fin), " ", keepempty = false))
+    @show numbers
 
     # close the iostream
     close(fin)
