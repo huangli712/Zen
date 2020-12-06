@@ -8,18 +8,20 @@ function from_poscar(f::AbstractString)
     # open the iostream
     fin = open(f * "/POSCAR", "r")
 
-    #for line in eachline(fin)
-    #    println(line, " ", typeof(line))
-    #end
-
     # get the case
     case = strip(readline(fin))
 
     # get the scaling factor
     scale = parse(F64, readline(fin))
 
+    # get the basis vector
+    bvec = zeros(F64, 3, 3)
+    bvec[1,:] = parse.(F64, split(readline(fin), " ", keepempty = false))
+    bvec[2,:] = parse.(F64, split(readline(fin), " ", keepempty = false))
+    bvec[3,:] = parse.(F64, split(readline(fin), " ", keepempty = false))
 
-    println(case, " ", scale)
+    # get the symbol list
+
     # close the iostream
     close(fin)
 end
