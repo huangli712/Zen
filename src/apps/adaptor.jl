@@ -25,7 +25,22 @@ function from_poscar(f::AbstractString)
 
     # get the number list 
     numbers = parse.(I64, split(readline(fin), " ", keepempty = false))
-    @show numbers
+
+    # get the total number of atoms
+    total_atoms = sum(numbers)
+
+    # create atom lists
+    atom_list = zeros(I64, total_atoms)
+    curr_index = 0
+    k = 0
+    for i in 1:length(numbers)
+        curr_index = curr_index + 1
+        for j in 1:numbers[i]
+            k = k + 1
+            atom_list[k] = curr_index
+        end
+    end
+    @show atom_list
 
     # close the iostream
     close(fin)
