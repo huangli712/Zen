@@ -9,4 +9,5 @@ using .Zen
 #    println(i, " ", kmesh[i,:], " ", weight[i])
 #end
 
-from_poscar(pwd() * "/dft")
+#from_poscar(pwd() * "/dft")
+from_eigenval(pwd() * "/dft")
