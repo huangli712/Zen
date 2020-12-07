@@ -123,18 +123,32 @@ function from_eigenval(f::AbstractString)
 
     # create arrays
     enk = zeros(F64, nkpt, nband, nspin)
+    occupy = zeros(F64, nkpt, nband, nspin)
 
     # read in the energy bands and the corresponding occupations
     for i in 1:nkpt
         readline(fin)
         readline(fin)
         for j in 1:nband
-            str = readline(fin)
+            line = split(readline(fin), " ", keepempty = false)
+            if nspin === 1
+                enk[i,j,1] = parse(F64, line[2])
+                occupy[i,j,1] = parse(F64, line[3])
+            else # nspin == 2
+                enk[i,j,1] = parse(F64, line[2])
+                enk[i,j,2] = parse(F64, line[3])
+                occupy[i,j,1] = parse(F64, line[4])
+                occupy[i,j,2] = parse(F64, line[5])
+            end
+            @show i, j, enk[i,j,:], occupy[i,j,:]
         end
     end
 
     # close the iostream
     close(fin)
+
+    # return the desired arrays
+    return enk, occupy
 end
 
 function from_chgcar(f::AbstractString)
