@@ -100,7 +100,18 @@ function from_ibzkpt(f::AbstractString)
     return kmesh, weight
 end
 
+"""
+    from_eigenval(f::AbstractString)
+
+Reading vasp's EIGENVAL file, return energy band information. Here `f`
+means only the directory that contains EIGENVAL
+"""
 function from_eigenval(f::AbstractString)
+    # open the iostream
+    fin = open(f * "/EIGENVAL", "r")
+
+    # close the iostream
+    close(fin)
 end
 
 function from_chgcar(f::AbstractString)
