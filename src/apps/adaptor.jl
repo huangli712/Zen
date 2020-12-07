@@ -110,6 +110,29 @@ function from_eigenval(f::AbstractString)
     # open the iostream
     fin = open(f * "/EIGENVAL", "r")
 
+    # determine number of spins
+    nspin = parse(I64, split(readline(fin), " ", keepempty = false)[end])
+
+    # skip for lines
+    for i in 1:4
+        readline(fin)
+    end
+
+    # read in some key parameters: nelect, nkpt, nbands 
+    nelect, nkpt, nband = tuple(parse.(I64, split(readline(fin), " ", keepempty = false))...)
+
+    # create arrays
+    enk = zeros(F64, nkpt, nband, nspin)
+
+    # read in the energy bands and the corresponding occupations
+    for i in 1:nkpt
+        readline(fin)
+        readline(fin)
+        for j in 1:nband
+            str = readline(fin)
+        end
+    end
+
     # close the iostream
     close(fin)
 end
