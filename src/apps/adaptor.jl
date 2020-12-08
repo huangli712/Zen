@@ -74,9 +74,8 @@ function from_locproj(f::AbstractString, read_param_only::Bool)
     fin = open(f * "/LOCPROJ", "r")
     
     if read_param_only
-        a = split(readline(fin), " ", keepempty = false)
-        @show a
-        exit(-1)
+        arr = split(readline(fin), " ", keepempty = false)
+        nspin, nkpt, nband, nproj = tuple(map(x -> parse(I64,x), arr[1:4])...)
         return nspin, nkpt, nband, nproj
     else
         error("Sorry, this feature has not been implemented")
