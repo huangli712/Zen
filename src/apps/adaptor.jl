@@ -94,8 +94,7 @@ function from_locproj(f::AbstractString, read_param_only::Bool)
         for i in 1:nproj
             sites[i] = parse(I64, split(readline(fin), " ", keepempty = false)[2])
         end
-        @show sites
-        exit(-1)
+        nsite = length(union(sites))
         return nspin, nkpt, nband, nproj, nsite
     else
         error("Sorry, this feature has not been implemented")
