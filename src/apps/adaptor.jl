@@ -64,12 +64,21 @@ function from_projcar(f::AbstractString)
 end
 
 """
-    from_locproj(f::AbstractString)
+    from_locproj(f::AbstractString, read_param_only::Bool)
 
 Reading vasp's LOCPROJ file, return raw projector matrix. Here `f` means
 only the directory that contains LOCPROJ
 """
-function from_locproj(f::AbstractString)
+function from_locproj(f::AbstractString, read_param_only::Bool)
+    # open the iostream
+    fin = open(f * "/LOCPROJ", "r")
+    
+    if read_param_only
+    else
+    end
+
+    # close the iostream
+    close(fin)
 end
 
 """
