@@ -67,6 +67,12 @@ function from_projcar(f::AbstractString)
     # open the iostream
     fin = open(f * "/PROJCAR", ""r)
 
+    # create arrays
+    chipsi = zeros(C64, nproj, nband, nkpt, nspin)
+
+    # read in raw projector data
+    
+
     # close the iostream
     close(fin)
 end
