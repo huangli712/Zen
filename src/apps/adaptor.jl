@@ -54,9 +54,21 @@ function from_poscar(f::AbstractString)
     return symbols, atom_list, posi_list
 end
 
+"""
+    from_projcar(f::AbstractString)
+
+Reading vasp's PROJCAR file, return raw projector matrix. Here `f` means
+only the directory that contains PROJCAR
+"""
 function from_projcar(f::AbstractString)
 end
 
+"""
+    from_locproj(f::AbstractString)
+
+Reading vasp's LOCPROJ file, return raw projector matrix. Here `f` means
+only the directory that contains LOCPROJ
+"""
 function from_locproj(f::AbstractString)
 end
 
