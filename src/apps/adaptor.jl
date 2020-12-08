@@ -62,7 +62,7 @@ only the directory that contains PROJCAR
 """
 function from_projcar(f::AbstractString)
     # get key parameters from the LOCPROJ file
-    nspin, nkpt, nband, nproj = from_locproj(f, true)
+    nspin, nkpt, nband, nproj, nsite = from_locproj(f, true)
 
     # open the iostream
     fin = open(f * "/PROJCAR", "r")
