@@ -65,7 +65,7 @@ function from_projcar(f::AbstractString)
     nspin, nkpt, nband, nproj = from_locproj(f, true)
 
     # open the iostream
-    fin = open(f * "/PROJCAR", ""r)
+    fin = open(f * "/PROJCAR", "r")
 
     # create arrays
     chipsi = zeros(C64, nproj, nband, nkpt, nspin)
@@ -90,7 +90,13 @@ function from_locproj(f::AbstractString, read_param_only::Bool)
     if read_param_only
         arr = split(readline(fin), " ", keepempty = false)
         nspin, nkpt, nband, nproj = tuple(map(x -> parse(I64,x), arr[1:4])...)
-        return nspin, nkpt, nband, nproj
+        sites = zeros(I64, nproj)
+        for i in 1:nproj
+            sites[i] = parse(I64, split(readline(fin), " ", keepempty = false)[2])
+        end
+        @show sites
+        exit(-1)
+        return nspin, nkpt, nband, nproj, nsite
     else
         error("Sorry, this feature has not been implemented")
     end
