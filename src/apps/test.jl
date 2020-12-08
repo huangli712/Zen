@@ -12,4 +12,4 @@ using .Zen
 #from_poscar(pwd() * "/dft")
 #from_eigenval(pwd() * "/dft")
 #from_locproj(pwd() * "/dft", true)
-from_projcar(pwd() * '/dft')
+from_projcar(pwd() * "/dft")
