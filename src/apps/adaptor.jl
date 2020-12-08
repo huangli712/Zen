@@ -61,8 +61,14 @@ Reading vasp's PROJCAR file, return raw projector matrix. Here `f` means
 only the directory that contains PROJCAR
 """
 function from_projcar(f::AbstractString)
+    # get key parameters from the LOCPROJ file
     nspin, nkpt, nband, nproj = from_locproj(f, true)
-    @show nspin, nkpt, nband, nproj
+
+    # open the iostream
+    fin = open(f * "/PROJCAR", ""r)
+
+    # close the iostream
+    close(fin)
 end
 
 """
