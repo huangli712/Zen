@@ -100,6 +100,9 @@ function from_projcar(f::AbstractString)
     
     # close the iostream
     close(fin)
+
+    # return the desired arrays
+    return chipsi
 end
 
 """
