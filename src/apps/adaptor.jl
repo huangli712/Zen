@@ -126,10 +126,8 @@ function from_locproj(f::AbstractString, read_param_only::Bool)
         projview = zeros(I64, nsite)
         for site in 1:nsite
             projview[site] = length(findall(x -> x===usites[site], sites))
-            @show projview[site] 
         end
-        exit(-1)
-        return nspin, nkpt, nband, nproj, nsite
+        return nspin, nkpt, nband, nproj, nsite, projview
     else
         error("Sorry, this feature has not been implemented")
     end
