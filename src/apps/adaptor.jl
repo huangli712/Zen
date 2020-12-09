@@ -71,6 +71,17 @@ function from_projcar(f::AbstractString)
     chipsi = zeros(C64, nproj, nband, nkpt, nspin)
 
     # read in raw projector data
+    for site in 1:nsite
+        readline(fin)
+        readline(fin)
+        for spin in 1:nspin
+            for kpt in 1:nkpt
+                a = split(readline(fin), " ", keepempty = false)
+                @show a
+                exit(-1)
+            end
+        end
+    end
     
 
     # close the iostream
