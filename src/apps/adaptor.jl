@@ -84,8 +84,12 @@ function from_projcar(f::AbstractString)
 
                 readline(fin)
                 readline(fin)
+
                 for band in 1:nband
+                    arr = parse.(F64, split(readline(fin), " ", keepempty = false))
+                    @show arr
                 end
+
                 exit(-1)
             end
         end
