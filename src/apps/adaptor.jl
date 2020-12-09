@@ -90,7 +90,7 @@ function from_projcar(f::AbstractString)
                     for proj in 1:nproj
                         cmplx = arr[2*proj] + arr[2*proj+1]im
                         chipsi[proj,band,kpt,spin] = cmplx
-                        @show chipsi[proj,band,kpt,spin], 2*proj, 2*proj+1
+                        @show chipsi[proj,band,kpt,spin], 2*proj, 2*proj+1, nproj
                     end
                     @show arr
                 end
@@ -100,7 +100,6 @@ function from_projcar(f::AbstractString)
         end
     end
     
-
     # close the iostream
     close(fin)
 end
@@ -122,7 +121,14 @@ function from_locproj(f::AbstractString, read_param_only::Bool)
         for i in 1:nproj
             sites[i] = parse(I64, split(readline(fin), " ", keepempty = false)[2])
         end
-        nsite = length(union(sites))
+        usites = union(sites)
+        nsite = length(usites)
+        projview = zeros(I64, nsite)
+        for site in 1:nsite
+            projview[site] = length(findall(x -> x===usites[site], sites))
+            @show projview[site] 
+        end
+        exit(-1)
         return nspin, nkpt, nband, nproj, nsite
     else
         error("Sorry, this feature has not been implemented")
