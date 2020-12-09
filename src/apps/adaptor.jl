@@ -81,7 +81,11 @@ function from_projcar(f::AbstractString)
                 curr_spin = parse(I64, arr[4])
                 @assert curr_kpt === kpt
                 @assert curr_spin === spin
-                @show arr, curr_kpt, curr_spin
+
+                readline(fin)
+                readline(fin)
+                for band in 1:nband
+                end
                 exit(-1)
             end
         end
