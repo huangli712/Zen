@@ -87,6 +87,11 @@ function from_projcar(f::AbstractString)
 
                 for band in 1:nband
                     arr = parse.(F64, split(readline(fin), " ", keepempty = false))
+                    for proj in 1:nproj
+                        cmplx = arr[2*proj] + arr[2*proj+1]im
+                        chipsi[proj,band,kpt,spin] = cmplx
+                        @show chipsi[proj,band,kpt,spin], 2*proj, 2*proj+1
+                    end
                     @show arr
                 end
 
