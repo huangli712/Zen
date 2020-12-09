@@ -62,7 +62,7 @@ only the directory that contains PROJCAR
 """
 function from_projcar(f::AbstractString)
     # get key parameters from the LOCPROJ file
-    nspin, nkpt, nband, nproj, nsite = from_locproj(f, true)
+    nspin, nkpt, nband, nproj, nsite, projview = from_locproj(f, true)
 
     # open the iostream
     fin = open(f * "/PROJCAR", "r")
@@ -87,7 +87,7 @@ function from_projcar(f::AbstractString)
 
                 for band in 1:nband
                     arr = parse.(F64, split(readline(fin), " ", keepempty = false))
-                    for proj in 1:nproj
+                    for proj in 1:projview[site]
                         cmplx = arr[2*proj] + arr[2*proj+1]im
                         chipsi[proj,band,kpt,spin] = cmplx
                         @show chipsi[proj,band,kpt,spin], 2*proj, 2*proj+1, nproj
