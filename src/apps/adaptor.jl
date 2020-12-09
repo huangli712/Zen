@@ -90,12 +90,10 @@ function from_projcar(f::AbstractString)
                     for proj in 1:projview[site]
                         cmplx = arr[2*proj] + arr[2*proj+1]im
                         chipsi[proj,band,kpt,spin] = cmplx
-                        @show chipsi[proj,band,kpt,spin], 2*proj, 2*proj+1, nproj
                     end
-                    @show arr
                 end
 
-                exit(-1)
+                readline(fin)
             end
         end
     end
@@ -127,6 +125,7 @@ function from_locproj(f::AbstractString, read_param_only::Bool)
         for site in 1:nsite
             projview[site] = length(findall(x -> x===usites[site], sites))
         end
+        @assert nproj === sum(projview)
         return nspin, nkpt, nband, nproj, nsite, projview
     else
         error("Sorry, this feature has not been implemented")
