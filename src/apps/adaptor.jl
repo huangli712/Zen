@@ -76,8 +76,12 @@ function from_projcar(f::AbstractString)
         readline(fin)
         for spin in 1:nspin
             for kpt in 1:nkpt
-                a = split(readline(fin), " ", keepempty = false)
-                @show a
+                arr = split(readline(fin), " ", keepempty = false)
+                curr_kpt = parse(I64, arr[2])
+                curr_spin = parse(I64, arr[4])
+                @assert curr_kpt === kpt
+                @assert curr_spin === spin
+                @show arr, curr_kpt, curr_spin
                 exit(-1)
             end
         end
