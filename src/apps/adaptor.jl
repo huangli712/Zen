@@ -138,9 +138,13 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool)
     @assert nproj === sum(projview)
  
     if read_param_only
-        @show nspin, nkpt, nband, nproj, nsite, projview
         return nspin, nkpt, nband, nproj, nsite, projview
     else
+
+        # create arrays
+        chipsi = zeros(C64, nproj, nband, nkpt, nspin)
+
+        
         error("Sorry, this feature has not been implemented")
     end
 
