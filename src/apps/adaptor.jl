@@ -153,9 +153,12 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool)
                     curr_spin = parse(I64, arr[2])
                     curr_kpt = parse(I64, arr[3])
                     curr_band = parse(I64, arr[4])
-                    @show arr
-                    @show curr_spin, curr_kpt, curr_band
-                    exit(-1)
+
+                    # check consistency
+                    @assert curr_spin === spin
+                    @assert curr_kpt === kpt
+                    @assert curr_band === band
+
                     # skip one empty line
                     readline(fin)
                 end
