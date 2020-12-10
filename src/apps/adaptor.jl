@@ -23,14 +23,17 @@ function vaspio_poscar(f::AbstractString)
     # get the symbol list
     symbols = split(readline(fin), " ", keepempty = false)
 
+    # get the number of sorts of atoms
+    nsorts = length(symbols)
+
     # get the number list 
     numbers = parse.(I64, split(readline(fin), " ", keepempty = false))
 
     # get the total number of atoms
-    total_atoms = sum(numbers)
+    natoms = sum(numbers)
 
-    # create atom lists
-    atom_list = zeros(I64, total_atoms)
+    # create atom list, whose value is related to the sorts of atoms
+    atom_list = zeros(I64, natoms)
     curr_index = 0
     k = 0
     for i in 1:length(numbers)
@@ -42,9 +45,9 @@ function vaspio_poscar(f::AbstractString)
     end
 
     # get the coordinates of atoms
-    posi_list = zeros(F64, total_atoms, 3)
+    posi_list = zeros(F64, natoms, 3)
     readline(fin)
-    for i in 1:total_atoms
+    for i in 1:natoms
         posi_list[i,:] = parse.(F64, split(readline(fin), " ", keepempty = false)[1:3])
     end
 
