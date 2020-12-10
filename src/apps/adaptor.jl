@@ -161,7 +161,9 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool)
 
                     for site in 1:nsite
                         for proj in 1:projview[site]
-                            readline(fin)
+                            _re, _im = tuple(parse.(F64, split(readline(fin), " ", keepempty = false)[2:3])...)
+                            @show _re, _im
+                            exit(-1)
                         end
                     end
 
