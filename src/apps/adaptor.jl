@@ -30,7 +30,7 @@ function vaspio_poscar(f::AbstractString)
     bvec[3,:] = parse.(F64, line_to_array(fin))
 
     # get the symbol list
-    symbols = split(readline(fin), " ", keepempty = false)
+    symbols = line_to_array(fin)
 
     # get the number of sorts of atoms
     nsorts = length(symbols)
