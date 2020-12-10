@@ -1,4 +1,9 @@
-@incline function line_to_array(io::IOStream)
+"""
+    line_to_array(io::IOStream)
+
+Convert a line (reading from an iostream) to a string array
+"""
+@inline function line_to_array(io::IOStream)
     split(readline(io), " ", keepempty = false)
 end
 
@@ -58,6 +63,7 @@ function vaspio_poscar(f::AbstractString)
     # close the iostream
     close(fin)
 
+    @show symbols
     return symbols, atom_list, posi_list
 end
 
