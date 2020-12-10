@@ -36,7 +36,7 @@ function vaspio_poscar(f::AbstractString)
     nsorts = length(symbols)
 
     # get the number list 
-    numbers = parse.(I64, split(readline(fin), " ", keepempty = false))
+    numbers = parse.(I64, line_to_array(fin))
 
     # get the total number of atoms
     natoms = sum(numbers)
@@ -57,14 +57,14 @@ function vaspio_poscar(f::AbstractString)
     posi_list = zeros(F64, natoms, 3)
     readline(fin)
     for i in 1:natoms
-        posi_list[i,:] = parse.(F64, split(readline(fin), " ", keepempty = false)[1:3])
+        posi_list[i,:] = parse.(F64, line_to_array(fin)[1:3])
     end
 
     # close the iostream
     close(fin)
 
-    @show symbols
-    return symbols, atom_list, posi_list
+    @show nsorts, natoms, symbols, atom_list, posi_list
+    return nsorts, natoms, symbols, atom_list, posi_list
 end
 
 """
