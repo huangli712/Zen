@@ -25,7 +25,7 @@ function vaspio_poscar(f::AbstractString)
 
     # get the basis vector
     bvec = zeros(F64, 3, 3)
-    bvec[1,:] = parse.(F64, split(readline(fin), " ", keepempty = false))
+    bvec[1,:] = parse.(F64, line_to_array(fin))
     bvec[2,:] = parse.(F64, split(readline(fin), " ", keepempty = false))
     bvec[3,:] = parse.(F64, split(readline(fin), " ", keepempty = false))
 
