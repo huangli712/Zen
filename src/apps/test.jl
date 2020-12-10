@@ -12,4 +12,5 @@ using .Zen
 #vaspio_poscar(pwd() * "/dft")
 #vaspio_eigenval(pwd() * "/dft")
 #vaspio_locproj(pwd() * "/dft", true)
-vaspio_projcar(pwd() * "/dft")
+#vaspio_projcar(pwd() * "/dft")
+vaspio_locproj(pwd() * "/dft", false)

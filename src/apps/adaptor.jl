@@ -140,12 +140,27 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool)
     if read_param_only
         return nspin, nkpt, nband, nproj, nsite, projview
     else
-
         # create arrays
         chipsi = zeros(C64, nproj, nband, nkpt, nspin)
 
-        
-        error("Sorry, this feature has not been implemented")
+        # read in raw projector data
+        readline(fin)
+        for spin in 1:nspin
+            for kpt in 1:nkpt
+                for band in 1:nband
+                    # extract index information
+                    arr = split(readline(fin), " ", keepempty = false)
+                    curr_spin = parse(I64, arr[2])
+                    curr_kpt = parse(I64, arr[3])
+                    curr_band = parse(I64, arr[4])
+                    @show arr
+                    @show curr_spin, curr_kpt, curr_band
+                    exit(-1)
+                    # skip one empty line
+                    readline(fin)
+                end
+            end
+        end
     end
 
     # close the iostream
