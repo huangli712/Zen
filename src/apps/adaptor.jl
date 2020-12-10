@@ -1,10 +1,10 @@
 """
-    from_poscar(f::AbstractString)
+    vaspio_poscar(f::AbstractString)
 
 Reading vasp's POSCAR file, return crystallography information. Here `f`
 means only the directory that contains POSCAR 
 """
-function from_poscar(f::AbstractString)
+function vaspio_poscar(f::AbstractString)
     # open the iostream
     fin = open(f * "/POSCAR", "r")
 
@@ -55,14 +55,14 @@ function from_poscar(f::AbstractString)
 end
 
 """
-    from_projcar(f::AbstractString)
+    vaspio_projcar(f::AbstractString)
 
 Reading vasp's PROJCAR file, return raw projector matrix. Here `f` means
 only the directory that contains PROJCAR
 """
-function from_projcar(f::AbstractString)
+function vaspio_projcar(f::AbstractString)
     # get key parameters from the LOCPROJ file
-    nspin, nkpt, nband, nproj, nsite, projview = from_locproj(f, true)
+    nspin, nkpt, nband, nproj, nsite, projview = vaspio_locproj(f, true)
 
     # open the iostream
     fin = open(f * "/PROJCAR", "r")
@@ -106,12 +106,12 @@ function from_projcar(f::AbstractString)
 end
 
 """
-    from_locproj(f::AbstractString, read_param_only::Bool)
+    vaspio_locproj(f::AbstractString, read_param_only::Bool)
 
 Reading vasp's LOCPROJ file, return raw projector matrix. Here `f` means
 only the directory that contains LOCPROJ
 """
-function from_locproj(f::AbstractString, read_param_only::Bool)
+function vaspio_locproj(f::AbstractString, read_param_only::Bool)
     # open the iostream
     fin = open(f * "/LOCPROJ", "r")
     
@@ -139,12 +139,12 @@ function from_locproj(f::AbstractString, read_param_only::Bool)
 end
 
 """
-    from_ibzkpt(f::AbstractString)
+    vaspio_ibzkpt(f::AbstractString)
 
 Reading vasp's IBZKPT file, return k-mesh and k-weight. Here `f` means
 only the directory that contains IBZKPT
 """
-function from_ibzkpt(f::AbstractString)
+function vaspio_ibzkpt(f::AbstractString)
     # open the iostream
     fin = open(f * "/IBZKPT", "r")
 
@@ -179,12 +179,12 @@ function from_ibzkpt(f::AbstractString)
 end
 
 """
-    from_eigenval(f::AbstractString)
+    vaspio_eigenval(f::AbstractString)
 
 Reading vasp's EIGENVAL file, return energy band information. Here `f`
 means only the directory that contains EIGENVAL
 """
-function from_eigenval(f::AbstractString)
+function vaspio_eigenval(f::AbstractString)
     # open the iostream
     fin = open(f * "/EIGENVAL", "r")
 
@@ -229,8 +229,5 @@ function from_eigenval(f::AbstractString)
     return enk, occupy
 end
 
-function from_chgcar(f::AbstractString)
-end
-
-function to_chgcar()
+function vaspio_chgcar(f::AbstractString)
 end
