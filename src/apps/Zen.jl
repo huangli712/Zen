@@ -53,12 +53,11 @@ export dft_run
 export dft_save
 
 include("adaptor.jl")
-export from_poscar
-export from_ibzkpt
-export from_projcar
-export from_locproj
-export from_eigenval
-export from_chgcar
-export to_chgcar
+export vaspio_poscar
+export vaspio_ibzkpt
+export vaspio_projcar
+export vaspio_locproj
+export vaspio_eigenval
+export vaspio_chgcar
 
 end
