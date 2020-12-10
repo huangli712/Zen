@@ -133,6 +133,8 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool)
     for site in 1:nsite
         projview[site] = length(findall(x -> x===usites[site], sites))
     end
+
+    # additional check, make sure nproj is equal to the sum of projview
     @assert nproj === sum(projview)
  
     if read_param_only
