@@ -131,6 +131,7 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool)
         @assert nproj === sum(projview)
         return nspin, nkpt, nband, nproj, nsite, projview
     else
+
         error("Sorry, this feature has not been implemented")
     end
 
