@@ -1,3 +1,7 @@
+@incline function line_to_array(io::IOStream)
+    split(readline(io), " ", keepempty = false)
+end
+
 """
     vaspio_poscar(f::AbstractString)
 
