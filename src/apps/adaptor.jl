@@ -159,11 +159,13 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool)
                     @assert curr_kpt === kpt
                     @assert curr_band === band
 
+                    # parse the data
+                    cproj = 0
                     for site in 1:nsite
                         for proj in 1:projview[site]
                             _re, _im = tuple(parse.(F64, split(readline(fin), " ", keepempty = false)[2:3])...)
-                            @show _re, _im
-                            exit(-1)
+                            cproj = cproj + 1
+                            chipsi[cproj,band,kpt,spin] = _re + _im * im
                         end
                     end
 
