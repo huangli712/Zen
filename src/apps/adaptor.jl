@@ -63,7 +63,6 @@ function vaspio_poscar(f::AbstractString)
     # close the iostream
     close(fin)
 
-    @show nsorts, natoms, symbols, atom_list, posi_list
     return nsorts, natoms, symbols, atom_list, posi_list
 end
 
