@@ -159,6 +159,10 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool)
                     @assert curr_kpt === kpt
                     @assert curr_band === band
 
+                    for proj in 1:nproj
+                        readline(fin)
+                    end
+
                     # skip one empty line
                     readline(fin)
                 end
