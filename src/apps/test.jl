@@ -3,13 +3,13 @@
 include("Zen.jl")
 using .Zen
 
-#kmesh, weight = from_ibzkpt(pwd() * "/dft")
+#kmesh, weight = vaspio_ibzkpt(pwd() * "/dft")
 #
 #for i in eachindex(weight)
 #    println(i, " ", kmesh[i,:], " ", weight[i])
 #end
 
-#from_poscar(pwd() * "/dft")
-#from_eigenval(pwd() * "/dft")
-#from_locproj(pwd() * "/dft", true)
-from_projcar(pwd() * "/dft")
+#vaspio_poscar(pwd() * "/dft")
+#vaspio_eigenval(pwd() * "/dft")
+#vaspio_locproj(pwd() * "/dft", true)
+vaspio_projcar(pwd() * "/dft")
