@@ -4,7 +4,6 @@ include("Zen.jl")
 using .Zen
 
 #kmesh, weight = vaspio_ibzkpt(pwd() * "/dft")
-#
 #for i in eachindex(weight)
 #    println(i, " ", kmesh[i,:], " ", weight[i])
 #end
@@ -13,9 +12,9 @@ using .Zen
 #@show nsorts, natoms, symbols, atom_list, posi_list
 
 #vaspio_eigenval(pwd() * "/dft")
-#vaspio_locproj(pwd() * "/dft", true)
-chipsi = vaspio_projcar(pwd() * "/dft")
-@show chipsi[:,19,1724,1]
 
-chipsi = vaspio_locproj(pwd() * "/dft")
-@show chipsi[:,19,1724,1]
+#chipsi = vaspio_projcar(pwd() * "/dft")
+#@show chipsi[:,19,1724,1]
+
+#chipsi = vaspio_locproj(pwd() * "/dft")
+#@show chipsi[:,19,1724,1]
