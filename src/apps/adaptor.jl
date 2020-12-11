@@ -139,16 +139,20 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
     # extract number of spins (nspin), number of k-points (nkpt),
     # number of bands (nband), and number of projectors (nproj)
     nspin, nkpt, nband, nproj = tuple(parse.(I64, line_to_array(fin)[1:4])...)
-    @show nspin, nkpt, nband, nproj
-    exit(-1)
 
     # find out how many sites are there (nsite)
     sites = zeros(I64, nproj)
+    projs = Array{String}(undef, nproj)
     for i in 1:nproj
-        sites[i] = parse(I64, split(readline(fin), " ", keepempty = false)[2])
+        arr = line_to_array(fin)
+        sites[i] = parse(I64, arr[2])
+        projs[i] = replace(arr[end], ":" => "")
+        @show arr, sites[i], projs[i]
     end
+    exit(-1)
     usites = union(sites)
     nsite = length(usites)
+    @show usites, nsite
 
     # find out how many projectors are there for a given site
     projview = zeros(I64, nsite)
