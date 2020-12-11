@@ -259,7 +259,10 @@ function vaspio_ibzkpt(f::AbstractString, tetra::Bool = false)
 
         # parse the input tetrahedra information
         for t in 1:ntet
+            itet[t,:] = parse.(I64, line_to_array(fin))
+            @show t, itet[t,:]
         end
+        exit(-1)
     end
  
     # close the iostream
