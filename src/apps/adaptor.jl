@@ -260,16 +260,18 @@ function vaspio_ibzkpt(f::AbstractString, tetra::Bool = false)
         # parse the input tetrahedra information
         for t in 1:ntet
             itet[t,:] = parse.(I64, line_to_array(fin))
-            @show t, itet[t,:]
         end
-        exit(-1)
     end
  
     # close the iostream
     close(fin)
 
     # return the desired arrays
-    return kmesh, weight
+    if tetra
+        return kmesh, weight, ntet, volt, itet 
+    else
+        return kmesh, weight
+    end
 end
 
 """
