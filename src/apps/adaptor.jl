@@ -156,6 +156,7 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
     for i in 1:nproj
         arr = line_to_array(fin)
         sites[i] = parse(I64, arr[2])
+        # get rid of the ":" char
         projs[i] = replace(arr[end], ":" => "")
     end
     usites = union(sites)
@@ -227,11 +228,12 @@ function vaspio_ibzkpt(f::AbstractString)
     # open the iostream
     fin = open(f * "/IBZKPT", "r")
 
-    # get number of k-points
+    # extract number of k-points
     readline(fin)
-    str = readline(fin)
-    nkpt = parse(I64, str)
+    nkpt = parse(I64, readline(fin))
     readline(fin)
+    @show nkpt
+    exit(-1)
 
     # create arrays 
     kmesh = zeros(F64, nkpt, 3)
