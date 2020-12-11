@@ -304,17 +304,18 @@ function vaspio_eigenval(f::AbstractString)
         readline(fin)
         readline(fin)
         for j in 1:nband
-            line = split(readline(fin), " ", keepempty = false)
+            arr = line_to_array(fin)
+            # for spin unpolarized case
             if nspin === 1
-                enk[i,j,1] = parse(F64, line[2])
-                occupy[i,j,1] = parse(F64, line[3])
-            else # nspin == 2
-                enk[i,j,1] = parse(F64, line[2])
-                enk[i,j,2] = parse(F64, line[3])
-                occupy[i,j,1] = parse(F64, line[4])
-                occupy[i,j,2] = parse(F64, line[5])
+                enk[i,j,1] = parse(F64, arr[2])
+                occupy[i,j,1] = parse(F64, arr[3])
+            # for spin polarized case
+            else
+                enk[i,j,1] = parse(F64, arr[2])
+                enk[i,j,2] = parse(F64, arr[3])
+                occupy[i,j,1] = parse(F64, arr[4])
+                occupy[i,j,2] = parse(F64, arr[5])
             end
-            @show i, j, enk[i,j,:], occupy[i,j,:]
         end
     end
 
