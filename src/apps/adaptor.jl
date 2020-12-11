@@ -326,5 +326,23 @@ function vaspio_eigenval(f::AbstractString)
     return enk, occupy
 end
 
+"""
+    vaspio_chgcar(f::AbstractString)
+"""
 function vaspio_chgcar(f::AbstractString)
+end
+
+function irio_lattice()
+end
+
+function irio_kmesh()
+end
+
+function irio_tetra()
+end
+
+function irio_projs()
+end
+
+function irio_eigen()
 end

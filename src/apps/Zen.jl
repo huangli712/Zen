@@ -59,5 +59,10 @@ export vaspio_projcar
 export vaspio_locproj
 export vaspio_eigenval
 export vaspio_chgcar
+export irio_lattice
+export irio_kmesh
+export irio_tetra
+export irio_projs
+export irio_eigen
 
 end
