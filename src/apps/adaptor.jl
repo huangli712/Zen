@@ -147,12 +147,11 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
         arr = line_to_array(fin)
         sites[i] = parse(I64, arr[2])
         projs[i] = replace(arr[end], ":" => "")
-        @show arr, sites[i], projs[i]
     end
-    exit(-1)
     usites = union(sites)
     nsite = length(usites)
     @show usites, nsite
+    exit(-1)
 
     # find out how many projectors are there for a given site
     projview = zeros(I64, nsite)
