@@ -238,16 +238,11 @@ function vaspio_ibzkpt(f::AbstractString)
     weight = zeros(F64, nkpt) 
 
     # read in the k-points and their weights
-    i = 0
-    for line in eachline(fin)
-        i = i + 1
-        subarr = parse.(F64, line_to_array(fin))
-        kmesh[i,1:3] = subarr[1:3]
-        weight[i] = subarr[4]
+    for i in 1:nkpt
+        arr = parse.(F64, line_to_array(fin))
+        kmesh[i,1:3] = arr[1:3]
+        weight[i] = arr[4]
     end
-
-    # make sure the number of k-points is correct
-    @assert( i === nkpt )
 
     # close the iostream
     close(fin)
