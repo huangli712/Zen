@@ -293,7 +293,7 @@ function vaspio_eigenval(f::AbstractString)
     end
 
     # read in some key parameters: nelect, nkpt, nbands 
-    nelect, nkpt, nband = tuple(parse.(I64, split(readline(fin), " ", keepempty = false))...)
+    nelect, nkpt, nband = parse.(I64, line_to_array(fin))
 
     # create arrays
     enk = zeros(F64, nkpt, nband, nspin)
