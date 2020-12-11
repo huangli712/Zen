@@ -219,12 +219,12 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
 end
 
 """
-    vaspio_ibzkpt(f::AbstractString)
+    vaspio_ibzkpt(f::AbstractString, tetra::Bool = false)
 
 Reading vasp's IBZKPT file, return k-mesh and k-weight. Here `f` means
 only the directory that contains IBZKPT
 """
-function vaspio_ibzkpt(f::AbstractString)
+function vaspio_ibzkpt(f::AbstractString, tetra::Bool = false)
     # open the iostream
     fin = open(f * "/IBZKPT", "r")
 
@@ -244,6 +244,19 @@ function vaspio_ibzkpt(f::AbstractString)
         weight[i] = arr[4]
     end
 
+    # read in the tetrahedron information
+    if tetra
+        # skip one empty line
+        readline(fin)
+
+        # extract total number of tetrahedra
+        arr = line_to_array(fin)
+        ntet = parse(I64, arr[1]) 
+        volt = parse(F64, arr[2])
+        @show ntet, volt
+        exit(-1)
+    end
+ 
     # close the iostream
     close(fin)
 

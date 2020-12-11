@@ -3,7 +3,7 @@
 include("Zen.jl")
 using .Zen
 
-kmesh, weight = vaspio_ibzkpt(pwd() * "/dft")
+kmesh, weight = vaspio_ibzkpt(pwd() * "/dft", true)
 for i in eachindex(weight)
     println(i, " ", kmesh[i,:], " ", weight[i])
 end
