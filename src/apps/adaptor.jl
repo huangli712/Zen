@@ -132,13 +132,13 @@ end
 Reading vasp's LOCPROJ file, return raw projector matrix. Here `f` means
 only the directory that contains LOCPROJ
 """
-function vaspio_locproj(f::AbstractString, read_param_only::Bool)
+function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
     # open the iostream
     fin = open(f * "/LOCPROJ", "r")
 
     # extract number of spins (nspin), number of k-points (nkpt),
     # number of bands (nband), and number of projectors (nproj)
-    arr = split(readline(fin), " ", keepempty = false)
+    arr = line_to_array(fin)
     nspin, nkpt, nband, nproj = tuple(map(x -> parse(I64,x), arr[1:4])...)
 
     # find out how many sites are there (nsite)
