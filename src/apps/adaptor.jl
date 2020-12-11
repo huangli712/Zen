@@ -232,8 +232,6 @@ function vaspio_ibzkpt(f::AbstractString)
     readline(fin)
     nkpt = parse(I64, readline(fin))
     readline(fin)
-    @show nkpt
-    exit(-1)
 
     # create arrays 
     kmesh = zeros(F64, nkpt, 3)
@@ -242,9 +240,8 @@ function vaspio_ibzkpt(f::AbstractString)
     # read in the k-points and their weights
     i = 0
     for line in eachline(fin)
-        substr = split(line, " ", keepempty = false)
-        subarr = map(x -> parse(F64, x),  substr) 
         i = i + 1
+        subarr = parse.(F64, line_to_array(fin))
         kmesh[i,1:3] = subarr[1:3]
         weight[i] = subarr[4]
     end
