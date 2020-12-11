@@ -285,7 +285,7 @@ function vaspio_eigenval(f::AbstractString)
     fin = open(f * "/EIGENVAL", "r")
 
     # determine number of spins
-    nspin = parse(I64, split(readline(fin), " ", keepempty = false)[end])
+    nspin = parse(I64, line_to_array(fin)[end])
 
     # skip for lines
     for i in 1:4

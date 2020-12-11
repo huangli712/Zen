@@ -15,7 +15,7 @@ using .Zen
 #nsorts, natoms, symbols, atom_list, posi_list = vaspio_poscar(pwd() * "/dft")
 #@show nsorts, natoms, symbols, atom_list, posi_list
 
-#vaspio_eigenval(pwd() * "/dft")
+vaspio_eigenval(pwd() * "/dft")
 
 #chipsi = vaspio_projcar(pwd() * "/dft")
 #@show chipsi[:,19,1724,1]
