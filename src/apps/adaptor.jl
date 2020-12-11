@@ -138,7 +138,7 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
 
     # extract number of spins (nspin), number of k-points (nkpt),
     # number of bands (nband), and number of projectors (nproj)
-    nspin, nkpt, nband, nproj = tuple(parse.(I64, line_to_array(fin)[1:4])...)
+    nspin, nkpt, nband, nproj = parse.(I64, line_to_array(fin)[1:4])
 
     # find out how many sites are there (nsite)
     # projs contains the specifications of the projectors
@@ -162,6 +162,7 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
     @assert nproj === sum(groups)
  
     if read_param_only
+        # return only parameters
         return nspin, nkpt, nband, nproj, nsite, sites, projs, groups
     else
         # create arrays
@@ -172,24 +173,24 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
         for spin in 1:nspin
             for kpt in 1:nkpt
                 for band in 1:nband
-                    # extract index information
-                    arr = split(readline(fin), " ", keepempty = false)
-                    curr_spin = parse(I64, arr[2])
-                    curr_kpt = parse(I64, arr[3])
-                    curr_band = parse(I64, arr[4])
+                    # extract some indices information
+                    arr = line_to_array(fin)
+                    _spin = parse(I64, arr[2])
+                    _kpt = parse(I64, arr[3])
+                    _band = parse(I64, arr[4])
 
-                    # check consistency
-                    @assert curr_spin === spin
-                    @assert curr_kpt === kpt
-                    @assert curr_band === band
+                    # check consistency of parameters
+                    @assert _spin === spin
+                    @assert _kpt === kpt
+                    @assert _band === band
 
-                    # parse the data
-                    cproj = 0
+                    # parse the input data
+                    _proj = 0
                     for site in 1:nsite
-                        for proj in 1:projview[site]
-                            _re, _im = tuple(parse.(F64, split(readline(fin), " ", keepempty = false)[2:3])...)
-                            cproj = cproj + 1
-                            chipsi[cproj,band,kpt,spin] = _re + _im * im
+                        for proj in 1:groups[site]
+                            _proj = _proj + 1
+                            _re, _im = parse.(F64, line_to_array(fin)[2:3])
+                            chipsi[_proj,band,kpt,spin] = _re + _im * im
                         end
                     end
 
@@ -202,6 +203,9 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
 
     # close the iostream
     close(fin)
+
+    # return the desired arrays
+    return chipsi
 end
 
 """
