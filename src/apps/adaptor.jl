@@ -332,6 +332,12 @@ end
 function vaspio_chgcar(f::AbstractString)
 end
 
+function ortho()
+end
+
+function density_matrix()
+end
+
 function irio_lattice()
 end
 
