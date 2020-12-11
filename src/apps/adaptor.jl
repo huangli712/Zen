@@ -83,7 +83,7 @@ only the directory that contains PROJCAR
 """
 function vaspio_projcar(f::AbstractString)
     # get key parameters from the LOCPROJ file
-    nspin, nkpt, nband, nproj, nsite, projview = vaspio_locproj(f, true)
+    nspin, nkpt, nband, nproj, nsite, sites, projs, groups = vaspio_locproj(f, true)
 
     # open the iostream
     fin = open(f * "/PROJCAR", "r")
@@ -93,27 +93,36 @@ function vaspio_projcar(f::AbstractString)
 
     # read in raw projector data
     for site in 1:nsite
+        # extract site information
+        _site = parse(I64, line_to_array(fin)[2])
+        @assert _site === site
+
+        # skip one empty line
         readline(fin)
-        readline(fin)
+
         for spin in 1:nspin
             for kpt in 1:nkpt
-                arr = split(readline(fin), " ", keepempty = false)
-                curr_kpt = parse(I64, arr[2])
-                curr_spin = parse(I64, arr[4])
-                @assert curr_kpt === kpt
-                @assert curr_spin === spin
+                # extract k-point and spin information
+                arr = line_to_array(fin)
+                _kpt = parse(I64, arr[2])
+                _spin = parse(I64, arr[4])
+                @assert _kpt === kpt
+                @assert _spin === spin
 
+                # skip two empty lines
                 readline(fin)
                 readline(fin)
 
+                # parse the input data
                 for band in 1:nband
-                    arr = parse.(F64, split(readline(fin), " ", keepempty = false))
-                    for proj in 1:projview[site]
+                    arr = parse.(F64, line_to_array(fin))
+                    for proj in 1:groups[site]
                         cmplx = arr[2*proj] + arr[2*proj+1]im
                         chipsi[proj,band,kpt,spin] = cmplx
                     end
                 end
 
+                # skip one empty line
                 readline(fin)
             end
         end
