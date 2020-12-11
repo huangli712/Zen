@@ -16,4 +16,5 @@ using .Zen
 #vaspio_locproj(pwd() * "/dft", true)
 #vaspio_projcar(pwd() * "/dft")
 
-vaspio_locproj(pwd() * "/dft")
+#chipsi = vaspio_locproj(pwd() * "/dft")
+#@show chipsi[:,24,1728,2]
