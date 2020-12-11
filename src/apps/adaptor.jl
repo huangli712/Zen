@@ -249,12 +249,17 @@ function vaspio_ibzkpt(f::AbstractString, tetra::Bool = false)
         # skip one empty line
         readline(fin)
 
-        # extract total number of tetrahedra
+        # extract total number of tetrahedra and volume of a tetrahedron 
         arr = line_to_array(fin)
         ntet = parse(I64, arr[1]) 
         volt = parse(F64, arr[2])
-        @show ntet, volt
-        exit(-1)
+ 
+        # create arrays
+        itet = zeros(I64, ntet, 5)
+
+        # parse the input tetrahedra information
+        for t in 1:ntet
+        end
     end
  
     # close the iostream
