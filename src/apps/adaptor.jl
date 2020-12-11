@@ -141,6 +141,7 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
     nspin, nkpt, nband, nproj = tuple(parse.(I64, line_to_array(fin)[1:4])...)
 
     # find out how many sites are there (nsite)
+    # projs contains the specifications of the projectors
     sites = zeros(I64, nproj)
     projs = Array{String}(undef, nproj)
     for i in 1:nproj
@@ -150,20 +151,18 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
     end
     usites = union(sites)
     nsite = length(usites)
-    @show usites, nsite
-    exit(-1)
 
     # find out how many projectors are there for a given site
-    projview = zeros(I64, nsite)
+    groups = zeros(I64, nsite)
     for site in 1:nsite
-        projview[site] = length(findall(x -> x===usites[site], sites))
+        groups[site] = length(findall(x -> x===usites[site], sites))
     end
 
-    # additional check, make sure nproj is equal to the sum of projview
-    @assert nproj === sum(projview)
+    # additional check, make sure nproj is equal to the sum of groups
+    @assert nproj === sum(groups)
  
     if read_param_only
-        return nspin, nkpt, nband, nproj, nsite, projview
+        return nspin, nkpt, nband, nproj, nsite, sites, projs, groups
     else
         # create arrays
         chipsi = zeros(C64, nproj, nband, nkpt, nspin)
