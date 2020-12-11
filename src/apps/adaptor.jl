@@ -138,8 +138,7 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
 
     # extract number of spins (nspin), number of k-points (nkpt),
     # number of bands (nband), and number of projectors (nproj)
-    arr = line_to_array(fin)
-    nspin, nkpt, nband, nproj = tuple(parse.(I64, arr[1:4])...)
+    nspin, nkpt, nband, nproj = tuple(parse.(I64, line_to_array(fin)[1:4])...)
     @show nspin, nkpt, nband, nproj
     exit(-1)
 
