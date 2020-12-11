@@ -8,6 +8,15 @@ Convert a line (reading from an iostream) to a string array
 end
 
 """
+    line_to_array(str::AbstractString)
+
+Convert a string (AbstractString) to a string array
+"""
+@inline function line_to_array(str::AbstractString)
+    split(str, " ", keepempty = false)
+end
+
+"""
     vaspio_poscar(f::AbstractString)
 
 Reading vasp's POSCAR file, return crystallography information. Here `f`
