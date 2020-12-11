@@ -15,7 +15,7 @@ using .Zen
 #vaspio_eigenval(pwd() * "/dft")
 #vaspio_locproj(pwd() * "/dft", true)
 chipsi = vaspio_projcar(pwd() * "/dft")
-@show chipsi[:,24,1728,2]
+@show chipsi[:,19,1724,1]
 
 chipsi = vaspio_locproj(pwd() * "/dft")
-@show chipsi[:,24,1728,2]
+@show chipsi[:,19,1724,1]
