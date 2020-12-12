@@ -352,6 +352,7 @@ end
 Write the k-mesh information using the IR format 
 """
 function irio_kmesh(f::AbstractString, kmesh::Array{F64,2}, weight::Array{F64,1})
+    
     open(f * "/kmesh.ir", "w") do fout
     end
 end
@@ -386,7 +387,10 @@ end
 Write the eigenvalues using the IR format
 """
 function irio_eigen(f::AbstractString, enk::Array{F64,3}, occupy::Array{F64,3})
+    # extract some key parameters
     nkpt, nband, nspin = size(enk)
+
+    # output the data
     open(f * "/eigen.ir", "w") do fout
         println(fout, "nkpt : $nkpt ")
         println(fout, "nband: $nband")
