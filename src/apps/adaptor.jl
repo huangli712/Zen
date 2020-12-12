@@ -359,7 +359,11 @@ end
 
 Write the tetrahedra information using the IR format
 """
-function irio_tetra(ntet::I64, volt::F64, itet::Array{I64,ntet,5})
+function irio_tetra(f::AbstractString, ntet::I64, volt::F64, itet::Array{I64,ntet,5})
+    open(f * "tetra.ir", "w") do fout
+        println(fout, ntet)
+        println(fout, volt)
+    end
 end
 
 """
