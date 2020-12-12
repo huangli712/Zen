@@ -383,7 +383,9 @@ end
 
 Write the eigenvalues using the IR format
 """
-function irio_eigen(f::AbstractString, enk::Array(F64,), occupy::Array(F64,))
+function irio_eigen(f::AbstractString, enk::Array(F64,3), occupy::Array(F64,3))
+    nkpt, nband, nspin = size(enk)
     open(f * "/eigen.ir", "w") do fout
+        println(fout, "")
     end
 end
