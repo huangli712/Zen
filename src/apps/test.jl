@@ -25,4 +25,4 @@ using .Zen
 #@show chipsi[:,19,1724,1]
 
 kmesh, weight, ntet, volt, itet = vaspio_ibzkpt(pwd() * "/dft", true)
-irio_tetra(pwd(), ntet, volt)
+irio_tetra(pwd(), ntet, volt, itet)
