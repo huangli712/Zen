@@ -352,8 +352,14 @@ end
 Write the k-mesh information using the IR format 
 """
 function irio_kmesh(f::AbstractString, kmesh::Array{F64,2}, weight::Array{F64,1})
-    
+    # extract some key parameters
+    nkpt, ndir = size(kmesh)
+
+    # output the data
     open(f * "/kmesh.ir", "w") do fout
+        for k in 1:nkpt
+            println(fout, kmesh[k,:], weight[k])
+        end
     end
 end
 
