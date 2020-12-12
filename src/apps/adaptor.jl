@@ -383,5 +383,7 @@ end
 
 Write the eigenvalues using the IR format
 """
-function irio_eigen()
+function irio_eigen(f::AbstractString)
+    open(f * "/eigen.ir", "w") do fout
+    end
 end
