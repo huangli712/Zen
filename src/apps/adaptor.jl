@@ -338,6 +338,11 @@ end
 function density_matrix()
 end
 
+"""
+    irio_lattice()
+
+Write the lattice information using the IR format
+"""
 function irio_lattice()
 end
 
@@ -357,8 +362,18 @@ Write the tetrahedra information using the IR format
 function irio_tetra()
 end
 
+"""
+    irio_projs()
+
+Write the projectors using the IR format
+"""
 function irio_projs()
 end
 
+"""
+    irio_eigen()
+
+Write the eigenvalues using the IR format
+"""
 function irio_eigen()
 end
