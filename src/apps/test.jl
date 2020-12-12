@@ -23,3 +23,6 @@ using .Zen
 
 #chipsi = vaspio_locproj(pwd() * "/dft")
 #@show chipsi[:,19,1724,1]
+
+kmesh, weight, ntet, volt, itet = vaspio_ibzkpt(pwd() * "/dft", true)
+irio_tetra(ntet, volt)
