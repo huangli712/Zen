@@ -355,7 +355,7 @@ function irio_kmesh()
 end
 
 """
-    irio_tetra()
+    irio_tetra(f::AbstractString, ntet::I64, volt::F64, itet::Array{I64,2})
 
 Write the tetrahedra information using the IR format
 """
