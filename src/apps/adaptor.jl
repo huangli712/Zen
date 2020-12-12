@@ -379,7 +379,7 @@ function irio_projs()
 end
 
 """
-    irio_eigen()
+    irio_eigen(f::AbstractString, enk::Array{F64,3}, occupy::Array{F64,3})
 
 Write the eigenvalues using the IR format
 """
