@@ -341,9 +341,19 @@ end
 function irio_lattice()
 end
 
+"""
+    irio_kmesh()
+
+Write the k-mesh information using the IR format 
+"""
 function irio_kmesh()
 end
 
+"""
+    irio_tetra()
+
+Write the tetrahedra information using the IR format
+"""
 function irio_tetra()
 end
 
