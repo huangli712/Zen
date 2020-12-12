@@ -1,0 +1,12 @@
+System   = FeSe 
+PREF     = Accurate 
+EDIFF    = 1E-8 
+ALGO     = Normal 
+LASPH    = .TRUE. 
+ISMEAR   = 2 
+KSPACING = 0.2 
+ISYM     = 2 
+ISPIN    = 1 
+LSORBIT  = .FALSE. 
+LOCPROJ  = 1 : d : Pr 
+LOCPROJ  = 2 : d : Pr 

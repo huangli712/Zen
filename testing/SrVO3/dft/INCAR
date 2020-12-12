@@ -1,0 +1,14 @@
+System   = SrVO3 
+PREF     = Accurate 
+EDIFF    = 1E-8 
+ALGO     = Normal 
+LASPH    = .TRUE. 
+ISMEAR   = 2 
+KSPACING = 0.2 
+ISYM     = 2 
+ISPIN    = 1 
+LSORBIT  = .FALSE. 
+LORBIT   = 14 
+EMIN     = 6.0 
+EMAX     = 9.0 
+LOCPROJ  = 2 : d : Pr 
