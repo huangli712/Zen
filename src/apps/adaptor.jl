@@ -389,5 +389,12 @@ function irio_eigen(f::AbstractString, enk::Array{F64,3}, occupy::Array{F64,3})
         println(fout, "nkpt : $nkpt ")
         println(fout, "nband: $nband")
         println(fout, "nspin: $nspin")
+        for s in 1:nspin
+            for b in 1:nband
+                for k in 1:nkpt
+                    println(fout, enk[k,b,s], occupy[k,b,s])
+                end
+            end
+        end
     end
 end
