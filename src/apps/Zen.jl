@@ -1,5 +1,13 @@
 module Zen
 
+#
+# using standard library
+#
+# additional remarks:
+#
+# the TOML package is included in the standard library since v1.6
+# so, please upgrade your julia environment if it is outdated 
+#
 using Printf
 using TOML
 
