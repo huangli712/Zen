@@ -34,9 +34,9 @@ function vaspio_poscar(f::AbstractString)
 
     # get the basis vector
     bvec = zeros(F64, 3, 3)
-    bvec[1,:] = parse.(F64, line_to_array(fin))
-    bvec[2,:] = parse.(F64, line_to_array(fin))
-    bvec[3,:] = parse.(F64, line_to_array(fin))
+    bvec[1, :] = parse.(F64, line_to_array(fin))
+    bvec[2, :] = parse.(F64, line_to_array(fin))
+    bvec[3, :] = parse.(F64, line_to_array(fin))
 
     # get the symbol list
     symbols = line_to_array(fin)
@@ -54,9 +54,9 @@ function vaspio_poscar(f::AbstractString)
     atom_list = zeros(I64, natoms)
     curr_index = 0
     k = 0
-    for i in 1:length(numbers)
+    for i = 1:length(numbers)
         curr_index = curr_index + 1
-        for j in 1:numbers[i]
+        for j = 1:numbers[i]
             k = k + 1
             atom_list[k] = curr_index
         end
@@ -65,8 +65,8 @@ function vaspio_poscar(f::AbstractString)
     # get the coordinates of atoms
     posi_list = zeros(F64, natoms, 3)
     readline(fin)
-    for i in 1:natoms
-        posi_list[i,:] = parse.(F64, line_to_array(fin)[1:3])
+    for i = 1:natoms
+        posi_list[i, :] = parse.(F64, line_to_array(fin)[1:3])
     end
 
     # close the iostream
@@ -92,7 +92,7 @@ function vaspio_projcar(f::AbstractString)
     chipsi = zeros(C64, nproj, nband, nkpt, nspin)
 
     # read in raw projector data
-    for site in 1:nsite
+    for site = 1:nsite
         # extract site information
         _site = parse(I64, line_to_array(fin)[2])
         @assert _site === site
@@ -100,8 +100,8 @@ function vaspio_projcar(f::AbstractString)
         # skip one empty line
         readline(fin)
 
-        for spin in 1:nspin
-            for kpt in 1:nkpt
+        for spin = 1:nspin
+            for kpt = 1:nkpt
                 # extract k-point and spin information
                 arr = line_to_array(fin)
                 _kpt = parse(I64, arr[2])
@@ -114,11 +114,11 @@ function vaspio_projcar(f::AbstractString)
                 readline(fin)
 
                 # parse the input data
-                for band in 1:nband
+                for band = 1:nband
                     arr = parse.(F64, line_to_array(fin))
-                    for proj in 1:groups[site]
+                    for proj = 1:groups[site]
                         cmplx = arr[2*proj] + arr[2*proj+1]im
-                        chipsi[proj,band,kpt,spin] = cmplx
+                        chipsi[proj, band, kpt, spin] = cmplx
                     end
                 end
 
@@ -127,7 +127,7 @@ function vaspio_projcar(f::AbstractString)
             end
         end
     end
-    
+
     # close the iostream
     close(fin)
 
@@ -153,7 +153,7 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
     # projs contains the specifications of the projectors
     sites = zeros(I64, nproj)
     projs = Array{String}(undef, nproj)
-    for i in 1:nproj
+    for i = 1:nproj
         arr = line_to_array(fin)
         sites[i] = parse(I64, arr[2])
         # get rid of the ":" char
@@ -164,13 +164,13 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
 
     # find out how many projectors are there for a given site
     groups = zeros(I64, nsite)
-    for site in 1:nsite
-        groups[site] = length(findall(x -> x===usites[site], sites))
+    for site = 1:nsite
+        groups[site] = length(findall(x -> x === usites[site], sites))
     end
 
     # additional check, make sure nproj is equal to the sum of groups
     @assert nproj === sum(groups)
- 
+
     if read_param_only
         # return only parameters
         return nspin, nkpt, nband, nproj, nsite, sites, projs, groups
@@ -180,9 +180,9 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
 
         # read in raw projector data
         readline(fin)
-        for spin in 1:nspin
-            for kpt in 1:nkpt
-                for band in 1:nband
+        for spin = 1:nspin
+            for kpt = 1:nkpt
+                for band = 1:nband
                     # extract some indices information
                     arr = line_to_array(fin)
                     _spin = parse(I64, arr[2])
@@ -196,11 +196,11 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
 
                     # parse the input data
                     _proj = 0
-                    for site in 1:nsite
-                        for proj in 1:groups[site]
+                    for site = 1:nsite
+                        for proj = 1:groups[site]
                             _proj = _proj + 1
                             _re, _im = parse.(F64, line_to_array(fin)[2:3])
-                            chipsi[_proj,band,kpt,spin] = _re + _im * im
+                            chipsi[_proj, band, kpt, spin] = _re + _im * im
                         end
                     end
 
@@ -235,12 +235,12 @@ function vaspio_ibzkpt(f::AbstractString, tetra::Bool = false)
 
     # create arrays 
     kmesh = zeros(F64, nkpt, 3)
-    weight = zeros(F64, nkpt) 
+    weight = zeros(F64, nkpt)
 
     # read in the k-points and their weights
-    for i in 1:nkpt
+    for i = 1:nkpt
         arr = parse.(F64, line_to_array(fin))
-        kmesh[i,1:3] = arr[1:3]
+        kmesh[i, 1:3] = arr[1:3]
         weight[i] = arr[4]
     end
 
@@ -251,24 +251,24 @@ function vaspio_ibzkpt(f::AbstractString, tetra::Bool = false)
 
         # extract total number of tetrahedra and volume of a tetrahedron 
         arr = line_to_array(fin)
-        ntet = parse(I64, arr[1]) 
+        ntet = parse(I64, arr[1])
         volt = parse(F64, arr[2])
- 
+
         # create arrays
         itet = zeros(I64, ntet, 5)
 
         # parse the input tetrahedra information
-        for t in 1:ntet
-            itet[t,:] = parse.(I64, line_to_array(fin))
+        for t = 1:ntet
+            itet[t, :] = parse.(I64, line_to_array(fin))
         end
     end
- 
+
     # close the iostream
     close(fin)
 
     # return the desired arrays
     if tetra
-        return kmesh, weight, ntet, volt, itet 
+        return kmesh, weight, ntet, volt, itet
     else
         return kmesh, weight
     end
@@ -288,7 +288,7 @@ function vaspio_eigenval(f::AbstractString)
     nspin = parse(I64, line_to_array(fin)[end])
 
     # skip for lines
-    for i in 1:4
+    for i = 1:4
         readline(fin)
     end
 
@@ -300,21 +300,21 @@ function vaspio_eigenval(f::AbstractString)
     occupy = zeros(F64, nkpt, nband, nspin)
 
     # read in the energy bands and the corresponding occupations
-    for i in 1:nkpt
+    for i = 1:nkpt
         readline(fin)
         readline(fin)
-        for j in 1:nband
+        for j = 1:nband
             arr = line_to_array(fin)
             # for spin unpolarized case
             if nspin === 1
-                enk[i,j,1] = parse(F64, arr[2])
-                occupy[i,j,1] = parse(F64, arr[3])
-            # for spin polarized case
+                enk[i, j, 1] = parse(F64, arr[2])
+                occupy[i, j, 1] = parse(F64, arr[3])
+                # for spin polarized case
             else
-                enk[i,j,1] = parse(F64, arr[2])
-                enk[i,j,2] = parse(F64, arr[3])
-                occupy[i,j,1] = parse(F64, arr[4])
-                occupy[i,j,2] = parse(F64, arr[5])
+                enk[i, j, 1] = parse(F64, arr[2])
+                enk[i, j, 2] = parse(F64, arr[3])
+                occupy[i, j, 1] = parse(F64, arr[4])
+                occupy[i, j, 2] = parse(F64, arr[5])
             end
         end
     end
@@ -329,22 +329,18 @@ end
 """
     vaspio_chgcar(f::AbstractString)
 """
-function vaspio_chgcar(f::AbstractString)
-end
+function vaspio_chgcar(f::AbstractString) end
 
-function ortho()
-end
+function ortho() end
 
-function density_matrix()
-end
+function density_matrix() end
 
 """
     irio_lattice()
 
 Write the lattice information using the IR format
 """
-function irio_lattice()
-end
+function irio_lattice() end
 
 """
     irio_kmesh()
@@ -357,8 +353,8 @@ function irio_kmesh(f::AbstractString, kmesh::Array{F64,2}, weight::Array{F64,1}
 
     # output the data
     open(f * "/kmesh.ir", "w") do fout
-        for k in 1:nkpt
-            println(fout, kmesh[k,:], weight[k])
+        for k = 1:nkpt
+            println(fout, kmesh[k, :], weight[k])
         end
     end
 end
@@ -370,11 +366,11 @@ Write the tetrahedra information using the IR format
 """
 function irio_tetra(f::AbstractString, ntet::I64, volt::F64, itet::Array{I64,2})
     open(f * "/tetra.ir", "w") do fout
-        @assert (ntet,5) === size(itet)
+        @assert (ntet, 5) === size(itet)
         println(fout, "ntet: $ntet")
         println(fout, "volt: $volt")
-        for t in 1:ntet
-            println(fout, itet[t,:])
+        for t = 1:ntet
+            println(fout, itet[t, :])
         end
     end
 end
@@ -384,8 +380,7 @@ end
 
 Write the projectors using the IR format
 """
-function irio_projs()
-end
+function irio_projs() end
 
 """
     irio_eigen(f::AbstractString, enk::Array{F64,3}, occupy::Array{F64,3})
@@ -401,10 +396,10 @@ function irio_eigen(f::AbstractString, enk::Array{F64,3}, occupy::Array{F64,3})
         println(fout, "nkpt : $nkpt ")
         println(fout, "nband: $nband")
         println(fout, "nspin: $nspin")
-        for s in 1:nspin
-            for b in 1:nband
-                for k in 1:nkpt
-                    println(fout, enk[k,b,s], " ", occupy[k,b,s])
+        for s = 1:nspin
+            for b = 1:nband
+                for k = 1:nkpt
+                    println(fout, enk[k, b, s], " ", occupy[k, b, s])
                 end
             end
         end
