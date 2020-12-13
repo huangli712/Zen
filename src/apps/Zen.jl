@@ -45,6 +45,7 @@ export welcome
 export goodbye
 export sorry
 export message
+export line_to_array
 
 include("base.jl")
 export make_trees
