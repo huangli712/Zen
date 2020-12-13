@@ -1,5 +1,6 @@
 module Zen
 
+using Printf
 using TOML
 
 include("const.jl")
