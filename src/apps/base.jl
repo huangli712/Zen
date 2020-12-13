@@ -44,67 +44,67 @@ function make_incar()
 
     # standard part
     case = _c("case")
-    write(ios,"System   = $case \n")
-    write(ios,"PREF     = Accurate \n")
-    write(ios,"EDIFF    = 1E-8 \n")
-    write(ios,"ALGO     = Normal \n")
-    write(ios,"LASPH    = .TRUE. \n")
+    write(ios, "System   = $case \n")
+    write(ios, "PREF     = Accurate \n")
+    write(ios, "EDIFF    = 1E-8 \n")
+    write(ios, "ALGO     = Normal \n")
+    write(ios, "LASPH    = .TRUE. \n")
 
     # customize your INCAR according to the case.toml
     #
     # for smearing
     smear = _d("smear")
     if smear === "m-p"
-        write(ios,"ISMEAR   = 2 \n")
+        write(ios, "ISMEAR   = 2 \n")
     elseif smear === "gauss"
-        write(ios,"ISMEAR   = 0 \n")
+        write(ios, "ISMEAR   = 0 \n")
     elseif smear === "tetra"
-        write(ios,"ISMEAR   = -5 \n")
+        write(ios, "ISMEAR   = -5 \n")
     else
-        write(ios,"ISMEAR   = 1 \n")
+        write(ios, "ISMEAR   = 1 \n")
     end
 
     # for k-mesh density
     kmesh = _d("kmesh")
     if kmesh === "accurate"
-        write(ios,"KSPACING = 0.1 \n")
+        write(ios, "KSPACING = 0.1 \n")
     elseif kmesh === "medium"
-        write(ios,"KSPACING = 0.2 \n")
+        write(ios, "KSPACING = 0.2 \n")
     elseif kmesh === "coarse"
-        write(ios,"KSPACING = 0.4 \n")
+        write(ios, "KSPACING = 0.4 \n")
     else # very coarse 
-        write(ios,"KSPACING = 0.5 \n")
+        write(ios, "KSPACING = 0.5 \n")
     end
 
     # for magnetic moment
     magmom = _d("magmom")
     if !isa(magmom, Missing)
-        write(ios,"MAGMOM   = $magmom \n")
+        write(ios, "MAGMOM   = $magmom \n")
     end
 
     # for symmetry
     lsymm = _d("lsymm")
     if lsymm
-        write(ios,"ISYM     = 2 \n")
+        write(ios, "ISYM     = 2 \n")
     else
-        write(ios,"ISYM     = 0 \n")
+        write(ios, "ISYM     = 0 \n")
     end
 
     # for spin polarizations
     # if spin-orbit coupling is on, then spins must be polarized
     lspins = _d("lspins")
     if lspins
-        write(ios,"ISPIN    = 2 \n")
+        write(ios, "ISPIN    = 2 \n")
     else
-        write(ios,"ISPIN    = 1 \n")
+        write(ios, "ISPIN    = 1 \n")
     end
 
     # for spin-orbit coupling
     lspinorb = _d("lspinorb")
     if lspinorb
-        write(ios,"LSORBIT  = .TRUE. \n")
+        write(ios, "LSORBIT  = .TRUE. \n")
     else
-        write(ios,"LSORBIT  = .FALSE. \n")
+        write(ios, "LSORBIT  = .FALSE. \n")
     end
 
     # for optimized projectors
@@ -112,11 +112,11 @@ function make_incar()
     loptim = _d("loptim")
     if !isa(window, Missing) && !isa(loptim, Missing)
         if loptim
-            write(ios,"LORBIT   = 14 \n")
+            write(ios, "LORBIT   = 14 \n")
             emin = window[1]
-            write(ios,"EMIN     = $emin \n")
+            write(ios, "EMIN     = $emin \n")
             emax = window[2]
-            write(ios,"EMAX     = $emax \n")
+            write(ios, "EMAX     = $emax \n")
         end
     end
 
@@ -126,7 +126,7 @@ function make_incar()
     sproj = _d("sproj")
     if !isa(lproj, Missing) && !isa(nproj, Missing) && !isa(sproj, Missing)
         if lproj
-            for p in 1:nproj
+            for p = 1:nproj
                 str = sproj[p]
                 write(ios, "LOCPROJ  = $str \n")
             end
@@ -148,10 +148,10 @@ function dft_init(it::IterInfo)
     # copy essential input files
     if it.dft_dmft_iter == 0
         if _d("engine") === "vasp"
-           cp("../POTCAR", pwd() * "/POTCAR")
-           cp("../POSCAR", pwd() * "/POSCAR")
+            cp("../POTCAR", pwd() * "/POTCAR")
+            cp("../POSCAR", pwd() * "/POSCAR")
         else
-           sorry()
+            sorry()
         end
     end
 
@@ -171,7 +171,7 @@ function dft_init(it::IterInfo)
                 error("Please make sure the existence of following files: INCAR, POSCAR, and POTCAR")
             end
         else
-           sorry()
+            sorry()
         end
     end
 
@@ -186,7 +186,7 @@ Execute the desired dft engine parallelly or sequentially
 """
 function dft_run(it::IterInfo)
     dft_home = query_dft()
-    mpi_prefix = parse_toml("MPI.toml", "dft", false) 
+    mpi_prefix = parse_toml("MPI.toml", "dft", false)
 
     cd("dft")
 

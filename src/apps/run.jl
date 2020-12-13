@@ -49,7 +49,7 @@ if _m("mode") === 1
     message("zen", "dft -> save")
     message("zen", "e_n_d < dft block >")
     dft_save(it)
-    for iter in 1:_m("niter")
+    for iter = 1:_m("niter")
         message("zen", "dft_dmft_iter -> 0  dmft1_iter -> $iter dmft2_iter -> 0")
     end
 

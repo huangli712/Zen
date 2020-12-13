@@ -17,9 +17,9 @@ Check whether the configuration file (case.toml) is provided
 function query_args()
     nargs = length(ARGS)
     if nargs < 1
-       error("Please specify the configuration file at least")
+        error("Please specify the configuration file at least")
     else
-       ARGS[1]
+        ARGS[1]
     end
 end
 
@@ -162,13 +162,25 @@ Print out the welcome messages to the screen
 """
 function welcome()
     printstyled("                                   |\n", color = :green)
-    printstyled("========== ========== ===     ===  | A Modern DFT + DMFT Computation Framework\n", color = :green)
+    printstyled(
+        "========== ========== ===     ===  | A Modern DFT + DMFT Computation Framework\n",
+        color = :green,
+    )
     printstyled("        // ||         || n     ||  |\n", color = :green)
     printstyled("       //  ||         ||  n    ||  |\n", color = :green)
     printstyled("  //zz//   ||eeeeeeee ||   n   ||  |\n", color = :green)
-    printstyled(" //        ||         ||    n  ||  | Version: $__version__\n", color = :green)
-    printstyled("//         ||         ||     n ||  | Release: $__release__\n", color = :green)
-    printstyled("========== ========== ===     ===  | Powered by the julia programming language\n", color = :green)
+    printstyled(
+        " //        ||         ||    n  ||  | Version: $__version__\n",
+        color = :green,
+    )
+    printstyled(
+        "//         ||         ||     n ||  | Release: $__release__\n",
+        color = :green,
+    )
+    printstyled(
+        "========== ========== ===     ===  | Powered by the julia programming language\n",
+        color = :green,
+    )
     printstyled("                                   |\n", color = :green)
     println()
 end
@@ -178,7 +190,7 @@ end
 
 Print the goodbye messages to the screen
 """
-function goodbye() 
+function goodbye()
     println("See you later")
 end
 
@@ -187,10 +199,10 @@ function sorry()
 end
 
 function message(from::String, msg::String)
-    printstyled("["*from*"]: ", color = :green)
+    printstyled("[" * from * "]: ", color = :green)
     println(msg)
 end
 
 function message(from::String)
-    message(from,"")
+    message(from, "")
 end
