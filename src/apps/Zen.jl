@@ -104,6 +104,11 @@ export vaspio_locproj
 export vaspio_eigenval
 export vaspio_chgcar
 
+#
+# ir.jl
+#
+# adaptor for the intermediate representation format
+#
 include("ir.jl")
 export irio_lattice
 export irio_kmesh
