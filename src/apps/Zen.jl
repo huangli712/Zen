@@ -53,13 +53,15 @@ export dft_init
 export dft_run
 export dft_save
 
-include("adaptor.jl")
+include("vasp.jl")
 export vaspio_poscar
 export vaspio_ibzkpt
 export vaspio_projcar
 export vaspio_locproj
 export vaspio_eigenval
 export vaspio_chgcar
+
+include("ir.jl")
 export irio_lattice
 export irio_kmesh
 export irio_tetra
