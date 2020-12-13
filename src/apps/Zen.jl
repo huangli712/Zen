@@ -11,6 +11,11 @@ module Zen
 using Printf
 using TOML
 
+#
+# const.jl
+#
+# define some global numerical or string constants
+#
 include("const.jl")
 export I32, I64
 export F32, F64
@@ -20,6 +25,12 @@ export __version__
 export __release__
 export __authors__
 
+#
+# types.jl
+#
+# define some dictionaries which contain the configuration parameters
+# and some data structures
+#
 include("types.jl")
 export PCASE
 export PDFT
@@ -28,6 +39,11 @@ export PIMP
 export PSOLVER
 export IterInfo
 
+#
+# config.jl
+#
+# to extract the configurations from external files or dictionaries 
+#
 include("config.jl")
 export parse_toml
 export renew_config
@@ -38,6 +54,12 @@ export _m
 export _i
 export _s
 
+#
+# util.jl
+#
+# to provide some useful utility functions. they can be used tp query
+# the environments, print the configurations, and parse the strings, etc. 
+#
 include("util.jl")
 export require
 export query_args
@@ -55,6 +77,12 @@ export sorry
 export message
 export line_to_array
 
+#
+# base.jl
+#
+# to provide the core functions to control the dft engine, dmft engine,
+# and impurity solver
+#
 include("base.jl")
 export make_trees
 export make_incar
@@ -62,6 +90,12 @@ export dft_init
 export dft_run
 export dft_save
 
+#
+# vasp.jl
+#
+# adaptor for the vasp software package. it provide a lot of functions
+# to deal with the vasp-related files
+#
 include("vasp.jl")
 export vaspio_poscar
 export vaspio_ibzkpt
