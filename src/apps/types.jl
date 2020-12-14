@@ -76,7 +76,7 @@ PIMP  = Dict{String,Any}(
             "nsite"    => [missing, 1, I64   , "number of impurity sites"],
             "atoms"    => [missing, 1, Array , "chemical symbols of impurity atoms"],
             "equiv"    => [missing, 1, Array , "equivalency of quantum impurity atoms"],
-            "shell"    => [missing, 1, Array , "angular momentum of correlated orbitals"],
+            "shell"    => [missing, 1, Array , "angular momenta of correlated orbitals"],
             "ising"    => [missing, 1, Array , "interaction types of correlated orbitals"],
             "occup"    => [missing, 1, Array , "nominal impurity occupancy"],
             "upara"    => [missing, 1, Array , "Coulomb interaction parameter"],
@@ -91,7 +91,7 @@ Dictionary for configuration parameters: quantum impurity solvers
 """
 PSOLVER= Dict{String,Any}(
              "engine"  => [missing, 1, String, "name of quantum impurity solver"],
-             "params"  => [missing, 1, Array , "parameters set of quantum impurity solver"],
+             "params"  => [missing, 1, Array , "parameter sets of quantum impurity solver"],
          )
 
 """
