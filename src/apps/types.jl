@@ -34,12 +34,12 @@ Dictionary for configuration parameters: density functional theory calculations
 """
 PDFT  = Dict{String,Any}(
             "engine"   => [missing, 1, String, "engine for density functional theory calculations"],
-            "smear"    => [missing, 1, String, "scheme for smearing"],
-            "kmesh"    => [missing, 1, String, "density of k-mesh sampling in the brillouin zone"],
+            "smear"    => [missing, 0, String, "scheme for smearing"],
+            "kmesh"    => [missing, 0, String, "density of k-mesh sampling in the brillouin zone"],
             "magmom"   => [missing, 0, String, "initial magnetic moment"],
-            "lsymm"    => [missing, 1, Bool  , "whether the symmetry is considered"],
-            "lspins"   => [missing, 1, Bool  , "whether the spin orientations are polarized"],
-            "lspinorb" => [missing, 1, Bool  , "whether the spin-orbit coupling is considered"],
+            "lsymm"    => [missing, 0, Bool  , "whether the symmetry is considered"],
+            "lspins"   => [missing, 0, Bool  , "whether the spin orientations are polarized"],
+            "lspinorb" => [missing, 0, Bool  , "whether the spin-orbit coupling is considered"],
             "window"   => [missing, 0, Array , "energy window for generating optimal projectors"],
             "loptim"   => [missing, 0, Bool  , "try to optimize the generated projectors"],
             "lproj"    => [missing, 1, Bool  , "try to generate projectors"],
