@@ -8,6 +8,16 @@
 # last modified: 2020/12/14
 #
 
+#
+# remarks:
+#
+# the value of dictionary is a array, which has four elements 
+#     [1] -> actually value
+#     [2] -> 1: it is mandatory; 0: it is optional
+#     [3] -> numerical type
+#     [4] -> explanations
+#
+
 """
     PCASE
 
