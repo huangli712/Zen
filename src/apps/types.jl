@@ -100,10 +100,10 @@ PSOLVER= Dict{String,Any}(
 Record the runtime information
 """
 mutable struct IterInfo
-    total_iter::I64
-    dmft1_iter::I64
-    dmft2_iter::I64
-    dft_dmft_iter::I64
+    total_iter :: I64
+    dmft1_iter :: I64
+    dmft2_iter :: I64
+    dft_dmft_iter :: I64
 end
 
 """
