@@ -1,13 +1,11 @@
 #
-# project :
-# program :
-# source  :
-# type    :
-# author  :
-# history :
-# purpose :
-# status  :
+# project : pansy
+# source  : Zen.jl
+# author  : Li Huang (lihuang.dmft@gmail.com)
+# status  : unstable
 # comment :
+#
+# last modified: 2020/12/14
 #
 
 module Zen
