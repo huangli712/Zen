@@ -1,6 +1,6 @@
 #
 # project : pansy
-# source  : Zen.jl
+# source  : config.jl
 # author  : Li Huang (lihuang.dmft@gmail.com)
 # status  : unstable
 # comment :
@@ -106,11 +106,12 @@ Validate the correctness and consistency of configurations
 function check_config()
     # check case block
     for key in keys(PCASE)
-        if isa(PCASE[key][1], Missing) && PCASE[key][2] > 0
+        val = PCASE[key]
+        if isa(val[1], Missing) && val[2] > 0
             error("Sorry, $key shoule be set")
         end
 
-        if !isa(PCASE[key][1], Missing) && !isa(PCASE[key][1], PCASE[key][3])
+        if !isa(val[1], Missing) && !isa(val[1], val[3])
             error("Sorry, type of $key is wrong")
         end
     end
