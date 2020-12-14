@@ -69,10 +69,10 @@ PIMP  = Dict{String,Any}(
 
 Dictionary for configuration parameters: quantum impurity solvers
 """
-PSOLVER = Dict{String,Any}(
-    "engine" => [missing, 1, String, "name of quantum impurity solver"],
-    "params" => [missing, 1, Array, "parameters set of quantum impurity solver"],
-)
+PSOLVER= Dict{String,Any}(
+             "engine"  => [missing, 1, String, "name of quantum impurity solver"],
+             "params"  => [missing, 1, Array , "parameters set of quantum impurity solver"],
+         )
 
 """
     IterInfo
