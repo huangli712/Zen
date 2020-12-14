@@ -118,44 +118,48 @@ function check_config()
 
     # check dft block
     for key in keys(PDFT)
-        if isa(PDFT[key][1], Missing) && PDFT[key][2] > 0
+        val = PDFT[key]
+        if isa(val[1], Missing) && val[2] > 0
             error("Sorry, $key shoule be set")
         end
 
-        if !isa(PDFT[key][1], Missing) && !isa(PDFT[key][1], PDFT[key][3])
+        if !isa(val[1], Missing) && !isa(val[1], val[3])
             error("Sorry, type of $key is wrong")
         end
     end
 
     # check dmft block
     for key in keys(PDMFT)
-        if isa(PDMFT[key][1], Missing) && PDMFT[key][2] > 0
+        val = PDMFT[key]
+        if isa(val[1], Missing) && val[2] > 0
             error("Sorry, $key shoule be set")
         end
 
-        if !isa(PDMFT[key][1], Missing) && !isa(PDMFT[key][1], PDMFT[key][3])
+        if !isa(val[1], Missing) && !isa(val[1], val[3])
             error("Sorry, type of $key is wrong")
         end
     end
 
     # check impurity block
     for key in keys(PIMP)
-        if isa(PIMP[key][1], Missing) && PIMP[key][2] > 0
+        val = PIMP[key]
+        if isa(val[1], Missing) && val[2] > 0
             error("Sorry, $key shoule be set")
         end
 
-        if !isa(PIMP[key][1], Missing) && !isa(PIMP[key][1], PIMP[key][3])
+        if !isa(val[1], Missing) && !isa(val[1], val[3])
             error("Sorry, type of $key is wrong")
         end
     end
 
     # check solver block
     for key in keys(PSOLVER)
-        if isa(PSOLVER[key][1], Missing) && PSOLVER[key][2] > 0
+        val = PSOLVER[key]
+        if isa(val[1], Missing) && val[2] > 0
             error("Sorry, $key shoule be set")
         end
 
-        if !isa(PSOLVER[key][1], Missing) && !isa(PSOLVER[key][1], PSOLVER[key][3])
+        if !isa(val[1], Missing) && !isa(val[1], val[3])
             error("Sorry, type of $key is wrong")
         end
     end
