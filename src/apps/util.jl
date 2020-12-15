@@ -208,7 +208,7 @@ end
 """
     message(from::String, msg::String)
 
-Print an standard message to the screen
+Print an standard zen message to the screen
 """
 function message(from::String, msg::String)
     printstyled("[" * from * "]: ", color = :green)
@@ -218,7 +218,7 @@ end
 """
     message(from::String)
 
-Print an standard message to the screen
+Print an standard zen message to the screen
 """
 function message(from::String)
     message(from, "")
