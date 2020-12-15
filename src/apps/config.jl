@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/14
+# last modified: 2020/12/15
 #
 
 """
@@ -107,13 +107,7 @@ function check_config()
     # check case block
     for key in keys(PCASE)
         val = PCASE[key]
-        if isa(val[1], Missing) && val[2] > 0
-            error("Sorry, $key shoule be set")
-        end
-
-        if !isa(val[1], Missing) && !isa(val[1], val[3])
-            error("Sorry, type of $key is wrong")
-        end
+        _verify(val)
     end
 
     # check dft block
@@ -162,6 +156,16 @@ function check_config()
         if !isa(val[1], Missing) && !isa(val[1], val[3])
             error("Sorry, type of $key is wrong")
         end
+    end
+end
+
+function _verify(val::Array{Any,1})
+    if isa(val[1], Missing) && val[2] > 0
+        error("Sorry, $key shoule be set")
+    end
+
+    if !isa(val[1], Missing) && !isa(val[1], val[3])
+        error("Sorry, type of $key is wrong")
     end
 end
 
