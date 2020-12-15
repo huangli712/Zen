@@ -39,6 +39,8 @@ end
 Check whether the essential input files exist
 """
 function query_cars()
+    # if the dft engine is vasp, we have to ensure that the required input
+    # files (POSCAR and POTCAR) are present
     if _d("engine") === "vasp"
         if !isfile("POSCAR") || !isfile("POTCAR")
             error("Please provide both POSCAR and POTCAR files")
@@ -54,6 +56,7 @@ end
 Query the home directory for zen
 """
 function query_zen()
+    # we have to setup environment variable ZEN_HOME
     if haskey(ENV, "ZEN_HOME")
         ENV["ZEN_HOME"]
     else
@@ -67,6 +70,7 @@ end
 Query the home directory of the dft engine
 """
 function query_dft()
+    # we have to setup environment variable VASP_HOME
     if _d("engine") === "vasp"
         if haskey(ENV, "VASP_HOME")
             ENV["VASP_HOME"]

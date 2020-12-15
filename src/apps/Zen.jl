@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/14
+# last modified: 2020/12/15
 #
 
 module Zen
@@ -61,6 +61,7 @@ include("config.jl")
 export parse_toml
 export renew_config
 export check_config
+export _v
 export _c
 export _d
 export _m
