@@ -176,25 +176,13 @@ Print out the welcome messages to the screen
 """
 function welcome()
     printstyled("                                   |\n", color = :green)
-    printstyled(
-        "========== ========== ===     ===  | A Modern DFT + DMFT Computation Framework\n",
-        color = :green,
-    )
+    printstyled("========== ========== ===     ===  | A Modern DFT + DMFT Computation Framework\n", color = :green)
     printstyled("        // ||         || n     ||  |\n", color = :green)
     printstyled("       //  ||         ||  n    ||  |\n", color = :green)
     printstyled("  //zz//   ||eeeeeeee ||   n   ||  |\n", color = :green)
-    printstyled(
-        " //        ||         ||    n  ||  | Version: $__version__\n",
-        color = :green,
-    )
-    printstyled(
-        "//         ||         ||     n ||  | Release: $__release__\n",
-        color = :green,
-    )
-    printstyled(
-        "========== ========== ===     ===  | Powered by the julia programming language\n",
-        color = :green,
-    )
+    printstyled(" //        ||         ||    n  ||  | Version: $__version__\n", color = :green)
+    printstyled("//         ||         ||     n ||  | Release: $__release__\n", color = :green)
+    printstyled("========== ========== ===     ===  | Powered by the julia programming language\n", color = :green)
     printstyled("                                   |\n", color = :green)
     println()
 end
