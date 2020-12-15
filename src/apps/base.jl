@@ -47,9 +47,10 @@ end
 """
     make_incar()
 
-Generate an INCAR for vasp, which is suitable for an initial self-consistent run
+Generate an INCAR file. it will be used only when the dft engine is vasp
 """
 function make_incar()
+    # open the iostream
     ios = open("INCAR", "w")
 
     # standard part
@@ -71,7 +72,7 @@ function make_incar()
     elseif smear === "tetra"
         write(ios, "ISMEAR   = -5 \n")
     else
-        write(ios, "ISMEAR   = 1 \n")
+        write(ios, "ISMEAR   = 2 \n")
     end
 
     # for k-mesh density
