@@ -9,13 +9,13 @@
 #
 
 """
-    @switch
+    @cswitch
 
 Provides C-like switch statement with the "falling through" behavior. this
 implements is borrowed from the following website:
     https://github.com/Gnimuc/CSyntax.jl
 """
-macro switch(constexpr, body)
+macro cswitch(constexpr, body)
     case2label = Dict{Any,Symbol}()
     flow = Expr(:block)
     end_label = gensym("end")
