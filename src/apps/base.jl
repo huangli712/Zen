@@ -176,8 +176,8 @@ function dft_init(it::IterInfo)
     # copy essential input files
     if it.dft_dmft_iter == 0
         if _d("engine") === "vasp"
-            cp("../POTCAR", pwd() * "/POTCAR")
-            cp("../POSCAR", pwd() * "/POSCAR")
+            cp("../POTCAR", joinpath(pwd(), "POTCAR"))
+            cp("../POSCAR", joinpath(pwd(), "POSCAR"))
         else
             sorry()
         end
