@@ -75,22 +75,12 @@ function make_incar()
             break
 
         @case "tetra"
-            write(ios, "ISMEAR   = -5 \n")
+            write(ios, "ISMEAR   =-5 \n")
             break
 
         @default
             write(ios, "ISMEAR   = 2 \n")
             break
-    end
-    exit(-1)
-    if smear === "m-p"
-        write(ios, "ISMEAR   = 2 \n")
-    elseif smear === "gauss"
-        write(ios, "ISMEAR   = 0 \n")
-    elseif smear === "tetra"
-        write(ios, "ISMEAR   = -5 \n")
-    else
-        write(ios, "ISMEAR   = 2 \n")
     end
 
     # for k-mesh density
