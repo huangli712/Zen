@@ -118,7 +118,7 @@ function make_incar()
     end
 
     # for spin polarizations
-    # if spin-orbit coupling is on, then spins must be polarized
+    # if spin-orbit coupling is on, spin orientations must be polarized
     lspins = _d("lspins")
     if lspins
         write(ios, "ISPIN    = 2 \n")
@@ -160,6 +160,7 @@ function make_incar()
         end
     end
 
+    # close the iostream
     close(ios)
 end
 
