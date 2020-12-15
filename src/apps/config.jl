@@ -135,7 +135,7 @@ function check_config()
     end
 end
 
-function _verify(val::Array{Any,1})
+@inline function _verify(val::Array{Any,1})
     if isa(val[1], Missing) && val[2] > 0
         error("Sorry, $key shoule be set")
     end
