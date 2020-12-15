@@ -85,14 +85,22 @@ function make_incar()
 
     # for k-mesh density
     kmesh = _d("kmesh")
-    if kmesh === "accurate"
-        write(ios, "KSPACING = 0.1 \n")
-    elseif kmesh === "medium"
-        write(ios, "KSPACING = 0.2 \n")
-    elseif kmesh === "coarse"
-        write(ios, "KSPACING = 0.4 \n")
-    else # very coarse 
-        write(ios, "KSPACING = 0.5 \n")
+    @cswitch kmesh begin
+        @case "accurate"
+            write(ios, "KSPACING = 0.1 \n")
+            break
+
+        @case "medium"
+            write(ios, "KSPACING = 0.2 \n")
+            break
+
+        @case "coarse"
+            write(ios, "KSPACING = 0.4 \n")
+            break
+
+        @default # very coarse 
+            write(ios, "KSPACING = 0.5 \n")
+            break
     end
 
     # for magnetic moment
