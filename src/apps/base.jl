@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/15
+# last modified: 2020/12/16
 #
 
 """
@@ -65,6 +65,14 @@ function make_incar()
     #
     # for smearing
     smear = _d("smear")
+
+    @cswitch smear begin
+        @case "m-p"
+            println("fancy")
+            break
+    end
+    exit(-1)
+
     if smear === "m-p"
         write(ios, "ISMEAR   = 2 \n")
     elseif smear === "gauss"
