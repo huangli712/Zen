@@ -65,14 +65,24 @@ function make_incar()
     #
     # for smearing
     smear = _d("smear")
-
     @cswitch smear begin
         @case "m-p"
-            println("fancy")
+            write(ios, "ISMEAR   = 2 \n")
+            break
+
+        @case "gauss"
+            write(ios, "ISMEAR   = 0 \n")
+            break
+
+        @case "tetra"
+            write(ios, "ISMEAR   = -5 \n")
+            break
+
+        @default
+            write(ios, "ISMEAR   = 2 \n")
             break
     end
     exit(-1)
-
     if smear === "m-p"
         write(ios, "ISMEAR   = 2 \n")
     elseif smear === "gauss"

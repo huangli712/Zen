@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/15
+# last modified: 2020/12/16
 #
 
 module Zen
@@ -76,6 +76,7 @@ export _s
 #
 include("util.jl")
 #
+export @cswitch
 export require
 export query_args
 export query_cars
