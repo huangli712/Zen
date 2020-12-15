@@ -113,49 +113,25 @@ function check_config()
     # check dft block
     for key in keys(PDFT)
         val = PDFT[key]
-        if isa(val[1], Missing) && val[2] > 0
-            error("Sorry, $key shoule be set")
-        end
-
-        if !isa(val[1], Missing) && !isa(val[1], val[3])
-            error("Sorry, type of $key is wrong")
-        end
+        _verify(val)
     end
 
     # check dmft block
     for key in keys(PDMFT)
         val = PDMFT[key]
-        if isa(val[1], Missing) && val[2] > 0
-            error("Sorry, $key shoule be set")
-        end
-
-        if !isa(val[1], Missing) && !isa(val[1], val[3])
-            error("Sorry, type of $key is wrong")
-        end
+        _verify(val)
     end
 
     # check impurity block
     for key in keys(PIMP)
         val = PIMP[key]
-        if isa(val[1], Missing) && val[2] > 0
-            error("Sorry, $key shoule be set")
-        end
-
-        if !isa(val[1], Missing) && !isa(val[1], val[3])
-            error("Sorry, type of $key is wrong")
-        end
+        _verify(val)
     end
 
     # check solver block
     for key in keys(PSOLVER)
         val = PSOLVER[key]
-        if isa(val[1], Missing) && val[2] > 0
-            error("Sorry, $key shoule be set")
-        end
-
-        if !isa(val[1], Missing) && !isa(val[1], val[3])
-            error("Sorry, type of $key is wrong")
-        end
+        _verify(val)
     end
 end
 
