@@ -107,35 +107,38 @@ function check_config()
     # check case block
     for key in keys(PCASE)
         val = PCASE[key]
-        _verify(val)
+        _v(val)
     end
 
     # check dft block
     for key in keys(PDFT)
         val = PDFT[key]
-        _verify(val)
+        _v(val)
     end
 
     # check dmft block
     for key in keys(PDMFT)
         val = PDMFT[key]
-        _verify(val)
+        _v(val)
     end
 
     # check impurity block
     for key in keys(PIMP)
         val = PIMP[key]
-        _verify(val)
+        _v(val)
     end
 
     # check solver block
     for key in keys(PSOLVER)
         val = PSOLVER[key]
-        _verify(val)
+        _v(val)
     end
 end
 
-@inline function _verify(val::Array{Any,1})
+"""
+    _v(val::Array{Any,1})
+"""
+@inline function _v(val::Array{Any,1})
     if isa(val[1], Missing) && val[2] > 0
         error("Sorry, $key shoule be set")
     end
