@@ -196,15 +196,30 @@ function goodbye()
     println("See you later")
 end
 
+"""
+    sorry()
+
+Print an error message to the screen
+"""
 function sorry()
     error("Sorry, this feature has not been implemented")
 end
 
+"""
+    message(from::String, msg::String)
+
+Print an standard message to the screen
+"""
 function message(from::String, msg::String)
     printstyled("[" * from * "]: ", color = :green)
     println(msg)
 end
 
+"""
+    message(from::String)
+
+Print an standard message to the screen
+"""
 function message(from::String)
     message(from, "")
 end
