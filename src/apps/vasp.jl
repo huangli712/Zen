@@ -1,3 +1,13 @@
+
+function vasp_init()
+end
+
+function vasp_run()
+end
+
+function vasp_save()
+end
+
 """
     vaspio_poscar(f::AbstractString)
 
