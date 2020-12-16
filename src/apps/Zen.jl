@@ -171,6 +171,13 @@ export dft_save
 # adaptor for the vasp software package. it provide a lot of functions
 # to deal with the vasp-related files
 #
+# summary:
+#
+# vaspio_lattice
+# vaspio_kmesh
+# vaspio_eigen
+# vaspio_charge
+#
 include("vasp.jl")
 #
 export vaspio_poscar
@@ -184,6 +191,14 @@ export vaspio_chgcar
 # ir.jl
 #
 # adaptor for the intermediate representation format
+#
+# summary:
+#
+# irio_lattice
+# irio_kmesh
+# irio_tetra
+# irio_eigen
+# irio_projs
 #
 include("ir.jl")
 #
