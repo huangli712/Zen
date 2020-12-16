@@ -207,14 +207,14 @@ function vasp_incar()
 end
 
 """
-    vaspio_poscar(f::AbstractString)
+    vaspio_lattice(f::AbstractString)
 
 Reading vasp's POSCAR file, return crystallography information. Here `f`
 means only the directory that contains POSCAR 
 """
-function vaspio_poscar(f::AbstractString)
+function vaspio_lattice(f::AbstractString)
     # open the iostream
-    fin = open(f * "/POSCAR", "r")
+    fin = open(joinpath(f, "POSCAR"), "r")
 
     # get the case
     case = strip(readline(fin))
