@@ -267,6 +267,67 @@ function vaspio_lattice(f::AbstractString)
 end
 
 """
+    vaspio_kmesh(f::AbstractString)
+
+Reading vasp's IBZKPT file, return k-mesh and k-weight. Here `f` means
+only the directory that contains IBZKPT
+"""
+function vaspio_kmesh(f::AbstractString)
+    # open the iostream
+    fin = open(f * "/IBZKPT", "r")
+
+    # extract number of k-points
+    readline(fin)
+    nkpt = parse(I64, readline(fin))
+    readline(fin)
+
+    # create arrays 
+    kmesh = zeros(F64, nkpt, 3)
+    weight = zeros(F64, nkpt)
+
+    # read in the k-points and their weights
+    for i = 1:nkpt
+        arr = parse.(F64, line_to_array(fin))
+        kmesh[i, 1:3] = arr[1:3]
+        weight[i] = arr[4]
+    end
+
+    # close the iostream
+    close(fin)
+
+    # return the desired arrays
+    if tetra
+        return kmesh, weight, ntet, volt, itet
+    else
+        return kmesh, weight
+    end
+end
+
+"""
+    vaspio_tetra(f::AbstractString)
+"""
+function vaspio_tetra()
+    # read in the tetrahedron information
+    if tetra
+        # skip one empty line
+        readline(fin)
+
+        # extract total number of tetrahedra and volume of a tetrahedron 
+        arr = line_to_array(fin)
+        ntet = parse(I64, arr[1])
+        volt = parse(F64, arr[2])
+
+        # create arrays
+        itet = zeros(I64, ntet, 5)
+
+        # parse the input tetrahedra information
+        for t = 1:ntet
+            itet[t, :] = parse.(I64, line_to_array(fin))
+        end
+    end
+end
+
+"""
     vaspio_projcar(f::AbstractString)
 
 Reading vasp's PROJCAR file, return raw projector matrix. Here `f` means
@@ -407,62 +468,6 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
 
     # return the desired arrays
     return chipsi
-end
-
-"""
-    vaspio_ibzkpt(f::AbstractString, tetra::Bool = false)
-
-Reading vasp's IBZKPT file, return k-mesh and k-weight. Here `f` means
-only the directory that contains IBZKPT
-"""
-function vaspio_ibzkpt(f::AbstractString, tetra::Bool = false)
-    # open the iostream
-    fin = open(f * "/IBZKPT", "r")
-
-    # extract number of k-points
-    readline(fin)
-    nkpt = parse(I64, readline(fin))
-    readline(fin)
-
-    # create arrays 
-    kmesh = zeros(F64, nkpt, 3)
-    weight = zeros(F64, nkpt)
-
-    # read in the k-points and their weights
-    for i = 1:nkpt
-        arr = parse.(F64, line_to_array(fin))
-        kmesh[i, 1:3] = arr[1:3]
-        weight[i] = arr[4]
-    end
-
-    # read in the tetrahedron information
-    if tetra
-        # skip one empty line
-        readline(fin)
-
-        # extract total number of tetrahedra and volume of a tetrahedron 
-        arr = line_to_array(fin)
-        ntet = parse(I64, arr[1])
-        volt = parse(F64, arr[2])
-
-        # create arrays
-        itet = zeros(I64, ntet, 5)
-
-        # parse the input tetrahedra information
-        for t = 1:ntet
-            itet[t, :] = parse.(I64, line_to_array(fin))
-        end
-    end
-
-    # close the iostream
-    close(fin)
-
-    # return the desired arrays
-    if tetra
-        return kmesh, weight, ntet, volt, itet
-    else
-        return kmesh, weight
-    end
 end
 
 """
