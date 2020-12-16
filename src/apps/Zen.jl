@@ -173,20 +173,20 @@ export dft_save
 #
 # summary:
 #
-# vaspio_lattice
-# vaspio_kmesh
-# vaspio_tetra
-# vaspio_eigen
-# vaspio_projs
-# vaspio_charge
+# vaspio_lattice -> read lattice information
+# vaspio_kmesh   -> read kmesh
+# vaspio_tetra   -> read tetrahedra
+# vaspio_eigen   -> read eigenvalues
+# vaspio_projs   -> read projectors
+# vaspio_charge  -> read/write charge
 #
 include("vasp.jl")
 #
-export vaspio_poscar
-export vaspio_ibzkpt
-export vaspio_projcar
-export vaspio_locproj
-export vaspio_eigenval
+export vaspio_lattice
+export vaspio_kmesh
+export vaspio_tetra
+export vaspio_eigen
+export vaspio_projs
 export vaspio_chgcar
 
 #
