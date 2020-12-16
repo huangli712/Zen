@@ -404,10 +404,10 @@ only the directory that contains PROJCAR
 """
 function vaspio_projs(f::AbstractString)
     # get key parameters from the LOCPROJ file
-    nspin, nkpt, nband, nproj, nsite, sites, projs, groups = vaspio_locproj(f, true)
+    nspin, nkpt, nband, nproj, nsite, sites, projs, groups = vaspio_projs(f, true)
 
     # open the iostream
-    fin = open(f * "/PROJCAR", "r")
+    fin = open(joinpath(f, "PROJCAR"), "r")
 
     # create arrays
     chipsi = zeros(C64, nproj, nband, nkpt, nspin)
@@ -464,7 +464,7 @@ only the directory that contains LOCPROJ
 """
 function vaspio_projs(f::AbstractString, read_param_only::Bool)
     # open the iostream
-    fin = open(f * "/LOCPROJ", "r")
+    fin = open(joinpath(f, "LOCPROJ"), "r")
 
     # extract number of spins (nspin), number of k-points (nkpt),
     # number of bands (nband), and number of projectors (nproj)
