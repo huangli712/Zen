@@ -345,6 +345,58 @@ function vaspio_tetra(f::AbstractString)
 end
 
 """
+    vaspio_eigen(f::AbstractString)
+
+Reading vasp's EIGENVAL file, return energy band information. Here `f`
+means only the directory that contains EIGENVAL
+"""
+function vaspio_eigen(f::AbstractString)
+    # open the iostream
+    fin = open(joinpath(f, "EIGENVAL"), "r")
+
+    # determine number of spins
+    nspin = parse(I64, line_to_array(fin)[end])
+
+    # skip for lines
+    for i = 1:4
+        readline(fin)
+    end
+
+    # read in some key parameters: nelect, nkpt, nbands 
+    nelect, nkpt, nband = parse.(I64, line_to_array(fin))
+
+    # create arrays
+    enk = zeros(F64, nkpt, nband, nspin)
+    occupy = zeros(F64, nkpt, nband, nspin)
+
+    # read in the energy bands and the corresponding occupations
+    for i = 1:nkpt
+        readline(fin)
+        readline(fin)
+        for j = 1:nband
+            arr = line_to_array(fin)
+            # for spin unpolarized case
+            if nspin === 1
+                enk[i, j, 1] = parse(F64, arr[2])
+                occupy[i, j, 1] = parse(F64, arr[3])
+                # for spin polarized case
+            else
+                enk[i, j, 1] = parse(F64, arr[2])
+                enk[i, j, 2] = parse(F64, arr[3])
+                occupy[i, j, 1] = parse(F64, arr[4])
+                occupy[i, j, 2] = parse(F64, arr[5])
+            end
+        end
+    end
+
+    # close the iostream
+    close(fin)
+
+    # return the desired arrays
+    return enk, occupy
+end
+
+"""
     vaspio_projcar(f::AbstractString)
 
 Reading vasp's PROJCAR file, return raw projector matrix. Here `f` means
@@ -485,58 +537,6 @@ function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
 
     # return the desired arrays
     return chipsi
-end
-
-"""
-    vaspio_eigenval(f::AbstractString)
-
-Reading vasp's EIGENVAL file, return energy band information. Here `f`
-means only the directory that contains EIGENVAL
-"""
-function vaspio_eigenval(f::AbstractString)
-    # open the iostream
-    fin = open(f * "/EIGENVAL", "r")
-
-    # determine number of spins
-    nspin = parse(I64, line_to_array(fin)[end])
-
-    # skip for lines
-    for i = 1:4
-        readline(fin)
-    end
-
-    # read in some key parameters: nelect, nkpt, nbands 
-    nelect, nkpt, nband = parse.(I64, line_to_array(fin))
-
-    # create arrays
-    enk = zeros(F64, nkpt, nband, nspin)
-    occupy = zeros(F64, nkpt, nband, nspin)
-
-    # read in the energy bands and the corresponding occupations
-    for i = 1:nkpt
-        readline(fin)
-        readline(fin)
-        for j = 1:nband
-            arr = line_to_array(fin)
-            # for spin unpolarized case
-            if nspin === 1
-                enk[i, j, 1] = parse(F64, arr[2])
-                occupy[i, j, 1] = parse(F64, arr[3])
-                # for spin polarized case
-            else
-                enk[i, j, 1] = parse(F64, arr[2])
-                enk[i, j, 2] = parse(F64, arr[3])
-                occupy[i, j, 1] = parse(F64, arr[4])
-                occupy[i, j, 2] = parse(F64, arr[5])
-            end
-        end
-    end
-
-    # close the iostream
-    close(fin)
-
-    # return the desired arrays
-    return enk, occupy
 end
 
 """
