@@ -149,6 +149,14 @@ export line_to_array
 # to provide the core functions to control the dft engine, dmft engine,
 # and impurity solver
 #
+# summary:
+#
+# make_trees -> make working directories
+# make_incar -> make essential input files
+# dft_init   -> init dft engine
+# dft_run    -> execute dft calculation
+# dft_save   -> finalize dft calculation
+#
 include("base.jl")
 #
 export make_trees
