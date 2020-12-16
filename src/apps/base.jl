@@ -53,34 +53,10 @@ function dft_init(it::IterInfo)
     # enter dft directory
     cd("dft")
 
-    # copy essential input files
-    if it.dft_dmft_iter == 0
-        if _d("engine") === "vasp"
-            cp("../POTCAR", joinpath(pwd(), "POTCAR"))
-            cp("../POSCAR", joinpath(pwd(), "POSCAR"))
-        else
-            sorry()
-        end
-    end
-
-    # generate essential input files
-    if it.dft_dmft_iter == 0
-        if _d("engine") === "vasp"
-            make_incar()
-        else
-            sorry()
-        end
-    end
-
-    # check essential input files
-    if it.dft_dmft_iter >= 1
-        if _d("engine") === "vasp"
-            if !isfile("INCAR") || !isfile("POSCAR") || !isfile("POTCAR")
-                error("Please make sure the existence of following files: INCAR, POSCAR, and POTCAR")
-            end
-        else
-            sorry()
-        end
+    if _d("engine") === "vasp"
+        vasp_init(it)
+    else
+        sorry()
     end
 
     # enter the parent directory
