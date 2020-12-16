@@ -178,7 +178,7 @@ export dft_save
 # vaspio_tetra   -> read tetrahedra
 # vaspio_eigen   -> read eigenvalues
 # vaspio_projs   -> read projectors
-# vaspio_charge  -> read/write charge
+# vaspio_charge  -> read charge
 #
 include("vasp.jl")
 #
@@ -187,7 +187,7 @@ export vaspio_kmesh
 export vaspio_tetra
 export vaspio_eigen
 export vaspio_projs
-export vaspio_chgcar
+export vaspio_charge
 
 #
 # ir.jl
@@ -196,11 +196,12 @@ export vaspio_chgcar
 #
 # summary:
 #
-# irio_lattice
-# irio_kmesh
-# irio_tetra
-# irio_eigen
-# irio_projs
+# irio_lattice -> write lattice information
+# irio_kmesh   -> write kmesh
+# irio_tetra   -> write tetrahedra
+# irio_eigen   -> write eigenvalues
+# irio_projs   -> write projectors
+# irio_charge  -> write charge
 #
 include("ir.jl")
 #
@@ -209,5 +210,6 @@ export irio_kmesh
 export irio_tetra
 export irio_eigen
 export irio_projs
+export irio_charge
 
 end
