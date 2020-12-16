@@ -3,10 +3,12 @@
 include("Zen.jl")
 using .Zen
 
-#kmesh, weight, ntet, volt, itet = vaspio_ibzkpt(pwd() * "/dft", true)
-#for i in eachindex(weight)
-#    println(i, " ", kmesh[i,:], " ", weight[i])
-#end
+kmesh, weight = vaspio_kmesh(pwd() * "/dft")
+for i in eachindex(weight)
+    println(i, " ", kmesh[i,:], " ", weight[i])
+end
+irio_kmesh(pwd(), kmesh, weight)
+
 #@show ntet, volt
 #for t in 1:ntet
 #    @show t, itet[t,:]
@@ -27,5 +29,5 @@ using .Zen
 #kmesh, weight, ntet, volt, itet = vaspio_ibzkpt(pwd() * "/dft", true)
 #irio_tetra(pwd(), ntet, volt, itet)
 
-enk, occupy = vaspio_eigenval(pwd() * "/dft")
-irio_eigen(pwd(), enk, occupy)
+#enk, occupy = vaspio_eigenval(pwd() * "/dft")
+#irio_eigen(pwd(), enk, occupy)

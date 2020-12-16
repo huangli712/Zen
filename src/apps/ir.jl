@@ -26,8 +26,14 @@ function irio_kmesh(f::AbstractString, kmesh::Array{F64,2}, weight::Array{F64,1}
 
     # output the data
     open(joinpath(f, "kmesh.ir"), "w") do fout
+        println(fout, "# file: kmesh.ir")
+        println(fout, "# data: kmesh[nkpt,ndir] and weight[nkpt]")
+        println(fout)
+        println(fout, "nkpt -> $nkpt")
+        println(fout, "ndir -> $ndir")
+        println(fout)
         for k = 1:nkpt
-            println(fout, kmesh[k, :], weight[k])
+            @printf(fout, "%16.12f %16.12f %16.12f %8.2f\n", kmesh[k, 1:3]..., weight[k])
         end
     end
 end
