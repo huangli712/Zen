@@ -152,7 +152,6 @@ export line_to_array
 # summary:
 #
 # make_trees -> make working directories
-# make_incar -> make essential input files
 # dft_init   -> init dft engine
 # dft_run    -> execute dft calculation
 # dft_save   -> finalize dft calculation
@@ -160,7 +159,6 @@ export line_to_array
 include("base.jl")
 #
 export make_trees
-export make_incar
 export dft_init
 export dft_run
 export dft_save
@@ -173,6 +171,10 @@ export dft_save
 #
 # summary:
 #
+# vasp_init      -> prepare vasp's input files
+# vasp_run       -> execute vasp program
+# vasp_save      -> backup vasp's output files
+# vasp_incar     -> make essential input file (INCAR)
 # vaspio_lattice -> read lattice information
 # vaspio_kmesh   -> read kmesh
 # vaspio_tetra   -> read tetrahedra
