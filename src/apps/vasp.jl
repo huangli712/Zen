@@ -269,12 +269,12 @@ end
 """
     vaspio_kmesh(f::AbstractString)
 
-Reading vasp's IBZKPT file, return k-mesh and k-weight. Here `f` means
+Reading vasp's IBZKPT file, return kmesh and weight. Here `f` means
 only the directory that contains IBZKPT
 """
 function vaspio_kmesh(f::AbstractString)
     # open the iostream
-    fin = open(f * "/IBZKPT", "r")
+    fin = open(joinpath(f, "IBZKPT"), "r")
 
     # extract number of k-points
     readline(fin)
@@ -296,11 +296,7 @@ function vaspio_kmesh(f::AbstractString)
     close(fin)
 
     # return the desired arrays
-    if tetra
-        return kmesh, weight, ntet, volt, itet
-    else
-        return kmesh, weight
-    end
+    return kmesh, weight
 end
 
 """
@@ -325,6 +321,7 @@ function vaspio_tetra()
             itet[t, :] = parse.(I64, line_to_array(fin))
         end
     end
+    return kmesh, weight, ntet, volt, itet
 end
 
 """
