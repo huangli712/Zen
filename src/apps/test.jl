@@ -4,15 +4,10 @@ include("Zen.jl")
 using .Zen
 
 kmesh, weight = vaspio_kmesh(pwd() * "/dft")
-for i in eachindex(weight)
-    println(i, " ", kmesh[i,:], " ", weight[i])
-end
 irio_kmesh(pwd(), kmesh, weight)
 
-#@show ntet, volt
-#for t in 1:ntet
-#    @show t, itet[t,:]
-#end
+volt, itet = vaspio_tetra(pwd() * "/dft")
+irio_tetra(pwd(), volt, itet)
 
 #nsorts, natoms, symbols, atom_list, posi_list = vaspio_poscar(pwd() * "/dft")
 #@show nsorts, natoms, symbols, atom_list, posi_list

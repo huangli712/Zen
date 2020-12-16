@@ -39,17 +39,24 @@ function irio_kmesh(f::AbstractString, kmesh::Array{F64,2}, weight::Array{F64,1}
 end
 
 """
-    irio_tetra(f::AbstractString, ntet::I64, volt::F64, itet::Array{I64,2})
+    irio_tetra(f::AbstractString, volt::F64, itet::Array{I64,2})
 
 Write the tetrahedra information using the IR format
 """
-function irio_tetra(f::AbstractString, ntet::I64, volt::F64, itet::Array{I64,2})
-    open(f * "/tetra.ir", "w") do fout
-        @assert (ntet, 5) === size(itet)
-        println(fout, "ntet: $ntet")
-        println(fout, "volt: $volt")
+function irio_tetra(f::AbstractString, volt::F64, itet::Array{I64,2})
+    # extract some key parameters
+    ntet, = size(itet)
+
+    # output the data
+    open(joinpath(f, "tetra.ir"), "w") do fout
+        println(fout, "# file: tetra.ir")
+        println(fout, "# data: itet[ntet,5]")
+        println(fout)
+        println(fout, "ntet -> $ntet")
+        println(fout, "volt -> $volt")
+        println(fout)
         for t = 1:ntet
-            println(fout, itet[t, :])
+            @printf(fout, "%8i %8i %8i %8i %8i\n", itet[t, :]...)
         end
     end
 end
