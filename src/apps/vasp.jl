@@ -66,19 +66,24 @@ function vasp_run(it::IterInfo)
     run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
 end
 
-function vasp_save()
-        if it.dft_dmft_iter == 0
-            cp("INCAR", "INCAR.$(it.dft_dmft_iter)")
-            cp("CHGCAR", "CHGCAR.$(it.dft_dmft_iter)")
-            cp("OUTCAR", "OUTCAR.$(it.dft_dmft_iter)")
-            cp("PROJCAR", "PROJCAR.$(it.dft_dmft_iter)")
-            cp("LOCPROJ", "LOCPROJ.$(it.dft_dmft_iter)")
-            cp("EIGENVAL", "EIGENVAL.$(it.dft_dmft_iter)")
-            cp("vasp.out", "vasp.out.$(it.dft_dmft_iter)")
-            cp("vasprun.xml", "vasprun.xml.$(it.dft_dmft_iter)")
-        else
-            sorry()
-        end
+"""
+    vasp_save(it::IterInfo)
+
+Backup the output files of vasp if necessary
+"""
+function vasp_save(it::IterInfo)
+    if it.dft_dmft_iter == 0
+        cp("INCAR", "INCAR.$(it.dft_dmft_iter)")
+        cp("CHGCAR", "CHGCAR.$(it.dft_dmft_iter)")
+        cp("OUTCAR", "OUTCAR.$(it.dft_dmft_iter)")
+        cp("PROJCAR", "PROJCAR.$(it.dft_dmft_iter)")
+        cp("LOCPROJ", "LOCPROJ.$(it.dft_dmft_iter)")
+        cp("EIGENVAL", "EIGENVAL.$(it.dft_dmft_iter)")
+        cp("vasp.out", "vasp.out.$(it.dft_dmft_iter)")
+        cp("vasprun.xml", "vasprun.xml.$(it.dft_dmft_iter)")
+    else
+        sorry()
+    end
 end
 
 """
