@@ -151,6 +151,27 @@ function vasp_init()
 end
 
 function vasp_run()
+    dft_home = query_dft()
+    mpi_prefix = parse_toml("MPI.toml", "dft", false)
+
+    cd("dft")
+
+    if _d("engine") === "vasp"
+        if _d("lspinorb")
+            vasp_exec = "$dft_home/vasp_ncl"
+        else
+            vasp_exec = "$dft_home/vasp_std"
+        end
+
+        if isnothing(mpi_prefix)
+            vasp_cmd = vasp_exec
+        else
+            vasp_cmd = split("$mpi_prefix $vasp_exec", " ")
+        end
+        run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
+    else
+        sorry()
+    end
 end
 
 function vasp_save()

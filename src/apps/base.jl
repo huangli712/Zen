@@ -53,6 +53,7 @@ function dft_init(it::IterInfo)
     # enter dft directory
     cd("dft")
 
+    # choose suitable dft engine
     engine = _d("engine")
     @cswitch engine begin
         @case "vasp"
@@ -74,28 +75,21 @@ end
 Execute the desired dft engine parallelly or sequentially
 """
 function dft_run(it::IterInfo)
-    dft_home = query_dft()
-    mpi_prefix = parse_toml("MPI.toml", "dft", false)
-
+    # enter dft directory
     cd("dft")
 
-    if _d("engine") === "vasp"
-        if _d("lspinorb")
-            vasp_exec = "$dft_home/vasp_ncl"
-        else
-            vasp_exec = "$dft_home/vasp_std"
-        end
+    engine = _d("engine")
+    @cswitch engine begin 
+        @case "vasp"
+            vasp_run(it)
+            break
 
-        if isnothing(mpi_prefix)
-            vasp_cmd = vasp_exec
-        else
-            vasp_cmd = split("$mpi_prefix $vasp_exec", " ")
-        end
-        run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
-    else
-        sorry()
+        @default
+            sorry()
+            break
     end
 
+    # enter the parent directory
     cd("..")
 end
 
