@@ -175,7 +175,9 @@ export dft_save
 #
 # vaspio_lattice
 # vaspio_kmesh
+# vaspio_tetra
 # vaspio_eigen
+# vaspio_projs
 # vaspio_charge
 #
 include("vasp.jl")
@@ -205,7 +207,7 @@ include("ir.jl")
 export irio_lattice
 export irio_kmesh
 export irio_tetra
-export irio_projs
 export irio_eigen
+export irio_projs
 
 end
