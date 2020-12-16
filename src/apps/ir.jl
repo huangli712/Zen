@@ -8,10 +8,6 @@
 # last modified: 2020/12/16
 #
 
-function ortho() end
-
-function density_matrix() end
-
 """
     irio_lattice()
 
@@ -53,13 +49,6 @@ function irio_tetra(f::AbstractString, ntet::I64, volt::F64, itet::Array{I64,2})
 end
 
 """
-    irio_projs()
-
-Write the projectors using the IR format
-"""
-function irio_projs() end
-
-"""
     irio_eigen(f::AbstractString, enk::Array{F64,3}, occupy::Array{F64,3})
 
 Write the eigenvalues using the IR format
@@ -82,3 +71,15 @@ function irio_eigen(f::AbstractString, enk::Array{F64,3}, occupy::Array{F64,3})
         end
     end
 end
+
+"""
+    irio_projs()
+
+Write the projectors using the IR format
+"""
+function irio_projs() end
+
+"""
+    irio_charge()
+"""
+function irio_charge() end
