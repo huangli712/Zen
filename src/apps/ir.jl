@@ -71,10 +71,14 @@ function irio_eigen(f::AbstractString, enk::Array{F64,3}, occupy::Array{F64,3})
     nkpt, nband, nspin = size(enk)
 
     # output the data
-    open(f * "/eigen.ir", "w") do fout
-        println(fout, "nkpt : $nkpt ")
-        println(fout, "nband: $nband")
-        println(fout, "nspin: $nspin")
+    open(joinpath(f, "eigen.ir"), "w") do fout
+        println(fout, "# file: eigen.ir")
+        println(fout, "# data: enk[nkpt,nband,nspin] and occupy[nkpt,nband,nspin]")
+        println(fout)
+        println(fout, "nkpt  -> $nkpt ")
+        println(fout, "nband -> $nband")
+        println(fout, "nspin -> $nspin")
+        println(fout)
         for s = 1:nspin
             for b = 1:nband
                 for k = 1:nkpt
