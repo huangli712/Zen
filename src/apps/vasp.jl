@@ -1,3 +1,122 @@
+"""
+    make_incar()
+
+Generate an INCAR file. it will be used only when the dft engine is vasp
+"""
+function make_incar()
+    # open the iostream
+    ios = open("INCAR", "w")
+
+    # standard part
+    case = _c("case")
+    write(ios, "System   = $case \n")
+    write(ios, "PREF     = Accurate \n")
+    write(ios, "EDIFF    = 1E-8 \n")
+    write(ios, "ALGO     = Normal \n")
+    write(ios, "LASPH    = .TRUE. \n")
+
+    # customize your INCAR according to the case.toml
+    #
+    # for smearing
+    smear = _d("smear")
+    @cswitch smear begin
+        @case "m-p"
+            write(ios, "ISMEAR   = 2 \n")
+            break
+
+        @case "gauss"
+            write(ios, "ISMEAR   = 0 \n")
+            break
+
+        @case "tetra"
+            write(ios, "ISMEAR   =-5 \n")
+            break
+
+        @default
+            write(ios, "ISMEAR   = 2 \n")
+            break
+    end
+
+    # for k-mesh density
+    kmesh = _d("kmesh")
+    @cswitch kmesh begin
+        @case "accurate"
+            write(ios, "KSPACING = 0.1 \n")
+            break
+
+        @case "medium"
+            write(ios, "KSPACING = 0.2 \n")
+            break
+
+        @case "coarse"
+            write(ios, "KSPACING = 0.4 \n")
+            break
+
+        @default # very coarse 
+            write(ios, "KSPACING = 0.5 \n")
+            break
+    end
+
+    # for magnetic moment
+    magmom = _d("magmom")
+    if !isa(magmom, Missing)
+        write(ios, "MAGMOM   = $magmom \n")
+    end
+
+    # for symmetry
+    lsymm = _d("lsymm")
+    if lsymm
+        write(ios, "ISYM     = 2 \n")
+    else
+        write(ios, "ISYM     = 0 \n")
+    end
+
+    # for spin polarizations
+    # if spin-orbit coupling is on, spin orientations must be polarized
+    lspins = _d("lspins")
+    if lspins
+        write(ios, "ISPIN    = 2 \n")
+    else
+        write(ios, "ISPIN    = 1 \n")
+    end
+
+    # for spin-orbit coupling
+    lspinorb = _d("lspinorb")
+    if lspinorb
+        write(ios, "LSORBIT  = .TRUE. \n")
+    else
+        write(ios, "LSORBIT  = .FALSE. \n")
+    end
+
+    # for optimized projectors
+    window = _d("window")
+    loptim = _d("loptim")
+    if !isa(window, Missing) && !isa(loptim, Missing)
+        if loptim
+            write(ios, "LORBIT   = 14 \n")
+            emin = window[1]
+            write(ios, "EMIN     = $emin \n")
+            emax = window[2]
+            write(ios, "EMAX     = $emax \n")
+        end
+    end
+
+    # for local orbitals and projectors
+    lproj = _d("lproj")
+    nproj = _d("nproj")
+    sproj = _d("sproj")
+    if !isa(lproj, Missing) && !isa(nproj, Missing) && !isa(sproj, Missing)
+        if lproj
+            for p = 1:nproj
+                str = sproj[p]
+                write(ios, "LOCPROJ  = $str \n")
+            end
+        end
+    end
+
+    # close the iostream
+    close(ios)
+end
 
 function vasp_init()
 end
