@@ -73,7 +73,19 @@ export IterInfo
 #
 # config.jl
 #
-# to extract the configurations from external files or dictionaries 
+# to extract the configurations from external files or dictionaries
+#
+# summary:
+#
+# parse_toml   -> parse case.toml
+# renew_config -> update dict (configuration)
+# check_config -> check dict (configuration)
+# _v           -> verify dict
+# _c           -> shortcut to visit dict (case)  
+# _d           -> shortcut to visit dict (dft)
+# _m           -> shortcut to visit dict (dmft)
+# _i           -> shortcut to visit dict (impurity)
+# _s           -> shortcut to visit dict (solver)
 #
 include("config.jl")
 #
@@ -91,7 +103,26 @@ export _s
 # util.jl
 #
 # to provide some useful utility functions. they can be used tp query
-# the environments, print the configurations, and parse the strings, etc. 
+# the environments, print the configurations, and parse the strings, etc.
+#
+# summary:
+#
+# @cswitch      -> C-style switch 
+# require       -> check julia envirnoment
+# query_args    -> query arguments
+# query_cars    -> query input files
+# query_zen     -> query home directory of zen
+# query_dft     -> query home directory of dft engine
+# view_case     -> print dict (case)
+# view_dft      -> print dict (dft)
+# view_dmft     -> print dict (dmft)
+# view_impurity -> print dict (impurity)
+# view_solver   -> print dict (solver)
+# welcome       -> welcome
+# goodbye       -> say goodbye
+# sorry         -> say sorry
+# message       -> print some message to the screen
+# line_to_array -> transform a line to a string array
 #
 include("util.jl")
 #
