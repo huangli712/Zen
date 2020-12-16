@@ -397,12 +397,12 @@ function vaspio_eigen(f::AbstractString)
 end
 
 """
-    vaspio_projcar(f::AbstractString)
+    vaspio_projs(f::AbstractString)
 
 Reading vasp's PROJCAR file, return raw projector matrix. Here `f` means
 only the directory that contains PROJCAR
 """
-function vaspio_projcar(f::AbstractString)
+function vaspio_projs(f::AbstractString)
     # get key parameters from the LOCPROJ file
     nspin, nkpt, nband, nproj, nsite, sites, projs, groups = vaspio_locproj(f, true)
 
@@ -457,12 +457,12 @@ function vaspio_projcar(f::AbstractString)
 end
 
 """
-    vaspio_locproj(f::AbstractString, read_param_only::Bool)
+    vaspio_projs(f::AbstractString, read_param_only::Bool)
 
 Reading vasp's LOCPROJ file, return raw projector matrix. Here `f` means
 only the directory that contains LOCPROJ
 """
-function vaspio_locproj(f::AbstractString, read_param_only::Bool = false)
+function vaspio_projs(f::AbstractString, read_param_only::Bool)
     # open the iostream
     fin = open(f * "/LOCPROJ", "r")
 
