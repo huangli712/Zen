@@ -16,16 +16,16 @@ Write the lattice information using the IR format
 function irio_lattice() end
 
 """
-    irio_kmesh()
+    irio_kmesh(f::AbstractString, kmesh::Array{F64,2}, weight::Array{F64,1})
 
-Write the k-mesh information using the IR format 
+Write the kmesh information using the IR format 
 """
 function irio_kmesh(f::AbstractString, kmesh::Array{F64,2}, weight::Array{F64,1})
     # extract some key parameters
     nkpt, ndir = size(kmesh)
 
     # output the data
-    open(f * "/kmesh.ir", "w") do fout
+    open(joinpath(f, "kmesh.ir"), "w") do fout
         for k = 1:nkpt
             println(fout, kmesh[k, :], weight[k])
         end
