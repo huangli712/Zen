@@ -53,10 +53,15 @@ function dft_init(it::IterInfo)
     # enter dft directory
     cd("dft")
 
-    if _d("engine") === "vasp"
-        vasp_init(it)
-    else
-        sorry()
+    engine = _d("engine")
+    @cswitch engine begin
+        @case "vasp"
+            vasp_init(it)
+            break
+
+        @default
+            sorry()
+            break
     end
 
     # enter the parent directory
