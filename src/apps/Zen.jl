@@ -184,6 +184,10 @@ export dft_save
 #
 include("vasp.jl")
 #
+export vasp_init
+export vasp_run
+export vasp_save
+export vasp_incar
 export vaspio_lattice
 export vaspio_kmesh
 export vaspio_tetra
