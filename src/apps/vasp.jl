@@ -540,6 +540,6 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
 end
 
 """
-    vaspio_chgcar(f::AbstractString)
+    vaspio_charge(f::AbstractString)
 """
-function vaspio_chgcar(f::AbstractString) end
+function vaspio_charge(f::AbstractString) end
