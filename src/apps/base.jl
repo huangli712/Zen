@@ -78,6 +78,7 @@ function dft_run(it::IterInfo)
     # enter dft directory
     cd("dft")
 
+    # choose suitable dft engine
     engine = _d("engine")
     @cswitch engine begin 
         @case "vasp"
@@ -99,24 +100,21 @@ end
 Backup the essential dft calculated results for next iterations
 """
 function dft_save(it::IterInfo)
+    # enter dft directory
     cd("dft")
 
-    if _d("engine") === "vasp"
-        if it.dft_dmft_iter == 0
-            cp("INCAR", "INCAR.$(it.dft_dmft_iter)")
-            cp("CHGCAR", "CHGCAR.$(it.dft_dmft_iter)")
-            cp("OUTCAR", "OUTCAR.$(it.dft_dmft_iter)")
-            cp("PROJCAR", "PROJCAR.$(it.dft_dmft_iter)")
-            cp("LOCPROJ", "LOCPROJ.$(it.dft_dmft_iter)")
-            cp("EIGENVAL", "EIGENVAL.$(it.dft_dmft_iter)")
-            cp("vasp.out", "vasp.out.$(it.dft_dmft_iter)")
-            cp("vasprun.xml", "vasprun.xml.$(it.dft_dmft_iter)")
-        else
+    # choose suitable dft engine
+    engine = _d("engine") 
+    @cswitch engine begin
+        @case "vasp"
+            vasp_save(it)
+            break
+
+        @default
             sorry()
-        end
-    else
-        sorry()
+            break
     end
 
+    # enter the parent directory
     cd("..")
 end
