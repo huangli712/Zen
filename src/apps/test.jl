@@ -12,17 +12,9 @@ using .Zen
 #enk, occupy = vaspio_eigen(joinpath(pwd(), "dft"))
 #irio_eigen(pwd(), enk, occupy)
 
-chipsi = vaspio_projs(joinpath(pwd(), "dft"))
-irio_projs(pwd(), chipsi)
+#chipsi1 = vaspio_projs(joinpath(pwd(), "dft"))
+#chipsi2 = vaspio_projs(joinpath(pwd(), "dft"), false)
+#irio_projs(pwd(), chipsi2)
 
 #nsorts, natoms, symbols, atom_list, posi_list = vaspio_poscar(pwd() * "/dft")
 #@show nsorts, natoms, symbols, atom_list, posi_list
-
-#chipsi = vaspio_locproj(pwd() * "/dft")
-#@show chipsi[:,19,1724,1]
-
-#kmesh, weight, ntet, volt, itet = vaspio_ibzkpt(pwd() * "/dft", true)
-#irio_tetra(pwd(), ntet, volt, itet)
-
-#enk, occupy = vaspio_eigenval(pwd() * "/dft")
-#irio_eigen(pwd(), enk, occupy)

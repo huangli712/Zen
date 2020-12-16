@@ -416,7 +416,9 @@ function vaspio_projs(f::AbstractString)
     for site = 1:nsite
         # extract site information
         _site = parse(I64, line_to_array(fin)[2])
-        @assert _site === site
+
+        # _proj means the shift for index of projectors 
+        _proj = site === 1 ? 0 : sum(groups[1:site-1])
 
         # skip one empty line
         readline(fin)
@@ -435,11 +437,12 @@ function vaspio_projs(f::AbstractString)
                 readline(fin)
 
                 # parse the input data
+                # please pay special attention to the first index of chipsi
                 for band = 1:nband
                     arr = parse.(F64, line_to_array(fin))
                     for proj = 1:groups[site]
                         cmplx = arr[2*proj] + arr[2*proj+1]im
-                        chipsi[proj, band, kpt, spin] = cmplx
+                        chipsi[proj+_proj, band, kpt, spin] = cmplx
                     end
                 end
 
@@ -516,6 +519,7 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
                     @assert _band === band
 
                     # parse the input data
+                    # please pay special attention to the first index of chipsi
                     _proj = 0
                     for site = 1:nsite
                         for proj = 1:groups[site]
