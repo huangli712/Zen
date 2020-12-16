@@ -9,14 +9,14 @@ using .Zen
 #volt, itet = vaspio_tetra(joinpath(pwd(), "dft"))
 #irio_tetra(pwd(), volt, itet)
 
-enk, occupy = vaspio_eigen(joinpath(pwd(), "dft"))
-irio_eigen(pwd(), enk, occupy)
+#enk, occupy = vaspio_eigen(joinpath(pwd(), "dft"))
+#irio_eigen(pwd(), enk, occupy)
+
+chipsi = vaspio_projs(joinpath(pwd(), "dft"))
+irio_projs(pwd(), chipsi)
 
 #nsorts, natoms, symbols, atom_list, posi_list = vaspio_poscar(pwd() * "/dft")
 #@show nsorts, natoms, symbols, atom_list, posi_list
-
-#chipsi = vaspio_projcar(pwd() * "/dft")
-#@show chipsi[:,19,1724,1]
 
 #chipsi = vaspio_locproj(pwd() * "/dft")
 #@show chipsi[:,19,1724,1]
