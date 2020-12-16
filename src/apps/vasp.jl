@@ -48,17 +48,21 @@ function vasp_run(it::IterInfo)
     # determine mpi prefix (whether the vasp is executed sequentially)
     mpi_prefix = parse_toml("MPI.toml", "dft", false)
 
+    # select suitable vasp program
     if _d("lspinorb")
         vasp_exec = "$dft_home/vasp_ncl"
     else
         vasp_exec = "$dft_home/vasp_std"
     end
 
+    # assemble command
     if isnothing(mpi_prefix)
         vasp_cmd = vasp_exec
     else
         vasp_cmd = split("$mpi_prefix $vasp_exec", " ")
     end
+
+    # invoke it, the terminal output is redirected to vasp.out
     run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
 end
 
