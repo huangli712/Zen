@@ -8,6 +8,11 @@
 # last modified: 2020/12/16
 #
 
+"""
+    vasp_init(it::IterInfo)
+
+Check the runtime environment of vasp, prepare necessary input files
+"""
 function vasp_init(it::IterInfo)
     # prepare essential input files
     if it.dft_dmft_iter == 0
@@ -31,28 +36,30 @@ function vasp_init(it::IterInfo)
     end
 end
 
-function vasp_run()
+"""
+    vasp_run(it::IterInfo)
+
+Execute the vasp program
+"""
+function vasp_run(it::IterInfo)
+    # get the home directory of vasp
     dft_home = query_dft()
+
+    # determine mpi prefix (whether the vasp is executed sequentially)
     mpi_prefix = parse_toml("MPI.toml", "dft", false)
 
-    cd("dft")
-
-    if _d("engine") === "vasp"
-        if _d("lspinorb")
-            vasp_exec = "$dft_home/vasp_ncl"
-        else
-            vasp_exec = "$dft_home/vasp_std"
-        end
-
-        if isnothing(mpi_prefix)
-            vasp_cmd = vasp_exec
-        else
-            vasp_cmd = split("$mpi_prefix $vasp_exec", " ")
-        end
-        run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
+    if _d("lspinorb")
+        vasp_exec = "$dft_home/vasp_ncl"
     else
-        sorry()
+        vasp_exec = "$dft_home/vasp_std"
     end
+
+    if isnothing(mpi_prefix)
+        vasp_cmd = vasp_exec
+    else
+        vasp_cmd = split("$mpi_prefix $vasp_exec", " ")
+    end
+    run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
 end
 
 function vasp_save()
