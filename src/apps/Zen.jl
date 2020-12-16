@@ -26,6 +26,16 @@ using TOML
 #
 # define some global numerical or string constants
 #
+# summary:
+#
+# I32, I64    -> numerical types
+# F32, F64    -> numerical types
+# C32, C64    -> numerical types
+# __libname__ -> library's name
+# __version__ -> version of zen
+# __release__ -> released date of zen
+# __authors__ -> authors of zen
+#
 include("const.jl")
 #
 export I32, I64
@@ -41,6 +51,15 @@ export __authors__
 #
 # define some dictionaries which contain the configuration parameters
 # and some data structures
+#
+# summary:
+#
+# PCASE    -> dict for case
+# PDFT     -> dict for dft engine
+# PDMFT    -> dict for dmft engine
+# PIMP     -> dict for quantum impurities
+# PSOLVER  -> dict for quantum impurity solver
+# IterInfo -> dict for iteration information
 #
 include("types.jl")
 #
