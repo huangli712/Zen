@@ -94,7 +94,31 @@ end
 
 Write the projectors using the IR format
 """
-function irio_projs() end
+function irio_projs(f::AbstractString, chipsi::Array{C64,4})
+    # extract some key parameters
+    nproj, nband, nkpt, nspin = size(chipsi)
+
+    # output the data
+    open(joinpath(f, "projs.ir"), "w") do fout
+        println(fout, "# file: projs.ir")
+        println(fout, "# data: chipsi[nproj,nband,nkpt,nspin]")
+        println(fout)
+        println(fout, "nproj -> $nproj")
+        println(fout, "nband -> $nband")
+        println(fout, "nkpt  -> $nkpt ")
+        println(fout, "nspin -> $nspin")
+        println(fout)
+        for s = 1:nspin
+            for k = 1:nkpt
+                for b = 1:nband
+                    for p = 1:nproj
+                        @printf(fout, "%16.12f %16.12f\n", chipsi[p,b,k,s]...)
+                    end
+                end
+            end
+        end
+    end
+end
 
 """
     irio_charge()
