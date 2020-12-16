@@ -1,9 +1,81 @@
+#
+# project : pansy
+# source  : vasp.jl
+# author  : Li Huang (lihuang.dmft@gmail.com)
+# status  : unstable
+# comment :
+#
+# last modified: 2020/12/16
+#
+
+function vasp_init(it::IterInfo)
+    # prepare essential input files
+    if it.dft_dmft_iter == 0
+        # copy POTCAR and POSCAR
+        cp("../POTCAR", joinpath(pwd(), "POTCAR"))
+        cp("../POSCAR", joinpath(pwd(), "POSCAR"))
+
+        # generate INCAR automatically
+        vasp_incar()
+    end
+
+    # check essential input files
+    if it.dft_dmft_iter >= 1
+        flist = ("INCAR", "POSCAR", "POTCAR")
+        for i in eachindex(flist)
+            filename = flist[i]
+            if !isfile(filename)
+                error("Please make sure the file $filename is available")
+            end
+        end
+    end
+end
+
+function vasp_run()
+    dft_home = query_dft()
+    mpi_prefix = parse_toml("MPI.toml", "dft", false)
+
+    cd("dft")
+
+    if _d("engine") === "vasp"
+        if _d("lspinorb")
+            vasp_exec = "$dft_home/vasp_ncl"
+        else
+            vasp_exec = "$dft_home/vasp_std"
+        end
+
+        if isnothing(mpi_prefix)
+            vasp_cmd = vasp_exec
+        else
+            vasp_cmd = split("$mpi_prefix $vasp_exec", " ")
+        end
+        run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
+    else
+        sorry()
+    end
+end
+
+function vasp_save()
+        if it.dft_dmft_iter == 0
+            cp("INCAR", "INCAR.$(it.dft_dmft_iter)")
+            cp("CHGCAR", "CHGCAR.$(it.dft_dmft_iter)")
+            cp("OUTCAR", "OUTCAR.$(it.dft_dmft_iter)")
+            cp("PROJCAR", "PROJCAR.$(it.dft_dmft_iter)")
+            cp("LOCPROJ", "LOCPROJ.$(it.dft_dmft_iter)")
+            cp("EIGENVAL", "EIGENVAL.$(it.dft_dmft_iter)")
+            cp("vasp.out", "vasp.out.$(it.dft_dmft_iter)")
+            cp("vasprun.xml", "vasprun.xml.$(it.dft_dmft_iter)")
+        else
+            sorry()
+        end
+end
+
 """
-    make_incar()
+    vasp_incar()
 
 Generate an INCAR file. it will be used only when the dft engine is vasp
 """
-function make_incar()
+function vasp_incar()
     # open the iostream
     ios = open("INCAR", "w")
 
@@ -116,77 +188,6 @@ function make_incar()
 
     # close the iostream
     close(ios)
-end
-
-function vasp_init()
-    # copy essential input files
-    if it.dft_dmft_iter == 0
-        if _d("engine") === "vasp"
-            cp("../POTCAR", joinpath(pwd(), "POTCAR"))
-            cp("../POSCAR", joinpath(pwd(), "POSCAR"))
-        else
-            sorry()
-        end
-    end
-
-    # generate essential input files
-    if it.dft_dmft_iter == 0
-        if _d("engine") === "vasp"
-            make_incar()
-        else
-            sorry()
-        end
-    end
-
-    # check essential input files
-    if it.dft_dmft_iter >= 1
-        if _d("engine") === "vasp"
-            if !isfile("INCAR") || !isfile("POSCAR") || !isfile("POTCAR")
-                error("Please make sure the existence of following files: INCAR, POSCAR, and POTCAR")
-            end
-        else
-            sorry()
-        end
-    end
-end
-
-function vasp_run()
-    dft_home = query_dft()
-    mpi_prefix = parse_toml("MPI.toml", "dft", false)
-
-    cd("dft")
-
-    if _d("engine") === "vasp"
-        if _d("lspinorb")
-            vasp_exec = "$dft_home/vasp_ncl"
-        else
-            vasp_exec = "$dft_home/vasp_std"
-        end
-
-        if isnothing(mpi_prefix)
-            vasp_cmd = vasp_exec
-        else
-            vasp_cmd = split("$mpi_prefix $vasp_exec", " ")
-        end
-        run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
-    else
-        sorry()
-    end
-end
-
-function vasp_save()
-        if it.dft_dmft_iter == 0
-            cp("INCAR", "INCAR.$(it.dft_dmft_iter)")
-            cp("CHGCAR", "CHGCAR.$(it.dft_dmft_iter)")
-            cp("OUTCAR", "OUTCAR.$(it.dft_dmft_iter)")
-            cp("PROJCAR", "PROJCAR.$(it.dft_dmft_iter)")
-            cp("LOCPROJ", "LOCPROJ.$(it.dft_dmft_iter)")
-            cp("EIGENVAL", "EIGENVAL.$(it.dft_dmft_iter)")
-            cp("vasp.out", "vasp.out.$(it.dft_dmft_iter)")
-            cp("vasprun.xml", "vasprun.xml.$(it.dft_dmft_iter)")
-        else
-            sorry()
-        end
 end
 
 """
