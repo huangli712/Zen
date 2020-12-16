@@ -262,6 +262,7 @@ function vaspio_lattice(f::AbstractString)
     # close the iostream
     close(fin)
 
+    # return the desired arrays
     return nsorts, natoms, symbols, atom_list, posi_list
 end
 
