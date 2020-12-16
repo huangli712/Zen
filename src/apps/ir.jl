@@ -82,7 +82,7 @@ function irio_eigen(f::AbstractString, enk::Array{F64,3}, occupy::Array{F64,3})
         for s = 1:nspin
             for b = 1:nband
                 for k = 1:nkpt
-                    println(fout, enk[k, b, s], " ", occupy[k, b, s])
+                    @printf(fout, "%16.12f %16.12f\n", enk[k, b, s], occupy[k, b, s])
                 end
             end
         end
