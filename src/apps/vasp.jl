@@ -156,7 +156,7 @@ function vasp_incar()
     if lsymm
         write(ios, "ISYM     = 2 \n")
     else
-        write(ios, "ISYM     = 0 \n")
+        write(ios, "ISYM     =-1 \n")
     end
 
     # for spin polarizations
