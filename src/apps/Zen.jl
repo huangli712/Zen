@@ -175,11 +175,13 @@ export dft_save
 # vasp_run       -> execute vasp program
 # vasp_save      -> backup vasp's output files
 # vasp_incar     -> make essential input file (INCAR)
+# vasp_kpoints   -> make essential input file (KPOINTS)
 # vaspio_lattice -> read lattice information
 # vaspio_kmesh   -> read kmesh
 # vaspio_tetra   -> read tetrahedra
 # vaspio_eigen   -> read eigenvalues
 # vaspio_projs   -> read projectors
+# vaspio_fermi   -> read fermi level
 # vaspio_charge  -> read charge
 #
 include("vasp.jl")
@@ -209,6 +211,7 @@ export vaspio_charge
 # irio_tetra   -> write tetrahedra
 # irio_eigen   -> write eigenvalues
 # irio_projs   -> write projectors
+# irio_fermi   -> write fermi level
 # irio_charge  -> write charge
 #
 include("ir.jl")
