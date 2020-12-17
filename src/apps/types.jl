@@ -5,13 +5,13 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/14
+# last modified: 2020/12/17
 #
 
 #
 # remarks:
 #
-# the value of dictionary is a array, which has four elements 
+# the value of dictionary is a array, which has four elements
 #     [1] -> actually value
 #     [2] -> 1: it is mandatory; 0: it is optional
 #     [3] -> numerical type
@@ -21,7 +21,7 @@
 """
     PCASE
 
-Dictionary for configuration parameters: case summary    
+Dictionary for configuration parameters: case summary
 """
 PCASE = Dict{String,Any}(
             "case"     => [missing, 1, String, "system's name"]

@@ -140,7 +140,7 @@ function vasp_incar()
             write(ios, "KSPACING = 0.4 \n")
             break
 
-        @default # very coarse 
+        @default # very coarse kmesh
             write(ios, "KSPACING = 0.5 \n")
             break
     end
@@ -207,10 +207,17 @@ function vasp_incar()
 end
 
 """
+    vasp_kpoints()
+
+Generate a KPOINTS file for vasp
+"""
+function vasp_kpoints() end
+
+"""
     vaspio_lattice(f::AbstractString)
 
 Reading vasp's POSCAR file, return crystallography information. Here `f`
-means only the directory that contains POSCAR 
+means only the directory that contains POSCAR
 """
 function vaspio_lattice(f::AbstractString)
     # open the iostream
@@ -234,7 +241,7 @@ function vaspio_lattice(f::AbstractString)
     # get the number of sorts of atoms
     nsorts = length(symbols)
 
-    # get the number list 
+    # get the number list
     numbers = parse.(I64, line_to_array(fin))
 
     # get the total number of atoms
@@ -281,7 +288,7 @@ function vaspio_kmesh(f::AbstractString)
     nkpt = parse(I64, readline(fin))
     readline(fin)
 
-    # create arrays 
+    # create arrays
     kmesh = zeros(F64, nkpt, 3)
     weight = zeros(F64, nkpt)
 
@@ -324,7 +331,7 @@ function vaspio_tetra(f::AbstractString)
     # skip one empty line
     readline(fin)
 
-    # extract total number of tetrahedra and volume of a tetrahedron 
+    # extract total number of tetrahedra and volume of a tetrahedron
     arr = line_to_array(fin)
     ntet = parse(I64, arr[1])
     volt = parse(F64, arr[2])
@@ -362,7 +369,7 @@ function vaspio_eigen(f::AbstractString)
         readline(fin)
     end
 
-    # read in some key parameters: nelect, nkpt, nbands 
+    # read in some key parameters: nelect, nkpt, nbands
     nelect, nkpt, nband = parse.(I64, line_to_array(fin))
 
     # create arrays
@@ -417,7 +424,7 @@ function vaspio_projs(f::AbstractString)
         # extract site information
         _site = parse(I64, line_to_array(fin)[2])
 
-        # _proj means the shift for index of projectors 
+        # _proj means the shift for index of projectors
         _proj = site === 1 ? 0 : sum(groups[1:site-1])
 
         # skip one empty line

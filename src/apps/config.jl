@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/15
+# last modified: 2020/12/17
 #
 
 """
@@ -138,7 +138,7 @@ end
 """
     _v(val::Array{Any,1})
 
-Verify the value array 
+Verify the value array
 """
 @inline function _v(val::Array{Any,1})
     # to check if the value is updated

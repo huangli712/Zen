@@ -6,7 +6,7 @@ using .Zen
 # check the version of julia runtime environment
 require()
 
-# print the welcome message 
+# print the welcome message
 welcome()
 
 # parse the file case.toml to extract configuration parameters

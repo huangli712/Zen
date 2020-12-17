@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/16
+# last modified: 2020/12/17
 #
 
 module Zen
@@ -16,7 +16,7 @@ module Zen
 # additional remarks:
 #
 # the TOML package is included in the standard library since v1.6
-# so, please upgrade your julia environment if it is outdated 
+# so, please upgrade your julia environment if it is outdated
 #
 using Printf
 using TOML
@@ -81,7 +81,7 @@ export IterInfo
 # renew_config -> update dict (configuration)
 # check_config -> check dict (configuration)
 # _v           -> verify dict
-# _c           -> shortcut to visit dict (case)  
+# _c           -> shortcut to visit dict (case)
 # _d           -> shortcut to visit dict (dft)
 # _m           -> shortcut to visit dict (dmft)
 # _i           -> shortcut to visit dict (impurity)
@@ -107,7 +107,7 @@ export _s
 #
 # summary:
 #
-# @cswitch      -> C-style switch 
+# @cswitch      -> C-style switch
 # require       -> check julia envirnoment
 # query_args    -> query arguments
 # query_cars    -> query input files

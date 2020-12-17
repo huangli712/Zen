@@ -5,13 +5,13 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/16
+# last modified: 2020/12/17
 #
 
 """
     make_trees()
 
-Prepare the working directories at advance 
+Prepare the working directories at advance
 """
 function make_trees()
     # the working directories include dft, dmft1, dmft2, and impurity.i
@@ -80,7 +80,7 @@ function dft_run(it::IterInfo)
 
     # choose suitable dft engine
     engine = _d("engine")
-    @cswitch engine begin 
+    @cswitch engine begin
         @case "vasp"
             vasp_run(it)
             break
@@ -104,7 +104,7 @@ function dft_save(it::IterInfo)
     cd("dft")
 
     # choose suitable dft engine
-    engine = _d("engine") 
+    engine = _d("engine")
     @cswitch engine begin
         @case "vasp"
             vasp_save(it)
