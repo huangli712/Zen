@@ -194,6 +194,7 @@ export vaspio_kmesh
 export vaspio_tetra
 export vaspio_eigen
 export vaspio_projs
+export vaspio_fermi
 export vaspio_charge
 
 #
@@ -217,6 +218,7 @@ export irio_kmesh
 export irio_tetra
 export irio_eigen
 export irio_projs
+export irio_fermi
 export irio_charge
 
 end

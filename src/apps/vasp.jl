@@ -557,6 +557,11 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
 end
 
 """
+    vaspio_fermi(f::AbstractString)
+"""
+function vaspio_fermi(f::AbstractString) end
+
+"""
     vaspio_charge(f::AbstractString)
 """
 function vaspio_charge(f::AbstractString) end

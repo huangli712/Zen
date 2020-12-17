@@ -123,6 +123,11 @@ function irio_projs(f::AbstractString, chipsi::Array{C64,4})
 end
 
 """
+    irio_fermi()
+"""
+function irio_fermi() end
+
+"""
     irio_charge()
 """
 function irio_charge() end
