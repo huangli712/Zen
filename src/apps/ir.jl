@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/16
+# last modified: 2020/12/17
 #
 
 """
@@ -18,7 +18,7 @@ function irio_lattice() end
 """
     irio_kmesh(f::AbstractString, kmesh::Array{F64,2}, weight::Array{F64,1})
 
-Write the kmesh information using the IR format 
+Write the kmesh information using the IR format
 """
 function irio_kmesh(f::AbstractString, kmesh::Array{F64,2}, weight::Array{F64,1})
     # extract some key parameters
