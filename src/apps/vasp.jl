@@ -46,7 +46,7 @@ function vasp_run(it::IterInfo)
     dft_home = query_dft()
 
     # determine mpi prefix (whether the vasp is executed sequentially)
-    mpi_prefix = parse_toml("MPI.toml", "dft", false)
+    mpi_prefix = parse_toml("../MPI.toml", "dft", false)
 
     # select suitable vasp program
     if _d("lspinorb")
