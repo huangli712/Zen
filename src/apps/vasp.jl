@@ -211,7 +211,13 @@ end
 
 Generate a KPOINTS file for vasp
 """
-function vasp_kpoints() end
+function vasp_kpoints()
+    # open the iostream
+    ios = open("KPOINTS", "w")
+
+    # close the iostream
+    close(ios)
+end
 
 """
     vaspio_lattice(f::AbstractString)

@@ -188,6 +188,7 @@ export vasp_init
 export vasp_run
 export vasp_save
 export vasp_incar
+export vasp_kpoints
 export vaspio_lattice
 export vaspio_kmesh
 export vaspio_tetra
