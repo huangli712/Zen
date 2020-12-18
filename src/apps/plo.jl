@@ -64,3 +64,9 @@ function plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3}
     # return the desired array
     return dm
 end
+
+function view_ovlp()
+end
+
+function view_dm()
+end
