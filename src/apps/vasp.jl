@@ -568,11 +568,25 @@ function vaspio_fermi(f::AbstractString)
     # open the iostream
     fin = open(joinpath(f, "DOSCAR"), "r")
 
+    # skip five empty lines
+    for i = 1:5
+        readline(fin)
+    end
+
+    # extract the fermi level
+    fermi = parse(F64, line_to_array(fin)[4])
+
     # close the iostream
     close(fin)
+
+    # return the desired data
+    return fermi
 end
 
 """
     vaspio_charge(f::AbstractString)
+
+Reading vasp's CHGCAR file, return the charge density. Here `f` means
+only the directory that contains CHGCAR
 """
 function vaspio_charge(f::AbstractString) end
