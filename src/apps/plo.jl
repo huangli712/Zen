@@ -34,7 +34,6 @@ function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
     return ovlp
 end
 
-
 """
     plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
 
