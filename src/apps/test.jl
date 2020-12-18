@@ -16,8 +16,8 @@ using .Zen
 #chipsi2 = vaspio_projs(joinpath(pwd(), "dft"), false)
 #irio_projs(pwd(), chipsi2)
 
-fermi = vaspio_fermi(joinpath(pwd(), "dft"))
-@show fermi
+#fermi = vaspio_fermi(joinpath(pwd(), "dft"))
+#irio_fermi(pwd(), fermi)
 
 #nsorts, natoms, symbols, atom_list, posi_list = vaspio_poscar(pwd() * "/dft")
 #@show nsorts, natoms, symbols, atom_list, posi_list

@@ -236,5 +236,7 @@ export irio_charge
 #
 include("plo.jl")
 #
+export plo_ovlp
+export plo_dm
 
 end
