@@ -10,13 +10,17 @@
 
 """
     plo_ovlp()
+
+Calculate the overlap of projectors
 """
 function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
     # extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
+    # create overlap array
     ovlp = zeros(F64, nproj, nproj, nspin)
 
+    # build overlap array
     for s = 1:nspin
         for k = 1:nkpt
             wght = weight[k] / nkpt
@@ -25,6 +29,8 @@ function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
             ovlp[:, :, s] = ovlp[:, :, s] + real(A * B) * wght
         end
     end
+
+    @show ovlp[:, :, 1]
 end
 
 """
