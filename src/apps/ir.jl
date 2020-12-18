@@ -68,21 +68,21 @@ Write the eigenvalues using the IR format
 """
 function irio_eigen(f::AbstractString, enk::Array{F64,3}, occupy::Array{F64,3})
     # extract some key parameters
-    nkpt, nband, nspin = size(enk)
+    nband, nkpt, nspin = size(enk)
 
     # output the data
     open(joinpath(f, "eigen.ir"), "w") do fout
         println(fout, "# file: eigen.ir")
-        println(fout, "# data: enk[nkpt,nband,nspin] and occupy[nkpt,nband,nspin]")
+        println(fout, "# data: enk[nband,nkpt,nspin] and occupy[nband,nkpt,nspin]")
         println(fout)
-        println(fout, "nkpt  -> $nkpt ")
         println(fout, "nband -> $nband")
+        println(fout, "nkpt  -> $nkpt ")
         println(fout, "nspin -> $nspin")
         println(fout)
         for s = 1:nspin
-            for b = 1:nband
-                for k = 1:nkpt
-                    @printf(fout, "%16.12f %16.12f\n", enk[k, b, s], occupy[k, b, s])
+            for k = 1:nkpt
+                for b = 1:nband
+                    @printf(fout, "%16.12f %16.12f\n", enk[b, k, s], occupy[b, k, s])
                 end
             end
         end

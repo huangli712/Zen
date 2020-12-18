@@ -381,8 +381,8 @@ function vaspio_eigen(f::AbstractString)
     nelect, nkpt, nband = parse.(I64, line_to_array(fin))
 
     # create arrays
-    enk = zeros(F64, nkpt, nband, nspin)
-    occupy = zeros(F64, nkpt, nband, nspin)
+    enk = zeros(F64, nband, nkpt, nspin)
+    occupy = zeros(F64, nband, nkpt, nspin)
 
     # read in the energy bands and the corresponding occupations
     for i = 1:nkpt
@@ -392,14 +392,14 @@ function vaspio_eigen(f::AbstractString)
             arr = line_to_array(fin)
             # for spin unpolarized case
             if nspin === 1
-                enk[i, j, 1] = parse(F64, arr[2])
-                occupy[i, j, 1] = parse(F64, arr[3])
+                enk[j, i, 1] = parse(F64, arr[2])
+                occupy[j, i, 1] = parse(F64, arr[3])
                 # for spin polarized case
             else
-                enk[i, j, 1] = parse(F64, arr[2])
-                enk[i, j, 2] = parse(F64, arr[3])
-                occupy[i, j, 1] = parse(F64, arr[4])
-                occupy[i, j, 2] = parse(F64, arr[5])
+                enk[j, i, 1] = parse(F64, arr[2])
+                enk[j, i, 2] = parse(F64, arr[3])
+                occupy[j, i, 1] = parse(F64, arr[4])
+                occupy[j, i, 2] = parse(F64, arr[5])
             end
         end
     end
