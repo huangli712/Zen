@@ -37,5 +37,6 @@ using .Zen
 chipsi = vaspio_projs(joinpath(pwd(), "dft"), false)
 kmesh, weight = vaspio_kmesh(joinpath(pwd(), "dft"))
 enk, occupy = vaspio_eigen(joinpath(pwd(), "dft"))
-plo_ovlp(chipsi, weight)
-plo_dm(chipsi, weight, occupy)
+ovlp = plo_ovlp(chipsi, weight)
+dm = plo_dm(chipsi, weight, occupy)
+view_ovlp(ovlp)

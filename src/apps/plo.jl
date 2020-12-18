@@ -65,7 +65,24 @@ function plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3}
     return dm
 end
 
-function view_ovlp()
+"""
+    view_ovlp(ovlp::Array{F64,3})
+
+Output the overlap matrix, only for debug
+"""
+function view_ovlp(ovlp::Array{F64,3})
+    # extract some key parameters
+    _, nproj, nspin = size(ovlp)
+
+    # output the data
+    println("<- Overlap Matrix ->")
+    for s = 1:nspin
+        println("Spin: $s")
+        for p1 = 1:nproj
+            map(x -> @printf("%12.7f", x), ovlp[p1, :, s])
+            println()
+        end
+    end
 end
 
 function view_dm()

@@ -239,5 +239,7 @@ include("plo.jl")
 #
 export plo_ovlp
 export plo_dm
+export view_ovlp
+export view_dm
 
 end
