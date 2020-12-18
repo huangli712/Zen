@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/17
+# last modified: 2020/12/18
 #
 
 """
@@ -125,7 +125,7 @@ function vasp_incar()
             break
     end
 
-    # for k-mesh density
+    # for kmesh density
     kmesh = _d("kmesh")
     @cswitch kmesh begin
         @case "accurate"
@@ -155,7 +155,7 @@ function vasp_incar()
     lsymm = _d("lsymm")
     if lsymm
         write(ios, "ISYM     = 2 \n")
-    else
+    else # ignore the symmetry completely
         write(ios, "ISYM     =-1 \n")
     end
 
@@ -214,6 +214,8 @@ Generate a KPOINTS file for vasp
 function vasp_kpoints()
     # open the iostream
     ios = open("KPOINTS", "w")
+
+    # TODO
 
     # close the iostream
     close(ios)
@@ -558,8 +560,17 @@ end
 
 """
     vaspio_fermi(f::AbstractString)
+
+Reading vasp's DOSCAR file, return the fermi level. Here `f` means
+only the directory that contains DOSCAR
 """
-function vaspio_fermi(f::AbstractString) end
+function vaspio_fermi(f::AbstractString)
+    # open the iostream
+    fin = open(joinpath(f, "DOSCAR"), "r")
+
+    # close the iostream
+    close(fin)
+end
 
 """
     vaspio_charge(f::AbstractString)
