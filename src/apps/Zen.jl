@@ -228,7 +228,7 @@ export irio_charge
 #
 # plo.jl
 #
-# tools for the projected local orbitals   
+# tools for the projection on localized orbitals scheme
 #
 # summary:
 #
