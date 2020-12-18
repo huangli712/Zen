@@ -85,5 +85,22 @@ function view_ovlp(ovlp::Array{F64,3})
     end
 end
 
-function view_dm()
+"""
+    view_dm(dm::Array{F64,3})
+
+Output the density matrix, only for debug
+"""
+function view_dm(dm::Array{F64,3})
+    # extract some key parameters
+    _, nproj, nspin = size(dm)
+
+    # output the data
+    println("<- Density Matrix ->")
+    for s = 1:nspin
+        println("Spin: $s")
+        for p1 = 1:nproj
+            map(x -> @printf("%12.7f", x), dm[p1, :, s])
+            println()
+        end
+    end
 end
