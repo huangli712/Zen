@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/17
+# last modified: 2020/12/18
 #
 
 """
@@ -90,7 +90,7 @@ function irio_eigen(f::AbstractString, enk::Array{F64,3}, occupy::Array{F64,3})
 end
 
 """
-    irio_projs()
+    irio_projs(f::AbstractString, chipsi::Array{C64,4})
 
 Write the projectors using the IR format
 """
@@ -123,9 +123,20 @@ function irio_projs(f::AbstractString, chipsi::Array{C64,4})
 end
 
 """
-    irio_fermi()
+    irio_fermi(f::AbstractString, fermi::F64)
+
+Write the fermi level using the IR format
 """
-function irio_fermi() end
+function irio_fermi(f::AbstractString, fermi::F64)
+    # output the data
+    open(joinpath(f, "fermi.ir"), "w") do fout
+        println(fout, "# file: fermi.ir")
+        println(fout, "# data: fermi")
+        println(fout)
+        println(fout, "fermi -> $fermi")
+        println(fout)
+    end
+end
 
 """
     irio_charge()
