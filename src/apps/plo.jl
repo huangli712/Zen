@@ -20,7 +20,9 @@ function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
     for s = 1:nspin
         for k = 1:nkpt
             wght = weight[k] / nkpt
-            ovlp[:, :, s] = ovlp[:, :, s] + real(chipsi[:, :, k, s] * transpose(chipsi[:, :, k, s])) * wght
+            A = chipsi[:, :, k, s]
+            B = conj(transpose(A))
+            ovlp[:, :, s] = ovlp[:, :, s] + real(A * B) * wght
         end
     end
 end
