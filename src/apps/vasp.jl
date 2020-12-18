@@ -102,6 +102,7 @@ function vasp_incar()
     write(ios, "EDIFF    = 1E-8 \n")
     write(ios, "ALGO     = Normal \n")
     write(ios, "LASPH    = .TRUE. \n")
+    write(ios, "LMAXMIX  = 6 \n")
 
     # customize your INCAR according to the case.toml
     #
