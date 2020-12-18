@@ -30,7 +30,8 @@ function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
         end
     end
 
-    @show ovlp[:, :, 1]
+    # return the desired array
+    return ovlp
 end
 
 """
