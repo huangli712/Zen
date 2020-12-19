@@ -139,4 +139,9 @@ mutable struct ProjsTrait
 end
 
 mutable struct ProjsGroup
+    site  :: I64
+    sort  :: String
+    l     :: I64
+    corr  :: Bool
+    # TODO
 end
