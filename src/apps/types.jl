@@ -128,3 +128,9 @@ mutable struct Lattice
     atoms :: Array{String,1}
     coord :: Array{F64,3}
 end
+
+mutable struct ProjsTrait
+end
+
+mutable struct ProjsGroup
+end
