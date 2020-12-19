@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/17
+# last modified: 2020/12/19
 #
 
 #
@@ -113,4 +113,18 @@ Outer constructor for IterInfo struct
 """
 function IterInfo(iter::I64 = 0)
     IterInfo(iter, iter, iter, iter)
+end
+
+"""
+    Lattice
+"""
+mutable struct Lattice
+    _case :: String
+    scale :: F64
+    lvect :: Array{F64,2}
+    nsort :: I64
+    natom :: I64
+    sorts :: Array{String,2}
+    atoms :: Array{String,1}
+    coord :: Array{F64,3}
 end
