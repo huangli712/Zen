@@ -130,6 +130,12 @@ mutable struct Lattice
 end
 
 mutable struct ProjsTrait
+    site  :: I64
+    sort  :: String
+    l     :: I64
+    m     :: I64
+    desc  :: String
+    corr  :: Bool
 end
 
 mutable struct ProjsGroup
