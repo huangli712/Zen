@@ -119,6 +119,19 @@ end
 
 """
     Lattice
+
+Contain the crystallography information
+
+._case -> the name of system 
+.scale -> universal scaling factor (lattice constant), which is used to
+          scale all lattice vectors and all atomic coordinates
+.lvect -> three lattice vectors defining the unit cell of the system
+.nsort -> number of sorts of atoms
+.natom -> number of atoms
+.sorts -> sorts of atoms
+.atoms -> lists of atoms
+.coord -> atomic positions are provided in cartesian coordinates or in
+          direct coordinates (respectively fractional coordinates)
 """
 mutable struct Lattice
     _case :: String
@@ -131,7 +144,7 @@ mutable struct Lattice
     coord :: Array{F64,3}
 end
 
-mutable struct ProjsTrait
+mutable struct PrTrait
     site  :: I64
     sort  :: String
     l     :: I64
@@ -140,7 +153,7 @@ mutable struct ProjsTrait
     corr  :: Bool
 end
 
-mutable struct ProjsGroup
+mutable struct PrGroup
     site  :: I64
     sort  :: String
     l     :: I64
