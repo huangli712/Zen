@@ -139,9 +139,25 @@ mutable struct Lattice
     lvect :: Array{F64,2}
     nsort :: I64
     natom :: I64
-    sorts :: Array{String,2}
+    sorts :: Array{Union{String,I64},2}
     atoms :: Array{String,1}
-    coord :: Array{F64,3}
+    coord :: Array{F64,2}
+end
+
+"""
+    Lattice()
+
+Outer constructor for Lattice struct
+"""
+function Lattice(_case::String, scale::F64, nsort::I64, natom::I64)
+    # initialize the arrays
+    lvect = zeros(F64, 3, 3)
+    sorts = Array{Union{String,I64}}(undef, nsort, 2)
+    atoms = fill("", natom)
+    coord = zeros(F64, natom, 3)
+
+    # call the default constructor
+    Lattice(_case, scale, lvect, nsort, natom, sorts, atoms, coord)
 end
 
 mutable struct PrTrait
