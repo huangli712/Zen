@@ -31,14 +31,20 @@ using .Zen
 
 # test vaspio_lattice()
 #--------------------------------------
-vaspio_lattice(joinpath(pwd(), "dft"))
-#@show nsorts, natoms, symbols, atom_list, posi_list
-exit(-1)
+#latt = vaspio_lattice(pwd())
+#@show latt._case
+#@show latt.scale
+#@show latt.lvect
+#@show latt.nsort
+#@show latt.natom
+#@show latt.sorts
+#@show latt.atoms
+#@show latt.coord
 
-chipsi = vaspio_projs(joinpath(pwd(), "dft"), false)
-kmesh, weight = vaspio_kmesh(joinpath(pwd(), "dft"))
-enk, occupy = vaspio_eigen(joinpath(pwd(), "dft"))
-ovlp = plo_ovlp(chipsi, weight)
-dm = plo_dm(chipsi, weight, occupy)
-view_ovlp(ovlp)
-view_dm(dm)
+#chipsi = vaspio_projs(joinpath(pwd(), "dft"), false)
+#kmesh, weight = vaspio_kmesh(joinpath(pwd(), "dft"))
+#enk, occupy = vaspio_eigen(joinpath(pwd(), "dft"))
+#ovlp = plo_ovlp(chipsi, weight)
+#dm = plo_dm(chipsi, weight, occupy)
+#view_ovlp(ovlp)
+#view_dm(dm)
