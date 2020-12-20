@@ -5,17 +5,19 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/19
+# last modified: 2020/12/20
 #
 
 #
 # remarks:
 #
-# the value of dictionary is a array, which has four elements
+# the values of the following dictionaries are actually arrays, which
+# contain four elements
 #     [1] -> actually value
-#     [2] -> 1: it is mandatory; 0: it is optional
+#     [2] -> if it is 1, this key-value pair is mandatory
+#            if it is 0, this key-value pair is optional
 #     [3] -> numerical type
-#     [4] -> explanations
+#     [4] -> brief explanations
 #
 
 """
