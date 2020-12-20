@@ -259,6 +259,8 @@ function vaspio_lattice(f::AbstractString)
     # now all the parameters are ready
     # we would like to create Lattice struct here
     latt = Lattice(_case, scale, nsort, natom)
+
+    # update latt using the available data
     latt.lvect = lvect
     for i = 1:nsort
         latt.sorts[i,1] = string(symbols[i])
@@ -273,6 +275,7 @@ function vaspio_lattice(f::AbstractString)
             latt.atoms[k] = symbols[i]
         end
     end
+    @assert k === natom
 
     # get the coordinates of atoms
     readline(fin)
