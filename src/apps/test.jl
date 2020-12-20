@@ -31,8 +31,9 @@ using .Zen
 
 # test vaspio_lattice()
 #--------------------------------------
-#nsorts, natoms, symbols, atom_list, posi_list = vaspio_lattice(joinpath(pwd(), "dft"))
+vaspio_lattice(joinpath(pwd(), "dft"))
 #@show nsorts, natoms, symbols, atom_list, posi_list
+exit(-1)
 
 chipsi = vaspio_projs(joinpath(pwd(), "dft"), false)
 kmesh, weight = vaspio_kmesh(joinpath(pwd(), "dft"))

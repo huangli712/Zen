@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/18
+# last modified: 2020/12/21
 #
 
 """
@@ -233,53 +233,58 @@ function vaspio_lattice(f::AbstractString)
     fin = open(joinpath(f, "POSCAR"), "r")
 
     # get the case
-    case = strip(readline(fin))
+    _case = string(strip(readline(fin)))
 
     # get the scaling factor
     scale = parse(F64, readline(fin))
 
-    # get the basis vector
-    bvec = zeros(F64, 3, 3)
-    bvec[1, :] = parse.(F64, line_to_array(fin))
-    bvec[2, :] = parse.(F64, line_to_array(fin))
-    bvec[3, :] = parse.(F64, line_to_array(fin))
+    # get the lattice vectors
+    lvect = zeros(F64, 3, 3)
+    lvect[1, :] = parse.(F64, line_to_array(fin))
+    lvect[2, :] = parse.(F64, line_to_array(fin))
+    lvect[3, :] = parse.(F64, line_to_array(fin))
 
     # get the symbol list
     symbols = line_to_array(fin)
 
     # get the number of sorts of atoms
-    nsorts = length(symbols)
+    nsort = length(symbols)
 
     # get the number list
     numbers = parse.(I64, line_to_array(fin))
 
     # get the total number of atoms
-    natoms = sum(numbers)
+    natom = sum(numbers)
 
-    # create atom list, whose value is related to the sorts of atoms
-    atom_list = zeros(I64, natoms)
-    curr_index = 0
+    # now all the parameters are ready
+    # we would like to create Lattice struct here
+    latt = Lattice(_case, scale, nsort, natom)
+    latt.lvect = lvect
+    for i = 1:nsort
+        latt.sorts[i,1] = string(symbols[i])
+        latt.sorts[i,2] = numbers[i]
+    end
+
+    # get the atom list
     k = 0
-    for i = 1:length(numbers)
-        curr_index = curr_index + 1
+    for i = 1:nsort
         for j = 1:numbers[i]
             k = k + 1
-            atom_list[k] = curr_index
+            latt.atoms[k] = symbols[i]
         end
     end
 
     # get the coordinates of atoms
-    posi_list = zeros(F64, natoms, 3)
     readline(fin)
-    for i = 1:natoms
-        posi_list[i, :] = parse.(F64, line_to_array(fin)[1:3])
+    for i = 1:natom
+        latt.coord[i, :] = parse.(F64, line_to_array(fin)[1:3])
     end
 
     # close the iostream
     close(fin)
 
-    # return the desired arrays
-    return nsorts, natoms, symbols, atom_list, posi_list
+    # return the desired struct
+    return latt
 end
 
 """
