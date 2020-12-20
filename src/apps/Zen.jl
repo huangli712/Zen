@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/19
+# last modified: 2020/12/21
 #
 
 module Zen
@@ -71,6 +71,8 @@ export PIMP
 export PSOLVER
 export IterInfo
 export Lattice
+export PrTrait
+export PrGroup
 
 #
 # config.jl

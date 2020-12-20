@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/20
+# last modified: 2020/12/21
 #
 
 #
@@ -160,6 +160,9 @@ function Lattice(_case::String, scale::F64, nsort::I64, natom::I64)
     Lattice(_case, scale, lvect, nsort, natom, sorts, atoms, coord)
 end
 
+"""
+    PrTrait
+"""
 mutable struct PrTrait
     site  :: I64
     sort  :: String
@@ -169,6 +172,9 @@ mutable struct PrTrait
     corr  :: Bool
 end
 
+"""
+    PrGroup
+"""
 mutable struct PrGroup
     site  :: I64
     sort  :: String
