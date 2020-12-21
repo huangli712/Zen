@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/21
+# last modified: 2020/12/22
 #
 
 #
@@ -156,14 +156,12 @@ end
 Essential information of projector
 
 .site -> site in which the projector is defined 
-.sort -> type of atom 
 .l    -> quantum number l
 .m    -> quantum number m
 .desc -> description
 """
 mutable struct PrTrait
     site  :: I64
-    sort  :: String
     l     :: I64
     m     :: I64
     desc  :: String
@@ -231,7 +229,7 @@ end
 
 Outer constructor for PrTrait struct
 """
-function PrTrait(site::I64, sort::String, desc::String)
+function PrTrait(site::I64, desc::String)
     # angular character of the local functions on the specified sites 
     # see the following webpage for more details
     #     https://www.vasp.at/wiki/index.php/LOCPROJ
@@ -249,7 +247,7 @@ function PrTrait(site::I64, sort::String, desc::String)
     m = lm - l * l
 
     # call the default constructor
-    PrTrait(site, sort, l, m, desc)
+    PrTrait(site, l, m, desc)
 end
 
 """
