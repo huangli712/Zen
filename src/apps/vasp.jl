@@ -15,7 +15,7 @@ Check the runtime environment of vasp, prepare necessary input files
 """
 function vasp_init(it::IterInfo)
     # prepare essential input files
-    if it.dft_dmft_iter == 0
+    if it.dmft_cycle == 0
         # copy POTCAR and POSCAR
         cp("../POTCAR", joinpath(pwd(), "POTCAR"))
         cp("../POSCAR", joinpath(pwd(), "POSCAR"))
@@ -25,7 +25,7 @@ function vasp_init(it::IterInfo)
     end
 
     # check essential input files
-    if it.dft_dmft_iter >= 1
+    if it.dmft_cycle >= 1
         flist = ("INCAR", "POSCAR", "POTCAR")
         for i in eachindex(flist)
             filename = flist[i]
@@ -72,15 +72,15 @@ end
 Backup the output files of vasp if necessary
 """
 function vasp_save(it::IterInfo)
-    if it.dft_dmft_iter == 0
-        cp("INCAR", "INCAR.$(it.dft_dmft_iter)")
-        cp("CHGCAR", "CHGCAR.$(it.dft_dmft_iter)")
-        cp("OUTCAR", "OUTCAR.$(it.dft_dmft_iter)")
-        cp("PROJCAR", "PROJCAR.$(it.dft_dmft_iter)")
-        cp("LOCPROJ", "LOCPROJ.$(it.dft_dmft_iter)")
-        cp("EIGENVAL", "EIGENVAL.$(it.dft_dmft_iter)")
-        cp("vasp.out", "vasp.out.$(it.dft_dmft_iter)")
-        cp("vasprun.xml", "vasprun.xml.$(it.dft_dmft_iter)")
+    if it.dmft_cycle == 0
+        cp("INCAR", "INCAR.$(it.dmft_cycle)")
+        cp("CHGCAR", "CHGCAR.$(it.dmft_cycle)")
+        cp("OUTCAR", "OUTCAR.$(it.dmft_cycle)")
+        cp("PROJCAR", "PROJCAR.$(it.dmft_cycle)")
+        cp("LOCPROJ", "LOCPROJ.$(it.dmft_cycle)")
+        cp("EIGENVAL", "EIGENVAL.$(it.dmft_cycle)")
+        cp("vasp.out", "vasp.out.$(it.dmft_cycle)")
+        cp("vasprun.xml", "vasprun.xml.$(it.dmft_cycle)")
     else
         sorry()
     end
