@@ -497,20 +497,28 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
     # number of bands (nband), and number of projectors (nproj)
     nspin, nkpt, nband, nproj = parse.(I64, line_to_array(fin)[1:4])
 
-    # find out how many sites are there (nsite)
-    # projs contains the specifications of the projectors
+    # extract information about projectors
     sites = zeros(I64, nproj)
-    projs = Array{String}(undef, nproj)
+    descs = fill("", nproj)
     for i = 1:nproj
         arr = line_to_array(fin)
         sites[i] = parse(I64, arr[2])
         # get rid of the ":" char
-        projs[i] = replace(arr[end], ":" => "")
+        descs[i] = replace(arr[end], ":" => "")
     end
+
+    # encapsulate the information about projectors into PrTrait struct
+    PT = PrTrait[]
+    for i = 1:nproj
+        push!(PT, PrTrait(sites[i], descs[i]))
+    end
+
+    # find out how many sites are involved (nsite)
     usites = union(sites)
     nsite = length(usites)
+    exit(-1)
 
-    # find out how many projectors are there for a given site
+    # combine the projectors with the same into groups
     groups = zeros(I64, nsite)
     for site = 1:nsite
         groups[site] = length(findall(x -> x === usites[site], sites))

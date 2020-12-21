@@ -20,7 +20,7 @@ using .Zen
 
 # test vaspio_projs() and irio_projs()
 #--------------------------------------
-#chipsi1 = vaspio_projs(joinpath(pwd(), "dft"))
+chipsi1 = vaspio_projs(joinpath(pwd(), "dft"))
 #chipsi2 = vaspio_projs(joinpath(pwd(), "dft"), false)
 #irio_projs(pwd(), chipsi2)
 
