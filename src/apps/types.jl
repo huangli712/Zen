@@ -211,7 +211,7 @@ end
 
 
 """
-    Lattice()
+    Lattice(_case::String, scale::F64, nsort::I64, natom::I64)
 
 Outer constructor for Lattice struct
 """
@@ -226,8 +226,18 @@ function Lattice(_case::String, scale::F64, nsort::I64, natom::I64)
     Lattice(_case, scale, lvect, nsort, natom, sorts, atoms, coord)
 end
 
+"""
+    PrTrait()
+
+Outer constructor for PrTrait struct
+"""
 function PrTrait()
 end
 
+"""
+    PrGroup
+
+Outer constructor for PrGroup struct
+"""
 function PrGroup()
 end
