@@ -193,7 +193,7 @@ mutable struct PrGroup
     l     :: I64
     corr  :: Bool
     Pr    :: Array{I64,1}
-    Tr    :: Array{F64,2}
+    Tr    :: Array{F64,1}
 end
 
 #
@@ -253,9 +253,20 @@ function PrTrait(site::I64, sort::String, desc::String)
 end
 
 """
-    PrGroup
+    PrGroup()
 
 Outer constructor for PrGroup struct
 """
 function PrGroup()
+    # setup initial parameters
+    site  = 0
+    sort  = ""
+    shell = "" 
+    l     = -1
+    corr  = false
+    Pr    = zeros(I64, 14)
+    Tr    = zeros(F64, 196) # 14 * 14
+
+    # call the default constructor
+    PrGroup(site, sort, shell, l, corr, Pr, Tr)
 end
