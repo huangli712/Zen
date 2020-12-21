@@ -62,7 +62,7 @@ export __authors__
 # PSOLVER  -> dict for quantum impurity solver
 # IterInfo -> struct for iteration information
 # Lattice  -> struct for crystallography information
-# PrTrait  -> struct for projectors 
+# PrTrait  -> struct for projectors
 # PrGroup  -> struct for groups of projectors
 #
 include("types.jl")

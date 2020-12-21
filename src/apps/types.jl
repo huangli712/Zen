@@ -9,15 +9,19 @@
 #
 
 #
+# Customized Dictionaries
+#
+
+#
 # remarks:
 #
-# the values of the following dictionaries are actually arrays, which
+# the values in the following dictionaries are actually arrays, which
 # contain four elements
-#     [1] -> actually value
-#     [2] -> if it is 1, this key-value pair is mandatory
-#            if it is 0, this key-value pair is optional
-#     [3] -> numerical type
-#     [4] -> brief explanations
+#     value[1] -> actually value
+#     value[2] -> if it is 1, this key-value pair is mandatory
+#                 if it is 0, this key-value pair is optional
+#     value[3] -> numerical type
+#     value[4] -> brief explanations
 #
 
 """
@@ -37,7 +41,7 @@ Dictionary for configuration parameters: density functional theory calculations
 PDFT  = Dict{String,Any}(
             "engine"   => [missing, 1, String, "engine for density functional theory calculations"],
             "smear"    => [missing, 0, String, "scheme for smearing"],
-            "kmesh"    => [missing, 0, String, "density of k-mesh sampling in the brillouin zone"],
+            "kmesh"    => [missing, 0, String, "density of kmesh sampling in the brillouin zone"],
             "magmom"   => [missing, 0, String, "initial magnetic moment"],
             "lsymm"    => [missing, 0, Bool  , "whether the symmetry is considered"],
             "lspins"   => [missing, 0, Bool  , "whether the spin orientations are polarized"],
@@ -96,6 +100,10 @@ PSOLVER= Dict{String,Any}(
              "params"  => [missing, 1, Array , "parameter sets of quantum impurity solver"],
          )
 
+#
+# Customized Structs
+#
+
 """
     IterInfo
 
@@ -122,7 +130,7 @@ end
 
 Contain the crystallography information
 
-._case -> the name of system 
+._case -> the name of system
 .scale -> universal scaling factor (lattice constant), which is used to
           scale all lattice vectors and all atomic coordinates
 .lvect -> three lattice vectors defining the unit cell of the system
