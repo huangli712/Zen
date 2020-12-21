@@ -108,21 +108,17 @@ PSOLVER= Dict{String,Any}(
     IterInfo
 
 Record the runtime information
+
+.dmft1_iter -> number of iterations for dmft1 and quantum impurity solver 
+.dmft2_iter -> number of iterations for dmft2 and dft engine
+.dmft_cycle -> number of dft + dmft iterations
+.full_cycle -> counter for each iteration
 """
 mutable struct IterInfo
-    total_iter :: I64
     dmft1_iter :: I64
     dmft2_iter :: I64
-    dft_dmft_iter :: I64
-end
-
-"""
-    IterInfo(iter::I64 = 0)
-
-Outer constructor for IterInfo struct
-"""
-function IterInfo(iter::I64 = 0)
-    IterInfo(iter, iter, iter, iter)
+    dmft_cycle :: I64
+    full_cycle :: I64
 end
 
 """
@@ -133,13 +129,15 @@ Contain the crystallography information
 ._case -> the name of system
 .scale -> universal scaling factor (lattice constant), which is used to
           scale all lattice vectors and all atomic coordinates
-.lvect -> three lattice vectors defining the unit cell of the system
+.lvect -> three lattice vectors defining the unit cell of the system. its
+          size is (3, 3)
 .nsort -> number of sorts of atoms
 .natom -> number of atoms
-.sorts -> sorts of atoms
-.atoms -> lists of atoms
+.sorts -> sorts of atoms. its size is (nsort, 2)
+.atoms -> lists of atoms. its size is (natom)
 .coord -> atomic positions are provided in cartesian coordinates or in
-          direct coordinates (respectively fractional coordinates)
+          direct coordinates (respectively fractional coordinates). its
+          size is (natom, 3)
 """
 mutable struct Lattice
     _case :: String
@@ -151,6 +149,54 @@ mutable struct Lattice
     atoms :: Array{String,1}
     coord :: Array{F64,2}
 end
+
+"""
+    PrTrait
+
+Essential information of projector
+
+.site ->
+.sort ->
+.l    ->
+.m    ->
+.desc ->
+"""
+mutable struct PrTrait
+    site  :: I64
+    sort  :: String
+    l     :: I64
+    m     :: I64
+    desc  :: String
+end
+
+"""
+    PrGroup
+
+.site ->
+.sort ->
+.l    ->
+.corr ->
+.Pr   ->
+.Tr   ->
+"""
+mutable struct PrGroup
+    site  :: I64
+    sort  :: String
+    l     :: I64
+    corr  :: Bool
+    Pr    :: Array{I64,1}
+    Tr    :: Array{F64,2}
+end
+
+"""
+    IterInfo(iter::I64 = 0)
+
+Outer constructor for IterInfo struct
+"""
+function IterInfo(iter::I64 = 0)
+    IterInfo(iter, iter, iter, iter)
+end
+
 
 """
     Lattice()
@@ -166,27 +212,4 @@ function Lattice(_case::String, scale::F64, nsort::I64, natom::I64)
 
     # call the default constructor
     Lattice(_case, scale, lvect, nsort, natom, sorts, atoms, coord)
-end
-
-"""
-    PrTrait
-"""
-mutable struct PrTrait
-    site  :: I64
-    sort  :: String
-    l     :: I64
-    m     :: I64
-    desc  :: String
-    corr  :: Bool
-end
-
-"""
-    PrGroup
-"""
-mutable struct PrGroup
-    site  :: I64
-    sort  :: String
-    l     :: I64
-    corr  :: Bool
-    # TODO
 end
