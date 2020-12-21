@@ -155,11 +155,11 @@ end
 
 Essential information of projector
 
-.site ->
-.sort ->
-.l    ->
-.m    ->
-.desc ->
+.site -> site in which the projector is defined 
+.sort -> type of atom 
+.l    -> quantum number l
+.m    -> quantum number m
+.desc -> description
 """
 mutable struct PrTrait
     site  :: I64
@@ -172,10 +172,16 @@ end
 """
     PrGroup
 
-.site ->
-.sort ->
-.l    ->
-.corr ->
+Essential information of group of projector
+
+.site -> site in which the projectors are defined. in principle, the
+         projectors included in the same group should be defined at
+         the same site (or equivalently atom)
+.sort -> type of atom
+.l    -> quantum number l. in principle, the projectors included in
+         the same group should have the same quantum number l (but
+         with different m)
+.corr -> if the projectors in this group are correlated
 .Pr   ->
 .Tr   ->
 """
