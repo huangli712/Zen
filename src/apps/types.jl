@@ -174,25 +174,31 @@ end
 
 Essential information of group of projector
 
-.site -> site in which the projectors are defined. in principle, the
-         projectors included in the same group should be defined at
-         the same site (or equivalently atom)
-.sort -> type of atom
-.l    -> quantum number l. in principle, the projectors included in
-         the same group should have the same quantum number l (but
-         with different m)
-.corr -> if the projectors in this group are correlated
-.Pr   ->
-.Tr   ->
+.site  -> site in which the projectors are defined. in principle, the
+          projectors included in the same group should be defined at
+          the same site (or equivalently atom)
+.sort  -> type of atom
+.shell -> type of correlated orbitals
+.l     -> quantum number l. in principle, the projectors included in
+          the same group should have the same quantum number l (but
+          with different m)
+.corr  -> if the projectors in this group are correlated
+.Pr    -> array. it contains the indices of projectors    
+.Tr    -> array. it contains the transformation matrix
 """
 mutable struct PrGroup
     site  :: I64
     sort  :: String
+    shell :: String
     l     :: I64
     corr  :: Bool
     Pr    :: Array{I64,1}
     Tr    :: Array{F64,2}
 end
+
+#
+# Customized Constructors
+#
 
 """
     IterInfo(iter::I64 = 0)
@@ -218,4 +224,10 @@ function Lattice(_case::String, scale::F64, nsort::I64, natom::I64)
 
     # call the default constructor
     Lattice(_case, scale, lvect, nsort, natom, sorts, atoms, coord)
+end
+
+function PrTrait()
+end
+
+function PrGroup()
 end
