@@ -227,12 +227,29 @@ function Lattice(_case::String, scale::F64, nsort::I64, natom::I64)
 end
 
 """
-    PrTrait()
+    PrTrait(site::I64, sort::String, desc::String)
 
 Outer constructor for PrTrait struct
 """
 function PrTrait(site::I64, sort::String, desc::String)
+    # angular character of the local functions on the specified sites 
+    # see the following webpage for more details
+    #     https://www.vasp.at/wiki/index.php/LOCPROJ
+    orb_labels = ("s", 
+                  "py", "pz", "px",
+                  "dxy", "dyz", "dz2", "dxz", "dx2-y2",
+                  "fz3", "fxz2", "fyz2", "fz(x2-y2)", "fxyz", "fx(x2-3y2)", "fy(3x2-y2)")
 
+    # to make sure the specified desc is valid
+    @assert desc in orb_labels 
+
+    # determine quantum numbers l and m according to desc
+    lm = findfirst(x -> x === desc, orb_labels) - 1
+    l = convert(I64, floor(sqrt(lm)))
+    m = lm - l * l
+
+    # call the default constructor
+    PrTrait(site, sort, l, m, desc)
 end
 
 """
