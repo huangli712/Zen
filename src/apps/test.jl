@@ -31,15 +31,15 @@ using .Zen
 
 # test vaspio_lattice()
 #--------------------------------------
-#latt = vaspio_lattice(pwd())
-#@show latt._case
-#@show latt.scale
-#@show latt.lvect
-#@show latt.nsort
-#@show latt.natom
-#@show latt.sorts
-#@show latt.atoms
-#@show latt.coord
+latt = vaspio_lattice(pwd())
+@show latt._case
+@show latt.scale
+@show latt.lvect
+@show latt.nsort
+@show latt.natom
+@show latt.sorts
+@show latt.atoms
+@show latt.coord
 
 #chipsi = vaspio_projs(joinpath(pwd(), "dft"), false)
 #kmesh, weight = vaspio_kmesh(joinpath(pwd(), "dft"))

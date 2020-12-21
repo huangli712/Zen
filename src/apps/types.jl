@@ -231,7 +231,8 @@ end
 
 Outer constructor for PrTrait struct
 """
-function PrTrait()
+function PrTrait(site::I64, sort::String, desc::String)
+
 end
 
 """
