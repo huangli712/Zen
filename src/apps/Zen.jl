@@ -51,7 +51,7 @@ export __authors__
 # types.jl
 #
 # define some dictionaries which contain the configuration parameters
-# and some data structures
+# and some structs
 #
 # summary:
 #
@@ -60,7 +60,10 @@ export __authors__
 # PDMFT    -> dict for dmft engine
 # PIMP     -> dict for quantum impurities
 # PSOLVER  -> dict for quantum impurity solver
-# IterInfo -> dict for iteration information
+# IterInfo -> struct for iteration information
+# Lattice  -> struct for crystallography information
+# PrTrait  -> struct for projectors 
+# PrGroup  -> struct for groups of projectors
 #
 include("types.jl")
 #
@@ -235,8 +238,10 @@ export irio_charge
 #
 # summary:
 #
-# plo_ovlp
-# plo_dm
+# plo_ovlp  -> calculate overlap matrix
+# plo_dm    -> calculate density matrix
+# view_ovlp -> show overlap matrix
+# view_dm   -> show density matrix
 #
 include("plo.jl")
 #
