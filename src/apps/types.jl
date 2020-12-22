@@ -189,7 +189,7 @@ mutable struct PrGroup
     corr  :: Bool
     shell :: String
     Pr    :: Array{I64,1}
-    Tr    :: Array{F64,1}
+    Tr    :: Array{F64,2}
 end
 
 #
@@ -261,8 +261,8 @@ function PrGroup(site::I64, l::I64)
     # allocate memory for Pr and Tr
     # they will be further initialized 
     max_dim = 7 # for f-electron system
-    Pr    = zeros(I64, max_dim)
-    Tr    = zeros(F64, max_dim * max_dim)
+    Pr = zeros(I64, max_dim)
+    Tr = zeros(F64, max_dim, max_dim)
 
     # call the default constructor
     PrGroup(site, l, corr, shell, Pr, Tr)
