@@ -5,15 +5,16 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/18
+# last modified: 2020/12/22
 #
 
 """
-    irio_lattice()
+    irio_lattice(latt::Lattice)
 
 Write the lattice information using the IR format
 """
-function irio_lattice() end
+function irio_lattice(latt::Lattice)
+end
 
 """
     irio_kmesh(f::AbstractString, kmesh::Array{F64,2}, weight::Array{F64,1})
