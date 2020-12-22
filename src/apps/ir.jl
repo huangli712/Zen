@@ -13,7 +13,22 @@
 
 Write the lattice information using the IR format
 """
-function irio_lattice(latt::Lattice)
+function irio_lattice(f::AbstractString, latt::Lattice)
+    # extract some key parameters
+    _case, scale, nsort, natom = latt._case, latt.scale, latt.nsort, latt.natom
+
+    # output the data
+    open(joinpath(f, "lattice.ir"), "w") do fout
+        println(fout, "# file: lattice.ir")
+        println(fout, "# data: Lattice struct")
+        println(fout)
+        println(fout, "scale -> $_case")
+        println(fout, "scale -> $scale")
+        println(fout, "nsort -> $nsort")
+        println(fout, "natom -> $natom")
+        println(fout)
+        println(fout, "lvect -> ")
+    end
 end
 
 """

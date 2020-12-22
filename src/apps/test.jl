@@ -32,7 +32,7 @@ using .Zen
 # test vaspio_lattice()
 #--------------------------------------
 latt = vaspio_lattice(pwd())
-irio_lattice(latt)
+irio_lattice(pwd(), latt)
 
 #chipsi = vaspio_projs(joinpath(pwd(), "dft"), false)
 #kmesh, weight = vaspio_kmesh(joinpath(pwd(), "dft"))
