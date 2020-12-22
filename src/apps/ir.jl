@@ -5,11 +5,11 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/22
+# last modified: 2020/12/23
 #
 
 """
-    irio_lattice(latt::Lattice)
+    irio_lattice(f::AbstractString, latt::Lattice)
 
 Write the lattice information using the IR format
 """
@@ -27,6 +27,8 @@ function irio_lattice(f::AbstractString, latt::Lattice)
         println(fout, "nsort -> $nsort")
         println(fout, "natom -> $natom")
         println(fout)
+
+        # for sorts part
         println(fout, "[sorts]")
         for i = 1:nsort
             @printf(fout, "%6s", latt.sorts[i,1])
@@ -37,17 +39,23 @@ function irio_lattice(f::AbstractString, latt::Lattice)
         end
         println(fout)
         println(fout)
+
+        # for atoms part
         println(fout, "[atoms]")
         for i = 1:natom
             @printf(fout, "%6s", latt.atoms[i])
         end
         println(fout)
         println(fout)
+
+        # for lvect part
         println(fout, "[lvect]")
         for i = 1:3
             @printf(fout, "%16.12f %16.12f %16.12f\n", latt.lvect[i, 1:3]...)
         end
         println(fout)
+
+        # for coord part
         println(fout, "[coord]")
         for i = 1:natom
             @printf(fout, "%16.12f %16.12f %16.12f\n", latt.coord[i, 1:3]...)
@@ -180,5 +188,7 @@ end
 
 """
     irio_charge()
+
+Write the charge using the IR format
 """
 function irio_charge() end
