@@ -158,7 +158,7 @@ Essential information of projector
 .site -> site in which the projector is defined 
 .l    -> quantum number l
 .m    -> quantum number m
-.desc -> description
+.desc -> projector's specification
 """
 mutable struct PrTrait
     site  :: I64
@@ -259,8 +259,12 @@ function PrGroup()
     l     = -1
     corr  = false
     shell = "" 
-    Pr    = zeros(I64, 14)
-    Tr    = zeros(F64, 196) # 14 * 14
+
+    # allocate memory for Pr and Tr
+    # they will be further initialized 
+    max_dim = 7 # for f-electron system
+    Pr    = zeros(I64, max_dim)
+    Tr    = zeros(F64, max_dim * max_dim)
 
     # call the default constructor
     PrGroup(site, l, corr, shell, Pr, Tr)
