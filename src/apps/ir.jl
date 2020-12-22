@@ -27,16 +27,28 @@ function irio_lattice(f::AbstractString, latt::Lattice)
         println(fout, "nsort -> $nsort")
         println(fout, "natom -> $natom")
         println(fout)
-        println(fout, "sorts -> ")
+        println(fout, "[sorts]")
+        for i = 1:nsort
+            @printf(fout, "%6s", latt.sorts[i,1])
+        end
         println(fout)
-        println(fout, "atoms -> ")
+        for i = 1:nsort
+            @printf(fout, "%6i", latt.sorts[i,2])
+        end
         println(fout)
-        println(fout, "lvect -> ")
+        println(fout)
+        println(fout, "[atoms]")
+        for i = 1:natom
+            @printf(fout, "%6s", latt.atoms[i])
+        end
+        println(fout)
+        println(fout)
+        println(fout, "[lvect]")
         for i = 1:3
             @printf(fout, "%16.12f %16.12f %16.12f\n", latt.lvect[i, 1:3]...)
         end
         println(fout)
-        println(fout, "coord -> ")
+        println(fout, "[coord]")
         for i = 1:natom
             @printf(fout, "%16.12f %16.12f %16.12f\n", latt.coord[i, 1:3]...)
         end
