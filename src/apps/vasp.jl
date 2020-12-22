@@ -513,18 +513,24 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
         push!(PT, PrTrait(sites[i], descs[i]))
     end
 
-    # try to split these projectors into groups  
+    # try to split these projectors into groups
+    # at first, we gather the tuple (l, m) for all projectors
     l_m = Tuple[]
     for i in eachindex(PT)
         push!(l_m, (PT[i].site, PT[i].l))
     end
+    # second, we figure out the unique (l, m) 
     union!(l_m)
-
+    # third, we create a array of PrGroup struct (except for l and
+    # site, most of its member variables need to be corrected)
     PG = PrGroup[]
     for i in eachindex(l_m)
         push!(PG, PrGroup(l_m[i]...))
     end
-
+    # fourth, for each PrGroup, we scan all of the projectors to find
+    # out those with suitable site and l; record their indices; and
+    # save them at PrGroup.Pr array; finally, do not forget to resize
+    # PrGroup.Pr to save memory
     for i in eachindex(PG)
         site, l = PG[i].site, PG[i].l
         p = 0
@@ -537,21 +543,7 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
         resize!(PG[i].Pr, p)
     end
     @show PG
-
     exit(-1)
-    ## find out how many sites are involved (nsite)
-    #usites = union(sites)
-    #nsite = length(usites)
-    #exit(-1)
-
-    ## combine the projectors with the same into groups
-    #groups = zeros(I64, nsite)
-    #for site = 1:nsite
-    #    groups[site] = length(findall(x -> x === usites[site], sites))
-    #end
-
-    ## additional check, make sure nproj is equal to the sum of groups
-    #@assert nproj === sum(groups)
 
     if read_param_only
         # return only parameters
