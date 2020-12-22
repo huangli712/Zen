@@ -20,8 +20,7 @@ using .Zen
 
 # test vaspio_projs() and irio_projs()
 #--------------------------------------
-#chipsi1 = vaspio_projs(joinpath(pwd(), "dft"))
-#chipsi2 = vaspio_projs(joinpath(pwd(), "dft"), false)
+PT, PG, chipsi2 = vaspio_projs(joinpath(pwd(), "dft"))
 #irio_projs(pwd(), chipsi2)
 
 # test vaspio_fermi() and irio_fermi()
@@ -32,7 +31,8 @@ using .Zen
 # test vaspio_lattice()
 #--------------------------------------
 latt = vaspio_lattice(pwd())
-irio_lattice(pwd(), latt)
+plo_group(latt, PG)
+#irio_lattice(pwd(), latt)
 
 #chipsi = vaspio_projs(joinpath(pwd(), "dft"), false)
 #kmesh, weight = vaspio_kmesh(joinpath(pwd(), "dft"))

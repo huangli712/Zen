@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/21
+# last modified: 2020/12/23
 #
 
 module Zen
@@ -238,6 +238,7 @@ export irio_charge
 #
 # summary:
 #
+# plo_group -> setup groups of projectors 
 # plo_ovlp  -> calculate overlap matrix
 # plo_dm    -> calculate density matrix
 # view_ovlp -> show overlap matrix
@@ -245,6 +246,7 @@ export irio_charge
 #
 include("plo.jl")
 #
+export plo_group
 export plo_ovlp
 export plo_dm
 export view_ovlp

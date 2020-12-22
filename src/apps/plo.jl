@@ -5,8 +5,12 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/18
+# last modified: 2020/12/23
 #
+
+function plo_group(latt::Lattice, PG::Array{PrGroup,1})
+    println("here")
+end
 
 """
     plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
