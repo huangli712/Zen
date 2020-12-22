@@ -249,14 +249,12 @@ function PrTrait(site::I64, desc::String)
 end
 
 """
-    PrGroup()
+    PrGroup(site::I64, l::I64)
 
 Outer constructor for PrGroup struct
 """
-function PrGroup()
+function PrGroup(site::I64, l::I64)
     # setup initial parameters
-    site  = 0
-    l     = -1
     corr  = false
     shell = "" 
 

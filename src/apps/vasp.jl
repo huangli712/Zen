@@ -497,7 +497,7 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
     # number of bands (nband), and number of projectors (nproj)
     nspin, nkpt, nband, nproj = parse.(I64, line_to_array(fin)[1:4])
 
-    # extract information about projectors
+    # extract raw information about projectors
     sites = zeros(I64, nproj)
     descs = fill("", nproj)
     for i = 1:nproj
@@ -507,25 +507,39 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
         descs[i] = replace(arr[end], ":" => "")
     end
 
-    # encapsulate the information about projectors into PrTrait struct
+    # encapsulate raw information about projectors into PrTrait struct
     PT = PrTrait[]
     for i = 1:nproj
         push!(PT, PrTrait(sites[i], descs[i]))
     end
 
-    # find out how many sites are involved (nsite)
-    usites = union(sites)
-    nsite = length(usites)
-    exit(-1)
-
-    # combine the projectors with the same into groups
-    groups = zeros(I64, nsite)
-    for site = 1:nsite
-        groups[site] = length(findall(x -> x === usites[site], sites))
+    # try to split these projectors into groups  
+    l_m = Tuple[]
+    for i in eachindex(PT)
+        push!(l_m, (PT[i].site, PT[i].l))
     end
+    union!(l_m)
 
-    # additional check, make sure nproj is equal to the sum of groups
-    @assert nproj === sum(groups)
+    PG = PrGroup[]
+    for i in eachindex(l_m)
+        push!(PG, PrGroup(l_m[i]...))
+    end
+    @show PG
+
+    exit(-1)
+    ## find out how many sites are involved (nsite)
+    #usites = union(sites)
+    #nsite = length(usites)
+    #exit(-1)
+
+    ## combine the projectors with the same into groups
+    #groups = zeros(I64, nsite)
+    #for site = 1:nsite
+    #    groups[site] = length(findall(x -> x === usites[site], sites))
+    #end
+
+    ## additional check, make sure nproj is equal to the sum of groups
+    #@assert nproj === sum(groups)
 
     if read_param_only
         # return only parameters
