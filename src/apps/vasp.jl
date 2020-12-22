@@ -514,7 +514,7 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
     end
 
     # try to split these projectors into groups
-    # at first, we gather the tuple (l, m) for all projectors
+    # at first, we collect the tuple (l, m) for all projectors
     l_m = Tuple[]
     for i in eachindex(PT)
         push!(l_m, (PT[i].site, PT[i].l))
@@ -522,24 +522,27 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
     # second, we figure out the unique (l, m) 
     union!(l_m)
     # third, we create a array of PrGroup struct (except for l and
-    # site, most of its member variables need to be corrected)
+    # site, most of its member variables need to be corrected). note
+    # that for a given PrGroup, the projectors indexed by PrGroup.Pr
+    # should have the same site and l  
     PG = PrGroup[]
     for i in eachindex(l_m)
         push!(PG, PrGroup(l_m[i]...))
     end
     # fourth, for each PrGroup, we scan all of the projectors to find
-    # out those with suitable site and l; record their indices; and
+    # out those with correct site and l; record their indices; and
     # save them at PrGroup.Pr array
     for i in eachindex(PG)
         site, l = PG[i].site, PG[i].l
         PG[i].Pr = findall(x -> x.site === site && x.l === l, PT)
     end
-    @show PG
-    exit(-1)
+    # finally, check
+    @assert nproj === sum(x -> length(x.Pr), PG)
 
+    # return the parameters or not
     if read_param_only
         # return only parameters
-        return nspin, nkpt, nband, nproj, nsite, sites, projs, groups
+        return nspin, nkpt, nband, nproj, PT, PG
     else
         # create arrays
         chipsi = zeros(C64, nproj, nband, nkpt, nspin)
@@ -561,14 +564,9 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
                     @assert _band === band
 
                     # parse the input data
-                    # please pay special attention to the first index of chipsi
-                    _proj = 0
-                    for site = 1:nsite
-                        for proj = 1:groups[site]
-                            _proj = _proj + 1
-                            _re, _im = parse.(F64, line_to_array(fin)[2:3])
-                            chipsi[_proj, band, kpt, spin] = _re + _im * im
-                        end
+                    for proj = 1:nproj
+                        _re, _im = parse.(F64, line_to_array(fin)[2:3])
+                        chipsi[proj, band, kpt, spin] = _re + _im * im
                     end
 
                     # skip one empty line

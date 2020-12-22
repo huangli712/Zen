@@ -20,8 +20,8 @@ using .Zen
 
 # test vaspio_projs() and irio_projs()
 #--------------------------------------
-chipsi1 = vaspio_projs(joinpath(pwd(), "dft"))
-#chipsi2 = vaspio_projs(joinpath(pwd(), "dft"), false)
+#chipsi1 = vaspio_projs(joinpath(pwd(), "dft"))
+chipsi2 = vaspio_projs(joinpath(pwd(), "dft"), false)
 #irio_projs(pwd(), chipsi2)
 
 # test vaspio_fermi() and irio_fermi()
@@ -55,5 +55,5 @@ orb_labels = ("s",
               "fz3", "fxz2", "fyz2", "fz(x2-y2)", "fxyz", "fx(x2-3y2)", "fy(3x2-y2)")
 
 for i in eachindex(orb_labels)
-    PrTrait(2, "V", orb_labels[i])
+    PrTrait(2, orb_labels[i])
 end
