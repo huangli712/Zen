@@ -421,12 +421,12 @@ function vaspio_eigen(f::AbstractString)
 end
 
 """
-    vaspio_projs(f::AbstractString, read_param_only::Bool)
+    vaspio_projs(f::AbstractString)
 
 Reading vasp's LOCPROJ file, return raw projector matrix. Here `f` means
 only the directory that contains LOCPROJ
 """
-function vaspio_projs(f::AbstractString, read_param_only::Bool)
+function vaspio_projs(f::AbstractString)
     # open the iostream
     fin = open(joinpath(f, "LOCPROJ"), "r")
 
@@ -476,39 +476,33 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
     # finally, check
     @assert nproj === sum(x -> length(x.Pr), PG)
 
-    # return the parameters or not
-    if read_param_only
-        # return only parameters
-        return nspin, nkpt, nband, nproj, PT, PG
-    else
-        # create arrays
-        chipsi = zeros(C64, nproj, nband, nkpt, nspin)
+    # create arrays
+    chipsi = zeros(C64, nproj, nband, nkpt, nspin)
 
-        # read in raw projector data
-        readline(fin)
-        for spin = 1:nspin
-            for kpt = 1:nkpt
-                for band = 1:nband
-                    # extract some indices information
-                    arr = line_to_array(fin)
-                    _spin = parse(I64, arr[2])
-                    _kpt = parse(I64, arr[3])
-                    _band = parse(I64, arr[4])
+    # read in raw projector data
+    readline(fin)
+    for spin = 1:nspin
+        for kpt = 1:nkpt
+            for band = 1:nband
+                # extract some indices information
+                arr = line_to_array(fin)
+                _spin = parse(I64, arr[2])
+                _kpt = parse(I64, arr[3])
+                _band = parse(I64, arr[4])
 
-                    # check consistency of parameters
-                    @assert _spin === spin
-                    @assert _kpt === kpt
-                    @assert _band === band
+                # check consistency of parameters
+                @assert _spin === spin
+                @assert _kpt === kpt
+                @assert _band === band
 
-                    # parse the input data
-                    for proj = 1:nproj
-                        _re, _im = parse.(F64, line_to_array(fin)[2:3])
-                        chipsi[proj, band, kpt, spin] = _re + _im * im
-                    end
-
-                    # skip one empty line
-                    readline(fin)
+                # parse the input data
+                for proj = 1:nproj
+                    _re, _im = parse.(F64, line_to_array(fin)[2:3])
+                    chipsi[proj, band, kpt, spin] = _re + _im * im
                 end
+
+                # skip one empty line
+                readline(fin)
             end
         end
     end
@@ -517,7 +511,7 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
     close(fin)
 
     # return the desired arrays
-    return chipsi
+    return PT, PG, chipsi
 end
 
 """
