@@ -524,6 +524,18 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
     for i in eachindex(l_m)
         push!(PG, PrGroup(l_m[i]...))
     end
+
+    for i in eachindex(PG)
+        site, l = PG[i].site, PG[i].l
+        p = 0
+        for j in eachindex(PT)
+            if site === PT[j].site && l === PT[j].l
+                p = p + 1
+                PG[i].Pr[p] = j
+            end
+        end
+        resize!(PG[i].Pr, p)
+    end
     @show PG
 
     exit(-1)
