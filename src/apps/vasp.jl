@@ -529,18 +529,10 @@ function vaspio_projs(f::AbstractString, read_param_only::Bool)
     end
     # fourth, for each PrGroup, we scan all of the projectors to find
     # out those with suitable site and l; record their indices; and
-    # save them at PrGroup.Pr array; finally, do not forget to resize
-    # PrGroup.Pr to save memory
+    # save them at PrGroup.Pr array
     for i in eachindex(PG)
         site, l = PG[i].site, PG[i].l
-        p = 0
-        for j in eachindex(PT)
-            if site === PT[j].site && l === PT[j].l
-                p = p + 1
-                PG[i].Pr[p] = j
-            end
-        end
-        resize!(PG[i].Pr, p)
+        PG[i].Pr = findall(x -> x.site === site && x.l === l, PT)
     end
     @show PG
     exit(-1)
