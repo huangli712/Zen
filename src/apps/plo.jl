@@ -9,7 +9,9 @@
 #
 
 function plo_group(latt::Lattice, PG::Array{PrGroup,1})
-    println("here")
+    for i in eachindex(PG)
+        @show PG[i]
+    end
 end
 
 """
