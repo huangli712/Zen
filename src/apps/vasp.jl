@@ -421,69 +421,6 @@ function vaspio_eigen(f::AbstractString)
 end
 
 """
-    vaspio_projs(f::AbstractString)
-
-Reading vasp's PROJCAR file, return raw projector matrix. Here `f` means
-only the directory that contains PROJCAR
-"""
-function vaspio_projs(f::AbstractString)
-    # get key parameters from the LOCPROJ file
-    nspin, nkpt, nband, nproj, nsite, sites, projs, groups = vaspio_projs(f, true)
-
-    # open the iostream
-    fin = open(joinpath(f, "PROJCAR"), "r")
-
-    # create arrays
-    chipsi = zeros(C64, nproj, nband, nkpt, nspin)
-
-    # read in raw projector data
-    for site = 1:nsite
-        # extract site information
-        _site = parse(I64, line_to_array(fin)[2])
-
-        # _proj means the shift for index of projectors
-        _proj = site === 1 ? 0 : sum(groups[1:site-1])
-
-        # skip one empty line
-        readline(fin)
-
-        for spin = 1:nspin
-            for kpt = 1:nkpt
-                # extract k-point and spin information
-                arr = line_to_array(fin)
-                _kpt = parse(I64, arr[2])
-                _spin = parse(I64, arr[4])
-                @assert _kpt === kpt
-                @assert _spin === spin
-
-                # skip two empty lines
-                readline(fin)
-                readline(fin)
-
-                # parse the input data
-                # please pay special attention to the first index of chipsi
-                for band = 1:nband
-                    arr = parse.(F64, line_to_array(fin))
-                    for proj = 1:groups[site]
-                        cmplx = arr[2*proj] + arr[2*proj+1]im
-                        chipsi[proj+_proj, band, kpt, spin] = cmplx
-                    end
-                end
-
-                # skip one empty line
-                readline(fin)
-            end
-        end
-    end
-
-    # close the iostream
-    close(fin)
-
-    # return the desired arrays
-    return chipsi
-end
-
-"""
     vaspio_projs(f::AbstractString, read_param_only::Bool)
 
 Reading vasp's LOCPROJ file, return raw projector matrix. Here `f` means
