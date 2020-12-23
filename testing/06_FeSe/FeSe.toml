@@ -30,7 +30,7 @@ lforce = false
 [impurity]
 nsite = 2
 atoms = ["Fe : 1", "Fe : 2"]
-equiv = [[1], [2]]
+equiv = [1, 2]
 shell = ["d", "d"]
 ising = ["ising", "ising"]
 occup = [6.0, 6.0]

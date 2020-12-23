@@ -30,7 +30,7 @@ lforce = false
 [impurity]
 nsite = 1
 atoms = ["V : 2"]
-equiv = [[1]]
+equiv = [1]
 shell = ["d_t2g"]
 ising = ["ising"]
 occup = [3.0]
