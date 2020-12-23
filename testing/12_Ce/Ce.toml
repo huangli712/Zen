@@ -1,0 +1,43 @@
+case = "Ce"
+
+[dft]
+engine = "vasp"
+smear = "m-p"
+kmesh = "medium"
+lsymm = true
+lspins = false
+lspinorb = true
+window = [6.0, 9.0]
+loptim = false
+lproj = true
+nproj = 1
+sproj = ["1 : f : Pr"]
+
+[dmft]
+mode = 1
+axis = 1
+beta = 40.0
+niter = 60
+mixer = 0.5
+dcount = "fll1"
+cc = 1.0E-4
+ec = 1.0E-4
+fc = 1.0E-4
+lcharge = true
+lenergy = true
+lforce = false
+
+[impurity]
+nsite = 1
+atoms = ["Ce"]
+equiv = [[1]]
+shell = ["f"]
+ising = ["full"]
+occup = [1.0]
+upara = [6.0]
+jpara = [0.7]
+lpara = [0.0]
+
+[solver]
+engine = "ct_hub2"
+params = [""]
