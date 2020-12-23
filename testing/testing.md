@@ -10,11 +10,11 @@ V-*3d* orbitals + O-*2p* orbitals
 
 * **03_SrVO<sub>3</sub>**
 
-V-3d t2g orbitals
+V-*3d* *t<sub>2g</sub>* orbitals
 
 * **04_SrVO<sub>3</sub>**
 
-V-*3d* t<sub>2g</sub> orbitals + O-*2p* orbitals
+V-*3d* *t<sub>2g</sub>* orbitals + O-*2p* orbitals
 
 ## case: FeSe
 
