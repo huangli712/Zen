@@ -29,7 +29,7 @@ lforce = false
 
 [impurity]
 nsite = 1
-atoms = ["V"]
+atoms = ["V : 2"]
 equiv = [[1]]
 shell = ["d"]
 ising = ["ising"]
