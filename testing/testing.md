@@ -1,6 +1,6 @@
-## **SrVO3**
+## SrVO3
 
-* 01_SrVO3
+* **01_SrVO3**
 
 V-3d orbitals
 
