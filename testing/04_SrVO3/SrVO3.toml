@@ -10,8 +10,8 @@ lspinorb = false
 window = [3.9, 7.1]
 loptim = true
 lproj = true
-nproj = 1
-sproj = ["2 : d : Pr"]
+nproj = 4
+sproj = ["2 : d : Pr", "3 : p : Pr", "4 : p : Pr", "5 : p : Pr"]
 
 [dmft]
 mode = 1
@@ -29,9 +29,9 @@ lforce = false
 
 [impurity]
 nsite = 1
-atoms = ["V"]
+atoms = ["V : 2"]
 equiv = [[1]]
-shell = ["d"]
+shell = ["d_t2g"]
 ising = ["ising"]
 occup = [3.0]
 upara = [4.0]
