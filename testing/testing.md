@@ -1,4 +1,4 @@
-## case: SrVO3
+## case: SrVO<sub>3</sub>
 
 * **01_SrVO3**
 
