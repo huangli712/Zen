@@ -3,7 +3,7 @@ case = "NiO"
 [dft]
 engine = "vasp"
 smear = "tetra"
-kmesh = "medium"
+kmesh = "coarse"
 magmom = "2.0 -2.0 0.0 0.0"
 lsymm = false
 lspins = true
