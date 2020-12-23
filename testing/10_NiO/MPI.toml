@@ -1,3 +1,0 @@
-dft = "mpiexec -n 4"
-dmft = "mpiexec -n 20"
-solver = "mpiexec -n 1000" 
