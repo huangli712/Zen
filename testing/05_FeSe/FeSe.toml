@@ -29,7 +29,7 @@ lforce = false
 
 [impurity]
 nsite = 2
-atoms = ["Fe", "Fe"]
+atoms = ["Fe : 1", "Fe : 2"]
 equiv = [[1, 2]]
 shell = ["d", "d"]
 ising = ["ising", "ising"]
