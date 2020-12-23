@@ -29,12 +29,22 @@ Fe-3d orbitals, two Fe sites
 ## Ni
 
 * 07_Ni
+
+Ni-3d orbitals, paramagnetic
+
 * 08_Ni
+
+Ni-3d orbitals, ferromagnetic
 
 ## NiO
 
 * 09_NiO
+
+Ni-3d orbitals + O-2p orbitals, paramagnetic
+
 * 10_NiO
+
+Ni-3d orbitals + O-2p orbitals, two Ni sites, antiferromagnetic
 
 ## Ce
 
