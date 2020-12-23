@@ -1,5 +1,3 @@
-# ZEN (A Modern DFT + DMFT Computation Framework) 
-
 ## SrVO3
 
 * 01_SrVO3
@@ -21,7 +19,12 @@ V-3d t2g orbitals + O-2p orbitals
 ## FeSe
 
 * 05_FeSe
+
+Fe-3d orbitals, two Fe sites (degenerated)
+
 * 06_FeSe
+
+Fe-3d orbitals, two Fe sites
 
 ## Ni
 
