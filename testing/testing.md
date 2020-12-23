@@ -1,10 +1,10 @@
 ## case: SrVO<sub>3</sub>
 
-* **01_SrVO3**
+* **01_SrVO<sub>3</sub>**
 
 V-3d orbitals
 
-* **02_SrVO3**
+* **02_SrVO<sub>3</sub>**
 
 V-3d orbitals + O-2p orbitals 
 
