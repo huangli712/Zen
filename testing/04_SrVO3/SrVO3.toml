@@ -1,0 +1,43 @@
+case = "SrVO3"
+
+[dft]
+engine = "vasp"
+smear = "tetra"
+kmesh = "medium"
+lsymm = false
+lspins = false
+lspinorb = false
+window = [3.9, 7.1]
+loptim = true
+lproj = true
+nproj = 1
+sproj = ["2 : d : Pr"]
+
+[dmft]
+mode = 1
+axis = 1
+beta = 40.0
+niter = 60
+mixer = 0.5
+dcount = "fll1"
+cc = 1.0E-4
+ec = 1.0E-4
+fc = 1.0E-4
+lcharge = true
+lenergy = true
+lforce = false
+
+[impurity]
+nsite = 1
+atoms = ["V"]
+equiv = [[1]]
+shell = ["d"]
+ising = ["ising"]
+occup = [3.0]
+upara = [4.0]
+jpara = [0.7]
+lpara = [0.0]
+
+[solver]
+engine = "ct_hub1"
+params = [""]
