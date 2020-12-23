@@ -3,9 +3,20 @@
 ## SrVO3
 
 * 01_SrVO3
+
+V-3d orbitals
+
 * 02_SrVO3
+
+V-3d orbitals + O-2p orbitals 
+
 * 03_SrVO3
+
+V-3d t2g orbitals
+
 * 04_SrVO3
+
+V-3d t2g orbitals + O-2p orbitals
 
 ## FeSe
 
