@@ -5,7 +5,7 @@ engine = "vasp"
 smear = "m-p"
 kmesh = "medium"
 magmom = "1.0"
-lsymm = true
+lsymm = false
 lspins = true
 lspinorb = false
 window = [6.0, 9.0]
@@ -30,8 +30,8 @@ lforce = false
 
 [impurity]
 nsite = 1
-atoms = ["Ni"]
-equiv = [[1]]
+atoms = ["Ni : 1"]
+equiv = [1]
 shell = ["d"]
 ising = ["ising"]
 occup = [8.0]
