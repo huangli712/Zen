@@ -49,4 +49,9 @@ Ni-3d orbitals + O-2p orbitals, two Ni sites, antiferromagnetic
 ## Ce
 
 * 11_Ce
+
+Ce-4f orbitals
+
 * 12_Ce
+
+Ce-4f orbitals, spin-orbit coupling
