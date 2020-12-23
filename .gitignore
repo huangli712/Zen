@@ -16,8 +16,4 @@
 .nfs*
 .DS_Store
 fort.*
-testing/SrVO3/dft
-testing/NiO/dft
-testing/Ni/dft
-testing/FeSe/dft
-testing/Ce/dft
+testing/*/dft
