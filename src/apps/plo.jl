@@ -152,9 +152,45 @@ Extract the projectors within a given energy window
 """
 function plo_window(enk::Array{F64,3}, emax::F64, emin::F64)
     # sanity check
+    # make sure there is an overlap between [emin, emax] and band structure
     if emax < minimum(enk) || emin > maximum(enk)
         error("Energy window does not overlap with the band structure")
     end
+
+    # extract some key parameters
+    nband, nkpt, nspin = size(enk)
+
+    # create arrays
+    # ib_window is used to record the band window for each kpt and each spin
+    ib_window = zeros(I64, nkpt, nspin, 2)
+
+    # scan the band structure to determine ib_window
+    for spin = 1:nspin
+        for kpt = 1:nkpt
+            # for lower boundary
+            ib1 = 1
+            while enk[ib1, kpt, spin] < emin
+                ib1 = ib1 + 1
+            end
+
+            # for upper boundary
+            ib2 = nband
+            while enk[ib2, kpt, spin] > emax
+                ib2 = ib2 - 1
+            end
+
+            # check the boundaries
+            @assert ib1 <= ib2
+
+            # save the boundaries
+            ib_window[kpt, spin, 1] = ib1
+            ib_window[kpt, spin, 2] = ib2
+        end
+    end
+
+    # try to find out the minimum and maximum band indices
+    ib_min = minimum(ib_window[:, :, 1])
+    ib_max = maximum(ib_window[:, :, 2])
 end
 
 """

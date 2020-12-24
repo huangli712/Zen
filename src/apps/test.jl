@@ -67,7 +67,7 @@ for i in eachindex(PGT)
     @show i, PGT[i]
 end
 enk = enk .- fermi
-plo_window(enk)
+plo_window(enk, 2.0, -1.4)
 exit(-1)
 
 ovlp = plo_ovlp(chipsi, weight)
