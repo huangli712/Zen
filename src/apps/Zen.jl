@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/24
+# last modified: 2020/12/25
 #
 
 module Zen
@@ -64,6 +64,7 @@ export __authors__
 # Lattice  -> struct for crystallography information
 # PrTrait  -> struct for projectors
 # PrGroup  -> struct for groups of projectors
+# PrGroupT -> struct for groups of projectors (transformed)
 #
 include("types.jl")
 #
