@@ -20,11 +20,11 @@ using .Zen
 
 # test vaspio_projs() and irio_projs()
 #--------------------------------------
-PT, PG, chipsi2 = vaspio_projs(joinpath(pwd(), "dft"))
+#PT, PG, chipsi2 = vaspio_projs(joinpath(pwd(), "dft"))
 #irio_projs(pwd(), chipsi2)
-for i in eachindex(PT)
-    @show i, PT[i]
-end
+#for i in eachindex(PT)
+#    @show i, PT[i]
+#end
 #
 #for i in eachindex(PG)
 #    @show i, PG[i]
@@ -38,12 +38,12 @@ end
 # test vaspio_lattice()
 #--------------------------------------
 #latt = vaspio_lattice(pwd())
-cfg = parse_toml(query_args(), true)
-renew_config(cfg)
-plo_group(PG)
-for i in eachindex(PG)
-    @show i, PG[i]
-end
+#cfg = parse_toml(query_args(), true)
+#renew_config(cfg)
+#plo_group(PG)
+#for i in eachindex(PG)
+#    @show i, PG[i]
+#end
 #irio_lattice(pwd(), latt)
 
 #PT, PG, chipsi = vaspio_projs(joinpath(pwd(), "dft"))
