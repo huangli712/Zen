@@ -98,6 +98,14 @@ end
 function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     println("here")
 
+    # create a array of PrGroupT struct
+    PGT = PrGroupT[]
+    for i in eachindex(PG)
+        ndim = size(PG[i].Tr)[1]
+        push!(PGT, PrGroupT(PG[i].site, PG[i].l, ndim, PG[i].corr, PG[i].shell))
+    end
+    exit(-1)
+
     # extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
