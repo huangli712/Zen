@@ -80,7 +80,7 @@ function plo_group(PG::Array{PrGroup,1})
                     @case "d_eg"
                         PG[g].Tr = zeros(F64, 2, 5)
                         PG[g].Tr[1, 3] = 1.0
-                        PG[g].Tr[2, 1] = 1.0
+                        PG[g].Tr[2, 5] = 1.0
                         break
 
                     @default

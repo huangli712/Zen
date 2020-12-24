@@ -41,6 +41,9 @@ end
 cfg = parse_toml(query_args(), true)
 renew_config(cfg)
 plo_group(PG)
+for i in eachindex(PG)
+    @show i, PG[i]
+end
 #irio_lattice(pwd(), latt)
 
 #PT, PG, chipsi = vaspio_projs(joinpath(pwd(), "dft"))

@@ -256,9 +256,17 @@ end
 Outer constructor for PrGroup struct
 """
 function PrGroup(site::I64, l::I64)
+    # lshell defines a mapping from l (integer) to shell (string)
+    lshell = Dict{I64,String}(
+                 0 => "s",
+                 1 => "p",
+                 2 => "d",
+                 3 => "f",
+             )
+
     # setup initial parameters
     corr  = false
-    shell = "" 
+    shell = lshell[l]
 
     # allocate memory for Pr and Tr
     # they will be further initialized 
