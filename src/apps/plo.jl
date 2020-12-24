@@ -114,7 +114,6 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
             c = c + 1
             PGT[i].Pr[j] = c
         end
-        @show PGT[i]
     end
 
     # extract some key parameters

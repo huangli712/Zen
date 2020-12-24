@@ -62,10 +62,9 @@ enk, occupy = vaspio_eigen(joinpath(pwd(), "dft"))
 cfg = parse_toml(query_args(), true)
 renew_config(cfg)
 plo_group(PG)
-for i in eachindex(PG)
-    @show i, PG[i]
-end
-
+#for i in eachindex(PG)
+#    @show i, PG[i]
+#end
 plo_rotate(PG, chipsi)
 exit(-1)
 
