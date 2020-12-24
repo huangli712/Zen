@@ -304,3 +304,16 @@ function PrGroup(site::I64, l::I64)
     # call the default constructor
     PrGroup(site, l, corr, shell, Pr, Tr)
 end
+
+"""
+    PrGroupT(site::I64, l::I64, ndim::I64, corr::Bool, shell::String)
+
+Outer constructor for PrGroupT struct
+"""
+function PrGroupT(site::I64, l::I64, ndim::I64, corr::Bool, shell::String)
+    # allocate memory for Pr
+    Pr = zeros(I64, ndim)
+
+    # call the default constructor
+    PrGroupT(site, l, ndim, corr, shell, Pr)
+end
