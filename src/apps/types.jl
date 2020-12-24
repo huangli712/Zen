@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/22
+# last modified: 2020/12/24
 #
 
 #
@@ -181,7 +181,9 @@ Essential information of group of projector
 .corr  -> if the projectors in this group are correlated
 .shell -> type of correlated orbitals
 .Pr    -> array. it contains the indices of projectors    
-.Tr    -> array. it contains the transformation matrix
+.Tr    -> array. it contains the transformation matrix. this parameter
+          can be useful to select certain subset of orbitals or perform
+          a simple global rotation
 """
 mutable struct PrGroup
     site  :: I64

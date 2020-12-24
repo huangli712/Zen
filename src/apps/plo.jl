@@ -41,6 +41,9 @@ function plo_group(PG::Array{PrGroup,1})
 
         # scan the groups of projectors
         for g in eachindex(PG)
+            # examine PrGroup, check number of projectors
+            @assert 2 * PG[g].l + 1 === length(PG[g].Pr)
+
             # well, find out the required PrGroup
             if (PG[g].site, PG[g].l) === (site, l)
                 # setup corr property
@@ -68,13 +71,20 @@ function plo_group(PG::Array{PrGroup,1})
                         break
 
                     @case "d_t2g"
-                        PG[g].Tr = zeros(F64, 5, 3)
+                        PG[g].Tr = zeros(F64, 3, 5)
+                        PG[g].Tr[1, 1] = 1.0 
+                        PG[g].Tr[2, 2] = 1.0 
+                        PG[g].Tr[3, 4] = 1.0 
                         break
 
                     @case "d_eg"
+                        PG[g].Tr = zeros(F64, 2, 5)
+                        PG[g].Tr[1, 3] = 1.0
+                        PG[g].Tr[2, 1] = 1.0
                         break
 
                     @default
+                        sorry()
                         break
                 end 
             end
