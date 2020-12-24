@@ -146,6 +146,12 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 end
 
 """
+    plo_window()
+"""
+function plo_window()
+end
+
+"""
     plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 
 Calculate the overlap out of projectors

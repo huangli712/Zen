@@ -249,6 +249,7 @@ include("plo.jl")
 #
 export plo_group
 export plo_rotate
+export plo_window
 export plo_ovlp
 export plo_dm
 export view_ovlp
