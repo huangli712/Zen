@@ -101,16 +101,28 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     # create a array of PrGroupT struct
     PGT = PrGroupT[]
     for i in eachindex(PG)
+        # determine how many projectors should be included in this group
+        # according to the rotation matrix (transformation matrix)
         ndim = size(PG[i].Tr)[1]
         push!(PGT, PrGroupT(PG[i].site, PG[i].l, ndim, PG[i].corr, PG[i].shell))
     end
-    exit(-1)
+
+    # setup the Pr property of PrGroupT struct
+    c = 0
+    for i in eachindex(PGT)
+        for j = 1:PGT[i].ndim
+            c = c + 1
+            PGT[i].Pr[j] = c
+        end
+        @show PGT[i]
+    end
 
     # extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
     # tell us how many projectors there are after the rotation
-    nproj_ = sum(x -> size(x.Tr)[1], PG)
+    nproj_ = sum(x -> x.ndim, PGT)
+    @assert nproj_ === sum(x -> size(x.Tr)[1], PG)
 
     for i in eachindex(PG)
     end
