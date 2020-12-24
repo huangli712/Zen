@@ -197,6 +197,21 @@ function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4
 
     # extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
+
+    # create arrays
+    # chipsi_ is used to store the required projectors
+    chipsi_ = zeros(C64, nproj, nbmax, nkpt, nspin)
+
+    # select projectors which lie in the given window
+    for spin = 1:nspin
+        for kpt = 1:nkpt
+            ib1 = ib_window[kpt, spin, 1]
+            ib2 = ib_window[kpt, spin, 2]
+            ib3 = ib2 - ib1 + 1
+            chipsi_[:, 1:ib3, kpt, spin] = chipsi[:, ib1:ib2, kpt, spin]
+        end
+    end
+
 end
 
 """
