@@ -31,8 +31,7 @@ function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
         for k = 1:nkpt
             wght = weight[k] / nkpt
             A = chipsi[:, :, k, s]
-            B = conj(transpose(A))
-            ovlp[:, :, s] = ovlp[:, :, s] + real(A * B) * wght
+            ovlp[:, :, s] = ovlp[:, :, s] + real(A * A') * wght
         end
     end
 
@@ -61,8 +60,7 @@ function plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3}
             wght = weight[k] / nkpt * sf
             occs = occupy[:, k, s]
             A = chipsi[:, :, k, s]
-            B = conj(transpose(A))
-            dm[:, :, s] = dm[:, :, s] + real(A * Diagonal(occs) * B) * wght
+            dm[:, :, s] = dm[:, :, s] + real(A * Diagonal(occs) * A') * wght
         end
     end
 
