@@ -52,9 +52,11 @@ function plo_group(PG::Array{PrGroup,1})
                 # setup Tr array further
                 @cswitch str begin
                     @case "s"
+                        PG[g].Tr = Diagonal(fill(1.0, 1))
                         break
 
                     @case "p"
+                        PG[g].Tr = Diagonal(fill(1.0, 3))
                         break
 
                     @case "d"
@@ -62,6 +64,7 @@ function plo_group(PG::Array{PrGroup,1})
                         break
 
                     @case "f"
+                        PG[g].Tr = Diagonal(fill(1.0, 7))
                         break
 
                     @case "d_t2g"
