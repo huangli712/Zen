@@ -52,6 +52,7 @@ function plo_group(PG::Array{PrGroup,1})
                         break
 
                     @case "d"
+                        PG[g].Tr = Diagonal(fill(1.0, 5))
                         break
 
                     @case "f"
