@@ -90,10 +90,6 @@ function plo_group(PG::Array{PrGroup,1})
             end
         end
     end
-
-    for i in eachindex(PG)
-        @show PG[i]
-    end
 end
 
 """
