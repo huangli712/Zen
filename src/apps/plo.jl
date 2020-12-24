@@ -41,6 +41,7 @@ function plo_group(PG::Array{PrGroup,1})
 
         # scan the groups of projectors
         for g in eachindex(PG)
+            # well, find out the required PrGroup
             if (PG[g].site, PG[g].l) === (site, l)
                 # setup corr property
                 PG[g].corr = true
@@ -48,7 +49,7 @@ function plo_group(PG::Array{PrGroup,1})
                 # setup shell property
                 PG[g].shell = str
 
-                # setup Tr array
+                # setup Tr array further
                 @cswitch str begin
                     @case "s"
                         break
