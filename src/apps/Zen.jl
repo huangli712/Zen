@@ -240,11 +240,14 @@ export irio_charge
 #
 # summary:
 #
-# plo_group -> setup groups of projectors 
-# plo_ovlp  -> calculate overlap matrix
-# plo_dm    -> calculate density matrix
-# view_ovlp -> show overlap matrix
-# view_dm   -> show density matrix
+# plo_group  -> setup groups of projectors
+# plo_rotate -> rotate the projectors
+# plo_window -> extract the projectors within a given energy window
+# plo_orthog -> orthogonalize the projectors
+# plo_ovlp   -> calculate overlap matrix
+# plo_dm     -> calculate density matrix
+# view_ovlp  -> show overlap matrix
+# view_dm    -> show density matrix
 #
 include("plo.jl")
 #
