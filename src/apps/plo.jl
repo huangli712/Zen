@@ -29,7 +29,7 @@ function plo_group(PG::Array{PrGroup,1})
                  "d_eg"  => 2, # only a subset of d orbitals
              )
 
-    # loop over each site (quantum impurity problem) 
+    # loop over each site (quantum impurity problem)
     for i = 1:_i("nsite")
         # determine site
         str = _i("atoms")[i]
@@ -87,7 +87,7 @@ function plo_group(PG::Array{PrGroup,1})
                 @default
                     sorry()
                     break
-            end 
+            end
         end
     end
 end

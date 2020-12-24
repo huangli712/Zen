@@ -46,7 +46,7 @@ using .Zen
 #end
 #irio_lattice(pwd(), latt)
 
-#orb_labels = ("s", 
+#orb_labels = ("s",
 #              "py", "pz", "px",
 #              "dxy", "dyz", "dz2", "dxz", "dx2-y2",
 #              "fz3", "fxz2", "fyz2", "fz(x2-y2)", "fxyz", "fx(x2-3y2)", "fy(3x2-y2)")

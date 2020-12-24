@@ -109,7 +109,7 @@ PSOLVER= Dict{String,Any}(
 
 Record the runtime information
 
-.dmft1_iter -> number of iterations for dmft1 and quantum impurity solver 
+.dmft1_iter -> number of iterations for dmft1 and quantum impurity solver
 .dmft2_iter -> number of iterations for dmft2 and dft engine
 .dmft_cycle -> number of dft + dmft iterations
 .full_cycle -> counter for each iteration
@@ -155,7 +155,7 @@ end
 
 Essential information of projector
 
-.site -> site in which the projector is defined 
+.site -> site in which the projector is defined
 .l    -> quantum number l
 .m    -> quantum number m
 .desc -> projector's specification
@@ -180,7 +180,7 @@ Essential information of group of projectors
           with different m)
 .corr  -> if the projectors in this group are correlated
 .shell -> type of correlated orbitals
-.Pr    -> array. it contains the indices of projectors    
+.Pr    -> array. it contains the indices of projectors
 .Tr    -> array. it contains the transformation matrix. this parameter
           can be useful to select certain subset of orbitals or perform
           a simple global rotation
@@ -209,7 +209,7 @@ Essential information of group of projectors (be transformed or rotated)
           should be equal to the length of vector Pr
 .corr  -> if the projectors in this group are correlated
 .shell -> type of correlated orbitals
-.Pr    -> array. it contains the indices of projectors    
+.Pr    -> array. it contains the indices of projectors
 """
 mutable struct PrGroupT
     site  :: I64
@@ -256,16 +256,16 @@ end
 Outer constructor for PrTrait struct
 """
 function PrTrait(site::I64, desc::String)
-    # angular character of the local functions on the specified sites 
+    # angular character of the local functions on the specified sites
     # see the following webpage for more details
     #     https://www.vasp.at/wiki/index.php/LOCPROJ
-    orb_labels = ("s", 
+    orb_labels = ("s",
                   "py", "pz", "px",
                   "dxy", "dyz", "dz2", "dxz", "dx2-y2",
                   "fz3", "fxz2", "fyz2", "fz(x2-y2)", "fxyz", "fx(x2-3y2)", "fy(3x2-y2)")
 
     # to make sure the specified desc is valid
-    @assert desc in orb_labels 
+    @assert desc in orb_labels
 
     # determine quantum numbers l and m according to desc
     lm = findfirst(x -> x === desc, orb_labels) - 1

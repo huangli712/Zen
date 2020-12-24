@@ -456,12 +456,12 @@ function vaspio_projs(f::AbstractString)
     for i in eachindex(PT)
         push!(site_l, (PT[i].site, PT[i].l))
     end
-    # second, we figure out the unique (site, l) 
+    # second, we figure out the unique (site, l)
     union!(site_l)
     # third, we create a array of PrGroup struct (except for site and
     # l, most of its member variables need to be corrected). note
     # that for a given PrGroup, the projectors indexed by PrGroup.Pr
-    # should have the same site and l  
+    # should have the same site and l
     PG = PrGroup[]
     for i in eachindex(site_l)
         push!(PG, PrGroup(site_l[i]...))
