@@ -8,22 +8,26 @@
 # last modified: 2020/12/24
 #
 
+"""
+    plo_group(PG::Array{PrGroup,1})
+
+Use the information contained in the PIMP dict to further complete
+the PrGroup struct
+"""
 function plo_group(PG::Array{PrGroup,1})
-    for i in eachindex(PG)
-        @show PG[i]
-    end
-
-    lshell = Dict{String,I64}(
-                 "s" => 0,
-                 "p" => 1,
-                 "d" => 2,
-                 "f" => 3,
-                 "d_t2g" => 2,
-                 "d_eg"  => 2,
-             )
-
+    # check the parameters contained in PIMP dict
     @assert _i("nsite") === length(_i("atoms"))
     @assert _i("nsite") === length(_i("shell"))
+
+    # lshell defines a mapping from shell (string) to l (integer)
+    lshell = Dict{String,I64}(
+                 "s"     => 0,
+                 "p"     => 1,
+                 "d"     => 2,
+                 "f"     => 3,
+                 "d_t2g" => 2, # only a subset of d orbitals
+                 "d_eg"  => 2, # only a subset of d orbitals
+             )
 
     for i = 1:_i("nsite")
         # determine site
