@@ -38,6 +38,8 @@ end
 # test vaspio_lattice()
 #--------------------------------------
 #latt = vaspio_lattice(pwd())
+cfg = parse_toml(query_args(), true)
+renew_config(cfg)
 plo_group(PG)
 #irio_lattice(pwd(), latt)
 

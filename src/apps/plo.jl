@@ -5,12 +5,40 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/23
+# last modified: 2020/12/24
 #
 
 function plo_group(PG::Array{PrGroup,1})
     for i in eachindex(PG)
         @show PG[i]
+    end
+
+    lshell = Dict{String,I64}(
+                 "s" => 0,
+                 "p" => 1,
+                 "d" => 2,
+                 "f" => 3,
+                 "d_t2g" => 2,
+                 "d_eg"  => 2,
+             )
+
+    @assert _i("nsite") === length(_i("atoms"))
+    @assert _i("nsite") === length(_i("shell"))
+
+    for i = 1:_i("nsite")
+        # determine site
+        str = _i("atoms")[i]
+        site = parse(I64, line_to_array(str)[3])
+
+        # determine l
+        str = _i("shell")[i]
+        l = haskey(lshell, str) ? lshell[str] : nothing
+
+        # scan the groups of projectors
+        for g in eachindex(PG)
+            if (PG[g].site, PG[g].l) === (site, l)
+            end
+        end
     end
 end
 
