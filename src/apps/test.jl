@@ -22,6 +22,13 @@ using .Zen
 #--------------------------------------
 PT, PG, chipsi2 = vaspio_projs(joinpath(pwd(), "dft"))
 #irio_projs(pwd(), chipsi2)
+for i in eachindex(PT)
+    @show i, PT[i]
+end
+
+for i in eachindex(PG)
+    @show i, PG[i]
+end
 
 # test vaspio_fermi() and irio_fermi()
 #--------------------------------------
@@ -30,8 +37,8 @@ PT, PG, chipsi2 = vaspio_projs(joinpath(pwd(), "dft"))
 
 # test vaspio_lattice()
 #--------------------------------------
-latt = vaspio_lattice(pwd())
-plo_group(latt, PG)
+#latt = vaspio_lattice(pwd())
+#plo_group(latt, PG)
 #irio_lattice(pwd(), latt)
 
 #chipsi = vaspio_projs(joinpath(pwd(), "dft"), false)
