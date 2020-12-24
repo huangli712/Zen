@@ -146,11 +146,11 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 end
 
 """
-    plo_window()
+    plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
 
 Extract the projectors within a given energy window
 """
-function plo_window(enk::Array{F64,3}, emax::F64, emin::F64)
+function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
     # sanity check
     # make sure there is an overlap between [emin, emax] and band structure
     if emax < minimum(enk) || emin > maximum(enk)
@@ -191,6 +191,12 @@ function plo_window(enk::Array{F64,3}, emax::F64, emin::F64)
     # try to find out the minimum and maximum band indices
     ib_min = minimum(ib_window[:, :, 1])
     ib_max = maximum(ib_window[:, :, 2])
+
+    # try to find out the maximum number of selected bands
+    nbmax = ib_max - ib_min + 1
+
+    # extract some key parameters
+    nproj, nband, nkpt, nspin = size(chipsi)
 end
 
 """

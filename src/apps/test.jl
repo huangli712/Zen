@@ -62,12 +62,12 @@ fermi = vaspio_fermi(joinpath(pwd(), "dft"))
 cfg = parse_toml(query_args(), true)
 renew_config(cfg)
 plo_group(PG)
-PGT, chipsi_ = plo_rotate(PG, chipsi)
+PGT, chipsi_r = plo_rotate(PG, chipsi)
 for i in eachindex(PGT)
     @show i, PGT[i]
 end
 enk = enk .- fermi
-plo_window(enk, 2.0, -1.4)
+plo_window(enk, 2.0, -1.4, chipsi_r)
 exit(-1)
 
 ovlp = plo_ovlp(chipsi, weight)
