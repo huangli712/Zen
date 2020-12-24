@@ -96,8 +96,6 @@ end
     plo_rotate()
 """
 function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
-    println("here")
-
     # create a array of PrGroupT struct
     PGT = PrGroupT[]
     for i in eachindex(PG)
@@ -127,8 +125,20 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     # create new arrays
     chipsi_ = zeros(C64, nproj_, nband, nkpt, nspin)
 
-    for i in eachindex(PG)
+    for spin = 1:nspin
+        for kpt = 1:nkpt
+            for band = 1:nband
+                for i in eachindex(PG)
+                    p1 = PG[i].Pr[1]
+                    p2 = PG[i].Pr[end]
+                    q1 = PGT[i].Pr[1]
+                    q2 = PGT[i].Pr[end]
+                    chipsi_[q1:q2, nband, nkpt, nspin] = complex(PG[i].Tr) * chipsi[p1:p2, band, kpt, spin]
+                end
+            end
+        end
     end
+    exit(-1)
 
     # return the desired arrays
     return PGT, chipsi_
