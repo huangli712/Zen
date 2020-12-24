@@ -152,6 +152,12 @@ function plo_window()
 end
 
 """
+    plo_orthog()
+"""
+function plo_orthog()
+end
+
+"""
     plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 
 Calculate the overlap out of projectors
