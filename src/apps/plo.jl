@@ -51,43 +51,43 @@ function plo_group(PG::Array{PrGroup,1})
 
                 # setup shell property
                 PG[g].shell = str
-
-                # setup Tr array further
-                @cswitch str begin
-                    @case "s"
-                        PG[g].Tr = Diagonal(fill(1.0, 1))
-                        break
-
-                    @case "p"
-                        PG[g].Tr = Diagonal(fill(1.0, 3))
-                        break
-
-                    @case "d"
-                        PG[g].Tr = Diagonal(fill(1.0, 5))
-                        break
-
-                    @case "f"
-                        PG[g].Tr = Diagonal(fill(1.0, 7))
-                        break
-
-                    @case "d_t2g"
-                        PG[g].Tr = zeros(F64, 3, 5)
-                        PG[g].Tr[1, 1] = 1.0 
-                        PG[g].Tr[2, 2] = 1.0 
-                        PG[g].Tr[3, 4] = 1.0 
-                        break
-
-                    @case "d_eg"
-                        PG[g].Tr = zeros(F64, 2, 5)
-                        PG[g].Tr[1, 3] = 1.0
-                        PG[g].Tr[2, 5] = 1.0
-                        break
-
-                    @default
-                        sorry()
-                        break
-                end 
             end
+
+            # setup Tr array further
+            @cswitch PG[g].shell begin
+                @case "s"
+                    PG[g].Tr = Diagonal(fill(1.0, 1))
+                    break
+
+                @case "p"
+                    PG[g].Tr = Diagonal(fill(1.0, 3))
+                    break
+
+                @case "d"
+                    PG[g].Tr = Diagonal(fill(1.0, 5))
+                    break
+
+                @case "f"
+                    PG[g].Tr = Diagonal(fill(1.0, 7))
+                    break
+
+                @case "d_t2g"
+                    PG[g].Tr = zeros(F64, 3, 5)
+                    PG[g].Tr[1, 1] = 1.0 
+                    PG[g].Tr[2, 2] = 1.0 
+                    PG[g].Tr[3, 4] = 1.0 
+                    break
+
+                @case "d_eg"
+                    PG[g].Tr = zeros(F64, 2, 5)
+                    PG[g].Tr[1, 3] = 1.0
+                    PG[g].Tr[2, 5] = 1.0
+                    break
+
+                @default
+                    sorry()
+                    break
+            end 
         end
     end
 end
