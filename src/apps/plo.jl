@@ -147,8 +147,11 @@ end
 
 """
     plo_window()
+
+Extract the projectors within a given energy window
 """
-function plo_window()
+function plo_window(enk::Array{F64,3})
+    println("here")
 end
 
 """

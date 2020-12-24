@@ -58,14 +58,16 @@ using .Zen
 PT, PG, chipsi = vaspio_projs(joinpath(pwd(), "dft"))
 kmesh, weight = vaspio_kmesh(joinpath(pwd(), "dft"))
 enk, occupy = vaspio_eigen(joinpath(pwd(), "dft"))
-
+fermi = vaspio_fermi(joinpath(pwd(), "dft"))
 cfg = parse_toml(query_args(), true)
 renew_config(cfg)
 plo_group(PG)
-#for i in eachindex(PG)
-#    @show i, PG[i]
-#end
-plo_rotate(PG, chipsi)
+PGT, chipsi_ = plo_rotate(PG, chipsi)
+for i in eachindex(PGT)
+    @show i, PGT[i]
+end
+enk = enk .- fermi
+plo_window(enk)
 exit(-1)
 
 ovlp = plo_ovlp(chipsi, weight)
