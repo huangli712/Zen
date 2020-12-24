@@ -93,7 +93,9 @@ function plo_group(PG::Array{PrGroup,1})
 end
 
 """
-    plo_rotate()
+    plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
+
+Perform global rotations or transformations for the projectors
 """
 function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     # create a array of PrGroupT struct
@@ -125,6 +127,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     # create new arrays
     chipsi_ = zeros(C64, nproj_, nband, nkpt, nspin)
 
+    # perform rotation or transformation
     for spin = 1:nspin
         for kpt = 1:nkpt
             for band = 1:nband
