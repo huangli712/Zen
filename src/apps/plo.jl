@@ -56,32 +56,32 @@ function plo_group(PG::Array{PrGroup,1})
             # setup Tr array further
             @cswitch PG[g].shell begin
                 @case "s"
-                    PG[g].Tr = Diagonal(fill(1.0, 1))
+                    PG[g].Tr = Diagonal(fill(1.0 + 0.0im, 1))
                     break
 
                 @case "p"
-                    PG[g].Tr = Diagonal(fill(1.0, 3))
+                    PG[g].Tr = Diagonal(fill(1.0 + 0.0im, 3))
                     break
 
                 @case "d"
-                    PG[g].Tr = Diagonal(fill(1.0, 5))
+                    PG[g].Tr = Diagonal(fill(1.0 + 0.0im, 5))
                     break
 
                 @case "f"
-                    PG[g].Tr = Diagonal(fill(1.0, 7))
+                    PG[g].Tr = Diagonal(fill(1.0 + 0.0im, 7))
                     break
 
                 @case "d_t2g"
-                    PG[g].Tr = zeros(F64, 3, 5)
-                    PG[g].Tr[1, 1] = 1.0 
-                    PG[g].Tr[2, 2] = 1.0 
-                    PG[g].Tr[3, 4] = 1.0 
+                    PG[g].Tr = zeros(C64, 3, 5)
+                    PG[g].Tr[1, 1] = 1.0 + 0.0im
+                    PG[g].Tr[2, 2] = 1.0 + 0.0im
+                    PG[g].Tr[3, 4] = 1.0 + 0.0im
                     break
 
                 @case "d_eg"
-                    PG[g].Tr = zeros(F64, 2, 5)
-                    PG[g].Tr[1, 3] = 1.0
-                    PG[g].Tr[2, 5] = 1.0
+                    PG[g].Tr = zeros(C64, 2, 5)
+                    PG[g].Tr[1, 3] = 1.0 + 0.0im
+                    PG[g].Tr[2, 5] = 1.0 + 0.0im
                     break
 
                 @default
@@ -133,7 +133,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
                     p2 = PG[i].Pr[end]
                     q1 = PGT[i].Pr[1]
                     q2 = PGT[i].Pr[end]
-                    chipsi_[q1:q2, band, kpt, spin] = complex(PG[i].Tr) * chipsi[p1:p2, band, kpt, spin]
+                    chipsi_[q1:q2, band, kpt, spin] = PG[i].Tr * chipsi[p1:p2, band, kpt, spin]
                 end
             end
         end
