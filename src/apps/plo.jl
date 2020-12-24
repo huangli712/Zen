@@ -124,8 +124,14 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     nproj_ = sum(x -> x.ndim, PGT)
     @assert nproj_ === sum(x -> size(x.Tr)[1], PG)
 
+    # create new arrays
+    chipsi_ = zeros(C64, nproj_, nband, nkpt, nspin)
+
     for i in eachindex(PG)
     end
+
+    # return the desired arrays
+    return PGT, chipsi_
 end
 
 """
