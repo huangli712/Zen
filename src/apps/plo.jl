@@ -150,8 +150,11 @@ end
 
 Extract the projectors within a given energy window
 """
-function plo_window(enk::Array{F64,3})
-    println("here")
+function plo_window(enk::Array{F64,3}, emax::F64, emin::F64)
+    # sanity check
+    if emax < minimum(enk) || emin > maximum(enk)
+        error("Energy window does not overlap with the band structure")
+    end
 end
 
 """
