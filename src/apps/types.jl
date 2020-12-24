@@ -265,11 +265,12 @@ function PrGroup(site::I64, l::I64)
              )
 
     # setup initial parameters
+    # they will be further initialized in vaspio_projs() and plo_group()
     corr  = false
     shell = lshell[l]
 
     # allocate memory for Pr and Tr
-    # they will be further initialized 
+    # they will be further initialized in vaspio_projs() and plo_group()
     max_dim = 7 # for f-electron system
     Pr = zeros(I64, max_dim)
     Tr = zeros(F64, max_dim, max_dim)
