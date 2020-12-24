@@ -170,7 +170,7 @@ end
 """
     PrGroup
 
-Essential information of group of projector
+Essential information of group of projectors
 
 .site  -> site in which the projectors are defined. in principle, the
           projectors included in the same group should be defined at
@@ -194,6 +194,23 @@ mutable struct PrGroup
     Tr    :: Array{F64,2}
 end
 
+"""
+    PrGroupT
+
+Essential information of group of projectors (be transformed or rotated)
+
+.site  -> site in which the projectors are defined. in principle, the
+          projectors included in the same group should be defined at
+          the same site (or equivalently atom)
+.l     -> quantum number l. in principle, the projectors included in
+          the same group should have the same quantum number l (but
+          with different m)
+.ndim  -> how many projectors are actually included in this group, which
+          should be equal to the length of vector Pr
+.corr  -> if the projectors in this group are correlated
+.shell -> type of correlated orbitals
+.Pr    -> array. it contains the indices of projectors    
+"""
 mutable struct PrGroupT
     site  :: I64
     l     :: I64
