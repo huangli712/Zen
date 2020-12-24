@@ -203,15 +203,19 @@ function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4
     chipsi_ = zeros(C64, nproj, nbmax, nkpt, nspin)
 
     # select projectors which lie in the given window
+    # copy data from chipsi to chipsi_
     for spin = 1:nspin
         for kpt = 1:nkpt
             ib1 = ib_window[kpt, spin, 1]
             ib2 = ib_window[kpt, spin, 2]
             ib3 = ib2 - ib1 + 1
+            @assert ib3 <= nbmax
             chipsi_[:, 1:ib3, kpt, spin] = chipsi[:, ib1:ib2, kpt, spin]
         end
     end
 
+    # return the desired arrays
+    return chipsi_
 end
 
 """
