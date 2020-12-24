@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/23
+# last modified: 2020/12/24
 #
 
 module Zen
@@ -247,6 +247,7 @@ export irio_charge
 include("plo.jl")
 #
 export plo_group
+export plo_rotate
 export plo_ovlp
 export plo_dm
 export view_ovlp

@@ -46,14 +46,6 @@ using .Zen
 #end
 #irio_lattice(pwd(), latt)
 
-#PT, PG, chipsi = vaspio_projs(joinpath(pwd(), "dft"))
-#kmesh, weight = vaspio_kmesh(joinpath(pwd(), "dft"))
-#enk, occupy = vaspio_eigen(joinpath(pwd(), "dft"))
-#ovlp = plo_ovlp(chipsi, weight)
-#dm = plo_dm(chipsi, weight, occupy)
-#view_ovlp(ovlp)
-#view_dm(dm)
-
 #orb_labels = ("s", 
 #              "py", "pz", "px",
 #              "dxy", "dyz", "dz2", "dxz", "dx2-y2",
@@ -62,3 +54,22 @@ using .Zen
 #for i in eachindex(orb_labels)
 #    PrTrait(2, orb_labels[i])
 #end
+
+PT, PG, chipsi = vaspio_projs(joinpath(pwd(), "dft"))
+kmesh, weight = vaspio_kmesh(joinpath(pwd(), "dft"))
+enk, occupy = vaspio_eigen(joinpath(pwd(), "dft"))
+
+cfg = parse_toml(query_args(), true)
+renew_config(cfg)
+plo_group(PG)
+for i in eachindex(PG)
+    @show i, PG[i]
+end
+
+plo_rotate(PG, chipsi)
+exit(-1)
+
+ovlp = plo_ovlp(chipsi, weight)
+dm = plo_dm(chipsi, weight, occupy)
+view_ovlp(ovlp)
+view_dm(dm)
