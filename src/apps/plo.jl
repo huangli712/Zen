@@ -68,6 +68,7 @@ function plo_group(PG::Array{PrGroup,1})
                         break
 
                     @case "d_t2g"
+                        PG[g].Tr = zeros(F64, 5, 3)
                         break
 
                     @case "d_eg"
