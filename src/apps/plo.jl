@@ -133,12 +133,11 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
                     p2 = PG[i].Pr[end]
                     q1 = PGT[i].Pr[1]
                     q2 = PGT[i].Pr[end]
-                    chipsi_[q1:q2, nband, nkpt, nspin] = complex(PG[i].Tr) * chipsi[p1:p2, band, kpt, spin]
+                    chipsi_[q1:q2, band, kpt, spin] = complex(PG[i].Tr) * chipsi[p1:p2, band, kpt, spin]
                 end
             end
         end
     end
-    exit(-1)
 
     # return the desired arrays
     return PGT, chipsi_
