@@ -76,6 +76,7 @@ export IterInfo
 export Lattice
 export PrTrait
 export PrGroup
+export PrGroupT
 
 #
 # config.jl

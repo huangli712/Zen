@@ -194,6 +194,15 @@ mutable struct PrGroup
     Tr    :: Array{F64,2}
 end
 
+mutable struct PrGroupT
+    site  :: I64
+    l     :: I64
+    ndim  :: I64
+    corr  :: Bool
+    shell :: String
+    Pr    :: Array{I64,1}
+end
+
 #
 # Customized Constructors
 #

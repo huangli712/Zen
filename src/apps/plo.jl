@@ -97,6 +97,15 @@ end
 """
 function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     println("here")
+
+    # extract some key parameters
+    nproj, nband, nkpt, nspin = size(chipsi)
+
+    # tell us how many projectors there are after the rotation
+    nproj_ = sum(x -> size(x.Tr)[1], PG)
+
+    for i in eachindex(PG)
+    end
 end
 
 """
