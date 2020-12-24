@@ -8,7 +8,7 @@
 # last modified: 2020/12/23
 #
 
-function plo_group(latt::Lattice, PG::Array{PrGroup,1})
+function plo_group(PG::Array{PrGroup,1})
     for i in eachindex(PG)
         @show PG[i]
     end

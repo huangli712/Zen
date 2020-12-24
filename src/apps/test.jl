@@ -20,11 +20,11 @@ using .Zen
 
 # test vaspio_projs() and irio_projs()
 #--------------------------------------
-#PT, PG, chipsi2 = vaspio_projs(joinpath(pwd(), "dft"))
+PT, PG, chipsi2 = vaspio_projs(joinpath(pwd(), "dft"))
 #irio_projs(pwd(), chipsi2)
-#for i in eachindex(PT)
-#    @show i, PT[i]
-#end
+for i in eachindex(PT)
+    @show i, PT[i]
+end
 #
 #for i in eachindex(PG)
 #    @show i, PG[i]
@@ -38,16 +38,16 @@ using .Zen
 # test vaspio_lattice()
 #--------------------------------------
 #latt = vaspio_lattice(pwd())
-#plo_group(latt, PG)
+plo_group(PG)
 #irio_lattice(pwd(), latt)
 
-PT, PG, chipsi = vaspio_projs(joinpath(pwd(), "dft"))
-kmesh, weight = vaspio_kmesh(joinpath(pwd(), "dft"))
-enk, occupy = vaspio_eigen(joinpath(pwd(), "dft"))
-ovlp = plo_ovlp(chipsi, weight)
-dm = plo_dm(chipsi, weight, occupy)
-view_ovlp(ovlp)
-view_dm(dm)
+#PT, PG, chipsi = vaspio_projs(joinpath(pwd(), "dft"))
+#kmesh, weight = vaspio_kmesh(joinpath(pwd(), "dft"))
+#enk, occupy = vaspio_eigen(joinpath(pwd(), "dft"))
+#ovlp = plo_ovlp(chipsi, weight)
+#dm = plo_dm(chipsi, weight, occupy)
+#view_ovlp(ovlp)
+#view_dm(dm)
 
 #orb_labels = ("s", 
 #              "py", "pz", "px",

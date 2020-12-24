@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/22
+# last modified: 2020/12/24
 #
 
 """
@@ -451,27 +451,27 @@ function vaspio_projs(f::AbstractString)
     end
 
     # try to split these projectors into groups
-    # at first, we collect the tuple (l, m) for all projectors
-    l_m = Tuple[]
+    # at first, we collect the tuple (site, l) for all projectors
+    site_l = Tuple[]
     for i in eachindex(PT)
-        push!(l_m, (PT[i].site, PT[i].l))
+        push!(site_l, (PT[i].site, PT[i].l))
     end
-    # second, we figure out the unique (l, m) 
-    union!(l_m)
-    # third, we create a array of PrGroup struct (except for l and
-    # site, most of its member variables need to be corrected). note
+    # second, we figure out the unique (site, l) 
+    union!(site_l)
+    # third, we create a array of PrGroup struct (except for site and
+    # l, most of its member variables need to be corrected). note
     # that for a given PrGroup, the projectors indexed by PrGroup.Pr
     # should have the same site and l  
     PG = PrGroup[]
-    for i in eachindex(l_m)
-        push!(PG, PrGroup(l_m[i]...))
+    for i in eachindex(site_l)
+        push!(PG, PrGroup(site_l[i]...))
     end
     # fourth, for each PrGroup, we scan all of the projectors to find
     # out those with correct site and l; record their indices; and
     # save them at PrGroup.Pr array
     for i in eachindex(PG)
         site, l = PG[i].site, PG[i].l
-        PG[i].Pr = findall(x -> x.site === site && x.l === l, PT)
+        PG[i].Pr = findall(x -> (x.site, x.l) === (site, l), PT)
     end
     # finally, check
     @assert nproj === sum(x -> length(x.Pr), PG)
