@@ -224,7 +224,12 @@ end
 Try to orthogonalize the projectors group by group (site by site)
 """
 function plo_orthog(chipsi::Array{C64,4})
-    println("here")
+    # extract some key parameters
+    nproj, nband, nkpt, nspin = size(chipsi)
+    @show nproj, nband, nkpt, nspin
+
+    # create arrays
+    TmpMat = zeros(C64, nproj, nband)
 end
 
 """
