@@ -245,6 +245,7 @@ export irio_charge
 # plo_rotate -> rotate the projectors
 # plo_window -> extract the projectors within a given energy window
 # plo_orthog -> orthogonalize the projectors
+# plo_diag   -> orthogonalizes a projector defined by a rectangular matrix
 # plo_ovlp   -> calculate overlap matrix
 # plo_dm     -> calculate density matrix
 # view_ovlp  -> show overlap matrix
@@ -256,6 +257,7 @@ export plo_group
 export plo_rotate
 export plo_window
 export plo_orthog
+export plo_diag
 export plo_ovlp
 export plo_dm
 export view_ovlp
