@@ -215,7 +215,7 @@ function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4
     end
 
     # return the desired arrays
-    return ib_window, chipsi_
+    return ib_min, ib_max, ib_window, chipsi_
 end
 
 """
@@ -293,6 +293,36 @@ function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 end
 
 """
+    plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
+
+Calculate the overlap out of projectors
+"""
+function plo_ovlp(PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
+    # extract some key parameters
+    nproj, nband, nkpt, nspin = size(chipsi)
+
+    # create overlap array
+    ovlp = zeros(F64, nproj, nproj, nspin)
+
+    # build overlap array
+    for s = 1:nspin
+        for k = 1:nkpt
+            wght = weight[k] / nkpt
+            for p in eachindex(PGT)
+                q1 = PGT[p].Pr[1]
+                q2 = PGT[p].Pr[end]
+                A = chipsi[q1:q2, :, k, s]
+                ovlp[q1:q2, q1:q2, s] = ovlp[q1:q2, :, s] + real(A * A') * wght
+            end
+        end
+    end
+    @show ovlp[:, :, 1]
+
+    # return the desired array
+    return ovlp
+end
+
+"""
     plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
 
 Calculate the density matrix out of projectors
@@ -316,6 +346,41 @@ function plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3}
             dm[:, :, s] = dm[:, :, s] + real(A * Diagonal(occs) * A') * wght
         end
     end
+
+    # return the desired array
+    return dm
+end
+
+"""
+    plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
+
+Calculate the density matrix out of projectors
+"""
+function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
+    # extract some key parameters
+    nproj, nband, nkpt, nspin = size(chipsi)
+    @assert nband === bmax - bmin + 1
+
+    # evaluate spin factor
+    sf = (nspin == 1 ? 2 : 1)
+
+    # create density matrix array
+    dm = zeros(F64, nproj, nproj, nspin)
+
+    # build overlap array
+    for s = 1:nspin
+        for k = 1:nkpt
+            wght = weight[k] / nkpt * sf
+            occs = occupy[bmin:bmax, k, s]
+            for p in eachindex(PGT)
+                q1 = PGT[p].Pr[1]
+                q2 = PGT[p].Pr[end]
+                A = chipsi[q1:q2, :, k, s]
+                dm[q1:q2, q1:q2, s] = dm[q1:q2, q1:q2, s] + real(A * Diagonal(occs) * A') * wght
+            end
+        end
+    end
+    @show dm[:, :, 1]
 
     # return the desired array
     return dm
