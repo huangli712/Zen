@@ -252,7 +252,7 @@ function plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{
 end
 
 """
-    plo_diag()
+    plo_diag(M::Array{C64,2})
 """
 function plo_diag(M::Array{C64,2})
     ovlp = M * M'
