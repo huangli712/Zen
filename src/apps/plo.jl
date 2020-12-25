@@ -226,7 +226,7 @@ Try to orthogonalize the projectors group by group (site by site)
 function plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4})
     # extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
-    @show nproj, nband, nkpt, nspin
+    #@show nproj, nband, nkpt, nspin
 
     # create arrays
     TmpMat = zeros(C64, nproj, nband)
@@ -241,7 +241,7 @@ function plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{
                 q1 = PGT[p].Pr[1]
                 q2 = PGT[p].Pr[end]
                 TmpMat[q1:q2, 1:nb] = chipsi[q1:q2, 1:nb, kpt, spin] 
-                println("here")
+                #println("here")
                 #@show TmpMat[q1:q2, 1:nb]
                 STmpMat = plo_diag(TmpMat[q1:q2, 1:nb])
                 #@show STmpMat
