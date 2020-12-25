@@ -241,10 +241,11 @@ function plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{
                 q1 = PGT[p].Pr[1]
                 q2 = PGT[p].Pr[end]
                 TmpMat[q1:q2, 1:nb] = chipsi[q1:q2, 1:nb, kpt, spin] 
-                #println("here")
+                println("here")
                 #@show TmpMat[q1:q2, 1:nb]
-                plo_diag!(TmpMat[q1:q2, 1:nb])
-                exit(-1)
+                STmpMat = plo_diag(TmpMat[q1:q2, 1:nb])
+                #@show STmpMat
+                chipsi[q1:q2, 1:nb, kpt, spin] = STmpMat
             end
         end
     end
@@ -253,7 +254,7 @@ end
 """
     plo_diag()
 """
-function plo_diag!(M::Array{C64,2})
+function plo_diag(M::Array{C64,2})
     ovlp = M * M'
     @assert ishermitian(ovlp)
 
@@ -263,7 +264,7 @@ function plo_diag!(M::Array{C64,2})
     sqrt_vals = map(x -> 1.0 / sqrt(x), vals)
     S = vecs * Diagonal(sqrt_vals) * vecs'
 
-    M = S * M
+    return S * M
 end
 
 """
