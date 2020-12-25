@@ -220,8 +220,11 @@ end
 
 """
     plo_orthog()
+
+Try to orthogonalize the projectors group by group (site by site)
 """
-function plo_orthog()
+function plo_orthog(chipsi::Array{C64,4})
+    println("here")
 end
 
 """
