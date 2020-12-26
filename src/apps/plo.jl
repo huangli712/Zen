@@ -407,6 +407,12 @@ function view_ovlp(ovlp::Array{F64,3})
 end
 
 """
+    view_ovlp()
+"""
+function view_ovlp()
+end
+
+"""
     view_dm(dm::Array{F64,3})
 
 Output the density matrix, only for debug
@@ -424,4 +430,10 @@ function view_dm(dm::Array{F64,3})
             println()
         end
     end
+end
+
+"""
+    view_dm()
+"""
+function view_dm()
 end
