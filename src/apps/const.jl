@@ -5,7 +5,7 @@
 # status  : stable
 # comment :
 #
-# last modified: 2020/12/14
+# last modified: 2020/12/27
 #
 
 """
@@ -56,6 +56,6 @@ const __release__ = "2020/12"
 """
     __authors__
 
-Authors of this julia package
+Core authors of this julia package
 """
-const __authors__ = ["Li Huang (lihuang@gmail.com)"]
+const __authors__ = [("Li Huang", "lihuang@gmail.com")]
