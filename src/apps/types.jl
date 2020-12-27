@@ -49,8 +49,7 @@ PDFT  = Dict{String,Array{Any,1}}(
             "window"   => [missing, 0, Array , "energy window for generating optimal projectors"],
             "loptim"   => [missing, 0, Bool  , "try to optimize the generated projectors"],
             "lproj"    => [missing, 1, Bool  , "try to generate projectors"],
-            "nproj"    => [missing, 1, I64   , "number of types of projectors"],
-            "sproj"    => [missing, 1, Array , "scheme for generating projectors"],
+            "sproj"    => [missing, 1, Array , "strings for generating projectors"],
         )
 
 """
