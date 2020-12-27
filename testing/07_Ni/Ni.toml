@@ -8,8 +8,8 @@ magmom = "1.0"
 lsymm = false
 lspins = true
 lspinorb = false
-window = [6.0, 9.0]
 loptim = false
+window = [6.0, 9.0]
 lproj = true
 sproj = ["1 : d : Pr"]
 

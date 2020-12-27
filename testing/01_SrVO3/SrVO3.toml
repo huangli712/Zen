@@ -7,8 +7,8 @@ kmesh = "medium"
 lsymm = false
 lspins = false
 lspinorb = false
-window = [3.9, 7.1]
 loptim = true
+window = [3.9, 7.1]
 lproj = true
 sproj = ["2 : d : Pr"]
 
