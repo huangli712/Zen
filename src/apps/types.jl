@@ -41,14 +41,14 @@ Dictionary for configuration parameters: density functional theory calculations
 PDFT  = Dict{String,Array{Any,1}}(
             "engine"   => [missing, 1, String, "engine for density functional theory calculations"],
             "smear"    => [missing, 0, String, "scheme for smearing"],
-            "kmesh"    => [missing, 0, String, "density of kmesh sampling in the brillouin zone"],
-            "magmom"   => [missing, 0, String, "initial magnetic moment"],
-            "lsymm"    => [missing, 0, Bool  , "whether the symmetry is considered"],
-            "lspins"   => [missing, 0, Bool  , "whether the spin orientations are polarized"],
-            "lspinorb" => [missing, 0, Bool  , "whether the spin-orbit coupling is considered"],
-            "loptim"   => [missing, 0, Bool  , "try to optimize the generated projectors"],
-            "window"   => [missing, 0, Array , "energy window for generating optimal projectors"],
-            "lproj"    => [missing, 1, Bool  , "try to generate projectors"],
+            "kmesh"    => [missing, 0, String, "k-density of sampling in the brillouin zone"],
+            "magmom"   => [missing, 0, String, "initial magnetic moments"],
+            "lsymm"    => [missing, 0, Bool  , "the symmetry is turned on or off"],
+            "lspins"   => [missing, 0, Bool  , "the spin orientations are polarized or not"],
+            "lspinorb" => [missing, 0, Bool  , "the spin-orbit coupling is considered or not"],
+            "loptim"   => [missing, 0, Bool  , "the generated projectors are optimized or not"],
+            "window"   => [missing, 0, Array , "energy window used to generate optimal projectors"],
+            "lproj"    => [missing, 1, Bool  , "the projectors are generated or not"],
             "sproj"    => [missing, 1, Array , "strings for generating projectors"],
         )
 
@@ -78,7 +78,7 @@ PDMFT = Dict{String,Array{Any,1}}(
 Dictionary for configuration parameters: quantum impurity problems
 """
 PIMP  = Dict{String,Array{Any,1}}(
-            "nsite"    => [missing, 1, I64   , "number of impurity sites"],
+            "nsite"    => [missing, 1, I64   , "number of (correlated) impurity sites"],
             "atoms"    => [missing, 1, Array , "chemical symbols of impurity atoms"],
             "equiv"    => [missing, 1, Array , "equivalency of quantum impurity atoms"],
             "shell"    => [missing, 1, Array , "angular momenta of correlated orbitals"],
@@ -129,14 +129,14 @@ Contain the crystallography information
 .scale -> universal scaling factor (lattice constant), which is used to
           scale all lattice vectors and all atomic coordinates
 .lvect -> three lattice vectors defining the unit cell of the system. its
-          size is (3, 3)
+          size must be (3, 3)
 .nsort -> number of sorts of atoms
 .natom -> number of atoms
-.sorts -> sorts of atoms. its size is (nsort, 2)
-.atoms -> lists of atoms. its size is (natom)
+.sorts -> sorts of atoms. its size must be (nsort, 2)
+.atoms -> lists of atoms. its size must be (natom)
 .coord -> atomic positions are provided in cartesian coordinates or in
           direct coordinates (respectively fractional coordinates). its
-          size is (natom, 3)
+          size must be (natom, 3)
 """
 mutable struct Lattice
     _case :: String
@@ -152,7 +152,7 @@ end
 """
     PrTrait
 
-Essential information of projector
+Essential information of a given projector
 
 .site -> site in which the projector is defined
 .l    -> quantum number l
@@ -231,7 +231,6 @@ Outer constructor for IterInfo struct
 function IterInfo(iter::I64 = 0)
     IterInfo(iter, iter, iter, iter)
 end
-
 
 """
     Lattice(_case::String, scale::F64, nsort::I64, natom::I64)
