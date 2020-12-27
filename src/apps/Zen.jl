@@ -92,11 +92,11 @@ export PrGroupT
 # renew_config -> update dict (configuration)
 # check_config -> check dict (configuration)
 # _v           -> verify dict
-# _c           -> shortcut to visit dict (case)
-# _d           -> shortcut to visit dict (dft)
-# _m           -> shortcut to visit dict (dmft)
-# _i           -> shortcut to visit dict (impurity)
-# _s           -> shortcut to visit dict (solver)
+# _c           -> shortcut for visiting dict (case)
+# _d           -> shortcut for visiting dict (dft)
+# _m           -> shortcut for visiting dict (dmft)
+# _i           -> shortcut for visiting dict (impurity)
+# _s           -> shortcut for visiting dict (solver)
 #
 include("config.jl")
 #
@@ -193,7 +193,7 @@ export dft_save
 # vaspio_eigen   -> read eigenvalues
 # vaspio_projs   -> read projectors
 # vaspio_fermi   -> read fermi level
-# vaspio_charge  -> read charge
+# vaspio_charge  -> read charge density
 #
 include("vasp.jl")
 #
@@ -223,7 +223,7 @@ export vaspio_charge
 # irio_eigen   -> write eigenvalues
 # irio_projs   -> write projectors
 # irio_fermi   -> write fermi level
-# irio_charge  -> write charge
+# irio_charge  -> write charge density
 #
 include("ir.jl")
 #
