@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/25
+# last modified: 2020/12/27
 #
 
 module Zen
@@ -19,6 +19,7 @@ module Zen
 # so, please upgrade your julia environment if it is outdated
 #
 using LinearAlgebra
+using Distributed
 using Printf
 using Dates
 using TOML
