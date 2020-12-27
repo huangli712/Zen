@@ -153,7 +153,6 @@ function view_dft()
     println("dft  -> window   -> ", _d("window"))
     println("dft  -> loptim   -> ", _d("loptim"))
     println("dft  -> lproj    -> ", _d("lproj"))
-    println("dft  -> nproj    -> ", _d("nproj"))
     println("dft  -> sproj    -> ", _d("sproj"))
     println()
 end

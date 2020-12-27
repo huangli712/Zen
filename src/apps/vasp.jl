@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/24
+# last modified: 2020/12/27
 #
 
 """
@@ -192,11 +192,10 @@ function vasp_incar()
 
     # for local orbitals and projectors
     lproj = _d("lproj")
-    nproj = _d("nproj")
     sproj = _d("sproj")
-    if !isa(lproj, Missing) && !isa(nproj, Missing) && !isa(sproj, Missing)
+    if !isa(lproj, Missing) && !isa(sproj, Missing)
         if lproj
-            for p = 1:nproj
+            for p in eachindex(sproj)
                 str = sproj[p]
                 write(ios, "LOCPROJ  = $str \n")
             end
