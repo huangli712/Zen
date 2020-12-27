@@ -5,15 +5,15 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/17
+# last modified: 2020/12/27
 #
 
 """
-    parse_toml(f::AbstractString, key::AbstractString, necessary::Bool)
+    parse_toml(f::String, key::String, necessary::Bool)
 
 Parse the configuration file (toml format)
 """
-function parse_toml(f::AbstractString, key::AbstractString, necessary::Bool)
+function parse_toml(f::String, key::String, necessary::Bool)
     if isfile(f)
         dict = TOML.parsefile(f)
 
@@ -32,11 +32,11 @@ function parse_toml(f::AbstractString, key::AbstractString, necessary::Bool)
 end
 
 """
-    parse_toml(f::AbstractString, necessary::Bool)
+    parse_toml(f::String, necessary::Bool)
 
 Parse the configuration file (toml format)
 """
-function parse_toml(f::AbstractString, necessary::Bool)
+function parse_toml(f::String, necessary::Bool)
     if isfile(f)
         dict = TOML.parsefile(f)
     else
