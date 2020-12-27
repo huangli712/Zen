@@ -46,8 +46,8 @@ PDFT  = Dict{String,Array{Any,1}}(
             "lsymm"    => [missing, 0, Bool  , "whether the symmetry is considered"],
             "lspins"   => [missing, 0, Bool  , "whether the spin orientations are polarized"],
             "lspinorb" => [missing, 0, Bool  , "whether the spin-orbit coupling is considered"],
-            "window"   => [missing, 0, Array , "energy window for generating optimal projectors"],
             "loptim"   => [missing, 0, Bool  , "try to optimize the generated projectors"],
+            "window"   => [missing, 0, Array , "energy window for generating optimal projectors"],
             "lproj"    => [missing, 1, Bool  , "try to generate projectors"],
             "sproj"    => [missing, 1, Array , "strings for generating projectors"],
         )
