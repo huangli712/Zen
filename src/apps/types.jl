@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/24
+# last modified: 2020/12/27
 #
 
 #
@@ -29,7 +29,7 @@
 
 Dictionary for configuration parameters: case summary
 """
-PCASE = Dict{String,Any}(
+PCASE = Dict{String,Array{Any,1}}(
             "case"     => [missing, 1, String, "system's name"]
         )
 
@@ -38,7 +38,7 @@ PCASE = Dict{String,Any}(
 
 Dictionary for configuration parameters: density functional theory calculations
 """
-PDFT  = Dict{String,Any}(
+PDFT  = Dict{String,Array{Any,1}}(
             "engine"   => [missing, 1, String, "engine for density functional theory calculations"],
             "smear"    => [missing, 0, String, "scheme for smearing"],
             "kmesh"    => [missing, 0, String, "density of kmesh sampling in the brillouin zone"],
@@ -58,7 +58,7 @@ PDFT  = Dict{String,Any}(
 
 Dictionary for configuration parameters: dynamical mean-field theory calculations
 """
-PDMFT = Dict{String,Any}(
+PDMFT = Dict{String,Array{Any,1}}(
             "mode"     => [missing, 1, I64   , "scheme of dynamical mean-field theory calculations"],
             "axis"     => [missing, 1, I64   , "imaginary-time axis or real-frequency axis"],
             "beta"     => [missing, 1, Real  , "inverse system temperature"],
@@ -78,7 +78,7 @@ PDMFT = Dict{String,Any}(
 
 Dictionary for configuration parameters: quantum impurity problems
 """
-PIMP  = Dict{String,Any}(
+PIMP  = Dict{String,Array{Any,1}}(
             "nsite"    => [missing, 1, I64   , "number of impurity sites"],
             "atoms"    => [missing, 1, Array , "chemical symbols of impurity atoms"],
             "equiv"    => [missing, 1, Array , "equivalency of quantum impurity atoms"],
@@ -95,7 +95,7 @@ PIMP  = Dict{String,Any}(
 
 Dictionary for configuration parameters: quantum impurity solvers
 """
-PSOLVER= Dict{String,Any}(
+PSOLVER= Dict{String,Array{Any,1}}(
              "engine"  => [missing, 1, String, "name of quantum impurity solver"],
              "params"  => [missing, 1, Array , "parameter sets of quantum impurity solver"],
          )
