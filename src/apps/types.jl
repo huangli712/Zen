@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/27
+# last modified: 2020/12/28
 #
 
 #
@@ -314,4 +314,24 @@ function PrGroupT(site::I64, l::I64, ndim::I64, corr::Bool, shell::String)
 
     # call the default constructor
     PrGroupT(site, l, ndim, corr, shell, Pr)
+end
+
+#
+# Customized Base.show functions
+#
+
+function Base.show(io::IO, it::IterInfo)
+    println(io, "hehe")
+end
+
+function Base.show(io::IO, latt::Lattice)
+end
+
+function Base.show(io::IO, PT::PrTrait)
+end
+
+function Base.show(io::IO, PG::PrGroup)
+end
+
+function Base.show(io::IO, PGT::PrGroupT)
 end
