@@ -369,7 +369,7 @@ end
 Base.show() function for PrGroup struct
 """
 function Base.show(io::IO, PG::PrGroup)
-    # TODO
+    println(io, "PrGroup struct")
 end
 
 """
@@ -378,5 +378,5 @@ end
 Base.show() function for PrGroupT struct
 """
 function Base.show(io::IO, PGT::PrGroupT)
-    # TODO
+    println(io, "PrGroupT struct")
 end
