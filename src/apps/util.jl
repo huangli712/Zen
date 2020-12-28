@@ -141,19 +141,19 @@ end
 """
     view_case()
 
-Print the configuration parameters to stdout: for case
+Print the configuration parameters to stdout: for PCASE dict
 """
 function view_case()
     message("Job Summary")
     println("Parameters: case")
-    println("  case -> ", _c("case"))
+    println("  case     -> ", _c("case"))
     println()
 end
 
 """
     view_dft()
 
-Print the configuration parameters to stdout: for dft
+Print the configuration parameters to stdout: for PDFT dict
 """
 function view_dft()
     println("Parameters: dft engine")
@@ -174,7 +174,7 @@ end
 """
     view_dmft()
 
-Print the configuration parameters to stdout: for dmft
+Print the configuration parameters to stdout: for PDMFT dict
 """
 function view_dmft()
     println("Parameters: dmft engine")
@@ -196,31 +196,31 @@ end
 """
     view_impurity()
 
-Print the configuration parameters to stdout: for impurity
+Print the configuration parameters to stdout: for PIMP dict
 """
 function view_impurity()
     println("Parameters: quantum impurity atoms")
-    println("  nsite  -> ", _i("nsite"))
-    println("  atoms  -> ", _i("atoms"))
-    println("  equiv  -> ", _i("equiv"))
-    println("  shell  -> ", _i("shell"))
-    println("  ising  -> ", _i("ising"))
-    println("  occup  -> ", _i("occup"))
-    println("  upara  -> ", _i("upara"))
-    println("  jpara  -> ", _i("jpara"))
-    println("  lpara  -> ", _i("lpara"))
+    println("  nsite    -> ", _i("nsite"))
+    println("  atoms    -> ", _i("atoms"))
+    println("  equiv    -> ", _i("equiv"))
+    println("  shell    -> ", _i("shell"))
+    println("  ising    -> ", _i("ising"))
+    println("  occup    -> ", _i("occup"))
+    println("  upara    -> ", _i("upara"))
+    println("  jpara    -> ", _i("jpara"))
+    println("  lpara    -> ", _i("lpara"))
     println()
 end
 
 """
     view_solver()
 
-Print the configuration parameters to stdout: for solver
+Print the configuration parameters to stdout: for PSOLVER dict
 """
 function view_solver()
     println("Parameters: quantum impurity solvers")
-    println("  engine -> ", _s("engine"))
-    println("  params -> ", _s("params"))
+    println("  engine   -> ", _s("engine"))
+    println("  params   -> ", _s("params"))
     println()
 end
 
