@@ -356,7 +356,11 @@ end
 Base.show() function for PrTrait struct
 """
 function Base.show(io::IO, PT::PrTrait)
-    # TODO
+    println(io, "PrTrait struct")
+    println(io, ".site : ", PT.site)
+    println(io, ".l    : ", PT.l)
+    println(io, ".m    : ", PT.m)
+    println(io, ".desc : ", PT.desc)
 end
 
 """
