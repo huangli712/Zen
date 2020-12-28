@@ -178,7 +178,7 @@ Essential information of group of projectors
           the same group should have the same quantum number l (but
           with different m)
 .corr  -> if the projectors in this group are correlated
-.shell -> type of correlated orbitals
+.shell -> type of correlated orbitals. it is infered from quantum number l
 .Pr    -> array. it contains the indices of projectors
 .Tr    -> array. it contains the transformation matrix. this parameter
           can be useful to select certain subset of orbitals or perform
@@ -207,7 +207,7 @@ Essential information of group of projectors (be transformed or rotated)
 .ndim  -> how many projectors are actually included in this group, which
           should be equal to the length of vector Pr
 .corr  -> if the projectors in this group are correlated
-.shell -> type of correlated orbitals
+.shell -> type of correlated orbitals. it is from PIMP dict
 .Pr    -> array. it contains the indices of projectors
 """
 mutable struct PrGroupT
@@ -370,12 +370,12 @@ Base.show() function for PrGroup struct
 """
 function Base.show(io::IO, PG::PrGroup)
     println(io, "PrGroup struct")
-    println(io, ".site : ", PG.site)
-    println(io, ".l    : ", PG.l)
-    println(io, ".corr : ", PG.corr)
-    println(io, ".shell: ", PG.shell)
-    println(io, ".Pr   : ", PG.Pr)
-    println(io, ".Tr   : ", PG.Tr)
+    println(io, ".site  : ", PG.site)
+    println(io, ".l     : ", PG.l)
+    println(io, ".corr  : ", PG.corr)
+    println(io, ".shell : ", PG.shell)
+    println(io, ".Pr    : ", PG.Pr)
+    println(io, ".Tr    : ", PG.Tr)
 end
 
 """
@@ -385,4 +385,11 @@ Base.show() function for PrGroupT struct
 """
 function Base.show(io::IO, PGT::PrGroupT)
     println(io, "PrGroupT struct")
+    println(io, ".site  : ", PGT.site)
+    println(io, ".l     : ", PGT.l)
+    println(io, ".ndim  : ", PGT.ndim)
+    println(io, ".corr  : ", PGT.corr)
+    println(io, ".shell : ", PGT.shell)
+    println(io, ".Pr    : ", PGT.Pr)
+    println(io, ".Tr    : ", PGT.Tr)
 end
