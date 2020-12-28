@@ -5,15 +5,29 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/16
+# last modified: 2020/12/28
 #
 
 """
     @cswitch
 
-Provides C-like switch statement with the "falling through" behavior. this
-implements is borrowed from the following website:
+Provides C-like switch statement with the ``falling through'' behavior. this
+implement is borrowed from the following github repp.:
     https://github.com/Gnimuc/CSyntax.jl
+
+# Examples
+```julia
+engine = _d("engine")
+@cswitch engine begin
+    @case "vasp"
+        vasp_init(it)
+        break
+
+    @default
+        sorry()
+        break
+end
+```
 """
 macro cswitch(constexpr, body)
     case2label = Dict{Any,Symbol}()

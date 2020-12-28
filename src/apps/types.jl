@@ -322,7 +322,7 @@ end
 Outer constructor for PrGroupT struct
 """
 function PrGroupT(PG::PrGroup)
-    # determine ndim 
+    # determine ndim
     ndim = size(PG.Tr)[1]
 
     # allocate memory for Pr
