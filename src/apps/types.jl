@@ -320,10 +320,24 @@ end
 # Customized Base.show functions
 #
 
+"""
+    Base.show(io::IO, it::IterInfo)
+
+Base.show function for IterInfo struct
+"""
 function Base.show(io::IO, it::IterInfo)
-    println(io, "hehe")
+    println(io, "IterInfo struct")
+    println(io, ".dmft1_iter : ", it.dmft1_iter)
+    println(io, ".dmft2_iter : ", it.dmft2_iter)
+    println(io, ".dmft_cycle : ", it.dmft_cycle)
+    println(io, ".full_cycle : ", it.full_cycle)
 end
 
+"""
+    Base.show(io::IO, latt::Lattice)
+
+Base.show function for Lattice struct
+"""
 function Base.show(io::IO, latt::Lattice)
 end
 

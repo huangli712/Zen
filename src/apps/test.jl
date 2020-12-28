@@ -5,6 +5,7 @@ using .Zen
 
 it = IterInfo(1)
 @show it
+#println(it)
 
 # test vaspio_kmesh() and irio_kmesh()
 #--------------------------------------
