@@ -3,10 +3,14 @@
 include("Zen.jl")
 using .Zen
 
-it = IterInfo(1)
-@show it
-latt = vaspio_lattice(pwd())
-@show latt 
+#it = IterInfo(1)
+#@show it
+#latt = vaspio_lattice(pwd())
+#@show latt
+#PG = PrGroup(2, 0)
+#@show PG
+#PGT = PrGroupT(PG)
+#@show PGT
 
 # test vaspio_kmesh() and irio_kmesh()
 #--------------------------------------

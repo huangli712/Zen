@@ -295,7 +295,7 @@ function PrGroup(site::I64, l::I64)
 
     # allocate memory for Pr and Tr
     # they will be further initialized in vaspio_projs() and plo_group()
-    max_dim = 7 # for f-electron system
+    max_dim = 2 * l + 1
     Pr = zeros(I64, max_dim)
     Tr = zeros(C64, max_dim, max_dim)
 
@@ -407,5 +407,4 @@ function Base.show(io::IO, PGT::PrGroupT)
     println(io, ".corr  : ", PGT.corr)
     println(io, ".shell : ", PGT.shell)
     println(io, ".Pr    : ", PGT.Pr)
-    println(io, ".Tr    : ", PGT.Tr)
 end
