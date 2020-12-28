@@ -3,6 +3,8 @@
 include("Zen.jl")
 using .Zen
 
+welcome()
+
 #it = IterInfo(1)
 #@show it
 #latt = vaspio_lattice(pwd())
