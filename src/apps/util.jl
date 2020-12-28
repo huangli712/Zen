@@ -218,9 +218,9 @@ end
 Print the configuration parameters to stdout: for solver
 """
 function view_solver()
-    message("solver parameters")
-    println("solver   -> engine -> ", _s("engine"))
-    println("solver   -> params -> ", _s("params"))
+    println("Parameters: quantum impurity solvers")
+    println("  engine -> ", _s("engine"))
+    println("  params -> ", _s("params"))
     println()
 end
 
