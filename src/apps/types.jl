@@ -316,6 +316,22 @@ function PrGroupT(site::I64, l::I64, ndim::I64, corr::Bool, shell::String)
     PrGroupT(site, l, ndim, corr, shell, Pr)
 end
 
+"""
+    PrGroupT(PG::PrGroup)
+
+Outer constructor for PrGroupT struct
+"""
+function PrGroupT(PG::PrGroup)
+    # determine ndim 
+    ndim = size(PG.Tr)[1]
+
+    # allocate memory for Pr
+    Pr = zeros(I64, ndim)
+
+    # call the default constructor
+    PrGroupT(PG.site, PG.l, ndim, PG.corr, PG.shell, Pr)
+end
+
 #
 # Customized Base.show() functions
 #
