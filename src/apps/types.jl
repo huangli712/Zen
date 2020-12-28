@@ -317,13 +317,13 @@ function PrGroupT(site::I64, l::I64, ndim::I64, corr::Bool, shell::String)
 end
 
 #
-# Customized Base.show functions
+# Customized Base.show() functions
 #
 
 """
     Base.show(io::IO, it::IterInfo)
 
-Base.show function for IterInfo struct
+Base.show() function for IterInfo struct
 """
 function Base.show(io::IO, it::IterInfo)
     println(io, "IterInfo struct")
@@ -336,7 +336,7 @@ end
 """
     Base.show(io::IO, latt::Lattice)
 
-Base.show function for Lattice struct
+Base.show() function for Lattice struct
 """
 function Base.show(io::IO, latt::Lattice)
     println(io, "Lattice struct")
@@ -350,11 +350,29 @@ function Base.show(io::IO, latt::Lattice)
     println(io, ".coord : ", latt.coord)
 end
 
+"""
+    Base.show(io::IO, PT::PrTrait)
+
+Base.show() function for PrTrait struct
+"""
 function Base.show(io::IO, PT::PrTrait)
+    # TODO
 end
 
+"""
+    Base.show(io::IO, PG::PrGroup)
+
+Base.show() function for PrGroup struct
+"""
 function Base.show(io::IO, PG::PrGroup)
+    # TODO
 end
 
+"""
+    Base.show(io::IO, PGT::PrGroupT)
+
+Base.show() function for PrGroupT struct
+"""
 function Base.show(io::IO, PGT::PrGroupT)
+    # TODO
 end
