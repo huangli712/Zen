@@ -5,7 +5,8 @@ using .Zen
 
 it = IterInfo(1)
 @show it
-#println(it)
+latt = vaspio_lattice(pwd())
+@show latt 
 
 # test vaspio_kmesh() and irio_kmesh()
 #--------------------------------------

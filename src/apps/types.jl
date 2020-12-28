@@ -339,6 +339,15 @@ end
 Base.show function for Lattice struct
 """
 function Base.show(io::IO, latt::Lattice)
+    println(io, "Lattice struct")
+    println(io, "._case : ", latt._case)
+    println(io, ".scale : ", latt.scale)
+    println(io, ".lvect : ", latt.lvect)
+    println(io, ".nsort : ", latt.nsort)
+    println(io, ".natom : ", latt.natom)
+    println(io, ".sorts : ", latt.sorts)
+    println(io, ".atoms : ", latt.atoms)
+    println(io, ".coord : ", latt.coord)
 end
 
 function Base.show(io::IO, PT::PrTrait)
