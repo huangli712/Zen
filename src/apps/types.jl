@@ -370,6 +370,12 @@ Base.show() function for PrGroup struct
 """
 function Base.show(io::IO, PG::PrGroup)
     println(io, "PrGroup struct")
+    println(io, ".site : ", PG.site)
+    println(io, ".l    : ", PG.l)
+    println(io, ".corr : ", PG.corr)
+    println(io, ".shell: ", PG.shell)
+    println(io, ".Pr   : ", PG.Pr)
+    println(io, ".Tr   : ", PG.Tr)
 end
 
 """
