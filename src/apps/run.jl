@@ -10,21 +10,19 @@ require()
 welcome()
 
 # parse the file case.toml to extract configuration parameters
-message("zen", "parse the configuration file")
 cfg = parse_toml(query_args(), true)
 
 # validate the configuration parameters
-message("zen", "check the configuration parameters")
 renew_config(cfg)
 check_config()
 
 # write the configuration parameters to stdout
-message("zen", "display the configuration parameters")
 view_case()
 view_dft()
 view_dmft()
 view_impurity()
 view_solver()
+exit(-1)
 
 # check the input files (which are essential for the calculation)
 message("zen", "examine the essential input files")

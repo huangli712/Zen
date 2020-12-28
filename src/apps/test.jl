@@ -3,7 +3,7 @@
 include("Zen.jl")
 using .Zen
 
-welcome()
+#welcome()
 
 #it = IterInfo(1)
 #@show it
