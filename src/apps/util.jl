@@ -144,8 +144,7 @@ end
 Print the configuration parameters to stdout: for PCASE dict
 """
 function view_case()
-    message("Job Summary")
-    println("Parameters: case")
+    println("< Parameters: case >")
     println("  case     -> ", _c("case"))
     println()
 end
@@ -156,7 +155,7 @@ end
 Print the configuration parameters to stdout: for PDFT dict
 """
 function view_dft()
-    println("Parameters: dft engine")
+    println("< Parameters: dft engine >")
     println("  engine   -> ", _d("engine"))
     println("  smear    -> ", _d("smear"))
     println("  kmesh    -> ", _d("kmesh"))
@@ -177,7 +176,7 @@ end
 Print the configuration parameters to stdout: for PDMFT dict
 """
 function view_dmft()
-    println("Parameters: dmft engine")
+    println("< Parameters: dmft engine >")
     println("  mode     -> ", _m("mode"))
     println("  axis     -> ", _m("axis"))
     println("  beta     -> ", _m("beta"))
@@ -199,7 +198,7 @@ end
 Print the configuration parameters to stdout: for PIMP dict
 """
 function view_impurity()
-    println("Parameters: quantum impurity atoms")
+    println("< Parameters: quantum impurity atoms >")
     println("  nsite    -> ", _i("nsite"))
     println("  atoms    -> ", _i("atoms"))
     println("  equiv    -> ", _i("equiv"))
@@ -218,7 +217,7 @@ end
 Print the configuration parameters to stdout: for PSOLVER dict
 """
 function view_solver()
-    println("Parameters: quantum impurity solvers")
+    println("< Parameters: quantum impurity solvers >")
     println("  engine   -> ", _s("engine"))
     println("  params   -> ", _s("params"))
     println()

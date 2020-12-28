@@ -17,12 +17,12 @@ renew_config(cfg)
 check_config()
 
 # write the configuration parameters to stdout
+message("Job Summary")
 view_case()
 view_dft()
 view_dmft()
 view_impurity()
 view_solver()
-exit(-1)
 
 # check the input files (which are essential for the calculation)
 message("zen", "examine the essential input files")
@@ -35,6 +35,8 @@ make_trees()
 # create a IterInfo object
 message("zen", "make the instance of scf-consistent iterator")
 it = IterInfo()
+
+exit(-1)
 
 if _m("mode") === 1
 
