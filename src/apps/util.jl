@@ -83,7 +83,7 @@ Check whether the configuration file (case.toml) is provided
 function query_args()
     nargs = length(ARGS)
     if nargs < 1
-        error("Please specify the configuration file at least")
+        error("Please specify the configuration file")
     else
         ARGS[1]
     end
