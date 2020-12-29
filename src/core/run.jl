@@ -1,5 +1,15 @@
 #!/usr/bin/env julia
 
+#
+# project : pansy
+# source  : run.jl
+# author  : Li Huang (lihuang.dmft@gmail.com)
+# status  : unstable
+# comment :
+#
+# last modified: 2020/12/29
+#
+
 include("Zen.jl")
 using .Zen
 
@@ -12,19 +22,34 @@ welcome()
 # S01: parse the configuration file, get job's description
 message("ZEN", "Parsing Job")
 #
-# parse the file case.toml to extract configuration parameters
+# S01.1: parse the case.toml file to extract configuration parameters
 cfg = parse_toml(query_args(), true)
+println("Extract configuration parameters from $(query_args())")
 #
-# validate the configuration parameters
+# S01.2: build the configuration dictionaries
 renew_config(cfg)
+println("Update configuration dictionaries")
+#
+# S01.3: validate the configuration dictionaries
 check_config()
+println("Check configuration dictionaries\n")
 
-# write the configuration parameters to stdout
-message("ZEN", "Job Summary")
+# S02: write the configuration parameters to stdout
+message("ZEN", "Viewing Job")
+#
+# S02.1: show dict PCASE
 view_case()
+#
+# S02.2: show dict PDFT
 view_dft()
+#
+# S02.3: show dict PDMFT
 view_dmft()
+#
+# S02.4: show dict PIMP
 view_impurity()
+#
+# S02.5: show dict PSOLVER
 view_solver()
 
 # check the input files (which are essential for the calculation)
