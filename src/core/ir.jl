@@ -157,11 +157,12 @@ function irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
 end
 
 """
-    irio_projs(f::AbstractString, chipsi::Array{C64,4})
+    irio_projs(f::String, chipsi::Array{C64,4})
 
-Write the projectors using the IR format
+Write the projectors to projs.ir using the IR format. Here `f` means only
+the directory that we want to use
 """
-function irio_projs(f::AbstractString, chipsi::Array{C64,4})
+function irio_projs(f::String, chipsi::Array{C64,4})
     # extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -179,8 +180,8 @@ function irio_projs(f::AbstractString, chipsi::Array{C64,4})
             for k = 1:nkpt
                 for b = 1:nband
                     for p = 1:nproj
-                        _re = real(chipsi[p,b,k,s])
-                        _im = imag(chipsi[p,b,k,s])
+                        _re = real(chipsi[p, b, k, s])
+                        _im = imag(chipsi[p, b, k, s])
                         @printf(fout, "%16.12f %16.12f\n", _re, _im)
                     end
                 end
