@@ -121,7 +121,7 @@ export _s
 # @cswitch      -> C-style switch
 # require       -> check julia envirnoment
 # query_args    -> query arguments
-# query_cars    -> query input files
+# query_inps    -> query input files
 # query_zen     -> query home directory of zen
 # query_dft     -> query home directory of dft engine
 # view_case     -> print dict (case)

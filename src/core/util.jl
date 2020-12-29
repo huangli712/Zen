@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/28
+# last modified: 2020/12/29
 #
 
 """
@@ -90,14 +90,13 @@ function query_args()
 end
 
 """
-    query_cars()
+    query_inps()
 
 Check whether the essential input files exist
 """
-function query_cars()
+function query_inps()
     # if the dft engine is vasp, we have to ensure that the required input
     # files (POSCAR and POTCAR) are present
-    print("Examine the essential input files...")
     if _d("engine") === "vasp"
         if !isfile("POSCAR") || !isfile("POTCAR")
             error("Please provide both POSCAR and POTCAR files")
@@ -105,7 +104,6 @@ function query_cars()
     else
         sorry()
     end
-    println("go!")
 end
 
 """

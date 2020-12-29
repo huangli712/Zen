@@ -26,7 +26,7 @@ view_solver()
 
 # check the input files (which are essential for the calculation)
 message("ZEN", "Preparing Job")
-query_cars()
+query_inps()
 
 # prepare the working directories
 make_trees()
