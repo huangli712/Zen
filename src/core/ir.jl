@@ -5,15 +5,16 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/23
+# last modified: 2020/12/29
 #
 
 """
-    irio_lattice(f::AbstractString, latt::Lattice)
+    irio_lattice(f::String, latt::Lattice)
 
-Write the lattice information using the IR format
+Write the lattice information to lattice.ir using the IR format. Here `f`
+means only the directory that we want to use  
 """
-function irio_lattice(f::AbstractString, latt::Lattice)
+function irio_lattice(f::String, latt::Lattice)
     # extract some key parameters
     _case, scale, nsort, natom = latt._case, latt.scale, latt.nsort, latt.natom
 
@@ -64,13 +65,18 @@ function irio_lattice(f::AbstractString, latt::Lattice)
 end
 
 """
-    irio_kmesh(f::AbstractString, kmesh::Array{F64,2}, weight::Array{F64,1})
+    irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
 
-Write the kmesh information using the IR format
+Write the kmesh and weight information to kmesh.ir using the IR format. Here
+`f` means only the directory that we want to use
 """
-function irio_kmesh(f::AbstractString, kmesh::Array{F64,2}, weight::Array{F64,1})
+function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
     # extract some key parameters
     nkpt, ndir = size(kmesh)
+
+    # extract some key parameters
+    _nkpt = size(weight)
+    @assert nkpt === _nkpt
 
     # output the data
     open(joinpath(f, "kmesh.ir"), "w") do fout
