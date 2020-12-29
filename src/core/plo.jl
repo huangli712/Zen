@@ -338,7 +338,7 @@ end
 """
     plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
 
-Calculate the density matrix out of projectors
+Calculate the density matrix out of projectors. General version
 """
 function plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
     # extract some key parameters
@@ -367,11 +367,13 @@ end
 """
     plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
 
-Calculate the density matrix out of projectors
+Calculate the density matrix out of projectors. The overlap matrix is block-diagonal
 """
 function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
     # extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
+
+    # sanity check
     @assert nband === bmax - bmin + 1
 
     # evaluate spin factor
@@ -393,7 +395,6 @@ function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,
             end
         end
     end
-    @show dm[:, :, 1]
 
     # return the desired array
     return dm

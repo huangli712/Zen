@@ -79,7 +79,8 @@ bmin, bmax, ib_window, chipsi_w = plo_window(enk, 2.0, -1.4, chipsi_r)
 @time plo_orthog(ib_window, PGT, chipsi_w)
 ovlp = plo_ovlp(PGT, chipsi_w, weight)
 @show ovlp
-plo_dm(bmin, bmax, PGT, chipsi_w, weight, occupy)
+dm = plo_dm(bmin, bmax, PGT, chipsi_w, weight, occupy)
+@show dm
 #exit(-1)
 
 #ovlp = plo_ovlp(chipsi, weight)
