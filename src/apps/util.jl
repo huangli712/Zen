@@ -97,6 +97,7 @@ Check whether the essential input files exist
 function query_cars()
     # if the dft engine is vasp, we have to ensure that the required input
     # files (POSCAR and POTCAR) are present
+    print("Examine the essential input files...")
     if _d("engine") === "vasp"
         if !isfile("POSCAR") || !isfile("POTCAR")
             error("Please provide both POSCAR and POTCAR files")
@@ -104,6 +105,7 @@ function query_cars()
     else
         sorry()
     end
+    println("go!")
 end
 
 """

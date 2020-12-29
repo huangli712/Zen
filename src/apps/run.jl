@@ -17,7 +17,7 @@ renew_config(cfg)
 check_config()
 
 # write the configuration parameters to stdout
-message("Job Summary")
+message("ZEN", "Job Summary")
 view_case()
 view_dft()
 view_dmft()
@@ -25,15 +25,13 @@ view_impurity()
 view_solver()
 
 # check the input files (which are essential for the calculation)
-message("zen", "examine the essential input files")
+message("ZEN", "Preparing Job")
 query_cars()
 
 # prepare the working directories
-message("zen", "create the working directories")
 make_trees()
 
 # create a IterInfo object
-message("zen", "make the instance of scf-consistent iterator")
 it = IterInfo()
 
 exit(-1)
