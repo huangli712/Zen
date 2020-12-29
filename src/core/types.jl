@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/28
+# last modified: 2020/12/29
 #
 
 #
@@ -41,7 +41,7 @@ Dictionary for configuration parameters: density functional theory calculations
 PDFT  = Dict{String,Array{Any,1}}(
             "engine"   => [missing, 1, String, "engine for density functional theory calculations"],
             "smear"    => [missing, 0, String, "scheme for smearing"],
-            "kmesh"    => [missing, 0, String, "k-density of sampling in the brillouin zone"],
+            "kmesh"    => [missing, 0, String, "kmesh for brillouin zone sampling / integration"],
             "magmom"   => [missing, 0, String, "initial magnetic moments"],
             "lsymm"    => [missing, 0, Bool  , "the symmetry is turned on or off"],
             "lspins"   => [missing, 0, Bool  , "the spin orientations are polarized or not"],
@@ -49,7 +49,7 @@ PDFT  = Dict{String,Array{Any,1}}(
             "loptim"   => [missing, 0, Bool  , "the generated projectors are optimized or not"],
             "window"   => [missing, 0, Array , "energy window used to generate optimal projectors"],
             "lproj"    => [missing, 1, Bool  , "the projectors are generated or not"],
-            "sproj"    => [missing, 1, Array , "strings for generating projectors"],
+            "sproj"    => [missing, 1, Array , "strings / descriptions for generating projectors"],
         )
 
 """
@@ -60,16 +60,16 @@ Dictionary for configuration parameters: dynamical mean-field theory calculation
 PDMFT = Dict{String,Array{Any,1}}(
             "mode"     => [missing, 1, I64   , "scheme of dynamical mean-field theory calculations"],
             "axis"     => [missing, 1, I64   , "imaginary-time axis or real-frequency axis"],
-            "beta"     => [missing, 1, Real  , "inverse system temperature"],
-            "niter"    => [missing, 0, I64   , "number of iterations"],
-            "mixer"    => [missing, 0, Real  , "mixing factor"],
+            "beta"     => [missing, 1, F64   , "inverse system temperature"],
+            "niter"    => [missing, 0, I64   , "maximum number of iterations"],
+            "mixer"    => [missing, 0, F64   , "mixing factor"],
             "dcount"   => [missing, 0, String, "scheme of double counting term"],
-            "cc"       => [missing, 0, Real  , "convergence criterion of charge"],
-            "ec"       => [missing, 0, Real  , "convergence criterion of total energy"],
-            "fc"       => [missing, 0, Real  , "convergence criterion of force"],
-            "lcharge"  => [missing, 0, Bool  , "examine whether charge is converged"],
-            "lenergy"  => [missing, 0, Bool  , "examine whether total energy is converged"],
-            "lforce"   => [missing, 0, Bool  , "examine whether force is converged"],
+            "cc"       => [missing, 0, F64   , "convergence criterion of charge"],
+            "ec"       => [missing, 0, F64   , "convergence criterion of total energy"],
+            "fc"       => [missing, 0, F64   , "convergence criterion of force"],
+            "lcharge"  => [missing, 0, Bool  , "test whether charge is converged"],
+            "lenergy"  => [missing, 0, Bool  , "test whether total energy is converged"],
+            "lforce"   => [missing, 0, Bool  , "test whether force is converged"],
         )
 
 """
@@ -108,8 +108,8 @@ PSOLVER= Dict{String,Array{Any,1}}(
 
 Record the runtime information
 
-.dmft1_iter -> number of iterations for dmft1 and quantum impurity solver
-.dmft2_iter -> number of iterations for dmft2 and dft engine
+.dmft1_iter -> number of iterations between dmft1 and quantum impurity solver
+.dmft2_iter -> number of iterations between dmft2 and dft engine
 .dmft_cycle -> number of dft + dmft iterations
 .full_cycle -> counter for each iteration
 """
@@ -129,14 +129,14 @@ Contain the crystallography information
 .scale -> universal scaling factor (lattice constant), which is used to
           scale all lattice vectors and all atomic coordinates
 .lvect -> three lattice vectors defining the unit cell of the system. its
-          size must be (3, 3)
+          shape must be (3, 3)
 .nsort -> number of sorts of atoms
 .natom -> number of atoms
-.sorts -> sorts of atoms. its size must be (nsort, 2)
-.atoms -> lists of atoms. its size must be (natom)
+.sorts -> sorts of atoms. its shape must be (nsort, 2)
+.atoms -> lists of atoms. its shape must be (natom)
 .coord -> atomic positions are provided in cartesian coordinates or in
           direct coordinates (respectively fractional coordinates). its
-          size must be (natom, 3)
+          shape must be (natom, 3)
 """
 mutable struct Lattice
     _case :: String
@@ -207,7 +207,7 @@ Essential information of group of projectors (be transformed or rotated)
 .ndim  -> how many projectors are actually included in this group, which
           should be equal to the length of vector Pr
 .corr  -> if the projectors in this group are correlated
-.shell -> type of correlated orbitals. it is from PIMP dict
+.shell -> type of correlated orbitals. it is infered from the PIMP dict
 .Pr    -> array. it contains the indices of projectors
 """
 mutable struct PrGroupT
