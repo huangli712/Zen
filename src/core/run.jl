@@ -19,6 +19,9 @@ require()
 # S00: print the welcome message
 welcome()
 
+message("ZEN", "Overview")
+overview()
+
 # S01: parse the configuration file, get job's description
 message("ZEN", "Parsing Job")
 #

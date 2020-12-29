@@ -243,7 +243,14 @@ function welcome()
     printstyled("Powered by the julia programming language\n", color = :magenta)
     printstyled("                                   |\n", color = :green)
     println()
-    message("ZEN", "Overview")
+end
+
+"""
+    overview()
+
+Print out the overview of zen to the screen
+"""
+function overview()
     println("Starting time: ", Dates.format(now(), "yyyy-mm-dd / HH:MM:SS"))
     println("Parallel execution: using ", nprocs(), nprocs() == 1 ? " processor" : " processors")
     println("Current working directory: ", pwd())
