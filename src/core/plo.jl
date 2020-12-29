@@ -221,14 +221,13 @@ function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4
 end
 
 """
-    plo_orthog()
+    plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4})
 
-Try to orthogonalize the projectors group by group (site by site)
+Try to orthogonalize the projectors group by group (site_l by site_l)
 """
 function plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4})
     # extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
-    #@show nproj, nband, nkpt, nspin
 
     # create arrays
     TmpMat = zeros(C64, nproj, nband)
