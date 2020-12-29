@@ -291,12 +291,12 @@ function vaspio_lattice(f::String)
 end
 
 """
-    vaspio_kmesh(f::AbstractString)
+    vaspio_kmesh(f::String)
 
 Reading vasp's IBZKPT file, return kmesh and weight. Here `f` means
 only the directory that contains IBZKPT
 """
-function vaspio_kmesh(f::AbstractString)
+function vaspio_kmesh(f::String)
     # open the iostream
     fin = open(joinpath(f, "IBZKPT"), "r")
 
@@ -324,12 +324,12 @@ function vaspio_kmesh(f::AbstractString)
 end
 
 """
-    vaspio_tetra(f::AbstractString)
+    vaspio_tetra(f::String)
 
 Reading vasp's IBZKPT file, return tetrahedra information. Here `f` means
 only the directory that contains IBZKPT
 """
-function vaspio_tetra(f::AbstractString)
+function vaspio_tetra(f::String)
     # open the iostream
     fin = open(joinpath(f, "IBZKPT"), "r")
 
