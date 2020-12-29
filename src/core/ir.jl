@@ -76,6 +76,8 @@ function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
 
     # extract some key parameters
     _nkpt = size(weight)
+    
+    # sanity check
     @assert nkpt === _nkpt
 
     # output the data
@@ -101,6 +103,8 @@ means only the directory that we want to use
 function irio_tetra(f::String, volt::F64, itet::Array{I64,2})
     # extract some key parameters
     ntet, ndim = size(itet)
+
+    # sanity check
     @assert ndim === 5
 
     # output the data
@@ -118,13 +122,20 @@ function irio_tetra(f::String, volt::F64, itet::Array{I64,2})
 end
 
 """
-    irio_eigen(f::AbstractString, enk::Array{F64,3}, occupy::Array{F64,3})
+    irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
 
-Write the eigenvalues using the IR format
+Write the eigenvalues to eigen.ir using the IR format. Here `f` means only
+the directory that we want to use
 """
-function irio_eigen(f::AbstractString, enk::Array{F64,3}, occupy::Array{F64,3})
+function irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
     # extract some key parameters
     nband, nkpt, nspin = size(enk)
+
+    # extract some key parameters
+    _nband, _nkpt, _nspin = size(enk)
+
+    # sanity check
+    @assert nband === _nband && nkpt === _nkpt && nspin === _nspin
 
     # output the data
     open(joinpath(f, "eigen.ir"), "w") do fout
