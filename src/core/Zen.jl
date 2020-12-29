@@ -129,8 +129,8 @@ export _s
 # view_dmft     -> print dict (dmft)
 # view_impurity -> print dict (impurity)
 # view_solver   -> print dict (solver)
-# welcome       -> welcome message
-# overview      -> overview of zen
+# welcome       -> print welcome message
+# overview      -> print overview of zen
 # goodbye       -> say goodbye
 # sorry         -> say sorry
 # message       -> print some message to the screen

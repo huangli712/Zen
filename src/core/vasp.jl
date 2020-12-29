@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/27
+# last modified: 2020/12/29
 #
 
 """
@@ -162,7 +162,7 @@ function vasp_incar()
 
     # for spin polarizations
     # if spin-orbit coupling is on, spin orientations must be polarized
-    lspins = _d("lspins")
+    lspins = _d("lspins") || _d("lspinorb")
     if lspins
         write(ios, "ISPIN    = 2 \n")
     else
@@ -222,12 +222,12 @@ function vasp_kpoints()
 end
 
 """
-    vaspio_lattice(f::AbstractString)
+    vaspio_lattice(f::String)
 
 Reading vasp's POSCAR file, return crystallography information. Here `f`
 means only the directory that contains POSCAR
 """
-function vaspio_lattice(f::AbstractString)
+function vaspio_lattice(f::String)
     # open the iostream
     fin = open(joinpath(f, "POSCAR"), "r")
 
@@ -262,8 +262,8 @@ function vaspio_lattice(f::AbstractString)
     # update latt using the available data
     latt.lvect = lvect
     for i = 1:nsort
-        latt.sorts[i,1] = string(symbols[i])
-        latt.sorts[i,2] = numbers[i]
+        latt.sorts[i, 1] = string(symbols[i])
+        latt.sorts[i, 2] = numbers[i]
     end
 
     # get the atom list
@@ -274,6 +274,7 @@ function vaspio_lattice(f::AbstractString)
             latt.atoms[k] = symbols[i]
         end
     end
+    # sanity check
     @assert k === natom
 
     # get the coordinates of atoms
