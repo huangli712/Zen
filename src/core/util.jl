@@ -243,7 +243,8 @@ function welcome()
     printstyled("Powered by the julia programming language\n", color = :magenta)
     printstyled("                                   |\n", color = :green)
     println()
-    println("Starting time: ", Dates.format(now(), "yyyy-mm-dd HH:MM:SS"))
+    message("ZEN", "Overview")
+    println("Starting time: ", Dates.format(now(), "yyyy-mm-dd / HH:MM:SS"))
     println("Parallel execution: using ", nprocs(), nprocs() == 1 ? " processor" : " processors")
     println("Current working directory: ", pwd())
     println("Job description file: ", query_args())
@@ -274,8 +275,9 @@ end
 Print an standard zen message to the screen
 """
 function message(from::String, msg::String)
-    printstyled("[" * from * "]: ", color = :green)
-    println(msg)
+    printstyled(from * " > ", color = :green)
+    printstyled(msg, color = :magenta)
+    println()
 end
 
 """
