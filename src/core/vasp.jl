@@ -539,9 +539,9 @@ function vaspio_fermi(f::String)
 end
 
 """
-    vaspio_charge(f::AbstractString)
+    vaspio_charge(f::String)
 
 Reading vasp's CHGCAR file, return the charge density. Here `f` means
 only the directory that contains CHGCAR
 """
-function vaspio_charge(f::AbstractString) end
+function vaspio_charge(f::String) end
