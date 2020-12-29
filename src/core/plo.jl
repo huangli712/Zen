@@ -234,15 +234,20 @@ function plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{
 
     for s = 1:nspin
         for k = 1:nkpt
+            # reset tmp matrix
             fill!(TmpMat, 0.0 + 0.0im)
+            # determine band index and band window 
             b1 = window[k, s, 1]
             b2 = window[k, s, 2]
             nb = b2 - b1 + 1
             for p in eachindex(PGT)
                 q1 = PGT[p].Pr[1]
                 q2 = PGT[p].Pr[end]
+                # extract the desired subarray
                 TmpMat[q1:q2, 1:nb] = chipsi[q1:q2, 1:nb, k, s]
+                # diagonalize it
                 STmpMat = plo_diag(TmpMat[q1:q2, 1:nb])
+                # copy it back to original array
                 chipsi[q1:q2, 1:nb, k, s] = STmpMat
             end
         end
