@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/28
+# last modified: 2020/12/29
 #
 
 """
@@ -14,8 +14,6 @@
 Prepare the working directories at advance
 """
 function make_trees()
-    print("Create the working directories...")
-
     # the working directories include dft, dmft1, dmft2, and impurity.i
     # if they exist already, we have to remove them at first
     #
@@ -44,8 +42,6 @@ function make_trees()
         end
         mkdir("impurity.$i")
     end
-
-    println("go!")
 end
 
 """
