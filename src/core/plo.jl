@@ -167,17 +167,17 @@ function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4
     ib_window = zeros(I64, nkpt, nspin, 2)
 
     # scan the band structure to determine ib_window
-    for spin = 1:nspin
-        for kpt = 1:nkpt
+    for s = 1:nspin
+        for k = 1:nkpt
             # for lower boundary
             ib1 = 1
-            while enk[ib1, kpt, spin] < emin
+            while enk[ib1, k, s] < emin
                 ib1 = ib1 + 1
             end
 
             # for upper boundary
             ib2 = nband
-            while enk[ib2, kpt, spin] > emax
+            while enk[ib2, k, s] > emax
                 ib2 = ib2 - 1
             end
 
@@ -185,8 +185,8 @@ function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4
             @assert ib1 <= ib2
 
             # save the boundaries
-            ib_window[kpt, spin, 1] = ib1
-            ib_window[kpt, spin, 2] = ib2
+            ib_window[k, s, 1] = ib1
+            ib_window[k, s, 2] = ib2
         end
     end
 
@@ -201,23 +201,23 @@ function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4
     nproj, nband, nkpt, nspin = size(chipsi)
 
     # create arrays
-    # chipsi_ is used to store the required projectors
-    chipsi_ = zeros(C64, nproj, nbmax, nkpt, nspin)
+    # chipsi_w is used to store the required projectors
+    chipsi_w = zeros(C64, nproj, nbmax, nkpt, nspin)
 
-    # select projectors which lie in the given window
-    # copy data from chipsi to chipsi_
-    for spin = 1:nspin
-        for kpt = 1:nkpt
-            ib1 = ib_window[kpt, spin, 1]
-            ib2 = ib_window[kpt, spin, 2]
+    # select projectors which live in the given band window
+    # copy data from chipsi to chipsi_w
+    for s = 1:nspin
+        for k = 1:nkpt
+            ib1 = ib_window[k, s, 1]
+            ib2 = ib_window[k, s, 2]
             ib3 = ib2 - ib1 + 1
             @assert ib3 <= nbmax
-            chipsi_[:, 1:ib3, kpt, spin] = chipsi[:, ib1:ib2, kpt, spin]
+            chipsi_w[:, 1:ib3, k, s] = chipsi[:, ib1:ib2, k, s]
         end
     end
 
     # return the desired arrays
-    return ib_min, ib_max, ib_window, chipsi_
+    return ib_min, ib_max, ib_window, chipsi_w
 end
 
 """
