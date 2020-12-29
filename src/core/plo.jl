@@ -284,7 +284,7 @@ end
 """
     plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 
-Calculate the overlap out of projectors
+Calculate the overlap out of projectors. General version
 """
 function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
     # extract some key parameters
@@ -307,9 +307,9 @@ function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 end
 
 """
-    plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
+    plo_ovlp(PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
 
-Calculate the overlap out of projectors
+Calculate the overlap out of projectors. The overlap matrix is block-diagonal
 """
 function plo_ovlp(PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
     # extract some key parameters
@@ -330,7 +330,6 @@ function plo_ovlp(PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F6
             end
         end
     end
-    @show ovlp[:, :, 1]
 
     # return the desired array
     return ovlp

@@ -77,7 +77,8 @@ PGT, chipsi_r = plo_rotate(PG, chipsi)
 enk = enk .- fermi
 bmin, bmax, ib_window, chipsi_w = plo_window(enk, 2.0, -1.4, chipsi_r)
 @time plo_orthog(ib_window, PGT, chipsi_w)
-plo_ovlp(PGT, chipsi_w, weight)
+ovlp = plo_ovlp(PGT, chipsi_w, weight)
+@show ovlp
 plo_dm(bmin, bmax, PGT, chipsi_w, weight, occupy)
 #exit(-1)
 
