@@ -115,6 +115,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
             PGT[i].Pr[j] = c
         end
     end
+    # until now PrGroupT struct is ready
 
     # extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
@@ -122,27 +123,28 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     # tell us how many projectors there are after the rotation
     nproj_ = sum(x -> x.ndim, PGT)
     @assert nproj_ === sum(x -> size(x.Tr)[1], PG)
+    @assert nproj_ <= nproj
 
     # create new arrays
-    chipsi_ = zeros(C64, nproj_, nband, nkpt, nspin)
+    chipsi_r = zeros(C64, nproj_, nband, nkpt, nspin)
 
     # perform rotation or transformation
-    for spin = 1:nspin
-        for kpt = 1:nkpt
-            for band = 1:nband
+    for s = 1:nspin
+        for k = 1:nkpt
+            for b = 1:nband
                 for i in eachindex(PG)
                     p1 = PG[i].Pr[1]
                     p2 = PG[i].Pr[end]
                     q1 = PGT[i].Pr[1]
                     q2 = PGT[i].Pr[end]
-                    chipsi_[q1:q2, band, kpt, spin] = PG[i].Tr * chipsi[p1:p2, band, kpt, spin]
+                    chipsi_r[q1:q2, b, k, s] = PG[i].Tr * chipsi[p1:p2, b, k, s]
                 end
             end
         end
     end
 
     # return the desired arrays
-    return PGT, chipsi_
+    return PGT, chipsi_r
 end
 
 """
