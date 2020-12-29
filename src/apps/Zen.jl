@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/27
+# last modified: 2020/12/29
 #
 
 module Zen
@@ -175,42 +175,6 @@ export dft_run
 export dft_save
 
 #
-# vasp.jl
-#
-# adaptor for the vasp software package. it provide a lot of functions
-# to deal with the vasp-related files
-#
-# summary:
-#
-# vasp_init      -> prepare vasp's input files
-# vasp_run       -> execute vasp program
-# vasp_save      -> backup vasp's output files
-# vasp_incar     -> make essential input file (INCAR)
-# vasp_kpoints   -> make essential input file (KPOINTS)
-# vaspio_lattice -> read lattice information
-# vaspio_kmesh   -> read kmesh
-# vaspio_tetra   -> read tetrahedra
-# vaspio_eigen   -> read eigenvalues
-# vaspio_projs   -> read projectors
-# vaspio_fermi   -> read fermi level
-# vaspio_charge  -> read charge density
-#
-include("vasp.jl")
-#
-export vasp_init
-export vasp_run
-export vasp_save
-export vasp_incar
-export vasp_kpoints
-export vaspio_lattice
-export vaspio_kmesh
-export vaspio_tetra
-export vaspio_eigen
-export vaspio_projs
-export vaspio_fermi
-export vaspio_charge
-
-#
 # ir.jl
 #
 # adaptor for the intermediate representation format
@@ -263,5 +227,61 @@ export plo_ovlp
 export plo_dm
 export view_ovlp
 export view_dm
+
+#
+# dos.jl
+#
+# functions for calculating of density of states
+#
+# summary:
+#
+#
+include("dos.jl")
+
+#
+# tetra.jl
+#
+# implementation of analytical tetrahedron method
+#
+# summary:
+#
+#
+include("tetra.jl")
+
+#
+# vasp.jl
+#
+# adaptor for the vasp software package. it provide a lot of functions
+# to deal with the vasp-related files
+#
+# summary:
+#
+# vasp_init      -> prepare vasp's input files
+# vasp_run       -> execute vasp program
+# vasp_save      -> backup vasp's output files
+# vasp_incar     -> make essential input file (INCAR)
+# vasp_kpoints   -> make essential input file (KPOINTS)
+# vaspio_lattice -> read lattice information
+# vaspio_kmesh   -> read kmesh
+# vaspio_tetra   -> read tetrahedra
+# vaspio_eigen   -> read eigenvalues
+# vaspio_projs   -> read projectors
+# vaspio_fermi   -> read fermi level
+# vaspio_charge  -> read charge density
+#
+include("vasp.jl")
+#
+export vasp_init
+export vasp_run
+export vasp_save
+export vasp_incar
+export vasp_kpoints
+export vaspio_lattice
+export vaspio_kmesh
+export vaspio_tetra
+export vaspio_eigen
+export vaspio_projs
+export vaspio_fermi
+export vaspio_charge
 
 end
