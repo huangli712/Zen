@@ -281,15 +281,6 @@ function message(from::String, msg::String)
 end
 
 """
-    message(from::String)
-
-Print an standard zen message to the screen
-"""
-function message(from::String)
-    message(from, "")
-end
-
-"""
     line_to_array(io::IOStream)
 
 Convert a line (reading from an iostream) to a string array

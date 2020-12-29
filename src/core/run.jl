@@ -3,15 +3,18 @@
 include("Zen.jl")
 using .Zen
 
-# check the version of julia runtime environment
+# S-1: check the version of julia runtime environment
 require()
 
-# print the welcome message
+# S00: print the welcome message
 welcome()
 
+# S01: parse the configuration file, get job's description
+message("ZEN", "Parsing Job")
+#
 # parse the file case.toml to extract configuration parameters
 cfg = parse_toml(query_args(), true)
-
+#
 # validate the configuration parameters
 renew_config(cfg)
 check_config()
