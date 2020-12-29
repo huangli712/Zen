@@ -369,12 +369,12 @@ function vaspio_tetra(f::String)
 end
 
 """
-    vaspio_eigen(f::AbstractString)
+    vaspio_eigen(f::String)
 
 Reading vasp's EIGENVAL file, return energy band information. Here `f`
 means only the directory that contains EIGENVAL
 """
-function vaspio_eigen(f::AbstractString)
+function vaspio_eigen(f::String)
     # open the iostream
     fin = open(joinpath(f, "EIGENVAL"), "r")
 
@@ -399,12 +399,10 @@ function vaspio_eigen(f::AbstractString)
         readline(fin)
         for j = 1:nband
             arr = line_to_array(fin)
-            # for spin unpolarized case
-            if nspin === 1
+            if nspin === 1 # for spin unpolarized case
                 enk[j, i, 1] = parse(F64, arr[2])
                 occupy[j, i, 1] = parse(F64, arr[3])
-                # for spin polarized case
-            else
+            else # for spin polarized case
                 enk[j, i, 1] = parse(F64, arr[2])
                 enk[j, i, 2] = parse(F64, arr[3])
                 occupy[j, i, 1] = parse(F64, arr[4])
