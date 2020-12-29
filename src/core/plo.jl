@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/25
+# last modified: 2020/12/30
 #
 
 """
@@ -56,19 +56,19 @@ function plo_group(PG::Array{PrGroup,1})
             # setup Tr array further
             @cswitch PG[g].shell begin
                 @case "s"
-                    PG[g].Tr = Diagonal(fill(1.0 + 0.0im, 1))
+                    PG[g].Tr = Matrix{ComplexF64}(I, 1, 1)
                     break
 
                 @case "p"
-                    PG[g].Tr = Diagonal(fill(1.0 + 0.0im, 3))
+                    PG[g].Tr = Matrix{ComplexF64}(I, 3, 3)
                     break
 
                 @case "d"
-                    PG[g].Tr = Diagonal(fill(1.0 + 0.0im, 5))
+                    PG[g].Tr = Matrix{ComplexF64}(I, 5, 5)
                     break
 
                 @case "f"
-                    PG[g].Tr = Diagonal(fill(1.0 + 0.0im, 7))
+                    PG[g].Tr = Matrix{ComplexF64}(I, 7, 7)
                     break
 
                 @case "d_t2g"
