@@ -66,7 +66,7 @@ using .Zen
 #    PrTrait(2, orb_labels[i])
 #end
 
-#PT, PG, chipsi = vaspio_projs(joinpath(pwd(), "dft"))
+PT, PG, chipsi = vaspio_projs(joinpath(pwd(), "dft"))
 #kmesh, weight = vaspio_kmesh(joinpath(pwd(), "dft"))
 #enk, occupy = vaspio_eigen(joinpath(pwd(), "dft"))
 #fermi = vaspio_fermi(joinpath(pwd(), "dft"))

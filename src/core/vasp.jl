@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/29
+# last modified: 2020/12/30
 #
 
 """
@@ -490,9 +490,9 @@ function vaspio_projs(f::String)
                 _band = parse(I64, arr[4])
 
                 # check consistency of parameters
-                @assert _spin === spin
-                @assert _kpt === kpt
-                @assert _band === band
+                @assert _spin === s
+                @assert _kpt === k
+                @assert _band === b
 
                 # parse the input data
                 for p = 1:nproj
