@@ -32,7 +32,7 @@ println("Update configuration dictionaries")
 #
 # S01.3: validate the configuration dictionaries
 check_config()
-println("Check configuration dictionaries\n")
+println("Verify configuration dictionaries\n")
 
 # S02: write the configuration parameters to stdout
 message("ZEN", "Viewing Job")
@@ -52,15 +52,20 @@ view_impurity()
 # S02.5: show dict PSOLVER
 view_solver()
 
-# check the input files (which are essential for the calculation)
-message("ZEN", "Preparing Job")
+# S03: initialize the job 
+message("ZEN", "Initializing")
+#
+# S03.1: check the input files (which are essential for the calculation)
 query_inps()
-
-# prepare the working directories
+println("Check essential input files")
+#
+# S03.2: prepare the working directories
 make_trees()
-
-# create a IterInfo object
+println("Create working directories")
+#
+# S03.3: create a IterInfo object
 it = IterInfo()
+println("Make self-consistent iterator\n")
 
 exit(-1)
 
