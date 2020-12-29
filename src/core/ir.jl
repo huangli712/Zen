@@ -93,13 +93,15 @@ function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
 end
 
 """
-    irio_tetra(f::AbstractString, volt::F64, itet::Array{I64,2})
+    irio_tetra(f::String, volt::F64, itet::Array{I64,2})
 
-Write the tetrahedra information using the IR format
+Write the tetrahedra information to tetra.ir using the IR format. Here `f`
+means only the directory that we want to use
 """
-function irio_tetra(f::AbstractString, volt::F64, itet::Array{I64,2})
+function irio_tetra(f::String, volt::F64, itet::Array{I64,2})
     # extract some key parameters
-    ntet, = size(itet)
+    ntet, ndim = size(itet)
+    @assert ndim === 5
 
     # output the data
     open(joinpath(f, "tetra.ir"), "w") do fout
