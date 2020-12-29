@@ -19,54 +19,55 @@ require()
 # S00: print the welcome message
 welcome()
 
+# S01: print the overview of zen
 message("ZEN", "Overview")
 overview()
 
-# S01: parse the configuration file, get job's description
+# S02: parse the configuration file, get job's description
 message("ZEN", "Parsing Job")
 #
-# S01.1: parse the case.toml file to extract configuration parameters
+# S02.1: parse the case.toml file to extract configuration parameters
 cfg = parse_toml(query_args(), true)
 println("Extract configuration parameters from $(query_args())")
 #
-# S01.2: build the configuration dictionaries
+# S02.2: build the configuration dictionaries
 renew_config(cfg)
 println("Update configuration dictionaries")
 #
-# S01.3: validate the configuration dictionaries
+# S02.3: validate the configuration dictionaries
 check_config()
 println("Verify configuration dictionaries\n")
 
-# S02: write the configuration parameters to stdout
+# S03: write the configuration parameters to stdout
 message("ZEN", "Viewing Job")
 #
-# S02.1: show dict PCASE
+# S03.1: show dict PCASE
 view_case()
 #
-# S02.2: show dict PDFT
+# S03.2: show dict PDFT
 view_dft()
 #
-# S02.3: show dict PDMFT
+# S03.3: show dict PDMFT
 view_dmft()
 #
-# S02.4: show dict PIMP
+# S03.4: show dict PIMP
 view_impurity()
 #
-# S02.5: show dict PSOLVER
+# S03.5: show dict PSOLVER
 view_solver()
 
-# S03: initialize the job 
+# S04: initialize the job 
 message("ZEN", "Initializing")
 #
-# S03.1: check the input files (which are essential for the calculation)
+# S04.1: check the input files (which are essential for the calculation)
 query_inps()
 println("Check essential input files")
 #
-# S03.2: prepare the working directories
+# S04.2: prepare the working directories
 make_trees()
 println("Create working directories")
 #
-# S03.3: create a IterInfo object
+# S04.3: create a IterInfo object
 it = IterInfo()
 println("Make self-consistent iterator\n")
 
