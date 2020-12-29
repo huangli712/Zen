@@ -5,11 +5,11 @@
 # status  : stable
 # comment :
 #
-# last modified: 2020/12/27
+# last modified: 2020/12/29
 #
 
 """
-    I32, I64
+    I32 and I64
 
 Alias of integer type
 """
@@ -17,7 +17,7 @@ const I32 = Int32
 const I64 = Int64
 
 """
-    F32, F64
+    F32 and F64
 
 Alias of float type
 """
@@ -25,7 +25,7 @@ const F32 = Float32
 const F64 = Float64
 
 """
-    C32, C64
+    C32 and C64
 
 Alias of complex type
 """
@@ -58,4 +58,4 @@ const __release__ = "2020/12"
 
 Core authors of this julia package
 """
-const __authors__ = [("Li Huang", "lihuang@gmail.com")]
+const __authors__ = [("Li Huang", "lihuang.dmft@gmail.com")]
