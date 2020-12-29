@@ -140,7 +140,7 @@ include("util.jl")
 export @cswitch
 export require
 export query_args
-export query_cars
+export query_inps
 export query_zen
 export query_dft
 export view_case
