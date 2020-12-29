@@ -191,11 +191,12 @@ function irio_projs(f::String, chipsi::Array{C64,4})
 end
 
 """
-    irio_fermi(f::AbstractString, fermi::F64)
+    irio_fermi(f::String, fermi::F64)
 
-Write the fermi level using the IR format
+Write the fermi level to fermi.ir using the IR format. Here `f` means only
+the directory that we want to use
 """
-function irio_fermi(f::AbstractString, fermi::F64)
+function irio_fermi(f::String, fermi::F64)
     # output the data
     open(joinpath(f, "fermi.ir"), "w") do fout
         println(fout, "# file: fermi.ir")
@@ -207,8 +208,9 @@ function irio_fermi(f::AbstractString, fermi::F64)
 end
 
 """
-    irio_charge()
+    irio_charge(f::String)
 
-Write the charge using the IR format
+Write the charge density to charge.ir using the IR format. Here `f` means
+only the directory that we want to use
 """
-function irio_charge() end
+function irio_charge(f::String) end
