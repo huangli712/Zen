@@ -403,7 +403,7 @@ end
 """
     view_ovlp(ovlp::Array{F64,3})
 
-Output the overlap matrix, only for debug
+Output the overlap matrix. General version
 """
 function view_ovlp(ovlp::Array{F64,3})
     # extract some key parameters
@@ -429,7 +429,7 @@ end
 """
     view_dm(dm::Array{F64,3})
 
-Output the density matrix, only for debug
+Output the density matrix. General version
 """
 function view_dm(dm::Array{F64,3})
     # extract some key parameters
