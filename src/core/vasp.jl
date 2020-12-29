@@ -514,12 +514,12 @@ function vaspio_projs(f::String)
 end
 
 """
-    vaspio_fermi(f::AbstractString)
+    vaspio_fermi(f::String)
 
 Reading vasp's DOSCAR file, return the fermi level. Here `f` means
 only the directory that contains DOSCAR
 """
-function vaspio_fermi(f::AbstractString)
+function vaspio_fermi(f::String)
     # open the iostream
     fin = open(joinpath(f, "DOSCAR"), "r")
 
