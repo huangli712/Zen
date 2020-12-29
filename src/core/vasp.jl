@@ -419,12 +419,12 @@ function vaspio_eigen(f::String)
 end
 
 """
-    vaspio_projs(f::AbstractString)
+    vaspio_projs(f::String)
 
 Reading vasp's LOCPROJ file, return raw projector matrix. Here `f` means
 only the directory that contains LOCPROJ
 """
-function vaspio_projs(f::AbstractString)
+function vaspio_projs(f::String)
     # open the iostream
     fin = open(joinpath(f, "LOCPROJ"), "r")
 
@@ -442,7 +442,8 @@ function vaspio_projs(f::AbstractString)
         descs[i] = replace(arr[end], ":" => "")
     end
 
-    # encapsulate raw information about projectors into PrTrait struct
+    # try to build PrTrait struct. the raw information about projectors
+    # are encapsulated in it 
     PT = PrTrait[]
     for i = 1:nproj
         push!(PT, PrTrait(sites[i], descs[i]))
@@ -459,7 +460,7 @@ function vaspio_projs(f::AbstractString)
     # third, we create a array of PrGroup struct (except for site and
     # l, most of its member variables need to be corrected). note
     # that for a given PrGroup, the projectors indexed by PrGroup.Pr
-    # should have the same site and l
+    # should share the same site and l
     PG = PrGroup[]
     for i in eachindex(site_l)
         push!(PG, PrGroup(site_l[i]...))
@@ -479,9 +480,9 @@ function vaspio_projs(f::AbstractString)
 
     # read in raw projector data
     readline(fin)
-    for spin = 1:nspin
-        for kpt = 1:nkpt
-            for band = 1:nband
+    for s = 1:nspin
+        for k = 1:nkpt
+            for b = 1:nband
                 # extract some indices information
                 arr = line_to_array(fin)
                 _spin = parse(I64, arr[2])
@@ -494,9 +495,9 @@ function vaspio_projs(f::AbstractString)
                 @assert _band === band
 
                 # parse the input data
-                for proj = 1:nproj
+                for p = 1:nproj
                     _re, _im = parse.(F64, line_to_array(fin)[2:3])
-                    chipsi[proj, band, kpt, spin] = _re + _im * im
+                    chipsi[p, b, k, s] = _re + _im * im
                 end
 
                 # skip one empty line
