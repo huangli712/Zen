@@ -232,18 +232,18 @@ function plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{
     # create arrays
     TmpMat = zeros(C64, nproj, nband)
 
-    for spin = 1:nspin
-        for kpt = 1:nkpt
+    for s = 1:nspin
+        for k = 1:nkpt
             fill!(TmpMat, 0.0 + 0.0im)
-            b1 = window[kpt, spin, 1]
-            b2 = window[kpt, spin, 2]
+            b1 = window[k, s, 1]
+            b2 = window[k, s, 2]
             nb = b2 - b1 + 1
             for p in eachindex(PGT)
                 q1 = PGT[p].Pr[1]
                 q2 = PGT[p].Pr[end]
-                TmpMat[q1:q2, 1:nb] = chipsi[q1:q2, 1:nb, kpt, spin]
+                TmpMat[q1:q2, 1:nb] = chipsi[q1:q2, 1:nb, k, s]
                 STmpMat = plo_diag(TmpMat[q1:q2, 1:nb])
-                chipsi[q1:q2, 1:nb, kpt, spin] = STmpMat
+                chipsi[q1:q2, 1:nb, k, s] = STmpMat
             end
         end
     end
