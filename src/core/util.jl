@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/29
+# last modified: 2020/12/30
 #
 
 """
@@ -139,22 +139,22 @@ function query_dft()
 end
 
 """
-    view_case()
+    list_case()
 
 Print the configuration parameters to stdout: for PCASE dict
 """
-function view_case()
+function list_case()
     println("< Parameters: case >")
     println("  case     -> ", _c("case"))
     println()
 end
 
 """
-    view_dft()
+    list_dft()
 
 Print the configuration parameters to stdout: for PDFT dict
 """
-function view_dft()
+function list_dft()
     println("< Parameters: dft engine >")
     println("  engine   -> ", _d("engine"))
     println("  smear    -> ", _d("smear"))
@@ -171,11 +171,11 @@ function view_dft()
 end
 
 """
-    view_dmft()
+    list_dmft()
 
 Print the configuration parameters to stdout: for PDMFT dict
 """
-function view_dmft()
+function list_dmft()
     println("< Parameters: dmft engine >")
     println("  mode     -> ", _m("mode"))
     println("  axis     -> ", _m("axis"))
@@ -193,11 +193,11 @@ function view_dmft()
 end
 
 """
-    view_impurity()
+    list_impurity()
 
 Print the configuration parameters to stdout: for PIMP dict
 """
-function view_impurity()
+function list_impurity()
     println("< Parameters: quantum impurity atoms >")
     println("  nsite    -> ", _i("nsite"))
     println("  atoms    -> ", _i("atoms"))
@@ -212,11 +212,11 @@ function view_impurity()
 end
 
 """
-    view_solver()
+    list_solver()
 
 Print the configuration parameters to stdout: for PSOLVER dict
 """
-function view_solver()
+function list_solver()
     println("< Parameters: quantum impurity solvers >")
     println("  engine   -> ", _s("engine"))
     println("  params   -> ", _s("params"))

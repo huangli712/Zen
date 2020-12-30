@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/29
+# last modified: 2020/12/30
 #
 
 module Zen
@@ -124,11 +124,11 @@ export _s
 # query_inps    -> query input files
 # query_zen     -> query home directory of zen
 # query_dft     -> query home directory of dft engine
-# view_case     -> print dict (case)
-# view_dft      -> print dict (dft)
-# view_dmft     -> print dict (dmft)
-# view_impurity -> print dict (impurity)
-# view_solver   -> print dict (solver)
+# list_case     -> print dict (case)
+# list_dft      -> print dict (dft)
+# list_dmft     -> print dict (dmft)
+# list_impurity -> print dict (impurity)
+# list_solver   -> print dict (solver)
 # welcome       -> print welcome message
 # overview      -> print overview of zen
 # goodbye       -> say goodbye
@@ -144,11 +144,11 @@ export query_args
 export query_inps
 export query_zen
 export query_dft
-export view_case
-export view_dft
-export view_dmft
-export view_impurity
-export view_solver
+export list_case
+export list_dft
+export list_dmft
+export list_impurity
+export list_solver
 export welcome
 export overview
 export goodbye
