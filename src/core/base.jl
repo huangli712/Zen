@@ -82,7 +82,7 @@ function adaptor_run(it::IterInfo)
     engine = _d("engine")
     @cswitch engine begin
         @case "vasp"
-            println("< Adaptor: Get Kohn-Sham Data")
+            println("< Adaptor: Get Kohn-Sham Data >")
 
             # read in lattice structure
             println("  Lattice")
@@ -120,10 +120,16 @@ function adaptor_run(it::IterInfo)
 
     # well, now we have the Kohn-Sham data. but they can not be written
     # directly. we have to process them carefully
-    println("< Adaptor: Eat Kohn-Sham Data")
+    println("< Adaptor: Eat Kohn-Sham Data >")
+    println("  Grouping")
+    plo_group(PG)
+    println("  Rotating")
+    println("  Leveling")
+    println("  Filtering")
+    println("  Orthogonalizing\n")
 
     # dump the Kohn-Sham data to files with IR format
-    println("< Adaptor: Put Kohn-Sham Data")
+    println("< Adaptor: Put Kohn-Sham Data >")
 
     # write lattice structure
     println("  Lattice")
@@ -135,8 +141,10 @@ function adaptor_run(it::IterInfo)
     irio_kmesh(pwd(), kmesh, weight)
 
     # write tetrahedron data if they are available
-    println("  Tetrahedron")
-    irio_tetra(pwd(), volt, itet)
+    if _d("smear") === "tetra"
+        println("  Tetrahedron")
+        irio_tetra(pwd(), volt, itet)
+    end
 
     # write band structure and the corresponding occupancies
     println("  Enk")
@@ -150,6 +158,9 @@ function adaptor_run(it::IterInfo)
     # write fermi level
     println("  Fermi Level\n")
     irio_fermi(pwd(), fermi)
+
+    println("< Adaptor: View Overlap Matrix >")
+    println("< Adaptor: View Density Matrix >")
 
     # enter the parent directory
     cd("..")
