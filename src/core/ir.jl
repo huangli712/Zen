@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/29
+# last modified: 2020/12/30
 #
 
 """
@@ -75,7 +75,7 @@ function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
     nkpt, ndir = size(kmesh)
 
     # extract some key parameters
-    _nkpt = size(weight)
+    _nkpt, = size(weight)
     
     # sanity check
     @assert nkpt === _nkpt
