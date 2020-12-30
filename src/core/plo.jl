@@ -326,7 +326,7 @@ function plo_ovlp(PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F6
                 q1 = PGT[p].Pr[1]
                 q2 = PGT[p].Pr[end]
                 A = chipsi[q1:q2, :, k, s]
-                ovlp[q1:q2, q1:q2, s] = ovlp[q1:q2, :, s] + real(A * A') * wght
+                ovlp[q1:q2, q1:q2, s] = ovlp[q1:q2, q1:q2, s] + real(A * A') * wght
             end
         end
     end
@@ -434,7 +434,7 @@ function view_ovlp(PGT::Array{PrGroupT,1}, ovlp::Array{F64,3})
     for s = 1:nspin
         println("Spin: $s")
         for p in eachindex(PGT)
-            println("Site: $(PGT[p].site) L: $(PGT[p].l)")
+            println("site: $(PGT[p].site) l: $(PGT[p].l)")
             q1 = PGT[p].Pr[1]
             q2 = PGT[p].Pr[end]
             for q = q1:q2
