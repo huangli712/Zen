@@ -17,8 +17,8 @@ function vasp_init(it::IterInfo)
     # prepare essential input files
     if it.dmft_cycle == 0
         # copy POTCAR and POSCAR
-        cp("../POTCAR", joinpath(pwd(), "POTCAR"))
-        cp("../POSCAR", joinpath(pwd(), "POSCAR"))
+        cp("../POTCAR", joinpath(pwd(), "POTCAR"), force = true)
+        cp("../POSCAR", joinpath(pwd(), "POSCAR"), force = true)
 
         # generate INCAR automatically
         vasp_incar(it._dft_fermi)
@@ -75,14 +75,14 @@ in IterInfo struct is also updated (IterInfo._dft_fermi)
 function vasp_save(it::IterInfo)
     # store the data files
     if it.dmft_cycle == 0
-        cp("INCAR", "INCAR.$(it.dmft_cycle)")
-        cp("CHGCAR", "CHGCAR.$(it.dmft_cycle)")
-        cp("OUTCAR", "OUTCAR.$(it.dmft_cycle)")
-        cp("PROJCAR", "PROJCAR.$(it.dmft_cycle)")
-        cp("LOCPROJ", "LOCPROJ.$(it.dmft_cycle)")
-        cp("EIGENVAL", "EIGENVAL.$(it.dmft_cycle)")
-        cp("vasp.out", "vasp.out.$(it.dmft_cycle)")
-        cp("vasprun.xml", "vasprun.xml.$(it.dmft_cycle)")
+        cp("INCAR", "INCAR.$(it.dmft_cycle)", force = true)
+        cp("CHGCAR", "CHGCAR.$(it.dmft_cycle)", force = true)
+        cp("OUTCAR", "OUTCAR.$(it.dmft_cycle)", force = true)
+        cp("PROJCAR", "PROJCAR.$(it.dmft_cycle)", force = true)
+        cp("LOCPROJ", "LOCPROJ.$(it.dmft_cycle)", force = true)
+        cp("EIGENVAL", "EIGENVAL.$(it.dmft_cycle)", force = true)
+        cp("vasp.out", "vasp.out.$(it.dmft_cycle)", force = true)
+        cp("vasprun.xml", "vasprun.xml.$(it.dmft_cycle)", force = true)
     else
         sorry()
     end

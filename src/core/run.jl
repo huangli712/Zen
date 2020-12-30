@@ -20,11 +20,11 @@ require()
 welcome()
 
 # S01: print the overview of zen
-message("ZEN", "Overview")
+message("ZEN", "OVERVIEW")
 overview()
 
 # S02: parse the configuration file, get job's description
-message("ZEN", "Parsing")
+message("ZEN", "PARSER")
 #
 # S02.1: parse the case.toml file to extract configuration parameters
 cfg = parse_toml(query_args(), true)
@@ -39,7 +39,7 @@ check_config()
 println("Verify configuration dictionaries\n")
 
 # S03: write the configuration parameters to stdout
-message("ZEN", "Listing")
+message("ZEN", "PARAMETER")
 #
 # S03.1: show dict PCASE
 list_case()
@@ -57,7 +57,7 @@ list_impurity()
 list_solver()
 
 # S04: initialize the job 
-message("ZEN", "Initializing")
+message("ZEN", "PREPARATION")
 #
 # S04.1: check the input files (which are essential for the calculation)
 query_inps()
@@ -75,7 +75,7 @@ println("Create self-consistent iterator")
 mode = _m("mode") === 1 ? "one-shot" : "fully self-consistent"
 println("Check self-consistent mode: $mode\n")
 
-message("ZEN", "Let’s rock and roll")
+message("ZEN", "START")
 
 # well, we choose the one-shot mode
 if _m("mode") === 1
