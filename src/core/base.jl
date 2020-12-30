@@ -53,7 +53,7 @@ function adaptor_init(it::IterInfo)
     # enter dft directory
     cd("dft")
 
-    # choose suitable dft engine
+    # choose suitable driver function according to dft engine
     engine = _d("engine")
     @cswitch engine begin
         @case "vasp"
@@ -78,7 +78,7 @@ function adaptor_run(it::IterInfo)
     # enter dft directory
     cd("dft")
 
-    # choose suitable dft engine
+    # choose suitable driver function according to dft engine
     engine = _d("engine")
     @cswitch engine begin
         @case "vasp"
