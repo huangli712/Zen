@@ -82,11 +82,24 @@ function adaptor_run(it::IterInfo)
     engine = _d("engine")
     @cswitch engine begin
         @case "vasp"
+            # read in lattice structure 
             latt = vaspio_lattice(pwd())
+
+            # read in kmesh and the corresponding weights
             kmesh, weight = vaspio_kmesh(pwd())
-            volt, itet = vaspio_tetra(pwd())
+
+            # read in tetrahedron data if they are available
+            if _d("smear") === "tetra"
+                volt, itet = vaspio_tetra(pwd())
+            end
+
+            # read in band structure and the corresponding occupancies
             enk, occupy = vaspio_eigen(pwd())
+
+            # read in raw projectors, traits, and groups
             PT, PG, chipsi = vaspio_projs(pwd())
+
+            # read in fermi level
             fermi = vaspio_fermi(pwd())
             break
 
