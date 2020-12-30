@@ -229,19 +229,19 @@ end
 Print out the welcome messages to the screen
 """
 function welcome()
-    printstyled("                                   |\n", color = :green)
-    printstyled("========== ========== ===     ===  | ", color = :green)
+    printstyled("                                        |\n", color = :green)
+    printstyled("ZZZZZZZZZZZZ EEEEEEEEEEEE NNNNNNNNNNNN  | ", color = :green)
     printstyled("A Modern DFT + DMFT Computation Framework\n", color = :magenta)
-    printstyled("        //            || n     ||  |\n", color = :green)
-    printstyled("       //             ||  n    ||  |\n", color = :green)
-    printstyled("  zzzzzz    eeeeeeee  ||   n   ||  |\n", color = :green)
-    printstyled(" //                   ||    n  ||  | ", color = :green)
+    printstyled("          Z               N          N  |\n", color = :green)
+    printstyled("         Z                N          N  |\n", color = :green)
+    printstyled("   ZZZZZZ    EEEEEEEEEEEE N          N  |\n", color = :green)
+    printstyled("  Z                       N          N  | ", color = :green)
     printstyled("Version: $__version__\n", color = :magenta)
-    printstyled("//                    ||     n ||  | ", color = :green)
+    printstyled(" Z                        N          N  | ", color = :green)
     printstyled("Release: $__release__\n", color = :magenta)
-    printstyled("========== ========== ===     ===  | ", color = :green)
+    printstyled("ZZZZZZZZZZZZ EEEEEEEEEEEE N          N  | ", color = :green)
     printstyled("Powered by the julia programming language\n", color = :magenta)
-    printstyled("                                   |\n", color = :green)
+    printstyled("                                        |\n", color = :green)
     println()
 end
 

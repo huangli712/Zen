@@ -129,6 +129,9 @@ if _m("mode") === 1
 
     end
 
+    # S07:
+    message("ZEN", "ADAPTOR")
+
 else
     sorry()
 end
