@@ -365,7 +365,7 @@ function plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3}
 end
 
 """
-    plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
+    plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
 
 Calculate the density matrix out of projectors. The overlap matrix is block-diagonal
 """
@@ -414,16 +414,35 @@ function view_ovlp(ovlp::Array{F64,3})
     for s = 1:nspin
         println("Spin: $s")
         for p1 = 1:nproj
-            map(x -> @printf("%12.7f", x), ovlp[p1, :, s])
+            foreach(x -> @printf("%12.7f", x), ovlp[p1, :, s])
             println()
         end
     end
 end
 
 """
-    view_ovlp()
+    view_ovlp(PGT::Array{PrGroupT,1}, ovlp::Array{F64,3})
+
+Output the overlap matrix. The overlap matrix is block-diagonal
 """
-function view_ovlp()
+function view_ovlp(PGT::Array{PrGroupT,1}, ovlp::Array{F64,3})
+    # extract some key parameters
+    _, nproj, nspin = size(ovlp)
+
+    # output the data
+    println("<- Overlap Matrix ->")
+    for s = 1:nspin
+        println("Spin: $s")
+        for p in eachindex(PGT)
+            println("Site: $(PGT[p].site) L: $(PGT[p].l)")
+            q1 = PGT[p].Pr[1]
+            q2 = PGT[p].Pr[end]
+            for q = q1:q2
+                foreach(x -> @printf("%12.7f", x), ovlp[q, q1:q2, s])
+                println()
+            end
+        end
+    end
 end
 
 """
@@ -440,7 +459,7 @@ function view_dm(dm::Array{F64,3})
     for s = 1:nspin
         println("Spin: $s")
         for p1 = 1:nproj
-            map(x -> @printf("%12.7f", x), dm[p1, :, s])
+            foreach(x -> @printf("%12.7f", x), dm[p1, :, s])
             println()
         end
     end
