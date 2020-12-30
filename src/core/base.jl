@@ -50,6 +50,11 @@ end
 Initialize the adaptor, to check whether the key files exist 
 """
 function adaptor_init(it::IterInfo)
+    # enter dft directory
+    cd("dft")
+
+    # enter the parent directory
+    cd("..")
 end
 
 """
@@ -58,12 +63,18 @@ end
 Parse the data output by dft engine, and transform them into IR format
 """
 function adaptor_run(it::IterInfo)
+    # enter dft directory
+    cd("dft")
+
 # vaspio_lattice
 # vaspio_kmesh
 # vaspio_tetra
 # vaspio_eigen
 # vaspio_projs
 # vaspio_fermi
+
+    # enter the parent directory
+    cd("..")
 end
 
 """
@@ -72,6 +83,11 @@ end
 Backup the output files by adaptor
 """
 function adaptor_save()
+    # enter dft directory
+    cd("dft")
+
+    # enter the parent directory
+    cd("..")
 end
 
 """
