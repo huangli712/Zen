@@ -124,23 +124,30 @@ function adaptor_run(it::IterInfo)
 
     # dump the Kohn-Sham data to files with IR format
     println("< Adaptor: Put Kohn-Sham Data")
+
+    # write lattice structure
     println("  Lattice")
     irio_lattice(pwd(), latt)
 
+    # write kmesh and the corresponding weights
     println("  Kmesh")
     println("  Weight")
     irio_kmesh(pwd(), kmesh, weight)
 
+    # write tetrahedron data if they are available
     println("  Tetrahedron")
     irio_tetra(pwd(), volt, itet)
 
+    # write band structure and the corresponding occupancies
     println("  Enk")
     println("  Occupation")
     irio_eigen(pwd(), enk, occupy)
 
+    # write projectors, traits, and groups
     println("  Projector (Trait and Group)")
     irio_projs(pwd(), chipsi)
 
+    # write fermi level
     println("  Fermi Level\n")
     irio_fermi(pwd(), fermi)
 
