@@ -228,6 +228,21 @@ function vasp_kpoints()
 end
 
 """
+    vasp_files(f::String)
+
+Check the essential output files by vasp. Here `f` means only the directory
+that contains the desired files
+"""
+function vasp_files(f::String)
+    @assert isfile(joinpath(f, "POSCAR")) &&
+            isfile(joinpath(f, "IBZKPT")) &&
+            isfile(joinpath(f, "DOSCAR")) &&
+            isfile(joinpath(f, "CHGCAR")) &&
+            isfile(joinpath(f, "LOCPROJ")) &&
+            isfile(joinpath(f, "EIGENVAL"))
+end
+
+"""
     vaspio_lattice(f::String)
 
 Reading vasp's POSCAR file, return crystallography information. Here `f`

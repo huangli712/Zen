@@ -57,7 +57,7 @@ function adaptor_init(it::IterInfo)
     engine = _d("engine")
     @cswitch engine begin
         @case "vasp"
-            vasp_files()
+            vasp_files(pwd())
             break
 
         @default
