@@ -112,12 +112,16 @@ Record the runtime information
 .dmft2_iter -> number of iterations between dmft2 and dft engine
 .dmft_cycle -> number of dft + dmft iterations
 .full_cycle -> counter for each iteration
+._dft_fermi -> fermi level obtained by dft engine
+.dmft_fermi -> fermi level obtained by dmft engine (dmft1)
 """
 mutable struct IterInfo
     dmft1_iter :: I64
     dmft2_iter :: I64
     dmft_cycle :: I64
     full_cycle :: I64
+    _dft_fermi :: F64
+    dmft_fermi :: F64
 end
 
 """
@@ -224,12 +228,12 @@ end
 #
 
 """
-    IterInfo(iter::I64 = 0)
+    IterInfo(iter::I64 = 0, fermi::F64 = 0.0)
 
 Outer constructor for IterInfo struct
 """
-function IterInfo(iter::I64 = 0)
-    IterInfo(iter, iter, iter, iter)
+function IterInfo(iter::I64 = 0, fermi::F64 = 0.0)
+    IterInfo(iter, iter, iter, iter, fermi, fermi)
 end
 
 """
@@ -347,6 +351,8 @@ function Base.show(io::IO, it::IterInfo)
     println(io, ".dmft2_iter : ", it.dmft2_iter)
     println(io, ".dmft_cycle : ", it.dmft_cycle)
     println(io, ".full_cycle : ", it.full_cycle)
+    println(io, "._dft_fermi : ", it._dft_fermi)
+    println(io, ".dmft_fermi : ", it.dmft_fermi)
 end
 
 """
