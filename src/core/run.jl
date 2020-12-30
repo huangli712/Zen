@@ -24,7 +24,7 @@ message("ZEN", "Overview")
 overview()
 
 # S02: parse the configuration file, get job's description
-message("ZEN", "Parser")
+message("ZEN", "Parsing")
 #
 # S02.1: parse the case.toml file to extract configuration parameters
 cfg = parse_toml(query_args(), true)
@@ -39,7 +39,7 @@ check_config()
 println("Verify configuration dictionaries\n")
 
 # S03: write the configuration parameters to stdout
-message("ZEN", "Parameters")
+message("ZEN", "Listing")
 #
 # S03.1: show dict PCASE
 view_case()
@@ -75,22 +75,13 @@ println("Create self-consistent iterator")
 mode = _m("mode") === 1 ? "one-shot" : "fully self-consistent"
 println("Check self-consistent mode: $mode\n")
 
-exit(-1)
+message("ZEN", "Launching")
 
 if _m("mode") === 1
-
-    message("zen", "begin < dft block >")
-    message("zen", "dft -> init")
+    message("ZEN", "DFT")
     dft_init(it)
-    message("zen", "dft -> run")
     dft_run(it)
-    message("zen", "dft -> save")
-    message("zen", "e_n_d < dft block >")
     dft_save(it)
-    for iter = 1:_m("niter")
-        message("zen", "dmft_cycle -> 0  dmft1_iter -> $iter dmft2_iter -> 0")
-    end
-
 else
     sorry()
 end
