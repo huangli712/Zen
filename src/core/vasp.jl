@@ -21,7 +21,7 @@ function vasp_init(it::IterInfo)
         cp("../POSCAR", joinpath(pwd(), "POSCAR"))
 
         # generate INCAR automatically
-        vasp_incar()
+        vasp_incar(it._dft_fermi)
     end
 
     # check essential input files
