@@ -266,6 +266,7 @@ include("tetra.jl")
 # vasp_save      -> backup vasp's output files
 # vasp_incar     -> make essential input file (INCAR)
 # vasp_kpoints   -> make essential input file (KPOINTS)
+# vasp_files     -> check essential output files 
 # vaspio_lattice -> read lattice information
 # vaspio_kmesh   -> read kmesh
 # vaspio_tetra   -> read tetrahedra
@@ -281,6 +282,7 @@ export vasp_run
 export vasp_save
 export vasp_incar
 export vasp_kpoints
+export vasp_files
 export vaspio_lattice
 export vaspio_kmesh
 export vaspio_tetra
