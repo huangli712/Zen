@@ -78,12 +78,30 @@ function adaptor_run(it::IterInfo)
     # enter dft directory
     cd("dft")
 
-# vaspio_lattice
-# vaspio_kmesh
-# vaspio_tetra
-# vaspio_eigen
-# vaspio_projs
-# vaspio_fermi
+    # choose suitable dft engine
+    engine = _d("engine")
+    @cswitch engine begin
+        @case "vasp"
+            latt = vaspio_lattice(pwd())
+            kmesh, weight = vaspio_kmesh(pwd())
+            volt, itet = vaspio_tetra(pwd())
+            enk, occupy = vaspio_eigen(pwd())
+            PT, PG, chipsi = vaspio_projs(pwd())
+            fermi = vaspio_fermi(pwd())
+            break
+
+        @default
+            sorry()
+            break
+    end
+
+    # dump the Kohn-Sham data to files with IR format
+    irio_lattice(pwd(), latt)
+    irio_kmesh(pwd(), kmesh, weight)
+    irio_tetra(pwd(), volt, itet)
+    irio_eigen(pwd(), enk, occupy)
+    irio_projs(pwd(), chipsi)
+    irio_fermi(pwd(), fermi)
 
     # enter the parent directory
     cd("..")
