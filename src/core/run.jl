@@ -42,19 +42,19 @@ println("Verify configuration dictionaries\n")
 message("ZEN", "Listing")
 #
 # S03.1: show dict PCASE
-view_case()
+list_case()
 #
 # S03.2: show dict PDFT
-view_dft()
+list_dft()
 #
 # S03.3: show dict PDMFT
-view_dmft()
+list_dmft()
 #
 # S03.4: show dict PIMP
-view_impurity()
+list_impurity()
 #
 # S03.5: show dict PSOLVER
-view_solver()
+list_solver()
 
 # S04: initialize the job 
 message("ZEN", "Initializing")
