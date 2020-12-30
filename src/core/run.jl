@@ -7,7 +7,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/29
+# last modified: 2020/12/30
 #
 
 include("Zen.jl")
@@ -24,7 +24,7 @@ message("ZEN", "Overview")
 overview()
 
 # S02: parse the configuration file, get job's description
-message("ZEN", "Parsing Job")
+message("ZEN", "Parser")
 #
 # S02.1: parse the case.toml file to extract configuration parameters
 cfg = parse_toml(query_args(), true)
@@ -39,7 +39,7 @@ check_config()
 println("Verify configuration dictionaries\n")
 
 # S03: write the configuration parameters to stdout
-message("ZEN", "Viewing Job")
+message("ZEN", "Parameters")
 #
 # S03.1: show dict PCASE
 view_case()
@@ -67,15 +67,18 @@ println("Check essential input files")
 make_trees()
 println("Create working directories")
 #
-# S04.3: create a IterInfo object
+# S04.3: create an IterInfo object
 it = IterInfo()
-println("Make self-consistent iterator\n")
+println("Create self-consistent iterator")
+#
+# S04.4: check self-consistent mode
+mode = _m("mode") === 1 ? "one-shot" : "fully self-consistent"
+println("Check self-consistent mode: $mode\n")
 
 exit(-1)
 
 if _m("mode") === 1
 
-    message("zen", "enter one-shot mode")
     message("zen", "begin < dft block >")
     message("zen", "dft -> init")
     dft_init(it)
