@@ -45,7 +45,7 @@ function make_trees()
 end
 
 """
-    adaptor_init()
+    adaptor_init(it::IterInfo)
 
 Initialize the adaptor, to check whether the key files exist 
 """
@@ -53,12 +53,24 @@ function adaptor_init(it::IterInfo)
     # enter dft directory
     cd("dft")
 
+    # choose suitable dft engine
+    engine = _d("engine")
+    @cswitch engine begin
+        @case "vasp"
+            vasp_files()
+            break
+
+        @default
+            sorry()
+            break
+    end
+
     # enter the parent directory
     cd("..")
 end
 
 """
-    adaptor_run()
+    adaptor_run(it::IterInfo)
 
 Parse the data output by dft engine, and transform them into IR format
 """
@@ -82,7 +94,7 @@ end
 
 Backup the output files by adaptor
 """
-function adaptor_save()
+function adaptor_save(it::IterInfo)
     # enter dft directory
     cd("dft")
 
