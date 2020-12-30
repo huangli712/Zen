@@ -8,7 +8,7 @@ lsymm = false
 lspins = false
 lspinorb = false
 loptim = true
-window = [3.9, 7.1]
+ewidth = 5.0
 lproj = true
 sproj = ["2 : d : Pr"]
 
