@@ -131,6 +131,9 @@ if _m("mode") === 1
 
     # S07:
     message("ZEN", "ADAPTOR")
+    adaptor_init(it)
+    adaptor_run(it)
+    adaptor_save(it)
 
 else
     sorry()
