@@ -434,7 +434,7 @@ function view_ovlp(PGT::Array{PrGroupT,1}, ovlp::Array{F64,3})
     for s = 1:nspin
         println("Spin: $s")
         for p in eachindex(PGT)
-            println("site: $(PGT[p].site) l: $(PGT[p].l)")
+            println("site -> $(PGT[p].site) l -> $(PGT[p].l)")
             q1 = PGT[p].Pr[1]
             q2 = PGT[p].Pr[end]
             for q = q1:q2
@@ -466,7 +466,26 @@ function view_dm(dm::Array{F64,3})
 end
 
 """
-    view_dm()
+    view_dm(PGT::Array{PrGroupT,1}, dm::Array{F64,3})
+
+Output the density matrix. The density matrix is block-diagonal
 """
-function view_dm()
+function view_dm(PGT::Array{PrGroupT,1}, dm::Array{F64,3})
+    # extract some key parameters
+    _, nproj, nspin = size(dm)
+
+    # output the data
+    println("<- Density Matrix ->")
+    for s = 1:nspin
+        println("Spin: $s")
+        for p in eachindex(PGT)
+            println("site -> $(PGT[p].site) l -> $(PGT[p].l)")
+            q1 = PGT[p].Pr[1]
+            q2 = PGT[p].Pr[end]
+            for q = q1:q2
+                foreach(x -> @printf("%12.7f", x), dm[q, q1:q2, s])
+                println()
+            end
+        end
+    end
 end

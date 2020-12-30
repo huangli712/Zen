@@ -80,7 +80,7 @@ plo_orthog(ib_window, PGT, chipsi_w)
 ovlp = plo_ovlp(PGT, chipsi_w, weight)
 view_ovlp(PGT, ovlp)
 dm = plo_dm(bmin, bmax, PGT, chipsi_w, weight, occupy)
-view_dm(dm)
+view_dm(PGT, dm)
 #exit(-1)
 
 #ovlp = plo_ovlp(chipsi, weight)
