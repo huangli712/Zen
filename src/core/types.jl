@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/29
+# last modified: 2020/12/30
 #
 
 #
@@ -47,7 +47,7 @@ PDFT  = Dict{String,Array{Any,1}}(
             "lspins"   => [missing, 0, Bool  , "the spin orientations are polarized or not"],
             "lspinorb" => [missing, 0, Bool  , "the spin-orbit coupling is considered or not"],
             "loptim"   => [missing, 0, Bool  , "the generated projectors are optimized or not"],
-            "window"   => [missing, 0, Array , "energy window used to generate optimal projectors"],
+            "ewidth"   => [missing, 0, F64   , "half-width of energy window for generating optimal projectors"],
             "lproj"    => [missing, 1, Bool  , "the projectors are generated or not"],
             "sproj"    => [missing, 1, Array , "strings / descriptions for generating projectors"],
         )

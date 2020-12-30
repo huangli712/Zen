@@ -87,11 +87,11 @@ function vasp_save(it::IterInfo)
 end
 
 """
-    vasp_incar()
+    vasp_incar(fermi::F64)
 
 Generate an INCAR file. it will be used only when the dft engine is vasp
 """
-function vasp_incar()
+function vasp_incar(fermi::F64)
     # open the iostream
     ios = open("INCAR", "w")
 
@@ -178,14 +178,14 @@ function vasp_incar()
     end
 
     # for optimized projectors
-    window = _d("window")
+    ewidth = _d("ewidth")
     loptim = _d("loptim")
-    if !isa(window, Missing) && !isa(loptim, Missing)
+    if !isa(ewidth, Missing) && !isa(loptim, Missing)
         if loptim
             write(ios, "LORBIT   = 14 \n")
-            emin = window[1]
+            emin = fermi - ewidth
             write(ios, "EMIN     = $emin \n")
-            emax = window[2]
+            emax = fermi + ewidth
             write(ios, "EMAX     = $emax \n")
         end
     end
