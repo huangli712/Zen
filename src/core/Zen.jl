@@ -172,6 +172,9 @@ export line_to_array
 include("base.jl")
 #
 export make_trees
+export adaptor_init
+export adaptor_run
+export adaptor_save
 export dft_init
 export dft_run
 export dft_save

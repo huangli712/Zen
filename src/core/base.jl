@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/29
+# last modified: 2020/12/30
 #
 
 """
@@ -42,6 +42,36 @@ function make_trees()
         end
         mkdir("impurity.$i")
     end
+end
+
+"""
+    adaptor_init()
+
+Initialize the adaptor, to check whether the key files exist 
+"""
+function adaptor_init(it::IterInfo)
+end
+
+"""
+    adaptor_run()
+
+Parse the data output by dft engine, and transform them into IR format
+"""
+function adaptor_run(it::IterInfo)
+# vaspio_lattice
+# vaspio_kmesh
+# vaspio_tetra
+# vaspio_eigen
+# vaspio_projs
+# vaspio_fermi
+end
+
+"""
+    adaptor_save(it::IterInfo)
+
+Backup the output files by adaptor
+"""
+function adaptor_save()
 end
 
 """
