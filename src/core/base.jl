@@ -109,7 +109,7 @@ function adaptor_run(it::IterInfo)
             PT, PG, chipsi = vaspio_projs(pwd())
 
             # read in fermi level
-            println("  Fermi Level")
+            println("  Fermi Level\n")
             fermi = vaspio_fermi(pwd())
             break
 
@@ -118,12 +118,30 @@ function adaptor_run(it::IterInfo)
             break
     end
 
+    # well, now we have the Kohn-Sham data. but they can not be written
+    # directly. we have to process them carefully
+    println("< Adaptor: Eat Kohn-Sham Data")
+
     # dump the Kohn-Sham data to files with IR format
+    println("< Adaptor: Put Kohn-Sham Data")
+    println("  Lattice")
     irio_lattice(pwd(), latt)
+
+    println("  Kmesh")
+    println("  Weight")
     irio_kmesh(pwd(), kmesh, weight)
+
+    println("  Tetrahedron")
     irio_tetra(pwd(), volt, itet)
+
+    println("  Enk")
+    println("  Occupation")
     irio_eigen(pwd(), enk, occupy)
+
+    println("  Projector (Trait and Group)")
     irio_projs(pwd(), chipsi)
+
+    println("  Fermi Level\n")
     irio_fermi(pwd(), fermi)
 
     # enter the parent directory
