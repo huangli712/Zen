@@ -44,7 +44,7 @@ const __libname__ = "ZEN Framework"
 
 Version of this julia package
 """
-const __version__ = "0.0.6@d"
+const __version__ = "0.0.6@devel"
 
 """
     __release__

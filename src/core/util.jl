@@ -131,7 +131,7 @@ function query_dft()
         if haskey(ENV, "VASP_HOME")
             ENV["VASP_HOME"]
         else
-            error("VASP_HOME must be defined")
+            error("VASP_HOME is undefined")
         end
     else
         sorry()
