@@ -56,7 +56,7 @@ list_impurity()
 # S03.5: show dict PSOLVER
 list_solver()
 
-# S04: initialize the job 
+# S04: initialize the job
 message("ZEN", "PREPARATION")
 #
 # S04.1: check the input files (which are essential for the calculation)
@@ -82,7 +82,7 @@ if _m("mode") === 1
 
 #
 # remarks:
-# 
+#
 # we would like to perform two successive dft runs if _d("loptim") is true.
 # the purpose of the first dft run is to evaluate the fermi level. then a
 # energy window is determined. we will use this window to generate optimal
@@ -93,7 +93,7 @@ if _m("mode") === 1
     # S05: perform dft calculation (for the first time).
     message("ZEN", "DFT")
     #
-    # S05.1: prepare and check essential files for the dft engine 
+    # S05.1: prepare and check essential files for the dft engine
     println("Initialize everything needed by the dft engine")
     dft_init(it)
     #
@@ -115,7 +115,7 @@ if _m("mode") === 1
         # S06: perform dft calculation (for the second time).
         message("ZEN", "DFT")
         #
-        # S06.1: prepare and check essential files for the dft engine 
+        # S06.1: prepare and check essential files for the dft engine
         println("Initialize everything needed by the dft engine")
         dft_init(it)
         #
@@ -137,7 +137,7 @@ if _m("mode") === 1
 # first the adaptor will read in these data from the output files of dft
 # engine. and then it will process the raw projectors (parse, label, group,
 # filter, and rotate). finally, the adaptor will write down the processed
-# data to some files within the IR format. 
+# data to some files within the IR format.
 #
 
     # S07: To bridge the gap between dft engine and dmft engine by adaptor
@@ -149,7 +149,7 @@ if _m("mode") === 1
     #
     # S07.2: launch the adaptor. it will read the Kohn-Sham data from the
     # dft engine, postprocess them, and then write them to external files
-    # with the IR format 
+    # with the IR format
     println("Launch the adaptor")
     adaptor_run(it)
     #

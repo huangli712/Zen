@@ -464,7 +464,7 @@ function vaspio_projs(f::String)
     end
 
     # try to build PrTrait struct. the raw information about projectors
-    # are encapsulated in it 
+    # are encapsulated in it
     PT = PrTrait[]
     for i = 1:nproj
         push!(PT, PrTrait(sites[i], descs[i]))

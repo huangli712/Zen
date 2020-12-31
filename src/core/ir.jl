@@ -12,7 +12,7 @@
     irio_lattice(f::String, latt::Lattice)
 
 Write the lattice information to lattice.ir using the IR format. Here `f`
-means only the directory that we want to use  
+means only the directory that we want to use
 """
 function irio_lattice(f::String, latt::Lattice)
     # extract some key parameters
@@ -76,7 +76,7 @@ function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
 
     # extract some key parameters
     _nkpt, = size(weight)
-    
+
     # sanity check
     @assert nkpt === _nkpt
 

@@ -237,7 +237,7 @@ function plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{
             # reset tmp matrix
             fill!(TmpMat, 0.0 + 0.0im)
 
-            # determine band index and band window 
+            # determine band index and band window
             b1 = window[k, s, 1]
             b2 = window[k, s, 2]
             nb = b2 - b1 + 1

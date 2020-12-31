@@ -47,7 +47,7 @@ end
 """
     adaptor_init(it::IterInfo)
 
-Initialize the adaptor, to check whether the key files exist 
+Initialize the adaptor, to check whether the key files exist
 """
 function adaptor_init(it::IterInfo)
     # enter dft directory
