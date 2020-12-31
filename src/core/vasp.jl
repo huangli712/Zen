@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/30
+# last modified: 2020/12/31
 #
 
 """
@@ -33,6 +33,14 @@ function vasp_init(it::IterInfo)
                 error("Please make sure the file $filename is available")
             end
         end
+
+        # maybe we need to update INCAR file here
+        vasp_incar(it.dmft_fermi)
+    end
+
+    # well, maybe we need to generate the KPOINTS file by ourselves
+    if __d("kmesh")
+        vasp_kpoints()
     end
 end
 
@@ -62,7 +70,7 @@ function vasp_run(it::IterInfo)
         vasp_cmd = split("$mpi_prefix $vasp_exec", " ")
     end
 
-    # invoke it, the terminal output is redirected to vasp.out
+    # launch it, the terminal output is redirected to vasp.out
     run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
 end
 
@@ -133,6 +141,8 @@ function vasp_incar(fermi::F64)
     end
 
     # for kmesh density
+    # if kmesh == "file", then vasp_kpoints() will be used to generate
+    # the KPOINTS file
     kmesh = _d("kmesh")
     @cswitch kmesh begin
         @case "accurate"
@@ -145,6 +155,9 @@ function vasp_incar(fermi::F64)
 
         @case "coarse"
             write(ios, "KSPACING = 0.4 \n")
+            break
+
+        @case "file"
             break
 
         @default # very coarse kmesh
@@ -218,13 +231,22 @@ end
 Generate a KPOINTS file for vasp
 """
 function vasp_kpoints()
-    # open the iostream
-    ios = open("KPOINTS", "w")
+    # if the KPOINTS file is available, we do nothing, or else we will
+    # create a new one
+    if !isfile("KPOINTS")
+        # open the iostream
+        ios = open("KPOINTS", "w")
 
-    # TODO
+        # write the body
+        write(ios, "Automatic mesh")
+        write(ios, "0")
+        write(ios, "Monkhorst-Pack")
+        write(ios, "$i $i $i")
+        write(ios, " 0  0  0")
 
-    # close the iostream
-    close(ios)
+        # close the iostream
+        close(ios)
+    end
 end
 
 """
