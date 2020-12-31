@@ -5,7 +5,7 @@
 # status  : stable
 # comment :
 #
-# last modified: 2020/12/29
+# last modified: 2020/12/31
 #
 
 """
@@ -37,21 +37,21 @@ const C64 = ComplexF64
 
 Name of this julia package
 """
-const __libname__ = "ZEN"
+const __libname__ = "ZEN Framework"
 
 """
     __version__
 
 Version of this julia package
 """
-const __version__ = "0.0.5@d"
+const __version__ = "0.0.6@d"
 
 """
     __release__
 
 Release date of this julia package
 """
-const __release__ = "2020/12"
+const __release__ = "2021/01"
 
 """
     __authors__
