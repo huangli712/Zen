@@ -400,6 +400,12 @@ function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,
     return dm
 end
 
+function plo_dos()
+end
+
+function plo_hamk()
+end
+
 """
     view_ovlp(ovlp::Array{F64,3})
 
