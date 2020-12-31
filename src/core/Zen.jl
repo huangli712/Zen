@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/30
+# last modified: 2020/12/31
 #
 
 module Zen
@@ -232,16 +232,6 @@ export plo_ovlp
 export plo_dm
 export view_ovlp
 export view_dm
-
-#
-# dos.jl
-#
-# functions for calculating of density of states
-#
-# summary:
-#
-#
-include("dos.jl")
 
 #
 # tetra.jl
