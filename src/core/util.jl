@@ -251,8 +251,13 @@ end
 Print out the overview of zen to the screen
 """
 function overview()
+    # build strings
+    str1 = nprocs() === 1 ? " processor " : " processors "
+    str2 = "(myid = $(myid()))"
+
+    # write the information
     println("Starting time: ", Dates.format(now(), "yyyy-mm-dd / HH:MM:SS"))
-    println("Parallel execution: using ", nprocs(), nprocs() == 1 ? " processor" : " processors")
+    println("Parallel execution: using ", nprocs(), str1, str2)
     println("Current working directory: ", pwd())
     println("Job description file: ", query_args())
     println()
