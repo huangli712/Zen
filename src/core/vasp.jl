@@ -446,15 +446,20 @@ function vaspio_eigen(f::String)
         readline(fin)
         for j = 1:nband
             arr = line_to_array(fin)
-            if nspin === 1 # for spin unpolarized case
-                enk[j, i, 1] = parse(F64, arr[2])
-                occupy[j, i, 1] = parse(F64, arr[3])
-            else # for spin polarized case
-                enk[j, i, 1] = parse(F64, arr[2])
-                enk[j, i, 2] = parse(F64, arr[3])
-                occupy[j, i, 1] = parse(F64, arr[4])
-                occupy[j, i, 2] = parse(F64, arr[5])
+            #if nspin === 1 # for spin unpolarized case
+            #    enk[j, i, 1] = parse(F64, arr[2])
+            #    occupy[j, i, 1] = parse(F64, arr[3])
+            #else # for spin polarized case
+            #    enk[j, i, 1] = parse(F64, arr[2])
+            #    enk[j, i, 2] = parse(F64, arr[3])
+            #    occupy[j, i, 1] = parse(F64, arr[4])
+            #    occupy[j, i, 2] = parse(F64, arr[5])
+            #end
+            for s = 1:nspin
+                enk[j, i, s] = parse(F64, arr[1*s+1])
+                occupy[j, i, s] = parse(F64, arr[2*s+1])
             end
+            exit(-1)
         end
     end
 
