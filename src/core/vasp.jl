@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/31
+# last modified: 2021/01/01
 #
 
 """
@@ -226,22 +226,26 @@ function vasp_incar(fermi::F64)
 end
 
 """
-    vasp_kpoints()
+    vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
 
 Generate a KPOINTS file for vasp
 """
-function vasp_kpoints()
-    # if the KPOINTS file is available, we do nothing, or else we will
-    # create a new one
+function vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
+    # if the KPOINTS file is available, we do nothing
+    # or else we will create a new one
     if !isfile("KPOINTS")
         # open the iostream
         ios = open("KPOINTS", "w")
 
         # write the body
-        write(ios, "Automatic mesh")
+        write(ios, "Automatic K-mesh Generation")
         write(ios, "0")
-        write(ios, "Monkhorst-Pack")
-        write(ios, "$i $i $i")
+        if mp_scheme
+            write(ios, "Monkhorst-Pack")
+        else
+            write(ios, "Gamma")
+        end
+        write(ios, "$n $n $n")
         write(ios, " 0  0  0")
 
         # close the iostream
