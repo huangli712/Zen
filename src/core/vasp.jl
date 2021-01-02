@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/01
+# last modified: 2021/01/02
 #
 
 """
@@ -39,7 +39,7 @@ function vasp_init(it::IterInfo)
     end
 
     # well, maybe we need to generate the KPOINTS file by ourselves
-    if __d("kmesh")
+    if _d("kmesh") === "file"
         vasp_kpoints()
     end
 end
@@ -238,15 +238,15 @@ function vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
         ios = open("KPOINTS", "w")
 
         # write the body
-        write(ios, "Automatic K-mesh Generation")
-        write(ios, "0")
+        write(ios, "Automatic K-mesh Generation\n")
+        write(ios, "0 \n")
         if mp_scheme
-            write(ios, "Monkhorst-Pack")
+            write(ios, "Monkhorst-Pack\n")
         else
-            write(ios, "Gamma")
+            write(ios, "Gamma\n")
         end
-        write(ios, "$n $n $n")
-        write(ios, " 0  0  0")
+        write(ios, "$n $n $n\n")
+        write(ios, " 0  0  0\n")
 
         # close the iostream
         close(ios)
