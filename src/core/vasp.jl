@@ -245,7 +245,7 @@ function vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
         else
             write(ios, "Gamma\n")
         end
-        write(ios, "$n $n $n\n")
+        write(ios, " $n  $n  $n\n")
         write(ios, " 0  0  0\n")
 
         # close the iostream
