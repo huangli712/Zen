@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/30
+# last modified: 2021/01/02
 #
 
 #
@@ -29,75 +29,75 @@
 
 Dictionary for configuration parameters: case summary
 """
-PCASE = Dict{String,Array{Any,1}}(
-            "case"     => [missing, 1, String, "system's name"]
-        )
+const PCASE = Dict{String,Array{Any,1}}(
+          "case"     => [missing, 1, String, "system's name"]
+      )
 
 """
     PDFT
 
 Dictionary for configuration parameters: density functional theory calculations
 """
-PDFT  = Dict{String,Array{Any,1}}(
-            "engine"   => [missing, 1, String, "engine for density functional theory calculations"],
-            "smear"    => [missing, 0, String, "scheme for smearing"],
-            "kmesh"    => [missing, 0, String, "kmesh for brillouin zone sampling / integration"],
-            "magmom"   => [missing, 0, String, "initial magnetic moments"],
-            "lsymm"    => [missing, 0, Bool  , "the symmetry is turned on or off"],
-            "lspins"   => [missing, 0, Bool  , "the spin orientations are polarized or not"],
-            "lspinorb" => [missing, 0, Bool  , "the spin-orbit coupling is considered or not"],
-            "loptim"   => [missing, 0, Bool  , "the generated projectors are optimized or not"],
-            "ewidth"   => [missing, 0, F64   , "half-width of energy window for generating optimal projectors"],
-            "lproj"    => [missing, 1, Bool  , "the projectors are generated or not"],
-            "sproj"    => [missing, 1, Array , "strings / descriptions for generating projectors"],
-        )
+const PDFT  = Dict{String,Array{Any,1}}(
+          "engine"   => [missing, 1, String, "engine for density functional theory calculations"],
+          "smear"    => [missing, 0, String, "scheme for smearing"],
+          "kmesh"    => [missing, 0, String, "kmesh for brillouin zone sampling / integration"],
+          "magmom"   => [missing, 0, String, "initial magnetic moments"],
+          "lsymm"    => [missing, 0, Bool  , "the symmetry is turned on or off"],
+          "lspins"   => [missing, 0, Bool  , "the spin orientations are polarized or not"],
+          "lspinorb" => [missing, 0, Bool  , "the spin-orbit coupling is considered or not"],
+          "loptim"   => [missing, 0, Bool  , "the generated projectors are optimized or not"],
+          "ewidth"   => [missing, 0, F64   , "half-width of energy window for generating optimal projectors"],
+          "lproj"    => [missing, 1, Bool  , "the projectors are generated or not"],
+          "sproj"    => [missing, 1, Array , "strings / descriptions for generating projectors"],
+      )
 
 """
     PDMFT
 
 Dictionary for configuration parameters: dynamical mean-field theory calculations
 """
-PDMFT = Dict{String,Array{Any,1}}(
-            "mode"     => [missing, 1, I64   , "scheme of dynamical mean-field theory calculations"],
-            "axis"     => [missing, 1, I64   , "imaginary-time axis or real-frequency axis"],
-            "beta"     => [missing, 1, F64   , "inverse system temperature"],
-            "niter"    => [missing, 0, I64   , "maximum number of iterations"],
-            "mixer"    => [missing, 0, F64   , "mixing factor"],
-            "dcount"   => [missing, 0, String, "scheme of double counting term"],
-            "cc"       => [missing, 0, F64   , "convergence criterion of charge"],
-            "ec"       => [missing, 0, F64   , "convergence criterion of total energy"],
-            "fc"       => [missing, 0, F64   , "convergence criterion of force"],
-            "lcharge"  => [missing, 0, Bool  , "test whether charge is converged"],
-            "lenergy"  => [missing, 0, Bool  , "test whether total energy is converged"],
-            "lforce"   => [missing, 0, Bool  , "test whether force is converged"],
-        )
+const PDMFT = Dict{String,Array{Any,1}}(
+          "mode"     => [missing, 1, I64   , "scheme of dynamical mean-field theory calculations"],
+          "axis"     => [missing, 1, I64   , "imaginary-time axis or real-frequency axis"],
+          "beta"     => [missing, 1, F64   , "inverse system temperature"],
+          "niter"    => [missing, 0, I64   , "maximum number of iterations"],
+          "mixer"    => [missing, 0, F64   , "mixing factor"],
+          "dcount"   => [missing, 0, String, "scheme of double counting term"],
+          "cc"       => [missing, 0, F64   , "convergence criterion of charge"],
+          "ec"       => [missing, 0, F64   , "convergence criterion of total energy"],
+          "fc"       => [missing, 0, F64   , "convergence criterion of force"],
+          "lcharge"  => [missing, 0, Bool  , "test whether charge is converged"],
+          "lenergy"  => [missing, 0, Bool  , "test whether total energy is converged"],
+          "lforce"   => [missing, 0, Bool  , "test whether force is converged"],
+      )
 
 """
     PIMP
 
 Dictionary for configuration parameters: quantum impurity problems
 """
-PIMP  = Dict{String,Array{Any,1}}(
-            "nsite"    => [missing, 1, I64   , "number of (correlated) impurity sites"],
-            "atoms"    => [missing, 1, Array , "chemical symbols of impurity atoms"],
-            "equiv"    => [missing, 1, Array , "equivalency of quantum impurity atoms"],
-            "shell"    => [missing, 1, Array , "angular momenta of correlated orbitals"],
-            "ising"    => [missing, 1, Array , "interaction types of correlated orbitals"],
-            "occup"    => [missing, 1, Array , "nominal impurity occupancy"],
-            "upara"    => [missing, 1, Array , "Coulomb interaction parameter"],
-            "jpara"    => [missing, 1, Array , "Hund's coupling parameter"],
-            "lpara"    => [missing, 1, Array , "spin-orbit coupling parameter"],
-        )
+const PIMP  = Dict{String,Array{Any,1}}(
+          "nsite"    => [missing, 1, I64   , "number of (correlated) impurity sites"],
+          "atoms"    => [missing, 1, Array , "chemical symbols of impurity atoms"],
+          "equiv"    => [missing, 1, Array , "equivalency of quantum impurity atoms"],
+          "shell"    => [missing, 1, Array , "angular momenta of correlated orbitals"],
+          "ising"    => [missing, 1, Array , "interaction types of correlated orbitals"],
+          "occup"    => [missing, 1, Array , "nominal impurity occupancy"],
+          "upara"    => [missing, 1, Array , "Coulomb interaction parameter"],
+          "jpara"    => [missing, 1, Array , "Hund's coupling parameter"],
+          "lpara"    => [missing, 1, Array , "spin-orbit coupling parameter"],
+      )
 
 """
     PSOLVER
 
 Dictionary for configuration parameters: quantum impurity solvers
 """
-PSOLVER= Dict{String,Array{Any,1}}(
-             "engine"  => [missing, 1, String, "name of quantum impurity solver"],
-             "params"  => [missing, 1, Array , "parameter sets of quantum impurity solver"],
-         )
+const PSOLVER= Dict{String,Array{Any,1}}(
+          "engine"  => [missing, 1, String, "name of quantum impurity solver"],
+          "params"  => [missing, 1, Array , "parameter sets of quantum impurity solver"],
+      )
 
 #
 # Customized Structs
