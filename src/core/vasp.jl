@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/02
+# last modified: 2021/01/04
 #
 
 """
@@ -484,6 +484,7 @@ function vaspio_projs(f::String)
     # extract number of spins (nspin), number of k-points (nkpt),
     # number of bands (nband), and number of projectors (nproj)
     nspin, nkpt, nband, nproj = parse.(I64, line_to_array(fin)[1:4])
+    @assert nspin === 1 || nspin === 2
 
     # extract raw information about projectors
     sites = zeros(I64, nproj)
@@ -496,7 +497,7 @@ function vaspio_projs(f::String)
     end
 
     # try to build PrTrait struct. the raw information about projectors
-    # are encapsulated in it
+    # should be encapsulated in it
     PT = PrTrait[]
     for i = 1:nproj
         push!(PT, PrTrait(sites[i], descs[i]))
@@ -508,7 +509,7 @@ function vaspio_projs(f::String)
     for i in eachindex(PT)
         push!(site_l, (PT[i].site, PT[i].l))
     end
-    # second, we figure out the unique (site, l)
+    # second, we figure out the unique (site, l) pairs
     union!(site_l)
     # third, we create a array of PrGroup struct (except for site and
     # l, most of its member variables need to be corrected). note
@@ -563,6 +564,7 @@ function vaspio_projs(f::String)
     close(fin)
 
     # return the desired arrays
+    # note: PG should be further setup at plo_group() function
     return PT, PG, chipsi
 end
 
