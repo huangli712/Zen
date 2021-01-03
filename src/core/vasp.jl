@@ -427,6 +427,7 @@ function vaspio_eigen(f::String)
 
     # determine number of spins
     nspin = parse(I64, line_to_array(fin)[end])
+    @assert nspin === 1 || nspin === 2
 
     # skip for lines
     for i = 1:4
@@ -449,17 +450,17 @@ function vaspio_eigen(f::String)
             #if nspin === 1 # for spin unpolarized case
             #    enk[j, i, 1] = parse(F64, arr[2])
             #    occupy[j, i, 1] = parse(F64, arr[3])
-            #else # for spin polarized case
+            #end
+            #if nspin === 2 # for spin polarized case
             #    enk[j, i, 1] = parse(F64, arr[2])
             #    enk[j, i, 2] = parse(F64, arr[3])
             #    occupy[j, i, 1] = parse(F64, arr[4])
             #    occupy[j, i, 2] = parse(F64, arr[5])
             #end
             for s = 1:nspin
-                enk[j, i, s] = parse(F64, arr[1*s+1])
-                occupy[j, i, s] = parse(F64, arr[2*s+1])
+                enk[j, i, s] = parse(F64, arr[s+1])
+                occupy[j, i, s] = parse(F64, arr[s+1+nspin])
             end
-            exit(-1)
         end
     end
 
