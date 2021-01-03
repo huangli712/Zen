@@ -5,10 +5,19 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/31
+# last modified: 2021/01/04
 #
 
 module Zen
+
+"""
+    __init__()
+
+This function would be executed immediately after the module is loaded at
+runtime for the first time
+"""
+function __init__()
+end
 
 #
 # using standard library
