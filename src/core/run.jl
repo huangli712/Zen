@@ -7,7 +7,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/30
+# last modified: 2021/01/04
 #
 
 include("Zen.jl")
@@ -19,7 +19,7 @@ require()
 # S00: print the welcome message
 welcome()
 
-# S01: print the overview of zen
+# S01: print the overview for zen
 message("ZEN", "OVERVIEW")
 overview()
 
@@ -31,7 +31,7 @@ println("Extract configuration parameters from $(query_args())")
 cfg = parse_toml(query_args(), true)
 #
 # S02.2: build the configuration dictionaries
-println("Update configuration dictionaries")
+println("Build configuration dictionaries")
 renew_config(cfg)
 #
 # S02.3: validate the configuration dictionaries
@@ -39,7 +39,7 @@ println("Verify configuration dictionaries\n")
 check_config()
 
 # S03: write the configuration parameters to stdout
-message("ZEN", "PARAMETER")
+message("ZEN", "VIEWER")
 #
 # S03.1: show dict PCASE
 list_case()
@@ -57,10 +57,10 @@ list_impurity()
 list_solver()
 
 # S04: initialize the job
-message("ZEN", "PREPARATION")
+message("ZEN", "CREATOR")
 #
 # S04.1: check the input files (which are essential for the calculation)
-println("Check essential input files")
+println("Ensure essential input files")
 query_inps()
 #
 # S04.2: prepare the working directories
@@ -73,7 +73,7 @@ it = IterInfo()
 #
 # S04.4: check self-consistent mode
 mode = _m("mode") === 1 ? "one-shot" : "fully self-consistent"
-println("Check self-consistent mode: $mode\n")
+println("Verify self-consistent mode: $mode\n")
 
 message("ZEN", "START")
 
@@ -137,7 +137,7 @@ if _m("mode") === 1
 # first the adaptor will read in these data from the output files of dft
 # engine. and then it will process the raw projectors (parse, label, group,
 # filter, and rotate). finally, the adaptor will write down the processed
-# data to some files within the IR format.
+# data to some specified files within the IR format.
 #
 
     # S07: To bridge the gap between dft engine and dmft engine by adaptor
