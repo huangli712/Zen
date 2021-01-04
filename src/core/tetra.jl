@@ -17,13 +17,23 @@ Integration weights for analytical tetrahedron algorithm
 .dw -> density of states weights at the four corners of a given tetrahedron
 .tw -> integration weights at the four corners of a given tetrahedron
 """
-mutable struct TetraWeight
+struct TetraWeight
     cw :: F64
     dw :: Array{F64,1}
     tw :: Array{F64,1}
 end
 
-function tetra_p_ek1
+"""
+    tetra_p_ek1()
+
+Blochl algorithm, case 1, for fully unoccupied tetrahedron
+"""
+function tetra_p_ek1()
+    cw = 0.0
+    dw = zeros(F64, 4)
+    tw = zeros(F64, 4)
+
+    TetraWeight(cw, dw, tw)
 end
 
 function tetra_p_ek12
