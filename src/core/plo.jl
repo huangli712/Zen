@@ -405,14 +405,6 @@ function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,
 end
 
 """
-    plo_dos()
-
-Try to calculate the density of states
-"""
-function plo_dos()
-end
-
-"""
     plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
 
 Try to build the local hamiltonian
@@ -444,6 +436,13 @@ function plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C6
     # return the desired array
     return hamk
 end
+
+"""
+    plo_dos()
+
+Try to calculate the density of states
+"""
+function plo_dos() end
 
 """
     view_ovlp(ovlp::Array{F64,3})
@@ -536,9 +535,29 @@ function view_dm(PGT::Array{PrGroupT,1}, dm::Array{F64,3})
 end
 
 """
-    view_dos()
+    view_hamk(hamk::Array{C64,3})
+
+Output the local hamiltonian. General version
 """
-function view_dos()
+function view_hamk(hamk::Array{C64,3})
+    # extract some key parameters
+    _, nproj, nspin = size(hamk)
+
+    # output the data
+    println("<- Local Hamiltonian ->")
+    for s = 1:nspin
+        println("Spin: $s")
+        println("Re:")
+        for p in 1:nproj
+            foreach(x -> @printf("%12.7f", x), real(hamk[p, :, s]))
+            println()
+        end
+        println("Im:")
+        for q in 1:nproj
+            foreach(x -> @printf("%12.7f", x), imag(hamk[q, :, s]))
+            println()
+        end
+    end
 end
 
 """
@@ -571,3 +590,8 @@ function view_hamk(PGT::Array{PrGroupT,1}, hamk::Array{C64,3})
         end
     end
 end
+
+"""
+    view_dos()
+"""
+function view_dos() end

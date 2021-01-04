@@ -226,12 +226,12 @@ export irio_charge
 # plo_diag   -> orthogonalizes a projector defined by a rectangular matrix
 # plo_ovlp   -> calculate overlap matrix
 # plo_dm     -> calculate density matrix
-# plo_dos    -> calculate density of states
 # plo_hamk   -> calculate local hamiltonian
+# plo_dos    -> calculate density of states
 # view_ovlp  -> show overlap matrix
 # view_dm    -> show density matrix
-# view_dos   -> show density of states
 # view_hamk  -> show local hamiltonian
+# view_dos   -> show density of states
 #
 include("plo.jl")
 #
@@ -242,12 +242,12 @@ export plo_orthog
 export plo_diag
 export plo_ovlp
 export plo_dm
-export plo_dos
 export plo_hamk
+export plo_dos
 export view_ovlp
 export view_dm
-export view_dos
 export view_hamk
+export view_dos
 
 #
 # tetra.jl
