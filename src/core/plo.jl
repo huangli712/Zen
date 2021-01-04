@@ -542,7 +542,9 @@ function view_dos()
 end
 
 """
-    view_hamk()
+    view_hamk(PGT::Array{PrGroupT,1}, hamk::Array{C64,3})
+
+Output the local hamiltonian. It should be block-diagonal
 """
 function view_hamk(PGT::Array{PrGroupT,1}, hamk::Array{C64,3})
     # extract some key parameters
@@ -554,13 +556,14 @@ function view_hamk(PGT::Array{PrGroupT,1}, hamk::Array{C64,3})
         println("Spin: $s")
         for p in eachindex(PGT)
             println("site -> $(PGT[p].site) l -> $(PGT[p].l) shell -> $(PGT[p].shell)")
+            println("Re:")
             q1 = PGT[p].Pr[1]
             q2 = PGT[p].Pr[end]
             for q = q1:q2
                 foreach(x -> @printf("%12.7f", x), real(hamk[q, q1:q2, s]))
                 println()
             end
-            println()
+            println("Im:")
             for q = q1:q2
                 foreach(x -> @printf("%12.7f", x), imag(hamk[q, q1:q2, s]))
                 println()
