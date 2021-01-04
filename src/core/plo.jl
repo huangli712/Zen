@@ -301,7 +301,7 @@ function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
     for s = 1:nspin
         for k = 1:nkpt
             wght = weight[k] / nkpt
-            A = chipsi[:, :, k, s]
+            A = view(chipsi, :, :, k, s)
             ovlp[:, :, s] = ovlp[:, :, s] + real(A * A') * wght
         end
     end
@@ -329,7 +329,7 @@ function plo_ovlp(PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F6
             for p in eachindex(PGT)
                 q1 = PGT[p].Pr[1]
                 q2 = PGT[p].Pr[end]
-                A = chipsi[q1:q2, :, k, s]
+                A = view(chipsi, q1:q2, :, k, s)
                 ovlp[q1:q2, q1:q2, s] = ovlp[q1:q2, q1:q2, s] + real(A * A') * wght
             end
         end
@@ -359,7 +359,7 @@ function plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3}
         for k = 1:nkpt
             wght = weight[k] / nkpt * sf
             occs = occupy[:, k, s]
-            A = chipsi[:, :, k, s]
+            A = view(chipsi, :, :, k, s)
             dm[:, :, s] = dm[:, :, s] + real(A * Diagonal(occs) * A') * wght
         end
     end
@@ -394,7 +394,7 @@ function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,
             for p in eachindex(PGT)
                 q1 = PGT[p].Pr[1]
                 q2 = PGT[p].Pr[end]
-                A = chipsi[q1:q2, :, k, s]
+                A = view(chipsi, q1:q2, :, k, s)
                 dm[q1:q2, q1:q2, s] = dm[q1:q2, q1:q2, s] + real(A * Diagonal(occs) * A') * wght
             end
         end
@@ -421,7 +421,7 @@ function plo_hamk(chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
         for k = 1:nkpt
             wght = weight[k] / nkpt
             eigs = enk[:, k, s]
-            A = chipsi[:, :, k, s]
+            A = view(chipsi, :, :, k, s)
             hamk[:, :, s] = hamk[:, :, s] + (A * Diagonal(eigs) * A') * wght
         end
     end
@@ -453,7 +453,7 @@ function plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C6
             for p in eachindex(PGT)
                 q1 = PGT[p].Pr[1]
                 q2 = PGT[p].Pr[end]
-                A = chipsi[q1:q2, :, k, s]
+                A = view(chipsi, q1:q2, :, k, s)
                 hamk[q1:q2, q1:q2, s] = hamk[q1:q2, q1:q2, s] + (A * Diagonal(eigs) * A') * wght
             end
         end
