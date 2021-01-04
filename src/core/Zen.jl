@@ -227,9 +227,11 @@ export irio_charge
 # plo_ovlp   -> calculate overlap matrix
 # plo_dm     -> calculate density matrix
 # plo_dos    -> calculate density of states
-# plo_hamk   -> calculate hamiltonian
+# plo_hamk   -> calculate local hamiltonian
 # view_ovlp  -> show overlap matrix
 # view_dm    -> show density matrix
+# view_dos   -> show density of states
+# view_hamk  -> show local hamiltonian
 #
 include("plo.jl")
 #
@@ -244,6 +246,8 @@ export plo_dos
 export plo_hamk
 export view_ovlp
 export view_dm
+export view_dos
+export view_hamk
 
 #
 # tetra.jl
