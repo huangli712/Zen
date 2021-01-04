@@ -405,9 +405,35 @@ function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,
 end
 
 """
+    plo_hamk(chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
+
+Try to build the local hamiltonian. General version
+"""
+function plo_hamk(chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
+    # extract some key parameters
+    nproj, nband, nkpt, nspin = size(chipsi)
+
+    # create hamiltonian array
+    hamk = zeros(C64, nproj, nproj, nspin)
+
+    # build hamiltonian array
+    for s = 1:nspin
+        for k = 1:nkpt
+            wght = weight[k] / nkpt
+            eigs = enk[:, k, s]
+            A = chipsi[:, :, k, s]
+            hamk[:, :, s] = hamk[:, :, s] + (A * Diagonal(eigs) * A') * wght
+        end
+    end
+
+    # return the desired array
+    return hamk
+end
+
+"""
     plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
 
-Try to build the local hamiltonian
+Try to build the local hamiltonian. It should be block-diagonal
 """
 function plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
     # extract some key parameters
