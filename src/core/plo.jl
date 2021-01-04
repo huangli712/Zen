@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/31
+# last modified: 2021/01/04
 #
 
 """
@@ -400,9 +400,19 @@ function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,
     return dm
 end
 
+"""
+    plo_dos()
+
+Try to calculate the density of states
+"""
 function plo_dos()
 end
 
+"""
+    plo_hamk()
+
+Try to build the effective hamiltonian
+"""
 function plo_hamk()
 end
 
