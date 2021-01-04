@@ -23,5 +23,7 @@ plo_orthog(ib_window, PGT, chipsi_w)
 # qualify the Kohn-Sham data
 ovlp = plo_ovlp(PGT, chipsi_w, weight)
 dm = plo_dm(bmin, bmax, PGT, chipsi_w, weight, occupy)
+hamk = plo_hamk(bmin, bmax, PGT, chipsi_w, weight, enk)
+@show hamk
 view_ovlp(PGT, ovlp)
 view_dm(PGT, dm)
