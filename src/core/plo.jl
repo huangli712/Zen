@@ -413,11 +413,36 @@ function plo_dos()
 end
 
 """
-    plo_hamk()
+    plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
 
 Try to build the effective hamiltonian
 """
-function plo_hamk()
+function plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
+    # extract some key parameters
+    nproj, nband, nkpt, nspin = size(chipsi)
+
+    # sanity check
+    @assert nband === bmax - bmin + 1
+
+    # create hamiltonian array
+    hamk = zeros(F64, nproj, nproj, nspin)
+
+    # build hamiltonian array
+    for s = 1:nspin
+        for k = 1:nkpt
+            wght = weight[k] / nkpt
+            eigs = occupy[bmin:bmax, k, s]
+            for p in eachindex(PGT)
+                q1 = PGT[p].Pr[1]
+                q2 = PGT[p].Pr[end]
+                A = chipsi[q1:q2, :, k, s]
+                hamk[q1:q2, q1:q2, s] = hamk[q1:q2, q1:q2, s] + real(A * Diagonal(eigs) * A') * wght
+            end
+        end
+    end
+
+    # return the desired array
+    return hamk
 end
 
 """
