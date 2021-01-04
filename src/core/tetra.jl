@@ -5,5 +5,20 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/29
+# last modified: 2021/01/04
 #
+
+"""
+    TetraWeight
+
+Integration weights for analytical tetrahedron algorithm
+
+.cw -> blochl corrections for dweight
+.dw -> density of states weights at the four corners of a given tetrahedron
+.tw -> integration weights at the four corners of a given tetrahedron
+"""
+mutable struct TetraWeight
+    cw :: F64
+    dw :: Array{F64,1}
+    tw :: Array{F64,1}
+end
