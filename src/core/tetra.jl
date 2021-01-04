@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/04
+# last modified: 2021/01/05
 #
 
 """
@@ -226,5 +226,68 @@ end
 function tetra_weight1()
 end
 
-function tetra_weight2()
+"""
+    tetra_weight2(z::F64, e::Array{F64,1})
+
+Peter E. Blochl algorithm for (integrated) density of states and relevant
+integration weights. Blochl corrections are taken into considersions as
+well. See Phys. Rev. B, 49, 16223 (1994) for more details
+"""
+function tetra_weight2(z::F64, e::Array{F64,1})
+    # sort the corner energy according to increasing values
+    sort!(e)
+
+    # remove degenerate
+    for i = 1:3
+        if abs( e[i] - e[i+1] ) < eps(F64)
+            e[i] = e[i] + eps(F64) / float(i)
+        end
+    end
+
+    for i = 1:4
+        if abs( e[i] - z ) < eps(F64) / 10.0
+            e[i] = e[i] + eps(F64) / 10.0 / float(i)
+        end
+    end
+
+    # find the case, to calculate TetraWeight (dw, tw, and cw)
+    # case 1, fully unoccupied tetrahedron
+    if z < e[1]
+        TW = tetra_p_ek1()
+
+    # case 2, partially occupied tetrahedron
+    elseif z < e[2] && z > e[1]
+        TW = tetra_p_ek12(z, e)
+
+    # case 3, partially occupied tetrahedron
+    elseif z < e[3] && z > e[2]
+        TW = tetra_p_ek23(z, e)
+
+    # case 4, partially occupied tetrahedron
+    elseif z < e[4] && z > e[3]
+        TW = tetra_p_ek34(z, e)
+
+    # case 5, fully occupied tetrahedron
+    elseif z > e[4]
+        TW = tetra_p_ek4()
+
+    end
+
+    # add up Blochl corrections for density of states weights
+    # apply equation (22)
+    for i = 1:4
+        do j = 1:4
+            TW.dw[i] = TW.dw[i] + ( e[j] - e[i] ) * TW.cw * 0.025
+        end
+    end
+
+    # add up Blochl corrections for integration weights
+    # apply equation (22)
+    for i = 1:4
+        for j = 1:4
+            TW.tw[i] = TW.tw[i] + ( e[j] - e[i] ) * sum(TW.dw) * 0.025
+        end
+    end
+
+    return TW
 end
