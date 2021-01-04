@@ -78,6 +78,10 @@ function adaptor_run(it::IterInfo)
     # enter dft directory
     cd("dft")
 
+    #
+    # S1: Parse the original Kohn-Sham data
+    #
+
     # choose suitable driver function according to dft engine
     engine = _d("engine")
     @cswitch engine begin
@@ -101,7 +105,7 @@ function adaptor_run(it::IterInfo)
 
             # read in band structure and the corresponding occupancies
             println("  Enk")
-            println("  Occupation")
+            println("  Occupy")
             enk, occupy = vaspio_eigen(pwd())
 
             # read in raw projectors, traits, and groups
@@ -118,6 +122,10 @@ function adaptor_run(it::IterInfo)
             break
     end
 
+    #
+    # S2: Process the original Kohn-Sham data
+    #
+
     # well, now we have the Kohn-Sham data. but they can not be written
     # directly. we have to process them carefully
     println("< Adaptor: Eat Kohn-Sham Data >")
@@ -127,6 +135,10 @@ function adaptor_run(it::IterInfo)
     println("  Leveling")
     println("  Filtering")
     println("  Orthogonalizing\n")
+
+    #
+    # S3: Output the processed Kohn-Sham data
+    #
 
     # dump the Kohn-Sham data to files with IR format
     println("< Adaptor: Put Kohn-Sham Data >")
@@ -148,7 +160,7 @@ function adaptor_run(it::IterInfo)
 
     # write band structure and the corresponding occupancies
     println("  Enk")
-    println("  Occupation")
+    println("  Occupy")
     irio_eigen(pwd(), enk, occupy)
 
     # write projectors, traits, and groups
@@ -158,6 +170,10 @@ function adaptor_run(it::IterInfo)
     # write fermi level
     println("  Fermi Level\n")
     irio_fermi(pwd(), fermi)
+
+    #
+    # S4: Qualify the Kohn-Sham data
+    #
 
     println("< Adaptor: View Overlap Matrix >")
     println("< Adaptor: View Density Matrix >")
@@ -174,6 +190,8 @@ Backup the output files by adaptor
 function adaptor_save(it::IterInfo)
     # enter dft directory
     cd("dft")
+
+    # TODO
 
     # enter the parent directory
     cd("..")

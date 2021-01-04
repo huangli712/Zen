@@ -16,8 +16,7 @@ module Zen
 This function would be executed immediately after the module is loaded at
 runtime for the first time
 """
-function __init__()
-end
+function __init__() end
 
 #
 # using standard library
