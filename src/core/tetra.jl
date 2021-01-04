@@ -29,10 +29,14 @@ end
 Blochl algorithm, case 1, for fully unoccupied tetrahedron
 """
 function tetra_p_ek1()
-    # apply equation (B1)
-    cw = 0.0
-    dw = zeros(F64, 4)
+    # integration weights, apply equation (B1)
     tw = zeros(F64, 4)
+
+    # density of states weights
+    dw = zeros(F64, 4)
+
+    # corrections for dweight
+    cw = 0.0
 
     TetraWeight(cw, dw, tw)
 end
@@ -201,7 +205,20 @@ function tetra_p_ek34(z::F64, e::Array{F64,1})
     TetraWeight(cw, dw, tw)
 end
 
-function tetra_p_ek4
+"""
+    tetra_p_ek4()
+
+Blochl algorithm, case 5, for fully occupied tetrahedron
+"""
+function tetra_p_ek4()
+! integration weights, apply equation (B19)
+     tweight = 0.25_dp
+
+! density of states weights
+     dweight = zero
+
+! corrections for dweight
+     cweight = zero
 end
 
 function tetra_weight1()
