@@ -18,10 +18,10 @@ plo_group(PG)
 PGT, chipsi_r = plo_rotate(PG, chipsi)
 enk = enk .- fermi
 bmin, bmax, ib_window, chipsi_w = plo_window(enk, 2.0, -1.4, chipsi_r)
-plo_orthog(ib_window, PGT, chipsi_w)
+@timev plo_orthog(ib_window, PGT, chipsi_w)
 
 # qualify the Kohn-Sham data
-@timev ovlp = plo_ovlp(PGT, chipsi_w, weight)
+ovlp = plo_ovlp(PGT, chipsi_w, weight)
 dm = plo_dm(bmin, bmax, PGT, chipsi_w, weight, occupy)
 hamk = plo_hamk(bmin, bmax, PGT, chipsi_w, weight, enk)
 view_ovlp(PGT, ovlp)
