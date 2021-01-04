@@ -22,3 +22,18 @@ mutable struct TetraWeight
     dw :: Array{F64,1}
     tw :: Array{F64,1}
 end
+
+function tetra_p_ek1
+end
+
+function tetra_p_ek12
+end
+
+function tetra_p_ek23
+end
+
+function tetra_p_ek34
+end
+
+function tetra_p_ek4
+end
