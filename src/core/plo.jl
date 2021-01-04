@@ -560,6 +560,11 @@ function view_hamk(PGT::Array{PrGroupT,1}, hamk::Array{C64,3})
                 foreach(x -> @printf("%12.7f", x), real(hamk[q, q1:q2, s]))
                 println()
             end
+            println()
+            for q = q1:q2
+                foreach(x -> @printf("%12.7f", x), imag(hamk[q, q1:q2, s]))
+                println()
+            end
         end
     end
 end
