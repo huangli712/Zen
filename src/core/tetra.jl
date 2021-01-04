@@ -37,3 +37,9 @@ end
 
 function tetra_p_ek4
 end
+
+function tetra_weight1()
+end
+
+function tetra_weight2()
+end
