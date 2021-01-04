@@ -415,7 +415,7 @@ end
 """
     plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
 
-Try to build the effective hamiltonian
+Try to build the local hamiltonian
 """
 function plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
     # extract some key parameters
@@ -529,6 +529,35 @@ function view_dm(PGT::Array{PrGroupT,1}, dm::Array{F64,3})
             q2 = PGT[p].Pr[end]
             for q = q1:q2
                 foreach(x -> @printf("%12.7f", x), dm[q, q1:q2, s])
+                println()
+            end
+        end
+    end
+end
+
+"""
+    view_dos()
+"""
+function view_dos()
+end
+
+"""
+    view_hamk()
+"""
+function view_hamk(PGT::Array{PrGroupT,1}, hamk::Array{C64,3})
+    # extract some key parameters
+    _, nproj, nspin = size(hamk)
+
+    # output the data
+    println("<- Local Hamiltonian ->")
+    for s = 1:nspin
+        println("Spin: $s")
+        for p in eachindex(PGT)
+            println("site -> $(PGT[p].site) l -> $(PGT[p].l) shell -> $(PGT[p].shell)")
+            q1 = PGT[p].Pr[1]
+            q2 = PGT[p].Pr[end]
+            for q = q1:q2
+                foreach(x -> @printf("%12.7f", x), real(hamk[q, q1:q2, s]))
                 println()
             end
         end
