@@ -211,14 +211,16 @@ end
 Blochl algorithm, case 5, for fully occupied tetrahedron
 """
 function tetra_p_ek4()
-! integration weights, apply equation (B19)
-     tweight = 0.25_dp
+    # integration weights, apply equation (B19)
+    tw = fill(0.25, 4)
 
-! density of states weights
-     dweight = zero
+    # density of states weights
+    dw = zeros(F64, 4)
 
-! corrections for dweight
-     cweight = zero
+    # corrections for dweight
+    cw = zero
+
+    TetraWeight(cw, dw, tw)
 end
 
 function tetra_weight1()
