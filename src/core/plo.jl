@@ -248,7 +248,7 @@ function plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{
                 M = view(chipsi, q1:q2, 1:nb, k, s)
 
                 # orthogonalize it (chipsi is update at the same time)
-                plo_diag!(M)
+                plo_diag(M)
             end
         end
     end
