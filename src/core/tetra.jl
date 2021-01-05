@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/05
+# last modified: 2021/01/06
 #
 
 """
@@ -237,7 +237,7 @@ function tetra_weight2(z::F64, e::Array{F64,1})
     # sort the corner energy according to increasing values
     sort!(e)
 
-    # remove degenerate
+    # remove possible degenerancies in e
     for i = 1:3
         if abs( e[i] - e[i+1] ) < eps(F64)
             e[i] = e[i] + eps(F64) / float(i)
