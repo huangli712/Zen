@@ -298,20 +298,7 @@ end
 Compute tetrahedron integrated weights for Brillouin zone integration.
 Used to calculate density of states
 """
-function tetra_dos(z::F64, enk::Array{F64,3}, wght::Array{F64,3}, itet::Array{I64,2})
-    # energy at the corner of tetrahedron
-    zc = zeros(F64, 4)
-
-    # weight at the corner of tetrahedron
-    zw = zeros(F64, 4)
-    zt = zeros(F64, 4)
-
-    # mass of tetrahedron
-    mtet = sum( itet[:, 5] )
-
-    # initialize weight
-    fill!(wght, 0.0)
-
+function tetra_dos(z::F64, itet::Array{I64,2}, enk::Array{F64,3}, wght::Array{F64,3})
     # extract some key parameters
     ntet, ndim = size(itet)
     @assert ndim === 5
@@ -319,11 +306,20 @@ function tetra_dos(z::F64, enk::Array{F64,3}, wght::Array{F64,3}, itet::Array{I6
     # extract some key parameters
     nband, nkpt, nspin = size(enk)
 
+    # energy at the corner of tetrahedron
+    zc = zeros(F64, 4)
+
+    # mass of tetrahedron
+    mtet = sum( itet[:, 5] )
+
+    # initialize weight
+    fill!(wght, 0.0)
+
     for t = 1:ntet
         for s = 1:nspin
             for b = 1:nband
 
-                # set the vectors of corner energies to zc
+                # save the four corner energies of one tetrahedron in zc
                 for c = 1:4
                     k = itet[t, c]
                     zc[c] = enk[b, k, s]
