@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/04
+# last modified: 2021/01/06
 #
 
 """
@@ -455,11 +455,12 @@ function plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C6
 end
 
 """
-    plo_dos()
+    plo_dos(itet::Array{I64,2}, enk::Array{F64,3})
 
 Try to calculate the density of states
 """
-function plo_dos() end
+function plo_dos(itet::Array{I64,2}, enk::Array{F64,3})
+end
 
 """
     view_ovlp(ovlp::Array{F64,3})
