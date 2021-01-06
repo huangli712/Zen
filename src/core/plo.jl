@@ -467,9 +467,26 @@ function plo_dos(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64
     @assert nband === bmax - bmin + 1
 
     mesh = collect(-4.0:0.01:4.0)
+    pdos = zeros(F64, length(mesh), nproj)
 
     for i in eachindex(mesh)
         wght = tetra_dos(mesh[i], itet, enk[bmin:bmax, :, :])
+        for s = 1:nspin
+            for k = 1:nkpt
+                for p in eachindex(PGT)
+                    q1 = PGT[p].Pr[1]
+                    q2 = PGT[p].Pr[end]
+                    for q = q1:q2
+                        for b = 1:nband
+                            pdos[i, q] = pdos[i, q] + wght[b, k, s] * real( chipsi[q, b, k, s] * conj(chipsi[q, b, k, s]) )
+                        end
+                    end
+                end
+            end
+        end
+        print(mesh[i], " ")
+        foreach(x -> @printf("%12.7f", x), pdos[i, :])
+        println()
     end
 end
 
