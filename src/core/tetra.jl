@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/06
+# last modified: 2021/01/07
 #
 
 """
@@ -276,7 +276,7 @@ function tetra_weight2(z::F64, e::Array{F64,1})
     # add up Blochl corrections for density of states weights
     # apply equation (22)
     for i = 1:4
-        do j = 1:4
+        for j = 1:4
             TW.dw[i] = TW.dw[i] + ( e[j] - e[i] ) * TW.cw * 0.025
         end
     end
@@ -293,12 +293,12 @@ function tetra_weight2(z::F64, e::Array{F64,1})
 end
 
 """
-    tetra_dos(z::F64, enk::Array{F64,3}, wght::Array{F64,3})
+    tetra_dos(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
 
 Compute tetrahedron integrated weights for Brillouin zone integration.
 Used to calculate density of states
 """
-function tetra_dos(z::F64, itet::Array{I64,2}, enk::Array{F64,3}, wght::Array{F64,3})
+function tetra_dos(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
     # extract some key parameters
     ntet, ndim = size(itet)
     @assert ndim === 5
@@ -313,7 +313,7 @@ function tetra_dos(z::F64, itet::Array{I64,2}, enk::Array{F64,3}, wght::Array{F6
     mtet = sum( itet[:, 5] )
 
     # initialize weight
-    fill!(wght, 0.0)
+    wght = zeros(F64, nband, nkpt, nspin)
 
     for t = 1:ntet
         for s = 1:nspin
@@ -338,5 +338,7 @@ function tetra_dos(z::F64, itet::Array{I64,2}, enk::Array{F64,3}, wght::Array{F6
     end
 
     # normalize properly
-    @. wght = wght / float(mtet) 
+    @. wght = wght / float(mtet)
+
+    return wght
 end

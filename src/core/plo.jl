@@ -459,7 +459,13 @@ end
 
 Try to calculate the density of states
 """
-function plo_dos(itet::Array{I64,2}, enk::Array{F64,3})
+function plo_dos(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, itet::Array{I64,2}, enk::Array{F64,3})
+    # extract some key parameters
+    nproj, nband, nkpt, nspin = size(chipsi)
+
+    # sanity check
+    @assert nband === bmax - bmin + 1
+
 end
 
 """
