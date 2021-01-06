@@ -218,7 +218,7 @@ function tetra_p_ek4()
     dw = zeros(F64, 4)
 
     # corrections for dweight
-    cw = zero
+    cw = 0.0
 
     TetraWeight(cw, dw, tw)
 end

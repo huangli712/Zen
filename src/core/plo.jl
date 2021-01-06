@@ -466,6 +466,11 @@ function plo_dos(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64
     # sanity check
     @assert nband === bmax - bmin + 1
 
+    mesh = collect(-4.0:0.01:4.0)
+
+    for i in eachindex(mesh)
+        wght = tetra_dos(mesh[i], itet, enk[bmin:bmax, :, :])
+    end
 end
 
 """
