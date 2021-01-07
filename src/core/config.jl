@@ -143,12 +143,12 @@ Verify the value array
 @inline function _v(val::Array{Any,1})
     # to check if the value is updated
     if isa(val[1], Missing) && val[2] > 0
-        error("Sorry, $key shoule be set")
+        error("Sorry, key shoule be set")
     end
 
     # to check if the type of value is correct
     if !isa(val[1], Missing) && !isa(val[1], eval(val[3]))
-        error("Sorry, type of $key is wrong")
+        error("Sorry, type of key is wrong")
     end
 end
 

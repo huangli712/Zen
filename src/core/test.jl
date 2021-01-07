@@ -4,15 +4,14 @@ include("Zen.jl")
 using .Zen
 
 # parse the configuration parameter
-@timev cfg = parse_toml(query_args(), true)
-@timev renew_config(cfg)
-
+cfg = parse_toml(query_args(), true)
+renew_config(cfg)
 check_config()
-list_case()
-list_dft()
-@timev  list_dmft()
-list_impurity()
-list_solver()
+#@timev list_case()
+@timev list_dft()
+#@timev list_dmft()
+#@timev list_impurity()
+#@timev list_solver()
 exit(-1)
 
 
