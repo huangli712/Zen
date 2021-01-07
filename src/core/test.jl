@@ -4,8 +4,18 @@ include("Zen.jl")
 using .Zen
 
 # parse the configuration parameter
-cfg = parse_toml(query_args(), true)
-renew_config(cfg)
+@timev cfg = parse_toml(query_args(), true)
+@timev renew_config(cfg)
+exit(-1)
+
+check_config()
+list_case()
+list_dft()
+@timev  list_dmft()
+list_impurity()
+list_solver()
+exit(-1)
+
 
 # read the Kohn-Sham data
 PT, PG, chipsi = vaspio_projs(joinpath(pwd(), "dft"))
