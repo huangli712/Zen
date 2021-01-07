@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/27
+# last modified: 2021/01/08
 #
 
 """
@@ -147,7 +147,7 @@ Verify the value array
     end
 
     # to check if the type of value is correct
-    if !isa(val[1], Missing) && !isa(val[1], val[3])
+    if !isa(val[1], Missing) && !isa(val[1], eval(val[3]))
         error("Sorry, type of $key is wrong")
     end
 end
