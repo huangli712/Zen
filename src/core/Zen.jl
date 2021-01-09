@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/04
+# last modified: 2021/01/09
 #
 
 module Zen
@@ -173,19 +173,36 @@ export line_to_array
 # summary:
 #
 # make_trees -> make working directories
+# rm_trees
+# adaptor_init
+# adaptor_run
+# adaptor_save
 # dft_init   -> init dft engine
 # dft_run    -> execute dft calculation
 # dft_save   -> finalize dft calculation
+# dmft_init
+# dmft_run
+# dmft_save
+# solver_init
+# solver_run
+# solver_save
 #
 include("base.jl")
 #
 export make_trees
+export rm_trees
 export adaptor_init
 export adaptor_run
 export adaptor_save
 export dft_init
 export dft_run
 export dft_save
+export dmft_init
+export dmft_run
+export dmft_save
+export solver_init
+export solver_run
+export solver_save
 
 #
 # ir.jl
