@@ -3,11 +3,6 @@
 include("Zen.jl")
 using .Zen
 
-
-@show pkgdir(Zen), typeof(Zen)
-exit(-1)
-
-
 # parse the configuration parameter
 cfg = parse_toml(query_args(), true)
 renew_config(cfg)
@@ -18,7 +13,6 @@ check_config()
 #@timev list_impurity()
 #@timev list_solver()
 exit(-1)
-
 
 # read the Kohn-Sham data
 PT, PG, chipsi = vaspio_projs(joinpath(pwd(), "dft"))

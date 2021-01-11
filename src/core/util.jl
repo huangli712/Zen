@@ -166,7 +166,7 @@ function list_dft()
     println("  loptim   -> ", _d("loptim"))
     println("  ewidth   -> ", _d("ewidth"))
     println("  lproj    -> ", _d("lproj"))
-    println("  sproj    -> ", _d("sproj"))
+    println("  sproj    -> ", _d("sproj")...)
     println()
 end
 
