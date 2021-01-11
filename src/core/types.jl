@@ -47,8 +47,8 @@ const PDFT  = Dict{String,Array{Any,1}}(
           "lspins"   => [missing, 0, :Bool  , "the spin orientations are polarized or not"],
           "lspinorb" => [missing, 0, :Bool  , "the spin-orbit coupling is considered or not"],
           "loptim"   => [missing, 0, :Bool  , "the generated projectors are optimized or not"],
-          "ewidth"   => [missing, 0, :F64   , "half-width of energy window for generating optimal projectors"],
           "lproj"    => [missing, 1, :Bool  , "the projectors are generated or not"],
+          "ewidth"   => [missing, 0, :F64   , "half-width of energy window for generating optimal projectors"],
           "sproj"    => [missing, 1, :Array , "strings / descriptions for generating projectors"],
       )
 
@@ -60,10 +60,10 @@ Dictionary for configuration parameters: dynamical mean-field theory calculation
 const PDMFT = Dict{String,Array{Any,1}}(
           "mode"     => [missing, 1, :I64   , "scheme of dynamical mean-field theory calculations"],
           "axis"     => [missing, 1, :I64   , "imaginary-time axis or real-frequency axis"],
-          "beta"     => [missing, 1, :F64   , "inverse system temperature"],
           "niter"    => [missing, 0, :I64   , "maximum number of iterations"],
-          "mixer"    => [missing, 0, :F64   , "mixing factor"],
           "dcount"   => [missing, 0, :String, "scheme of double counting term"],
+          "beta"     => [missing, 1, :F64   , "inverse system temperature"],
+          "mixer"    => [missing, 0, :F64   , "mixing factor"],
           "cc"       => [missing, 0, :F64   , "convergence criterion of charge"],
           "ec"       => [missing, 0, :F64   , "convergence criterion of total energy"],
           "fc"       => [missing, 0, :F64   , "convergence criterion of force"],
