@@ -38,20 +38,20 @@ using TOML
 # I32, I64    -> numerical types
 # F32, F64    -> numerical types
 # C32, C64    -> numerical types
-# __libname__ -> library's name
-# __version__ -> version of zen
-# __release__ -> released date of zen
-# __authors__ -> authors of zen
+# __LIBNAME__ -> library's name
+# __VERSION__ -> version of zen
+# __RELEASE__ -> released date of zen
+# __AUTHORS__ -> authors of zen
 #
 include("global.jl")
 #
 export I32, I64
 export F32, F64
 export C32, C64
-export __libname__
-export __version__
-export __release__
-export __authors__
+export __LIBNAME__
+export __VERSION__
+export __RELEASE__
+export __AUTHORS__
 
 #
 # types.jl
