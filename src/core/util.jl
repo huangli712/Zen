@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/30
+# last modified: 2021/01/12
 #
 
 """
@@ -155,6 +155,13 @@ end
 Print the configuration parameters to stdout: for PDFT dict
 """
 function list_dft()
+    #
+    # remarks:
+    #
+    # _d("sproj") is actually an Array{String,1}. it would be quite low
+    # efficiency if we print it directly. so we convert it into a string
+    # by using the join function at first.
+    #
     println("< Parameters: dft engine >")
     println("  engine   -> ", _d("engine"))
     println("  smear    -> ", _d("smear"))
@@ -198,16 +205,17 @@ end
 Print the configuration parameters to stdout: for PIMP dict
 """
 function list_impurity()
+    # see comments in list_dft()
     println("< Parameters: quantum impurity atoms >")
     println("  nsite    -> ", _i("nsite"))
-    println("  atoms    -> ", join(_i("atoms"),"; "))
-    println("  equiv    -> ", join(_i("equiv"),"; "))
-    println("  shell    -> ", join(_i("shell"),"; "))
-    println("  ising    -> ", join(_i("ising"),"; "))
-    println("  occup    -> ", join(_i("occup"),"; "))
-    println("  upara    -> ", join(_i("upara"),"; "))
-    println("  jpara    -> ", join(_i("jpara"),"; "))
-    println("  lpara    -> ", join(_i("lpara"),"; "))
+    println("  atoms    -> ", join(_i("atoms"), "; "))
+    println("  equiv    -> ", join(_i("equiv"), "; "))
+    println("  shell    -> ", join(_i("shell"), "; "))
+    println("  ising    -> ", join(_i("ising"), "; "))
+    println("  occup    -> ", join(_i("occup"), "; "))
+    println("  upara    -> ", join(_i("upara"), "; "))
+    println("  jpara    -> ", join(_i("jpara"), "; "))
+    println("  lpara    -> ", join(_i("lpara"), "; "))
     println()
 end
 
@@ -217,9 +225,10 @@ end
 Print the configuration parameters to stdout: for PSOLVER dict
 """
 function list_solver()
+    # see comments in list_solver()
     println("< Parameters: quantum impurity solvers >")
     println("  engine   -> ", _s("engine"))
-    println("  params   -> ", join(_s("params"),"; "))
+    println("  params   -> ", join(_s("params"), "; "))
     println()
 end
 
