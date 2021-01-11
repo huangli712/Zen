@@ -42,20 +42,20 @@ check_config()
 message("ZEN", "VIEWER")
 #
 # S03.1: show dict PCASE
-@timev list_case()
+list_case()
 #
 # S03.2: show dict PDFT
-@timev list_dft()
+list_dft()
 #
 # S03.3: show dict PDMFT
-@timev list_dmft()
+list_dmft()
 #
 # S03.4: show dict PIMP
-@timev list_impurity()
+list_impurity()
 #
 # S03.5: show dict PSOLVER
-@timev list_solver()
-exit(-1)
+list_solver()
+
 # S04: initialize the job
 message("ZEN", "CREATOR")
 #
