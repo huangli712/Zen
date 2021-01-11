@@ -160,7 +160,11 @@ function list_dft()
     #
     # _d("sproj") is actually an Array{String,1}. it would be quite low
     # efficiency if we print it directly. so we convert it into a string
-    # by using the join function at first.
+    # by using the join() function at first.
+    #
+    # _d("ewidth") is actually a real number. it would be quite low
+    # efficiency if we print it directly. so we convert it into a string
+    # by using the string() function at first.
     #
     println("< Parameters: dft engine >")
     println("  engine   -> ", _d("engine"))
@@ -171,7 +175,7 @@ function list_dft()
     println("  lspins   -> ", _d("lspins"))
     println("  lspinorb -> ", _d("lspinorb"))
     println("  loptim   -> ", _d("loptim"))
-    println("  ewidth   -> ", _d("ewidth"))
+    println("  ewidth   -> ", string(_d("ewidth")))
     println("  lproj    -> ", _d("lproj"))
     println("  sproj    -> ", join(_d("sproj"), "; "))
     println()
@@ -186,13 +190,13 @@ function list_dmft()
     println("< Parameters: dmft engine >")
     println("  mode     -> ", _m("mode"))
     println("  axis     -> ", _m("axis"))
-    println("  beta     -> ", _m("beta"))
+    println("  beta     -> ", string(_m("beta")))
     println("  niter    -> ", _m("niter"))
-    println("  mixer    -> ", _m("mixer"))
+    println("  mixer    -> ", string(_m("mixer")))
     println("  dcount   -> ", _m("dcount"))
-    println("  cc       -> ", _m("cc"))
-    println("  ec       -> ", _m("ec"))
-    println("  fc       -> ", _m("fc"))
+    println("  cc       -> ", string(_m("cc")))
+    println("  ec       -> ", string(_m("ec")))
+    println("  fc       -> ", string(_m("fc")))
     println("  lcharge  -> ", _m("lcharge"))
     println("  lenergy  -> ", _m("lenergy"))
     println("  lforce   -> ", _m("lforce"))

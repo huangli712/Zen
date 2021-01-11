@@ -10,8 +10,8 @@ check_config()
 @timev list_case()
 @timev list_dft()
 @timev list_dmft()
-@timev list_impurity()
-@timev list_solver()
+#@timev list_impurity()
+#@timev list_solver()
 exit(-1)
 
 # read the Kohn-Sham data
