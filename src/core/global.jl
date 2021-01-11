@@ -1,11 +1,11 @@
 #
 # project : pansy
-# source  : const.jl
+# source  : global.jl
 # author  : Li Huang (lihuang.dmft@gmail.com)
 # status  : stable
 # comment :
 #
-# last modified: 2020/12/31
+# last modified: 2021/01/11
 #
 
 """
@@ -33,29 +33,29 @@ const C32 = ComplexF32
 const C64 = ComplexF64
 
 """
-    __libname__
+    __LIBNAME__
 
 Name of this julia package
 """
-const __libname__ = "ZEN Framework"
+const __LIBNAME__ = "ZEN Framework"
 
 """
-    __version__
+    __VERSION__
 
 Version of this julia package
 """
-const __version__ = "0.0.6@devel"
+const __VERSION__ = "0.0.6@devel"
 
 """
-    __release__
+    __RELEASE__
 
 Release date of this julia package
 """
-const __release__ = "2021/01"
+const __RELEASE__ = "2021/01"
 
 """
-    __authors__
+    __AUTHORS__
 
 Core authors of this julia package
 """
-const __authors__ = [("Li Huang", "lihuang.dmft@gmail.com")]
+const __AUTHORS__ = [(name = "Li Huang", email = "lihuang.dmft@gmail.com")]
