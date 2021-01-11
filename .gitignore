@@ -16,4 +16,4 @@
 .nfs*
 .DS_Store
 fort.*
-testing/*/dft
+test/*/dft
