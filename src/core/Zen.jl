@@ -5,35 +5,31 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/10
+# last modified: 2021/01/11
 #
 
 module Zen
 
-"""
-    __init__()
-
-This function would be executed immediately after the module is loaded at
-runtime for the first time
-"""
-function __init__() end
+#
+# using standard libraries
+#
+using LinearAlgebra
+using Distributed
+using Printf
+using Dates
 
 #
-# using standard library
+# using third-party libraries
 #
 # additional remarks:
 #
 # the TOML package is included in the standard library since v1.6
 # so, please upgrade your julia environment if it is outdated
 #
-using LinearAlgebra
-using Distributed
-using Printf
-using Dates
 using TOML
 
 #
-# const.jl
+# global.jl
 #
 # define some global numerical or string constants
 #
@@ -47,7 +43,7 @@ using TOML
 # __release__ -> released date of zen
 # __authors__ -> authors of zen
 #
-include("const.jl")
+include("global.jl")
 #
 export I32, I64
 export F32, F64
@@ -313,5 +309,13 @@ export vaspio_eigen
 export vaspio_projs
 export vaspio_fermi
 export vaspio_charge
+
+"""
+    __init__()
+
+This function would be executed immediately after the module is loaded at
+runtime for the first time
+"""
+function __init__() end
 
 end

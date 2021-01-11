@@ -3,6 +3,11 @@
 include("Zen.jl")
 using .Zen
 
+
+@show pkgdir(Zen), typeof(Zen)
+exit(-1)
+
+
 # parse the configuration parameter
 cfg = parse_toml(query_args(), true)
 renew_config(cfg)
