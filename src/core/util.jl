@@ -166,7 +166,7 @@ function list_dft()
     println("  loptim   -> ", _d("loptim"))
     println("  ewidth   -> ", _d("ewidth"))
     println("  lproj    -> ", _d("lproj"))
-    println("  sproj    -> ", _d("sproj"))
+    println("  sproj    -> ", join(_d("sproj"), "; "))
     println()
 end
 
@@ -200,14 +200,14 @@ Print the configuration parameters to stdout: for PIMP dict
 function list_impurity()
     println("< Parameters: quantum impurity atoms >")
     println("  nsite    -> ", _i("nsite"))
-    println("  atoms    -> ", _i("atoms"))
-    println("  equiv    -> ", _i("equiv"))
-    println("  shell    -> ", _i("shell"))
-    println("  ising    -> ", _i("ising"))
-    println("  occup    -> ", _i("occup"))
-    println("  upara    -> ", _i("upara"))
-    println("  jpara    -> ", _i("jpara"))
-    println("  lpara    -> ", _i("lpara"))
+    println("  atoms    -> ", join(_i("atoms"),"; "))
+    println("  equiv    -> ", join(_i("equiv"),"; "))
+    println("  shell    -> ", join(_i("shell"),"; "))
+    println("  ising    -> ", join(_i("ising"),"; "))
+    println("  occup    -> ", join(_i("occup"),"; "))
+    println("  upara    -> ", join(_i("upara"),"; "))
+    println("  jpara    -> ", join(_i("jpara"),"; "))
+    println("  lpara    -> ", join(_i("lpara"),"; "))
     println()
 end
 
@@ -219,7 +219,7 @@ Print the configuration parameters to stdout: for PSOLVER dict
 function list_solver()
     println("< Parameters: quantum impurity solvers >")
     println("  engine   -> ", _s("engine"))
-    println("  params   -> ", _s("params"))
+    println("  params   -> ", join(_s("params"),"; "))
     println()
 end
 
