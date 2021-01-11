@@ -8,17 +8,17 @@ lsymm = false
 lspins = false
 lspinorb = false
 loptim = true
-ewidth = 5.0
 lproj = true
+ewidth = 5.0
 sproj = ["2 : d : Pr"]
 
 [dmft]
 mode = 1
 axis = 1
-beta = 40.0
 niter = 60
-mixer = 0.5
 dcount = "fll1"
+beta = 40.0
+mixer = 0.5
 cc = 1.0E-4
 ec = 1.0E-4
 fc = 1.0E-4
