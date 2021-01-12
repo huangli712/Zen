@@ -145,7 +145,7 @@ Print the configuration parameters to stdout: for PCASE dict
 """
 function list_case()
     println("< Parameters: case >")
-    println("  case     -> ", _c("case"))
+    println("  case     -> ", str_c("case"))
     println()
 end
 

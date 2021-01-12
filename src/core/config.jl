@@ -205,6 +205,18 @@ Extract configurations from dict: PCASE
     end
 end
 
+@inline function str_c(key::String)
+    if haskey(PCASE, key)
+        if PCASE[key][3] === :Array
+            join(PCASE[key][1], "; ")
+        else
+            string(PCASE[key][1])
+        end
+    else
+        error("Sorry, PCASE does not contain key: $key")
+    end
+end
+
 """
     _d(key::String)
 
