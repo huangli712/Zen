@@ -96,11 +96,16 @@ export PrGroupT
 # renew_config -> update dict (configuration)
 # check_config -> check dict (configuration)
 # _v           -> verify dict
-# _c           -> shortcut for visiting dict (case)
-# _d           -> shortcut for visiting dict (dft)
-# _m           -> shortcut for visiting dict (dmft)
-# _i           -> shortcut for visiting dict (impurity)
-# _s           -> shortcut for visiting dict (solver)
+# _c           -> shortcut for visiting dict (case), return original value
+# _d           -> shortcut for visiting dict (dft), return original value
+# _m           -> shortcut for visiting dict (dmft), return original value
+# _i           -> shortcut for visiting dict (impurity), return original value
+# _s           -> shortcut for visiting dict (solver), return original value
+# str_c        -> shortcut for visiting dict (case), return string
+# str_d        -> shortcut for visiting dict (dft), return string
+# str_m        -> shortcut for visiting dict (dmft), return string
+# str_i        -> shortcut for visiting dict (impurity), return string
+# str_s        -> shortcut for visiting dict (solver), return string
 #
 include("config.jl")
 #
@@ -108,11 +113,11 @@ export parse_toml
 export renew_config
 export check_config
 export _v
-export _c
-export _d
-export _m
-export _i
-export _s
+export _c, str_c
+export _d, str_d
+export _m, str_m
+export _i, str_i
+export _s, str_s
 
 #
 # util.jl
