@@ -139,19 +139,33 @@ function check_config()
     # 2. check rationalities
     #
     # check dft block
-    @assert _d("engine") in ("vasp", "wannier", missing)
+    @assert _d("engine") in ("vasp", "wannier")
     @assert _d("smear") in ("m-p", "gauss", "tetra", missing)
     @assert _d("kmesh") in ("accurate", "medium", "coarse", "file", missing)
     #
     # check dmft block
-    @assert _m("dcount") in ("fll1", "fll2", "amf", missing)
+    @assert _m("mode") in (0, 1)
+    @assert _m("axis") in (0, 1)
+    @assert _m("niter") > 0
+    @assert _m("dcount") in ("fll1", "fll2", "amf")
+    @assert _m("beta") >= 0.0
     #
     # check solver block
-    @assert _s("engine") in ("ct_hub1", "ct_hub2", "hub1", "norg", missing)
+    @assert _s("engine") in ("ct_hub1", "ct_hub2", "hub1", "norg")
     #
     # please add more assertion statements here
 
     # 3. check self-consistency
+    #
+    # check dft block
+    if _d("lspinorb")
+        @assert _d("lspins")
+    end
+    if _d("lproj")
+        @assert !_d("lsymm") && !isa(_d("sproj"), Missing)
+    end
+    #
+    # check solver block
 end
 
 """
