@@ -307,3 +307,15 @@ Extract configurations from dict: PSOLVER
         error("Sorry, PSOLVER does not contain key: $key")
     end
 end
+
+@inline function str_s(key::String)
+    if haskey(PSOLVER, key)
+        if PSOLVER[key][3] === :Array
+            join(PSOLVER[key][1], "; ")
+        else
+            string(PSOLVER[key][1])
+        end
+    else
+        error("Sorry, PSOLVER does not contain key: $key")
+    end
+end
