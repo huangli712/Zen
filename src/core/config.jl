@@ -248,6 +248,11 @@ Extract configurations from dict: PDMFT
     end
 end
 
+"""
+    str_m(key::String)
+
+Extract configurations from dict: PDMFT, convert them into strings
+"""
 @inline function str_m(key::String)
     if haskey(PDMFT, key)
         if PDMFT[key][3] === :Array

@@ -189,6 +189,7 @@ end
 Print the configuration parameters to stdout: for PDMFT dict
 """
 function list_dmft()
+    # see comments in list_dft()
     println("< Parameters: dmft engine >")
     println("  mode     -> ", str_m("mode"))
     println("  axis     -> ", str_m("axis"))
