@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/08
+# last modified: 2021/01/12
 #
 
 """
@@ -104,35 +104,54 @@ end
 Validate the correctness and consistency of configurations
 """
 function check_config()
+    # 1. check types and existences
+    #
     # check case block
     for key in keys(PCASE)
         val = PCASE[key]
         _v(val)
     end
-
+    #
     # check dft block
     for key in keys(PDFT)
         val = PDFT[key]
         _v(val)
     end
-
+    #
     # check dmft block
     for key in keys(PDMFT)
         val = PDMFT[key]
         _v(val)
     end
-
+    #
     # check impurity block
     for key in keys(PIMP)
         val = PIMP[key]
         _v(val)
     end
-
+    #
     # check solver block
     for key in keys(PSOLVER)
         val = PSOLVER[key]
         _v(val)
     end
+
+    # 2. check rationalities
+    #
+    # check dft block
+    @assert _d("engine") in ("vasp", "wannier", missing)
+    @assert _d("smear") in ("m-p", "gauss", "tetra", missing)
+    @assert _d("kmesh") in ("accurate", "medium", "coarse", "file", missing)
+    #
+    # check dmft block
+    @assert _m("dcount") in ("fll1", "fll2", "amf", missing)
+    #
+    # check solver block
+    @assert _s("engine") in ("ct_hub1", "ct_hub2", "hub1", "norg", missing)
+    #
+    # please add more assertion statements here
+
+    # 3. check self-consistency
 end
 
 """

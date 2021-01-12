@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/11
+# last modified: 2021/01/12
 #
 
 module Zen
@@ -35,13 +35,13 @@ using TOML
 #
 # summary:
 #
-# I32, I64    -> numerical types
-# F32, F64    -> numerical types
-# C32, C64    -> numerical types
-# __LIBNAME__ -> library's name
-# __VERSION__ -> version of zen
-# __RELEASE__ -> released date of zen
-# __AUTHORS__ -> authors of zen
+# I32, I64    -> numerical types (integer)
+# F32, F64    -> numerical types (float)
+# C32, C64    -> numerical types (complex)
+# __LIBNAME__ -> name of this library
+# __VERSION__ -> version of this library
+# __RELEASE__ -> released date of this library
+# __AUTHORS__ -> authors of this library
 #
 include("global.jl")
 #
@@ -56,8 +56,8 @@ export __AUTHORS__
 #
 # types.jl
 #
-# define some dictionaries which contain the configuration parameters
-# and some structs
+# define some dicts and structs, which contain the config parameters or
+# represent some essential data structures
 #
 # summary:
 #
