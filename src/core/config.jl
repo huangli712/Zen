@@ -308,6 +308,11 @@ Extract configurations from dict: PSOLVER
     end
 end
 
+"""
+    str_s(key::String)
+
+Extract configurations from dict: PSOLVER, convert them into strings
+"""
 @inline function str_s(key::String)
     if haskey(PSOLVER, key)
         if PSOLVER[key][3] === :Array
