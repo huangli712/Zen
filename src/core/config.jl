@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/12
+# last modified: 2021/01/13
 #
 
 """
@@ -104,7 +104,7 @@ end
 Validate the correctness and consistency of configurations
 """
 function check_config()
-    # 1. check types and existences
+    # C1. check types and existences
     #
     # check case block
     for key in keys(PCASE)
@@ -136,7 +136,7 @@ function check_config()
         _v(val)
     end
 
-    # 2. check rationalities
+    # C2. check rationalities
     #
     # check dft block
     @assert _d("engine") in ("vasp", "wannier")
@@ -155,7 +155,7 @@ function check_config()
     #
     # please add more assertion statements here
 
-    # 3. check self-consistency
+    # C3. check self-consistency
     #
     # check dft block
     if _d("lspinorb")
@@ -205,6 +205,11 @@ Extract configurations from dict: PCASE
     end
 end
 
+"""
+    str_c(key::String)
+
+Extract configurations from dict: PCASE, convert them into strings
+"""
 @inline function str_c(key::String)
     if haskey(PCASE, key)
         if PCASE[key][3] === :Array
