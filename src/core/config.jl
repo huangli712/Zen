@@ -106,34 +106,9 @@ Validate the correctness and consistency of configurations
 function check_config()
     # C1. check types and existences
     #
-    # check case block
-    for key in keys(PCASE)
-        val = PCASE[key]
-        _v(val)
-    end
-    #
-    # check dft block
-    for key in keys(PDFT)
-        val = PDFT[key]
-        _v(val)
-    end
-    #
-    # check dmft block
-    for key in keys(PDMFT)
-        val = PDMFT[key]
-        _v(val)
-    end
-    #
-    # check impurity block
-    for key in keys(PIMP)
-        val = PIMP[key]
-        _v(val)
-    end
-    #
-    # check solver block
-    for key in keys(PSOLVER)
-        val = PSOLVER[key]
-        _v(val)
+    # check all blocks
+    for P in (PCASE, PDFT, PDMFT, PIMP, PSOLVER)
+        foreach(x -> _v(x.second), P)
     end
 
     # C2. check rationalities

@@ -6,7 +6,8 @@ using .Zen
 # parse the configuration parameter
 cfg = parse_toml(query_args(), true)
 renew_config(cfg)
-check_config()
+@timev check_config()
+exit(-1)
 @timev begin
     list_case()
     list_dft()
