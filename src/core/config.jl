@@ -278,6 +278,18 @@ Extract configurations from dict: PIMP
     end
 end
 
+@inline function str_i(key::String)
+    if haskey(PIMP, key)
+        if PIMP[key][3] === :Array
+            join(PIMP[key][1], "; ")
+        else
+            string(PIMP[key][1])
+        end
+    else
+        error("Sorry, PIMP does not contain key: $key")
+    end
+end
+
 """
     _s(key::String)
 
