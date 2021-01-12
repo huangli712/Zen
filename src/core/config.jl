@@ -278,6 +278,11 @@ Extract configurations from dict: PIMP
     end
 end
 
+"""
+    str_i(key::String)
+
+Extract configurations from dict: PIMP, convert them into strings
+"""
 @inline function str_i(key::String)
     if haskey(PIMP, key)
         if PIMP[key][3] === :Array
