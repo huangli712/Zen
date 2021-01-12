@@ -232,10 +232,10 @@ end
 Print the configuration parameters to stdout: for PSOLVER dict
 """
 function list_solver()
-    # see comments in list_solver()
+    # see comments in list_dft()
     println("< Parameters: quantum impurity solvers >")
-    println("  engine   -> ", _s("engine"))
-    println("  params   -> ", join(_s("params"), "; "))
+    println("  engine   -> ", str_s("engine"))
+    println("  params   -> ", str_s("params"))
     println()
 end
 
