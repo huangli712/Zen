@@ -166,6 +166,13 @@ function check_config()
     end
     #
     # check solver block
+    if _s("engine") in ("ct_hub1", "ct_hub2", "hub1")
+        @assert _m("axis") === 0 # imaginary axis
+    elseif _s("engine") in ("norg")
+        @assert _m("axis") === 1 # real axis
+    end
+    #
+    # please add more assertion statements here
 end
 
 """
