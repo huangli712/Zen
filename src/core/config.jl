@@ -218,6 +218,18 @@ Extract configurations from dict: PDFT
     end
 end
 
+@inline function str_d(key::String)
+    if haskey(PDFT, key)
+        if PDFT[key][3] === :Array 
+            join(PDFT[key][1], "; ")
+        else
+            string(PDFT[key][1])
+        end
+    else
+        error("Sorry, PDFT does not contain key: $key")
+    end
+end
+
 """
     _m(key::String)
 
