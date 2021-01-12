@@ -215,7 +215,7 @@ Extract configurations from dict: PCASE, convert them into strings
         if PCASE[key][3] === :Array
             join(PCASE[key][1], "; ")
         else
-            string(PCASE[key][1])
+            ( c = PCASE[key][1] ) isa String ? c : string(c)
         end
     else
         error("Sorry, PCASE does not contain key: $key")
@@ -245,7 +245,7 @@ Extract configurations from dict: PDFT, convert them into strings
         if PDFT[key][3] === :Array 
             join(PDFT[key][1], "; ")
         else
-            string(PDFT[key][1])
+            ( d = PDFT[key][1] ) isa String ? d : string(d)
         end
     else
         error("Sorry, PDFT does not contain key: $key")
@@ -275,7 +275,7 @@ Extract configurations from dict: PDMFT, convert them into strings
         if PDMFT[key][3] === :Array
             join(PDMFT[key][1], "; ")
         else
-            string(PDMFT[key][1])
+            ( m = PDMFT[key][1] ) isa String ? m : string(m)
         end
     else
         error("Sorry, PDMFT does not contain key: $key")
@@ -305,7 +305,7 @@ Extract configurations from dict: PIMP, convert them into strings
         if PIMP[key][3] === :Array
             join(PIMP[key][1], "; ")
         else
-            string(PIMP[key][1])
+            ( i = PIMP[key][1] ) isa String ? i : string(i)
         end
     else
         error("Sorry, PIMP does not contain key: $key")
@@ -335,7 +335,7 @@ Extract configurations from dict: PSOLVER, convert them into strings
         if PSOLVER[key][3] === :Array
             join(PSOLVER[key][1], "; ")
         else
-            string(PSOLVER[key][1])
+            ( s = PSOLVER[key][1] ) isa String ? s : string(s)
         end
     else
         error("Sorry, PSOLVER does not contain key: $key")

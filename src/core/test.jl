@@ -8,11 +8,11 @@ cfg = parse_toml(query_args(), true)
 renew_config(cfg)
 check_config()
 @timev begin
- list_case()
- list_dft()
- list_dmft()
- list_impurity()
- list_solver()
+    list_case()
+    list_dft()
+    list_dmft()
+    list_impurity()
+    list_solver()
 end
 exit(-1)
 
