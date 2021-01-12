@@ -218,6 +218,11 @@ Extract configurations from dict: PDFT
     end
 end
 
+"""
+    str_d(key::String)
+
+Extract configurations from dict: PDFT, convert them into strings
+"""
 @inline function str_d(key::String)
     if haskey(PDFT, key)
         if PDFT[key][3] === :Array 
