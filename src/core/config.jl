@@ -144,8 +144,8 @@ function check_config()
     @assert _d("kmesh") in ("accurate", "medium", "coarse", "file", missing)
     #
     # check dmft block
-    @assert _m("mode") in (0, 1)
-    @assert _m("axis") in (0, 1)
+    @assert _m("mode") in (1, 2)
+    @assert _m("axis") in (1, 2)
     @assert _m("niter") > 0
     @assert _m("dcount") in ("fll1", "fll2", "amf")
     @assert _m("beta") >= 0.0
@@ -167,9 +167,9 @@ function check_config()
     #
     # check solver block
     if _s("engine") in ("ct_hub1", "ct_hub2", "hub1")
-        @assert _m("axis") === 0 # imaginary axis
+        @assert _m("axis") === 1 # imaginary axis
     elseif _s("engine") in ("norg")
-        @assert _m("axis") === 1 # real axis
+        @assert _m("axis") === 2 # real axis
     end
     #
     # please add more assertion statements here
