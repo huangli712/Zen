@@ -166,6 +166,8 @@ function list_dft()
     # efficiency if we print it directly. so we convert it into a string
     # by using the string() function at first.
     #
+    # see config.jl/str_d() for more details
+    #
     println("< Parameters: dft engine >")
     println("  engine   -> ", str_d("engine"))
     println("  smear    -> ", str_d("smear"))
@@ -188,18 +190,18 @@ Print the configuration parameters to stdout: for PDMFT dict
 """
 function list_dmft()
     println("< Parameters: dmft engine >")
-    println("  mode     -> ", _m("mode"))
-    println("  axis     -> ", _m("axis"))
-    println("  niter    -> ", _m("niter"))
-    println("  dcount   -> ", _m("dcount"))
-    println("  beta     -> ", string(_m("beta")))
-    println("  mixer    -> ", string(_m("mixer")))
-    println("  cc       -> ", string(_m("cc")))
-    println("  ec       -> ", string(_m("ec")))
-    println("  fc       -> ", string(_m("fc")))
-    println("  lcharge  -> ", _m("lcharge"))
-    println("  lenergy  -> ", _m("lenergy"))
-    println("  lforce   -> ", _m("lforce"))
+    println("  mode     -> ", str_m("mode"))
+    println("  axis     -> ", str_m("axis"))
+    println("  niter    -> ", str_m("niter"))
+    println("  dcount   -> ", str_m("dcount"))
+    println("  beta     -> ", str_m("beta"))
+    println("  mixer    -> ", str_m("mixer"))
+    println("  cc       -> ", str_m("cc"))
+    println("  ec       -> ", str_m("ec"))
+    println("  fc       -> ", str_m("fc"))
+    println("  lcharge  -> ", str_m("lcharge"))
+    println("  lenergy  -> ", str_m("lenergy"))
+    println("  lforce   -> ", str_m("lforce"))
     println()
 end
 

@@ -248,6 +248,18 @@ Extract configurations from dict: PDMFT
     end
 end
 
+@inline function str_m(key::String)
+    if haskey(PDMFT, key)
+        if PDMFT[key][3] === :Array
+            join(PDMFT[key][1], "; ")
+        else
+            string(PDMFT[key][1])
+        end
+    else
+        error("Sorry, PDMFT does not contain key: $key")
+    end
+end
+
 """
     _i(key::String)
 
