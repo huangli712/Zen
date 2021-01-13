@@ -130,7 +130,9 @@ function adaptor_run(it::IterInfo)
     # A2: Process the original Kohn-Sham data
     #
     # well, now we have the Kohn-Sham data. but they can not be used
-    # directly. we have to check and process them carefully
+    # directly. we have to check and process them carefully. please
+    # pay attention that the KohnShamData dict will be modified in the
+    # plo_adaptor() function
     #
     plo_adaptor()
 
@@ -138,9 +140,11 @@ function adaptor_run(it::IterInfo)
     # A3: Output the processed Kohn-Sham data
     #
     # ok, now the Kohn-Sham data are ready. we would like to write them
-    # to some specified files. maybe you want to see some key quantities
+    # to some specified files. here the parameter (view = )true means
+    # that we are going to seeing some interesting quantities to check
+    # the correctness of the Kohn-Sham data
     #
-    ir_adaptor()
+    ir_adaptor(true)
 
     # enter the parent directory
     cd("..")
