@@ -5,8 +5,44 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2020/12/31
+# last modified: 2021/01/13
 #
+
+"""
+    ir_adaptor()
+"""
+function ir_adaptor()
+    # dump the Kohn-Sham data to files with IR format
+    println("< Adaptor: Put Kohn-Sham Data >")
+
+    # write lattice structure
+    println("  Lattice")
+    #irio_lattice(pwd(), latt)
+
+    # write kmesh and the corresponding weights
+    println("  Kmesh")
+    println("  Weight")
+    #irio_kmesh(pwd(), kmesh, weight)
+
+    # write tetrahedron data if they are available
+    if _d("smear") === "tetra"
+        println("  Tetrahedron")
+        #irio_tetra(pwd(), volt, itet)
+    end
+
+    # write band structure and the corresponding occupancies
+    println("  Enk")
+    println("  Occupy")
+    #irio_eigen(pwd(), enk, occupy)
+
+    # write projectors, traits, and groups
+    println("  Projector (Trait and Group)")
+    #irio_projs(pwd(), chipsi)
+
+    # write fermi level
+    println("  Fermi Level\n")
+    #irio_fermi(pwd(), fermi)
+end
 
 """
     irio_lattice(f::String, latt::Lattice)
