@@ -115,6 +115,7 @@ function adaptor_run(it::IterInfo)
     engine = _d("engine")
     @cswitch engine begin
         @case "vasp"
+            vasp_adaptor()
             break
 
         @default
