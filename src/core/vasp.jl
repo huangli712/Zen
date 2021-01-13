@@ -5,9 +5,47 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/04
+# last modified: 2021/01/13
 #
 
+"""
+    vasp_adaptor()
+
+Adaptor support for vasp code. it will read the output of vasp code and
+fulfill the KohnShamData dict
+"""
+function vasp_adaptor()
+    println("< Adaptor: Get Kohn-Sham Data >")
+
+    # read in lattice structure
+    println("  Lattice")
+    latt = vaspio_lattice(pwd())
+
+    # read in kmesh and the corresponding weights
+    println("  Kmesh")
+    println("  Weight")
+    kmesh, weight = vaspio_kmesh(pwd())
+
+    # read in tetrahedron data if they are available
+    if _d("smear") === "tetra"
+        println("  Tetrahedron")
+        volt, itet = vaspio_tetra(pwd())
+    end
+
+    # read in band structure and the corresponding occupancies
+    println("  Enk")
+    println("  Occupy")
+    enk, occupy = vaspio_eigen(pwd())
+
+    # read in raw projectors, traits, and groups
+    println("  Projector (Trait and Group)")
+    PT, PG, chipsi = vaspio_projs(pwd())
+
+    # read in fermi level
+    println("  Fermi Level\n")
+    fermi = vaspio_fermi(pwd())
+end
+ 
 """
     vasp_init(it::IterInfo)
 

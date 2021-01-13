@@ -115,35 +115,6 @@ function adaptor_run(it::IterInfo)
     engine = _d("engine")
     @cswitch engine begin
         @case "vasp"
-            println("< Adaptor: Get Kohn-Sham Data >")
-
-            # read in lattice structure
-            println("  Lattice")
-            latt = vaspio_lattice(pwd())
-
-            # read in kmesh and the corresponding weights
-            println("  Kmesh")
-            println("  Weight")
-            kmesh, weight = vaspio_kmesh(pwd())
-
-            # read in tetrahedron data if they are available
-            if _d("smear") === "tetra"
-                println("  Tetrahedron")
-                volt, itet = vaspio_tetra(pwd())
-            end
-
-            # read in band structure and the corresponding occupancies
-            println("  Enk")
-            println("  Occupy")
-            enk, occupy = vaspio_eigen(pwd())
-
-            # read in raw projectors, traits, and groups
-            println("  Projector (Trait and Group)")
-            PT, PG, chipsi = vaspio_projs(pwd())
-
-            # read in fermi level
-            println("  Fermi Level\n")
-            fermi = vaspio_fermi(pwd())
             break
 
         @default
