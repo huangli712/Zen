@@ -76,7 +76,7 @@ end
 """
     adaptor_init(it::IterInfo)
 
-Initialize the adaptor, to check whether the key files exist
+Initialize the adaptor, to check whether the essential files exist
 """
 function adaptor_init(it::IterInfo)
     # enter dft directory
@@ -86,7 +86,7 @@ function adaptor_init(it::IterInfo)
     engine = _d("engine")
     @cswitch engine begin
         @case "vasp"
-            vasp_files(pwd())
+            vasp_files()
             break
 
         @default
@@ -101,7 +101,8 @@ end
 """
     adaptor_run(it::IterInfo)
 
-Parse the data output by dft engine, and transform them into IR format
+Parse the data output by dft engine, postprocess them, and then transform
+them into IR format
 """
 function adaptor_run(it::IterInfo)
     # enter dft directory
@@ -110,8 +111,10 @@ function adaptor_run(it::IterInfo)
     #
     # A1: Parse the original Kohn-Sham data
     #
-
+    #
     # choose suitable driver function according to dft engine
+    # the Kohn-Sham data will be stored in the KohnShamData dict
+    #
     engine = _d("engine")
     @cswitch engine begin
         @case "vasp"
@@ -126,15 +129,17 @@ function adaptor_run(it::IterInfo)
     #
     # A2: Process the original Kohn-Sham data
     #
-
-    # well, now we have the Kohn-Sham data. but they can not be written
-    # directly. we have to process them carefully
+    # well, now we have the Kohn-Sham data. but they can not be used
+    # directly. we have to check and process them carefully
+    #
     plo_adaptor()
 
     #
     # A3: Output the processed Kohn-Sham data
     #
-
+    # ok, now the Kohn-Sham data are ready. we would like to write them
+    # to some specified files. maybe you want to see some key quantities
+    #
     ir_adaptor()
 
     # enter the parent directory

@@ -305,6 +305,7 @@ function vasp_files(f::String)
             isfile(joinpath(f, "LOCPROJ")) &&
             isfile(joinpath(f, "EIGENVAL"))
 end
+vasp_files() = vasp_files(pwd())
 
 """
     vaspio_lattice(f::String)
