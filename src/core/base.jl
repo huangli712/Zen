@@ -168,7 +168,8 @@ end
 """
     dft_init(it::IterInfo)
 
-To examine whether the dft runtime environment is ready
+To examine whether the runtime environment for density functional theory
+engine is ready
 """
 function dft_init(it::IterInfo)
     # enter dft directory
@@ -193,7 +194,7 @@ end
 """
     dft_run(it::IterInfo)
 
-Execute the desired dft engine parallelly or sequentially
+Launch the density functional theory engine
 """
 function dft_run(it::IterInfo)
     # enter dft directory
@@ -218,7 +219,8 @@ end
 """
     dft_save(it::IterInfo)
 
-Backup the essential dft calculated results for next iterations
+Backup the output files by density functional theory engine
+for next iterations
 """
 function dft_save(it::IterInfo)
     # enter dft directory
@@ -241,31 +243,46 @@ function dft_save(it::IterInfo)
 end
 
 """
-    dmft_init()
+    dmft_init(it::IterInfo)
+
+To examine whether the runtime environment for dynamical mean-field theory
+engine is ready
 """
-function dmft_init() end
+function dmft_init(it::IterInfo) end
 
 """
-    dmft_run()
+    dmft_run(it::IterInfo)
+
+Launch the dynamical mean-field theory engine
 """
-function dmft_run() end
+function dmft_run(it::IterInfo) end
 
 """
-    dmft_save()
+    dmft_save(it::IterInfo)
+
+Backup the output files by dynamical mean-field theory engine
+for next iterations
 """
-function dmft_save() end
+function dmft_save(it::IterInfo) end
 
 """
-    solver_init()
+    solver_init(it::IterInfo)
+
+To examine whether the runtime environment for quantum impurity solver
+is ready
 """
-function solver_init() end
+function solver_init(it::IterInfo) end
 
 """
-    solver_run()
+    solver_run(it::IterInfo)
+
+Launch the quantum impurity solver
 """
-function solver_run() end
+function solver_run(it::IterInfo) end
 
 """
-    solver_save()
+    solver_save(it::IterInfo)
+
+Backup the output files by quantum impurity solver for next iterations
 """
-function solver_save() end
+function solver_save(it::IterInfo) end
