@@ -108,7 +108,7 @@ function adaptor_run(it::IterInfo)
     cd("dft")
 
     #
-    # S1: Parse the original Kohn-Sham data
+    # A1: Parse the original Kohn-Sham data
     #
 
     # choose suitable driver function according to dft engine
@@ -124,21 +124,15 @@ function adaptor_run(it::IterInfo)
     end
 
     #
-    # S2: Process the original Kohn-Sham data
+    # A2: Process the original Kohn-Sham data
     #
 
     # well, now we have the Kohn-Sham data. but they can not be written
     # directly. we have to process them carefully
-    println("< Adaptor: Eat Kohn-Sham Data >")
-    println("  Grouping")
-    plo_group(PG)
-    println("  Rotating")
-    println("  Leveling")
-    println("  Filtering")
-    println("  Orthogonalizing\n")
+    plo_adaptor()
 
     #
-    # S3: Output the processed Kohn-Sham data
+    # A3: Output the processed Kohn-Sham data
     #
 
     # dump the Kohn-Sham data to files with IR format
@@ -173,7 +167,7 @@ function adaptor_run(it::IterInfo)
     irio_fermi(pwd(), fermi)
 
     #
-    # S4: Qualify the Kohn-Sham data
+    # A4: Qualify the Kohn-Sham data
     #
 
     println("< Adaptor: View Overlap Matrix >")

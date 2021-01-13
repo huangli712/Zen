@@ -5,8 +5,20 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/06
+# last modified: 2021/01/13
 #
+
+"""
+    plo_adaptor()
+"""
+function plo_adaptor()
+    println("< Adaptor: Eat Kohn-Sham Data >")
+    println("  Grouping")
+    println("  Rotating")
+    println("  Leveling")
+    println("  Filtering")
+    println("  Orthogonalizing\n")
+end
 
 """
     plo_group(PG::Array{PrGroup,1})
