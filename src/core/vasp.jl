@@ -45,7 +45,7 @@ function vasp_adaptor()
     println("  Fermi Level\n")
     fermi = vaspio_fermi(pwd())
 end
- 
+
 """
     vasp_init(it::IterInfo)
 
