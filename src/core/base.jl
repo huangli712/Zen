@@ -300,3 +300,11 @@ function dft_save(it::IterInfo)
     # enter the parent directory
     cd("..")
 end
+
+function dmft_init() end
+function dmft_run() end
+function dmft_save() end
+
+function solver_init() end
+function solver_run() end
+function solver_save() end
