@@ -131,8 +131,8 @@ function adaptor_run(it::IterInfo)
     #
     # well, now we have the Kohn-Sham data. but they can not be used
     # directly. we have to check and process them carefully. please
-    # pay attention that the KohnShamData dict will be modified in the
-    # plo_adaptor() function
+    # pay attention to that the KohnShamData dict will be modified in
+    # the plo_adaptor() function
     #
     plo_adaptor()
 
