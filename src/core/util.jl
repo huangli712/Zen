@@ -109,7 +109,7 @@ end
 """
     query_zen()
 
-Query the home directory for zen
+Query the home directory of zen
 """
 function query_zen()
     # we have to setup environment variable ZEN_HOME
@@ -208,11 +208,11 @@ function list_dmft()
 end
 
 """
-    list_impurity()
+    list_imp()
 
 Print the configuration parameters to stdout: for PIMP dict
 """
-function list_impurity()
+function list_imp()
     # see comments in list_dft()
     println("< Parameters: quantum impurity atoms >")
     println("  nsite    -> ", str_i("nsite"))

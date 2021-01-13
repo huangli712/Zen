@@ -136,7 +136,7 @@ export _s, str_s
 # list_case     -> print dict (case)
 # list_dft      -> print dict (dft)
 # list_dmft     -> print dict (dmft)
-# list_impurity -> print dict (impurity)
+# list_imp      -> print dict (impurity)
 # list_solver   -> print dict (solver)
 # welcome       -> print welcome message
 # overview      -> print overview of zen
@@ -156,7 +156,7 @@ export query_dft
 export list_case
 export list_dft
 export list_dmft
-export list_impurity
+export list_imp
 export list_solver
 export welcome
 export overview

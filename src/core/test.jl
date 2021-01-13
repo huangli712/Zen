@@ -11,7 +11,7 @@ cfg = parse_toml(query_args(), true)
     list_case()
     list_dft()
     list_dmft()
-    list_impurity()
+    list_imp()
     list_solver()
 end
 exit(-1)

@@ -7,7 +7,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/04
+# last modified: 2021/01/13
 #
 
 include("Zen.jl")
@@ -51,7 +51,7 @@ list_dft()
 list_dmft()
 #
 # S03.4: show dict PIMP
-list_impurity()
+list_imp()
 #
 # S03.5: show dict PSOLVER
 list_solver()
