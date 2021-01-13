@@ -301,10 +301,32 @@ function dft_save(it::IterInfo)
     cd("..")
 end
 
+"""
+    dmft_init()
+"""
 function dmft_init() end
+
+"""
+    dmft_run()
+"""
 function dmft_run() end
+
+"""
+    dmft_save()
+"""
 function dmft_save() end
 
+"""
+    solver_init()
+"""
 function solver_init() end
+
+"""
+    solver_run()
+"""
 function solver_run() end
+
+"""
+    solver_save()
+"""
 function solver_save() end
