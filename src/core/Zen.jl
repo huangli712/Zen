@@ -214,7 +214,7 @@ export solver_save
 #
 # summary:
 #
-# irio_adaptor ->
+# ir_adaptor   ->
 # irio_lattice -> write lattice information
 # irio_kmesh   -> write kmesh
 # irio_tetra   -> write tetrahedra
@@ -225,7 +225,7 @@ export solver_save
 #
 include("ir.jl")
 #
-export irio_adaptor
+export ir_adaptor
 export irio_lattice
 export irio_kmesh
 export irio_tetra
