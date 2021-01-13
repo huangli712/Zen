@@ -61,16 +61,17 @@ export __AUTHORS__
 #
 # summary:
 #
-# PCASE    -> dict for case
-# PDFT     -> dict for dft engine
-# PDMFT    -> dict for dmft engine
-# PIMP     -> dict for quantum impurities
-# PSOLVER  -> dict for quantum impurity solver
-# IterInfo -> struct for iteration information
-# Lattice  -> struct for crystallography information
-# PrTrait  -> struct for projectors
-# PrGroup  -> struct for groups of projectors
-# PrGroupT -> struct for groups of projectors (transformed)
+# PCASE        -> dict for case
+# PDFT         -> dict for dft engine
+# PDMFT        -> dict for dmft engine
+# PIMP         -> dict for quantum impurities
+# PSOLVER      -> dict for quantum impurity solver
+# KohnShamData -> dict for storing Kohn-Sham data
+# IterInfo     -> struct for iteration information
+# Lattice      -> struct for crystallography information
+# PrTrait      -> struct for projectors
+# PrGroup      -> struct for groups of projectors
+# PrGroupT     -> struct for groups of projectors (transformed)
 #
 include("types.jl")
 #
@@ -79,6 +80,7 @@ export PDFT
 export PDMFT
 export PIMP
 export PSOLVER
+export KohnShamData
 export IterInfo
 export Lattice
 export PrTrait
@@ -212,6 +214,7 @@ export solver_save
 #
 # summary:
 #
+# irio_adaptor ->
 # irio_lattice -> write lattice information
 # irio_kmesh   -> write kmesh
 # irio_tetra   -> write tetrahedra
@@ -222,6 +225,7 @@ export solver_save
 #
 include("ir.jl")
 #
+export irio_adaptor
 export irio_lattice
 export irio_kmesh
 export irio_tetra
@@ -237,22 +241,24 @@ export irio_charge
 #
 # summary:
 #
-# plo_group  -> setup groups of projectors
-# plo_rotate -> rotate the projectors
-# plo_window -> extract the projectors within a given energy window
-# plo_orthog -> orthogonalize the projectors
-# plo_diag   -> orthogonalizes a projector defined by a rectangular matrix
-# plo_ovlp   -> calculate overlap matrix
-# plo_dm     -> calculate density matrix
-# plo_hamk   -> calculate local hamiltonian
-# plo_dos    -> calculate density of states
-# view_ovlp  -> show overlap matrix
-# view_dm    -> show density matrix
-# view_hamk  -> show local hamiltonian
-# view_dos   -> show density of states
+# plo_adaptor ->
+# plo_group   -> setup groups of projectors
+# plo_rotate  -> rotate the projectors
+# plo_window  -> extract the projectors within a given energy window
+# plo_orthog  -> orthogonalize the projectors
+# plo_diag    -> orthogonalizes a projector defined by a rectangular matrix
+# plo_ovlp    -> calculate overlap matrix
+# plo_dm      -> calculate density matrix
+# plo_hamk    -> calculate local hamiltonian
+# plo_dos     -> calculate density of states
+# view_ovlp   -> show overlap matrix
+# view_dm     -> show density matrix
+# view_hamk   -> show local hamiltonian
+# view_dos    -> show density of states
 #
 include("plo.jl")
 #
+export plo_adaptor
 export plo_group
 export plo_rotate
 export plo_window
@@ -285,6 +291,7 @@ include("tetra.jl")
 #
 # summary:
 #
+# vasp_adaptor   ->
 # vasp_init      -> prepare vasp's input files
 # vasp_run       -> execute vasp program
 # vasp_save      -> backup vasp's output files
@@ -301,6 +308,7 @@ include("tetra.jl")
 #
 include("vasp.jl")
 #
+export vasp_adaptor
 export vasp_init
 export vasp_run
 export vasp_save
