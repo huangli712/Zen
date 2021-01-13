@@ -214,7 +214,7 @@ export solver_save
 #
 # summary:
 #
-# ir_adaptor   ->
+# ir_adaptor   -> adaptor support
 # irio_lattice -> write lattice information
 # irio_kmesh   -> write kmesh
 # irio_tetra   -> write tetrahedra
@@ -241,7 +241,7 @@ export irio_charge
 #
 # summary:
 #
-# plo_adaptor ->
+# plo_adaptor -> adaptor support
 # plo_group   -> setup groups of projectors
 # plo_rotate  -> rotate the projectors
 # plo_window  -> extract the projectors within a given energy window
@@ -291,7 +291,7 @@ include("tetra.jl")
 #
 # summary:
 #
-# vasp_adaptor   ->
+# vasp_adaptor   -> adaptor support
 # vasp_init      -> prepare vasp's input files
 # vasp_run       -> execute vasp program
 # vasp_save      -> backup vasp's output files
