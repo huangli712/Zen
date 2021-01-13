@@ -217,7 +217,7 @@ Extract configurations from dict: PDFT, convert them into strings
 """
 @inline function str_d(key::String)
     if haskey(PDFT, key)
-        if PDFT[key][3] === :Array 
+        if PDFT[key][3] === :Array
             join(PDFT[key][1], "; ")
         else
             ( d = PDFT[key][1] ) isa String ? d : string(d)

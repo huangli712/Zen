@@ -9,7 +9,7 @@
 #
 
 """
-    @cswitch
+    @cswitch(constexpr, body)
 
 Provides C-like switch statement with the ``falling through'' behavior. this
 implement is borrowed from the following github repp.:
