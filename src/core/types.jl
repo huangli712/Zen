@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/12
+# last modified: 2021/01/13
 #
 
 #
@@ -98,6 +98,17 @@ const PSOLVER= Dict{String,Array{Any,1}}(
           "engine"   => [missing, 1, :String, "name of quantum impurity solver"],
           "params"   => [missing, 1, :Array , "parameter sets of quantum impurity solver"],
       )
+
+#
+# Customized Dictionaries for Kohn-Sham data
+#
+
+"""
+    KohnShamData
+
+Dictionary for storing the Kohn-Sham data
+"""
+const KohnShamData = Dict{String,Any}()
 
 #
 # Customized Structs
