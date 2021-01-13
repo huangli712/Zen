@@ -137,13 +137,6 @@ function adaptor_run(it::IterInfo)
 
     ir_adaptor()
 
-    #
-    # A4: Qualify the Kohn-Sham data
-    #
-
-    println("< Adaptor: View Overlap Matrix >")
-    println("< Adaptor: View Density Matrix >")
-
     # enter the parent directory
     cd("..")
 end

@@ -42,6 +42,9 @@ function ir_adaptor()
     # write fermi level
     println("  Fermi Level\n")
     #irio_fermi(pwd(), fermi)
+
+    println("< Adaptor: View Overlap Matrix >")
+    println("< Adaptor: View Density Matrix >")
 end
 
 """
