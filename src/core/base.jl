@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/04
+# last modified: 2021/01/13
 #
 
 """
@@ -41,6 +41,35 @@ function make_trees()
             rm("impurity.$i", force = true, recursive = true)
         end
         mkdir("impurity.$i")
+    end
+end
+
+"""
+    rm_trees()
+
+Remove the working directories finally
+"""
+function rm_trees()
+    # for dft
+    if isdir("dft")
+        rm("dft", force = true, recursive = true)
+    end
+
+    # for dmft1
+    if isdir("dmft1")
+        rm("dmft1", force = true, recursive = true)
+    end
+
+    # for dmft2
+    if isdir("dmft2")
+        rm("dmft2", force = true, recursive = true)
+    end
+
+    # for impurity.i
+    for i = 1:_i("nsite")
+        if isdir("impurity.$i")
+            rm("impurity.$i", force = true, recursive = true)
+        end
     end
 end
 
