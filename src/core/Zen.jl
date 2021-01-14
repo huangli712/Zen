@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/14
+# last modified: 2021/01/15
 #
 
 module Zen
@@ -103,12 +103,12 @@ export PrGroupT
 # list_dmft    -> print dict (dmft)
 # list_imp     -> print dict (impurity)
 # list_solver  -> print dict (solver)
-# _v           -> verify dict
-# _c           -> shortcut for visiting dict (case), return original value
-# _d           -> shortcut for visiting dict (dft), return original value
-# _m           -> shortcut for visiting dict (dmft), return original value
-# _i           -> shortcut for visiting dict (impurity), return original value
-# _s           -> shortcut for visiting dict (solver), return original value
+# chk_val      -> verify dict
+# get_c        -> shortcut for visiting dict (case), return original value
+# get_d        -> shortcut for visiting dict (dft), return original value
+# get_m        -> shortcut for visiting dict (dmft), return original value
+# get_i        -> shortcut for visiting dict (impurity), return original value
+# get_s        -> shortcut for visiting dict (solver), return original value
 # str_c        -> shortcut for visiting dict (case), return string
 # str_d        -> shortcut for visiting dict (dft), return string
 # str_m        -> shortcut for visiting dict (dmft), return string
@@ -118,21 +118,26 @@ export PrGroupT
 include("config.jl")
 #
 export parser
-export viewer
 export parse_toml
 export renew_config
 export check_config
+export viewer
 export list_case
 export list_dft
 export list_dmft
 export list_imp
 export list_solver
-export _v
-export _c, str_c
-export _d, str_d
-export _m, str_m
-export _i, str_i
-export _s, str_s
+export chk_val
+export get_c 
+export get_d 
+export get_m 
+export get_i 
+export get_s 
+export str_c
+export str_d
+export str_m
+export str_i
+export str_s
 
 #
 # util.jl
