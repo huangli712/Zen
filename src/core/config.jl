@@ -161,6 +161,23 @@ function chk_dict()
 end
 
 """
+    _v(val::Array{Any,1})
+
+Verify the value array
+"""
+@inline function _v(val::Array{Any,1})
+    # to check if the value is updated
+    if isa(val[1], Missing) && val[2] > 0
+        error("Sorry, key shoule be set")
+    end
+
+    # to check if the type of value is correct
+    if !isa(val[1], Missing) && !isa(val[1], eval(val[3]))
+        error("Sorry, type of key is wrong")
+    end
+end
+
+"""
     list_case()
 
 Print the configuration parameters to stdout: for PCASE dict
@@ -260,23 +277,6 @@ function list_solver()
     println("  engine   -> ", str_s("engine"))
     println("  params   -> ", str_s("params"))
     println()
-end
-
-"""
-    _v(val::Array{Any,1})
-
-Verify the value array
-"""
-@inline function _v(val::Array{Any,1})
-    # to check if the value is updated
-    if isa(val[1], Missing) && val[2] > 0
-        error("Sorry, key shoule be set")
-    end
-
-    # to check if the type of value is correct
-    if !isa(val[1], Missing) && !isa(val[1], eval(val[3]))
-        error("Sorry, type of key is wrong")
-    end
 end
 
 """
