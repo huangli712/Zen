@@ -157,7 +157,7 @@ if get_m("mode") === 1
     println("Save the output files\n")
     adaptor_save(it)
 
-    for iter = 1:_m("niter")
+    for iter = 1:get_m("niter")
         message("ZEN", "ITER : $iter")
         message("ZEN", "DMFT1")
         message("ZEN", "SOLVER")
