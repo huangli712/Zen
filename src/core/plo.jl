@@ -42,9 +42,9 @@ function plo_group(PG::Array{PrGroup,1})
              )
 
     # loop over each site (quantum impurity problem)
-    for i = 1:_i("nsite")
+    for i = 1:get_i("nsite")
         # determine site
-        str = _i("atoms")[i]
+        str = get_i("atoms")[i]
         site = parse(I64, line_to_array(str)[3])
 
         # determine l
