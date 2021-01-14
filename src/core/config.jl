@@ -109,11 +109,11 @@ function new_dict(cfg::Dict{String,Any})
 end
 
 """
-    check_config()
+    chk_dict()
 
 Validate the correctness and consistency of configurations
 """
-function check_config()
+function chk_dict()
     # C1. check types and existences
     #
     # check all blocks
