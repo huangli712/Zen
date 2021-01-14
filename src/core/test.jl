@@ -14,7 +14,6 @@ cfg = inp_toml(query_args(), true)
     cat_i()
     cat_s()
 end
-exit(-1)
 
 # read the Kohn-Sham data
 PT, PG, chipsi = vaspio_projs(joinpath(pwd(), "dft"))
@@ -31,10 +30,10 @@ bmin, bmax, ib_window, chipsi_w = plo_window(enk, 2.0, -1.4, chipsi_r)
 plo_orthog(ib_window, PGT, chipsi_w)
 
 # qualify the Kohn-Sham data
-plo_dos(bmin, bmax, PGT, chipsi_w, itet, enk)
-#ovlp = plo_ovlp(PGT, chipsi_w, weight)
-#dm = plo_dm(bmin, bmax, PGT, chipsi_w, weight, occupy)
-#hamk = plo_hamk(bmin, bmax, PGT, chipsi_w, weight, enk)
-#view_ovlp(PGT, ovlp)
-#view_dm(PGT, dm)
+#plo_dos(bmin, bmax, PGT, chipsi_w, itet, enk)
+ovlp = plo_ovlp(PGT, chipsi_w, weight)
+dm = plo_dm(bmin, bmax, PGT, chipsi_w, weight, occupy)
+hamk = plo_hamk(bmin, bmax, PGT, chipsi_w, weight, enk)
+view_ovlp(PGT, ovlp)
+view_dm(PGT, dm)
 #view_hamk(PGT, hamk)
