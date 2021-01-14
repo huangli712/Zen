@@ -19,11 +19,11 @@ function setup() end
 function exhibit() end
 
 """
-    parse_toml(f::String, key::String, necessary::Bool)
+    inp_toml(f::String, key::String, necessary::Bool)
 
 Parse the configuration file (toml format)
 """
-function parse_toml(f::String, key::String, necessary::Bool)
+function inp_toml(f::String, key::String, necessary::Bool)
     if isfile(f)
         dict = TOML.parsefile(f)
 
@@ -42,11 +42,11 @@ function parse_toml(f::String, key::String, necessary::Bool)
 end
 
 """
-    parse_toml(f::String, necessary::Bool)
+    inp_toml(f::String, necessary::Bool)
 
 Parse the configuration file (toml format)
 """
-function parse_toml(f::String, necessary::Bool)
+function inp_toml(f::String, necessary::Bool)
     if isfile(f)
         dict = TOML.parsefile(f)
     else
