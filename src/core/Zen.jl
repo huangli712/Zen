@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/13
+# last modified: 2021/01/14
 #
 
 module Zen
@@ -94,6 +94,7 @@ export PrGroupT
 #
 # summary:
 #
+# config       ->
 # parse_toml   -> parse case.toml
 # renew_config -> update dict (configuration)
 # check_config -> check dict (configuration)
@@ -111,6 +112,7 @@ export PrGroupT
 #
 include("config.jl")
 #
+export config
 export parse_toml
 export renew_config
 export check_config
