@@ -94,26 +94,27 @@ export PrGroupT
 #
 # summary:
 #
-# parser       ->
-# parse_toml   -> parse case.toml
-# renew_config -> update dict (configuration)
-# check_config -> check dict (configuration)
-# list_case    -> print dict (case)
-# list_dft     -> print dict (dft)
-# list_dmft    -> print dict (dmft)
-# list_imp     -> print dict (impurity)
-# list_solver  -> print dict (solver)
-# chk_val      -> verify dict
-# get_c        -> shortcut for visiting dict (case), return original value
-# get_d        -> shortcut for visiting dict (dft), return original value
-# get_m        -> shortcut for visiting dict (dmft), return original value
-# get_i        -> shortcut for visiting dict (impurity), return original value
-# get_s        -> shortcut for visiting dict (solver), return original value
-# str_c        -> shortcut for visiting dict (case), return string
-# str_d        -> shortcut for visiting dict (dft), return string
-# str_m        -> shortcut for visiting dict (dmft), return string
-# str_i        -> shortcut for visiting dict (impurity), return string
-# str_s        -> shortcut for visiting dict (solver), return string
+# setup       -> setup parameters
+# inp_toml    -> parse case.toml
+# new_dict    -> update dict (configuration)
+# chk_dict    -> check dict (configuration)
+# exhibit     -> show parameters
+# cat_case    -> print dict (case)
+# cat_dft     -> print dict (dft)
+# cat_dmft    -> print dict (dmft)
+# cat_imp     -> print dict (impurity)
+# cat_solver  -> print dict (solver)
+# chk_val     -> verify dict
+# get_c       -> shortcut for visiting dict (case), return original value
+# get_d       -> shortcut for visiting dict (dft), return original value
+# get_m       -> shortcut for visiting dict (dmft), return original value
+# get_i       -> shortcut for visiting dict (impurity), return original value
+# get_s       -> shortcut for visiting dict (solver), return original value
+# str_c       -> shortcut for visiting dict (case), return string
+# str_d       -> shortcut for visiting dict (dft), return string
+# str_m       -> shortcut for visiting dict (dmft), return string
+# str_i       -> shortcut for visiting dict (impurity), return string
+# str_s       -> shortcut for visiting dict (solver), return string
 #
 include("config.jl")
 #
