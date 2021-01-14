@@ -332,6 +332,19 @@ Extract configurations from dict: PIMP
 end
 
 """
+    get_s(key::String)
+
+Extract configurations from dict: PSOLVER
+"""
+@inline function get_s(key::String)
+    if haskey(PSOLVER, key)
+        PSOLVER[key][1]
+    else
+        error("Sorry, PSOLVER does not contain key: $key")
+    end
+end
+
+"""
     str_c(key::String)
 
 Extract configurations from dict: PCASE, convert them into strings
@@ -396,19 +409,6 @@ Extract configurations from dict: PIMP, convert them into strings
         end
     else
         error("Sorry, PIMP does not contain key: $key")
-    end
-end
-
-"""
-    get_s(key::String)
-
-Extract configurations from dict: PSOLVER
-"""
-@inline function get_s(key::String)
-    if haskey(PSOLVER, key)
-        PSOLVER[key][1]
-    else
-        error("Sorry, PSOLVER does not contain key: $key")
     end
 end
 
