@@ -370,11 +370,11 @@ Extract configurations from dict: PDMFT, convert them into strings
 end
 
 """
-    _i(key::String)
+    get_i(key::String)
 
 Extract configurations from dict: PIMP
 """
-@inline function _i(key::String)
+@inline function get_i(key::String)
     if haskey(PIMP, key)
         PIMP[key][1]
     else
