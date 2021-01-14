@@ -190,23 +190,23 @@ function cat_c()
 end
 
 """
-    list_dft()
+    cat_d()
 
 Print the configuration parameters to stdout: for PDFT dict
 """
-function list_dft()
+function cat_d()
     #
     # remarks:
     #
-    # _d("sproj") is actually an Array{String,1}. it would be quite low
+    # get_d("sproj") is actually an Array{String,1}. it would be quite low
     # efficiency if we print it directly. so we convert it into a string
     # by using the join() function at first.
     #
-    # _d("ewidth") is actually a real number. it would be quite low
+    # get_d("ewidth") is actually a real number. it would be quite low
     # efficiency if we print it directly. so we convert it into a string
     # by using the string() function at first.
     #
-    # see config.jl/str_d() for more details
+    # see config.jl/str_d() function for more details
     #
     println("< Parameters: dft engine >")
     println("  engine   -> ", str_d("engine"))
