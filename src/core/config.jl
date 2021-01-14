@@ -140,7 +140,7 @@ function chk_dict()
     @assert get_m("beta") >= 0.0
     #
     # check solver block
-    @assert _s("engine") in ("ct_hub1", "ct_hub2", "hub1", "norg")
+    @assert get_s("engine") in ("ct_hub1", "ct_hub2", "hub1", "norg")
     #
     # please add more assertion statements here
 
