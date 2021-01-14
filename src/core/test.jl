@@ -8,11 +8,11 @@ cfg = inp_toml(query_args(), true)
 @timev new_dict(cfg)
 @timev chk_dict()
 @timev begin
-    list_case()
-    list_dft()
-    list_dmft()
-    list_imp()
-    list_solver()
+    cat_c()
+    cat_d()
+    cat_m()
+    cat_i()
+    cat_s()
 end
 exit(-1)
 
