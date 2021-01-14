@@ -280,11 +280,11 @@ function cat_s()
 end
 
 """
-    _c(key::String)
+    get_c(key::String)
 
 Extract configurations from dict: PCASE
 """
-@inline function _c(key::String)
+@inline function get_c(key::String)
     if haskey(PCASE, key)
         PCASE[key][1]
     else
