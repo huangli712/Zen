@@ -127,7 +127,7 @@ Query the home directory of the dft engine
 """
 function query_dft()
     # we have to setup environment variable VASP_HOME
-    if _d("engine") === "vasp"
+    if get_d("engine") === "vasp"
         if haskey(ENV, "VASP_HOME")
             ENV["VASP_HOME"]
         else
