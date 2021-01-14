@@ -340,11 +340,11 @@ Extract configurations from dict: PDFT, convert them into strings
 end
 
 """
-    _m(key::String)
+    get_m(key::String)
 
 Extract configurations from dict: PDMFT
 """
-@inline function _m(key::String)
+@inline function get_m(key::String)
     if haskey(PDMFT, key)
         PDMFT[key][1]
     else
