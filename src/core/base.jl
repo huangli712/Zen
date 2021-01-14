@@ -176,7 +176,7 @@ function dft_init(it::IterInfo)
     cd("dft")
 
     # choose suitable dft engine
-    engine = _d("engine")
+    engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
             vasp_init(it)
