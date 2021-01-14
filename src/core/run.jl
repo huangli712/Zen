@@ -7,7 +7,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/13
+# last modified: 2021/01/15
 #
 
 include("Zen.jl")
@@ -28,7 +28,7 @@ message("ZEN", "PARSER")
 #
 # S02.1: parse the case.toml file to extract configuration parameters
 println("Extract configuration parameters from $(query_args())")
-cfg = parse_toml(query_args(), true)
+cfg = inp_toml(query_args(), true)
 #
 # S02.2: build the configuration dictionaries
 println("Build configuration dictionaries")
