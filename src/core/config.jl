@@ -267,12 +267,12 @@ function cat_i()
 end
 
 """
-    list_solver()
+    cat_s()
 
 Print the configuration parameters to stdout: for PSOLVER dict
 """
-function list_solver()
-    # see comments in list_dft()
+function cat_s()
+    # see comments in cat_d()
     println("< Parameters: quantum impurity solvers >")
     println("  engine   -> ", str_s("engine"))
     println("  params   -> ", str_s("params"))
