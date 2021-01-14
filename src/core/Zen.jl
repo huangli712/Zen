@@ -94,10 +94,15 @@ export PrGroupT
 #
 # summary:
 #
-# config       ->
+# parser       ->
 # parse_toml   -> parse case.toml
 # renew_config -> update dict (configuration)
 # check_config -> check dict (configuration)
+# list_case    -> print dict (case)
+# list_dft     -> print dict (dft)
+# list_dmft    -> print dict (dmft)
+# list_imp     -> print dict (impurity)
+# list_solver  -> print dict (solver)
 # _v           -> verify dict
 # _c           -> shortcut for visiting dict (case), return original value
 # _d           -> shortcut for visiting dict (dft), return original value
@@ -112,10 +117,16 @@ export PrGroupT
 #
 include("config.jl")
 #
-export config
+export parser
+export viewer
 export parse_toml
 export renew_config
 export check_config
+export list_case
+export list_dft
+export list_dmft
+export list_imp
+export list_solver
 export _v
 export _c, str_c
 export _d, str_d
@@ -137,11 +148,6 @@ export _s, str_s
 # query_inps    -> query input files
 # query_zen     -> query home directory of zen
 # query_dft     -> query home directory of dft engine
-# list_case     -> print dict (case)
-# list_dft      -> print dict (dft)
-# list_dmft     -> print dict (dmft)
-# list_imp      -> print dict (impurity)
-# list_solver   -> print dict (solver)
 # welcome       -> print welcome message
 # overview      -> print overview of zen
 # goodbye       -> say goodbye
@@ -157,11 +163,6 @@ export query_args
 export query_inps
 export query_zen
 export query_dft
-export list_case
-export list_dft
-export list_dmft
-export list_imp
-export list_solver
 export welcome
 export overview
 export goodbye

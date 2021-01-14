@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/13
+# last modified: 2021/01/15
 #
 
 """
@@ -148,6 +148,108 @@ function check_config()
     end
     #
     # please add more assertion statements here
+end
+
+"""
+    list_case()
+
+Print the configuration parameters to stdout: for PCASE dict
+"""
+function list_case()
+    # see comments in list_dft()
+    println("< Parameters: case >")
+    println("  case     -> ", str_c("case"))
+    println()
+end
+
+"""
+    list_dft()
+
+Print the configuration parameters to stdout: for PDFT dict
+"""
+function list_dft()
+    #
+    # remarks:
+    #
+    # _d("sproj") is actually an Array{String,1}. it would be quite low
+    # efficiency if we print it directly. so we convert it into a string
+    # by using the join() function at first.
+    #
+    # _d("ewidth") is actually a real number. it would be quite low
+    # efficiency if we print it directly. so we convert it into a string
+    # by using the string() function at first.
+    #
+    # see config.jl/str_d() for more details
+    #
+    println("< Parameters: dft engine >")
+    println("  engine   -> ", str_d("engine"))
+    println("  smear    -> ", str_d("smear"))
+    println("  kmesh    -> ", str_d("kmesh"))
+    println("  magmom   -> ", str_d("magmom"))
+    println("  lsymm    -> ", str_d("lsymm"))
+    println("  lspins   -> ", str_d("lspins"))
+    println("  lspinorb -> ", str_d("lspinorb"))
+    println("  loptim   -> ", str_d("loptim"))
+    println("  lproj    -> ", str_d("lproj"))
+    println("  ewidth   -> ", str_d("ewidth"))
+    println("  sproj    -> ", str_d("sproj"))
+    println()
+end
+
+"""
+    list_dmft()
+
+Print the configuration parameters to stdout: for PDMFT dict
+"""
+function list_dmft()
+    # see comments in list_dft()
+    println("< Parameters: dmft engine >")
+    println("  mode     -> ", str_m("mode"))
+    println("  axis     -> ", str_m("axis"))
+    println("  niter    -> ", str_m("niter"))
+    println("  dcount   -> ", str_m("dcount"))
+    println("  beta     -> ", str_m("beta"))
+    println("  mixer    -> ", str_m("mixer"))
+    println("  cc       -> ", str_m("cc"))
+    println("  ec       -> ", str_m("ec"))
+    println("  fc       -> ", str_m("fc"))
+    println("  lcharge  -> ", str_m("lcharge"))
+    println("  lenergy  -> ", str_m("lenergy"))
+    println("  lforce   -> ", str_m("lforce"))
+    println()
+end
+
+"""
+    list_imp()
+
+Print the configuration parameters to stdout: for PIMP dict
+"""
+function list_imp()
+    # see comments in list_dft()
+    println("< Parameters: quantum impurity atoms >")
+    println("  nsite    -> ", str_i("nsite"))
+    println("  atoms    -> ", str_i("atoms"))
+    println("  equiv    -> ", str_i("equiv"))
+    println("  shell    -> ", str_i("shell"))
+    println("  ising    -> ", str_i("ising"))
+    println("  occup    -> ", str_i("occup"))
+    println("  upara    -> ", str_i("upara"))
+    println("  jpara    -> ", str_i("jpara"))
+    println("  lpara    -> ", str_i("lpara"))
+    println()
+end
+
+"""
+    list_solver()
+
+Print the configuration parameters to stdout: for PSOLVER dict
+"""
+function list_solver()
+    # see comments in list_dft()
+    println("< Parameters: quantum impurity solvers >")
+    println("  engine   -> ", str_s("engine"))
+    println("  params   -> ", str_s("params"))
+    println()
 end
 
 """
