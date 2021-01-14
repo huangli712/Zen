@@ -59,11 +59,11 @@ function inp_toml(f::String, necessary::Bool)
 end
 
 """
-    renew_config(cfg::Dict{String,Any})
+    new_dict(cfg::Dict{String,Any})
 
 Copy configurations from cfg to PCASE, PDFT, PDMFT, PIMP, and PSOLVER
 """
-function renew_config(cfg::Dict{String,Any})
+function new_dict(cfg::Dict{String,Any})
     # for case block
     PCASE["case"][1] = cfg["case"]
 
