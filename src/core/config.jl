@@ -400,11 +400,11 @@ Extract configurations from dict: PIMP, convert them into strings
 end
 
 """
-    _s(key::String)
+    get_s(key::String)
 
 Extract configurations from dict: PSOLVER
 """
-@inline function _s(key::String)
+@inline function get_s(key::String)
     if haskey(PSOLVER, key)
         PSOLVER[key][1]
     else
