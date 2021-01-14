@@ -247,12 +247,12 @@ function cat_m()
 end
 
 """
-    list_imp()
+    cat_i()
 
 Print the configuration parameters to stdout: for PIMP dict
 """
-function list_imp()
-    # see comments in list_dft()
+function cat_i()
+    # see comments in cat_d()
     println("< Parameters: quantum impurity atoms >")
     println("  nsite    -> ", str_i("nsite"))
     println("  atoms    -> ", str_i("atoms"))
