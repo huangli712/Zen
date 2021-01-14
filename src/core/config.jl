@@ -310,11 +310,11 @@ Extract configurations from dict: PCASE, convert them into strings
 end
 
 """
-    _d(key::String)
+    get_d(key::String)
 
 Extract configurations from dict: PDFT
 """
-@inline function _d(key::String)
+@inline function get_d(key::String)
     if haskey(PDFT, key)
         PDFT[key][1]
     else
