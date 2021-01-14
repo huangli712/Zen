@@ -72,13 +72,13 @@ println("Create self-consistent iterator")
 it = IterInfo()
 #
 # S04.4: check self-consistent mode
-mode = _m("mode") === 1 ? "one-shot" : "fully self-consistent"
+mode = get_m("mode") === 1 ? "one-shot" : "fully self-consistent"
 println("Verify self-consistent mode: $mode\n")
 
 message("ZEN", "START")
 
 # well, we choose the one-shot mode
-if _m("mode") === 1
+if get_m("mode") === 1
 
 #
 # remarks:
