@@ -9,6 +9,16 @@
 #
 
 """
+    setup()
+"""
+function setup() end
+
+"""
+    exhibit()
+"""
+function exhibit() end
+
+"""
     parse_toml(f::String, key::String, necessary::Bool)
 
 Parse the configuration file (toml format)
