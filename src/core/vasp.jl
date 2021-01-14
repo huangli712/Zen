@@ -248,8 +248,8 @@ function vasp_incar(fermi::F64)
     end
 
     # for local orbitals and projectors
-    lproj = _d("lproj")
-    sproj = _d("sproj")
+    lproj = get_d("lproj")
+    sproj = get_d("sproj")
     if !isa(lproj, Missing) && !isa(sproj, Missing)
         if lproj
             for p in eachindex(sproj)
