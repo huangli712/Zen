@@ -95,11 +95,11 @@ export PrGroupT
 # summary:
 #
 # setup    -> setup parameters
+# exhibit  -> show parameters
 # inp_toml -> parse case.toml
 # new_dict -> update dict (configuration)
 # chk_dict -> check dict (configuration)
 # _v       -> verify dict
-# exhibit  -> show parameters
 # cat_c    -> print dict (case)
 # cat_d    -> print dict (dft)
 # cat_m    -> print dict (dmft)
@@ -119,21 +119,21 @@ export PrGroupT
 include("config.jl")
 #
 export setup
+export exhibit
 export inp_toml
 export new_dict
 export chk_dict
 export _v
-export exhibit
 export cat_c
 export cat_d
 export cat_m
 export cat_i
 export cat_s
-export get_c 
-export get_d 
-export get_m 
-export get_i 
-export get_s 
+export get_c
+export get_d
+export get_m
+export get_i
+export get_s
 export str_c
 export str_d
 export str_m
