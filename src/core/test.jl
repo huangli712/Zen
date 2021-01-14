@@ -5,7 +5,7 @@ using .Zen
 
 # parse the configuration parameter
 cfg = inp_toml(query_args(), true)
-@timev renew_config(cfg)
+@timev new_dict(cfg)
 @timev check_config()
 @timev begin
     list_case()
