@@ -48,7 +48,7 @@ function plo_group(PG::Array{PrGroup,1})
         site = parse(I64, line_to_array(str)[3])
 
         # determine l
-        str = _i("shell")[i]
+        str = get_i("shell")[i]
         l = haskey(lshell, str) ? lshell[str] : nothing
 
         # scan the groups of projectors
