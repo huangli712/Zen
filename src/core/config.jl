@@ -155,10 +155,10 @@ function chk_dict()
     end
     #
     # check solver block
-    if _s("engine") in ("ct_hub1", "ct_hub2", "hub1")
-        @assert _m("axis") === 1 # imaginary axis
-    elseif _s("engine") in ("norg")
-        @assert _m("axis") === 2 # real axis
+    if get_s("engine") in ("ct_hub1", "ct_hub2", "hub1")
+        @assert get_m("axis") === 1 # imaginary axis
+    elseif get_s("engine") in ("norg")
+        @assert get_m("axis") === 2 # real axis
     end
     #
     # please add more assertion statements here
