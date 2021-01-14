@@ -32,7 +32,7 @@ cfg = inp_toml(query_args(), true)
 #
 # S02.2: build the configuration dictionaries
 println("Build configuration dictionaries")
-renew_config(cfg)
+new_dict(cfg)
 #
 # S02.3: validate the configuration dictionaries
 println("Verify configuration dictionaries\n")
