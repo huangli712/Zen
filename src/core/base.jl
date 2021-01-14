@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/13
+# last modified: 2021/01/15
 #
 
 """
@@ -36,7 +36,7 @@ function make_trees()
     mkdir("dmft2")
 
     # for impurity.i
-    for i = 1:_i("nsite")
+    for i = 1:get_i("nsite")
         if isdir("impurity.$i")
             rm("impurity.$i", force = true, recursive = true)
         end
