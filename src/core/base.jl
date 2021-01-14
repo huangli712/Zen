@@ -66,7 +66,7 @@ function rm_trees()
     end
 
     # for impurity.i
-    for i = 1:_i("nsite")
+    for i = 1:get_i("nsite")
         if isdir("impurity.$i")
             rm("impurity.$i", force = true, recursive = true)
         end
@@ -83,7 +83,7 @@ function adaptor_init(it::IterInfo)
     cd("dft")
 
     # choose suitable driver function according to dft engine
-    engine = _d("engine")
+    engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
             vasp_files()
@@ -115,7 +115,7 @@ function adaptor_run(it::IterInfo)
     # choose suitable driver function according to dft engine
     # the Kohn-Sham data will be stored in the KohnShamData dict
     #
-    engine = _d("engine")
+    engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
             vasp_adaptor()
@@ -201,7 +201,7 @@ function dft_run(it::IterInfo)
     cd("dft")
 
     # choose suitable dft engine
-    engine = _d("engine")
+    engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
             vasp_run(it)
@@ -227,7 +227,7 @@ function dft_save(it::IterInfo)
     cd("dft")
 
     # choose suitable dft engine
-    engine = _d("engine")
+    engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
             vasp_save(it)
