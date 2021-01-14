@@ -306,6 +306,19 @@ Extract configurations from dict: PDFT
 end
 
 """
+    get_m(key::String)
+
+Extract configurations from dict: PDMFT
+"""
+@inline function get_m(key::String)
+    if haskey(PDMFT, key)
+        PDMFT[key][1]
+    else
+        error("Sorry, PDMFT does not contain key: $key")
+    end
+end
+
+"""
     str_c(key::String)
 
 Extract configurations from dict: PCASE, convert them into strings
@@ -336,19 +349,6 @@ Extract configurations from dict: PDFT, convert them into strings
         end
     else
         error("Sorry, PDFT does not contain key: $key")
-    end
-end
-
-"""
-    get_m(key::String)
-
-Extract configurations from dict: PDMFT
-"""
-@inline function get_m(key::String)
-    if haskey(PDMFT, key)
-        PDMFT[key][1]
-    else
-        error("Sorry, PDMFT does not contain key: $key")
     end
 end
 
