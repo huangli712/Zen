@@ -319,6 +319,19 @@ Extract configurations from dict: PDMFT
 end
 
 """
+    get_i(key::String)
+
+Extract configurations from dict: PIMP
+"""
+@inline function get_i(key::String)
+    if haskey(PIMP, key)
+        PIMP[key][1]
+    else
+        error("Sorry, PIMP does not contain key: $key")
+    end
+end
+
+"""
     str_c(key::String)
 
 Extract configurations from dict: PCASE, convert them into strings
@@ -366,19 +379,6 @@ Extract configurations from dict: PDMFT, convert them into strings
         end
     else
         error("Sorry, PDMFT does not contain key: $key")
-    end
-end
-
-"""
-    get_i(key::String)
-
-Extract configurations from dict: PIMP
-"""
-@inline function get_i(key::String)
-    if haskey(PIMP, key)
-        PIMP[key][1]
-    else
-        error("Sorry, PIMP does not contain key: $key")
     end
 end
 
