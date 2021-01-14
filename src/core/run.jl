@@ -51,7 +51,7 @@ cat_d()
 cat_m()
 #
 # S03.4: show dict PIMP
-list_imp()
+cat_i()
 #
 # S03.5: show dict PSOLVER
 list_solver()
