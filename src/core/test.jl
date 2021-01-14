@@ -4,7 +4,7 @@ include("Zen.jl")
 using .Zen
 
 # parse the configuration parameter
-cfg = parse_toml(query_args(), true)
+cfg = inp_toml(query_args(), true)
 @timev renew_config(cfg)
 @timev check_config()
 @timev begin
