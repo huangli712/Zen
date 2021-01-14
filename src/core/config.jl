@@ -128,9 +128,9 @@ function chk_dict()
     # C2. check rationalities
     #
     # check dft block
-    @assert _d("engine") in ("vasp", "wannier")
-    @assert _d("smear") in ("m-p", "gauss", "tetra", missing)
-    @assert _d("kmesh") in ("accurate", "medium", "coarse", "file", missing)
+    @assert get_d("engine") in ("vasp", "wannier")
+    @assert get_d("smear") in ("m-p", "gauss", "tetra", missing)
+    @assert get_d("kmesh") in ("accurate", "medium", "coarse", "file", missing)
     #
     # check dmft block
     @assert _m("mode") in (1, 2)
