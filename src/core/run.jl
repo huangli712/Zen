@@ -45,7 +45,7 @@ message("ZEN", "VIEWER")
 cat_c()
 #
 # S03.2: show dict PDFT
-list_dft()
+cat_d()
 #
 # S03.3: show dict PDMFT
 list_dmft()
