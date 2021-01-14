@@ -48,7 +48,7 @@ cat_c()
 cat_d()
 #
 # S03.3: show dict PDMFT
-list_dmft()
+cat_m()
 #
 # S03.4: show dict PIMP
 list_imp()
