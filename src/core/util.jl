@@ -17,7 +17,7 @@ implement is borrowed from the following github repp.:
 
 # Examples
 ```julia
-engine = _d("engine")
+engine = get_d("engine")
 @cswitch engine begin
     @case "vasp"
         vasp_init(it)

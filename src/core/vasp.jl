@@ -27,7 +27,7 @@ function vasp_adaptor()
     kmesh, weight = vaspio_kmesh(pwd())
 
     # read in tetrahedron data if they are available
-    if _d("smear") === "tetra"
+    if get_d("smear") === "tetra"
         println("  Tetrahedron")
         volt, itet = vaspio_tetra(pwd())
     end
@@ -95,7 +95,7 @@ function vasp_run(it::IterInfo)
     mpi_prefix = parse_toml("../MPI.toml", "dft", false)
 
     # select suitable vasp program
-    if _d("lspinorb")
+    if get_d("lspinorb")
         vasp_exec = "$dft_home/vasp_ncl"
     else
         vasp_exec = "$dft_home/vasp_std"

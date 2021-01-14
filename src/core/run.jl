@@ -83,10 +83,10 @@ if get_m("mode") === 1
 #
 # remarks:
 #
-# we would like to perform two successive dft runs if _d("loptim") is true.
+# we would like to perform two successive dft runs if get_d("loptim") is true.
 # the purpose of the first dft run is to evaluate the fermi level. then a
 # energy window is determined. we will use this window to generate optimal
-# projectors in the second dft run. On the other hand, if _d("loptim") is
+# projectors in the second dft run. On the other hand, if get_d("loptim") is
 # false, only the first dft run is enough.
 #
 
@@ -110,7 +110,7 @@ if get_m("mode") === 1
     # window -> wrong optimial projectors. but at this point, the fermi
     # level is updated, so we have to generate the optimal projectors
     # again within this window
-    if _d("loptim")
+    if get_d("loptim")
 
         # S06: perform dft calculation (for the second time).
         message("ZEN", "DFT")

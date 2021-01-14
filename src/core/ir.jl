@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/13
+# last modified: 2021/01/15
 #
 
 """
@@ -25,7 +25,7 @@ function ir_adaptor()
     #irio_kmesh(pwd(), kmesh, weight)
 
     # write tetrahedron data if they are available
-    if _d("smear") === "tetra"
+    if get_d("smear") === "tetra"
         println("  Tetrahedron")
         #irio_tetra(pwd(), volt, itet)
     end
