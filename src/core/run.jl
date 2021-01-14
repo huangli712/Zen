@@ -42,7 +42,7 @@ chk_dict()
 message("ZEN", "VIEWER")
 #
 # S03.1: show dict PCASE
-list_case()
+cat_c()
 #
 # S03.2: show dict PDFT
 list_dft()
