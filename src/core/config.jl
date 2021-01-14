@@ -293,6 +293,19 @@ Extract configurations from dict: PCASE
 end
 
 """
+    get_d(key::String)
+
+Extract configurations from dict: PDFT
+"""
+@inline function get_d(key::String)
+    if haskey(PDFT, key)
+        PDFT[key][1]
+    else
+        error("Sorry, PDFT does not contain key: $key")
+    end
+end
+
+"""
     str_c(key::String)
 
 Extract configurations from dict: PCASE, convert them into strings
@@ -306,19 +319,6 @@ Extract configurations from dict: PCASE, convert them into strings
         end
     else
         error("Sorry, PCASE does not contain key: $key")
-    end
-end
-
-"""
-    get_d(key::String)
-
-Extract configurations from dict: PDFT
-"""
-@inline function get_d(key::String)
-    if haskey(PDFT, key)
-        PDFT[key][1]
-    else
-        error("Sorry, PDFT does not contain key: $key")
     end
 end
 
