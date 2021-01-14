@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/13
+# last modified: 2021/01/15
 #
 
 """
@@ -28,8 +28,8 @@ the PrGroup struct
 """
 function plo_group(PG::Array{PrGroup,1})
     # additional check for the parameters contained in PIMP dict
-    @assert _i("nsite") === length(_i("atoms"))
-    @assert _i("nsite") === length(_i("shell"))
+    @assert get_i("nsite") === length(get_i("atoms"))
+    @assert get_i("nsite") === length(get_i("shell"))
 
     # lshell defines a mapping from shell (string) to l (integer)
     lshell = Dict{String,I64}(
