@@ -279,6 +279,10 @@ function cat_s()
     println()
 end
 
+#
+# get_x() functions
+#
+
 """
     get_c(key::String)
 
@@ -343,6 +347,10 @@ Extract configurations from dict: PSOLVER
         error("Sorry, PSOLVER does not contain key: $key")
     end
 end
+
+#
+# str_x() functions
+#
 
 """
     str_c(key::String)
