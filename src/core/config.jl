@@ -133,11 +133,11 @@ function chk_dict()
     @assert get_d("kmesh") in ("accurate", "medium", "coarse", "file", missing)
     #
     # check dmft block
-    @assert _m("mode") in (1, 2)
-    @assert _m("axis") in (1, 2)
-    @assert _m("niter") > 0
-    @assert _m("dcount") in ("fll1", "fll2", "amf")
-    @assert _m("beta") >= 0.0
+    @assert get_m("mode") in (1, 2)
+    @assert get_m("axis") in (1, 2)
+    @assert get_m("niter") > 0
+    @assert get_m("dcount") in ("fll1", "fll2", "amf")
+    @assert get_m("beta") >= 0.0
     #
     # check solver block
     @assert _s("engine") in ("ct_hub1", "ct_hub2", "hub1", "norg")
