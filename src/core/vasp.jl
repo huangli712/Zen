@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/13
+# last modified: 2021/01/15
 #
 
 """
@@ -77,7 +77,7 @@ function vasp_init(it::IterInfo)
     end
 
     # well, maybe we need to generate the KPOINTS file by ourselves
-    if _d("kmesh") === "file"
+    if get_d("kmesh") === "file"
         vasp_kpoints()
     end
 end
