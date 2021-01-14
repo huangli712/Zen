@@ -18,6 +18,10 @@ function setup() end
 """
 function exhibit() end
 
+#
+# internal functions
+#
+
 """
     inp_toml(f::String, key::String, necessary::Bool)
 
