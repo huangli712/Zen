@@ -148,7 +148,7 @@ function vasp_incar(fermi::F64)
     ios = open("INCAR", "w")
 
     # standard part
-    case = _c("case")
+    case = get_c("case")
     write(ios, "System   = $case \n")
     write(ios, "PREF     = Accurate \n")
     write(ios, "EDIFF    = 1E-8 \n")
@@ -159,7 +159,7 @@ function vasp_incar(fermi::F64)
     # customize your INCAR according to the case.toml
     #
     # for smearing
-    smear = _d("smear")
+    smear = get_d("smear")
     @cswitch smear begin
         @case "m-p"
             write(ios, "ISMEAR   = 2 \n")
@@ -181,7 +181,7 @@ function vasp_incar(fermi::F64)
     # for kmesh density
     # if kmesh == "file", then vasp_kpoints() will be used to generate
     # the KPOINTS file
-    kmesh = _d("kmesh")
+    kmesh = get_d("kmesh")
     @cswitch kmesh begin
         @case "accurate"
             write(ios, "KSPACING = 0.1 \n")
@@ -204,13 +204,13 @@ function vasp_incar(fermi::F64)
     end
 
     # for magnetic moment
-    magmom = _d("magmom")
+    magmom = get_d("magmom")
     if !isa(magmom, Missing)
         write(ios, "MAGMOM   = $magmom \n")
     end
 
     # for symmetry
-    lsymm = _d("lsymm")
+    lsymm = get_d("lsymm")
     if lsymm
         write(ios, "ISYM     = 2 \n")
     else # ignore the symmetry completely
@@ -219,7 +219,7 @@ function vasp_incar(fermi::F64)
 
     # for spin polarizations
     # if spin-orbit coupling is on, spin orientations must be polarized
-    lspins = _d("lspins") || _d("lspinorb")
+    lspins = get_d("lspins") || get_d("lspinorb")
     if lspins
         write(ios, "ISPIN    = 2 \n")
     else
@@ -227,7 +227,7 @@ function vasp_incar(fermi::F64)
     end
 
     # for spin-orbit coupling
-    lspinorb = _d("lspinorb")
+    lspinorb = get_d("lspinorb")
     if lspinorb
         write(ios, "LSORBIT  = .TRUE. \n")
     else
@@ -235,8 +235,8 @@ function vasp_incar(fermi::F64)
     end
 
     # for optimized projectors
-    ewidth = _d("ewidth")
-    loptim = _d("loptim")
+    ewidth = get_d("ewidth")
+    loptim = get_d("loptim")
     if !isa(ewidth, Missing) && !isa(loptim, Missing)
         if loptim
             write(ios, "LORBIT   = 14 \n")
