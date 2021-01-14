@@ -36,7 +36,7 @@ new_dict(cfg)
 #
 # S02.3: validate the configuration dictionaries
 println("Verify configuration dictionaries\n")
-check_config()
+chk_dict()
 
 # S03: write the configuration parameters to stdout
 message("ZEN", "VIEWER")
