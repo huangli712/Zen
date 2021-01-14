@@ -147,11 +147,11 @@ function chk_dict()
     # C3. check self-consistency
     #
     # check dft block
-    if _d("lspinorb")
-        @assert _d("lspins")
+    if get_d("lspinorb")
+        @assert get_d("lspins")
     end
-    if _d("lproj")
-        @assert !_d("lsymm") && !isa(_d("sproj"), Missing)
+    if get_d("lproj")
+        @assert !get_d("lsymm") && !isa(get_d("sproj"), Missing)
     end
     #
     # check solver block
