@@ -54,7 +54,7 @@ cat_m()
 cat_i()
 #
 # S03.5: show dict PSOLVER
-list_solver()
+cat_s()
 
 # S04: initialize the job
 message("ZEN", "CREATOR")
