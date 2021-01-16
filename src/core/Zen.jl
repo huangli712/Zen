@@ -152,6 +152,7 @@ export str_s
 # require       -> check julia envirnoment
 # query_args    -> query arguments
 # query_inps    -> query input files
+# query_stop    -> query case.stop file
 # query_zen     -> query home directory of zen
 # query_dft     -> query home directory of dft engine
 # welcome       -> print welcome message
