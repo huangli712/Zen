@@ -30,7 +30,22 @@ end
 """
     exhibit()
 """
-function exhibit() end
+function exhibit()
+    # S03.1: show dict PCASE
+    cat_c()
+
+    # S03.2: show dict PDFT
+    cat_d()
+
+    # S03.3: show dict PDMFT
+    cat_m()
+
+    # S03.4: show dict PIMP
+    cat_i()
+
+    # S03.5: show dict PSOLVER
+    cat_s()
+end
 
 #
 # internal functions
