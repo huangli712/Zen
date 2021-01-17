@@ -31,17 +31,19 @@ using TOML
 #
 # global.jl
 #
-# define some global numerical or string constants
+# Summary:
 #
-# members:
+# Define some global numerical or string constants
 #
-# I32, I64    -> numerical types (integer)
-# F32, F64    -> numerical types (float)
-# C32, C64    -> numerical types (complex)
-# __LIBNAME__ -> name of this library
-# __VERSION__ -> version of this library
-# __RELEASE__ -> released date of this library
-# __AUTHORS__ -> authors of this library
+# Members:
+#
+# I32, I64    -> Numerical types (integer)
+# F32, F64    -> Numerical types (float)
+# C32, C64    -> Numerical types (complex)
+# __LIBNAME__ -> Name of this library
+# __VERSION__ -> Version of this library
+# __RELEASE__ -> Released date of this library
+# __AUTHORS__ -> Authors of this library
 #
 include("global.jl")
 #
@@ -56,22 +58,24 @@ export __AUTHORS__
 #
 # types.jl
 #
-# define some dicts and structs, which contain the config parameters or
-# represent some essential data structures
+# Summary:
 #
-# summary:
+# Define some dicts and structs, which store the config parameters or
+# represent some essential data structures.
 #
-# PCASE        -> dict for case
-# PDFT         -> dict for dft engine
-# PDMFT        -> dict for dmft engine
-# PIMP         -> dict for quantum impurities
-# PSOLVER      -> dict for quantum impurity solver
-# KohnShamData -> dict for storing Kohn-Sham data
-# IterInfo     -> struct for iteration information
-# Lattice      -> struct for crystallography information
-# PrTrait      -> struct for projectors
-# PrGroup      -> struct for groups of projectors
-# PrGroupT     -> struct for groups of projectors (transformed)
+# Members:
+#
+# PCASE        -> Dict for case
+# PDFT         -> Dict for dft engine
+# PDMFT        -> Dict for dmft engine
+# PIMP         -> Dict for quantum impurities
+# PSOLVER      -> Dict for quantum impurity solvers
+# KohnShamData -> Dict for storing Kohn-Sham data
+# IterInfo     -> Struct for iteration information
+# Lattice      -> Struct for crystallography information
+# PrTrait      -> Struct for projectors
+# PrGroup      -> Struct for groups of projectors
+# PrGroupT     -> Struct for groups of projectors (transformed)
 #
 include("types.jl")
 #
@@ -90,21 +94,23 @@ export PrGroupT
 #
 # config.jl
 #
-# to extract the configurations from external files or dictionaries
+# Summary:
 #
-# summary:
+# To extract the configurations from external files or dictionaries.
 #
-# setup    -> setup parameters
-# exhibit  -> show parameters
-# inp_toml -> parse case.toml
-# new_dict -> update dict (configuration)
-# chk_dict -> check dict (configuration)
-# _v       -> verify dict
-# cat_c    -> print dict (case)
-# cat_d    -> print dict (dft)
-# cat_m    -> print dict (dmft)
-# cat_i    -> print dict (impurity)
-# cat_s    -> print dict (solver)
+# Members:
+#
+# setup    -> Setup parameters
+# exhibit  -> Display parameters for reference
+# inp_toml -> Parse case.toml, return raw configuration information
+# new_dict -> Update dicts of configuration
+# chk_dict -> Check dicts of configuration
+# _v       -> Verify dict's values
+# cat_c    -> Print dict (PCASE)
+# cat_d    -> Print dict (PDFT)
+# cat_m    -> Print dict (PDMFT)
+# cat_i    -> Print dict (PIMP)
+# cat_s    -> Print dict (PSOLVER)
 # get_c    -> shortcut for visiting dict (case), return original value
 # get_d    -> shortcut for visiting dict (dft), return original value
 # get_m    -> shortcut for visiting dict (dmft), return original value
