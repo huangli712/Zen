@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/17
+# Last modified: 2021/01/18
 #
 
 module Zen
@@ -301,9 +301,11 @@ export view_dos
 #
 # tetra.jl
 #
-# implementation of analytical tetrahedron method
+# Summary:
 #
-# summary:
+# Tools for the analytical tetrahedron method (adaptor).
+#
+# Members:
 #
 #
 include("tetra.jl")
@@ -311,25 +313,27 @@ include("tetra.jl")
 #
 # vasp.jl
 #
-# adaptor for the vasp software package. it provide a lot of functions
-# to deal with the vasp-related files
+# Summary:
 #
-# summary:
+# Tools for the vasp software package (adaptor). It provide a lot of
+# functions to deal with the vasp-related files.
 #
-# vasp_adaptor   -> adaptor support
-# vasp_init      -> prepare vasp's input files
-# vasp_run       -> execute vasp program
-# vasp_save      -> backup vasp's output files
-# vasp_incar     -> make essential input file (INCAR)
-# vasp_kpoints   -> make essential input file (KPOINTS)
-# vasp_files     -> check essential output files
-# vaspio_lattice -> read lattice information
-# vaspio_kmesh   -> read kmesh
-# vaspio_tetra   -> read tetrahedra
-# vaspio_eigen   -> read eigenvalues
-# vaspio_projs   -> read projectors
-# vaspio_fermi   -> read fermi level
-# vaspio_charge  -> read charge density
+# Members:
+#
+# vasp_adaptor   -> Adaptor support
+# vasp_init      -> Prepare vasp's input files
+# vasp_run       -> Execute vasp program
+# vasp_save      -> Backup vasp's output files
+# vasp_incar     -> Make essential input file (INCAR)
+# vasp_kpoints   -> Make essential input file (KPOINTS)
+# vasp_files     -> Check essential output files
+# vaspio_lattice -> Read lattice information
+# vaspio_kmesh   -> Read kmesh
+# vaspio_tetra   -> Read tetrahedra
+# vaspio_eigen   -> Read eigenvalues
+# vaspio_projs   -> Read projectors
+# vaspio_fermi   -> Read fermi level
+# vaspio_charge  -> Read charge density
 #
 include("vasp.jl")
 #
@@ -352,7 +356,7 @@ export vaspio_charge
     __init__()
 
 This function would be executed immediately after the module is loaded at
-runtime for the first time
+runtime for the first time.
 """
 function __init__() end
 
