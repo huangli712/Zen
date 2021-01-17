@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/15
+# last modified: 2021/01/17
 #
 
 module Zen
@@ -33,7 +33,7 @@ using TOML
 #
 # define some global numerical or string constants
 #
-# summary:
+# members:
 #
 # I32, I64    -> numerical types (integer)
 # F32, F64    -> numerical types (float)
