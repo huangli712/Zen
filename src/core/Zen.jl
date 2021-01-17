@@ -176,6 +176,7 @@ export @cswitch
 export require
 export query_args
 export query_inps
+export query_stop
 export query_zen
 export query_dft
 export welcome
