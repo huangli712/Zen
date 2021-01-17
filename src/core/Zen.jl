@@ -231,18 +231,20 @@ export solver_save
 #
 # ir.jl
 #
-# adaptor for the intermediate representation format
+# Summary:
 #
-# summary:
+# Tools for the intermediate representation format (adaptor).
 #
-# ir_adaptor   -> adaptor support
-# irio_lattice -> write lattice information
-# irio_kmesh   -> write kmesh
-# irio_tetra   -> write tetrahedra
-# irio_eigen   -> write eigenvalues
-# irio_projs   -> write projectors
-# irio_fermi   -> write fermi level
-# irio_charge  -> write charge density
+# Members:
+#
+# ir_adaptor   -> Adaptor support
+# irio_lattice -> Write lattice information
+# irio_kmesh   -> Write kmesh
+# irio_tetra   -> Write tetrahedra
+# irio_eigen   -> Write eigenvalues
+# irio_projs   -> Write projectors
+# irio_fermi   -> Write fermi level
+# irio_charge  -> Write charge density
 #
 include("ir.jl")
 #
@@ -258,24 +260,26 @@ export irio_charge
 #
 # plo.jl
 #
-# tools for the projection on localized orbitals scheme
+# Summary:
 #
-# summary:
+# Tools for the projection on localized orbitals scheme (adaptor).
 #
-# plo_adaptor -> adaptor support
-# plo_group   -> setup groups of projectors
-# plo_rotate  -> rotate the projectors
-# plo_window  -> extract the projectors within a given energy window
-# plo_orthog  -> orthogonalize the projectors
-# plo_diag    -> orthogonalizes a projector defined by a rectangular matrix
-# plo_ovlp    -> calculate overlap matrix
-# plo_dm      -> calculate density matrix
-# plo_hamk    -> calculate local hamiltonian
-# plo_dos     -> calculate density of states
-# view_ovlp   -> show overlap matrix
-# view_dm     -> show density matrix
-# view_hamk   -> show local hamiltonian
-# view_dos    -> show density of states
+# Members:
+#
+# plo_adaptor -> Adaptor support
+# plo_group   -> Setup groups of projectors
+# plo_rotate  -> Rotate the projectors
+# plo_window  -> Extract the projectors within a given energy window
+# plo_orthog  -> Orthogonalize the projectors
+# plo_diag    -> Orthogonalizes a projector defined by a rectangular matrix
+# plo_ovlp    -> Calculate overlap matrix
+# plo_dm      -> Calculate density matrix
+# plo_hamk    -> Calculate local hamiltonian
+# plo_dos     -> Calculate density of states
+# view_ovlp   -> Show overlap matrix
+# view_dm     -> Show density matrix
+# view_hamk   -> Show local hamiltonian
+# view_dos    -> Show density of states
 #
 include("plo.jl")
 #
