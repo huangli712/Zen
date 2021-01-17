@@ -151,8 +151,8 @@ export str_s
 #
 # Summary:
 #
-# to provide some useful utility functions. they can be used to query
-# the environments, print the configurations, and parse the strings, etc.
+# To provide some useful utility functions. They can be used to query
+# the environments and parse the strings, etc.
 #
 # Members:
 #
