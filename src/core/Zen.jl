@@ -11,7 +11,7 @@
 module Zen
 
 #
-# using standard libraries
+# Using standard libraries
 #
 using LinearAlgebra
 using Distributed
@@ -19,12 +19,12 @@ using Printf
 using Dates
 
 #
-# using third-party libraries
+# Using third-party libraries
 #
-# additional remarks:
+# Remarks:
 #
-# the TOML package is included in the standard library since v1.6
-# so, please upgrade your julia environment if it is outdated
+# The TOML package is included in the standard library since v1.6.
+# So, please upgrade your julia environment if it is outdated.
 #
 using TOML
 
