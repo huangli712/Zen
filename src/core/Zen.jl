@@ -111,16 +111,16 @@ export PrGroupT
 # cat_m    -> Print dict (PDMFT)
 # cat_i    -> Print dict (PIMP)
 # cat_s    -> Print dict (PSOLVER)
-# get_c    -> shortcut for visiting dict (case), return original value
-# get_d    -> shortcut for visiting dict (dft), return original value
-# get_m    -> shortcut for visiting dict (dmft), return original value
-# get_i    -> shortcut for visiting dict (impurity), return original value
-# get_s    -> shortcut for visiting dict (solver), return original value
-# str_c    -> shortcut for visiting dict (case), return string
-# str_d    -> shortcut for visiting dict (dft), return string
-# str_m    -> shortcut for visiting dict (dmft), return string
-# str_i    -> shortcut for visiting dict (impurity), return string
-# str_s    -> shortcut for visiting dict (solver), return string
+# get_c    -> Extract value from dict (PCASE), return original value
+# get_d    -> Extract value from dict (PDFT), return original value
+# get_m    -> Extract value from dict (PDMFT), return original value
+# get_i    -> Extract value from dict (PIMP), return original value
+# get_s    -> Extract value from dict (PSOLVER), return original value
+# str_c    -> Extract value from dict (PCASE), return string
+# str_d    -> Extract value from dict (PDFT), return string
+# str_m    -> Extract value from dict (PDMFT), return string
+# str_i    -> Extract value from dict (PIMP), return string
+# str_s    -> Extract value from dict (PSOLVER), return string
 #
 include("config.jl")
 #
@@ -149,10 +149,12 @@ export str_s
 #
 # util.jl
 #
+# Summary:
+#
 # to provide some useful utility functions. they can be used to query
 # the environments, print the configurations, and parse the strings, etc.
 #
-# summary:
+# Members:
 #
 # @cswitch      -> C-style switch
 # require       -> check julia envirnoment
