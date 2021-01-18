@@ -125,12 +125,12 @@ const KohnShamData = Dict{String,Any}()
 
 Record the runtime information.
 
-.dmft1_iter -> number of iterations between dmft1 and quantum impurity solver
-.dmft2_iter -> number of iterations between dmft2 and dft engine
-.dmft_cycle -> number of dft + dmft iterations
-.full_cycle -> counter for each iteration
-._dft_fermi -> fermi level obtained by dft engine
-.dmft_fermi -> fermi level obtained by dmft engine (dmft1)
+.dmft1_iter -> Number of iterations between dmft1 and quantum impurity solver
+.dmft2_iter -> Number of iterations between dmft2 and dft engine
+.dmft_cycle -> Number of dft + dmft iterations
+.full_cycle -> Counter for each iteration
+._dft_fermi -> Fermi level obtained by dft engine
+.dmft_fermi -> Fermi level obtained by dmft engine (dmft1)
 """
 mutable struct IterInfo
     dmft1_iter :: I64
