@@ -5,25 +5,25 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/16
+# last modified: 2021/01/18
 #
 
 """
     setup()
 
-Read parameters from configuration file, and then setup the related dicts 
+Read parameters from configuration file, and then setup the related dicts.
 """
 function setup()
-    # S02.1: parse the case.toml file to extract configuration parameters
+    # S1: Parse the case.toml file to extract configuration parameters
     println("Extract configuration parameters from $(query_args())")
     cfg = inp_toml(query_args(), true)
 
-    # S02.2: build the configuration dictionaries
-    println("Build configuration dictionaries")
+    # S2: Build the configuration dictionaries
+    println("Setup configuration dictionaries")
     new_dict(cfg)
 
-    # S02.3: validate the configuration dictionaries
-    println("Verify configuration dictionaries\n")
+    # S3: Validate the configuration dictionaries
+    println("Check configuration dictionaries\n")
     chk_dict()
 end
 
