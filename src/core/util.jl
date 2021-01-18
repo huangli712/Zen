@@ -115,8 +115,13 @@ function query_inps()
     end
 end
 
+"""
+    query_stop()
+
+Query whether the case.stop file exists.
+"""
 function query_stop()
-    @show query_case()
+    isfile(query_case()*".stop")
 end
 
 """
