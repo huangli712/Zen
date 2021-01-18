@@ -116,7 +116,7 @@ function query_inps()
 end
 
 function query_stop()
-    query_case()
+    @show query_case()
 end
 
 """
