@@ -283,15 +283,15 @@ function PrTrait(site::I64, desc::String)
                   "dxy", "dyz", "dz2", "dxz", "dx2-y2",
                   "fz3", "fxz2", "fyz2", "fz(x2-y2)", "fxyz", "fx(x2-3y2)", "fy(3x2-y2)")
 
-    # to make sure the specified desc is valid
+    # To make sure the specified desc is valid
     @assert desc in orb_labels
 
-    # determine quantum numbers l and m according to desc
+    # Determine quantum numbers l and m according to desc
     lm = findfirst(x -> x === desc, orb_labels) - 1
     l = convert(I64, floor(sqrt(lm)))
     m = lm - l * l
 
-    # call the default constructor
+    # Call the default constructor
     PrTrait(site, l, m, desc)
 end
 
