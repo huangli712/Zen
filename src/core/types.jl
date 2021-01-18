@@ -173,12 +173,12 @@ end
 """
     PrTrait
 
-Essential information of a given projector
+Essential information of a given projector.
 
-.site -> site in which the projector is defined
-.l    -> quantum number l
-.m    -> quantum number m
-.desc -> projector's specification
+.site -> Site in which the projector is defined
+.l    -> Quantum number l
+.m    -> Quantum number m
+.desc -> Projector's specification
 """
 mutable struct PrTrait
     site  :: I64
