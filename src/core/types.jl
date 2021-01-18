@@ -340,16 +340,16 @@ end
 """
     PrGroupT(PG::PrGroup)
 
-Outer constructor for PrGroupT struct
+Outer constructor for PrGroupT struct.
 """
 function PrGroupT(PG::PrGroup)
-    # determine ndim
+    # Determine ndim
     ndim = size(PG.Tr)[1]
 
-    # allocate memory for Pr
+    # Allocate memory for Pr
     Pr = zeros(I64, ndim)
 
-    # call the default constructor
+    # Call the default constructor
     PrGroupT(PG.site, PG.l, ndim, PG.corr, PG.shell, Pr)
 end
 
