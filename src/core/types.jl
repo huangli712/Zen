@@ -13,49 +13,49 @@
 #
 
 #
-# remarks:
+# Remarks:
 #
-# the values in the following dictionaries are actually arrays, which
-# contain four elements
-#     value[1] -> actually value
-#     value[2] -> if it is 1, this key-value pair is mandatory
-#                 if it is 0, this key-value pair is optional
-#     value[3] -> numerical type (a julia Symbol)
-#     value[4] -> brief explanations
+# The values in the following dictionaries are actually arrays, which
+# contain four elements:
+#     Value[1] -> Actually value
+#     Value[2] -> If it is 1, this key-value pair is mandatory.
+#                 If it is 0, this key-value pair is optional.
+#     Value[3] -> Numerical type (a julia Symbol)
+#     Value[4] -> Brief explanations
 #
 
 """
     PCASE
 
-Dictionary for configuration parameters: case summary
+Dictionary for configuration parameters: case summary.
 """
 const PCASE = Dict{String,Array{Any,1}}(
-          "case"     => [missing, 1, :String, "system's name"]
+          "case"     => [missing, 1, :String, "System's name"]
       )
 
 """
     PDFT
 
-Dictionary for configuration parameters: density functional theory calculations
+Dictionary for configuration parameters: density functional theory calculations.
 """
 const PDFT  = Dict{String,Array{Any,1}}(
-          "engine"   => [missing, 1, :String, "engine for density functional theory calculations"],
-          "smear"    => [missing, 0, :String, "scheme for smearing"],
-          "kmesh"    => [missing, 0, :String, "kmesh for brillouin zone sampling / integration"],
-          "magmom"   => [missing, 0, :String, "initial magnetic moments"],
-          "lsymm"    => [missing, 0, :Bool  , "the symmetry is turned on or off"],
-          "lspins"   => [missing, 0, :Bool  , "the spin orientations are polarized or not"],
-          "lspinorb" => [missing, 0, :Bool  , "the spin-orbit coupling is considered or not"],
-          "loptim"   => [missing, 0, :Bool  , "the generated projectors are optimized or not"],
-          "lproj"    => [missing, 1, :Bool  , "the projectors are generated or not"],
-          "ewidth"   => [missing, 0, :F64   , "half-width of energy window for generating optimal projectors"],
-          "sproj"    => [missing, 1, :Array , "strings / descriptions for generating projectors"],
+          "engine"   => [missing, 1, :String, "Engine for density functional theory calculations"],
+          "smear"    => [missing, 0, :String, "Scheme for smearing"],
+          "kmesh"    => [missing, 0, :String, "Kmesh for brillouin zone sampling / integration"],
+          "magmom"   => [missing, 0, :String, "Initial magnetic moments"],
+          "lsymm"    => [missing, 0, :Bool  , "The symmetry is turned on or off"],
+          "lspins"   => [missing, 0, :Bool  , "The spin orientations are polarized or not"],
+          "lspinorb" => [missing, 0, :Bool  , "The spin-orbit coupling is considered or not"],
+          "loptim"   => [missing, 0, :Bool  , "The generated projectors are optimized or not"],
+          "lproj"    => [missing, 1, :Bool  , "The projectors are generated or not"],
+          "ewidth"   => [missing, 0, :F64   , "Half-width of energy window for generating optimal projectors"],
+          "sproj"    => [missing, 1, :Array , "Strings / descriptions for generating projectors"],
       )
 
 """
     PDMFT
 
-Dictionary for configuration parameters: dynamical mean-field theory calculations
+Dictionary for configuration parameters: dynamical mean-field theory calculations.
 """
 const PDMFT = Dict{String,Array{Any,1}}(
           "mode"     => [missing, 1, :I64   , "scheme of dynamical mean-field theory calculations"],
@@ -75,7 +75,7 @@ const PDMFT = Dict{String,Array{Any,1}}(
 """
     PIMP
 
-Dictionary for configuration parameters: quantum impurity problems
+Dictionary for configuration parameters: quantum impurity problems.
 """
 const PIMP  = Dict{String,Array{Any,1}}(
           "nsite"    => [missing, 1, :I64   , "number of (correlated) impurity sites"],
@@ -92,7 +92,7 @@ const PIMP  = Dict{String,Array{Any,1}}(
 """
     PSOLVER
 
-Dictionary for configuration parameters: quantum impurity solvers
+Dictionary for configuration parameters: quantum impurity solvers.
 """
 const PSOLVER= Dict{String,Array{Any,1}}(
           "engine"   => [missing, 1, :String, "name of quantum impurity solver"],
@@ -103,10 +103,16 @@ const PSOLVER= Dict{String,Array{Any,1}}(
 # Customized Dictionaries for Kohn-Sham data
 #
 
+#
+# Remarks:
+#
+# The key-value pairs will be inserted into this dict dynamically.
+#
+
 """
     KohnShamData
 
-Dictionary for storing the Kohn-Sham data
+Dictionary for storing the Kohn-Sham data.
 """
 const KohnShamData = Dict{String,Any}()
 
@@ -117,7 +123,7 @@ const KohnShamData = Dict{String,Any}()
 """
     IterInfo
 
-Record the runtime information
+Record the runtime information.
 
 .dmft1_iter -> number of iterations between dmft1 and quantum impurity solver
 .dmft2_iter -> number of iterations between dmft2 and dft engine
