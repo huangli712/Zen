@@ -58,18 +58,18 @@ const PDFT  = Dict{String,Array{Any,1}}(
 Dictionary for configuration parameters: dynamical mean-field theory calculations.
 """
 const PDMFT = Dict{String,Array{Any,1}}(
-          "mode"     => [missing, 1, :I64   , "scheme of dynamical mean-field theory calculations"],
-          "axis"     => [missing, 1, :I64   , "imaginary-time axis or real-frequency axis"],
-          "niter"    => [missing, 1, :I64   , "maximum number of iterations"],
-          "dcount"   => [missing, 1, :String, "scheme of double counting term"],
-          "beta"     => [missing, 1, :F64   , "inverse system temperature"],
-          "mixer"    => [missing, 0, :F64   , "mixing factor"],
-          "cc"       => [missing, 0, :F64   , "convergence criterion of charge"],
-          "ec"       => [missing, 0, :F64   , "convergence criterion of total energy"],
-          "fc"       => [missing, 0, :F64   , "convergence criterion of force"],
-          "lcharge"  => [missing, 0, :Bool  , "test whether charge is converged"],
-          "lenergy"  => [missing, 0, :Bool  , "test whether total energy is converged"],
-          "lforce"   => [missing, 0, :Bool  , "test whether force is converged"],
+          "mode"     => [missing, 1, :I64   , "Scheme of dynamical mean-field theory calculations"],
+          "axis"     => [missing, 1, :I64   , "Imaginary-time axis or real-frequency axis"],
+          "niter"    => [missing, 1, :I64   , "Maximum number of iterations"],
+          "dcount"   => [missing, 1, :String, "Scheme of double counting term"],
+          "beta"     => [missing, 1, :F64   , "Inverse system temperature"],
+          "mixer"    => [missing, 0, :F64   , "Mixing factor"],
+          "cc"       => [missing, 0, :F64   , "Convergence criterion of charge"],
+          "ec"       => [missing, 0, :F64   , "Convergence criterion of total energy"],
+          "fc"       => [missing, 0, :F64   , "Convergence criterion of force"],
+          "lcharge"  => [missing, 0, :Bool  , "Test whether charge is converged"],
+          "lenergy"  => [missing, 0, :Bool  , "Test whether total energy is converged"],
+          "lforce"   => [missing, 0, :Bool  , "Test whether force is converged"],
       )
 
 """
@@ -78,15 +78,15 @@ const PDMFT = Dict{String,Array{Any,1}}(
 Dictionary for configuration parameters: quantum impurity problems.
 """
 const PIMP  = Dict{String,Array{Any,1}}(
-          "nsite"    => [missing, 1, :I64   , "number of (correlated) impurity sites"],
-          "atoms"    => [missing, 1, :Array , "chemical symbols of impurity atoms"],
-          "equiv"    => [missing, 1, :Array , "equivalency of quantum impurity atoms"],
-          "shell"    => [missing, 1, :Array , "angular momenta of correlated orbitals"],
-          "ising"    => [missing, 1, :Array , "interaction types of correlated orbitals"],
-          "occup"    => [missing, 1, :Array , "nominal impurity occupancy"],
+          "nsite"    => [missing, 1, :I64   , "Number of (correlated) impurity sites"],
+          "atoms"    => [missing, 1, :Array , "Chemical symbols of impurity atoms"],
+          "equiv"    => [missing, 1, :Array , "Equivalency of quantum impurity atoms"],
+          "shell"    => [missing, 1, :Array , "Angular momenta of correlated orbitals"],
+          "ising"    => [missing, 1, :Array , "Interaction types of correlated orbitals"],
+          "occup"    => [missing, 1, :Array , "Nominal impurity occupancy"],
           "upara"    => [missing, 1, :Array , "Coulomb interaction parameter"],
           "jpara"    => [missing, 1, :Array , "Hund's coupling parameter"],
-          "lpara"    => [missing, 1, :Array , "spin-orbit coupling parameter"],
+          "lpara"    => [missing, 1, :Array , "Spin-orbit coupling parameter"],
       )
 
 """
