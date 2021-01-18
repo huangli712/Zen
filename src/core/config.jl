@@ -8,6 +8,10 @@
 # last modified: 2021/01/18
 #
 
+#
+# Driver Functions
+#
+
 """
     setup()
 
@@ -50,13 +54,14 @@ function exhibit()
 end
 
 #
-# internal functions
+# Service Functions
 #
 
 """
     inp_toml(f::String, key::String, necessary::Bool)
 
-Parse the configuration file (toml format)
+Parse the configuration file (toml format). It reads only parts of the
+configuration file, which depends on the value of `key`.
 """
 function inp_toml(f::String, key::String, necessary::Bool)
     if isfile(f)
@@ -79,7 +84,7 @@ end
 """
     inp_toml(f::String, necessary::Bool)
 
-Parse the configuration file (toml format)
+Parse the configuration file (toml format). It reads the whole file.
 """
 function inp_toml(f::String, necessary::Bool)
     if isfile(f)
