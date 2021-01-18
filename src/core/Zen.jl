@@ -170,7 +170,7 @@ export str_s
 # overview      -> Print overview of Zen
 # goodbye       -> Say goodbye
 # sorry         -> Say sorry
-# message       -> Print some messages to the screen
+# prompt        -> Print some messages to the screen
 # line_to_array -> Convert a line to a string array
 #
 include("util.jl")
@@ -189,7 +189,7 @@ export welcome
 export overview
 export goodbye
 export sorry
-export message
+export prompt
 export line_to_array
 
 #

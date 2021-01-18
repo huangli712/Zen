@@ -67,7 +67,7 @@ end
 """
     @ps1(str, c)
 
-Wrapper for printstyled function
+Wrapper for printstyled function.
 """
 macro ps1(str, c)
     return :( printstyled($str, color = $c) )
@@ -76,7 +76,7 @@ end
 """
     @ps2(str1, c1, str2, c2)
 
-Wrapper for printstyled function
+Wrapper for printstyled function.
 """
 macro ps2(str1, c1, str2, c2)
     ex = quote
@@ -152,7 +152,7 @@ end
 Query the home directory of Zen.
 """
 function query_zen()
-    # We have to setup environment variable ZEN_HOME
+    # We have to setup environment variable ZEN_HOME.
     if haskey(ENV, "ZEN_HOME")
         ENV["ZEN_HOME"]
     else
@@ -166,7 +166,7 @@ end
 Query the home directory of the DFT engine.
 """
 function query_dft()
-    # We have to setup environment variable VASP_HOME
+    # We have to setup environment variable VASP_HOME.
     if get_d("engine") === "vasp"
         if haskey(ENV, "VASP_HOME")
             ENV["VASP_HOME"]
@@ -181,7 +181,7 @@ end
 """
     welcome()
 
-Print out the welcome messages to the screen
+Print out the welcome messages to the screen.
 """
 function welcome()
     @ps1 "                                        |\n" :green
@@ -199,14 +199,14 @@ end
 """
     overview()
 
-Print out the overview of zen to the screen
+Print out the overview of Zen to the screen.
 """
 function overview()
-    # build strings
+    # Build strings
     str1 = nprocs() === 1 ? " processor " : " processors "
     str2 = "(myid = $(myid()))"
 
-    # write the information
+    # Write the information
     println("Starting time: ", Dates.format(now(), "yyyy-mm-dd / HH:MM:SS"))
     println("Parallel execution: using ", nprocs(), str1, str2)
     println("Current working directory: ", pwd())
@@ -217,7 +217,7 @@ end
 """
     goodbye()
 
-Print the goodbye messages to the screen
+Print the goodbye messages to the screen.
 """
 function goodbye()
     println("See you later")
@@ -226,27 +226,26 @@ end
 """
     sorry()
 
-Print an error message to the screen
+Print an error message to the screen.
 """
 function sorry()
     error("Sorry, this feature has not been implemented")
 end
 
 """
-    message(from::String, msg::String)
+    prompt(from::String, msg::String)
 
-Print an standard zen message to the screen
+Print an standard Zen message to the screen.
 """
-function message(from::String, msg::String)
-    printstyled(from * " > ", color = :green)
-    printstyled(msg, color = :magenta)
+function prompt(from::String, msg::String)
+    @ps2 from * " > " :green msg :magenta
     println()
 end
 
 """
     line_to_array(io::IOStream)
 
-Convert a line (reading from an iostream) to a string array
+Convert a line (reading from an iostream) to a string array.
 """
 @inline function line_to_array(io::IOStream)
     split(readline(io), " ", keepempty = false)
@@ -255,7 +254,7 @@ end
 """
     line_to_array(str::AbstractString)
 
-Convert a string (AbstractString) to a string array
+Convert a string (AbstractString) to a string array.
 """
 @inline function line_to_array(str::AbstractString)
     split(str, " ", keepempty = false)
