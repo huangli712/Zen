@@ -95,8 +95,8 @@ const PIMP  = Dict{String,Array{Any,1}}(
 Dictionary for configuration parameters: quantum impurity solvers.
 """
 const PSOLVER= Dict{String,Array{Any,1}}(
-          "engine"   => [missing, 1, :String, "name of quantum impurity solver"],
-          "params"   => [missing, 1, :Array , "parameter sets of quantum impurity solver"],
+          "engine"   => [missing, 1, :String, "Name of quantum impurity solver"],
+          "params"   => [missing, 1, :Array , "Parameter sets of quantum impurity solver"],
       )
 
 #
