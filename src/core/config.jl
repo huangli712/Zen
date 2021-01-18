@@ -29,21 +29,23 @@ end
 
 """
     exhibit()
+
+Display the configuration parameters for reference.
 """
 function exhibit()
-    # S03.1: show dict PCASE
+    # S1: Show dict PCASE
     cat_c()
 
-    # S03.2: show dict PDFT
+    # S2: Show dict PDFT
     cat_d()
 
-    # S03.3: show dict PDMFT
+    # S3: Show dict PDMFT
     cat_m()
 
-    # S03.4: show dict PIMP
+    # S4: Show dict PIMP
     cat_i()
 
-    # S03.5: show dict PSOLVER
+    # S5: Show dict PSOLVER
     cat_s()
 end
 
