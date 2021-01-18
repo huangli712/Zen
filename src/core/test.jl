@@ -3,6 +3,10 @@
 include("Zen.jl")
 using .Zen
 
+
+query_stop()
+exit(-1)
+
 # parse the configuration parameter
 cfg = inp_toml(query_args(), true)
 @timev new_dict(cfg)

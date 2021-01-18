@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/18
+# Last modified: 2021/01/19
 #
 
 module Zen
@@ -159,6 +159,7 @@ export str_s
 # @cswitch      -> C-style switch
 # require       -> Check julia envirnoment
 # query_args    -> Query program's arguments
+# query_case    -> Query case (job's name)
 # query_inps    -> Query input files
 # query_stop    -> Query case.stop file
 # query_zen     -> Query home directory of Zen
@@ -175,6 +176,7 @@ include("util.jl")
 export @cswitch
 export require
 export query_args
+export query_case
 export query_inps
 export query_stop
 export query_zen

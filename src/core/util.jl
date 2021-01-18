@@ -5,14 +5,14 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/15
+# last modified: 2021/01/19
 #
 
 """
     @cswitch(constexpr, body)
 
-Provides C-like switch statement with the ``falling through'' behavior. this
-implement is borrowed from the following github repp.:
+Provides C-like switch statement with the ``falling through'' behavior. This
+implement is borrowed from the following github repo.:
     https://github.com/Gnimuc/CSyntax.jl
 
 # Examples
@@ -67,7 +67,7 @@ end
 """
     require()
 
-Check the version of julia runtime environment
+Check the version of julia runtime environment.
 """
 function require()
     if VERSION < v"1.5-"
@@ -78,7 +78,7 @@ end
 """
     query_args()
 
-Check whether the configuration file (case.toml) is provided
+Check whether the configuration file (case.toml) is provided.
 """
 function query_args()
     nargs = length(ARGS)
@@ -90,13 +90,22 @@ function query_args()
 end
 
 """
+    query_case()
+
+Return case, in other words, the job's name.
+"""
+function query_case()
+    basename( splitext(query_args())[1] )
+end
+
+"""
     query_inps()
 
-Check whether the essential input files exist
+Check whether the essential input files exist.
 """
 function query_inps()
-    # if the dft engine is vasp, we have to ensure that the required input
-    # files (POSCAR and POTCAR) are present
+    # If the DFT engine is vasp, we have to ensure that the required input
+    # files (POSCAR and POTCAR) are present.
     if get_d("engine") === "vasp"
         if !isfile("POSCAR") || !isfile("POTCAR")
             error("Please provide both POSCAR and POTCAR files")
@@ -106,10 +115,14 @@ function query_inps()
     end
 end
 
+function query_stop()
+    query_case()
+end
+
 """
     query_zen()
 
-Query the home directory of zen
+Query the home directory of Zen.
 """
 function query_zen()
     # we have to setup environment variable ZEN_HOME
