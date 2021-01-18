@@ -54,7 +54,7 @@ function exhibit()
 end
 
 #
-# Service Functions
+# Service Functions (Group A)
 #
 
 """
@@ -205,31 +205,31 @@ end
 """
     _v(val::Array{Any,1})
 
-Verify the value array
+Verify the value array. Called by chk_dict() function only.
 """
 @inline function _v(val::Array{Any,1})
-    # to check if the value is updated
+    # To check if the value is updated
     if isa(val[1], Missing) && val[2] > 0
         error("Sorry, key shoule be set")
     end
 
-    # to check if the type of value is correct
+    # To check if the type of value is correct
     if !isa(val[1], Missing) && !isa(val[1], eval(val[3]))
         error("Sorry, type of key is wrong")
     end
 end
 
 #
-# cat_x() functions
+# Service Functions (Group B: cat_xxx())
 #
 
 """
     cat_c()
 
-Print the configuration parameters to stdout: for PCASE dict
+Print the configuration parameters to stdout: for PCASE dict.
 """
 function cat_c()
-    # see comments in cat_d()
+    # See comments in cat_d()
     println("< Parameters: case >")
     println("  case     -> ", str_c("case"))
     println()
@@ -238,21 +238,21 @@ end
 """
     cat_d()
 
-Print the configuration parameters to stdout: for PDFT dict
+Print the configuration parameters to stdout: for PDFT dict.
 """
 function cat_d()
     #
-    # remarks:
+    # Remarks:
     #
-    # get_d("sproj") is actually an Array{String,1}. it would be quite low
-    # efficiency if we print it directly. so we convert it into a string
-    # by using the join() function at first.
+    # The get_d("sproj") is actually an Array{String,1}. It would be quite
+    # low efficiency if we print it directly. So we have to convert it into
+    # a string by using the join() function at first.
     #
-    # get_d("ewidth") is actually a real number. it would be quite low
-    # efficiency if we print it directly. so we convert it into a string
-    # by using the string() function at first.
+    # The get_d("ewidth") is actually a real number. It would be quite low
+    # efficiency if we print it directly. So we have to convert it into a
+    # string by using the string() function at first.
     #
-    # see config.jl/str_d() function for more details
+    # See config.jl/str_d() function for more details.
     #
     println("< Parameters: dft engine >")
     println("  engine   -> ", str_d("engine"))
@@ -272,10 +272,10 @@ end
 """
     cat_m()
 
-Print the configuration parameters to stdout: for PDMFT dict
+Print the configuration parameters to stdout: for PDMFT dict.
 """
 function cat_m()
-    # see comments in cat_d()
+    # See comments in cat_d()
     println("< Parameters: dmft engine >")
     println("  mode     -> ", str_m("mode"))
     println("  axis     -> ", str_m("axis"))
@@ -295,10 +295,10 @@ end
 """
     cat_i()
 
-Print the configuration parameters to stdout: for PIMP dict
+Print the configuration parameters to stdout: for PIMP dict.
 """
 function cat_i()
-    # see comments in cat_d()
+    # See comments in cat_d()
     println("< Parameters: quantum impurity atoms >")
     println("  nsite    -> ", str_i("nsite"))
     println("  atoms    -> ", str_i("atoms"))
@@ -315,10 +315,10 @@ end
 """
     cat_s()
 
-Print the configuration parameters to stdout: for PSOLVER dict
+Print the configuration parameters to stdout: for PSOLVER dict.
 """
 function cat_s()
-    # see comments in cat_d()
+    # See comments in cat_d()
     println("< Parameters: quantum impurity solvers >")
     println("  engine   -> ", str_s("engine"))
     println("  params   -> ", str_s("params"))
