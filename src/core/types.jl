@@ -144,20 +144,20 @@ end
 """
     Lattice
 
-Contain the crystallography information
+Contain the crystallography information.
 
-._case -> the name of system
-.scale -> universal scaling factor (lattice constant), which is used to
-          scale all lattice vectors and all atomic coordinates
-.lvect -> three lattice vectors defining the unit cell of the system. its
-          shape must be (3, 3)
-.nsort -> number of sorts of atoms
-.natom -> number of atoms
-.sorts -> sorts of atoms. its shape must be (nsort, 2)
-.atoms -> lists of atoms. its shape must be (natom)
-.coord -> atomic positions are provided in cartesian coordinates or in
-          direct coordinates (respectively fractional coordinates). its
-          shape must be (natom, 3)
+._case -> The name of system
+.scale -> Universal scaling factor (lattice constant), which is used to
+          scale all lattice vectors and all atomic coordinates.
+.lvect -> Three lattice vectors defining the unit cell of the system. Its
+          shape must be (3, 3).
+.nsort -> Number of sorts of atoms
+.natom -> Number of atoms
+.sorts -> Sorts of atoms. Its shape must be (nsort, 2).
+.atoms -> Lists of atoms. Its shape must be (natom).
+.coord -> Atomic positions are provided in cartesian coordinates or in
+          direct coordinates (respectively fractional coordinates). Its
+          shape must be (natom, 3).
 """
 mutable struct Lattice
     _case :: String
