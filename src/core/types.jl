@@ -190,20 +190,20 @@ end
 """
     PrGroup
 
-Essential information of group of projectors
+Essential information of group of projectors.
 
-.site  -> site in which the projectors are defined. in principle, the
+.site  -> Site in which the projectors are defined. In principle, the
           projectors included in the same group should be defined at
-          the same site (or equivalently atom)
-.l     -> quantum number l. in principle, the projectors included in
+          the same site (or equivalently atom).
+.l     -> Quantum number l. In principle, the projectors included in
           the same group should have the same quantum number l (but
-          with different m)
-.corr  -> if the projectors in this group are correlated
-.shell -> type of correlated orbitals. it is infered from quantum number l
-.Pr    -> array. it contains the indices of projectors
-.Tr    -> array. it contains the transformation matrix. this parameter
-          can be useful to select certain subset of orbitals or perform
-          a simple global rotation
+          with different m).
+.corr  -> Test if the projectors in this group are correlated
+.shell -> Type of correlated orbitals. It is infered from quantum number l.
+.Pr    -> Array. It contains the indices of projectors.
+.Tr    -> Array. It contains the transformation matrix. This parameter
+          could be useful to select certain subset of orbitals or perform
+          a simple global rotation.
 """
 mutable struct PrGroup
     site  :: I64
