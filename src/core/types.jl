@@ -327,13 +327,13 @@ end
 """
     PrGroupT(site::I64, l::I64, ndim::I64, corr::Bool, shell::String)
 
-Outer constructor for PrGroupT struct
+Outer constructor for PrGroupT struct.
 """
 function PrGroupT(site::I64, l::I64, ndim::I64, corr::Bool, shell::String)
-    # allocate memory for Pr
+    # Allocate memory for Pr
     Pr = zeros(I64, ndim)
 
-    # call the default constructor
+    # Call the default constructor
     PrGroupT(site, l, ndim, corr, shell, Pr)
 end
 
