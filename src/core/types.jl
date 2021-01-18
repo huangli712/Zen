@@ -247,7 +247,7 @@ end
 """
     IterInfo(iter::I64 = 0, fermi::F64 = 0.0)
 
-Outer constructor for IterInfo struct
+Outer constructor for IterInfo struct.
 """
 function IterInfo(iter::I64 = 0, fermi::F64 = 0.0)
     IterInfo(iter, iter, iter, iter, fermi, fermi)
@@ -256,27 +256,27 @@ end
 """
     Lattice(_case::String, scale::F64, nsort::I64, natom::I64)
 
-Outer constructor for Lattice struct
+Outer constructor for Lattice struct.
 """
 function Lattice(_case::String, scale::F64, nsort::I64, natom::I64)
-    # initialize the arrays
+    # Initialize the arrays
     lvect = zeros(F64, 3, 3)
     sorts = Array{Union{String,I64}}(undef, nsort, 2)
     atoms = fill("", natom)
     coord = zeros(F64, natom, 3)
 
-    # call the default constructor
+    # Call the default constructor
     Lattice(_case, scale, lvect, nsort, natom, sorts, atoms, coord)
 end
 
 """
     PrTrait(site::I64, sort::String, desc::String)
 
-Outer constructor for PrTrait struct
+Outer constructor for PrTrait struct.
 """
 function PrTrait(site::I64, desc::String)
-    # angular character of the local functions on the specified sites
-    # see the following webpage for more details
+    # Angular character of the local functions on the specified sites.
+    # See the following webpage for more details:
     #     https://www.vasp.at/wiki/index.php/LOCPROJ
     orb_labels = ("s",
                   "py", "pz", "px",
@@ -298,7 +298,7 @@ end
 """
     PrGroup(site::I64, l::I64)
 
-Outer constructor for PrGroup struct
+Outer constructor for PrGroup struct.
 """
 function PrGroup(site::I64, l::I64)
     # lshell defines a mapping from l (integer) to shell (string)
