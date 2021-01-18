@@ -157,6 +157,8 @@ export str_s
 # Members:
 #
 # @cswitch      -> C-style switch
+# @ps1          -> Wrapper for printstyled function
+# @ps2          -> Wrapper for printstyled function
 # require       -> Check julia envirnoment
 # query_args    -> Query program's arguments
 # query_case    -> Query case (job's name)
@@ -174,6 +176,8 @@ export str_s
 include("util.jl")
 #
 export @cswitch
+export @ps1
+export @ps2
 export require
 export query_args
 export query_case

@@ -65,6 +65,28 @@ macro cswitch(constexpr, body)
 end
 
 """
+    @ps1(str, c)
+
+Wrapper for printstyled function
+"""
+macro ps1(str, c)
+    return :( printstyled($str, color = $c) )
+end
+
+"""
+    @ps2(str1, c1, str2, c2)
+
+Wrapper for printstyled function
+"""
+macro ps2(str1, c1, str2, c2)
+    ex = quote
+        printstyled($str1, color = $c1)
+        printstyled($str2, color = $c2)
+    end
+    return ex
+end
+
+"""
     require()
 
 Check the version of julia runtime environment.
@@ -161,18 +183,6 @@ end
 
 Print out the welcome messages to the screen
 """
-macro ps1(str, c)
-    return :( printstyled($str, color = $c) )
-end
-
-macro ps2(str1, c1, str2, c2)
-    ex = quote
-        printstyled($str1, color = $c1)
-        printstyled($str2, color = $c2)
-    end
-    return ex
-end
-
 function welcome()
     @ps1 "                                        |\n" :green
     @ps2 "ZZZZZZZZZZZZ EEEEEEEEEEEE NNNNNNNNNNNN  | "  :green "A Modern DFT + DMFT Computation Framework\n" :magenta
