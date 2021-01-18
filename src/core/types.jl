@@ -301,7 +301,7 @@ end
 Outer constructor for PrGroup struct.
 """
 function PrGroup(site::I64, l::I64)
-    # lshell defines a mapping from l (integer) to shell (string)
+    # The lshell defines a mapping from l (integer) to shell (string)
     lshell = Dict{I64,String}(
                  0 => "s",
                  1 => "p",
@@ -309,18 +309,18 @@ function PrGroup(site::I64, l::I64)
                  3 => "f",
              )
 
-    # setup initial parameters
-    # they will be further initialized in vaspio_projs() and plo_group()
+    # Setup initial parameters
+    # They will be further initialized in vaspio_projs() and plo_group()
     corr  = false
     shell = lshell[l]
 
-    # allocate memory for Pr and Tr
-    # they will be further initialized in vaspio_projs() and plo_group()
+    # Allocate memory for Pr and Tr
+    # They will be further initialized in vaspio_projs() and plo_group()
     max_dim = 2 * l + 1
     Pr = zeros(I64, max_dim)
     Tr = zeros(C64, max_dim, max_dim)
 
-    # call the default constructor
+    # Call the default constructor
     PrGroup(site, l, corr, shell, Pr, Tr)
 end
 
