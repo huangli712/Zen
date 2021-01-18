@@ -360,7 +360,7 @@ end
 """
     Base.show(io::IO, it::IterInfo)
 
-Base.show() function for IterInfo struct
+Base.show() function for IterInfo struct.
 """
 function Base.show(io::IO, it::IterInfo)
     println(io, "IterInfo struct")
@@ -375,7 +375,7 @@ end
 """
     Base.show(io::IO, latt::Lattice)
 
-Base.show() function for Lattice struct
+Base.show() function for Lattice struct.
 """
 function Base.show(io::IO, latt::Lattice)
     println(io, "Lattice struct")
@@ -392,7 +392,7 @@ end
 """
     Base.show(io::IO, PT::PrTrait)
 
-Base.show() function for PrTrait struct
+Base.show() function for PrTrait struct.
 """
 function Base.show(io::IO, PT::PrTrait)
     println(io, "PrTrait struct")
@@ -405,7 +405,7 @@ end
 """
     Base.show(io::IO, PG::PrGroup)
 
-Base.show() function for PrGroup struct
+Base.show() function for PrGroup struct.
 """
 function Base.show(io::IO, PG::PrGroup)
     println(io, "PrGroup struct")
@@ -420,7 +420,7 @@ end
 """
     Base.show(io::IO, PGT::PrGroupT)
 
-Base.show() function for PrGroupT struct
+Base.show() function for PrGroupT struct.
 """
 function Base.show(io::IO, PGT::PrGroupT)
     println(io, "PrGroupT struct")
