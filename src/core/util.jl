@@ -130,7 +130,7 @@ end
 Query the home directory of Zen.
 """
 function query_zen()
-    # we have to setup environment variable ZEN_HOME
+    # We have to setup environment variable ZEN_HOME
     if haskey(ENV, "ZEN_HOME")
         ENV["ZEN_HOME"]
     else
@@ -141,10 +141,10 @@ end
 """
     query_dft()
 
-Query the home directory of the dft engine
+Query the home directory of the DFT engine.
 """
 function query_dft()
-    # we have to setup environment variable VASP_HOME
+    # We have to setup environment variable VASP_HOME
     if get_d("engine") === "vasp"
         if haskey(ENV, "VASP_HOME")
             ENV["VASP_HOME"]
@@ -161,20 +161,28 @@ end
 
 Print out the welcome messages to the screen
 """
+macro ps1(str, c)
+    return :( printstyled($str, color = $c) )
+end
+
+macro ps2(str1, c1, str2, c2)
+    ex = quote
+        printstyled($str1, color = $c1)
+        printstyled($str2, color = $c2)
+    end
+    return ex
+end
+
 function welcome()
-    printstyled("                                        |\n", color = :green)
-    printstyled("ZZZZZZZZZZZZ EEEEEEEEEEEE NNNNNNNNNNNN  | ", color = :green)
-    printstyled("A Modern DFT + DMFT Computation Framework\n", color = :magenta)
-    printstyled("          Z               N          N  |\n", color = :green)
-    printstyled("         Z                N          N  |\n", color = :green)
-    printstyled("   ZZZZZZ    EEEEEEEEEEEE N          N  |\n", color = :green)
-    printstyled("  Z                       N          N  | ", color = :green)
-    printstyled("Version: $__VERSION__\n", color = :magenta)
-    printstyled(" Z                        N          N  | ", color = :green)
-    printstyled("Release: $__RELEASE__\n", color = :magenta)
-    printstyled("ZZZZZZZZZZZZ EEEEEEEEEEEE N          N  | ", color = :green)
-    printstyled("Powered by the julia programming language\n", color = :magenta)
-    printstyled("                                        |\n", color = :green)
+    @ps1 "                                        |\n" :green
+    @ps2 "ZZZZZZZZZZZZ EEEEEEEEEEEE NNNNNNNNNNNN  | "  :green "A Modern DFT + DMFT Computation Framework\n" :magenta
+    @ps1 "          Z               N          N  |\n" :green
+    @ps1 "         Z                N          N  |\n" :green
+    @ps1 "   ZZZZZZ    EEEEEEEEEEEE N          N  |\n" :green
+    @ps2 "  Z                       N          N  | "  :green "Version: $__VERSION__\n" :magenta
+    @ps2 " Z                        N          N  | "  :green "Release: $__RELEASE__\n" :magenta
+    @ps2 "ZZZZZZZZZZZZ EEEEEEEEEEEE N          N  | "  :green "Powered by the julia programming language\n" :magenta
+    @ps1 "                                        |\n" :green
     println()
 end
 

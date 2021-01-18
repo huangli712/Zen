@@ -6,6 +6,7 @@ using .Zen
 # parse the configuration parameter
 setup()
 exhibit()
+welcome()
 exit(-1)
 
 # read the Kohn-Sham data
