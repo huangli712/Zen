@@ -101,13 +101,15 @@ end
 """
     new_dict(cfg::Dict{String,Any})
 
-Copy configurations from cfg to PCASE, PDFT, PDMFT, PIMP, and PSOLVER
+Transfer configurations from cfg to PCASE, PDFT, PDMFT, PIMP, and PSOLVER.
 """
 function new_dict(cfg::Dict{String,Any})
-    # for case block
+    # For case block
+    #
+    # Pay attention to that the case block only includes one child element
     PCASE["case"][1] = cfg["case"]
 
-    # for dft block
+    # For dft block
     dft = cfg["dft"]
     for key in keys(dft)
         if haskey(PDFT, key)
@@ -117,7 +119,7 @@ function new_dict(cfg::Dict{String,Any})
         end
     end
 
-    # for dmft block
+    # For dmft block
     dmft = cfg["dmft"]
     for key in keys(dmft)
         if haskey(PDMFT, key)
@@ -127,7 +129,7 @@ function new_dict(cfg::Dict{String,Any})
         end
     end
 
-    # for impurity block
+    # For impurity block
     impurity = cfg["impurity"]
     for key in keys(impurity)
         if haskey(PIMP, key)
@@ -137,7 +139,7 @@ function new_dict(cfg::Dict{String,Any})
         end
     end
 
-    # for solver block
+    # For solver block
     solver = cfg["solver"]
     for key in keys(solver)
         if haskey(PSOLVER, key)
@@ -151,38 +153,38 @@ end
 """
     chk_dict()
 
-Validate the correctness and consistency of configurations
+Validate the correctness and consistency of configurations.
 """
 function chk_dict()
-    # C1. check types and existences
+    # C1. Check types and existences
     #
-    # check all blocks
+    # Check all blocks one by one
     for P in (PCASE, PDFT, PDMFT, PIMP, PSOLVER)
         foreach(x -> _v(x.second), P)
     end
 
-    # C2. check rationalities
+    # C2. Check rationalities
     #
-    # check dft block
+    # Check dft block
     @assert get_d("engine") in ("vasp", "wannier")
-    @assert get_d("smear") in ("m-p", "gauss", "tetra", missing)
-    @assert get_d("kmesh") in ("accurate", "medium", "coarse", "file", missing)
+    @assert get_d("smear") in ("m-p", "gauss", "tetra")
+    @assert get_d("kmesh") in ("accurate", "medium", "coarse", "file")
     #
-    # check dmft block
+    # Check dmft block
     @assert get_m("mode") in (1, 2)
     @assert get_m("axis") in (1, 2)
     @assert get_m("niter") > 0
-    @assert get_m("dcount") in ("fll1", "fll2", "amf")
+    @assert get_m("dcount") in ("fll1", "fll2", "amf", "exact")
     @assert get_m("beta") >= 0.0
     #
-    # check solver block
+    # Check solver block
     @assert get_s("engine") in ("ct_hub1", "ct_hub2", "hub1", "norg")
     #
-    # please add more assertion statements here
+    # Please add more assertion statements here
 
-    # C3. check self-consistency
+    # C3. Check self-consistency
     #
-    # check dft block
+    # Check dft block
     if get_d("lspinorb")
         @assert get_d("lspins")
     end
@@ -190,14 +192,14 @@ function chk_dict()
         @assert !get_d("lsymm") && !isa(get_d("sproj"), Missing)
     end
     #
-    # check solver block
+    # Check solver block
     if get_s("engine") in ("ct_hub1", "ct_hub2", "hub1")
-        @assert get_m("axis") === 1 # imaginary axis
+        @assert get_m("axis") === 1 # Imaginary axis
     elseif get_s("engine") in ("norg")
-        @assert get_m("axis") === 2 # real axis
+        @assert get_m("axis") === 2 # Real axis
     end
     #
-    # please add more assertion statements here
+    # Please add more assertion statements here
 end
 
 """

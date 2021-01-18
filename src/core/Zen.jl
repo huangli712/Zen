@@ -103,8 +103,8 @@ export PrGroupT
 # setup    -> Setup parameters
 # exhibit  -> Display parameters for reference
 # inp_toml -> Parse case.toml, return raw configuration information
-# new_dict -> Update dicts of configuration
-# chk_dict -> Check dicts of configuration
+# new_dict -> Update dicts for configuration
+# chk_dict -> Check dicts for configuration
 # _v       -> Verify dict's values
 # cat_c    -> Print dict (PCASE)
 # cat_d    -> Print dict (PDFT)
