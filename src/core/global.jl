@@ -56,6 +56,6 @@ const __RELEASE__ = "2021/01"
 """
     __AUTHORS__
 
-Core authors of this julia package
+Core authors of this julia package. The Array's element is a NamedTuple object.
 """
 const __AUTHORS__ = [(name = "Li Huang", email = "lihuang.dmft@gmail.com")]
