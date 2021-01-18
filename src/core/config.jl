@@ -38,18 +38,23 @@ Display the configuration parameters for reference.
 """
 function exhibit()
     # S1: Show dict PCASE
+    println("< Parameters: case >")
     cat_c()
 
     # S2: Show dict PDFT
+    println("< Parameters: dft engine >")
     cat_d()
 
     # S3: Show dict PDMFT
+    println("< Parameters: dmft engine >")
     cat_m()
 
     # S4: Show dict PIMP
+    println("< Parameters: quantum impurity atoms >")
     cat_i()
 
     # S5: Show dict PSOLVER
+    println("< Parameters: quantum impurity solvers >")
     cat_s()
 end
 
@@ -230,7 +235,6 @@ Print the configuration parameters to stdout: for PCASE dict.
 """
 function cat_c()
     # See comments in cat_d()
-    println("< Parameters: case >")
     println("  case     -> ", str_c("case"))
     println()
 end
@@ -254,7 +258,6 @@ function cat_d()
     #
     # See config.jl/str_d() function for more details.
     #
-    println("< Parameters: dft engine >")
     println("  engine   -> ", str_d("engine"))
     println("  smear    -> ", str_d("smear"))
     println("  kmesh    -> ", str_d("kmesh"))
@@ -276,7 +279,6 @@ Print the configuration parameters to stdout: for PDMFT dict.
 """
 function cat_m()
     # See comments in cat_d()
-    println("< Parameters: dmft engine >")
     println("  mode     -> ", str_m("mode"))
     println("  axis     -> ", str_m("axis"))
     println("  niter    -> ", str_m("niter"))
@@ -299,7 +301,6 @@ Print the configuration parameters to stdout: for PIMP dict.
 """
 function cat_i()
     # See comments in cat_d()
-    println("< Parameters: quantum impurity atoms >")
     println("  nsite    -> ", str_i("nsite"))
     println("  atoms    -> ", str_i("atoms"))
     println("  equiv    -> ", str_i("equiv"))
@@ -319,20 +320,19 @@ Print the configuration parameters to stdout: for PSOLVER dict.
 """
 function cat_s()
     # See comments in cat_d()
-    println("< Parameters: quantum impurity solvers >")
     println("  engine   -> ", str_s("engine"))
     println("  params   -> ", str_s("params"))
     println()
 end
 
 #
-# get_x() functions
+# Service Functions (Group C: get_xxx())
 #
 
 """
     get_c(key::String)
 
-Extract configurations from dict: PCASE
+Extract configurations from dict: PCASE.
 """
 @inline function get_c(key::String)
     if haskey(PCASE, key)
@@ -345,7 +345,7 @@ end
 """
     get_d(key::String)
 
-Extract configurations from dict: PDFT
+Extract configurations from dict: PDFT.
 """
 @inline function get_d(key::String)
     if haskey(PDFT, key)
@@ -358,7 +358,7 @@ end
 """
     get_m(key::String)
 
-Extract configurations from dict: PDMFT
+Extract configurations from dict: PDMFT.
 """
 @inline function get_m(key::String)
     if haskey(PDMFT, key)
@@ -371,7 +371,7 @@ end
 """
     get_i(key::String)
 
-Extract configurations from dict: PIMP
+Extract configurations from dict: PIMP.
 """
 @inline function get_i(key::String)
     if haskey(PIMP, key)
@@ -384,7 +384,7 @@ end
 """
     get_s(key::String)
 
-Extract configurations from dict: PSOLVER
+Extract configurations from dict: PSOLVER.
 """
 @inline function get_s(key::String)
     if haskey(PSOLVER, key)
@@ -395,13 +395,13 @@ Extract configurations from dict: PSOLVER
 end
 
 #
-# str_x() functions
+# Service Functions (Group D: str_xxx())
 #
 
 """
     str_c(key::String)
 
-Extract configurations from dict: PCASE, convert them into strings
+Extract configurations from dict: PCASE, convert them into strings.
 """
 @inline function str_c(key::String)
     if haskey(PCASE, key)
@@ -418,7 +418,7 @@ end
 """
     str_d(key::String)
 
-Extract configurations from dict: PDFT, convert them into strings
+Extract configurations from dict: PDFT, convert them into strings.
 """
 @inline function str_d(key::String)
     if haskey(PDFT, key)
@@ -435,7 +435,7 @@ end
 """
     str_m(key::String)
 
-Extract configurations from dict: PDMFT, convert them into strings
+Extract configurations from dict: PDMFT, convert them into strings.
 """
 @inline function str_m(key::String)
     if haskey(PDMFT, key)
@@ -452,7 +452,7 @@ end
 """
     str_i(key::String)
 
-Extract configurations from dict: PIMP, convert them into strings
+Extract configurations from dict: PIMP, convert them into strings.
 """
 @inline function str_i(key::String)
     if haskey(PIMP, key)
@@ -469,7 +469,7 @@ end
 """
     str_s(key::String)
 
-Extract configurations from dict: PSOLVER, convert them into strings
+Extract configurations from dict: PSOLVER, convert them into strings.
 """
 @inline function str_s(key::String)
     if haskey(PSOLVER, key)
