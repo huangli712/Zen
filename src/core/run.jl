@@ -24,19 +24,8 @@ prompt("ZEN", "OVERVIEW")
 overview()
 
 # S02: parse the configuration file, get job's description
-message("ZEN", "PARSER")
-#
-# S02.1: parse the case.toml file to extract configuration parameters
-println("Extract configuration parameters from $(query_args())")
-cfg = inp_toml(query_args(), true)
-#
-# S02.2: build the configuration dictionaries
-println("Build configuration dictionaries")
-new_dict(cfg)
-#
-# S02.3: validate the configuration dictionaries
-println("Verify configuration dictionaries\n")
-chk_dict()
+prompt("ZEN", "PARSER")
+setup()
 
 # S03: write the configuration parameters to stdout
 message("ZEN", "VIEWER")
