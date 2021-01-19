@@ -5,7 +5,21 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/15
+# last modified: 2021/01/19
+#
+
+#
+# Driver Functions
+#
+
+function ready() end
+function go() end
+function final() end
+function cycle1() end
+function cycle2() end
+
+#
+# Service Functions
 #
 
 """
