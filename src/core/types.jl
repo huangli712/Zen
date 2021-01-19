@@ -5,7 +5,7 @@
 # Status  : unstable
 # Comment :
 #
-# Last modified: 2021/01/18
+# Last modified: 2021/01/19
 #
 
 #
@@ -119,6 +119,23 @@ const KohnShamData = Dict{String,Any}()
 #
 # Customized Structs
 #
+
+"""
+    Logger
+
+Store the IOStreams for case.log and case.cycle files.
+
+.log   -> IOStream for case.log file
+.cycle -> IOStream for case.cycle file
+"""
+mutable struct Logger
+    # Members
+    log   :: IOStream
+    cycle :: IOStream
+
+    # Default constructor
+    Logger() = new()
+end
 
 """
     IterInfo
@@ -356,6 +373,17 @@ end
 #
 # Customized Base.show() functions
 #
+
+"""
+    Base.show(io::IO, it::IterInfo)
+
+Base.show() function for Logger struct.
+"""
+function Base.show(io::IO, logger::Logger)
+    println(io, "Logger struct")
+    println(io, ".log   : ", logger.log  )
+    println(io, ".cycle : ", logger.cycle)
+end
 
 """
     Base.show(io::IO, it::IterInfo)

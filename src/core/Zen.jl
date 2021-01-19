@@ -33,7 +33,7 @@ using TOML
 #
 # Summary:
 #
-# Define some global numerical or string constants
+# Define type aliases and some string constants.
 #
 # Members:
 #
@@ -71,6 +71,7 @@ export __AUTHORS__
 # PIMP         -> Dict for quantum impurities
 # PSOLVER      -> Dict for quantum impurity solvers
 # KohnShamData -> Dict for storing Kohn-Sham data
+# Logger       -> Struct for logger
 # IterInfo     -> Struct for iteration information
 # Lattice      -> Struct for crystallography information
 # PrTrait      -> Struct for projectors
@@ -85,6 +86,7 @@ export PDMFT
 export PIMP
 export PSOLVER
 export KohnShamData
+export Logger
 export IterInfo
 export Lattice
 export PrTrait
