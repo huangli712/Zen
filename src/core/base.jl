@@ -63,6 +63,8 @@ end
 
 """
     cycle1()
+
+Perform one-shot DFT + DMFT calculations.
 """
 function cycle1()
 #
@@ -151,6 +153,8 @@ end
 
 """
     cycle2()
+
+Perform fully self-consistent DFT + DMFT calculations.
 """
 function cycle2()
     sorry()
