@@ -204,6 +204,11 @@ export line_to_array
 #
 # Members:
 #
+# ready        -> Prepare everything that is essential for DFT + DMFT calculations  
+# go           -> Dispatcher for DFT + DMFT calculations
+# final        -> Finalize the DFT + DMFT calculations
+# cycle1       -> Perform DFT + DMFT calculations (one-shot mode)
+# cycle2       -> Perform DFT + DMFT calculations (fully self-consistent mode)
 # make_trees   -> Make working directories
 # rm_trees     -> Remove working directories
 # adaptor_init -> Initialize DFT_DMFT adaptor
@@ -221,6 +226,11 @@ export line_to_array
 #
 include("base.jl")
 #
+export ready
+export go
+export final
+export cycle1
+export cycle2
 export make_trees
 export rm_trees
 export adaptor_init

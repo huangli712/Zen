@@ -30,10 +30,10 @@ setup()
 # S03: write the configuration parameters to stdout
 prompt("ZEN", "VIEWER")
 exhibit()
-exit(-1)
 
 # S04: initialize the job
-message("ZEN", "CREATOR")
+prompt("ZEN", "CREATOR")
+exit(-1)
 #
 # S04.1: check the input files (which are essential for the calculation)
 println("Ensure essential input files")
