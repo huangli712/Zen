@@ -79,11 +79,10 @@ end
 Wrapper for printstyled function.
 """
 macro ps2(str1, c1, str2, c2)
-    ex = quote
+    return quote
         printstyled($str1, color = $c1)
         printstyled($str2, color = $c2)
     end
-    return ex
 end
 
 """
