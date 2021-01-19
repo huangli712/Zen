@@ -33,10 +33,21 @@ end
 Dispatcher for the DFT + DMFT calculations
 """
 function go()
-    if get_m("mode") === 1
-        cycle1()
-    else
-        cycle2()
+    mode = get_m("mode")
+    @cswitch mode begin
+        # One-shot DFT + DMFT calculations
+        @case 1
+            cycle1()
+            break
+
+        # Fully self-consistent DFT + DMFT calculations
+        @case 2
+            cycle2()
+            break
+
+        @default
+            sorry()
+            break
     end
 end
 
