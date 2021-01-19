@@ -33,23 +33,8 @@ exhibit()
 
 # S04: initialize the job
 prompt("ZEN", "CREATOR")
+ready()
 exit(-1)
-#
-# S04.1: check the input files (which are essential for the calculation)
-println("Ensure essential input files")
-query_inps()
-#
-# S04.2: prepare the working directories
-println("Create working directories")
-make_trees()
-#
-# S04.3: create an IterInfo object
-println("Create self-consistent iterator")
-it = IterInfo()
-#
-# S04.4: check self-consistent mode
-mode = get_m("mode") === 1 ? "one-shot" : "fully self-consistent"
-println("Verify self-consistent mode: $mode\n")
 
 message("ZEN", "START")
 
