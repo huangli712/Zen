@@ -31,6 +31,11 @@ end
     go()
 """
 function go()
+    if get_m("mode") === 1
+        cycle1()
+    else
+        cycle2()
+    end
 end
 
 function final() end

@@ -34,9 +34,9 @@ exhibit()
 # S04: initialize the job
 prompt("ZEN", "CREATOR")
 ready()
-exit(-1)
 
-message("ZEN", "START")
+prompt("ZEN", "START")
+exit(-1)
 
 # well, we choose the one-shot mode
 if get_m("mode") === 1
