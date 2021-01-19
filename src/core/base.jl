@@ -30,7 +30,7 @@ end
 """
     go()
 
-Dispatcher for the DFT + DMFT calculations
+Dispatcher for the DFT + DMFT calculations.
 """
 function go()
     mode = get_m("mode")
@@ -45,6 +45,7 @@ function go()
             cycle2()
             break
 
+        # To be implemented
         @default
             sorry()
             break
@@ -53,6 +54,8 @@ end
 
 """
     final()
+
+Finalize the DFT + DMFT calculations.
 """
 function final()
     sorry()
