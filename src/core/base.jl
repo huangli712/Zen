@@ -67,6 +67,7 @@ end
 Perform one-shot DFT + DMFT calculations.
 """
 function cycle1()
+    # S00: Create IterInfo
 
 #
 # Remarks:
@@ -131,7 +132,7 @@ function cycle1()
 #
 
     # S07: To bridge the gap between dft engine and dmft engine by adaptor
-    message("ZEN", "ADAPTOR")
+    prompt("ZEN", "ADAPTOR")
     #
     # S07.1: prepare and check essential files for the adaptor
     println("Initialize everything needed by the adaptor")
@@ -148,9 +149,9 @@ function cycle1()
     adaptor_save(it)
 
     for iter = 1:get_m("niter")
-        message("ZEN", "ITER : $iter")
-        message("ZEN", "DMFT1")
-        message("ZEN", "SOLVER")
+        prompt("ZEN", "ITER : $iter")
+        prompt("ZEN", "DMFT1")
+        prompt("ZEN", "SOLVER")
     end
 end
 
