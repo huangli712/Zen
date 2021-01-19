@@ -7,7 +7,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/15
+# last modified: 2021/01/19
 #
 
 include("Zen.jl")
@@ -20,7 +20,7 @@ require()
 welcome()
 
 # S01: print the overview for zen
-message("ZEN", "OVERVIEW")
+prompt("ZEN", "OVERVIEW")
 overview()
 
 # S02: parse the configuration file, get job's description

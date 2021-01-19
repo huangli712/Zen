@@ -79,10 +79,11 @@ end
 Wrapper for printstyled function.
 """
 macro ps2(str1, c1, str2, c2)
-    return quote
+    ex = quote
         printstyled($str1, color = $c1)
         printstyled($str2, color = $c2)
     end
+    return :( $(esc(ex)) )
 end
 
 """
@@ -237,7 +238,7 @@ end
 Print an standard Zen message to the screen.
 """
 function prompt(from::String, msg::String)
-    @ps2 from * " > " :green msg :magenta
+    @ps2 "$from > " :green msg :magenta
     println()
 end
 
