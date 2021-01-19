@@ -29,6 +29,8 @@ end
 
 """
     go()
+
+Dispatcher for the DFT + DMFT calculations
 """
 function go()
     if get_m("mode") === 1
