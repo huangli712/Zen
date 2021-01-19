@@ -1,42 +1,46 @@
 #!/usr/bin/env julia
 
 #
-# project : pansy
-# source  : run.jl
-# author  : Li Huang (lihuang.dmft@gmail.com)
-# status  : unstable
-# comment :
+# Project : Pansy
+# Source  : run.jl
+# Author  : Li Huang (lihuang.dmft@gmail.com)
+# Status  : Unstable
+# Comment :
 #
-# last modified: 2021/01/19
+# Last modified: 2021/01/19
 #
 
 include("Zen.jl")
 using .Zen
 
-# S-1: check the version of julia runtime environment
+# S-1: Check the version of julia runtime environment
 require()
 
-# S00: print the welcome message
+# S00: Print the welcome message
 welcome()
 
-# S01: print the overview for zen
+# S01: Print the overview for Zen
 prompt("ZEN", "OVERVIEW")
 overview()
 
-# S02: parse the configuration file, get job's description
+# S02: Setup the configuration parameters
 prompt("ZEN", "PARSER")
 setup()
 
-# S03: write the configuration parameters to stdout
+# S03: Print the configuration parameters to stdout
 prompt("ZEN", "VIEWER")
 exhibit()
 
-# S04: initialize the job
+# S04: Initialize the task
 prompt("ZEN", "CREATOR")
 ready()
 
+# S05: Do the calculations
 prompt("ZEN", "START")
 go()
-exit(-1)
 
+# S06: Finalize the calculations
+final()
+
+# S07: Say good bye
 goodbye()
