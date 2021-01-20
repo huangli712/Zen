@@ -34,6 +34,8 @@ end
 Display the configuration parameters for reference.
 """
 function exhibit()
+    prompt("ZEN", "Configuration")
+
     # S1: Show dict PCASE
     println("< Parameters: case >")
     cat_c()
