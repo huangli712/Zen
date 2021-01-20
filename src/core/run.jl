@@ -31,8 +31,7 @@ exhibit()
 # S04: Initialize the task
 ready()
 
-# S05: Do the calculations
-prompt("ZEN", "START")
+# S05: Carry out the calculations
 go()
 
 # S06: Finalize the calculations
