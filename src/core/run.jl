@@ -7,7 +7,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/19
+# Last modified: 2021/01/20
 #
 
 include("Zen.jl")
@@ -20,19 +20,15 @@ require()
 welcome()
 
 # S01: Print the overview for Zen
-prompt("ZEN", "OVERVIEW")
 overview()
 
 # S02: Setup the configuration parameters
-prompt("ZEN", "PARSER")
 setup()
 
 # S03: Print the configuration parameters to stdout
-prompt("ZEN", "VIEWER")
 exhibit()
 
 # S04: Initialize the task
-prompt("ZEN", "CREATOR")
 ready()
 
 # S05: Do the calculations

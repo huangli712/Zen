@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/19
+# last modified: 2021/01/20
 #
 
 """
@@ -207,10 +207,10 @@ function overview()
     str2 = "(myid = $(myid()))"
 
     # Write the information
-    println("Starting time: ", Dates.format(now(), "yyyy-mm-dd / HH:MM:SS"))
-    println("Parallel execution: using ", nprocs(), str1, str2)
-    println("Current working directory: ", pwd())
-    println("Job description file: ", query_args())
+    println("Time: ", Dates.format(now(), "yyyy-mm-dd / HH:MM:SS"))
+    println("Para: Using ", nprocs(), str1, str2)
+    println("Dirs: ", pwd())
+    println("Task: ", query_args())
     println()
 end
 

@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/18
+# last modified: 2021/01/20
 #
 
 #
@@ -19,15 +19,12 @@ Read parameters from configuration file, and then setup the related dicts.
 """
 function setup()
     # S1: Parse the case.toml file to extract configuration parameters
-    println("Extract configuration parameters from $(query_args())")
     cfg = inp_toml(query_args(), true)
 
     # S2: Build the configuration dictionaries
-    println("Setup configuration dictionaries")
     new_dict(cfg)
 
     # S3: Validate the configuration dictionaries
-    println("Check configuration dictionaries\n")
     chk_dict()
 end
 

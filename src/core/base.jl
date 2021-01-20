@@ -19,11 +19,9 @@ Examine whether all the conditions for DFT + DMFT calculations are ready.
 """
 function ready()
     # S1: Check the input files
-    println("Ensure essential input files")
     query_inps()
 
     # S2: Prepare the working directories
-    println("Create working directories")
     make_trees()
 end
 
