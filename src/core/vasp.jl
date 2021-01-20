@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/15
+# last modified: 2021/01/20
 #
 
 """
@@ -52,6 +52,7 @@ end
 Check the runtime environment of vasp, prepare necessary input files
 """
 function vasp_init(it::IterInfo)
+    println("  init dft engine: vasp")
     # prepare essential input files
     if it.dmft_cycle == 0
         # copy POTCAR and POSCAR
@@ -88,11 +89,13 @@ end
 Execute the vasp program
 """
 function vasp_run(it::IterInfo)
+    println("  launch dft engine")
+
     # get the home directory of vasp
     dft_home = query_dft()
 
     # determine mpi prefix (whether the vasp is executed sequentially)
-    mpi_prefix = parse_toml("../MPI.toml", "dft", false)
+    mpi_prefix = inp_toml("../MPI.toml", "dft", false)
 
     # select suitable vasp program
     if get_d("lspinorb")

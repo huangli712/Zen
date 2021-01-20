@@ -88,18 +88,15 @@ function cycle1()
 #
 
     # S01: Perform DFT calculation (for the first time)
-    prompt(" ", "DFT")
+    prompt("DFT", "BEGIN")
     #
     # S01.1: Prepare and check essential files for the DFT engine
-    println("Initialize everything needed by the DFT engine")
     dft_init(it)
     #
     # S01.2: Perform a self-consitent calculation at the DFT level
-    println("Launch the DFT engine")
     dft_run(it)
     #
     # S01.3: Backup the output files of the DFT engine
-    println("Save the output files\n")
     dft_save(it)
 
     # We want better optimal projectors.
