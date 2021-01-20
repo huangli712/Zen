@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/19
+# Last modified: 2021/01/20
 #
 
 #
@@ -18,6 +18,8 @@
 Examine whether all the conditions for DFT + DMFT calculations are ready.
 """
 function ready()
+    prompt("ZEN", "START")
+
     # S1: Check the input files
     query_inps()
 
@@ -65,7 +67,13 @@ end
 Perform one-shot DFT + DMFT calculations.
 """
 function cycle1()
-    # S00: Create IterInfo
+    # S-1: Create IterInfo
+    it = IterInfo()
+
+    # S00: Create Logger
+    lr = Logger()
+    lr.log = open(query_case() * ".log", "a")
+    lr.cycle = open(query_case() * ".cycle", "a")
 
 #
 # Remarks:
@@ -80,7 +88,7 @@ function cycle1()
 #
 
     # S01: Perform DFT calculation (for the first time)
-    prompt("ZEN", "DFT")
+    prompt(" ", "DFT")
     #
     # S01.1: Prepare and check essential files for the DFT engine
     println("Initialize everything needed by the DFT engine")
