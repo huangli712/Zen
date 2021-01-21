@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/20
+# last modified: 2021/01/21
 #
 
 """
@@ -49,21 +49,22 @@ end
 """
     vasp_init(it::IterInfo)
 
-Check the runtime environment of vasp, prepare necessary input files
+Check the runtime environment of vasp, prepare necessary input files.
 """
 function vasp_init(it::IterInfo)
     println("  init dft engine: vasp")
-    # prepare essential input files
+
+    # Prepare essential input files
     if it.dmft_cycle == 0
-        # copy POTCAR and POSCAR
+        # Copy POTCAR and POSCAR
         cp("../POTCAR", joinpath(pwd(), "POTCAR"), force = true)
         cp("../POSCAR", joinpath(pwd(), "POSCAR"), force = true)
 
-        # generate INCAR automatically
+        # Generate INCAR automatically
         vasp_incar(it._dft_fermi)
     end
 
-    # check essential input files
+    # Check essential input files
     if it.dmft_cycle >= 1
         flist = ("INCAR", "POSCAR", "POTCAR")
         for i in eachindex(flist)
@@ -73,11 +74,11 @@ function vasp_init(it::IterInfo)
             end
         end
 
-        # maybe we need to update INCAR file here
+        # Maybe we need to update INCAR file here
         vasp_incar(it.dmft_fermi)
     end
 
-    # well, maybe we need to generate the KPOINTS file by ourselves
+    # Well, perhaps we need to generate the KPOINTS file by ourselves
     if get_d("kmesh") === "file"
         vasp_kpoints()
     end
