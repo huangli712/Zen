@@ -265,19 +265,19 @@ end
 """
     adaptor_run(it::IterInfo)
 
-Parse the data output by dft engine, postprocess them, and then transform
-them into IR format
+Parse the data output by DFT engine, postprocess them, and then transform
+them into IR format.
 """
 function adaptor_run(it::IterInfo)
-    # enter dft directory
+    # Enter dft directory
     cd("dft")
 
     #
     # A1: Parse the original Kohn-Sham data
     #
     #
-    # choose suitable driver function according to dft engine
-    # the Kohn-Sham data will be stored in the KohnShamData dict
+    # Choose suitable driver function according to DFT engine. The
+    # Kohn-Sham data will be stored in the KohnShamData dict.
     #
     engine = get_d("engine")
     @cswitch engine begin
@@ -293,24 +293,24 @@ function adaptor_run(it::IterInfo)
     #
     # A2: Process the original Kohn-Sham data
     #
-    # well, now we have the Kohn-Sham data. but they can not be used
-    # directly. we have to check and process them carefully. please
+    # Well, now we have the Kohn-Sham data. But they can not be used
+    # directly. We have to check and process them carefully. Please
     # pay attention to that the KohnShamData dict will be modified in
-    # the plo_adaptor() function
+    # the plo_adaptor() function.
     #
     plo_adaptor()
 
     #
     # A3: Output the processed Kohn-Sham data
     #
-    # ok, now the Kohn-Sham data are ready. we would like to write them
-    # to some specified files. here the parameter (view = )true means
+    # Ok, now the Kohn-Sham data are ready. We would like to write them
+    # to some specified files. Here the parameter (debug = )true means
     # that we are going to seeing some interesting quantities to check
-    # the correctness of the Kohn-Sham data
+    # the correctness of the Kohn-Sham data.
     #
     ir_adaptor(true)
 
-    # enter the parent directory
+    # Enter the parent directory
     cd("..")
 end
 
