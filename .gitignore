@@ -11,6 +11,7 @@
 *.pyc
 *.swp
 *.data
+*.cycle
 *.optrpt
 *.dSYM
 .nfs*
