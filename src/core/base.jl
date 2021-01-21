@@ -18,8 +18,6 @@
 Examine whether all the conditions for DFT + DMFT calculations are ready.
 """
 function ready()
-    prompt("ZEN", "START")
-
     # S1: Check the input files
     query_inps()
 
@@ -33,7 +31,10 @@ end
 Dispatcher for the DFT + DMFT calculations.
 """
 function go()
+    # Get calculation mode
     mode = get_m("mode")
+
+    # Choose suitable computational driver 
     @cswitch mode begin
         # One-shot DFT + DMFT calculations
         @case 1
