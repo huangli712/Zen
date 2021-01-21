@@ -5,46 +5,48 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/15
+# last modified: 2021/01/21
 #
 
 """
-    ir_adaptor()
+    ir_adaptor(debug::Bool = false)
 """
-function ir_adaptor()
+function ir_adaptor(debug::Bool = false)
     # dump the Kohn-Sham data to files with IR format
-    println("< Adaptor: Put Kohn-Sham Data >")
+    println("  < IR Adaptor >")
 
     # write lattice structure
-    println("  Lattice")
+    println("    Put Lattice")
     #irio_lattice(pwd(), latt)
 
     # write kmesh and the corresponding weights
-    println("  Kmesh")
-    println("  Weight")
+    println("    Put Kmesh")
+    println("    Put Weight")
     #irio_kmesh(pwd(), kmesh, weight)
 
     # write tetrahedron data if they are available
     if get_d("smear") === "tetra"
-        println("  Tetrahedron")
+        println("    Put Tetrahedron")
         #irio_tetra(pwd(), volt, itet)
     end
 
     # write band structure and the corresponding occupancies
-    println("  Enk")
-    println("  Occupy")
+    println("    Put Enk")
+    println("    Put Occupy")
     #irio_eigen(pwd(), enk, occupy)
 
     # write projectors, traits, and groups
-    println("  Projector (Trait and Group)")
+    println("    Put Projector (Trait and Group)")
     #irio_projs(pwd(), chipsi)
 
     # write fermi level
-    println("  Fermi Level\n")
+    println("    Put Fermi Level\n")
     #irio_fermi(pwd(), fermi)
 
-    println("< Adaptor: View Overlap Matrix >")
-    println("< Adaptor: View Density Matrix >")
+    if debug
+        println("< Adaptor: View Overlap Matrix >")
+        println("< Adaptor: View Density Matrix >")
+    end
 end
 
 """

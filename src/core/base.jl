@@ -153,6 +153,7 @@ function cycle1()
     # S03.4: Monitor the status
     monitor(true)
 
+    @show get_m("niter")
     for iter = 1:get_m("niter")
         # TODO
         prompt("ZEN", "ITER : $iter")
@@ -286,6 +287,7 @@ function adaptor_init(it::IterInfo)
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
+            prompt("Adaptor : VASP")
             vasp_files()
             break
 
@@ -318,6 +320,7 @@ function adaptor_run(it::IterInfo)
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
+            println("  Launch VASP Adaptor")
             vasp_adaptor()
             break
 
@@ -334,6 +337,7 @@ function adaptor_run(it::IterInfo)
     # pay attention to that the KohnShamData dict will be modified in
     # the plo_adaptor() function.
     #
+    println("  Launch PLO Adaptor")
     plo_adaptor()
 
     #
@@ -344,6 +348,7 @@ function adaptor_run(it::IterInfo)
     # that we are going to seeing some interesting quantities to check
     # the correctness of the Kohn-Sham data.
     #
+    println("  Launch IR Adaptor")
     ir_adaptor(true)
 
     # Enter the parent directory
@@ -433,7 +438,7 @@ function dft_save(it::IterInfo)
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
-            println("  Backup VASP's output data")
+            println("  Backup VASP's output data\n")
             vasp_save(it)
             break
 

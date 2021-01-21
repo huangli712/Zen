@@ -5,19 +5,19 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/15
+# last modified: 2021/01/21
 #
 
 """
     plo_adaptor()
 """
 function plo_adaptor()
-    println("< Adaptor: Eat Kohn-Sham Data >")
-    println("  Grouping")
-    println("  Rotating")
-    println("  Leveling")
-    println("  Filtering")
-    println("  Orthogonalizing\n")
+    println("  < PLO Adaptor >")
+    println("    Grouping")
+    println("    Rotating")
+    println("    Leveling")
+    println("    Filtering")
+    println("    Orthogonalizing\n")
 end
 
 """

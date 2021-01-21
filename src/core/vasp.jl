@@ -15,34 +15,34 @@ Adaptor support for vasp code. it will read the output of vasp code and
 fulfill the KohnShamData dict
 """
 function vasp_adaptor()
-    println("< Adaptor: Get Kohn-Sham Data >")
+    println("  < VASP Adaptor >")
 
     # read in lattice structure
-    println("  Lattice")
+    println("    Get Lattice")
     latt = vaspio_lattice(pwd())
 
     # read in kmesh and the corresponding weights
-    println("  Kmesh")
-    println("  Weight")
+    println("    Get Kmesh")
+    println("    Get Weight")
     kmesh, weight = vaspio_kmesh(pwd())
 
     # read in tetrahedron data if they are available
     if get_d("smear") === "tetra"
-        println("  Tetrahedron")
+        println("    Get Tetrahedron")
         volt, itet = vaspio_tetra(pwd())
     end
 
     # read in band structure and the corresponding occupancies
-    println("  Enk")
-    println("  Occupy")
+    println("    Get Enk")
+    println("    Get Occupy")
     enk, occupy = vaspio_eigen(pwd())
 
     # read in raw projectors, traits, and groups
-    println("  Projector (Trait and Group)")
+    println("    Get Projector (Trait and Group)")
     PT, PG, chipsi = vaspio_projs(pwd())
 
     # read in fermi level
-    println("  Fermi Level\n")
+    println("    Get Fermi Level\n")
     fermi = vaspio_fermi(pwd())
 end
 
@@ -141,13 +141,13 @@ end
 """
     vasp_incar(fermi::F64)
 
-Generate an INCAR file. it will be used only when the dft engine is vasp
+Generate an INCAR file. It will be used only when the DFT engine is vasp.
 """
 function vasp_incar(fermi::F64)
-    # open the iostream
+    # Open the iostream
     ios = open("INCAR", "w")
 
-    # standard part
+    # Standard part
     case = get_c("case")
     write(ios, "System   = $case \n")
     write(ios, "PREF     = Accurate \n")
@@ -155,10 +155,11 @@ function vasp_incar(fermi::F64)
     write(ios, "ALGO     = Normal \n")
     write(ios, "LASPH    = .TRUE. \n")
     write(ios, "LMAXMIX  = 6 \n")
+    write(ios, "NCORE    = 4 \n")
 
-    # customize your INCAR according to the case.toml
+    # Customize your INCAR according to the case.toml
     #
-    # for smearing
+    # For smearing
     smear = get_d("smear")
     @cswitch smear begin
         @case "m-p"
@@ -178,9 +179,10 @@ function vasp_incar(fermi::F64)
             break
     end
 
-    # for kmesh density
-    # if kmesh == "file", then vasp_kpoints() will be used to generate
-    # the KPOINTS file
+    # For kmesh density
+    #
+    # If kmesh == "file", then vasp_kpoints() will be used to generate
+    # the KPOINTS file.
     kmesh = get_d("kmesh")
     @cswitch kmesh begin
         @case "accurate"
@@ -198,27 +200,28 @@ function vasp_incar(fermi::F64)
         @case "file"
             break
 
-        @default # very coarse kmesh
+        @default # Very coarse kmesh
             write(ios, "KSPACING = 0.5 \n")
             break
     end
 
-    # for magnetic moment
+    # For magnetic moment
     magmom = get_d("magmom")
     if !isa(magmom, Missing)
         write(ios, "MAGMOM   = $magmom \n")
     end
 
-    # for symmetry
+    # For symmetry
     lsymm = get_d("lsymm")
     if lsymm
         write(ios, "ISYM     = 2 \n")
-    else # ignore the symmetry completely
+    else # Ignore the symmetry completely
         write(ios, "ISYM     =-1 \n")
     end
 
-    # for spin polarizations
-    # if spin-orbit coupling is on, spin orientations must be polarized
+    # For spin polarizations
+    #
+    # If spin-orbit coupling is on, spin orientations must be polarized.
     lspins = get_d("lspins") || get_d("lspinorb")
     if lspins
         write(ios, "ISPIN    = 2 \n")
@@ -226,7 +229,7 @@ function vasp_incar(fermi::F64)
         write(ios, "ISPIN    = 1 \n")
     end
 
-    # for spin-orbit coupling
+    # For spin-orbit coupling
     lspinorb = get_d("lspinorb")
     if lspinorb
         write(ios, "LSORBIT  = .TRUE. \n")
@@ -234,7 +237,7 @@ function vasp_incar(fermi::F64)
         write(ios, "LSORBIT  = .FALSE. \n")
     end
 
-    # for optimized projectors
+    # For optimized projectors
     ewidth = get_d("ewidth")
     loptim = get_d("loptim")
     if !isa(ewidth, Missing) && !isa(loptim, Missing)
@@ -247,7 +250,7 @@ function vasp_incar(fermi::F64)
         end
     end
 
-    # for local orbitals and projectors
+    # For local orbitals and projectors
     lproj = get_d("lproj")
     sproj = get_d("sproj")
     if !isa(lproj, Missing) && !isa(sproj, Missing)
@@ -259,7 +262,7 @@ function vasp_incar(fermi::F64)
         end
     end
 
-    # close the iostream
+    # Close the iostream
     close(ios)
 end
 
