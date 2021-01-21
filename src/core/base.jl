@@ -154,6 +154,11 @@ function cycle1()
     # S03.4: Monitor the status
     monitor(true)
 
+    #
+    # STOP HERE
+    #
+    exit(-1)
+
     for iter = 1:get_m("niter")
         # S04: Perform DMFT calculation
         #
@@ -207,7 +212,7 @@ Determine whether we need to terminate the Zen code
 function monitor(force_exit::Bool = false)
     #
     # In order to terminate the Zen code, the following two conditions
-    # should be fulfilled.
+    # should be fulfilled at the same time.
     #
     # 1. The argument force_exit is true
     #
@@ -296,7 +301,7 @@ function adaptor_init(it::IterInfo)
     # Enter dft directory
     cd("dft")
 
-    # Choose suitable driver according to DFT engine
+    # Choose suitable adaptor according to DFT engine
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
@@ -392,7 +397,7 @@ function dft_init(it::IterInfo)
     # Enter dft directory
     cd("dft")
 
-    # Choose suitable DFT engine
+    # Choose suitable DFT engine, then initialize it's input files
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
@@ -420,7 +425,7 @@ function dft_run(it::IterInfo)
     # Enter dft directory
     cd("dft")
 
-    # Choose suitable DFT engine
+    # Choose suitable DFT engine, then launch it
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
@@ -447,7 +452,7 @@ function dft_save(it::IterInfo)
     # Enter dft directory
     cd("dft")
 
-    # Choose suitable DFT engine
+    # Choose suitable DFT engine, then backup some essential output files
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
@@ -470,7 +475,13 @@ end
 To examine the runtime environment for dynamical mean-field theory engine.
 """
 function dmft_init(it::IterInfo)
+    # Enter dmft1 directory
+    cd("dmft1")
+
     # TODO
+
+    # Enter the parent directory
+    cd("..")
 end
 
 """
@@ -479,7 +490,13 @@ end
 Launch the dynamical mean-field theory engine.
 """
 function dmft_run(it::IterInfo)
+    # Enter dmft1 directory
+    cd("dmft1")
+
     # TODO
+
+    # Enter the parent directory
+    cd("..")
 end
 
 """
@@ -489,7 +506,13 @@ Backup the output files by dynamical mean-field theory engine
 for next iterations.
 """
 function dmft_save(it::IterInfo)
+    # Enter dmft1 directory
+    cd("dmft1")
+
     # TODO
+
+    # Enter the parent directory
+    cd("..")
 end
 
 """
