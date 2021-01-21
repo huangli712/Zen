@@ -240,13 +240,13 @@ end
 """
     adaptor_init(it::IterInfo)
 
-Initialize the adaptor, to check whether the essential files exist
+Initialize the adaptor, to check whether the essential files exist.
 """
 function adaptor_init(it::IterInfo)
-    # enter dft directory
+    # Enter dft directory
     cd("dft")
 
-    # choose suitable driver function according to dft engine
+    # Choose suitable driver according to DFT engine
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
@@ -258,7 +258,7 @@ function adaptor_init(it::IterInfo)
             break
     end
 
-    # enter the parent directory
+    # Enter the parent directory
     cd("..")
 end
 
