@@ -317,23 +317,22 @@ end
 """
     adaptor_save(it::IterInfo)
 
-Backup the output files by adaptor
+Backup the output files by adaptor.
 """
 function adaptor_save(it::IterInfo)
-    # enter dft directory
+    # Enter dft directory
     cd("dft")
 
     # TODO
 
-    # enter the parent directory
+    # Enter the parent directory
     cd("..")
 end
 
 """
     dft_init(it::IterInfo)
 
-To examine whether the runtime environment for density functional theory
-engine is ready.
+To examine the runtime environment for density functional theory engine.
 """
 function dft_init(it::IterInfo)
     # Enter dft directory
