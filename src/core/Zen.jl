@@ -209,6 +209,7 @@ export line_to_array
 # final        -> Finalize the DFT + DMFT calculations
 # cycle1       -> Perform DFT + DMFT calculations (one-shot mode)
 # cycle2       -> Perform DFT + DMFT calculations (fully self-consistent mode)
+# monitor      -> Monitor the DFT + DMFT calculations
 # make_trees   -> Make working directories
 # rm_trees     -> Remove working directories
 # adaptor_init -> Initialize DFT_DMFT adaptor
@@ -231,6 +232,7 @@ export go
 export final
 export cycle1
 export cycle2
+export monitor
 export make_trees
 export rm_trees
 export adaptor_init
