@@ -250,6 +250,7 @@ Print a format Zen message to the screen.
 """
 function prompt(msg::String)
     @ps2 "Task -> " :blue msg :red
+    println()
 end
 
 """
