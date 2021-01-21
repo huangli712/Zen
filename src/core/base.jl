@@ -157,11 +157,13 @@ function cycle1()
         # TODO
         prompt("ZEN", "ITER : $iter")
 
+        # S04:
         prompt("ZEN", "DMFT1")
         dmft_init(it)
         dmft_run(it)
         dmft_save(it)
 
+        # S05:
         prompt("ZEN", "SOLVER")
         solver_init(it)
         solver_run(it)
