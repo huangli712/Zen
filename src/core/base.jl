@@ -156,8 +156,16 @@ function cycle1()
     for iter = 1:get_m("niter")
         # TODO
         prompt("ZEN", "ITER : $iter")
+
         prompt("ZEN", "DMFT1")
+        dmft_init(it)
+        dmft_run(it)
+        dmft_save(it)
+
         prompt("ZEN", "SOLVER")
+        solver_init(it)
+        solver_run(it)
+        solver_save(it)
     end
 end
 
