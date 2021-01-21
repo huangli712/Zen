@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/20
+# last modified: 2021/01/21
 #
 
 #
@@ -182,7 +182,7 @@ function chk_dict()
     @assert get_m("beta") >= 0.0
     #
     # Check solver block
-    @assert get_s("engine") in ("ct_hub1", "ct_hub2", "hub1", "norg")
+    @assert get_s("engine") in ("ct_hyb1", "ct_hyb2", "hub1", "norg")
     #
     # Please add more assertion statements here
 
