@@ -92,7 +92,7 @@ function cycle1()
 #
 
     # S01: Perform DFT calculation (for the first time)
-    prompt("DFT", "BEGIN")
+    prompt("DFT : VASP")
     #
     # S01.1: Prepare and check essential files for the DFT engine
     dft_init(it)

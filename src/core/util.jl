@@ -236,11 +236,20 @@ end
 """
     prompt(from::String, msg::String)
 
-Print an standard Zen message to the screen.
+Print a format Zen message to the screen.
 """
 function prompt(from::String, msg::String)
     @ps2 "$from > " :green msg :magenta
     println()
+end
+
+"""
+    prompt(msg::String)
+
+Print a format Zen message to the screen.
+"""
+function prompt(msg::String)
+    @ps2 "Task -> " :blue msg :red
 end
 
 """

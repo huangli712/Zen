@@ -197,7 +197,7 @@ function chk_dict()
     end
     #
     # Check solver block
-    if get_s("engine") in ("ct_hub1", "ct_hub2", "hub1")
+    if get_s("engine") in ("ct_hyb1", "ct_hyb2", "hub1")
         @assert get_m("axis") === 1 # Imaginary axis
     elseif get_s("engine") in ("norg")
         @assert get_m("axis") === 2 # Real axis
