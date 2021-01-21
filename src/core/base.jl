@@ -101,6 +101,9 @@ function cycle1()
     #
     # S01.3: Backup the output files of the DFT engine
     dft_save(it)
+    #
+    # S01.4: Monitor the status
+    monitor(true)
 
     # We want better optimal projectors.
     # In the previous DFT run, initial fermi level = 0 -> wrong energy
@@ -117,36 +120,41 @@ function cycle1()
         # S02.2: Perform a self-consitent calculation at the DFT level
         dft_run(it)
         #
-        # S02.3: backup the output files of the DFT engine
+        # S02.3: Backup the output files of the DFT engine
         dft_save(it)
+        #
+        # S02.4: Monitor the status
+        monitor(true)
 
     end
 
 #
 # Remarks 2:
 #
-# the key Kohn-Sham data inclue lattice structures, k-mesh and its weights,
-# tetrahedra data, eigenvalues, raw projectors, and fermi level, etc. at
-# first the adaptor will read in these data from the output files of dft
-# engine. and then it will process the raw projectors (parse, label, group,
-# filter, and rotate). finally, the adaptor will write down the processed
-# data to some specified files within the IR format.
+# The key Kohn-Sham data inclue lattice structures, k-mesh and its weights,
+# tetrahedra data, eigenvalues, raw projectors, and fermi level, etc. At
+# first, the adaptor will read in these data from the output files of DFT
+# engine. And then it will process the raw projectors (such as parsing,
+# labeling, grouping, filtering, and rotatation). Finally, the adaptor will
+# write down the processed data to some specified files within the IR format.
 #
 
-    # S07: To bridge the gap between dft engine and dmft engine by adaptor
+    # S03: To bridge the gap between DFT engine and DMFT engine by adaptor
     #
-    # S07.1: prepare and check essential files for the adaptor
+    # S03.1: Prepare and check essential files for the adaptor
     adaptor_init(it)
     #
-    # S07.2: launch the adaptor. it will read the Kohn-Sham data from the
-    # dft engine, postprocess them, and then write them to external files
-    # with the IR format
+    # S03.2: Launch the adaptor
     adaptor_run(it)
     #
-    # S07.3: backup the output files of the adaptor
+    # S03.3: backup the output files of the adaptor
     adaptor_save(it)
+    #
+    # S03.4: Monitor the status
+    monitor(true)
 
     for iter = 1:get_m("niter")
+        # TODO
         prompt("ZEN", "ITER : $iter")
         prompt("ZEN", "DMFT1")
         prompt("ZEN", "SOLVER")
@@ -159,6 +167,7 @@ end
 Perform fully self-consistent DFT + DMFT calculations.
 """
 function cycle2()
+    # TODO
     sorry()
 end
 
