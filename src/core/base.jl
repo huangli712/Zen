@@ -521,7 +521,18 @@ end
 To examine the runtime environment for quantum impurity solver.
 """
 function solver_init(it::IterInfo)
-    # TODO
+    # Loop over each impurity site
+    for i = 1:get_i("nsite")
+
+        # Enter impurity.i directory
+        cd("impurity.$i")
+
+        # TODO
+
+        # Enter the parent directory
+        cd("..")
+
+    end
 end
 
 """
@@ -530,7 +541,18 @@ end
 Launch the quantum impurity solver.
 """
 function solver_run(it::IterInfo)
-    # TODO
+    # Loop over each impurity site
+    for i = 1:get_i("nsite")
+
+        # Enter impurity.i directory
+        cd("impurity.$i")
+
+        # TODO
+
+        # Enter the parent directory
+        cd("..")
+
+    end
 end
 
 """
@@ -539,5 +561,16 @@ end
 Backup the output files by quantum impurity solver for next iterations.
 """
 function solver_save(it::IterInfo)
-    # TODO
+    # Loop over each impurity site
+    for i = 1:get_i("nsite")
+
+        # Enter impurity.i directory
+        cd("impurity.$i")
+
+        # TODO
+
+        # Enter the parent directory
+        cd("..")
+
+    end
 end
