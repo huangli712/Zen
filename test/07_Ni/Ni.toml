@@ -39,5 +39,5 @@ jpara = [0.7]
 lpara = [0.0]
 
 [solver]
-engine = "ct_hub1"
+engine = "ct_hyb1"
 params = [""]
