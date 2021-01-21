@@ -527,6 +527,7 @@ function solver_init(it::IterInfo)
         # Enter impurity.i directory
         cd("impurity.$i")
 
+        # Choose suitable quantum impurity solver
         engine = get_s("engine")
         @cswitch engine begin
             @case "ct_hyb1"
@@ -564,7 +565,25 @@ function solver_run(it::IterInfo)
         # Enter impurity.i directory
         cd("impurity.$i")
 
-        # TODO
+        # Choose suitable quantum impurity solver
+        engine = get_s("engine")
+        @cswitch engine begin
+            @case "ct_hyb1"
+                sorry()
+                break
+
+            @case "ct_hyb2"
+                sorry()
+                break
+
+            @case "hub1"
+                sorry()
+                break
+
+            @case "norg"
+                sorry()
+                break
+        end
 
         # Enter the parent directory
         cd("..")
@@ -584,7 +603,25 @@ function solver_save(it::IterInfo)
         # Enter impurity.i directory
         cd("impurity.$i")
 
-        # TODO
+        # Choose suitable quantum impurity solver
+        engine = get_s("engine")
+        @cswitch engine begin
+            @case "ct_hyb1"
+                sorry()
+                break
+
+            @case "ct_hyb2"
+                sorry()
+                break
+
+            @case "hub1"
+                sorry()
+                break
+
+            @case "norg"
+                sorry()
+                break
+        end
 
         # Enter the parent directory
         cd("..")
