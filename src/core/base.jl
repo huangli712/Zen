@@ -344,6 +344,7 @@ function dft_init(it::IterInfo)
     @cswitch engine begin
         @case "vasp"
             prompt("DFT : VASP")
+            println("  Init VASP")
             vasp_init(it)
             break
 
@@ -360,16 +361,17 @@ end
 """
     dft_run(it::IterInfo)
 
-Launch the density functional theory engine
+Launch the density functional theory engine.
 """
 function dft_run(it::IterInfo)
-    # enter dft directory
+    # Enter dft directory
     cd("dft")
 
-    # choose suitable dft engine
+    # Choose suitable DFT engine
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
+            println("  Launch VASP")
             vasp_run(it)
             break
 
@@ -378,7 +380,7 @@ function dft_run(it::IterInfo)
             break
     end
 
-    # enter the parent directory
+    # Enter the parent directory
     cd("..")
 end
 
@@ -386,16 +388,17 @@ end
     dft_save(it::IterInfo)
 
 Backup the output files by density functional theory engine
-for next iterations
+for next iterations.
 """
 function dft_save(it::IterInfo)
-    # enter dft directory
+    # Enter dft directory
     cd("dft")
 
-    # choose suitable dft engine
+    # Choose suitable DFT engine
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
+            println("  Backup VASP's output data")
             vasp_save(it)
             break
 
@@ -404,51 +407,61 @@ function dft_save(it::IterInfo)
             break
     end
 
-    # enter the parent directory
+    # Enter the parent directory
     cd("..")
 end
 
 """
     dmft_init(it::IterInfo)
 
-To examine whether the runtime environment for dynamical mean-field theory
-engine is ready
+To examine the runtime environment for dynamical mean-field theory engine.
 """
-function dmft_init(it::IterInfo) end
+function dmft_init(it::IterInfo)
+    # TODO
+end
 
 """
     dmft_run(it::IterInfo)
 
-Launch the dynamical mean-field theory engine
+Launch the dynamical mean-field theory engine.
 """
-function dmft_run(it::IterInfo) end
+function dmft_run(it::IterInfo)
+    # TODO
+end
 
 """
     dmft_save(it::IterInfo)
 
 Backup the output files by dynamical mean-field theory engine
-for next iterations
+for next iterations.
 """
-function dmft_save(it::IterInfo) end
+function dmft_save(it::IterInfo)
+    # TODO
+end
 
 """
     solver_init(it::IterInfo)
 
-To examine whether the runtime environment for quantum impurity solver
-is ready
+To examine the runtime environment for quantum impurity solver.
 """
-function solver_init(it::IterInfo) end
+function solver_init(it::IterInfo)
+    # TODO
+end
 
 """
     solver_run(it::IterInfo)
 
-Launch the quantum impurity solver
+Launch the quantum impurity solver.
 """
-function solver_run(it::IterInfo) end
+function solver_run(it::IterInfo)
+    # TODO
+end
 
 """
     solver_save(it::IterInfo)
 
-Backup the output files by quantum impurity solver for next iterations
+Backup the output files by quantum impurity solver for next iterations.
 """
-function solver_save(it::IterInfo) end
+function solver_save(it::IterInfo)
+    # TODO
+end

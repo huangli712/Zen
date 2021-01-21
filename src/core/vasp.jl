@@ -52,8 +52,6 @@ end
 Check the runtime environment of vasp, prepare necessary input files.
 """
 function vasp_init(it::IterInfo)
-    println("  init dft engine: vasp")
-
     # Prepare essential input files
     if it.dmft_cycle == 0
         # Copy POTCAR and POSCAR
@@ -90,8 +88,6 @@ end
 Execute the vasp program
 """
 function vasp_run(it::IterInfo)
-    println("  launch dft engine")
-
     # get the home directory of vasp
     dft_home = query_dft()
 
