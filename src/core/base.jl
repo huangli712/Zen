@@ -527,7 +527,24 @@ function solver_init(it::IterInfo)
         # Enter impurity.i directory
         cd("impurity.$i")
 
-        # TODO
+        engine = get_s("engine")
+        @cswitch engine begin
+            @case "ct_hyb1"
+                sorry()
+                break
+
+            @case "ct_hyb2"
+                sorry()
+                break
+
+            @case "hub1"
+                sorry()
+                break
+
+            @case "norg"
+                sorry()
+                break
+        end
 
         # Enter the parent directory
         cd("..")
