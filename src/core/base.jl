@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/21
+# Last modified: 2021/01/22
 #
 
 #
@@ -62,6 +62,7 @@ end
 Finalize the DFT + DMFT calculations.
 """
 function final()
+    # TODO
     sorry()
 end
 
@@ -147,28 +148,40 @@ function cycle1()
     # S03.2: Launch the adaptor
     adaptor_run(it)
     #
-    # S03.3: backup the output files of the adaptor
+    # S03.3: Backup the output files of the adaptor
     adaptor_save(it)
     #
     # S03.4: Monitor the status
     monitor(true)
 
-    @show get_m("niter")
     for iter = 1:get_m("niter")
-        # TODO
-        prompt("ZEN", "ITER : $iter")
-
-        # S04:
-        prompt("ZEN", "DMFT1")
+        # S04: Perform DMFT calculation
+        #
+        # S04.1: Prepare and check essential files for the DMFT engine
         dmft_init(it)
+        #
+        # S04.2: Launch the DMFT engine (dmft1)
         dmft_run(it)
+        #
+        # S04.3: Backup the output files of the DMFT engine
         dmft_save(it)
+        #
+        # S04.4: Monitor the status
+        monitor(true)
 
-        # S05:
-        prompt("ZEN", "SOLVER")
+        # S05: Solve the quantum impurity problems
+        #
+        # S05.1: Prepare and check essential files for the quantum impurity solver
         solver_init(it)
+        #
+        # S05.2: Launch the quantum impurity solver
         solver_run(it)
+        #
+        # S05.3: Backup the output files of the quantum impurity solver
         solver_save(it)
+        #
+        # S05.4: Monitor the status
+        monitor(true)
     end
 end
 

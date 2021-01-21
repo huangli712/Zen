@@ -152,7 +152,7 @@ end
 Query the home directory of Zen.
 """
 function query_zen()
-    # We have to setup environment variable ZEN_HOME.
+    # We have to setup the environment variable ZEN_HOME
     if haskey(ENV, "ZEN_HOME")
         ENV["ZEN_HOME"]
     else
@@ -166,7 +166,7 @@ end
 Query the home directory of the DFT engine.
 """
 function query_dft()
-    # We have to setup environment variable VASP_HOME.
+    # We have to setup the environment variable VASP_HOME
     if get_d("engine") === "vasp"
         if haskey(ENV, "VASP_HOME")
             ENV["VASP_HOME"]
