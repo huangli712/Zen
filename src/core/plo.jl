@@ -5,19 +5,24 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/21
+# last modified: 2021/01/22
 #
 
 """
-    plo_adaptor()
+    plo_adaptor(debug::Bool = false)
 """
-function plo_adaptor()
+function plo_adaptor(debug::Bool = false)
     println("  < PLO Adaptor >")
     println("    Grouping")
     println("    Rotating")
     println("    Leveling")
     println("    Filtering")
     println("    Orthogonalizing\n")
+
+    if debug
+        # TODO
+        println("DEBUG!\n")
+    end
 end
 
 """

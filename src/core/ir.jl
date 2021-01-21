@@ -5,13 +5,13 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/21
+# last modified: 2021/01/22
 #
 
 """
-    ir_adaptor(debug::Bool = false)
+    ir_adaptor()
 """
-function ir_adaptor(debug::Bool = false)
+function ir_adaptor()
     # dump the Kohn-Sham data to files with IR format
     println("  < IR Adaptor >")
 
@@ -42,11 +42,6 @@ function ir_adaptor(debug::Bool = false)
     # write fermi level
     println("    Put Fermi Level\n")
     #irio_fermi(pwd(), fermi)
-
-    if debug
-        println("< Adaptor: View Overlap Matrix >")
-        println("< Adaptor: View Density Matrix >")
-    end
 end
 
 """

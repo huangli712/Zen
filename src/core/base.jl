@@ -353,21 +353,21 @@ function adaptor_run(it::IterInfo)
     # Well, now we have the Kohn-Sham data. But they can not be used
     # directly. We have to check and process them carefully. Please
     # pay attention to that the KohnShamData dict will be modified in
-    # the plo_adaptor() function.
+    # the plo_adaptor() function. Here the parameter (debug = )true
+    # means that we are going to seeing some interesting quantities
+    # to check the correctness of the Kohn-Sham data.
     #
     println("  Launch PLO Adaptor")
-    plo_adaptor()
+    plo_adaptor(true)
 
     #
     # A3: Output the processed Kohn-Sham data
     #
     # Ok, now the Kohn-Sham data are ready. We would like to write them
-    # to some specified files. Here the parameter (debug = )true means
-    # that we are going to seeing some interesting quantities to check
-    # the correctness of the Kohn-Sham data.
+    # to some specified files.
     #
     println("  Launch IR Adaptor")
-    ir_adaptor(true)
+    ir_adaptor()
 
     # Enter the parent directory
     cd("..")
