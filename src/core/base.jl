@@ -38,16 +38,19 @@ function go()
     @cswitch mode begin
         # One-shot DFT + DMFT calculations
         @case 1
+            prompt("ZEN", "Cycling")
             cycle1()
             break
 
         # Fully self-consistent DFT + DMFT calculations
         @case 2
+            prompt("ZEN", "Cycling")
             cycle2()
             break
 
         # To be implemented
         @default
+            prompt("ZEN", "Nothing")
             sorry()
             break
     end
