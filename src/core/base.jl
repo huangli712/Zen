@@ -80,7 +80,7 @@ function cycle1()
     lr.cycle = open(query_case() * ".cycle", "a")
 
 #
-# Remarks:
+# Remarks 1:
 #
 # We would like to perform two successive DFT runs if get_d("loptim") is
 # true. The purpose of the first DFT run is to evaluate the fermi level.
@@ -92,7 +92,6 @@ function cycle1()
 #
 
     # S01: Perform DFT calculation (for the first time)
-    prompt("DFT : VASP")
     #
     # S01.1: Prepare and check essential files for the DFT engine
     dft_init(it)
@@ -111,24 +110,20 @@ function cycle1()
     if get_d("loptim")
 
         # S02: Perform DFT calculation (for the second time)
-        prompt("ZEN", "DFT")
         #
         # S02.1: Prepare and check essential files for the DFT engine
-        println("Initialize everything needed by the DFT engine")
         dft_init(it)
         #
         # S02.2: Perform a self-consitent calculation at the DFT level
-        println("Launch the DFT engine")
         dft_run(it)
         #
         # S02.3: backup the output files of the DFT engine
-        println("Save the output files\n")
         dft_save(it)
 
     end
 
 #
-# remarks:
+# Remarks 2:
 #
 # the key Kohn-Sham data inclue lattice structures, k-mesh and its weights,
 # tetrahedra data, eigenvalues, raw projectors, and fermi level, etc. at
@@ -139,20 +134,16 @@ function cycle1()
 #
 
     # S07: To bridge the gap between dft engine and dmft engine by adaptor
-    prompt("ZEN", "ADAPTOR")
     #
     # S07.1: prepare and check essential files for the adaptor
-    println("Initialize everything needed by the adaptor")
     adaptor_init(it)
     #
     # S07.2: launch the adaptor. it will read the Kohn-Sham data from the
     # dft engine, postprocess them, and then write them to external files
     # with the IR format
-    println("Launch the adaptor")
     adaptor_run(it)
     #
     # S07.3: backup the output files of the adaptor
-    println("Save the output files\n")
     adaptor_save(it)
 
     for iter = 1:get_m("niter")
@@ -178,7 +169,8 @@ end
 """
     monitor()
 """
-function monitor() end
+function monitor()
+end
 
 """
     make_trees()
@@ -341,25 +333,27 @@ end
     dft_init(it::IterInfo)
 
 To examine whether the runtime environment for density functional theory
-engine is ready
+engine is ready.
 """
 function dft_init(it::IterInfo)
-    # enter dft directory
+    # Enter dft directory
     cd("dft")
 
-    # choose suitable dft engine
+    # Choose suitable DFT engine
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
+            prompt("DFT : VASP")
             vasp_init(it)
             break
 
         @default
+            prompt("DFT : Undef")
             sorry()
             break
     end
 
-    # enter the parent directory
+    # Enter the parent directory
     cd("..")
 end
 
