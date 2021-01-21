@@ -175,31 +175,35 @@ end
 """
     make_trees()
 
-Prepare the working directories at advance
+Prepare the working directories at advance.
 """
 function make_trees()
-    # the working directories include dft, dmft1, dmft2, and impurity.i
-    # if they exist already, we have to remove them at first
     #
-    # for dft
+    # Remarks:
+    #
+    # The working directories include dft, dmft1, dmft2, and impurity.i.
+    # If they exist already, it would be better to remove them at first.
+    #
+
+    # For dft
     if isdir("dft")
         rm("dft", force = true, recursive = true)
     end
     mkdir("dft")
 
-    # for dmft1
+    # For dmft1
     if isdir("dmft1")
         rm("dmft1", force = true, recursive = true)
     end
     mkdir("dmft1")
 
-    # for dmft2
+    # For dmft2
     if isdir("dmft2")
         rm("dmft2", force = true, recursive = true)
     end
     mkdir("dmft2")
 
-    # for impurity.i
+    # For impurity.i
     for i = 1:get_i("nsite")
         if isdir("impurity.$i")
             rm("impurity.$i", force = true, recursive = true)
@@ -211,25 +215,25 @@ end
 """
     rm_trees()
 
-Remove the working directories finally
+Remove the working directories finally.
 """
 function rm_trees()
-    # for dft
+    # For dft
     if isdir("dft")
         rm("dft", force = true, recursive = true)
     end
 
-    # for dmft1
+    # For dmft1
     if isdir("dmft1")
         rm("dmft1", force = true, recursive = true)
     end
 
-    # for dmft2
+    # For dmft2
     if isdir("dmft2")
         rm("dmft2", force = true, recursive = true)
     end
 
-    # for impurity.i
+    # For impurity.i
     for i = 1:get_i("nsite")
         if isdir("impurity.$i")
             rm("impurity.$i", force = true, recursive = true)
