@@ -34,10 +34,14 @@ function ir_adaptor()
         error("The KohnShamData dict does not contain the keys: kmesh and weight")
     end
 
-    # write tetrahedron data if they are available
+    # S04: Write tetrahedron data if they are available
     if get_d("smear") === "tetra"
         println("    Put Tetrahedron")
-        #irio_tetra(pwd(), volt, itet)
+        if haskey(KohnShamData, "volt") && haskey(KohnShamData, "itet")
+            irio_tetra(pwd(), KohnShamData["volt"], KohnShamData["itet"])
+        else
+            error("The KohnShamData dict does not contain the keys: volt and itet")
+        end
     end
 
     # write band structure and the corresponding occupancies
