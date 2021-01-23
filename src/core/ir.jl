@@ -22,13 +22,17 @@ function ir_adaptor()
     if haskey(KohnShamData, "latt")
         irio_lattice(pwd(), KohnShamData["latt"])
     else
-        error("The KohnShamData dict does not contain the latt key")
+        error("The KohnShamData dict does not contain the key: latt")
     end
 
-    # write kmesh and the corresponding weights
+    # S03: Write kmesh and the corresponding weights
     println("    Put Kmesh")
     println("    Put Weight")
-    #irio_kmesh(pwd(), kmesh, weight)
+    if haskey(KohnShamData, "kmesh") && haskey(KohnShamData, "weight")
+        irio_kmesh(pwd(), KohnShamData["kmesh"], KohnShamData["weight"])
+    else
+        error("The KohnShamData dict does not contain the keys: kmesh and weight")
+    end
 
     # write tetrahedron data if they are available
     if get_d("smear") === "tetra"
