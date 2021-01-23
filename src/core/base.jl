@@ -210,14 +210,16 @@ end
 Determine whether we need to terminate the Zen code 
 """
 function monitor(force_exit::Bool = false)
-    #
-    # In order to terminate the Zen code, the following two conditions
-    # should be fulfilled at the same time.
-    #
-    # 1. The argument force_exit is true
-    #
-    # 2. The case.stop file exists
-    #
+
+#
+# In order to terminate the Zen code, the following two conditions
+# should be fulfilled at the same time.
+#
+# 1. The argument force_exit is true
+#
+# 2. The case.stop file exists
+#
+
     if force_exit && query_stop()
         exit(-1)
     end
@@ -229,12 +231,13 @@ end
 Prepare the working directories at advance.
 """
 function make_trees()
-    #
-    # Remarks:
-    #
-    # The working directories include dft, dmft1, dmft2, and impurity.i.
-    # If they exist already, it would be better to remove them at first.
-    #
+
+#
+# Remarks:
+#
+# The working directories include dft, dmft1, dmft2, and impurity.i.
+# If they exist already, it would be better to remove them at first.
+#
 
     # For dft
     if isdir("dft")
