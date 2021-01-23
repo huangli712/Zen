@@ -44,16 +44,16 @@ function ir_adaptor()
         end
     end
 
-    # write band structure and the corresponding occupancies
+    # S05: Write band structure and the corresponding occupancies
     println("    Put Enk")
     println("    Put Occupy")
     #irio_eigen(pwd(), enk, occupy)
 
-    # write projectors, traits, and groups
+    # S06: Write projectors, traits, and groups
     println("    Put Projector (Trait and Group)")
     #irio_projs(pwd(), chipsi)
 
-    # write fermi level
+    # S07: Write fermi level
     println("    Put Fermi Level")
     #irio_fermi(pwd(), fermi)
 end
