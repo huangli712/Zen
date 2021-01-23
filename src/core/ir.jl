@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/22
+# last modified: 2021/01/23
 #
 
 """
@@ -40,7 +40,7 @@ function ir_adaptor()
     #irio_projs(pwd(), chipsi)
 
     # write fermi level
-    println("    Put Fermi Level\n")
+    println("    Put Fermi Level")
     #irio_fermi(pwd(), fermi)
 end
 

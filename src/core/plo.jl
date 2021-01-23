@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/22
+# last modified: 2021/01/23
 #
 
 """
@@ -17,11 +17,11 @@ function plo_adaptor(debug::Bool = false)
     println("    Rotating")
     println("    Leveling")
     println("    Filtering")
-    println("    Orthogonalizing\n")
+    println("    Orthogonalizing")
 
     if debug
         # TODO
-        println("DEBUG!\n")
+        println("DEBUG!")
     end
 end
 

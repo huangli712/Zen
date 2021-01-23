@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/21
+# last modified: 2021/01/23
 #
 
 """
@@ -42,7 +42,7 @@ function vasp_adaptor()
     PT, PG, chipsi = vaspio_projs(pwd())
 
     # read in fermi level
-    println("    Get Fermi Level\n")
+    println("    Get Fermi Level")
     fermi = vaspio_fermi(pwd())
 end
 

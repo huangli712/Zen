@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/22
+# Last modified: 2021/01/23
 #
 
 #
@@ -306,6 +306,7 @@ function adaptor_init(it::IterInfo)
     @cswitch engine begin
         @case "vasp"
             prompt("Adaptor : VASP")
+            println("  Init VASP Adaptor")
             vasp_files()
             break
 
