@@ -10,14 +10,20 @@
 
 """
     ir_adaptor()
+
+Write the Kohn-Data data to specified files within the IR format.
 """
 function ir_adaptor()
-    # dump the Kohn-Sham data to files with IR format
+    # S01: Print the title
     println("  < IR Adaptor >")
 
-    # write lattice structure
+    # S02: Write lattice structure
     println("    Put Lattice")
-    #irio_lattice(pwd(), latt)
+    if haskey(KohnShamData, "latt")
+        irio_lattice(pwd(), KohnShamData["latt"])
+    else
+        error("The KohnShamData dict does not contain the latt key")
+    end
 
     # write kmesh and the corresponding weights
     println("    Put Kmesh")
