@@ -48,7 +48,7 @@ function vasp_adaptor()
 
     # S07: Read in fermi level
     println("    Get Fermi Level")
-    fermi = vaspio_fermi(pwd())
+    KohnShamData["fermi"] = vaspio_fermi(pwd())
 end
 
 """
