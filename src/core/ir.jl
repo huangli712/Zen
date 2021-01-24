@@ -244,15 +244,15 @@ end
     irio_projs(f::String, chipsi::Array{C64,4})
 
 Write the projectors to projs.ir using the IR format. Here `f` means only
-the directory that we want to use
+the directory that we want to use.
 """
 function irio_projs(f::String, chipsi::Array{C64,4})
-    # extract some key parameters
+    # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # output the data
+    # Output the data
     open(joinpath(f, "projs.ir"), "w") do fout
-        # write the header
+        # Write the header
         println(fout, "# file: projs.ir")
         println(fout, "# data: chipsi[nproj,nband,nkpt,nspin]")
         println(fout)
@@ -262,7 +262,7 @@ function irio_projs(f::String, chipsi::Array{C64,4})
         println(fout, "nspin -> $nspin")
         println(fout)
 
-        # write the body
+        # Write the body
         for s = 1:nspin
             for k = 1:nkpt
                 for b = 1:nband
