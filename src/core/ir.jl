@@ -176,18 +176,18 @@ end
     irio_tetra(f::String, volt::F64, itet::Array{I64,2})
 
 Write the tetrahedra information to tetra.ir using the IR format. Here `f`
-means only the directory that we want to use
+means only the directory that we want to use.
 """
 function irio_tetra(f::String, volt::F64, itet::Array{I64,2})
-    # extract some key parameters
+    # Extract some key parameters
     ntet, ndim = size(itet)
 
-    # sanity check
+    # Sanity check
     @assert ndim === 5
 
-    # output the data
+    # Output the data
     open(joinpath(f, "tetra.ir"), "w") do fout
-        # write the header
+        # Write the header
         println(fout, "# file: tetra.ir")
         println(fout, "# data: itet[ntet,5]")
         println(fout)
@@ -195,7 +195,7 @@ function irio_tetra(f::String, volt::F64, itet::Array{I64,2})
         println(fout, "volt -> $volt")
         println(fout)
 
-        # write the body
+        # Write the body
         for t = 1:ntet
             @printf(fout, "%8i %8i %8i %8i %8i\n", itet[t, :]...)
         end
