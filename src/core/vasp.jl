@@ -144,7 +144,7 @@ function vasp_save(it::IterInfo)
 end
 
 #
-# Service Functions
+# Service Functions (Group A)
 #
 
 """
@@ -307,7 +307,7 @@ end
     vasp_files(f::String)
 
 Check the essential output files by vasp. Here `f` means only the directory
-that contains the desired files
+that contains the desired files.
 """
 function vasp_files(f::String)
     @assert isfile(joinpath(f, "POSCAR")) &&
@@ -318,6 +318,10 @@ function vasp_files(f::String)
             isfile(joinpath(f, "EIGENVAL"))
 end
 vasp_files() = vasp_files(pwd())
+
+#
+# Service Functions (Group B)
+#
 
 """
     vaspio_lattice(f::String)
