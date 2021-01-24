@@ -55,7 +55,11 @@ function ir_adaptor()
 
     # S06: Write projectors, traits, and groups
     println("    Put Projector (Trait and Group)")
-    #irio_projs(pwd(), chipsi)
+    if haskey(KohnShamData, "chipsi")
+        irio_projs(pwd(), KohnShamData["chipsi"])
+    else
+        error("The KohnShamData dict does not contain the key: chipsi")
+    end
 
     # S07: Write fermi level
     println("    Put Fermi Level")
