@@ -206,21 +206,21 @@ end
     irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
 
 Write the eigenvalues to eigen.ir using the IR format. Here `f` means only
-the directory that we want to use
+the directory that we want to use.
 """
 function irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
-    # extract some key parameters
+    # Extract some key parameters
     nband, nkpt, nspin = size(enk)
 
-    # extract some key parameters
+    # Extract some key parameters
     _nband, _nkpt, _nspin = size(enk)
 
-    # sanity check
+    # Sanity check
     @assert nband === _nband && nkpt === _nkpt && nspin === _nspin
 
-    # output the data
+    # Output the data
     open(joinpath(f, "eigen.ir"), "w") do fout
-        # write the header
+        # Write the header
         println(fout, "# file: eigen.ir")
         println(fout, "# data: enk[nband,nkpt,nspin] and occupy[nband,nkpt,nspin]")
         println(fout)
@@ -229,7 +229,7 @@ function irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
         println(fout, "nspin -> $nspin")
         println(fout)
 
-        # write the body
+        # Write the body
         for s = 1:nspin
             for k = 1:nkpt
                 for b = 1:nband
