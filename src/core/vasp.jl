@@ -327,48 +327,48 @@ vasp_files() = vasp_files(pwd())
     vaspio_lattice(f::String)
 
 Reading vasp's POSCAR file, return crystallography information. Here `f`
-means only the directory that contains POSCAR
+means only the directory that contains POSCAR.
 """
 function vaspio_lattice(f::String)
-    # open the iostream
+    # Open the iostream
     fin = open(joinpath(f, "POSCAR"), "r")
 
-    # get the case
+    # Get the case
     _case = string(strip(readline(fin)))
 
-    # get the scaling factor
+    # Get the scaling factor
     scale = parse(F64, readline(fin))
 
-    # get the lattice vectors
+    # Get the lattice vectors
     lvect = zeros(F64, 3, 3)
     lvect[1, :] = parse.(F64, line_to_array(fin))
     lvect[2, :] = parse.(F64, line_to_array(fin))
     lvect[3, :] = parse.(F64, line_to_array(fin))
 
-    # get the symbol list
+    # Get the symbol list
     symbols = line_to_array(fin)
 
-    # get the number of sorts of atoms
+    # Get the number of sorts of atoms
     nsort = length(symbols)
 
-    # get the number list
+    # Get the number list
     numbers = parse.(I64, line_to_array(fin))
 
-    # get the total number of atoms
+    # Get the total number of atoms
     natom = sum(numbers)
 
-    # now all the parameters are ready
-    # we would like to create Lattice struct here
+    # Now all the parameters are ready
+    # We would like to create Lattice struct here
     latt = Lattice(_case, scale, nsort, natom)
 
-    # update latt using the available data
+    # Update latt using the available data
     latt.lvect = lvect
     for i = 1:nsort
         latt.sorts[i, 1] = string(symbols[i])
         latt.sorts[i, 2] = numbers[i]
     end
 
-    # get the atom list
+    # Get the atom list
     k = 0
     for i = 1:nsort
         for j = 1:numbers[i]
@@ -376,19 +376,19 @@ function vaspio_lattice(f::String)
             latt.atoms[k] = symbols[i]
         end
     end
-    # sanity check
+    # Sanity check
     @assert k === natom
 
-    # get the coordinates of atoms
+    # Get the coordinates of atoms
     readline(fin)
     for i = 1:natom
         latt.coord[i, :] = parse.(F64, line_to_array(fin)[1:3])
     end
 
-    # close the iostream
+    # Close the iostream
     close(fin)
 
-    # return the desired struct
+    # Return the desired struct
     return latt
 end
 
