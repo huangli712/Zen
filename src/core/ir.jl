@@ -85,15 +85,15 @@ end
     irio_lattice(f::String, latt::Lattice)
 
 Write the lattice information to lattice.ir using the IR format. Here `f`
-means only the directory that we want to use
+means only the directory that we want to use.
 """
 function irio_lattice(f::String, latt::Lattice)
-    # extract some key parameters
+    # Extract some key parameters
     _case, scale, nsort, natom = latt._case, latt.scale, latt.nsort, latt.natom
 
-    # output the data
+    # Output the data
     open(joinpath(f, "lattice.ir"), "w") do fout
-        # write the header
+        # Write the header
         println(fout, "# file: lattice.ir")
         println(fout, "# data: Lattice struct")
         println(fout)
@@ -103,20 +103,20 @@ function irio_lattice(f::String, latt::Lattice)
         println(fout, "natom -> $natom")
         println(fout)
 
-        # write the body
-        # for sorts part
+        # Write the body
+        # For sorts part
         println(fout, "[sorts]")
-        for i = 1:nsort # symbols
+        for i = 1:nsort # Symbols
             @printf(fout, "%6s", latt.sorts[i, 1])
         end
         println(fout)
-        for i = 1:nsort # numbers
+        for i = 1:nsort # Numbers
             @printf(fout, "%6i", latt.sorts[i, 2])
         end
         println(fout)
         println(fout)
 
-        # for atoms part
+        # For atoms part
         println(fout, "[atoms]")
         for i = 1:natom
             @printf(fout, "%6s", latt.atoms[i])
@@ -124,14 +124,14 @@ function irio_lattice(f::String, latt::Lattice)
         println(fout)
         println(fout)
 
-        # for lvect part
+        # For lvect part
         println(fout, "[lvect]")
         for i = 1:3
             @printf(fout, "%16.12f %16.12f %16.12f\n", latt.lvect[i, 1:3]...)
         end
         println(fout)
 
-        # for coord part
+        # For coord part
         println(fout, "[coord]")
         for i = 1:natom
             @printf(fout, "%16.12f %16.12f %16.12f\n", latt.coord[i, 1:3]...)
@@ -143,21 +143,21 @@ end
     irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
 
 Write the kmesh and weight information to kmesh.ir using the IR format. Here
-`f` means only the directory that we want to use
+`f` means only the directory that we want to use.
 """
 function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
-    # extract some key parameters
+    # Extract some key parameters
     nkpt, ndir = size(kmesh)
 
-    # extract some key parameters
+    # Extract some key parameters
     _nkpt, = size(weight)
 
-    # sanity check
+    # Sanity check
     @assert nkpt === _nkpt
 
-    # output the data
+    # Output the data
     open(joinpath(f, "kmesh.ir"), "w") do fout
-        # write the header
+        # Write the header
         println(fout, "# file: kmesh.ir")
         println(fout, "# data: kmesh[nkpt,ndir] and weight[nkpt]")
         println(fout)
@@ -165,7 +165,7 @@ function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
         println(fout, "ndir -> $ndir")
         println(fout)
 
-        # write the body
+        # Write the body
         for k = 1:nkpt
             @printf(fout, "%16.12f %16.12f %16.12f %8.2f\n", kmesh[k, 1:3]..., weight[k])
         end
