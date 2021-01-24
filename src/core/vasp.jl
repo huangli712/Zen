@@ -396,32 +396,32 @@ end
     vaspio_kmesh(f::String)
 
 Reading vasp's IBZKPT file, return kmesh and weight. Here `f` means
-only the directory that contains IBZKPT
+only the directory that contains IBZKPT.
 """
 function vaspio_kmesh(f::String)
-    # open the iostream
+    # Open the iostream
     fin = open(joinpath(f, "IBZKPT"), "r")
 
-    # extract number of k-points
+    # Extract number of k-points
     readline(fin)
     nkpt = parse(I64, readline(fin))
     readline(fin)
 
-    # create arrays
+    # Create arrays
     kmesh = zeros(F64, nkpt, 3)
     weight = zeros(F64, nkpt)
 
-    # read in the k-points and their weights
+    # Read in the k-points and their weights
     for i = 1:nkpt
         arr = parse.(F64, line_to_array(fin))
         kmesh[i, 1:3] = arr[1:3]
         weight[i] = arr[4]
     end
 
-    # close the iostream
+    # Close the iostream
     close(fin)
 
-    # return the desired arrays
+    # Return the desired arrays
     return kmesh, weight
 end
 
