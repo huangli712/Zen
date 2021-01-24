@@ -37,16 +37,16 @@ function vasp_adaptor()
         KohnShamData["volt"], KohnShamData["itet"] = vaspio_tetra(pwd())
     end
 
-    # read in band structure and the corresponding occupancies
+    # S05: Read in band structure and the corresponding occupancies
     println("    Get Enk")
     println("    Get Occupy")
-    enk, occupy = vaspio_eigen(pwd())
+    KohnShamData["enk"], KohnShamData["occupy"] = vaspio_eigen(pwd())
 
-    # read in raw projectors, traits, and groups
+    # S06: Read in raw projectors, traits, and groups
     println("    Get Projector (Trait and Group)")
     PT, PG, chipsi = vaspio_projs(pwd())
 
-    # read in fermi level
+    # S07: Read in fermi level
     println("    Get Fermi Level")
     fermi = vaspio_fermi(pwd())
 end
