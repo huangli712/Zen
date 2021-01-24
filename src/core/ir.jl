@@ -5,16 +5,16 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/23
+# last modified: 2021/01/24
 #
 
 """
     ir_adaptor()
 
-Write the Kohn-Data data to specified files within the IR format.
+Write the Kohn-Data data to specified files using the IR format.
 """
 function ir_adaptor()
-    # S01: Print the title
+    # S01: Print the header
     println("  < IR Adaptor >")
 
     # S02: Write lattice structure
@@ -47,7 +47,11 @@ function ir_adaptor()
     # S05: Write band structure and the corresponding occupancies
     println("    Put Enk")
     println("    Put Occupy")
-    #irio_eigen(pwd(), enk, occupy)
+    if haskey(KohnShamData, "enk") && haskey(KohnShamData, "occupy")
+        irio_eigen(pwd(), KohnShamData["enk"], KohnShamData["occupy"])
+    else
+        error("The KohnShamData dict does not contain the keys: enk and occupy")
+    end
 
     # S06: Write projectors, traits, and groups
     println("    Put Projector (Trait and Group)")
