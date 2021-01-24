@@ -474,34 +474,46 @@ end
     vaspio_eigen(f::String)
 
 Reading vasp's EIGENVAL file, return energy band information. Here `f`
-means only the directory that contains EIGENVAL
+means only the directory that contains EIGENVAL.
 """
 function vaspio_eigen(f::String)
-    # open the iostream
+    # Open the iostream
     fin = open(joinpath(f, "EIGENVAL"), "r")
 
-    # determine number of spins
+    # Determine number of spins
     nspin = parse(I64, line_to_array(fin)[end])
     @assert nspin === 1 || nspin === 2
 
-    # skip for lines
+    # Skip for lines
     for i = 1:4
         readline(fin)
     end
 
-    # read in some key parameters: nelect, nkpt, nbands
+    # Read in some key parameters: nelect, nkpt, nbands
     nelect, nkpt, nband = parse.(I64, line_to_array(fin))
 
-    # create arrays
+    # Create arrays
     enk = zeros(F64, nband, nkpt, nspin)
     occupy = zeros(F64, nband, nkpt, nspin)
 
-    # read in the energy bands and the corresponding occupations
+    # Read in the energy bands and the corresponding occupations
     for i = 1:nkpt
         readline(fin)
         readline(fin)
         for j = 1:nband
             arr = line_to_array(fin)
+
+#
+# Remarks:
+#
+# Here we provide two implementations. The first implementation is somewhat
+# tedious, so we don't use it. It seems that the second implementation is
+# more graceful.
+#
+
+#
+# Implementation 1
+#
             #if nspin === 1 # for spin unpolarized case
             #    enk[j, i, 1] = parse(F64, arr[2])
             #    occupy[j, i, 1] = parse(F64, arr[3])
@@ -512,6 +524,10 @@ function vaspio_eigen(f::String)
             #    occupy[j, i, 1] = parse(F64, arr[4])
             #    occupy[j, i, 2] = parse(F64, arr[5])
             #end
+
+#
+# Implementation 2
+#
             for s = 1:nspin
                 enk[j, i, s] = parse(F64, arr[s+1])
                 occupy[j, i, s] = parse(F64, arr[s+1+nspin])
