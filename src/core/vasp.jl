@@ -5,26 +5,31 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/23
+# last modified: 2021/01/24
+#
+
+#
+# Driver Functions
 #
 
 """
     vasp_adaptor()
 
-Adaptor support for vasp code. it will read the output of vasp code and
-fulfill the KohnShamData dict
+Adaptor support for vasp code. It will read the output of vasp code and
+fulfill the KohnShamData dict.
 """
 function vasp_adaptor()
+    # S01: Print the header
     println("  < VASP Adaptor >")
 
-    # read in lattice structure
+    # S02: Read in lattice structure
     println("    Get Lattice")
-    latt = vaspio_lattice(pwd())
+    KohnShamData["latt"] = vaspio_lattice(pwd())
 
-    # read in kmesh and the corresponding weights
+    # S03: Read in kmesh and the corresponding weights
     println("    Get Kmesh")
     println("    Get Weight")
-    kmesh, weight = vaspio_kmesh(pwd())
+    KohnShamData["kmesh"], KohnShamData["weight"] = vaspio_kmesh(pwd())
 
     # read in tetrahedron data if they are available
     if get_d("smear") === "tetra"
