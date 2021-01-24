@@ -546,96 +546,101 @@ end
     vaspio_projs(f::String)
 
 Reading vasp's LOCPROJ file, return raw projector matrix. Here `f` means
-only the directory that contains LOCPROJ
+only the directory that contains LOCPROJ.
 """
 function vaspio_projs(f::String)
-    # open the iostream
+    # Open the iostream
     fin = open(joinpath(f, "LOCPROJ"), "r")
 
-    # extract number of spins (nspin), number of k-points (nkpt),
-    # number of bands (nband), and number of projectors (nproj)
+    # Extract number of spins (nspin), number of k-points (nkpt),
+    # number of bands (nband), and number of projectors (nproj).
     nspin, nkpt, nband, nproj = parse.(I64, line_to_array(fin)[1:4])
     @assert nspin === 1 || nspin === 2
 
-    # extract raw information about projectors
+    # Extract raw information about projectors
     sites = zeros(I64, nproj)
     descs = fill("", nproj)
     for i = 1:nproj
         arr = line_to_array(fin)
         sites[i] = parse(I64, arr[2])
-        # get rid of the ":" char
+        # Get rid of the ":" char
         descs[i] = replace(arr[end], ":" => "")
     end
 
-    # try to build PrTrait struct. the raw information about projectors
-    # should be encapsulated in it
+    # Try to build PrTrait struct. The raw information about projectors
+    # should be encapsulated in it.
     PT = PrTrait[]
     for i = 1:nproj
         push!(PT, PrTrait(sites[i], descs[i]))
     end
 
-    # try to split these projectors into groups
-    # at first, we collect the tuple (site, l) for all projectors
+    # Try to split these projectors into groups.
+    #
+    # At first, we collect the tuple (site, l) for all projectors.
     site_l = Tuple[]
     for i in eachindex(PT)
         push!(site_l, (PT[i].site, PT[i].l))
     end
-    # second, we figure out the unique (site, l) pairs
+    #
+    # Second, we figure out the unique (site, l) pairs.
     union!(site_l)
-    # third, we create a array of PrGroup struct (except for site and
-    # l, most of its member variables need to be corrected). note
+    #
+    # Third, we create a array of PrGroup struct (except for site and
+    # l, most of its member variables need to be corrected). Note
     # that for a given PrGroup, the projectors indexed by PrGroup.Pr
-    # should share the same site and l
+    # should share the same site and l.
     PG = PrGroup[]
     for i in eachindex(site_l)
         push!(PG, PrGroup(site_l[i]...))
     end
-    # fourth, for each PrGroup, we scan all of the projectors to find
+    #
+    # Fourth, for each PrGroup, we scan all of the projectors to find
     # out those with correct site and l; record their indices; and
-    # save them at PrGroup.Pr array
+    # save them at PrGroup.Pr array.
     for i in eachindex(PG)
         site, l = PG[i].site, PG[i].l
         PG[i].Pr = findall(x -> (x.site, x.l) === (site, l), PT)
     end
-    # finally, check
+    #
+    # Finally, check correctness
     @assert nproj === sum(x -> length(x.Pr), PG)
 
-    # create arrays
+    # Create arrays
     chipsi = zeros(C64, nproj, nband, nkpt, nspin)
 
-    # read in raw projector data
+    # Read in raw projector data
     readline(fin)
     for s = 1:nspin
         for k = 1:nkpt
             for b = 1:nband
-                # extract some indices information
+                # Extract some indices information
                 arr = line_to_array(fin)
                 _spin = parse(I64, arr[2])
                 _kpt = parse(I64, arr[3])
                 _band = parse(I64, arr[4])
 
-                # check consistency of parameters
+                # Check consistency of parameters
                 @assert _spin === s
                 @assert _kpt === k
                 @assert _band === b
 
-                # parse the input data
+                # Parse the input data
                 for p = 1:nproj
                     _re, _im = parse.(F64, line_to_array(fin)[2:3])
                     chipsi[p, b, k, s] = _re + _im * im
                 end
 
-                # skip one empty line
+                # Skip one empty line
                 readline(fin)
             end
         end
     end
 
-    # close the iostream
+    # Close the iostream
     close(fin)
 
-    # return the desired arrays
-    # note: PG should be further setup at plo_group() function
+    # Return the desired arrays
+    # Note: PG should be further setup at plo_group() function.
     return PT, PG, chipsi
 end
 
