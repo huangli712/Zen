@@ -429,44 +429,44 @@ end
     vaspio_tetra(f::String)
 
 Reading vasp's IBZKPT file, return tetrahedra information. Here `f` means
-only the directory that contains IBZKPT
+only the directory that contains IBZKPT.
 """
 function vaspio_tetra(f::String)
-    # open the iostream
+    # Open the iostream
     fin = open(joinpath(f, "IBZKPT"), "r")
 
-    # extract number of k-points
+    # Extract number of k-points
     readline(fin)
     nkpt = parse(I64, readline(fin))
     readline(fin)
 
-    # read in the k-points and their weights
-    # skip nkpt lines
+    # Read in the k-points and their weights
+    # Skip nkpt lines
     for i = 1:nkpt
         readline(fin)
     end
 
-    # read in the tetrahedra information
-    # skip one empty line
+    # Read in the tetrahedra information
+    # Skip one empty line
     readline(fin)
 
-    # extract total number of tetrahedra and volume of a tetrahedron
+    # Extract total number of tetrahedra and volume of a tetrahedron
     arr = line_to_array(fin)
     ntet = parse(I64, arr[1])
     volt = parse(F64, arr[2])
 
-    # create arrays
+    # Create arrays
     itet = zeros(I64, ntet, 5)
 
-    # parse the input tetrahedra information
+    # Parse the input tetrahedra information
     for t = 1:ntet
         itet[t, :] = parse.(I64, line_to_array(fin))
     end
 
-    # close the iostream
+    # Close the iostream
     close(fin)
 
-    # return the desired arrays
+    # Return the desired arrays
     return volt, itet
 end
 
