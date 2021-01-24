@@ -281,19 +281,19 @@ end
     irio_fermi(f::String, fermi::F64)
 
 Write the fermi level to fermi.ir using the IR format. Here `f` means only
-the directory that we want to use
+the directory that we want to use.
 """
 function irio_fermi(f::String, fermi::F64)
-    # output the data
+    # Output the data
     open(joinpath(f, "fermi.ir"), "w") do fout
-        # write the header
+        # Write the header
         println(fout, "# file: fermi.ir")
         println(fout, "# data: fermi")
         println(fout)
         println(fout, "fermi -> $fermi")
         println(fout)
 
-        # write the body
+        # Write the body
         # N/A
     end
 end
@@ -302,6 +302,6 @@ end
     irio_charge(f::String)
 
 Write the charge density to charge.ir using the IR format. Here `f` means
-only the directory that we want to use
+only the directory that we want to use.
 """
 function irio_charge(f::String) end
