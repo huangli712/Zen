@@ -274,16 +274,16 @@ end
 """
     vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
 
-Generate a KPOINTS file for vasp
+Generate a valid KPOINTS file for vasp.
 """
 function vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
-    # if the KPOINTS file is available, we do nothing
-    # or else we will create a new one
+    # If the KPOINTS file is available, we do nothing or else we will
+    # try to create a new one
     if !isfile("KPOINTS")
-        # open the iostream
+        # Open the iostream
         ios = open("KPOINTS", "w")
 
-        # write the body
+        # Write the body
         write(ios, "Automatic K-mesh Generation\n")
         write(ios, "0 \n")
         if mp_scheme
@@ -294,7 +294,7 @@ function vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
         write(ios, " $n  $n  $n\n")
         write(ios, " 0  0  0\n")
 
-        # close the iostream
+        # Close the iostream
         close(ios)
     end
 end
