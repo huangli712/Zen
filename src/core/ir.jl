@@ -8,6 +8,10 @@
 # last modified: 2021/01/24
 #
 
+#
+# Driver Functions
+#
+
 """
     ir_adaptor()
 
@@ -35,6 +39,9 @@ function ir_adaptor()
     end
 
     # S04: Write tetrahedron data if they are available
+    #
+    # This step is optional, because the tetrahedron information might
+    # be absent.
     if get_d("smear") === "tetra"
         println("    Put Tetrahedron")
         if haskey(KohnShamData, "volt") && haskey(KohnShamData, "itet")
@@ -63,8 +70,16 @@ function ir_adaptor()
 
     # S07: Write fermi level
     println("    Put Fermi Level")
-    #irio_fermi(pwd(), fermi)
+    if haskey(KohnShamData, "fermi")
+        irio_fermi(pwd(), KohnShamData["fermi"])
+    else
+        error("The KohnShamData dict does not contain the key: fermi")
+    end
 end
+
+#
+# Service Functions
+#
 
 """
     irio_lattice(f::String, latt::Lattice)

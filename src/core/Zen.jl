@@ -204,7 +204,7 @@ export line_to_array
 #
 # Members:
 #
-# ready        -> Prepare everything that is essential for DFT + DMFT calculations  
+# ready        -> Prepare everything that is essential for DFT + DMFT calculations
 # go           -> Dispatcher for DFT + DMFT calculations
 # final        -> Finalize the DFT + DMFT calculations
 # cycle1       -> Perform DFT + DMFT calculations (one-shot mode)

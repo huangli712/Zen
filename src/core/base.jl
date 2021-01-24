@@ -34,7 +34,7 @@ function go()
     # Get calculation mode
     mode = get_m("mode")
 
-    # Choose suitable computational driver 
+    # Choose suitable computational driver
     @cswitch mode begin
         # One-shot DFT + DMFT calculations
         @case 1
@@ -86,7 +86,7 @@ function cycle1()
 # We would like to perform two successive DFT runs if get_d("loptim") is
 # true. The purpose of the first DFT run is to evaluate the fermi level.
 # Then an energy window is determined. We will use this window to generate
-# optimal projectors in the second DFT run. 
+# optimal projectors in the second DFT run.
 #
 # On the other hand, if get_d("loptim") is false, only the first DFT run
 # is enough.
@@ -207,7 +207,7 @@ end
 """
     monitor(force_exit::Bool = false)
 
-Determine whether we need to terminate the Zen code 
+Determine whether we need to terminate the Zen code.
 """
 function monitor(force_exit::Bool = false)
 
@@ -215,9 +215,9 @@ function monitor(force_exit::Bool = false)
 # In order to terminate the Zen code, the following two conditions
 # should be fulfilled at the same time.
 #
-# 1. The argument force_exit is true
+# 1. The argument force_exit is true.
 #
-# 2. The case.stop file exists
+# 2. The case.stop file exists.
 #
 
     if force_exit && query_stop()
