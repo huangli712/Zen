@@ -673,6 +673,6 @@ end
     vaspio_charge(f::String)
 
 Reading vasp's CHGCAR file, return the charge density. Here `f` means
-only the directory that contains CHGCAR
+only the directory that contains CHGCAR.
 """
 function vaspio_charge(f::String) end
