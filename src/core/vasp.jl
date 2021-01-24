@@ -124,7 +124,7 @@ Backup the output files of vasp if necessary. Furthermore, the fermi level
 in IterInfo struct is also updated (IterInfo._dft_fermi)
 """
 function vasp_save(it::IterInfo)
-    # store the data files
+    # Store the data files
     if it.dmft_cycle == 0
         cp("INCAR", "INCAR.$(it.dmft_cycle)", force = true)
         cp("CHGCAR", "CHGCAR.$(it.dmft_cycle)", force = true)
@@ -138,8 +138,8 @@ function vasp_save(it::IterInfo)
         sorry()
     end
 
-    # anyway, the fermi level is extracted from DOSCAR, and its value will
-    # be saved at IterInfo._dft_fermi
+    # Anyway, the fermi level is extracted from DOSCAR, and its value will
+    # be saved at IterInfo._dft_fermi.
     it._dft_fermi = vaspio_fermi(pwd())
 end
 
