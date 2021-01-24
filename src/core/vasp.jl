@@ -31,10 +31,10 @@ function vasp_adaptor()
     println("    Get Weight")
     KohnShamData["kmesh"], KohnShamData["weight"] = vaspio_kmesh(pwd())
 
-    # read in tetrahedron data if they are available
+    # S04: Read in tetrahedron data if they are available
     if get_d("smear") === "tetra"
         println("    Get Tetrahedron")
-        volt, itet = vaspio_tetra(pwd())
+        KohnShamData["volt"], KohnShamData["itet"] = vaspio_tetra(pwd())
     end
 
     # read in band structure and the corresponding occupancies
