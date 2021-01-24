@@ -648,24 +648,24 @@ end
     vaspio_fermi(f::String)
 
 Reading vasp's DOSCAR file, return the fermi level. Here `f` means
-only the directory that contains DOSCAR
+only the directory that contains DOSCAR.
 """
 function vaspio_fermi(f::String)
-    # open the iostream
+    # Open the iostream
     fin = open(joinpath(f, "DOSCAR"), "r")
 
-    # skip five empty lines
+    # Skip five empty lines
     for i = 1:5
         readline(fin)
     end
 
-    # extract the fermi level
+    # Extract the fermi level
     fermi = parse(F64, line_to_array(fin)[4])
 
-    # close the iostream
+    # Close the iostream
     close(fin)
 
-    # return the desired data
+    # Return the desired data
     return fermi
 end
 
