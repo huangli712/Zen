@@ -143,6 +143,10 @@ function vasp_save(it::IterInfo)
     it._dft_fermi = vaspio_fermi(pwd())
 end
 
+#
+# Service Functions
+#
+
 """
     vasp_incar(fermi::F64)
 
