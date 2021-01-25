@@ -5,20 +5,38 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/23
+# last modified: 2021/01/25
+#
+
+#
+# Driver Functions
 #
 
 """
     plo_adaptor(debug::Bool = false)
+
+Adaptor support. It will postprocess the raw projector matrix.
 """
 function plo_adaptor(debug::Bool = false)
+    # S01: Print the header
     println("  < PLO Adaptor >")
+
+    # S02:
     println("    Grouping")
+
+    # S03:
     println("    Rotating")
+
+    # S04:
     println("    Leveling")
+
+    # S05:
     println("    Filtering")
+
+    # S06:
     println("    Orthogonalizing")
 
+    # S07:
     if debug
         # TODO
         println("DEBUG!")
