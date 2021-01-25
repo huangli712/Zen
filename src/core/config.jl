@@ -490,10 +490,11 @@ Extract configurations from dict: PSOLVER, convert them into strings.
 """
 @inline function str_s(key::String)
     if haskey(PSOLVER, key)
-        if PSOLVER[key][3] === :Array
+        s = PSOLVER[key][1]
+        if PSOLVER[key][3] === :Array && !isa(s, Missing)
             join(PSOLVER[key][1], "; ")
         else
-            ( s = PSOLVER[key][1] ) isa String ? s : string(s)
+            s isa String ? s : string(s)
         end
     else
         error("Sorry, PSOLVER does not contain key: $key")
