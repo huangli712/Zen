@@ -433,22 +433,22 @@ end
 """
     plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
 
-Calculate the density matrix out of projectors. It should be block-diagonal
+Calculate the density matrix out of projectors. It should be block-diagonal.
 """
 function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
-    # extract some key parameters
+    # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # sanity check
+    # Sanity check
     @assert nband === bmax - bmin + 1
 
-    # evaluate spin factor
+    # Evaluate spin factor
     sf = (nspin === 1 ? 2 : 1)
 
-    # create density matrix array
+    # Create density matrix array
     dm = zeros(F64, nproj, nproj, nspin)
 
-    # build density matrix array
+    # Build density matrix array
     for s = 1:nspin
         for k = 1:nkpt
             wght = weight[k] / nkpt * sf
@@ -462,7 +462,7 @@ function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,
         end
     end
 
-    # return the desired array
+    # Return the desired array
     return dm
 end
 
