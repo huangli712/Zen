@@ -45,11 +45,17 @@ function plo_adaptor(debug::Bool = false)
         error("The KohnShamData dict does not contain the keys: fermi and enk")
     end
 
-    # S05:
+    # S05: Filter the projector matrix
     println("    Filtering")
+    if haskey(KohnShamData, "enk") && haskey(KohnShamData, "chipsi")
+        bmin, bmax, ib_window, KohnShamData["chipsi"] = plo_window(KohnSham["enk"], 2.0, -1.4, KohnShamData["chipsi"])
+    else
+        error("The KohnShamData dict does not contain the keys: enk and chipsi")
+    end
 
     # S06:
     println("    Orthogonalizing")
+    plo_orthog(ib_window, PGT, chipsi_w)
 
     # S07:
     if debug
