@@ -289,7 +289,7 @@ end
 """
     plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4})
 
-Try to orthogonalize the projectors group by group (site_l by site_l)
+Try to orthogonalize the projectors group by group (site_l by site_l).
 """
 function plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4})
     # extract some key parameters
