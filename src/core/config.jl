@@ -418,10 +418,11 @@ Extract configurations from dict: PCASE, convert them into strings.
 """
 @inline function str_c(key::String)
     if haskey(PCASE, key)
-        if PCASE[key][3] === :Array
-            join(PCASE[key][1], "; ")
+        c = PCASE[key][1]
+        if PCASE[key][3] === :Array && !isa(c, Missing)
+            join(c, "; ")
         else
-            ( c = PCASE[key][1] ) isa String ? c : string(c)
+            c isa String ? c : string(c)
         end
     else
         error("Sorry, PCASE does not contain key: $key")
