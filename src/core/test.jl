@@ -4,9 +4,11 @@ include("Zen.jl")
 using .Zen
 
 # parse the configuration parameter
+require()
+welcome()
+overview()
 setup()
 exhibit()
-welcome()
 exit(-1)
 
 # read the Kohn-Sham data

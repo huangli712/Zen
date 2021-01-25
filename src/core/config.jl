@@ -266,8 +266,8 @@ function cat_d()
     println("  lspinorb -> ", str_d("lspinorb"))
     println("  loptim   -> ", str_d("loptim"))
     println("  lproj    -> ", str_d("lproj"))
-    println("  ewidth   -> ", str_d("ewidth"))
     println("  sproj    -> ", str_d("sproj"))
+    println("  window   -> ", str_d("window"))
     println()
 end
 

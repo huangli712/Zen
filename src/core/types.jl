@@ -140,7 +140,7 @@ end
 """
     IterInfo
 
-Record the runtime information.
+Record the DFT + DMFT iteration information.
 
 .dmft1_iter -> Number of iterations between dmft1 and quantum impurity solver
 .dmft2_iter -> Number of iterations between dmft2 and dft engine
@@ -371,7 +371,7 @@ function PrGroupT(PG::PrGroup)
 end
 
 #
-# Customized Base.show() functions
+# Customized Base.show() Functions
 #
 
 """
