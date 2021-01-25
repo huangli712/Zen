@@ -65,18 +65,18 @@ export __AUTHORS__
 #
 # Members:
 #
-# PCASE        -> Dict for case
-# PDFT         -> Dict for DFT engine
-# PDMFT        -> Dict for DMFT engine
-# PIMP         -> Dict for quantum impurities
-# PSOLVER      -> Dict for quantum impurity solvers
-# KohnShamData -> Dict for storing Kohn-Sham data
-# Logger       -> Struct for logger
-# IterInfo     -> Struct for iteration information
-# Lattice      -> Struct for crystallography information
-# PrTrait      -> Struct for projectors
-# PrGroup      -> Struct for groups of projectors
-# PrGroupT     -> Struct for groups of projectors (transformed)
+# PCASE    -> Dict for case
+# PDFT     -> Dict for DFT engine
+# PDMFT    -> Dict for DMFT engine
+# PIMP     -> Dict for quantum impurities
+# PSOLVER  -> Dict for quantum impurity solvers
+# DFTData  -> Dict for storing Kohn-Sham data
+# Logger   -> Struct for logger
+# IterInfo -> Struct for iteration information
+# Lattice  -> Struct for crystallography information
+# PrTrait  -> Struct for projectors
+# PrGroup  -> Struct for groups of projectors
+# PrGroupT -> Struct for groups of projectors (transformed)
 #
 include("types.jl")
 #
