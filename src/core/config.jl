@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/21
+# last modified: 2021/01/25
 #
 
 #
@@ -24,7 +24,7 @@ function setup()
     # S2: Build the configuration dictionaries
     new_dict(cfg)
 
-    # S3: Validate the configuration dictionaries
+    # S3: Validate the configuration parameters
     chk_dict()
 end
 
@@ -34,6 +34,7 @@ end
 Display the configuration parameters for reference.
 """
 function exhibit()
+    # S0: Print the header
     prompt("ZEN", "Configuration")
 
     # S1: Show dict PCASE
@@ -105,7 +106,8 @@ end
 """
     new_dict(cfg::Dict{String,Any})
 
-Transfer configurations from cfg to PCASE, PDFT, PDMFT, PIMP, and PSOLVER.
+Transfer configurations from dict cfg to dicts (PCASE, PDFT, PDMFT,
+PIMP, and PSOLVER).
 """
 function new_dict(cfg::Dict{String,Any})
     # For case block
