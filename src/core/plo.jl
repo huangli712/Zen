@@ -29,11 +29,20 @@ function plo_adaptor(debug::Bool = false)
         error("The KohnShamData dict does not contain the key: PG")
     end
 
-    # S03:
+    # S03: Transform the projector matrix
     println("    Rotating")
+    if haskey(KohnShamData, "PG") && haskey(KohnShamData, "chipsi")
+        KohnShamData["PGT"], KohnShamData["chipsi"] = plo_rotate(KohnShamData["PG"], KohnShamData["chipsi"])
+    else
+        error("The KohnShamData dict does not contain the keys: PG and chipsi")
+    end
 
-    # S04:
+    # S04: Adjust the band structure
     println("    Leveling")
+    if haskey(KohnShamData, "fermi") && haskey(KohnShamData, "enk")
+    else
+        error("The KohnShamData dict does not contain the keys: fermi and enk")
+    end
 
     # S05:
     println("    Filtering")
