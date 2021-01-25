@@ -67,6 +67,10 @@ function plo_adaptor(debug::Bool = false)
     end
 end
 
+#
+# Service Functions (Group A)
+#
+
 """
     plo_group(PG::Array{PrGroup,1})
 
@@ -339,19 +343,23 @@ function plo_diag(M::AbstractArray{C64,2})
     copy!(M, S * M)
 end
 
+#
+# Service Functions (Group B)
+#
+
 """
     plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 
-Calculate the overlap matrix out of projectors. General version
+Calculate the overlap matrix out of projectors. A general version.
 """
 function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
-    # extract some key parameters
+    # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # create overlap array
+    # Create overlap array
     ovlp = zeros(F64, nproj, nproj, nspin)
 
-    # build overlap array
+    # Build overlap array
     for s = 1:nspin
         for k = 1:nkpt
             wght = weight[k] / nkpt
@@ -360,7 +368,7 @@ function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
         end
     end
 
-    # return the desired array
+    # Return the desired array
     return ovlp
 end
 
@@ -552,6 +560,10 @@ function plo_dos(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64
         println()
     end
 end
+
+#
+# Service Functions (Group C)
+#
 
 """
     view_ovlp(ovlp::Array{F64,3})
