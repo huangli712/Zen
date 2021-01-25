@@ -568,13 +568,13 @@ end
 """
     view_ovlp(ovlp::Array{F64,3})
 
-Output the overlap matrix. General version
+Output the overlap matrix. A general version.
 """
 function view_ovlp(ovlp::Array{F64,3})
-    # extract some key parameters
+    # Extract some key parameters
     _, nproj, nspin = size(ovlp)
 
-    # output the data
+    # Output the data
     println("<- Overlap Matrix ->")
     for s = 1:nspin
         println("Spin: $s")
@@ -588,13 +588,13 @@ end
 """
     view_ovlp(PGT::Array{PrGroupT,1}, ovlp::Array{F64,3})
 
-Output the overlap matrix. It should be block-diagonal
+Output the overlap matrix. It should be block-diagonal.
 """
 function view_ovlp(PGT::Array{PrGroupT,1}, ovlp::Array{F64,3})
-    # extract some key parameters
+    # Extract some key parameters
     _, nproj, nspin = size(ovlp)
 
-    # output the data
+    # Output the data
     println("<- Overlap Matrix ->")
     for s = 1:nspin
         println("Spin: $s")
@@ -613,13 +613,13 @@ end
 """
     view_dm(dm::Array{F64,3})
 
-Output the density matrix. General version
+Output the density matrix. A general version.
 """
 function view_dm(dm::Array{F64,3})
-    # extract some key parameters
+    # Extract some key parameters
     _, nproj, nspin = size(dm)
 
-    # output the data
+    # Output the data
     println("<- Density Matrix ->")
     for s = 1:nspin
         println("Spin: $s")
@@ -633,13 +633,13 @@ end
 """
     view_dm(PGT::Array{PrGroupT,1}, dm::Array{F64,3})
 
-Output the density matrix. It should be block-diagonal
+Output the density matrix. It should be block-diagonal.
 """
 function view_dm(PGT::Array{PrGroupT,1}, dm::Array{F64,3})
-    # extract some key parameters
+    # Extract some key parameters
     _, nproj, nspin = size(dm)
 
-    # output the data
+    # Output the data
     println("<- Density Matrix ->")
     for s = 1:nspin
         println("Spin: $s")
@@ -658,13 +658,13 @@ end
 """
     view_hamk(hamk::Array{C64,3})
 
-Output the local hamiltonian. General version
+Output the local hamiltonian. A general version.
 """
 function view_hamk(hamk::Array{C64,3})
-    # extract some key parameters
+    # Extract some key parameters
     _, nproj, nspin = size(hamk)
 
-    # output the data
+    # Output the data
     println("<- Local Hamiltonian ->")
     for s = 1:nspin
         println("Spin: $s")
@@ -684,13 +684,13 @@ end
 """
     view_hamk(PGT::Array{PrGroupT,1}, hamk::Array{C64,3})
 
-Output the local hamiltonian. It should be block-diagonal
+Output the local hamiltonian. It should be block-diagonal.
 """
 function view_hamk(PGT::Array{PrGroupT,1}, hamk::Array{C64,3})
-    # extract some key parameters
+    # Extract some key parameters
     _, nproj, nspin = size(hamk)
 
-    # output the data
+    # Output the data
     println("<- Local Hamiltonian ->")
     for s = 1:nspin
         println("Spin: $s")
