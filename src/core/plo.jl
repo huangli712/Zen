@@ -40,6 +40,7 @@ function plo_adaptor(debug::Bool = false)
     # S04: Adjust the band structure
     println("    Leveling")
     if haskey(KohnShamData, "fermi") && haskey(KohnShamData, "enk")
+        @. KohnShamData["enk"] = KohnShamData["enk"] - KohnShamData["fermi"]
     else
         error("The KohnShamData dict does not contain the keys: fermi and enk")
     end
