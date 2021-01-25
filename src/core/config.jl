@@ -454,10 +454,11 @@ Extract configurations from dict: PDMFT, convert them into strings.
 """
 @inline function str_m(key::String)
     if haskey(PDMFT, key)
-        if PDMFT[key][3] === :Array
-            join(PDMFT[key][1], "; ")
+        m = PDMFT[key][1]
+        if PDMFT[key][3] === :Array && !isa(m, Missing)
+            join(m, "; ")
         else
-            ( m = PDMFT[key][1] ) isa String ? m : string(m)
+            m isa String ? m : string(m)
         end
     else
         error("Sorry, PDMFT does not contain key: $key")
