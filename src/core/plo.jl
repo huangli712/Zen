@@ -74,45 +74,45 @@ Use the information contained in the PIMP dict to further complete
 the PrGroup struct.
 """
 function plo_group(PG::Array{PrGroup,1})
-    # additional check for the parameters contained in PIMP dict
+    # Additional check for the parameters contained in PIMP dict
     @assert get_i("nsite") === length(get_i("atoms"))
     @assert get_i("nsite") === length(get_i("shell"))
 
-    # lshell defines a mapping from shell (string) to l (integer)
+    # The lshell defines a mapping from shell (string) to l (integer)
     lshell = Dict{String,I64}(
                  "s"     => 0,
                  "p"     => 1,
                  "d"     => 2,
                  "f"     => 3,
-                 "d_t2g" => 2, # only a subset of d orbitals
-                 "d_eg"  => 2, # only a subset of d orbitals
+                 "d_t2g" => 2, # Only a subset of d orbitals
+                 "d_eg"  => 2, # Only a subset of d orbitals
              )
 
-    # loop over each site (quantum impurity problem)
+    # Loop over each site (quantum impurity problem)
     for i = 1:get_i("nsite")
-        # determine site
+        # Determine site
         str = get_i("atoms")[i]
         site = parse(I64, line_to_array(str)[3])
 
-        # determine l
+        # Determine l
         str = get_i("shell")[i]
         l = haskey(lshell, str) ? lshell[str] : nothing
 
-        # scan the groups of projectors
+        # Scan the groups of projectors
         for g in eachindex(PG)
-            # examine PrGroup, check number of projectors
+            # Examine PrGroup, check number of projectors
             @assert 2 * PG[g].l + 1 === length(PG[g].Pr)
 
-            # well, find out the required PrGroup
+            # Well, find out the required PrGroup
             if (PG[g].site, PG[g].l) === (site, l)
-                # setup corr property
+                # Setup corr property
                 PG[g].corr = true
 
-                # setup shell property
+                # Setup shell property
                 PG[g].shell = str
             end
 
-            # setup Tr array further
+            # Setup Tr array further
             @cswitch PG[g].shell begin
                 @case "s"
                     PG[g].Tr = Matrix{ComplexF64}(I, 1, 1)
