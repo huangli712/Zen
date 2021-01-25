@@ -218,60 +218,60 @@ end
 Extract the projectors within a given energy window.
 """
 function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
-    # sanity check
-    # make sure there is an overlap between [emin, emax] and band structure
+    # Sanity check. Here we should make sure there is an overlap between
+    # [emin, emax] and band structure.
     if emax < minimum(enk) || emin > maximum(enk)
         error("Energy window does not overlap with the band structure")
     end
 
-    # extract some key parameters
+    # Extract some key parameters
     nband, nkpt, nspin = size(enk)
 
-    # create arrays
-    # ib_window is used to record the band window for each kpt and each spin
+    # Create arrays
+    # The ib_window is used to record the band window for each kpt and each spin
     ib_window = zeros(I64, nkpt, nspin, 2)
 
-    # scan the band structure to determine ib_window
+    # Scan the band structure to determine ib_window
     for s = 1:nspin
         for k = 1:nkpt
-            # for lower boundary
+            # For lower boundary
             ib1 = 1
             while enk[ib1, k, s] < emin
                 ib1 = ib1 + 1
             end
 
-            # for upper boundary
+            # For upper boundary
             ib2 = nband
             while enk[ib2, k, s] > emax
                 ib2 = ib2 - 1
             end
 
-            # check the boundaries
+            # Check the boundaries
             @assert ib1 <= ib2
 
-            # save the boundaries
-            # ib1 and ib2 mean the lower and upper boundaries, respectively
+            # Save the boundaries
+            # The ib1 and ib2 mean the lower and upper boundaries, respectively.
             ib_window[k, s, 1] = ib1
             ib_window[k, s, 2] = ib2
         end
     end
 
-    # try to find out the global minimum and maximum band indices
+    # Try to find out the global minimum and maximum band indices
     ib_min = minimum(ib_window[:, :, 1])
     ib_max = maximum(ib_window[:, :, 2])
 
-    # try to find out the maximum number of selected bands in the window
+    # Try to find out the maximum number of selected bands in the window
     nbmax = ib_max - ib_min + 1
 
-    # extract some key parameters
+    # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # create arrays
-    # chipsi_w is used to store the required projectors
+    # Create arrays
+    # The chipsi_w is used to store the required projectors
     chipsi_w = zeros(C64, nproj, nbmax, nkpt, nspin)
 
-    # select projectors which live in the given band window
-    # copy data from chipsi to chipsi_w
+    # Select projectors which live in the given band window
+    # We just copy data from chipsi to chipsi_w
     for s = 1:nspin
         for k = 1:nkpt
             ib1 = ib_window[k, s, 1]
@@ -282,7 +282,7 @@ function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4
         end
     end
 
-    # return the desired arrays
+    # Return the desired arrays
     return ib_min, ib_max, ib_window, chipsi_w
 end
 
