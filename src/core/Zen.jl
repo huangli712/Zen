@@ -68,11 +68,11 @@ export __AUTHORS__
 # PCASE    -> Dict for case
 # PDFT     -> Dict for DFT engine
 # PDMFT    -> Dict for DMFT engine
-# PIMP     -> Dict for quantum impurities
+# PIMP     -> Dict for quantum impurity problems
 # PSOLVER  -> Dict for quantum impurity solvers
-# DFTData  -> Dict for storing Kohn-Sham data
+# DFTData  -> Dict for storing Kohn-Sham band structure and related data
 # Logger   -> Struct for logger
-# IterInfo -> Struct for iteration information
+# IterInfo -> Struct for DFT + DMFT iteration information
 # Lattice  -> Struct for crystallography information
 # PrTrait  -> Struct for projectors
 # PrGroup  -> Struct for groups of projectors
@@ -108,21 +108,21 @@ export PrGroupT
 # new_dict -> Update dicts for configuration
 # chk_dict -> Check dicts for configuration
 # _v       -> Verify dict's values
-# cat_c    -> Print dict (PCASE)
-# cat_d    -> Print dict (PDFT)
-# cat_m    -> Print dict (PDMFT)
-# cat_i    -> Print dict (PIMP)
-# cat_s    -> Print dict (PSOLVER)
-# get_c    -> Extract value from dict (PCASE), return original value
-# get_d    -> Extract value from dict (PDFT), return original value
-# get_m    -> Extract value from dict (PDMFT), return original value
-# get_i    -> Extract value from dict (PIMP), return original value
-# get_s    -> Extract value from dict (PSOLVER), return original value
-# str_c    -> Extract value from dict (PCASE), return string
-# str_d    -> Extract value from dict (PDFT), return string
-# str_m    -> Extract value from dict (PDMFT), return string
-# str_i    -> Extract value from dict (PIMP), return string
-# str_s    -> Extract value from dict (PSOLVER), return string
+# cat_c    -> Print dict (PCASE dict)
+# cat_d    -> Print dict (PDFT dict)
+# cat_m    -> Print dict (PDMFT dict)
+# cat_i    -> Print dict (PIMP dict)
+# cat_s    -> Print dict (PSOLVER dict)
+# get_c    -> Extract value from dict (PCASE dict), return original value
+# get_d    -> Extract value from dict (PDFT dict), return original value
+# get_m    -> Extract value from dict (PDMFT dict), return original value
+# get_i    -> Extract value from dict (PIMP dict), return original value
+# get_s    -> Extract value from dict (PSOLVER dict), return original value
+# str_c    -> Extract value from dict (PCASE dict), return everything as string
+# str_d    -> Extract value from dict (PDFT dict), return everything as string
+# str_m    -> Extract value from dict (PDMFT dict), return everything as string
+# str_i    -> Extract value from dict (PIMP dict), return everything as string
+# str_s    -> Extract value from dict (PSOLVER dict), return everything as string
 #
 include("config.jl")
 #
@@ -289,7 +289,7 @@ export irio_charge
 # plo_adaptor -> Adaptor support
 # plo_group   -> Setup groups of projectors
 # plo_rotate  -> Rotate the projectors
-# plo_window  -> Extract the projectors within a given energy window
+# plo_filter  -> Extract the projectors within a given energy window
 # plo_orthog  -> Orthogonalize the projectors
 # plo_diag    -> Orthogonalizes a projector defined by a rectangular matrix
 # plo_ovlp    -> Calculate overlap matrix
@@ -306,7 +306,7 @@ include("plo.jl")
 export plo_adaptor
 export plo_group
 export plo_rotate
-export plo_window
+export plo_filter
 export plo_orthog
 export plo_diag
 export plo_ovlp
