@@ -495,19 +495,19 @@ end
 """
     plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
 
-Try to build the local hamiltonian. It should be block-diagonal
+Try to build the local hamiltonian. It should be block-diagonal.
 """
 function plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
-    # extract some key parameters
+    # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # sanity check
+    # Sanity check
     @assert nband === bmax - bmin + 1
 
-    # create hamiltonian array
+    # Create hamiltonian array
     hamk = zeros(C64, nproj, nproj, nspin)
 
-    # build hamiltonian array
+    # Build hamiltonian array
     for s = 1:nspin
         for k = 1:nkpt
             wght = weight[k] / nkpt
@@ -521,14 +521,14 @@ function plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C6
         end
     end
 
-    # return the desired array
+    # Return the desired array
     return hamk
 end
 
 """
     plo_dos(itet::Array{I64,2}, enk::Array{F64,3})
 
-Try to calculate the density of states
+Try to calculate the density of states.
 """
 function plo_dos(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, itet::Array{I64,2}, enk::Array{F64,3})
     # extract some key parameters
