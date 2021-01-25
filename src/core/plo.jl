@@ -292,25 +292,25 @@ end
 Try to orthogonalize the projectors group by group (site_l by site_l).
 """
 function plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4})
-    # extract some key parameters
+    # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # loop over spins and kpoints
+    # Loop over spins and kpoints
     for s = 1:nspin
         for k = 1:nkpt
-            # determine band index and band window
+            # Determine band index and band window
             b1 = window[k, s, 1]
             b2 = window[k, s, 2]
             nb = b2 - b1 + 1
             for p in eachindex(PGT)
-                # determine projector index
+                # Determine projector index
                 q1 = PGT[p].Pr[1]
                 q2 = PGT[p].Pr[end]
 
-                # make a view for the desired subarray
+                # Make a view for the desired subarray
                 M = view(chipsi, q1:q2, 1:nb, k, s)
 
-                # orthogonalize it (chipsi is update at the same time)
+                # Orthogonalize it (chipsi is update at the same time)
                 plo_diag(M)
             end
         end
@@ -320,22 +320,22 @@ end
 """
     plo_diag(M::AbstractArray{C64,2})
 
-Orthogonalize the given matrix
+Orthogonalize the given matrix.
 """
 function plo_diag(M::AbstractArray{C64,2})
-    # calculate overlap matrix, it must be a hermitian matrix
+    # Calculate overlap matrix, it must be a hermitian matrix.
     ovlp = M * M'
     @assert ishermitian(ovlp)
 
-    # diagonalize the overlap matrix, return eigenvalues and eigenvectors
+    # Diagonalize the overlap matrix, return eigenvalues and eigenvectors.
     vals, vecs = eigen(Hermitian(ovlp))
     @assert all(vals .> 0)
 
-    # calculate the renormalization factor
+    # Calculate the renormalization factor
     sqrt_vals = map(x -> 1.0 / sqrt(x), vals)
     S = vecs * Diagonal(sqrt_vals) * vecs'
 
-    # renormalize the input matrix
+    # Renormalize the input matrix
     copy!(M, S * M)
 end
 
