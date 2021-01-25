@@ -21,8 +21,13 @@ function plo_adaptor(debug::Bool = false)
     # S01: Print the header
     println("  < PLO Adaptor >")
 
-    # S02:
+    # S02: Setup the PrGroup strcut
     println("    Grouping")
+    if haskey(KohnShamData, "PG")
+        plo_group(KohnShamData["PG"])
+    else
+        error("The KohnShamData dict does not contain the key: PG")
+    end
 
     # S03:
     println("    Rotating")
@@ -47,7 +52,7 @@ end
     plo_group(PG::Array{PrGroup,1})
 
 Use the information contained in the PIMP dict to further complete
-the PrGroup struct
+the PrGroup struct.
 """
 function plo_group(PG::Array{PrGroup,1})
     # additional check for the parameters contained in PIMP dict
