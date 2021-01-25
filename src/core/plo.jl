@@ -154,20 +154,20 @@ end
 """
     plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 
-Perform global rotations or transformations for the projectors
+Perform global rotations or transformations for the projectors.
 """
 function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
-    # create a array of PrGroupT struct
+    # Create a array of PrGroupT struct
     PGT = PrGroupT[]
     for i in eachindex(PG)
-        # determine how many projectors should be included in this group
+        # Determine how many projectors should be included in this group
         # according to the rotation matrix (transformation matrix)
         ndim = size(PG[i].Tr)[1]
-        # create PrGroupT and push it into PGT array
+        # Create a PrGroupT struct and push it into the PGT array
         push!(PGT, PrGroupT(PG[i].site, PG[i].l, ndim, PG[i].corr, PG[i].shell))
     end
 
-    # setup the Pr property of PrGroupT struct
+    # Setup the Pr property of PrGroupT struct
     c = 0
     for i in eachindex(PGT)
         for j = 1:PGT[i].ndim
@@ -175,21 +175,25 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
             PGT[i].Pr[j] = c
         end
     end
-    # until now PrGroupT struct is ready
+    # Until now PrGroupT struct is ready
 
-    # extract some key parameters
+    # Extract some key parameters from raw projector matrix
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # tell us how many projectors there are after the rotation
+    # Tell us how many projectors there are after the rotation
     nproj_ = sum(x -> x.ndim, PGT)
     @assert nproj_ === sum(x -> size(x.Tr)[1], PG)
     @assert nproj_ <= nproj
 
-    # create new arrays
+    # Create new arrays
     chipsi_r = zeros(C64, nproj_, nband, nkpt, nspin)
 
-    # perform rotation or transformation
-    # note: PG[i].Tr must be a matrix. its size must be (q2 - q1 + 1, p2 - p1 + 1)
+    # Perform rotation or transformation
+    #
+    # Remark:
+    #
+    # PG[i].Tr must be a matrix. its size must be (q2 - q1 + 1, p2 - p1 + 1)
+    #
     for s = 1:nspin
         for k = 1:nkpt
             for b = 1:nband
@@ -204,14 +208,14 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
         end
     end
 
-    # return the desired arrays
+    # Return the desired arrays
     return PGT, chipsi_r
 end
 
 """
     plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
 
-Extract the projectors within a given energy window
+Extract the projectors within a given energy window.
 """
 function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
     # sanity check
