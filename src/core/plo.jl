@@ -53,13 +53,16 @@ function plo_adaptor(debug::Bool = false)
         error("The KohnShamData dict does not contain the keys: enk and chipsi")
     end
 
-    # S06:
+    # S06: To make sure the projectors orthogonalize with each other
     println("    Orthogonalizing")
-    plo_orthog(ib_window, PGT, chipsi_w)
+    if haskey(KohnShamData, "PGT") && haskey(KohnShamData["chipsi"])
+        plo_orthog(ib_window, KohnShamData["PGT"], KohnShamData["chipsi"])
+    else
+        error("The KohnShamData dict does not contain the keys: PGT and chipsi")
+    end
 
-    # S07:
+    # S07: Write the density matrix and overlap matrix for checking
     if debug
-        # TODO
         println("DEBUG!")
     end
 end
