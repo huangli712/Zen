@@ -469,16 +469,16 @@ end
 """
     plo_hamk(chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
 
-Try to build the local hamiltonian. General version
+Try to build the local hamiltonian. A general version.
 """
 function plo_hamk(chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
-    # extract some key parameters
+    # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # create hamiltonian array
+    # Create hamiltonian array
     hamk = zeros(C64, nproj, nproj, nspin)
 
-    # build hamiltonian array
+    # Build hamiltonian array
     for s = 1:nspin
         for k = 1:nkpt
             wght = weight[k] / nkpt
@@ -488,7 +488,7 @@ function plo_hamk(chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
         end
     end
 
-    # return the desired array
+    # Return the desired array
     return hamk
 end
 
