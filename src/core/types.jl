@@ -110,11 +110,11 @@ const PSOLVER= Dict{String,Array{Any,1}}(
 #
 
 """
-    KohnShamData
+    DFTData
 
-Dictionary for storing the Kohn-Sham data.
+Dictionary for storing the Kohn-Sham band structure and related data.
 """
-const KohnShamData = Dict{String,Any}()
+const DFTData = Dict{String,Any}()
 
 #
 # Customized Structs
