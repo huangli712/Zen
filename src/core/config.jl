@@ -472,10 +472,11 @@ Extract configurations from dict: PIMP, convert them into strings.
 """
 @inline function str_i(key::String)
     if haskey(PIMP, key)
-        if PIMP[key][3] === :Array
-            join(PIMP[key][1], "; ")
+        i = PIMP[key][1]
+        if PIMP[key][3] === :Array && !isa(i, Missing)
+            join(i, "; ")
         else
-            ( i = PIMP[key][1] ) isa String ? i : string(i)
+            i isa String ? i : string(i)
         end
     else
         error("Sorry, PIMP does not contain key: $key")
