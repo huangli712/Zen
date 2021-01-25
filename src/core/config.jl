@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/25
+# last modified: 2021/01/26
 #
 
 #
@@ -162,6 +162,14 @@ end
 Validate the correctness and consistency of configurations.
 """
 function chk_dict()
+
+#
+# Remarks:
+#
+# This function is far away from completeness. We should add more
+# constraints here, both physically and numerically.
+#
+
     # C1. Check types and existences
     #
     # Check all blocks one by one
@@ -208,6 +216,10 @@ function chk_dict()
     # Please add more assertion statements here
 end
 
+#
+# Service Functions (Group B)
+#
+
 """
     _v(val::Array{Any,1})
 
@@ -226,7 +238,7 @@ Verify the value array. Called by chk_dict() function only.
 end
 
 #
-# Service Functions (Group B: cat_xxx())
+# Service Functions (Group C: cat_xxx())
 #
 
 """
@@ -246,19 +258,19 @@ end
 Print the configuration parameters to stdout: for PDFT dict.
 """
 function cat_d()
-    #
-    # Remarks:
-    #
-    # The get_d("sproj") is actually an Array{String,1}. It would be quite
-    # low efficiency if we print it directly. So we have to convert it into
-    # a string by using the join() function at first.
-    #
-    # The get_d("ewidth") is actually a real number. It would be quite low
-    # efficiency if we print it directly. So we have to convert it into a
-    # string by using the string() function at first.
-    #
-    # See config.jl/str_d() function for more details.
-    #
+#
+# Remarks:
+#
+# The get_d("sproj") is actually an Array{String,1}. It would be quite
+# low efficiency if we print it directly. So we have to convert it into
+# a string by using the join() function at first.
+#
+# The get_d("window") is actually an Array{F64,N}. It would be quite
+# low efficiency if we print it directly. So we have to convert it into
+# a string by using the join() function at first.
+#
+# See config.jl/str_d() function for more details.
+#
     println("  engine   -> ", str_d("engine"))
     println("  smear    -> ", str_d("smear"))
     println("  kmesh    -> ", str_d("kmesh"))
@@ -327,7 +339,7 @@ function cat_s()
 end
 
 #
-# Service Functions (Group C: get_xxx())
+# Service Functions (Group D: get_xxx())
 #
 
 """
@@ -396,7 +408,7 @@ Extract configurations from dict: PSOLVER.
 end
 
 #
-# Service Functions (Group D: str_xxx())
+# Service Functions (Group E: str_xxx())
 #
 
 """
@@ -423,10 +435,11 @@ Extract configurations from dict: PDFT, convert them into strings.
 """
 @inline function str_d(key::String)
     if haskey(PDFT, key)
-        if PDFT[key][3] === :Array
-            join(PDFT[key][1], "; ")
+        d = PDFT[key][1]
+        if PDFT[key][3] === :Array && !isa(d, Missing)
+            join(d, "; ")
         else
-            ( d = PDFT[key][1] ) isa String ? d : string(d)
+            d isa String ? d : string(d)
         end
     else
         error("Sorry, PDFT does not contain key: $key")
