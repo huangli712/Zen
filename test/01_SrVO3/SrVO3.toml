@@ -9,7 +9,6 @@ lspins = false
 lspinorb = false
 loptim = true
 lproj = true
-ewidth = 5.0
 sproj = ["2 : d : Pr"]
 
 [dmft]

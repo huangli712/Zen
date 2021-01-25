@@ -9,8 +9,8 @@ lspins = false
 lspinorb = false
 loptim = true
 lproj = true
-ewidth = 5.0
 sproj = ["2 : d : Pr"]
+wproj = [(-2.0, 1.4)]
 
 [dmft]
 mode = 1
