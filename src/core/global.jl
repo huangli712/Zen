@@ -5,7 +5,7 @@
 # Status  : stable
 # Comment :
 #
-# Last modified: 2021/01/18
+# Last modified: 2021/01/25
 #
 
 """
@@ -44,7 +44,7 @@ const __LIBNAME__ = "ZEN Framework"
 
 Version of this julia package
 """
-const __VERSION__ = "0.0.6@devel"
+const __VERSION__ = "0.0.7@devel"
 
 """
     __RELEASE__
@@ -56,6 +56,13 @@ const __RELEASE__ = "2021/01"
 """
     __AUTHORS__
 
-Core authors of this julia package. The Array's element is a NamedTuple object.
+Core authors of this julia package.
 """
+
+#
+# Remarks:
+#
+# The Array's element should be a NamedTuple object:
+#     (name = "name", email = "email").
+#
 const __AUTHORS__ = [(name = "Li Huang", email = "lihuang.dmft@gmail.com")]

@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/21
+# Last modified: 2021/01/25
 #
 
 module Zen
@@ -33,17 +33,17 @@ using TOML
 #
 # Summary:
 #
-# Define type aliases and some string constants.
+# Define type aliases and some string constants for the Zen framework.
 #
 # Members:
 #
 # I32, I64    -> Numerical types (integer)
 # F32, F64    -> Numerical types (float)
 # C32, C64    -> Numerical types (complex)
-# __LIBNAME__ -> Name of this library
-# __VERSION__ -> Version of this library
-# __RELEASE__ -> Released date of this library
-# __AUTHORS__ -> Authors of this library
+# __LIBNAME__ -> Name of this framework
+# __VERSION__ -> Version of this framework
+# __RELEASE__ -> Released date of this framework
+# __AUTHORS__ -> Authors of this framework
 #
 include("global.jl")
 #
@@ -85,7 +85,7 @@ export PDFT
 export PDMFT
 export PIMP
 export PSOLVER
-export KohnShamData
+export DFTData
 export Logger
 export IterInfo
 export Lattice
