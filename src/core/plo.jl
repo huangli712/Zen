@@ -531,10 +531,10 @@ end
 Try to calculate the density of states.
 """
 function plo_dos(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, itet::Array{I64,2}, enk::Array{F64,3})
-    # extract some key parameters
+    # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # sanity check
+    # Sanity check
     @assert nband === bmax - bmin + 1
 
     mesh = collect(-4.0:0.01:4.0)
