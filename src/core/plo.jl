@@ -375,16 +375,16 @@ end
 """
     plo_ovlp(PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
 
-Calculate the overlap matrix out of projectors. It should be block-diagonal
+Calculate the overlap matrix out of projectors. It should be block-diagonal.
 """
 function plo_ovlp(PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
-    # extract some key parameters
+    # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # create overlap array
+    # Create overlap array
     ovlp = zeros(F64, nproj, nproj, nspin)
 
-    # build overlap array
+    # Build overlap array
     for s = 1:nspin
         for k = 1:nkpt
             wght = weight[k] / nkpt
@@ -397,7 +397,7 @@ function plo_ovlp(PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F6
         end
     end
 
-    # return the desired array
+    # Return the desired array
     return ovlp
 end
 
