@@ -5,7 +5,7 @@
 # Status  : unstable
 # Comment :
 #
-# Last modified: 2021/01/19
+# Last modified: 2021/01/25
 #
 
 #
@@ -16,7 +16,7 @@
 # Remarks:
 #
 # The values in the following dictionaries are actually arrays, which
-# contain four elements:
+# usually contain four elements:
 #     Value[1] -> Actually value
 #     Value[2] -> If it is 1, this key-value pair is mandatory.
 #                 If it is 0, this key-value pair is optional.
@@ -41,15 +41,15 @@ Dictionary for configuration parameters: density functional theory calculations.
 const PDFT  = Dict{String,Array{Any,1}}(
           "engine"   => [missing, 1, :String, "Engine for density functional theory calculations"],
           "smear"    => [missing, 0, :String, "Scheme for smearing"],
-          "kmesh"    => [missing, 0, :String, "Kmesh for brillouin zone sampling / integration"],
+          "kmesh"    => [missing, 0, :String, "K-mesh for brillouin zone sampling / integration"],
           "magmom"   => [missing, 0, :String, "Initial magnetic moments"],
           "lsymm"    => [missing, 0, :Bool  , "The symmetry is turned on or off"],
           "lspins"   => [missing, 0, :Bool  , "The spin orientations are polarized or not"],
           "lspinorb" => [missing, 0, :Bool  , "The spin-orbit coupling is considered or not"],
           "loptim"   => [missing, 0, :Bool  , "The generated projectors are optimized or not"],
           "lproj"    => [missing, 1, :Bool  , "The projectors are generated or not"],
-          "ewidth"   => [missing, 0, :F64   , "Half-width of energy window for generating optimal projectors"],
-          "sproj"    => [missing, 1, :Array , "Strings / descriptions for generating projectors"],
+          "sproj"    => [missing, 1, :Array , "Specifications for generating projectors"],
+          "window"   => [missing, 0, :Array , "Band / energy window for orthogonalizing projectors"],
       )
 
 """
