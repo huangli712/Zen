@@ -40,7 +40,7 @@ function vasp_adaptor()
     # S05: Read in band structure and the corresponding occupancies
     println("    Get Enk")
     println("    Get Occupy")
-    KohnShamData["enk"], KohnShamData["occupy"] = vaspio_eigen(pwd())
+    DFTData["enk"], DFTData["occupy"] = vaspio_eigen(pwd())
 
     # S06: Read in raw projectors, traits, and groups
     println("    Get Projector (Trait and Group)")
