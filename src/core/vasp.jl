@@ -34,7 +34,7 @@ function vasp_adaptor()
     # S04: Read in tetrahedron data if they are available
     if get_d("smear") === "tetra"
         println("    Get Tetrahedron")
-        KohnShamData["volt"], KohnShamData["itet"] = vaspio_tetra(pwd())
+        DFTData["volt"], DFTData["itet"] = vaspio_tetra(pwd())
     end
 
     # S05: Read in band structure and the corresponding occupancies
