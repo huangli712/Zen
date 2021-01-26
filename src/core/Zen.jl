@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/25
+# Last modified: 2021/01/26
 #
 
 module Zen
@@ -258,6 +258,7 @@ export solver_save
 # Members:
 #
 # ir_adaptor   -> Adaptor support
+# ir_save      -> Save the output files by the adaptor
 # irio_lattice -> Write lattice information
 # irio_kmesh   -> Write kmesh
 # irio_tetra   -> Write tetrahedra
@@ -269,6 +270,7 @@ export solver_save
 include("ir.jl")
 #
 export ir_adaptor
+export ir_save
 export irio_lattice
 export irio_kmesh
 export irio_tetra
