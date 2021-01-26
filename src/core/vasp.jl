@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/24
+# last modified: 2021/01/26
 #
 
 #
@@ -15,8 +15,8 @@
 """
     vasp_adaptor()
 
-Adaptor support for vasp code. It will read the output of vasp code and
-fulfill the KohnShamData dict.
+Adaptor support for vasp code. It will read the output files of vasp
+code and then fulfill the DFTData dict.
 """
 function vasp_adaptor()
     # S01: Print the header
@@ -24,12 +24,12 @@ function vasp_adaptor()
 
     # S02: Read in lattice structure
     println("    Get Lattice")
-    KohnShamData["latt"] = vaspio_lattice(pwd())
+    DFTData["latt"] = vaspio_lattice(pwd())
 
     # S03: Read in kmesh and the corresponding weights
     println("    Get Kmesh")
     println("    Get Weight")
-    KohnShamData["kmesh"], KohnShamData["weight"] = vaspio_kmesh(pwd())
+    DFTData["kmesh"], DFTData["weight"] = vaspio_kmesh(pwd())
 
     # S04: Read in tetrahedron data if they are available
     if get_d("smear") === "tetra"
