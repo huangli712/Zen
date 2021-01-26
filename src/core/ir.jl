@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/24
+# last modified: 2021/01/26
 #
 
 #
@@ -23,19 +23,19 @@ function ir_adaptor()
 
     # S02: Write lattice structure
     println("    Put Lattice")
-    if haskey(KohnShamData, "latt")
-        irio_lattice(pwd(), KohnShamData["latt"])
+    if haskey(DFTData, "latt")
+        irio_lattice(pwd(), DFTData["latt"])
     else
-        error("The KohnShamData dict does not contain the key: latt")
+        error("The DFTData dict does not contain the key: latt")
     end
 
     # S03: Write kmesh and the corresponding weights
     println("    Put Kmesh")
     println("    Put Weight")
-    if haskey(KohnShamData, "kmesh") && haskey(KohnShamData, "weight")
-        irio_kmesh(pwd(), KohnShamData["kmesh"], KohnShamData["weight"])
+    if haskey(DFTData, "kmesh") && haskey(DFTData, "weight")
+        irio_kmesh(pwd(), DFTData["kmesh"], DFTData["weight"])
     else
-        error("The KohnShamData dict does not contain the keys: kmesh and weight")
+        error("The DFTData dict does not contain the keys: kmesh and weight")
     end
 
     # S04: Write tetrahedron data if they are available
