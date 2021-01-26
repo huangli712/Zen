@@ -137,7 +137,7 @@ function cycle1()
 # first, the adaptor will read in these data from the output files of DFT
 # engine. And then it will process the raw projectors (such as parsing,
 # labeling, grouping, filtering, and rotatation). Finally, the adaptor will
-# write down the processed data to some specified files within the IR format.
+# write down the processed data to some specified files using the IR format.
 #
 
     # S03: To bridge the gap between DFT engine and DMFT engine by adaptor
@@ -154,9 +154,11 @@ function cycle1()
     # S03.4: Monitor the status
     monitor(true)
 
-    #
-    # STOP HERE
-    #
+#
+# Remarks 3:
+#
+# Now everything is ready. We are going to solve the DMFT equation iterately.. 
+#
     exit(-1)
 
     for iter = 1:get_m("niter")
