@@ -214,6 +214,8 @@ Determine whether we need to terminate the Zen code.
 function monitor(force_exit::Bool = false)
 
 #
+# Remarks:
+#
 # In order to terminate the Zen code, the following two conditions
 # should be fulfilled at the same time.
 #
@@ -334,12 +336,17 @@ function adaptor_run(it::IterInfo)
     # Enter dft directory
     cd("dft")
 
+    # Clear the DFTData dict
+    for k in keys(DFTData)
+        delete!(DFTData, k)
+    end
+
     #
     # A1: Parse the original Kohn-Sham data
     #
     #
     # Choose suitable driver function according to DFT engine. The
-    # Kohn-Sham data will be stored in the KohnShamData dict.
+    # Kohn-Sham data will be stored in the DFTData dict.
     #
     engine = get_d("engine")
     @cswitch engine begin
@@ -358,7 +365,7 @@ function adaptor_run(it::IterInfo)
     #
     # Well, now we have the Kohn-Sham data. But they can not be used
     # directly. We have to check and process them carefully. Please
-    # pay attention to that the KohnShamData dict will be modified in
+    # pay attention to that the DFTData dict will be modified in
     # the plo_adaptor() function. Here the parameter (debug = )true
     # means that we are going to seeing some interesting quantities
     # to check the correctness of the Kohn-Sham data.
