@@ -81,6 +81,27 @@ function ir_adaptor()
     end
 end
 
+"""
+    ir_save(it::IterInfo)
+
+Backup the files outputed by the adaptor.
+"""
+function ir_save(it::IterInfo)
+    # Store the data files
+    if it.dmft_cycle == 0
+        cp("lattice.ir", "lattice.ir.$(it.dmft_cycle)", force = true)
+        cp("kmesh.ir", "kmesh.ir.$(it.dmft_cycle)", force = true)
+        if get_d("smear") === "tetra"
+            cp("tetra.ir", "tetra.ir.$(it.dmft_cycle)", force = true)
+        end
+        cp("eigen.ir", "eigen.ir.$(it.dmft_cycle)", force = true)
+        cp("projs.ir", "projs.ir.$(it.dmft_cycle)", force = true)
+        cp("fermi.ir", "fermi.ir.$(it.dmft_cycle)", force = true)
+    else
+        sorry()
+    end
+end
+
 #
 # Service Functions
 #

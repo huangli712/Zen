@@ -396,7 +396,7 @@ function adaptor_save(it::IterInfo)
     cd("dft")
 
     # Save the essential files
-    ir_save()
+    ir_save(it)
 
     # Enter the parent directory
     cd("..")
