@@ -58,26 +58,26 @@ function ir_adaptor()
     # S05: Write band structure and the corresponding occupancies
     println("    Put Enk")
     println("    Put Occupy")
-    if haskey(KohnShamData, "enk") && haskey(KohnShamData, "occupy")
-        irio_eigen(pwd(), KohnShamData["enk"], KohnShamData["occupy"])
+    if haskey(DFTData, "enk") && haskey(DFTData, "occupy")
+        irio_eigen(pwd(), DFTData["enk"], DFTData["occupy"])
     else
-        error("The KohnShamData dict does not contain the keys: enk and occupy")
+        error("The DFTData dict does not contain the keys: enk and occupy")
     end
 
     # S06: Write projectors, traits, and groups
     println("    Put Projector (Trait and Group)")
-    if haskey(KohnShamData, "chipsi")
-        irio_projs(pwd(), KohnShamData["chipsi"])
+    if haskey(DFTData, "chipsi")
+        irio_projs(pwd(), DFTData["chipsi"])
     else
-        error("The KohnShamData dict does not contain the key: chipsi")
+        error("The DFTData dict does not contain the key: chipsi")
     end
 
     # S07: Write fermi level
     println("    Put Fermi Level")
-    if haskey(KohnShamData, "fermi")
-        irio_fermi(pwd(), KohnShamData["fermi"])
+    if haskey(DFTData, "fermi")
+        irio_fermi(pwd(), DFTData["fermi"])
     else
-        error("The KohnShamData dict does not contain the key: fermi")
+        error("The DFTData dict does not contain the key: fermi")
     end
 end
 
