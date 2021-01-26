@@ -44,7 +44,7 @@ function vasp_adaptor()
 
     # S06: Read in raw projectors, traits, and groups
     println("    Get Projector (Trait and Group)")
-    KohnShamData["PT"], KohnShamData["PG"], KohnShamData["chipsi"] = vaspio_projs(pwd())
+    DFTData["PT"], DFTData["PG"], DFTData["chipsi"] = vaspio_projs(pwd())
 
     # S07: Read in fermi level
     println("    Get Fermi Level")
