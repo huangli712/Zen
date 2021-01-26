@@ -38,16 +38,20 @@ function ir_adaptor()
         error("The DFTData dict does not contain the keys: kmesh and weight")
     end
 
+#
+# Remarks:
+#
+# This step is optional, because the tetrahedron information might
+# be absent.
+#
+
     # S04: Write tetrahedron data if they are available
-    #
-    # This step is optional, because the tetrahedron information might
-    # be absent.
     if get_d("smear") === "tetra"
         println("    Put Tetrahedron")
-        if haskey(KohnShamData, "volt") && haskey(KohnShamData, "itet")
-            irio_tetra(pwd(), KohnShamData["volt"], KohnShamData["itet"])
+        if haskey(DFTData, "volt") && haskey(DFTData, "itet")
+            irio_tetra(pwd(), DFTData["volt"], DFTData["itet"])
         else
-            error("The KohnShamData dict does not contain the keys: volt and itet")
+            error("The DFTData dict does not contain the keys: volt and itet")
         end
     end
 
