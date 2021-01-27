@@ -17,11 +17,11 @@
 #
 # The values in the following dictionaries are actually arrays, which
 # usually contain four elements:
-#     Value[1] -> Actually value
-#     Value[2] -> If it is 1, this key-value pair is mandatory.
-#                 If it is 0, this key-value pair is optional.
-#     Value[3] -> Numerical type (a julia Symbol)
-#     Value[4] -> Brief explanations
+#     Element[1] -> Actually value.
+#     Element[2] -> If it is 1, this key-value pair is mandatory.
+#                   If it is 0, this key-value pair is optional.
+#     Element[3] -> Numerical type (A julia Symbol).
+#     Element[4] -> Brief explanations.
 #
 
 """
@@ -126,11 +126,11 @@ end
 Record the DFT + DMFT iteration information.
 
 .dmft1_iter -> Number of iterations between dmft1 and quantum impurity solver
-.dmft2_iter -> Number of iterations between dmft2 and dft engine
-.dmft_cycle -> Number of dft + dmft iterations
+.dmft2_iter -> Number of iterations between dmft2 and DFT engine
+.dmft_cycle -> Number of DFT + DMFT iterations
 .full_cycle -> Counter for each iteration
-._dft_fermi -> Fermi level obtained by dft engine
-.dmft_fermi -> Fermi level obtained by dmft engine (dmft1)
+._dft_fermi -> Fermi level obtained by DFT engine
+.dmft_fermi -> Fermi level obtained by DMFT engine (dmft1)
 """
 mutable struct IterInfo
     dmft1_iter :: I64
