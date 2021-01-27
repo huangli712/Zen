@@ -13,12 +13,12 @@
 #
 
 """
-    vasp_adaptor()
+    vasp_adaptor(D::Dict{String,Any})
 
 Adaptor support for vasp code. It will read the output files of vasp
 code and then fulfill the DFTData dict.
 """
-function vasp_adaptor()
+function vasp_adaptor(D::Dict{String,Any})
     # S01: Print the header
     println("  < VASP Adaptor >")
 
