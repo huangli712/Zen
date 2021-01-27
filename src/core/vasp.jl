@@ -356,8 +356,8 @@ function vaspio_lattice(f::String)
     # Get the total number of atoms
     natom = sum(numbers)
 
-    # Now all the parameters are ready
-    # We would like to create Lattice struct here
+    # Now all the parameters are ready, we would like to create
+    # Lattice struct here.
     latt = Lattice(_case, scale, nsort, natom)
 
     # Update latt using the available data
@@ -440,12 +440,14 @@ function vaspio_tetra(f::String)
     readline(fin)
 
     # Read in the k-points and their weights
+    #
     # Skip nkpt lines
     for i = 1:nkpt
         readline(fin)
     end
 
     # Read in the tetrahedra information
+    #
     # Skip one empty line
     readline(fin)
 
@@ -505,9 +507,9 @@ function vaspio_eigen(f::String)
 #
 # Remarks:
 #
-# Here we provide two implementations. The first implementation is somewhat
-# tedious, so we don't use it. It seems that the second implementation is
-# more graceful.
+# Here we provide two implementations to read the eigenvalues. The first
+# implementation is somewhat tedious, so we don't use it. It seems that
+# the second implementation looks quite graceful.
 #
 
 #
