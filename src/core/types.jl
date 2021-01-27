@@ -446,16 +446,16 @@ function Base.show(io::IO, PG::PrGroup)
 end
 
 """
-    Base.show(io::IO, PGT::PrUnion)
+    Base.show(io::IO, PU::PrUnion)
 
 Base.show() function for PrUnion struct.
 """
-function Base.show(io::IO, PGT::PrUnion)
+function Base.show(io::IO, PU::PrUnion)
     println(io, "PrUnion struct")
-    println(io, ".site  : ", PGT.site)
-    println(io, ".l     : ", PGT.l)
-    println(io, ".ndim  : ", PGT.ndim)
-    println(io, ".corr  : ", PGT.corr)
-    println(io, ".shell : ", PGT.shell)
-    println(io, ".Pr    : ", PGT.Pr)
+    println(io, ".site  : ", PU.site)
+    println(io, ".l     : ", PU.l)
+    println(io, ".ndim  : ", PU.ndim)
+    println(io, ".corr  : ", PU.corr)
+    println(io, ".shell : ", PU.shell)
+    println(io, ".Pr    : ", PU.Pr)
 end
