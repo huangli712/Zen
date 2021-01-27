@@ -40,6 +40,8 @@ using TOML
 # I32, I64    -> Numerical types (integer)
 # F32, F64    -> Numerical types (float)
 # C32, C64    -> Numerical types (complex)
+# R32, R64    -> Numerical types (union of integer and float)
+# N32, N64    -> Numerical types (union of integer, float, and complex)
 # __LIBNAME__ -> Name of this framework
 # __VERSION__ -> Version of this framework
 # __RELEASE__ -> Released date of this framework
@@ -50,6 +52,8 @@ include("global.jl")
 export I32, I64
 export F32, F64
 export C32, C64
+export R32, R64
+export N32, N64
 export __LIBNAME__
 export __VERSION__
 export __RELEASE__
