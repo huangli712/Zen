@@ -335,8 +335,12 @@ function PrGroup(site::I64, l::I64)
     Pr = zeros(I64, max_dim)
     Tr = zeros(C64, max_dim, max_dim)
 
+    # Setup band/energy window
+    # It will be further initialized in plo_group()
+    window = (0, 0)
+
     # Call the default constructor
-    PrGroup(site, l, corr, shell, Pr, Tr)
+    PrGroup(site, l, corr, shell, Pr, Tr, window)
 end
 
 """
@@ -378,6 +382,7 @@ end
 Base.show() function for Logger struct.
 """
 function Base.show(io::IO, logger::Logger)
+    @assert isopen(logger.log) && isopen(logger.cycle)
     println(io, "Logger struct")
     println(io, ".log   : ", logger.log  )
     println(io, ".cycle : ", logger.cycle)
@@ -441,6 +446,7 @@ function Base.show(io::IO, PG::PrGroup)
     println(io, ".shell : ", PG.shell)
     println(io, ".Pr    : ", PG.Pr)
     println(io, ".Tr    : ", PG.Tr)
+    println(io, ".window: ", PG.window)
 end
 
 """
