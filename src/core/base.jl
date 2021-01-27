@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/26
+# Last modified: 2021/01/27
 #
 
 #
@@ -354,7 +354,7 @@ function adaptor_run(it::IterInfo)
     @cswitch engine begin
         @case "vasp"
             println("  Launch VASP Adaptor")
-            vasp_adaptor()
+            vasp_adaptor(DFTData)
             break
 
         @default
@@ -373,7 +373,7 @@ function adaptor_run(it::IterInfo)
     # to check the correctness of the Kohn-Sham data.
     #
     println("  Launch PLO Adaptor")
-    plo_adaptor(true)
+    plo_adaptor(DFTData, true)
 
     #
     # A3: Output the processed Kohn-Sham data
@@ -382,9 +382,11 @@ function adaptor_run(it::IterInfo)
     # to some specified files.
     #
     println("  Launch IR Adaptor")
-    ir_adaptor()
+    ir_adaptor(DFTData)
 
-    # Clear the DFTData dict
+    #
+    # A4: Clear the DFTData dict
+    #
     for k in keys(DFTData)
         delete!(DFTData, k)
     end
