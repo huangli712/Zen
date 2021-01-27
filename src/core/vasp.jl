@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/26
+# last modified: 2021/01/27
 #
 
 #
@@ -189,9 +189,6 @@ function vasp_incar(fermi::F64)
     end
 
     # For kmesh density
-    #
-    # If kmesh == "file", then vasp_kpoints() will be used to generate
-    # the KPOINTS file.
     kmesh = get_d("kmesh")
     @cswitch kmesh begin
         @case "accurate"
@@ -206,6 +203,8 @@ function vasp_incar(fermi::F64)
             write(ios, "KSPACING = 0.4 \n")
             break
 
+        # If kmesh == "file", then vasp_kpoints() will be used to
+        # generate the KPOINTS file.
         @case "file"
             break
 
@@ -247,7 +246,7 @@ function vasp_incar(fermi::F64)
     end
 
     # For optimized projectors
-    ewidth = get_d("ewidth")
+    ewidth = 3.0 # A magic number
     loptim = get_d("loptim")
     if !isa(ewidth, Missing) && !isa(loptim, Missing)
         if loptim
