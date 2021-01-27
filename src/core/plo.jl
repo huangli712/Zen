@@ -39,10 +39,10 @@ function plo_adaptor(debug::Bool = false)
 
     # S04: Adjust the band structure
     println("    Leveling")
-    if haskey(KohnShamData, "fermi") && haskey(KohnShamData, "enk")
-        @. KohnShamData["enk"] = KohnShamData["enk"] - KohnShamData["fermi"]
+    if haskey(DFTData, "fermi") && haskey(DFTData, "enk")
+        @. DFTData["enk"] = DFTData["enk"] - DFTData["fermi"]
     else
-        error("The KohnShamData dict does not contain the keys: fermi and enk")
+        error("The DFTData dict does not contain the keys: fermi and enk")
     end
 
     # S05: Filter the projector matrix
