@@ -47,7 +47,7 @@ function plo_adaptor(debug::Bool = false)
 
     # S05: Filter the projector matrix
     println("    Filtering")
-    if haskey(KohnShamData, "enk") && haskey(KohnShamData, "chipsi")
+    if haskey(DFTData, "enk") && haskey(DFTData, "chipsi")
         bmin, bmax, ib_window, KohnShamData["chipsi"] = plo_window(KohnShamData["enk"], 2.0, -1.4, KohnShamData["chipsi"])
     else
         error("The KohnShamData dict does not contain the keys: enk and chipsi")
