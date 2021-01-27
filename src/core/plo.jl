@@ -161,17 +161,17 @@ end
 Perform global rotations or transformations for the projectors.
 """
 function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
-    # Create a array of PrGroupT struct
-    PGT = PrGroupT[]
+    # Create a array of PrUnion struct
+    PGT = PrUnion[]
     for i in eachindex(PG)
         # Determine how many projectors should be included in this group
         # according to the rotation matrix (transformation matrix)
         ndim = size(PG[i].Tr)[1]
-        # Create a PrGroupT struct and push it into the PGT array
-        push!(PGT, PrGroupT(PG[i].site, PG[i].l, ndim, PG[i].corr, PG[i].shell))
+        # Create a PrUnion struct and push it into the PGT array
+        push!(PGT, PrUnion(PG[i].site, PG[i].l, ndim, PG[i].corr, PG[i].shell))
     end
 
-    # Setup the Pr property of PrGroupT struct
+    # Setup the Pr property of PrUnion struct
     c = 0
     for i in eachindex(PGT)
         for j = 1:PGT[i].ndim
@@ -179,7 +179,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
             PGT[i].Pr[j] = c
         end
     end
-    # Until now PrGroupT struct is ready
+    # Until now PrUnion struct is ready
 
     # Extract some key parameters from raw projector matrix
     nproj, nband, nkpt, nspin = size(chipsi)
@@ -291,11 +291,11 @@ function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4
 end
 
 """
-    plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4})
+    plo_orthog(window::Array{I64,3}, PGT::Array{PrUnion,1}, chipsi::Array{C64,4})
 
 Try to orthogonalize the projectors group by group (site_l by site_l).
 """
-function plo_orthog(window::Array{I64,3}, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4})
+function plo_orthog(window::Array{I64,3}, PGT::Array{PrUnion,1}, chipsi::Array{C64,4})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -373,11 +373,11 @@ function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 end
 
 """
-    plo_ovlp(PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
+    plo_ovlp(PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
 
 Calculate the overlap matrix out of projectors. It should be block-diagonal.
 """
-function plo_ovlp(PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
+function plo_ovlp(PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -431,11 +431,11 @@ function plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3}
 end
 
 """
-    plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
+    plo_dm(bmin::I64, bmax::I64, PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
 
 Calculate the density matrix out of projectors. It should be block-diagonal.
 """
-function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
+function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -493,11 +493,11 @@ function plo_hamk(chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
 end
 
 """
-    plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
+    plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
 
 Try to build the local hamiltonian. It should be block-diagonal.
 """
-function plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
+function plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -530,7 +530,7 @@ end
 
 Try to calculate the density of states.
 """
-function plo_dos(bmin::I64, bmax::I64, PGT::Array{PrGroupT,1}, chipsi::Array{C64,4}, itet::Array{I64,2}, enk::Array{F64,3})
+function plo_dos(bmin::I64, bmax::I64, PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, itet::Array{I64,2}, enk::Array{F64,3})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -586,11 +586,11 @@ function view_ovlp(ovlp::Array{F64,3})
 end
 
 """
-    view_ovlp(PGT::Array{PrGroupT,1}, ovlp::Array{F64,3})
+    view_ovlp(PGT::Array{PrUnion,1}, ovlp::Array{F64,3})
 
 Output the overlap matrix. It should be block-diagonal.
 """
-function view_ovlp(PGT::Array{PrGroupT,1}, ovlp::Array{F64,3})
+function view_ovlp(PGT::Array{PrUnion,1}, ovlp::Array{F64,3})
     # Extract some key parameters
     _, nproj, nspin = size(ovlp)
 
@@ -631,11 +631,11 @@ function view_dm(dm::Array{F64,3})
 end
 
 """
-    view_dm(PGT::Array{PrGroupT,1}, dm::Array{F64,3})
+    view_dm(PGT::Array{PrUnion,1}, dm::Array{F64,3})
 
 Output the density matrix. It should be block-diagonal.
 """
-function view_dm(PGT::Array{PrGroupT,1}, dm::Array{F64,3})
+function view_dm(PGT::Array{PrUnion,1}, dm::Array{F64,3})
     # Extract some key parameters
     _, nproj, nspin = size(dm)
 
@@ -682,11 +682,11 @@ function view_hamk(hamk::Array{C64,3})
 end
 
 """
-    view_hamk(PGT::Array{PrGroupT,1}, hamk::Array{C64,3})
+    view_hamk(PGT::Array{PrUnion,1}, hamk::Array{C64,3})
 
 Output the local hamiltonian. It should be block-diagonal.
 """
-function view_hamk(PGT::Array{PrGroupT,1}, hamk::Array{C64,3})
+function view_hamk(PGT::Array{PrUnion,1}, hamk::Array{C64,3})
     # Extract some key parameters
     _, nproj, nspin = size(hamk)
 
