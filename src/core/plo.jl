@@ -23,18 +23,18 @@ function plo_adaptor(D::Dict{String,Any}, debug::Bool = false)
 
     # S02: Setup the PrGroup strcut
     println("    Grouping")
-    if haskey(DFTData, "PG")
-        plo_group(DFTData["PG"])
+    if haskey(D, "PG")
+        plo_group(D["PG"])
     else
-        error("The DFTData dict does not contain the key: PG")
+        error("The D dict does not contain the key: PG")
     end
 
     # S03: Transform the projector matrix
     println("    Rotating")
-    if haskey(DFTData, "PG") && haskey(DFTData, "chipsi")
-        DFTData["PGT"], DFTData["chipsi"] = plo_rotate(DFTData["PG"], DFTData["chipsi"])
+    if haskey(D, "PG") && haskey(D, "chipsi")
+        D["PGT"], D["chipsi"] = plo_rotate(D["PG"], D["chipsi"])
     else
-        error("The DFTData dict does not contain the keys: PG and chipsi")
+        error("The D dict does not contain the keys: PG and chipsi")
     end
 
     # S04: Adjust the band structure
