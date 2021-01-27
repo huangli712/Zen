@@ -31,10 +31,10 @@ function plo_adaptor(debug::Bool = false)
 
     # S03: Transform the projector matrix
     println("    Rotating")
-    if haskey(KohnShamData, "PG") && haskey(KohnShamData, "chipsi")
-        KohnShamData["PGT"], KohnShamData["chipsi"] = plo_rotate(KohnShamData["PG"], KohnShamData["chipsi"])
+    if haskey(DFTData, "PG") && haskey(DFTData, "chipsi")
+        DFTData["PGT"], DFTData["chipsi"] = plo_rotate(DFTData["PG"], DFTData["chipsi"])
     else
-        error("The KohnShamData dict does not contain the keys: PG and chipsi")
+        error("The DFTData dict does not contain the keys: PG and chipsi")
     end
 
     # S04: Adjust the band structure
