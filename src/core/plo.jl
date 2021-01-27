@@ -32,7 +32,7 @@ function plo_adaptor(D::Dict{String,Any}, debug::Bool = false)
     # S03: Transform the projector matrix
     println("    Rotating")
     if haskey(D, "PG") && haskey(D, "chipsi")
-        D["PGT"], D["chipsi"] = plo_rotate(D["PG"], D["chipsi"])
+        D["PU"], D["chipsi"] = plo_rotate(D["PG"], D["chipsi"])
     else
         error("The D dict does not contain the keys: PG and chipsi")
     end
@@ -55,10 +55,10 @@ function plo_adaptor(D::Dict{String,Any}, debug::Bool = false)
 
     # S06: To make sure the projectors orthogonalize with each other
     println("    Orthogonalizing")
-    if haskey(D, "PGT") && haskey(D["chipsi"])
-        plo_orthog(ib_window, D["PGT"], D["chipsi"])
+    if haskey(D, "PU") && haskey(D["chipsi"])
+        plo_orthog(ib_window, D["PU"], D["chipsi"])
     else
-        error("The D dict does not contain the keys: PGT and chipsi")
+        error("The D dict does not contain the keys: PU and chipsi")
     end
 
     # S07: Write the density matrix and overlap matrix for checking
@@ -162,21 +162,21 @@ Perform global rotations or transformations for the projectors.
 """
 function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     # Create a array of PrUnion struct
-    PGT = PrUnion[]
+    PU = PrUnion[]
     for i in eachindex(PG)
         # Determine how many projectors should be included in this group
         # according to the rotation matrix (transformation matrix)
         ndim = size(PG[i].Tr)[1]
-        # Create a PrUnion struct and push it into the PGT array
-        push!(PGT, PrUnion(PG[i].site, PG[i].l, ndim, PG[i].corr, PG[i].shell))
+        # Create a PrUnion struct and push it into the PU array
+        push!(PU, PrUnion(PG[i].site, PG[i].l, ndim, PG[i].corr, PG[i].shell))
     end
 
     # Setup the Pr property of PrUnion struct
     c = 0
-    for i in eachindex(PGT)
-        for j = 1:PGT[i].ndim
+    for i in eachindex(PU)
+        for j = 1:PU[i].ndim
             c = c + 1
-            PGT[i].Pr[j] = c
+            PU[i].Pr[j] = c
         end
     end
     # Until now PrUnion struct is ready
@@ -185,7 +185,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     nproj, nband, nkpt, nspin = size(chipsi)
 
     # Tell us how many projectors there are after the rotation
-    nproj_ = sum(x -> x.ndim, PGT)
+    nproj_ = sum(x -> x.ndim, PU)
     @assert nproj_ === sum(x -> size(x.Tr)[1], PG)
     @assert nproj_ <= nproj
 
@@ -204,8 +204,8 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
                 for i in eachindex(PG)
                     p1 = PG[i].Pr[1]
                     p2 = PG[i].Pr[end]
-                    q1 = PGT[i].Pr[1]
-                    q2 = PGT[i].Pr[end]
+                    q1 = PU[i].Pr[1]
+                    q2 = PU[i].Pr[end]
                     chipsi_r[q1:q2, b, k, s] = PG[i].Tr * chipsi[p1:p2, b, k, s]
                 end
             end
@@ -213,7 +213,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     end
 
     # Return the desired arrays
-    return PGT, chipsi_r
+    return PU, chipsi_r
 end
 
 """
@@ -291,11 +291,11 @@ function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4
 end
 
 """
-    plo_orthog(window::Array{I64,3}, PGT::Array{PrUnion,1}, chipsi::Array{C64,4})
+    plo_orthog(window::Array{I64,3}, PU::Array{PrUnion,1}, chipsi::Array{C64,4})
 
 Try to orthogonalize the projectors group by group (site_l by site_l).
 """
-function plo_orthog(window::Array{I64,3}, PGT::Array{PrUnion,1}, chipsi::Array{C64,4})
+function plo_orthog(window::Array{I64,3}, PU::Array{PrUnion,1}, chipsi::Array{C64,4})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -306,10 +306,10 @@ function plo_orthog(window::Array{I64,3}, PGT::Array{PrUnion,1}, chipsi::Array{C
             b1 = window[k, s, 1]
             b2 = window[k, s, 2]
             nb = b2 - b1 + 1
-            for p in eachindex(PGT)
+            for p in eachindex(PU)
                 # Determine projector index
-                q1 = PGT[p].Pr[1]
-                q2 = PGT[p].Pr[end]
+                q1 = PU[p].Pr[1]
+                q2 = PU[p].Pr[end]
 
                 # Make a view for the desired subarray
                 M = view(chipsi, q1:q2, 1:nb, k, s)
@@ -373,11 +373,11 @@ function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 end
 
 """
-    plo_ovlp(PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
+    plo_ovlp(PU::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
 
 Calculate the overlap matrix out of projectors. It should be block-diagonal.
 """
-function plo_ovlp(PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
+function plo_ovlp(PU::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -388,9 +388,9 @@ function plo_ovlp(PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64
     for s = 1:nspin
         for k = 1:nkpt
             wght = weight[k] / nkpt
-            for p in eachindex(PGT)
-                q1 = PGT[p].Pr[1]
-                q2 = PGT[p].Pr[end]
+            for p in eachindex(PU)
+                q1 = PU[p].Pr[1]
+                q2 = PU[p].Pr[end]
                 A = view(chipsi, q1:q2, :, k, s)
                 ovlp[q1:q2, q1:q2, s] = ovlp[q1:q2, q1:q2, s] + real(A * A') * wght
             end
@@ -431,11 +431,11 @@ function plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3}
 end
 
 """
-    plo_dm(bmin::I64, bmax::I64, PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
+    plo_dm(bmin::I64, bmax::I64, PU::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
 
 Calculate the density matrix out of projectors. It should be block-diagonal.
 """
-function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
+function plo_dm(bmin::I64, bmax::I64, PU::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -453,9 +453,9 @@ function plo_dm(bmin::I64, bmax::I64, PGT::Array{PrUnion,1}, chipsi::Array{C64,4
         for k = 1:nkpt
             wght = weight[k] / nkpt * sf
             occs = occupy[bmin:bmax, k, s]
-            for p in eachindex(PGT)
-                q1 = PGT[p].Pr[1]
-                q2 = PGT[p].Pr[end]
+            for p in eachindex(PU)
+                q1 = PU[p].Pr[1]
+                q2 = PU[p].Pr[end]
                 A = view(chipsi, q1:q2, :, k, s)
                 dm[q1:q2, q1:q2, s] = dm[q1:q2, q1:q2, s] + real(A * Diagonal(occs) * A') * wght
             end
@@ -493,11 +493,11 @@ function plo_hamk(chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
 end
 
 """
-    plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
+    plo_hamk(bmin::I64, bmax::I64, PU::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
 
 Try to build the local hamiltonian. It should be block-diagonal.
 """
-function plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
+function plo_hamk(bmin::I64, bmax::I64, PU::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -512,9 +512,9 @@ function plo_hamk(bmin::I64, bmax::I64, PGT::Array{PrUnion,1}, chipsi::Array{C64
         for k = 1:nkpt
             wght = weight[k] / nkpt
             eigs = enk[bmin:bmax, k, s]
-            for p in eachindex(PGT)
-                q1 = PGT[p].Pr[1]
-                q2 = PGT[p].Pr[end]
+            for p in eachindex(PU)
+                q1 = PU[p].Pr[1]
+                q2 = PU[p].Pr[end]
                 A = view(chipsi, q1:q2, :, k, s)
                 hamk[q1:q2, q1:q2, s] = hamk[q1:q2, q1:q2, s] + (A * Diagonal(eigs) * A') * wght
             end
@@ -530,7 +530,7 @@ end
 
 Try to calculate the density of states.
 """
-function plo_dos(bmin::I64, bmax::I64, PGT::Array{PrUnion,1}, chipsi::Array{C64,4}, itet::Array{I64,2}, enk::Array{F64,3})
+function plo_dos(bmin::I64, bmax::I64, PU::Array{PrUnion,1}, chipsi::Array{C64,4}, itet::Array{I64,2}, enk::Array{F64,3})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -544,9 +544,9 @@ function plo_dos(bmin::I64, bmax::I64, PGT::Array{PrUnion,1}, chipsi::Array{C64,
         wght = tetra_dos(mesh[i], itet, enk[bmin:bmax, :, :])
         for s = 1:nspin
             for k = 1:nkpt
-                for p in eachindex(PGT)
-                    q1 = PGT[p].Pr[1]
-                    q2 = PGT[p].Pr[end]
+                for p in eachindex(PU)
+                    q1 = PU[p].Pr[1]
+                    q2 = PU[p].Pr[end]
                     for q = q1:q2
                         for b = 1:nband
                             pdos[i, q] = pdos[i, q] + wght[b, k, s] * real( chipsi[q, b, k, s] * conj(chipsi[q, b, k, s]) )
@@ -586,11 +586,11 @@ function view_ovlp(ovlp::Array{F64,3})
 end
 
 """
-    view_ovlp(PGT::Array{PrUnion,1}, ovlp::Array{F64,3})
+    view_ovlp(PU::Array{PrUnion,1}, ovlp::Array{F64,3})
 
 Output the overlap matrix. It should be block-diagonal.
 """
-function view_ovlp(PGT::Array{PrUnion,1}, ovlp::Array{F64,3})
+function view_ovlp(PU::Array{PrUnion,1}, ovlp::Array{F64,3})
     # Extract some key parameters
     _, nproj, nspin = size(ovlp)
 
@@ -598,10 +598,10 @@ function view_ovlp(PGT::Array{PrUnion,1}, ovlp::Array{F64,3})
     println("<- Overlap Matrix ->")
     for s = 1:nspin
         println("Spin: $s")
-        for p in eachindex(PGT)
-            println("site -> $(PGT[p].site) l -> $(PGT[p].l) shell -> $(PGT[p].shell)")
-            q1 = PGT[p].Pr[1]
-            q2 = PGT[p].Pr[end]
+        for p in eachindex(PU)
+            println("site -> $(PU[p].site) l -> $(PU[p].l) shell -> $(PU[p].shell)")
+            q1 = PU[p].Pr[1]
+            q2 = PU[p].Pr[end]
             for q = q1:q2
                 foreach(x -> @printf("%12.7f", x), ovlp[q, q1:q2, s])
                 println()
@@ -631,11 +631,11 @@ function view_dm(dm::Array{F64,3})
 end
 
 """
-    view_dm(PGT::Array{PrUnion,1}, dm::Array{F64,3})
+    view_dm(PU::Array{PrUnion,1}, dm::Array{F64,3})
 
 Output the density matrix. It should be block-diagonal.
 """
-function view_dm(PGT::Array{PrUnion,1}, dm::Array{F64,3})
+function view_dm(PU::Array{PrUnion,1}, dm::Array{F64,3})
     # Extract some key parameters
     _, nproj, nspin = size(dm)
 
@@ -643,10 +643,10 @@ function view_dm(PGT::Array{PrUnion,1}, dm::Array{F64,3})
     println("<- Density Matrix ->")
     for s = 1:nspin
         println("Spin: $s")
-        for p in eachindex(PGT)
-            println("site -> $(PGT[p].site) l -> $(PGT[p].l) shell -> $(PGT[p].shell)")
-            q1 = PGT[p].Pr[1]
-            q2 = PGT[p].Pr[end]
+        for p in eachindex(PU)
+            println("site -> $(PU[p].site) l -> $(PU[p].l) shell -> $(PU[p].shell)")
+            q1 = PU[p].Pr[1]
+            q2 = PU[p].Pr[end]
             for q = q1:q2
                 foreach(x -> @printf("%12.7f", x), dm[q, q1:q2, s])
                 println()
@@ -682,11 +682,11 @@ function view_hamk(hamk::Array{C64,3})
 end
 
 """
-    view_hamk(PGT::Array{PrUnion,1}, hamk::Array{C64,3})
+    view_hamk(PU::Array{PrUnion,1}, hamk::Array{C64,3})
 
 Output the local hamiltonian. It should be block-diagonal.
 """
-function view_hamk(PGT::Array{PrUnion,1}, hamk::Array{C64,3})
+function view_hamk(PU::Array{PrUnion,1}, hamk::Array{C64,3})
     # Extract some key parameters
     _, nproj, nspin = size(hamk)
 
@@ -694,11 +694,11 @@ function view_hamk(PGT::Array{PrUnion,1}, hamk::Array{C64,3})
     println("<- Local Hamiltonian ->")
     for s = 1:nspin
         println("Spin: $s")
-        for p in eachindex(PGT)
-            println("site -> $(PGT[p].site) l -> $(PGT[p].l) shell -> $(PGT[p].shell)")
+        for p in eachindex(PU)
+            println("site -> $(PU[p].site) l -> $(PU[p].l) shell -> $(PU[p].shell)")
             println("Re:")
-            q1 = PGT[p].Pr[1]
-            q2 = PGT[p].Pr[end]
+            q1 = PU[p].Pr[1]
+            q2 = PU[p].Pr[end]
             for q = q1:q2
                 foreach(x -> @printf("%12.7f", x), real(hamk[q, q1:q2, s]))
                 println()
