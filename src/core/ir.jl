@@ -26,16 +26,16 @@ function ir_adaptor(D::Dict{String,Any})
     if haskey(D, "latt")
         irio_lattice(pwd(), D["latt"])
     else
-        error("The DFTData dict does not contain the key: latt")
+        error("The D dict does not contain the key: latt")
     end
 
     # S03: Write kmesh and the corresponding weights
     println("    Put Kmesh")
     println("    Put Weight")
-    if haskey(DFTData, "kmesh") && haskey(DFTData, "weight")
-        irio_kmesh(pwd(), DFTData["kmesh"], DFTData["weight"])
+    if haskey(D, "kmesh") && haskey(D, "weight")
+        irio_kmesh(pwd(), D["kmesh"], D["weight"])
     else
-        error("The DFTData dict does not contain the keys: kmesh and weight")
+        error("The D dict does not contain the keys: kmesh and weight")
     end
 
 #
@@ -48,20 +48,20 @@ function ir_adaptor(D::Dict{String,Any})
     # S04: Write tetrahedron data if they are available
     if get_d("smear") === "tetra"
         println("    Put Tetrahedron")
-        if haskey(DFTData, "volt") && haskey(DFTData, "itet")
-            irio_tetra(pwd(), DFTData["volt"], DFTData["itet"])
+        if haskey(D, "volt") && haskey(D, "itet")
+            irio_tetra(pwd(), D["volt"], D["itet"])
         else
-            error("The DFTData dict does not contain the keys: volt and itet")
+            error("The D dict does not contain the keys: volt and itet")
         end
     end
 
     # S05: Write band structure and the corresponding occupancies
     println("    Put Enk")
     println("    Put Occupy")
-    if haskey(DFTData, "enk") && haskey(DFTData, "occupy")
-        irio_eigen(pwd(), DFTData["enk"], DFTData["occupy"])
+    if haskey(D, "enk") && haskey(D, "occupy")
+        irio_eigen(pwd(), D["enk"], D["occupy"])
     else
-        error("The DFTData dict does not contain the keys: enk and occupy")
+        error("The D dict does not contain the keys: enk and occupy")
     end
 
     # S06: Write projectors, traits, and groups
