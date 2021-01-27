@@ -5,7 +5,7 @@
 # Status  : unstable
 # Comment :
 #
-# Last modified: 2021/01/25
+# Last modified: 2021/01/27
 #
 
 #
@@ -232,7 +232,7 @@ mutable struct PrGroup
 end
 
 """
-    PrGroupT
+    PrUnion
 
 Essential information of group of projectors (be transformed or rotated).
 
@@ -248,7 +248,7 @@ Essential information of group of projectors (be transformed or rotated).
 .shell -> Type of correlated orbitals. It is infered from the PIMP dict.
 .Pr    -> Array. It contains the indices of projectors.
 """
-mutable struct PrGroupT
+mutable struct PrUnion
     site  :: I64
     l     :: I64
     ndim  :: I64
@@ -342,24 +342,24 @@ function PrGroup(site::I64, l::I64)
 end
 
 """
-    PrGroupT(site::I64, l::I64, ndim::I64, corr::Bool, shell::String)
+    PrUnion(site::I64, l::I64, ndim::I64, corr::Bool, shell::String)
 
-Outer constructor for PrGroupT struct.
+Outer constructor for PrUnion struct.
 """
-function PrGroupT(site::I64, l::I64, ndim::I64, corr::Bool, shell::String)
+function PrUnion(site::I64, l::I64, ndim::I64, corr::Bool, shell::String)
     # Allocate memory for Pr
     Pr = zeros(I64, ndim)
 
     # Call the default constructor
-    PrGroupT(site, l, ndim, corr, shell, Pr)
+    PrUnion(site, l, ndim, corr, shell, Pr)
 end
 
 """
-    PrGroupT(PG::PrGroup)
+    PrUnion(PG::PrGroup)
 
-Outer constructor for PrGroupT struct.
+Outer constructor for PrUnion struct.
 """
-function PrGroupT(PG::PrGroup)
+function PrUnion(PG::PrGroup)
     # Determine ndim
     ndim = size(PG.Tr)[1]
 
@@ -367,7 +367,7 @@ function PrGroupT(PG::PrGroup)
     Pr = zeros(I64, ndim)
 
     # Call the default constructor
-    PrGroupT(PG.site, PG.l, ndim, PG.corr, PG.shell, Pr)
+    PrUnion(PG.site, PG.l, ndim, PG.corr, PG.shell, Pr)
 end
 
 #
@@ -446,12 +446,12 @@ function Base.show(io::IO, PG::PrGroup)
 end
 
 """
-    Base.show(io::IO, PGT::PrGroupT)
+    Base.show(io::IO, PGT::PrUnion)
 
-Base.show() function for PrGroupT struct.
+Base.show() function for PrUnion struct.
 """
-function Base.show(io::IO, PGT::PrGroupT)
-    println(io, "PrGroupT struct")
+function Base.show(io::IO, PGT::PrUnion)
+    println(io, "PrUnion struct")
     println(io, ".site  : ", PGT.site)
     println(io, ".l     : ", PGT.l)
     println(io, ".ndim  : ", PGT.ndim)
