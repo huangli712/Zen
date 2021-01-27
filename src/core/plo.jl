@@ -47,8 +47,8 @@ function plo_adaptor(D::Dict{String,Any}, debug::Bool = false)
 
     # S05: Filter the projector matrix
     println("    Filtering")
-    if haskey(DFTData, "enk") && haskey(DFTData, "chipsi")
-        bmin, bmax, ib_window, DFTData["chipsi"] = plo_filter(DFTData["enk"], DFTData["chipsi"])
+    if haskey(D, "enk") && haskey(D, "chipsi")
+        bmin, bmax, ib_window, D["chipsi"] = plo_filter(D["enk"], D["chipsi"])
     else
         error("The DFTData dict does not contain the keys: enk and chipsi")
     end
