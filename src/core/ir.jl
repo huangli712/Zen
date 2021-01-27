@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/26
+# last modified: 2021/01/27
 #
 
 #
@@ -13,18 +13,18 @@
 #
 
 """
-    ir_adaptor()
+    ir_adaptor(D::Dict{String,Any})
 
 Write the Kohn-Data data to specified files using the IR format.
 """
-function ir_adaptor()
+function ir_adaptor(D::Dict{String,Any})
     # S01: Print the header
     println("  < IR Adaptor >")
 
     # S02: Write lattice structure
     println("    Put Lattice")
-    if haskey(DFTData, "latt")
-        irio_lattice(pwd(), DFTData["latt"])
+    if haskey(D, "latt")
+        irio_lattice(pwd(), D["latt"])
     else
         error("The DFTData dict does not contain the key: latt")
     end
