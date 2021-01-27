@@ -50,15 +50,15 @@ function plo_adaptor(D::Dict{String,Any}, debug::Bool = false)
     if haskey(D, "enk") && haskey(D, "chipsi")
         bmin, bmax, ib_window, D["chipsi"] = plo_filter(D["enk"], D["chipsi"])
     else
-        error("The DFTData dict does not contain the keys: enk and chipsi")
+        error("The D dict does not contain the keys: enk and chipsi")
     end
 
     # S06: To make sure the projectors orthogonalize with each other
     println("    Orthogonalizing")
-    if haskey(DFTData, "PGT") && haskey(DFTData["chipsi"])
-        plo_orthog(ib_window, DFTData["PGT"], DFTData["chipsi"])
+    if haskey(D, "PGT") && haskey(D["chipsi"])
+        plo_orthog(ib_window, D["PGT"], D["chipsi"])
     else
-        error("The DFTData dict does not contain the keys: PGT and chipsi")
+        error("The D dict does not contain the keys: PGT and chipsi")
     end
 
     # S07: Write the density matrix and overlap matrix for checking
