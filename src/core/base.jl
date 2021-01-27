@@ -335,23 +335,17 @@ them into IR format.
 function adaptor_run(it::IterInfo)
     # Enter dft directory
     cd("dft")
-#
-# Remarks:
-#
-# The key-value pairs will be inserted into this dict dynamically.
-#
 
-Dictionary for storing the Kohn-Sham band structure and related data.
-const DFTData = Dict{String,Any}()
-
-    # Clear the DFTData dict
-    for k in keys(DFTData)
-        delete!(DFTData, k)
-    end
+    # A0: Create a dict named DFTData
+    #
+    # This dictionary is for storing the Kohn-Sham band structure and
+    # related data. The key-value pairs should be inserted into this
+    # dict dynamically.
+    #
+    DFTData = Dict{String,Any}()
 
     #
     # A1: Parse the original Kohn-Sham data
-    #
     #
     # Choose suitable driver function according to DFT engine. The
     # Kohn-Sham data will be stored in the DFTData dict.
@@ -389,6 +383,11 @@ const DFTData = Dict{String,Any}()
     #
     println("  Launch IR Adaptor")
     ir_adaptor()
+
+    # Clear the DFTData dict
+    for k in keys(DFTData)
+        delete!(DFTData, k)
+    end
 
     # Enter the parent directory
     cd("..")
