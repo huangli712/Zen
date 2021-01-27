@@ -70,7 +70,6 @@ export __AUTHORS__
 # PDMFT    -> Dict for DMFT engine
 # PIMP     -> Dict for quantum impurity problems
 # PSOLVER  -> Dict for quantum impurity solvers
-# DFTData  -> Dict for storing Kohn-Sham band structure and related data
 # Logger   -> Struct for logger
 # IterInfo -> Struct for DFT + DMFT iteration information
 # Lattice  -> Struct for crystallography information
@@ -85,7 +84,6 @@ export PDFT
 export PDMFT
 export PIMP
 export PSOLVER
-export DFTData
 export Logger
 export IterInfo
 export Lattice
