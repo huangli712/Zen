@@ -100,23 +100,6 @@ const PSOLVER= Dict{String,Array{Any,1}}(
       )
 
 #
-# Customized Dictionaries for Kohn-Sham data
-#
-
-#
-# Remarks:
-#
-# The key-value pairs will be inserted into this dict dynamically.
-#
-
-"""
-    DFTData
-
-Dictionary for storing the Kohn-Sham band structure and related data.
-"""
-const DFTData = Dict{String,Any}()
-
-#
 # Customized Structs
 #
 
