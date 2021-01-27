@@ -192,18 +192,20 @@ end
 
 Essential information of group of projectors.
 
-.site  -> Site in which the projectors are defined. In principle, the
-          projectors included in the same group should be defined at
-          the same site (or equivalently atom).
-.l     -> Quantum number l. In principle, the projectors included in
-          the same group should have the same quantum number l (but
-          with different m).
-.corr  -> Test if the projectors in this group are correlated
-.shell -> Type of correlated orbitals. It is infered from quantum number l.
-.Pr    -> Array. It contains the indices of projectors.
-.Tr    -> Array. It contains the transformation matrix. This parameter
-          could be useful to select certain subset of orbitals or perform
-          a simple global rotation.
+.site   -> Site in which the projectors are defined. In principle, the
+           projectors included in the same group should be defined at
+           the same site (or equivalently atom).
+.l      -> Quantum number l. In principle, the projectors included in
+           the same group should have the same quantum number l (but
+           with different m).
+.corr   -> Test if the projectors in this group are correlated
+.shell  -> Type of correlated orbitals. It is infered from quantum number l.
+.Pr     -> Array. It contains the indices of projectors.
+.Tr     -> Array. It contains the transformation matrix. This parameter
+           could be useful to select certain subset of orbitals or perform
+           a simple global rotation.
+.window -> Tuple. It is the band window or energy window, which is used
+           to filter the Kohn-Sham band structure.
 """
 mutable struct PrGroup
     site  :: I64
@@ -212,12 +214,18 @@ mutable struct PrGroup
     shell :: String
     Pr    :: Array{I64,1}
     Tr    :: Array{C64,2}
+    window:: Tuple{R64,R64}
 end
 
 """
     PrUnion
 
 Essential information of group of projectors (be transformed or rotated).
+
+Note that the `site`, `l`, `corr`, and `shell` arguments are borrowed
+from the PrGroup struct. In other words, they are just copies of those
+in the PrGroup struct. On the other hand, the `ndim` is new, and the
+`Pr` is different from the one in the PrGroup struct.
 
 .site  -> Site in which the projectors are defined. In principle, the
           projectors included in the same group should be defined at
