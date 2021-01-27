@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/25
+# last modified: 2021/01/27
 #
 
 #
@@ -23,10 +23,10 @@ function plo_adaptor(debug::Bool = false)
 
     # S02: Setup the PrGroup strcut
     println("    Grouping")
-    if haskey(KohnShamData, "PG")
-        plo_group(KohnShamData["PG"])
+    if haskey(DFTData, "PG")
+        plo_group(DFTData["PG"])
     else
-        error("The KohnShamData dict does not contain the key: PG")
+        error("The DFTData dict does not contain the key: PG")
     end
 
     # S03: Transform the projector matrix
