@@ -5,7 +5,7 @@
 # Status  : unstable
 # Comment :
 #
-# Last modified: 2021/01/27
+# Last modified: 2021/01/28
 #
 
 #
@@ -283,9 +283,16 @@ end
 Outer constructor for PrTrait struct.
 """
 function PrTrait(site::I64, desc::String)
-    # Angular character of the local functions on the specified sites.
-    # See the following webpage for more details:
-    #     https://www.vasp.at/wiki/index.php/LOCPROJ
+
+#
+# Remarks:
+#
+# Please go to the following webpage for more details about the original
+# specifications of projectors in the vasp code:
+#     https://www.vasp.at/wiki/index.php/LOCPROJ
+#
+
+    # Angular character of the local functions on the specified sites
     orb_labels = ("s",
                   "py", "pz", "px",
                   "dxy", "dyz", "dz2", "dxz", "dx2-y2",
