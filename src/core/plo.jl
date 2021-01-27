@@ -39,10 +39,10 @@ function plo_adaptor(D::Dict{String,Any}, debug::Bool = false)
 
     # S04: Adjust the band structure
     println("    Leveling")
-    if haskey(DFTData, "fermi") && haskey(DFTData, "enk")
-        @. DFTData["enk"] = DFTData["enk"] - DFTData["fermi"]
+    if haskey(D, "fermi") && haskey(D, "enk")
+        @. D["enk"] = D["enk"] - D["fermi"]
     else
-        error("The DFTData dict does not contain the keys: fermi and enk")
+        error("The D dict does not contain the keys: fermi and enk")
     end
 
     # S05: Filter the projector matrix
