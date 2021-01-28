@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/28
+# last modified: 2021/01/29
 #
 
 #
@@ -18,8 +18,6 @@
 Adaptor support. It will postprocess the raw projector matrix.
 """
 function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
-    return
-
     # S01: Print the header
     println("  < PLO Adaptor >")
 
@@ -35,7 +33,11 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
     # S04: Setup the PrGroup strcut further
     println("    Grouping")
-    plo_group(D[:PG])
+    @show D[:PG]
+    @timev plo_group(D[:PG])
+    @show D[:PG]
+    exit(-1)
+    return
 
     # S05: Transform the projector matrix
     println("    Rotating")
@@ -70,7 +72,7 @@ function plo_group(PG::Array{PrGroup,1})
     @assert get_i("nsite") === length(get_i("atoms"))
     @assert get_i("nsite") === length(get_i("shell"))
 
-    # The lshell defines a mapping from shell (string) to l (integer)
+    # The lshell creates a mapping from shell (string) to l (integer)
     lshell = Dict{String,I64}(
                  "s"     => 0,
                  "p"     => 1,
@@ -81,6 +83,7 @@ function plo_group(PG::Array{PrGroup,1})
              )
 
     # Loop over each site (quantum impurity problem)
+    site_l = Tuple[]
     for i = 1:get_i("nsite")
         # Determine site
         str = get_i("atoms")[i]
@@ -88,57 +91,73 @@ function plo_group(PG::Array{PrGroup,1})
 
         # Determine l
         str = get_i("shell")[i]
-        l = haskey(lshell, str) ? lshell[str] : nothing
+        l = get(lshell, str, nothing)
 
-        # Scan the groups of projectors
-        for g in eachindex(PG)
-            # Examine PrGroup, check number of projectors
-            @assert 2 * PG[g].l + 1 === length(PG[g].Pr)
+        push!(site_l, (site, l, str))
+    end
 
+    window = get_d("window")
+    nwin = convert(I64, length(window) / 2)
+    @assert nwin === 1 || nwin === length(PG)
+
+    # Scan the groups of projectors
+    for g in eachindex(PG)
+        # Examine PrGroup, check number of projectors
+        @assert 2 * PG[g].l + 1 === length(PG[g].Pr)
+
+        # Loop over each site (quantum impurity problem)
+        for i in eachindex(site_l)
+            T = site_l[i]
             # Well, find out the required PrGroup
-            if (PG[g].site, PG[g].l) === (site, l)
+            if (PG[g].site, PG[g].l) === (T[1], T[2])
                 # Setup corr property
                 PG[g].corr = true
 
                 # Setup shell property
-                PG[g].shell = str
+                PG[g].shell = T[3]
             end
+        end
 
-            # Setup Tr array further
-            @cswitch PG[g].shell begin
-                @case "s"
-                    PG[g].Tr = Matrix{ComplexF64}(I, 1, 1)
-                    break
+        # Setup Tr array further
+        @cswitch PG[g].shell begin
+            @case "s"
+                PG[g].Tr = Matrix{ComplexF64}(I, 1, 1)
+                break
 
-                @case "p"
-                    PG[g].Tr = Matrix{ComplexF64}(I, 3, 3)
-                    break
+            @case "p"
+                PG[g].Tr = Matrix{ComplexF64}(I, 3, 3)
+                break
 
-                @case "d"
-                    PG[g].Tr = Matrix{ComplexF64}(I, 5, 5)
-                    break
+            @case "d"
+                PG[g].Tr = Matrix{ComplexF64}(I, 5, 5)
+                break
 
-                @case "f"
-                    PG[g].Tr = Matrix{ComplexF64}(I, 7, 7)
-                    break
+            @case "f"
+                PG[g].Tr = Matrix{ComplexF64}(I, 7, 7)
+                break
 
-                @case "d_t2g"
-                    PG[g].Tr = zeros(C64, 3, 5)
-                    PG[g].Tr[1, 1] = 1.0 + 0.0im
-                    PG[g].Tr[2, 2] = 1.0 + 0.0im
-                    PG[g].Tr[3, 4] = 1.0 + 0.0im
-                    break
+            @case "d_t2g"
+                PG[g].Tr = zeros(C64, 3, 5)
+                PG[g].Tr[1, 1] = 1.0 + 0.0im
+                PG[g].Tr[2, 2] = 1.0 + 0.0im
+                PG[g].Tr[3, 4] = 1.0 + 0.0im
+                break
 
-                @case "d_eg"
-                    PG[g].Tr = zeros(C64, 2, 5)
-                    PG[g].Tr[1, 3] = 1.0 + 0.0im
-                    PG[g].Tr[2, 5] = 1.0 + 0.0im
-                    break
+            @case "d_eg"
+                PG[g].Tr = zeros(C64, 2, 5)
+                PG[g].Tr[1, 3] = 1.0 + 0.0im
+                PG[g].Tr[2, 5] = 1.0 + 0.0im
+                break
 
-                @default
-                    sorry()
-                    break
-            end
+            @default
+                sorry()
+                break
+        end
+
+        if nwin === 1
+            PG[g].window = (window[1], window[2])
+        else
+            PG[g].window = (window[2g-1], window[2*g])
         end
     end
 end
