@@ -353,7 +353,7 @@ function adaptor_run(it::IterInfo)
     # related data. The key-value pairs should be inserted into this
     # dict dynamically.
     #
-    DFTData = Dict{String,Any}()
+    DFTData = Dict{Symbol,Any}()
 
     #
     # A1: Parse the original Kohn-Sham data
