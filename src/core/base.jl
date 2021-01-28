@@ -116,7 +116,7 @@ function cycle1()
         # S02: Perform DFT calculation (for the second time)
         #
         # S02.1: Prepare and check essential files for the DFT engine
-        dft_init(it)
+        dft_init(it, lr)
         #
         # S02.2: Perform a self-consitent calculation at the DFT level
         dft_run(it)
@@ -143,7 +143,7 @@ function cycle1()
     # S03: To bridge the gap between DFT engine and DMFT engine by adaptor
     #
     # S03.1: Prepare and check essential files for the adaptor
-    adaptor_init(it)
+    adaptor_init(it, lr)
     #
     # S03.2: Launch the adaptor
     adaptor_run(it)
@@ -165,7 +165,7 @@ function cycle1()
         # S04: Perform DMFT calculation
         #
         # S04.1: Prepare and check essential files for the DMFT engine
-        dmft_init(it)
+        dmft_init(it, lr)
         #
         # S04.2: Launch the DMFT engine (dmft1)
         dmft_run(it)
@@ -179,7 +179,7 @@ function cycle1()
         # S05: Solve the quantum impurity problems
         #
         # S05.1: Prepare and check essential files for the quantum impurity solver
-        solver_init(it)
+        solver_init(it, lr)
         #
         # S05.2: Launch the quantum impurity solver
         solver_run(it)
@@ -189,6 +189,16 @@ function cycle1()
         #
         # S05.4: Monitor the status
         monitor(true)
+    end
+
+    # S90: Close Logger
+    if isopen(lr.log)
+        flush(lr.log)
+        close(lr.log)
+    end
+    if isopen(lr.cycle)
+        flush(lr.cycle)
+        close(lr.cycle)
     end
 end
 
@@ -300,11 +310,11 @@ function rm_trees()
 end
 
 """
-    adaptor_init(it::IterInfo)
+    adaptor_init(it::IterInfo, lr::Logger)
 
 Initialize the adaptor, to check whether the essential files exist.
 """
-function adaptor_init(it::IterInfo)
+function adaptor_init(it::IterInfo, lr::Logger)
     # Enter dft directory
     cd("dft")
 
@@ -312,6 +322,7 @@ function adaptor_init(it::IterInfo)
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
+            prompt(lr.log, "adaptor")
             prompt("Adaptor : VASP")
             println("  Init VASP Adaptor")
             vasp_files()
@@ -494,15 +505,16 @@ function dft_save(it::IterInfo)
 end
 
 """
-    dmft_init(it::IterInfo)
+    dmft_init(it::IterInfo, lr::Logger)
 
 To examine the runtime environment for dynamical mean-field theory engine.
 """
-function dmft_init(it::IterInfo)
+function dmft_init(it::IterInfo, lr::Logger)
     # Enter dmft1 directory
     cd("dmft1")
 
     # TODO
+    prompt(lr.log, "dmft1")
 
     # Enter the parent directory
     cd("..")
@@ -540,11 +552,11 @@ function dmft_save(it::IterInfo)
 end
 
 """
-    solver_init(it::IterInfo)
+    solver_init(it::IterInfo, lr::Logger)
 
 To examine the runtime environment for quantum impurity solver.
 """
-function solver_init(it::IterInfo)
+function solver_init(it::IterInfo, lr::Logger)
     # Loop over each impurity site
     for i = 1:get_i("nsite")
 
@@ -555,18 +567,22 @@ function solver_init(it::IterInfo)
         engine = get_s("engine")
         @cswitch engine begin
             @case "ct_hyb1"
+                prompt(lr.log, "ct_hyb1")
                 sorry()
                 break
 
             @case "ct_hyb2"
+                prompt(lr.log, "ct_hyb2")
                 sorry()
                 break
 
             @case "hub1"
+                prompt(lr.log, "hub1")
                 sorry()
                 break
 
             @case "norg"
+                prompt(lr.log, "norg")
                 sorry()
                 break
         end
