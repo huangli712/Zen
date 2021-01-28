@@ -183,8 +183,7 @@ function chk_dict()
     @assert get_d("engine") in ("vasp", "wannier")
     @assert get_d("smear") in ("m-p", "gauss", "tetra")
     @assert get_d("kmesh") in ("accurate", "medium", "coarse", "file")
-    @assert get_d("window")
-    exit(-1)
+    @assert iseven( length( get_d("window") ) )
     #
     # Check dmft block
     @assert get_m("mode") in (1, 2)
@@ -251,7 +250,7 @@ Print the configuration parameters to stdout: for PCASE dict.
 function cat_c()
     # See comments in cat_d()
     println("  case     -> ", str_c("case"))
-    println()
+    #println()
 end
 
 """
@@ -284,7 +283,7 @@ function cat_d()
     println("  lproj    -> ", str_d("lproj"))
     println("  sproj    -> ", str_d("sproj"))
     println("  window   -> ", str_d("window"))
-    println()
+    #println()
 end
 
 """
@@ -306,7 +305,7 @@ function cat_m()
     println("  lcharge  -> ", str_m("lcharge"))
     println("  lenergy  -> ", str_m("lenergy"))
     println("  lforce   -> ", str_m("lforce"))
-    println()
+    #println()
 end
 
 """
@@ -325,7 +324,7 @@ function cat_i()
     println("  upara    -> ", str_i("upara"))
     println("  jpara    -> ", str_i("jpara"))
     println("  lpara    -> ", str_i("lpara"))
-    println()
+    #println()
 end
 
 """
