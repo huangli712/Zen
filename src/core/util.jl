@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/21
+# last modified: 2021/01/28
 #
 
 """
@@ -251,6 +251,16 @@ Print a format Zen message to the screen.
 function prompt(msg::String)
     @ps2 "Task -> " :blue msg :light_red
     println()
+end
+
+"""
+    prompt(io::IOStream, msg::String)
+
+Print a format Zen message to the given IOStream.
+"""
+function prompt(io::IOStream, msg::String)
+    date = Dates.format(now(), "yyyy-mm-dd / HH:MM:SS")
+    println(io, "$date  $msg")
 end
 
 """

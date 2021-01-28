@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/27
+# Last modified: 2021/01/28
 #
 
 #
@@ -28,7 +28,7 @@ end
 """
     go()
 
-Dispatcher for the DFT + DMFT calculations.
+Dispatcher for DFT + DMFT calculations.
 """
 function go()
     # Get calculation mode
@@ -95,7 +95,7 @@ function cycle1()
     # S01: Perform DFT calculation (for the first time)
     #
     # S01.1: Prepare and check essential files for the DFT engine
-    dft_init(it)
+    dft_init(it, lr)
     #
     # S01.2: Perform a self-consitent calculation at the DFT level
     dft_run(it)
@@ -412,11 +412,11 @@ function adaptor_save(it::IterInfo)
 end
 
 """
-    dft_init(it::IterInfo)
+    dft_init(it::IterInfo, lr::Logger)
 
 To examine the runtime environment for density functional theory engine.
 """
-function dft_init(it::IterInfo)
+function dft_init(it::IterInfo, lr::Logger)
     # Enter dft directory
     cd("dft")
 
@@ -424,6 +424,7 @@ function dft_init(it::IterInfo)
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
+            prompt(lr.log, "vasp")
             prompt("DFT : VASP")
             println("  Init VASP")
             vasp_init(it)
