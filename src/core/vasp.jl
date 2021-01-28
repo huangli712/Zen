@@ -29,7 +29,7 @@ function vasp_adaptor(D::Dict{String,Any})
     # S03: Read in kmesh and the corresponding weights
     println("    Get Kmesh")
     println("    Get Weight")
-    D[:kmesh], D[:weight:] = vaspio_kmesh(pwd())
+    D[:kmesh], D[:weight] = vaspio_kmesh(pwd())
 
     # S04: Read in band structure and the corresponding occupancies
     println("    Get Enk")
