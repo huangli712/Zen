@@ -40,11 +40,7 @@ function ir_adaptor(D::Dict{String,Any})
     # S05: Write band structure and the corresponding occupancies
     println("    Put Enk")
     println("    Put Occupy")
-    if haskey(D, "enk") && haskey(D, "occupy")
-        irio_eigen(pwd(), D["enk"], D["occupy"])
-    else
-        error("The D dict does not contain the keys: enk and occupy")
-    end
+    irio_eigen(pwd(), D[:enk], D[:occupy])
 
     # S06: Write projectors, traits, and groups
     println("    Put Projector (Trait and Group)")
