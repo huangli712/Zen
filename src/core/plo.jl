@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/27
+# last modified: 2021/01/28
 #
 
 #
@@ -21,47 +21,33 @@ function plo_adaptor(D::Dict{String,Any}, debug::Bool = false)
     # S01: Print the header
     println("  < PLO Adaptor >")
 
-    # S02: Setup the PrGroup strcut
-    println("    Grouping")
-    if haskey(D, "PG")
-        plo_group(D["PG"])
-    else
-        error("The D dict does not contain the key: PG")
+    # S02: Check the validity of the dict
+    key_list = [:PG, :chipsi, :enk, :fermi]
+    for k in key_list
+        @assert haskey(D, k)
     end
 
-    # S03: Transform the projector matrix
-    println("    Rotating")
-    if haskey(D, "PG") && haskey(D, "chipsi")
-        D["PU"], D["chipsi"] = plo_rotate(D["PG"], D["chipsi"])
-    else
-        error("The D dict does not contain the keys: PG and chipsi")
-    end
-
-    # S04: Adjust the band structure
+    # S03: Adjust the band structure
     println("    Leveling")
-    if haskey(D, "fermi") && haskey(D, "enk")
-        @. D["enk"] = D["enk"] - D["fermi"]
-    else
-        error("The D dict does not contain the keys: fermi and enk")
-    end
+    @. D[:enk] = D[:enk] - D[:fermi]
 
-    # S05: Filter the projector matrix
+    # S04: Setup the PrGroup strcut further
+    println("    Grouping")
+    plo_group(D[:PG])
+
+    # S05: Transform the projector matrix
+    println("    Rotating")
+    D[:PU], D[:chipsi] = plo_rotate(D[:PG], D[:chipsi])
+
+    # S06: Filter the projector matrix
     println("    Filtering")
-    if haskey(D, "enk") && haskey(D, "chipsi")
-        bmin, bmax, ib_window, D["chipsi"] = plo_filter(D["enk"], D["chipsi"])
-    else
-        error("The D dict does not contain the keys: enk and chipsi")
-    end
+    bmin, bmax, ib_window, D[:chipsi] = plo_filter(D[:enk], D[:chipsi])
 
-    # S06: To make sure the projectors orthogonalize with each other
+    # S07: To make sure the projectors orthogonalize with each other
     println("    Orthogonalizing")
-    if haskey(D, "PU") && haskey(D["chipsi"])
-        plo_orthog(ib_window, D["PU"], D["chipsi"])
-    else
-        error("The D dict does not contain the keys: PU and chipsi")
-    end
+    plo_orthog(ib_window, D[:PU], D[:chipsi])
 
-    # S07: Write the density matrix and overlap matrix for checking
+    # S08: Write the density matrix and overlap matrix for checking
     if debug
         println("DEBUG!")
     end
