@@ -3,12 +3,13 @@
 include("Zen.jl")
 using .Zen
 
-# parse the configuration parameter
 require()
 welcome()
 overview()
 setup()
 exhibit()
+it = IterInfo()
+adaptor_run(it)
 exit(-1)
 
 # read the Kohn-Sham data

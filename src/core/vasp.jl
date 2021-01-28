@@ -13,18 +13,21 @@
 #
 
 """
-    vasp_adaptor(D::Dict{String,Any})
+    vasp_adaptor(D::Dict{Symbol,Any})
 
 Adaptor support for vasp code. It will read the output files of vasp
 code and then fulfill the DFTData dict (i.e D).
 """
-function vasp_adaptor(D::Dict{String,Any})
+function vasp_adaptor(D::Dict{Symbol,Any})
     # S01: Print the header
     println("  < VASP Adaptor >")
 
     # S02: Read in lattice structure
     println("    Get Lattice")
-    D[:latt] = vaspio_lattice(pwd())
+    A = vaspio_lattice(pwd())
+    @show typeof(A)
+    #D[:latt] 
+    exit(-1)
 
     # S03: Read in kmesh and the corresponding weights
     println("    Get Kmesh")
