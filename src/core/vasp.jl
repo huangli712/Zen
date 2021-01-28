@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/27
+# last modified: 2021/01/28
 #
 
 #
@@ -16,7 +16,7 @@
     vasp_adaptor(D::Dict{String,Any})
 
 Adaptor support for vasp code. It will read the output files of vasp
-code and then fulfill the DFTData dict (D).
+code and then fulfill the DFTData dict (i.e D).
 """
 function vasp_adaptor(D::Dict{String,Any})
     # S01: Print the header
@@ -24,31 +24,31 @@ function vasp_adaptor(D::Dict{String,Any})
 
     # S02: Read in lattice structure
     println("    Get Lattice")
-    D["latt"] = vaspio_lattice(pwd())
+    D[:latt] = vaspio_lattice(pwd())
 
     # S03: Read in kmesh and the corresponding weights
     println("    Get Kmesh")
     println("    Get Weight")
-    D["kmesh"], D["weight"] = vaspio_kmesh(pwd())
+    D[:kmesh], D[:weight:] = vaspio_kmesh(pwd())
 
-    # S04: Read in tetrahedron data if they are available
-    if get_d("smear") === "tetra"
-        println("    Get Tetrahedron")
-        D["volt"], D["itet"] = vaspio_tetra(pwd())
-    end
-
-    # S05: Read in band structure and the corresponding occupancies
+    # S04: Read in band structure and the corresponding occupancies
     println("    Get Enk")
     println("    Get Occupy")
-    D["enk"], D["occupy"] = vaspio_eigen(pwd())
+    D[:enk], D[:occupy] = vaspio_eigen(pwd())
 
-    # S06: Read in raw projectors, traits, and groups
+    # S05: Read in raw projectors, traits, and groups
     println("    Get Projector (Trait and Group)")
-    D["PT"], D["PG"], D["chipsi"] = vaspio_projs(pwd())
+    D[:PT], D[:PG], D[:chipsi] = vaspio_projs(pwd())
 
-    # S07: Read in fermi level
+    # S06: Read in fermi level
     println("    Get Fermi Level")
-    D["fermi"] = vaspio_fermi(pwd())
+    D[:fermi] = vaspio_fermi(pwd())
+
+    # S07: Read in tetrahedron data if they are available
+    if get_d("smear") === "tetra"
+        println("    Get Tetrahedron")
+        D[:volt], D[:itet] = vaspio_tetra(pwd())
+    end
 end
 
 """
