@@ -309,10 +309,10 @@ Check the essential output files by vasp. Here `f` means only the directory
 that contains the desired files.
 """
 function vasp_files(f::String)
-    @assert isfile(joinpath(f, "POSCAR")) &&
-            isfile(joinpath(f, "IBZKPT")) &&
-            isfile(joinpath(f, "DOSCAR")) &&
-            isfile(joinpath(f, "CHGCAR")) &&
+    @assert isfile(joinpath(f, "POSCAR"))  &&
+            isfile(joinpath(f, "IBZKPT"))  &&
+            isfile(joinpath(f, "DOSCAR"))  &&
+            isfile(joinpath(f, "CHGCAR"))  &&
             isfile(joinpath(f, "LOCPROJ")) &&
             isfile(joinpath(f, "EIGENVAL"))
 end
@@ -584,7 +584,7 @@ function vaspio_projs(f::String)
     end
     #
     # Second, we figure out the unique (site, l) pairs.
-    union!(site_l)
+    unique!(site_l)
     #
     # Third, we create a array of PrGroup struct (except for site and
     # l, most of its member variables need to be corrected). Note
