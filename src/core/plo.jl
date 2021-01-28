@@ -18,7 +18,7 @@
 Adaptor support. It will postprocess the raw projector matrix.
 """
 function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
-    exit(-1)
+    return
 
     # S01: Print the header
     println("  < PLO Adaptor >")

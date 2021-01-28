@@ -43,7 +43,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     irio_eigen(pwd(), D[:enk], D[:occupy])
 
     # S06: Write projectors, traits, and groups
-    println("    Put Projector (Trait and Group)")
+    println("    Put Projector")
     irio_projs(pwd(), D[:chipsi])
 
     # S07: Write fermi level
