@@ -44,19 +44,11 @@ function ir_adaptor(D::Dict{String,Any})
 
     # S06: Write projectors, traits, and groups
     println("    Put Projector (Trait and Group)")
-    if haskey(D, "chipsi")
-        irio_projs(pwd(), D["chipsi"])
-    else
-        error("The D dict does not contain the key: chipsi")
-    end
+    irio_projs(pwd(), D[:chipsi])
 
     # S07: Write fermi level
     println("    Put Fermi Level")
-    if haskey(D, "fermi")
-        irio_fermi(pwd(), D["fermi"])
-    else
-        error("The D dict does not contain the key: fermi")
-    end
+    irio_fermi(pwd(), D[:fermi])
 
 #
 # Remarks:
