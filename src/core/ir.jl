@@ -68,7 +68,7 @@ function ir_adaptor(D::Dict{String,Any})
     # S09: Write tetrahedron data if they are available
     if get_d("smear") === "tetra"
         println("    Put Tetrahedron")
-        irio_tetra(pwd(), D["volt"], D["itet"])
+        irio_tetra(pwd(), D[:volt], D[:itet])
     end
 end
 
