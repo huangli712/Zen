@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/27
+# last modified: 2021/01/28
 #
 
 #
@@ -15,45 +15,27 @@
 """
     ir_adaptor(D::Dict{String,Any})
 
-Write the Kohn-Data data to specified files using the IR format.
+Write the Kohn-Sham data to specified files using the IR format. Note
+that the Kohn-Sham data are encapsulated in a dict. 
 """
 function ir_adaptor(D::Dict{String,Any})
     # S01: Print the header
     println("  < IR Adaptor >")
 
-    # S02: Write lattice structure
-    println("    Put Lattice")
-    if haskey(D, "latt")
-        irio_lattice(pwd(), D["latt"])
-    else
-        error("The D dict does not contain the key: latt")
+    # S02: Check the validity of the dict
+    key_list = [:latt, :kmesh, :weight, :enk, :occupy, :chipsi, :fermi]
+    for k in key_list
+        @assert haskey(D, k)
     end
 
-    # S03: Write kmesh and the corresponding weights
+    # S03: Write lattice structure
+    println("    Put Lattice")
+    irio_lattice(pwd(), D[:latt])
+
+    # S04: Write kmesh and the corresponding weights
     println("    Put Kmesh")
     println("    Put Weight")
-    if haskey(D, "kmesh") && haskey(D, "weight")
-        irio_kmesh(pwd(), D["kmesh"], D["weight"])
-    else
-        error("The D dict does not contain the keys: kmesh and weight")
-    end
-
-#
-# Remarks:
-#
-# This step is optional, because the tetrahedron information might
-# be absent.
-#
-
-    # S04: Write tetrahedron data if they are available
-    if get_d("smear") === "tetra"
-        println("    Put Tetrahedron")
-        if haskey(D, "volt") && haskey(D, "itet")
-            irio_tetra(pwd(), D["volt"], D["itet"])
-        else
-            error("The D dict does not contain the keys: volt and itet")
-        end
-    end
+    irio_kmesh(pwd(), D[:kmesh], D[:weight])
 
     # S05: Write band structure and the corresponding occupancies
     println("    Put Enk")
@@ -78,6 +60,31 @@ function ir_adaptor(D::Dict{String,Any})
         irio_fermi(pwd(), D["fermi"])
     else
         error("The D dict does not contain the key: fermi")
+    end
+
+#
+# Remarks:
+#
+# This step is optional, because the tetrahedron information might
+# be absent.
+#
+
+    # S08: Check the validity of the dict further (optional)
+    if get_d("smear") === "tetra"
+        key_list = [:volt, :itet]
+        for k in key_list
+            @assert haskey(D, k)
+        end
+    end
+
+    # S09: Write tetrahedron data if they are available
+    if get_d("smear") === "tetra"
+        println("    Put Tetrahedron")
+        if haskey(D, "volt") && haskey(D, "itet")
+            irio_tetra(pwd(), D["volt"], D["itet"])
+        else
+            error("The D dict does not contain the keys: volt and itet")
+        end
     end
 end
 
