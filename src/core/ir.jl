@@ -53,8 +53,8 @@ function ir_adaptor(D::Dict{String,Any})
 #
 # Remarks:
 #
-# This step is optional, because the tetrahedron information might
-# be absent.
+# The following steps are optional, because the tetrahedron information
+# might be absent.
 #
 
     # S08: Check the validity of the dict further (optional)
@@ -68,11 +68,7 @@ function ir_adaptor(D::Dict{String,Any})
     # S09: Write tetrahedron data if they are available
     if get_d("smear") === "tetra"
         println("    Put Tetrahedron")
-        if haskey(D, "volt") && haskey(D, "itet")
-            irio_tetra(pwd(), D["volt"], D["itet"])
-        else
-            error("The D dict does not contain the keys: volt and itet")
-        end
+        irio_tetra(pwd(), D["volt"], D["itet"])
     end
 end
 
