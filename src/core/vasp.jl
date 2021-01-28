@@ -24,10 +24,7 @@ function vasp_adaptor(D::Dict{Symbol,Any})
 
     # S02: Read in lattice structure
     println("    Get Lattice")
-    A = vaspio_lattice(pwd())
-    @show typeof(A)
-    #D[:latt] 
-    exit(-1)
+    D[:latt] = vaspio_lattice(pwd())
 
     # S03: Read in kmesh and the corresponding weights
     println("    Get Kmesh")
@@ -40,7 +37,7 @@ function vasp_adaptor(D::Dict{Symbol,Any})
     D[:enk], D[:occupy] = vaspio_eigen(pwd())
 
     # S05: Read in raw projectors, traits, and groups
-    println("    Get Projector (Trait and Group)")
+    println("    Get Projector")
     D[:PT], D[:PG], D[:chipsi] = vaspio_projs(pwd())
 
     # S06: Read in fermi level
@@ -586,8 +583,9 @@ function vaspio_projs(f::String)
         push!(site_l, (PT[i].site, PT[i].l))
     end
     #
-    # Second, we figure out the unique (site, l) pairs.
-    unique!(site_l)
+    # Second, we figure out the unique (site, l) pairs. Here, we use the
+    # union! function, which is much more efficient than the unique! one.
+    union!(site_l)
     #
     # Third, we create a array of PrGroup struct (except for site and
     # l, most of its member variables need to be corrected). Note

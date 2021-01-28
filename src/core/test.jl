@@ -3,13 +3,10 @@
 include("Zen.jl")
 using .Zen
 
-require()
-welcome()
-overview()
 setup()
 exhibit()
 it = IterInfo()
-adaptor_run(it)
+@timev adaptor_run(it)
 exit(-1)
 
 # read the Kohn-Sham data
