@@ -13,11 +13,11 @@
 #
 
 """
-    plo_adaptor(D::Dict{String,Any}, debug::Bool = false)
+    plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
 Adaptor support. It will postprocess the raw projector matrix.
 """
-function plo_adaptor(D::Dict{String,Any}, debug::Bool = false)
+function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     exit(-1)
 
     # S01: Print the header
