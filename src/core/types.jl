@@ -49,7 +49,7 @@ const PDFT  = Dict{String,Array{Any,1}}(
           "loptim"   => [missing, 0, :Bool  , "The generated projectors are optimized or not"],
           "lproj"    => [missing, 1, :Bool  , "The projectors are generated or not"],
           "sproj"    => [missing, 1, :Array , "Specifications for generating projectors"],
-          "window"   => [missing, 0, :Array , "Band / energy window for orthogonalizing projectors"],
+          "window"   => [missing, 1, :Array , "Band / energy window for orthogonalizing projectors"],
       )
 
 """

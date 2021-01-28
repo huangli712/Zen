@@ -21,8 +21,8 @@ function setup()
     # S1: Parse the case.toml file to extract configuration parameters
     cfg = inp_toml(query_args(), true)
 
-    # S2: Build the configuration dictionaries
-    new_dict(cfg)
+    # S2: Revise the configuration dictionaries
+    rev_dict(cfg)
 
     # S3: Validate the configuration parameters
     chk_dict()
@@ -183,6 +183,8 @@ function chk_dict()
     @assert get_d("engine") in ("vasp", "wannier")
     @assert get_d("smear") in ("m-p", "gauss", "tetra")
     @assert get_d("kmesh") in ("accurate", "medium", "coarse", "file")
+    @assert get_d("window")
+    exit(-1)
     #
     # Check dmft block
     @assert get_m("mode") in (1, 2)
