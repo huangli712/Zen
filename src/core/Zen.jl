@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/27
+# Last modified: 2021/01/28
 #
 
 module Zen
@@ -107,7 +107,7 @@ export PrUnion
 # setup    -> Setup parameters
 # exhibit  -> Display parameters for reference
 # inp_toml -> Parse case.toml, return raw configuration information
-# new_dict -> Update dicts for configuration
+# rev_dict -> Update dicts for configuration
 # chk_dict -> Check dicts for configuration
 # _v       -> Verify dict's values
 # cat_c    -> Print dict (PCASE dict)
@@ -131,7 +131,7 @@ include("config.jl")
 export setup
 export exhibit
 export inp_toml
-export new_dict
+export rev_dict
 export chk_dict
 export _v
 export cat_c

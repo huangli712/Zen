@@ -104,12 +104,12 @@ function inp_toml(f::String, necessary::Bool)
 end
 
 """
-    new_dict(cfg::Dict{String,Any})
+    rev_dict(cfg::Dict{String,Any})
 
 Transfer configurations from dict cfg to dicts (PCASE, PDFT, PDMFT,
 PIMP, and PSOLVER).
 """
-function new_dict(cfg::Dict{String,Any})
+function rev_dict(cfg::Dict{String,Any})
     # For case block
     #
     # Pay attention to that the case block only includes one child element
