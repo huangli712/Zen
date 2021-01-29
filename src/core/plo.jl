@@ -113,6 +113,13 @@ function plo_group(PG::Array{PrGroup,1})
         push!(site_l, (site, l, str))
     end
 
+#
+# Remarks:
+#
+# 1. Here, `window` means energy window or band window.
+# 1. When nwin is 1, it means that all PrGroup share the same energy window
+#
+
     # Deal with the energy window, which is used to filter the eigenvalues.
     window = get_d("window")
     nwin = convert(I64, length(window) / 2)
