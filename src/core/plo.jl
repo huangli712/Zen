@@ -207,17 +207,11 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     end
     #
     # Setup the Pr property of PrUnion struct
-    c = 0
     for i in eachindex(PU)
         for j = 1:PU[i].ndim
-            c = c + 1
-            PU[i].Pr[j] = c
+            PU[i].Pr[j] = j
         end
     end
-    #
-    # Sanity check
-    # Actually, c means the number of projectors after the rotation
-    @assert c === sum(x -> size(x.Tr)[1], PG)
     #
     # Until now PrUnion struct is ready
 
@@ -233,7 +227,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 #
 # Remarks:
 #
-# PG[i].Tr must be a matrix. its size must be (q2 - q1 + 1, p2 - p1 + 1)
+# PG[i].Tr must be a matrix. its size must be (ndim, p2 - p1 + 1)
 #
 
     # Perform rotation or transformation
@@ -243,9 +237,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
                 for i in eachindex(PG)
                     p1 = PG[i].Pr[1]
                     p2 = PG[i].Pr[end]
-                    q1 = PU[i].Pr[1]
-                    q2 = PU[i].Pr[end]
-                    chipsi_r[q1:q2, b, k, s] = PG[i].Tr * chipsi[p1:p2, b, k, s]
+                    chipsi_r[i][:, b, k, s] = PG[i].Tr * chipsi[p1:p2, b, k, s]
                 end
             end
         end
