@@ -43,6 +43,8 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
     # S06: Filter the projector matrix
     println("    Filtering")
+    @show typeof(D[:chipsi_r])
+    @timev plo_filter(D[:enk], D[:PG], D[:chipsi_r])
     #bmin, bmax, ib_window, D[:chipsi] = plo_filter(D[:enk], D[:chipsi])
     exit(-1)
 
@@ -258,12 +260,21 @@ end
 
 """
     plo_filter(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1}
+
+Filter the projector matrix according to band window or energy window.
 """
 function plo_filter(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1})
+    # Scan the groups of projectors, filter them one by one.
     for p in eachindex(PG)
+        # Retrieve the window
         window = PG[i].window
+
+        # Sanity check. This window must be defined by band indices
+        # (they are integers) or energies (two float numbers).
         @assert typeof(window[1]) === typeof(window[2])
         @assert window[1] isa AbstractFloat || @assert window[1] isa Integer
+
+        # Perform the filter really
         plo_window(enk, window[2], window[1], chipsi[p])
     end
 end
