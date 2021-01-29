@@ -15,7 +15,9 @@
 """
     plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
-Adaptor support. It will postprocess the raw projector matrix.
+Adaptor support. It will postprocess the raw projector matrix. The dict
+D contains all of the necessary Kohn-Sham data, which will be modified
+as well.
 """
 function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # S01: Print the header
