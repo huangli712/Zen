@@ -70,11 +70,23 @@ Use the information contained in the PIMP dict to further complete
 the PrGroup struct.
 """
 function plo_group(PG::Array{PrGroup,1})
+
+#
+# Remarks:
+#
+# 1. The PG array was created in vasp.jl/vaspio_projs().  
+#
+# 2. In this function, `corr`, `shell`,  `Tr`, and `window` which are
+#    members of PrGroup struct will be modified according to users'
+#    setup (i.e, the case.toml file).
+#
+
     # Additional check for the parameters contained in PIMP dict
     @assert get_i("nsite") === length(get_i("atoms"))
     @assert get_i("nsite") === length(get_i("shell"))
 
-    # The lshell creates a mapping from shell (string) to l (integer)
+    # The lshell creates a mapping from shell (string) to l (integer).
+    # It is used to parse get_i("shell") to extract the `l` parameter. 
     lshell = Dict{String,I64}(
                  "s"     => 0,
                  "p"     => 1,
@@ -84,20 +96,24 @@ function plo_group(PG::Array{PrGroup,1})
                  "d_eg"  => 2, # Only a subset of d orbitals
              )
 
-    # Loop over each site (quantum impurity problem)
+    # Loop over each site (the quantum impurity problem) to gather some
+    # relevant information, such as `site` and `l`. We use a Tuple Array
+    # (site_l) to record them.
     site_l = Tuple[]
     for i = 1:get_i("nsite")
         # Determine site
         str = get_i("atoms")[i]
         site = parse(I64, line_to_array(str)[3])
 
-        # Determine l
+        # Determine l and its specification
         str = get_i("shell")[i]
         l = get(lshell, str, nothing)
 
+        # Push the data into site_l
         push!(site_l, (site, l, str))
     end
 
+    # Deal with the energy window, which is used to filter the eigenvalues.
     window = get_d("window")
     nwin = convert(I64, length(window) / 2)
     @assert nwin === 1 || nwin === length(PG)
