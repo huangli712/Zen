@@ -39,12 +39,12 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
     # S05: Transform the projector matrix
     println("    Rotating")
-    @timev D[:PU], D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
-    exit(-1)
+    D[:PU], D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
 
     # S06: Filter the projector matrix
     println("    Filtering")
-    bmin, bmax, ib_window, D[:chipsi] = plo_filter(D[:enk], D[:chipsi])
+    #bmin, bmax, ib_window, D[:chipsi] = plo_filter(D[:enk], D[:chipsi])
+    exit(-1)
 
     # S07: To make sure the projectors orthogonalize with each other
     println("    Orthogonalizing")
@@ -254,6 +254,9 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 
     # Return the desired arrays
     return PU, chipsi_r
+end
+
+function plo_filter()
 end
 
 """
