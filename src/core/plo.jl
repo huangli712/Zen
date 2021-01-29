@@ -188,6 +188,8 @@ function plo_group(PG::Array{PrGroup,1})
             # Each PrGroup has it own window
             PG[g].window = (window[2*g-1], window[2*g])
         end
+        # Examine window further
+        @assert PG[g].window[1] < PG[g].window[2]
     end
 end
 
