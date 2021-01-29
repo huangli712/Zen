@@ -35,15 +35,12 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
     # S04: Setup the PrGroup strcut further
     println("    Grouping")
-    @show D[:PG]
-    @timev plo_group(D[:PG])
-    @show D[:PG]
-    exit(-1)
-    return
+    plo_group(D[:PG])
 
     # S05: Transform the projector matrix
     println("    Rotating")
-    D[:PU], D[:chipsi] = plo_rotate(D[:PG], D[:chipsi])
+    @timev D[:PU], D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
+    exit(-1)
 
     # S06: Filter the projector matrix
     println("    Filtering")
@@ -217,25 +214,26 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
             PU[i].Pr[j] = c
         end
     end
+    #
+    # Sanity check
+    # Actually, c means the number of projectors after the rotation
+    @assert c === sum(x -> size(x.Tr)[1], PG)
+    #
     # Until now PrUnion struct is ready
 
     # Extract some key parameters from raw projector matrix
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # Tell us how many projectors there are after the rotation
-    nproj_ = sum(x -> x.ndim, PU)
-    @assert nproj_ === sum(x -> size(x.Tr)[1], PG)
-    @assert nproj_ <= nproj
-
     # Create new arrays
-    chipsi_r = zeros(C64, nproj_, nband, nkpt, nspin)
+    chipsi_r = zeros(C64, nproj_r, nband, nkpt, nspin)
+
+#
+# Remarks:
+#
+# PG[i].Tr must be a matrix. its size must be (q2 - q1 + 1, p2 - p1 + 1)
+#
 
     # Perform rotation or transformation
-    #
-    # Remark:
-    #
-    # PG[i].Tr must be a matrix. its size must be (q2 - q1 + 1, p2 - p1 + 1)
-    #
     for s = 1:nspin
         for k = 1:nkpt
             for b = 1:nband
