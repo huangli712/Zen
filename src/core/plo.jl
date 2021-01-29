@@ -218,29 +218,38 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     # Extract some key parameters from raw projector matrix
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # Create new arrays
+    # Initialize new arrays. Now it is empty. We are going to allocate
+    # memory for it later.
     chipsi_r = []
-    for i in eachindex(PU)
-        push!(chipsi_r, zeros(C64, PU[i].ndim, nband, nkpt, nspin))
-    end
 
 #
 # Remarks:
 #
-# PG[i].Tr must be a matrix. its size must be (ndim, p2 - p1 + 1)
+# 1. The sizes of PG and PU are the same.
+#
+# 2. PG[i].Tr must be a matrix. its size must be (ndim, p2 - p1 + 1)
 #
 
     # Perform rotation or transformation
-    for s = 1:nspin
-        for k = 1:nkpt
-            for b = 1:nband
-                for i in eachindex(PG)
-                    p1 = PG[i].Pr[1]
-                    p2 = PG[i].Pr[end]
-                    chipsi_r[i][:, b, k, s] = PG[i].Tr * chipsi[p1:p2, b, k, s]
+    for i in eachindex(PG)
+        # Determine the range of original projectors 
+        p1 = PG[i].Pr[1]
+        p2 = PG[i].Pr[end]
+
+        # Create a temporary array M
+        M = zeros(C64, PU[i].ndim, nband, nkpt, nspin)
+
+        # Rotate M by Tr
+        for s = 1:nspin
+            for k = 1:nkpt
+                for b = 1:nband
+                    M[:, b, k, s] = PG[i].Tr * chipsi[p1:p2, b, k, s]
                 end
             end
         end
+
+        # Push M into chipsi_r to save it
+        push!(chipsi_r, M)
     end
 
     # Return the desired arrays
