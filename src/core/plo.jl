@@ -205,7 +205,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
         # Create a PrUnion struct and push it into the PU array
         push!(PU, PrUnion(PG[i].site, PG[i].l, ndim, PG[i].corr, PG[i].shell))
     end
-
+    #
     # Setup the Pr property of PrUnion struct
     c = 0
     for i in eachindex(PU)
@@ -225,7 +225,10 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     nproj, nband, nkpt, nspin = size(chipsi)
 
     # Create new arrays
-    chipsi_r = zeros(C64, nproj_r, nband, nkpt, nspin)
+    chipsi_r = []
+    for i in eachindex(PU)
+        push!(chipsi_r, zeros(C64, PU[i].ndim, nband, nkpt, nspin))
+    end
 
 #
 # Remarks:
