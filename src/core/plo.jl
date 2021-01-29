@@ -220,7 +220,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 
     # Initialize new arrays. Now it is empty. We are going to allocate
     # memory for it later.
-    chipsi_r = []
+    chipsi_r = Array{C64,4}[]
 
 #
 # Remarks:
@@ -256,7 +256,16 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     return PU, chipsi_r
 end
 
-function plo_filter()
+"""
+    plo_filter(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1}
+"""
+function plo_filter(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1})
+    for p in eachindex(PG)
+        window = PG[i].window
+        @assert typeof(window[1]) === typeof(window[2])
+        @assert window[1] isa AbstractFloat || @assert window[1] isa Integer
+        plo_window(enk, window[2], window[1], chipsi[p])
+    end
 end
 
 """
