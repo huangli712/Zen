@@ -116,8 +116,9 @@ function plo_group(PG::Array{PrGroup,1})
 #
 # Remarks:
 #
-# 1. Here, `window` means energy window or band window.
-# 1. When nwin is 1, it means that all PrGroup share the same energy window
+# Here, `window` means energy window or band window. When nwin is 1, it
+# means that all PrGroup share the same window. When nwin is equal to
+# length(PG), it means that each PrGroup has its own window.
 #
 
     # Deal with the energy window, which is used to filter the eigenvalues.
@@ -125,7 +126,7 @@ function plo_group(PG::Array{PrGroup,1})
     nwin = convert(I64, length(window) / 2)
     @assert nwin === 1 || nwin === length(PG)
 
-    # Scan the groups of projectors
+    # Scan the groups of projectors, setup them one by one.
     for g in eachindex(PG)
         # Examine PrGroup, check number of projectors
         @assert 2 * PG[g].l + 1 === length(PG[g].Pr)
@@ -138,7 +139,7 @@ function plo_group(PG::Array{PrGroup,1})
                 # Setup corr property
                 PG[g].corr = true
 
-                # Setup shell property
+                # Setup shell property. Later it will be used to generate `Tr`
                 PG[g].shell = T[3]
             end
         end
@@ -179,10 +180,13 @@ function plo_group(PG::Array{PrGroup,1})
                 break
         end
 
+        # Setup window. Don't forget it is a Tuple.
         if nwin === 1
+            # All PrGroup shares the same window
             PG[g].window = (window[1], window[2])
         else
-            PG[g].window = (window[2g-1], window[2*g])
+            # Each PrGroup has it own window
+            PG[g].window = (window[2*g-1], window[2*g])
         end
     end
 end
