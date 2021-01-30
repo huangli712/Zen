@@ -30,7 +30,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     end
 
     # S03: Adjust the band structure
-    println("    Subtract Fermi Level")
+    println("    Calibrate Fermi Level")
     @. D[:enk] = D[:enk] - D[:fermi]
 
     # S04: 
