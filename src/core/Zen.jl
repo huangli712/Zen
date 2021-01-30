@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/28
+# Last modified: 2021/01/30
 #
 
 module Zen
@@ -80,6 +80,7 @@ export __AUTHORS__
 # PrTrait  -> Struct for projectors
 # PrGroup  -> Struct for groups of projectors
 # PrUnion  -> Struct for groups of projectors (transformed)
+# PrWindow -> Struct for band window
 #
 include("types.jl")
 #
@@ -94,6 +95,7 @@ export Lattice
 export PrTrait
 export PrGroup
 export PrUnion
+export PrWindow
 
 #
 # config.jl
