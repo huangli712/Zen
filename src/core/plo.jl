@@ -30,29 +30,32 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     end
 
     # S03: Adjust the band structure
-    println("    Leveling")
+    println("    Subtract Fermi Level")
     @. D[:enk] = D[:enk] - D[:fermi]
 
-    # S04: Setup the PrGroup strcut further
-    println("    Grouping")
+    # S04: 
+    println("    Calibrate Band Window")
+
+    # S05: Setup the PrGroup strcut further
+    println("    Group Projectors")
     plo_group(D[:PG])
 
-    # S05: Transform the projector matrix
-    println("    Rotating")
+    # S06: Transform the projector matrix
+    println("    Rotate Projectors")
     D[:PU], D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
+    exit(-1)
 
-    # S06: Filter the projector matrix
-    println("    Filtering")
+    # S07: Filter the projector matrix
+    println("    Filter Projectors")
     @show typeof(D[:chipsi_r])
     @timev plo_filter(D[:enk], D[:PG], D[:chipsi_r])
     #bmin, bmax, ib_window, D[:chipsi] = plo_filter(D[:enk], D[:chipsi])
-    exit(-1)
 
-    # S07: To make sure the projectors orthogonalize with each other
-    println("    Orthogonalizing")
+    # S08: To make sure the projectors orthogonalize with each other
+    println("    Normalize Projectors")
     plo_orthog(ib_window, D[:PU], D[:chipsi])
 
-    # S08: Write the density matrix and overlap matrix for checking
+    # S09: Write the density matrix and overlap matrix for checking
     if debug
         println("DEBUG!")
     end

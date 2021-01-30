@@ -248,6 +248,9 @@ mutable struct PrUnion
     Pr    :: Array{I64,1}
 end
 
+mutable struct PrWindow
+end
+
 #
 # Customized Constructors
 #
