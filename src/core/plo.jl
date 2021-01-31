@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/29
+# last modified: 2021/01/31
 #
 
 #
@@ -24,14 +24,14 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     println("  < PLO Adaptor >")
 
     # S02: Check the validity of the dict
-    key_list = [:PG, :chipsi, :enk, :fermi]
+    key_list = [:enk, :fermi, :PG, :chipsi]
     for k in key_list
         @assert haskey(D, k)
     end
 
     # S03: Adjust the band structure
     println("    Calibrate Fermi Level")
-    @. D[:enk] = D[:enk] - D[:fermi]
+    plo_fermi(D[:enk], D[:fermi])
 
     # S04: 
     println("    Calibrate Band Window")
@@ -64,6 +64,15 @@ end
 #
 # Service Functions (Group A)
 #
+
+"""
+    plo_fermi(enk::Array{F64,3}, fermi::F64)
+
+Calibrate the band structure to enforce the fermi level to be zero.
+"""
+function plo_fermi(enk::Array{F64,3}, fermi::F64)
+    @. enk = enk - fermi
+end
 
 """
     plo_group(PG::Array{PrGroup,1})

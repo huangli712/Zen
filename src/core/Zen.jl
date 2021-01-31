@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/30
+# Last modified: 2021/01/31
 #
 
 module Zen
@@ -293,6 +293,7 @@ export irio_charge
 # Members:
 #
 # plo_adaptor -> Adaptor support
+# plo_fermi   -> Calibrate fermi level for Kohn-Sham eigenvalues
 # plo_group   -> Setup groups of projectors
 # plo_rotate  -> Rotate the projectors
 # plo_filter  -> Extract the projectors within a given energy window
@@ -310,6 +311,7 @@ export irio_charge
 include("plo.jl")
 #
 export plo_adaptor
+export plo_fermi
 export plo_group
 export plo_rotate
 export plo_filter
