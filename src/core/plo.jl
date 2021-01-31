@@ -35,12 +35,12 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
     # S04: Setup the band / energy window for projectors
     println("    Calibrate Band Window")
-    plo_window(D[:enk])
+    plo_window(D[:PG], D[:enk])
+    exit(-1)
 
     # S05: Setup the PrGroup strcut further
     println("    Group Projectors")
     plo_group(D[:PG])
-    exit(-1)
 
     # S06: Transform the projector matrix
     #println("    Rotate Projectors")
@@ -77,10 +77,55 @@ function plo_fermi(enk::Array{F64,3}, fermi::F64)
 end
 
 """
-    plo_window()
+    plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
 
+Calibrate the band window to filter the Kohn-Sham eigenvalues.
 """
-function plo_window()
+function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
+
+#
+# Remarks:
+#
+# Here, `window` means energy window or band window. When nwin is 1, it
+# means that all PrGroup share the same window. When nwin is equal to
+# length(PG), it means that each PrGroup has its own window.
+#
+
+    # Deal with the energy window, which is used to filter the eigenvalues.
+    window = get_d("window")
+    nwin = convert(I64, length(window) / 2)
+    @assert nwin === 1 || nwin === length(PG)
+
+    PW = PrWindow[]
+
+    # Scan the groups of projectors, setup PrWindow one by one.
+    for p in eachindex(PG)
+
+    # Setup window. Don't forget it is a Tuple.
+    if nwin === 1
+        # All PrGroup shares the same window
+        bwin = (window[1], window[2])
+    else
+        # Each PrGroup has it own window
+        bwin = (window[2*g-1], window[2*g])
+    end
+    # Examine window further
+    @assert bwin[1] < bwin[2]
+
+
+
+
+        # Retrieve the window
+        window = PG[p].window
+
+        # Sanity check. This window must be defined by band indices
+        # (they are integers) or energies (two float numbers).
+        @assert typeof(window[1]) === typeof(window[2])
+        @assert window[1] isa AbstractFloat # || @assert window[1] isa Integer
+
+        # Perform the filter really
+        plo_window(enk, window[2], window[1], chipsi[p])
+    end
 
 end
 
@@ -118,8 +163,8 @@ function plo_group(PG::Array{PrGroup,1})
              )
 
     # Loop over each site (the quantum impurity problem) to gather some
-    # relevant information, such as `site` and `l`. We use a Tuple Array
-    # (site_l) to record them.
+    # relevant information, such as `site` and `l`. We use a Array of
+    # Tuple (site_l) to record them.
     site_l = Tuple[]
     for i = 1:get_i("nsite")
         # Determine site
@@ -133,19 +178,6 @@ function plo_group(PG::Array{PrGroup,1})
         # Push the data into site_l
         push!(site_l, (site, l, str))
     end
-
-#
-# Remarks:
-#
-# Here, `window` means energy window or band window. When nwin is 1, it
-# means that all PrGroup share the same window. When nwin is equal to
-# length(PG), it means that each PrGroup has its own window.
-#
-
-    # Deal with the energy window, which is used to filter the eigenvalues.
-    window = get_d("window")
-    nwin = convert(I64, length(window) / 2)
-    @assert nwin === 1 || nwin === length(PG)
 
     # Scan the groups of projectors, setup them one by one.
     for g in eachindex(PG)
@@ -200,17 +232,6 @@ function plo_group(PG::Array{PrGroup,1})
                 sorry()
                 break
         end
-
-        # Setup window. Don't forget it is a Tuple.
-        if nwin === 1
-            # All PrGroup shares the same window
-            PG[g].window = (window[1], window[2])
-        else
-            # Each PrGroup has it own window
-            PG[g].window = (window[2*g-1], window[2*g])
-        end
-        # Examine window further
-        @assert PG[g].window[1] < PG[g].window[2]
     end
 end
 
@@ -286,27 +307,14 @@ end
 Filter the projector matrix according to band window or energy window.
 """
 function plo_filter(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1})
-    # Scan the groups of projectors, filter them one by one.
-    for p in eachindex(PG)
-        # Retrieve the window
-        window = PG[p].window
-
-        # Sanity check. This window must be defined by band indices
-        # (they are integers) or energies (two float numbers).
-        @assert typeof(window[1]) === typeof(window[2])
-        @assert window[1] isa AbstractFloat # || @assert window[1] isa Integer
-
-        # Perform the filter really
-        plo_window(enk, window[2], window[1], chipsi[p])
-    end
 end
 
 """
-    plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
+    plo_window1(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
 
 Extract the projectors within a given energy window.
 """
-function plo_window(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
+function plo_window1(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
     # Sanity check. Here we should make sure there is an overlap between
     # [emin, emax] and band structure.
     if emax < minimum(enk) || emin > maximum(enk)
