@@ -129,64 +129,6 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
     return PW
 end
 
-function plo_window1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
-    bmin, bmax = bwin
-
-    # Extract some key parameters
-    nband, nkpt, nspin = size(enk)
-
-    # Create arrays
-    # The kwin is used to record the band window for each kpt and each spin
-    kwin = zeros(I64, nkpt, nspin, 2)
-
-    fill!(kwin[:, :, 1], bmin)
-    fill!(kwin[:, :, 2], bmax)
-end
-
-function plo_window2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
-    emin, emax = bwin
-
-    # Sanity check. Here we should make sure there is an overlap between
-    # [emin, emax] and band structure.
-    if emax < minimum(enk) || emin > maximum(enk)
-        error("Energy window does not overlap with the band structure")
-    end
-
-    # Extract some key parameters
-    nband, nkpt, nspin = size(enk)
-
-    # Create arrays
-    # The kwin is used to record the band window for each kpt and each spin
-    kwin = zeros(I64, nkpt, nspin, 2)
-
-    # Scan the band structure to determine kwin
-    for s = 1:nspin
-        for k = 1:nkpt
-            # For lower boundary
-            ib1 = 1
-            while enk[ib1, k, s] < emin
-                ib1 = ib1 + 1
-            end
-
-            # For upper boundary
-            ib2 = nband
-            while enk[ib2, k, s] > emax
-                ib2 = ib2 - 1
-            end
-
-            # Check the boundaries
-            @assert ib1 <= ib2
-
-            # Save the boundaries
-            # The ib1 and ib2 mean the lower and upper boundaries, respectively.
-            kwin[k, s, 1] = ib1
-            kwin[k, s, 2] = ib2
-        end
-    end
-
-    return kwin
-end
-
 """
     plo_group(PG::Array{PrGroup,1})
 
@@ -363,16 +305,9 @@ end
     plo_filter1(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1}
 
 Filter the projector matrix according to band window or energy window.
-"""
-#function plo_filter1(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1})
-#end
-
-"""
-    plo_filter2(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
-
 Extract the projectors within a given energy window.
 """
-function plo_filter2(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
+function plo_filter(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -425,6 +360,64 @@ function plo_orthog(window::Array{I64,3}, PU::Array{PrUnion,1}, chipsi::Array{C6
             end
         end
     end
+end
+
+function plo_window1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
+    bmin, bmax = bwin
+
+    # Extract some key parameters
+    nband, nkpt, nspin = size(enk)
+
+    # Create arrays
+    # The kwin is used to record the band window for each kpt and each spin
+    kwin = zeros(I64, nkpt, nspin, 2)
+
+    fill!(kwin[:, :, 1], bmin)
+    fill!(kwin[:, :, 2], bmax)
+end
+
+function plo_window2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
+    emin, emax = bwin
+
+    # Sanity check. Here we should make sure there is an overlap between
+    # [emin, emax] and band structure.
+    if emax < minimum(enk) || emin > maximum(enk)
+        error("Energy window does not overlap with the band structure")
+    end
+
+    # Extract some key parameters
+    nband, nkpt, nspin = size(enk)
+
+    # Create arrays
+    # The kwin is used to record the band window for each kpt and each spin
+    kwin = zeros(I64, nkpt, nspin, 2)
+
+    # Scan the band structure to determine kwin
+    for s = 1:nspin
+        for k = 1:nkpt
+            # For lower boundary
+            ib1 = 1
+            while enk[ib1, k, s] < emin
+                ib1 = ib1 + 1
+            end
+
+            # For upper boundary
+            ib2 = nband
+            while enk[ib2, k, s] > emax
+                ib2 = ib2 - 1
+            end
+
+            # Check the boundaries
+            @assert ib1 <= ib2
+
+            # Save the boundaries
+            # The ib1 and ib2 mean the lower and upper boundaries, respectively.
+            kwin[k, s, 1] = ib1
+            kwin[k, s, 2] = ib2
+        end
+    end
+
+    return kwin
 end
 
 """
