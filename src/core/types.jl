@@ -204,8 +204,6 @@ Essential information of group of projectors.
 .Tr     -> Array. It contains the transformation matrix. This parameter
            could be useful to select certain subset of orbitals or perform
            a simple global rotation.
-.window -> Tuple. It is the band window or energy window, which is used
-           to filter the Kohn-Sham band structure.
 """
 mutable struct PrGroup
     site  :: I64
@@ -214,7 +212,6 @@ mutable struct PrGroup
     shell :: String
     Pr    :: Array{I64,1}
     Tr    :: Array{C64,2}
-    window:: Tuple{R64,R64}
 end
 
 """
@@ -256,13 +253,16 @@ Define the band window of group of projectors.
 .bmin -> Minimum band index 
 .bmax -> Maximum band index
 .nbnd -> Maximum number of bands in the current window
-.bwin -> Band window
+.kwin -> Momentum-dependent and spin-dependent band window
+.bwin -> Tuple. It is the band window or energy window, which is used
+         to filter the Kohn-Sham band structure.
 """
 mutable struct PrWindow
     bmin  :: I64
     bmax  :: I64
     nbnd  :: I64
-    bwin  :: Array{I64,3}
+    kwin  :: Array{I64,3}
+    bwin  :: Tuple{R64,R64}
 end
 
 #
@@ -352,12 +352,8 @@ function PrGroup(site::I64, l::I64)
     Pr = zeros(I64, max_dim)
     Tr = zeros(C64, max_dim, max_dim)
 
-    # Setup band/energy window
-    # It will be further initialized in plo_group()
-    window = (0, 0)
-
     # Call the default constructor
-    PrGroup(site, l, corr, shell, Pr, Tr, window)
+    PrGroup(site, l, corr, shell, Pr, Tr)
 end
 
 """
@@ -390,20 +386,20 @@ function PrUnion(PG::PrGroup)
 end
 
 """
-    PrWindow(bwin::Array{I64,3})
+    PrWindow(kwin::Array{I64,3}, bwin::Tuple{R64,R64})
 
 Outer constructor for PrWindow struct.
 """
-function PrWindow(bwin::Array{I64,3})
+function PrWindow(kwin::Array{I64,3}, bwin::Tuple{R64,R64})
     # Determine the boundaries of the window
-    bmin = minimum(bwin[:, :, 1])
-    bmax = maximum(bwin[:, :, 2])
+    bmin = minimum(kwin[:, :, 1])
+    bmax = maximum(kwin[:, :, 2])
 
     # Determine the width of the window
     nbnd = bmax - bmin + 1
 
     # Call the default constructor
-    PrWindow(bmin, bmax, nbnd, bwin)
+    PrWindow(bmin, bmax, nbnd, kwin, bwin)
 end
 
 #

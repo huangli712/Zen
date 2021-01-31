@@ -24,21 +24,23 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     println("  < PLO Adaptor >")
 
     # S02: Check the validity of the dict
-    key_list = [:enk, :fermi, :PG, :chipsi]
+    key_list = [:PG, :enk, :fermi, :chipsi]
     for k in key_list
         @assert haskey(D, k)
     end
 
-    # S03: Adjust the band structure
+    # S03: Setup the PrGroup strcut further
+    println("    Group Projectors")
+    plo_group(D[:PG])
+
+    # S04: Adjust the band structure
     println("    Calibrate Fermi Level")
     plo_fermi(D[:enk], D[:fermi])
 
-    # S04: 
+    # S05: 
     println("    Calibrate Band Window")
-
-    # S05: Setup the PrGroup strcut further
-    println("    Group Projectors")
-    plo_group(D[:PG])
+    plo_window()
+    exit(-1)
 
     # S06: Transform the projector matrix
     println("    Rotate Projectors")
@@ -75,6 +77,13 @@ function plo_fermi(enk::Array{F64,3}, fermi::F64)
 end
 
 """
+    plo_window()
+
+"""
+function plo_window()
+end
+
+"""
     plo_group(PG::Array{PrGroup,1})
 
 Use the information contained in the PIMP dict to further complete
@@ -89,7 +98,7 @@ function plo_group(PG::Array{PrGroup,1})
 #
 # 2. In this function, `corr`, `shell`,  `Tr`, and `window` which are
 #    members of PrGroup struct will be modified according to users'
-#    setup (i.e, the case.toml file).
+#    configuration (i.e, the case.toml file).
 #
 
     # Additional check for the parameters contained in PIMP dict

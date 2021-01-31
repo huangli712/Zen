@@ -6,7 +6,7 @@ using .Zen
 setup()
 exhibit()
 it = IterInfo()
-@timev adaptor_run(it)
+adaptor_run(it)
 exit(-1)
 
 # read the Kohn-Sham data
