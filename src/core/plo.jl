@@ -100,32 +100,35 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
 
     # Scan the groups of projectors, setup PrWindow one by one.
     for p in eachindex(PG)
-
-    # Setup window. Don't forget it is a Tuple.
-    if nwin === 1
-        # All PrGroup shares the same window
-        bwin = (window[1], window[2])
-    else
-        # Each PrGroup has it own window
-        bwin = (window[2*g-1], window[2*g])
-    end
-    # Examine window further
-    @assert bwin[1] < bwin[2]
-
-
-
-
-        # Retrieve the window
-        window = PG[p].window
+        # Setup bwin. Don't forget it is a Tuple.
+        if nwin === 1
+            # All PrGroup shares the same window
+            bwin = (window[1], window[2])
+        else
+            # Each PrGroup has it own window
+            bwin = (window[2*p-1], window[2*p])
+        end
+        # Examine bwin further
+        @assert bwin[2] > bwin[1]
 
         # Sanity check. This window must be defined by band indices
         # (they are integers) or energies (two float numbers).
-        @assert typeof(window[1]) === typeof(window[2])
-        @assert window[1] isa AbstractFloat # || @assert window[1] isa Integer
+        @assert typeof(bwin[1]) === typeof(bwin[2])
+        @assert bwin[1] isa Integer || @assert bwin[1] isa AbstractFloat
 
         # Perform the filter really
-        plo_window(enk, window[2], window[1], chipsi[p])
+        if bwin[1] isa Integer
+            plo_window1()
+        else
+            plo_window2(enk, bwin)
+        end
     end
+end
+
+function plo_window1()
+end
+
+function plo_window2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
 
 end
 
