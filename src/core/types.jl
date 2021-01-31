@@ -5,7 +5,7 @@
 # Status  : unstable
 # Comment :
 #
-# Last modified: 2021/01/30
+# Last modified: 2021/01/31
 #
 
 #
@@ -248,7 +248,12 @@ mutable struct PrUnion
     Pr    :: Array{I64,1}
 end
 
+"""
+    PrWindow
+"""
 mutable struct PrWindow
+    bmax  :: I64
+    bmin  :: I64
 end
 
 #
