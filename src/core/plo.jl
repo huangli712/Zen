@@ -35,7 +35,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
     # S04: Setup the band / energy window for projectors
     println("    Calibrate Band Window")
-    plo_window(D[:PG], D[:enk])
+    D[:PW] = plo_window(D[:PG], D[:enk])
     exit(-1)
 
     # S05: Setup the PrGroup strcut further
@@ -120,16 +120,60 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
         if bwin[1] isa Integer
             plo_window1()
         else
-            plo_window2(enk, bwin)
+            kwin = plo_window2(enk, bwin)
         end
+
+        push!(PW, PrWindow(kwin, bwin))
     end
+
+    return PW
 end
 
 function plo_window1()
 end
 
 function plo_window2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
+    emin, emax = bwin
 
+    # Sanity check. Here we should make sure there is an overlap between
+    # [emin, emax] and band structure.
+    if emax < minimum(enk) || emin > maximum(enk)
+        error("Energy window does not overlap with the band structure")
+    end
+
+    # Extract some key parameters
+    nband, nkpt, nspin = size(enk)
+
+    # Create arrays
+    # The kwin is used to record the band window for each kpt and each spin
+    kwin = zeros(I64, nkpt, nspin, 2)
+
+    # Scan the band structure to determine kwin
+    for s = 1:nspin
+        for k = 1:nkpt
+            # For lower boundary
+            ib1 = 1
+            while enk[ib1, k, s] < emin
+                ib1 = ib1 + 1
+            end
+
+            # For upper boundary
+            ib2 = nband
+            while enk[ib2, k, s] > emax
+                ib2 = ib2 - 1
+            end
+
+            # Check the boundaries
+            @assert ib1 <= ib2
+
+            # Save the boundaries
+            # The ib1 and ib2 mean the lower and upper boundaries, respectively.
+            kwin[k, s, 1] = ib1
+            kwin[k, s, 2] = ib2
+        end
+    end
+
+    return kwin
 end
 
 """
@@ -305,64 +349,19 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 end
 
 """
-    plo_filter(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1}
+    plo_filter1(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1}
 
 Filter the projector matrix according to band window or energy window.
 """
-function plo_filter(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1})
-end
+#function plo_filter1(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1})
+#end
 
 """
-    plo_window1(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
+    plo_filter2(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
 
 Extract the projectors within a given energy window.
 """
-function plo_window1(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
-    # Sanity check. Here we should make sure there is an overlap between
-    # [emin, emax] and band structure.
-    if emax < minimum(enk) || emin > maximum(enk)
-        error("Energy window does not overlap with the band structure")
-    end
-
-    # Extract some key parameters
-    nband, nkpt, nspin = size(enk)
-
-    # Create arrays
-    # The ib_window is used to record the band window for each kpt and each spin
-    ib_window = zeros(I64, nkpt, nspin, 2)
-
-    # Scan the band structure to determine ib_window
-    for s = 1:nspin
-        for k = 1:nkpt
-            # For lower boundary
-            ib1 = 1
-            while enk[ib1, k, s] < emin
-                ib1 = ib1 + 1
-            end
-
-            # For upper boundary
-            ib2 = nband
-            while enk[ib2, k, s] > emax
-                ib2 = ib2 - 1
-            end
-
-            # Check the boundaries
-            @assert ib1 <= ib2
-
-            # Save the boundaries
-            # The ib1 and ib2 mean the lower and upper boundaries, respectively.
-            ib_window[k, s, 1] = ib1
-            ib_window[k, s, 2] = ib2
-        end
-    end
-
-    # Try to find out the global minimum and maximum band indices
-    ib_min = minimum(ib_window[:, :, 1])
-    ib_max = maximum(ib_window[:, :, 2])
-
-    # Try to find out the maximum number of selected bands in the window
-    nbmax = ib_max - ib_min + 1
-
+function plo_filter2(enk::Array{F64,3}, emax::F64, emin::F64, chipsi::Array{C64,4})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
