@@ -36,16 +36,15 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # S04: Setup the band / energy window for projectors
     println("    Calibrate Band Window")
     D[:PW] = plo_window(D[:PG], D[:enk])
-    exit(-1)
 
     # S05: Setup the PrGroup strcut further
     println("    Group Projectors")
     plo_group(D[:PG])
 
     # S06: Transform the projector matrix
-    #println("    Rotate Projectors")
-    #D[:PU], D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
-    #exit(-1)
+    println("    Rotate Projectors")
+    D[:PU], D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
+    exit(-1)
 
     # S07: Filter the projector matrix
     #println("    Filter Projectors")
