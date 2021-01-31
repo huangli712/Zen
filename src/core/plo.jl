@@ -29,17 +29,17 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
         @assert haskey(D, k)
     end
 
-    # S03: Setup the PrGroup strcut further
-    println("    Group Projectors")
-    plo_group(D[:PG])
-
-    # S04: Adjust the band structure
+    # S03: Adjust the band structure
     println("    Calibrate Fermi Level")
     plo_fermi(D[:enk], D[:fermi])
 
-    # S05: 
+    # S04: Setup the band / energy window for projectors
     println("    Calibrate Band Window")
-    plo_window()
+    plo_window(D[:enk])
+
+    # S05: Setup the PrGroup strcut further
+    println("    Group Projectors")
+    plo_group(D[:PG])
     exit(-1)
 
     # S06: Transform the projector matrix
