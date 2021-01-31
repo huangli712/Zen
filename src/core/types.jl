@@ -504,4 +504,9 @@ end
 Base.show() function for PrWindow struct.
 """
 function Base.show(io::IO, PW::PrWindow)
+    println(io, "PrWindow struct")
+    println(io, ".bmin : ", PW.bmin)
+    println(io, ".bmax : ", PW.bmax)
+    println(io, ".nbnd : ", PW.nbnd)
+    println(io, ".bwin : ", PW.bwin)
 end
