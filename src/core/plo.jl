@@ -114,11 +114,11 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
         # Sanity check. This window must be defined by band indices
         # (they are integers) or energies (two float numbers).
         @assert typeof(bwin[1]) === typeof(bwin[2])
-        @assert bwin[1] isa Integer || @assert bwin[1] isa AbstractFloat
+        @assert bwin[1] isa Integer || bwin[1] isa AbstractFloat
 
         # Perform the filter really
         if bwin[1] isa Integer
-            plo_window1()
+            kwin = plo_window1(enk, bwin)
         else
             kwin = plo_window2(enk, bwin)
         end
@@ -129,7 +129,18 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
     return PW
 end
 
-function plo_window1()
+function plo_window1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
+    bmin, bmax = bwin
+
+    # Extract some key parameters
+    nband, nkpt, nspin = size(enk)
+
+    # Create arrays
+    # The kwin is used to record the band window for each kpt and each spin
+    kwin = zeros(I64, nkpt, nspin, 2)
+
+    fill!(kwin[:, :, 1], bmin)
+    fill!(kwin[:, :, 2], bmax)
 end
 
 function plo_window2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
