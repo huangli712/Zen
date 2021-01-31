@@ -250,10 +250,19 @@ end
 
 """
     PrWindow
+
+Define the band window of group of projectors.
+
+.bmax -> Maximum band index
+.bmin -> Minimum band index 
+.nbnd -> Maximum number of bands in the current window
+.bwin -> Band window
 """
 mutable struct PrWindow
     bmax  :: I64
     bmin  :: I64
+    nbnd  :: I64
+    bwin  :: Array{I64,3}
 end
 
 #
@@ -378,6 +387,14 @@ function PrUnion(PG::PrGroup)
 
     # Call the default constructor
     PrUnion(PG.site, PG.l, ndim, PG.corr, PG.shell, Pr)
+end
+
+"""
+    PrWindow(bwin::Array{I64,3})
+
+Outer constructor for PrWindow struct.
+"""
+function PrWindow(bwin::Array{I64,3})
 end
 
 #
