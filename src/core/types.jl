@@ -395,8 +395,11 @@ end
 Outer constructor for PrWindow struct.
 """
 function PrWindow(bwin::Array{I64,3})
+    # Determine the boundaries of the window
     bmin = minimum(bwin[:, :, 1])
     bmax = maximum(bwin[:, :, 2])
+
+    # Determine the width of the window
     nbnd = bmax - bmin + 1
 
     # Call the default constructor
