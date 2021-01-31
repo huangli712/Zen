@@ -43,24 +43,24 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     exit(-1)
 
     # S06: Transform the projector matrix
-    println("    Rotate Projectors")
-    D[:PU], D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
-    exit(-1)
+    #println("    Rotate Projectors")
+    #D[:PU], D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
+    #exit(-1)
 
     # S07: Filter the projector matrix
-    println("    Filter Projectors")
-    @show typeof(D[:chipsi_r])
-    @timev plo_filter(D[:enk], D[:PG], D[:chipsi_r])
+    #println("    Filter Projectors")
+    #@show typeof(D[:chipsi_r])
+    #@timev plo_filter(D[:enk], D[:PG], D[:chipsi_r])
     #bmin, bmax, ib_window, D[:chipsi] = plo_filter(D[:enk], D[:chipsi])
 
     # S08: To make sure the projectors orthogonalize with each other
-    println("    Normalize Projectors")
-    plo_orthog(ib_window, D[:PU], D[:chipsi])
+    #println("    Normalize Projectors")
+    #plo_orthog(ib_window, D[:PU], D[:chipsi])
 
     # S09: Write the density matrix and overlap matrix for checking
-    if debug
-        println("DEBUG!")
-    end
+    #if debug
+    #    println("DEBUG!")
+    #end
 end
 
 #
@@ -81,6 +81,7 @@ end
 
 """
 function plo_window()
+
 end
 
 """
@@ -96,9 +97,9 @@ function plo_group(PG::Array{PrGroup,1})
 #
 # 1. The PG array was created in vasp.jl/vaspio_projs().  
 #
-# 2. In this function, `corr`, `shell`,  `Tr`, and `window` which are
-#    members of PrGroup struct will be modified according to users'
-#    configuration (i.e, the case.toml file).
+# 2. In this function, `corr`, `shell`,  and `Tr` which are members of
+#    PrGroup struct will be modified according to users' configuration
+#    i.e, the case.toml file.
 #
 
     # Additional check for the parameters contained in PIMP dict
