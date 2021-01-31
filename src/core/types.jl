@@ -253,14 +253,14 @@ end
 
 Define the band window of group of projectors.
 
-.bmax -> Maximum band index
 .bmin -> Minimum band index 
+.bmax -> Maximum band index
 .nbnd -> Maximum number of bands in the current window
 .bwin -> Band window
 """
 mutable struct PrWindow
-    bmax  :: I64
     bmin  :: I64
+    bmax  :: I64
     nbnd  :: I64
     bwin  :: Array{I64,3}
 end
@@ -395,6 +395,12 @@ end
 Outer constructor for PrWindow struct.
 """
 function PrWindow(bwin::Array{I64,3})
+    bmin = minimum(bwin[:, :, 1])
+    bmax = maximum(bwin[:, :, 2])
+    nbnd = bmax - bmin + 1
+
+    # Call the default constructor
+    PrWindow(bmin, bmax, nbnd, bwin)
 end
 
 #
