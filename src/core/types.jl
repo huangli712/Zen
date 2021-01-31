@@ -497,3 +497,11 @@ function Base.show(io::IO, PU::PrUnion)
     println(io, ".shell : ", PU.shell)
     println(io, ".Pr    : ", PU.Pr)
 end
+
+"""
+    Base.show(io::IO, PW::PrWindow)
+
+Base.show() function for PrWindow struct.
+"""
+function Base.show(io::IO, PW::PrWindow)
+end
