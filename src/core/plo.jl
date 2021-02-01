@@ -51,7 +51,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
     # S07: Filter the projector matrix
     println("    Filter Projectors")
-    D[:chipsi_f] = plo_filter(D[:PW], D[:chipsi_r])
+    @timev D[:chipsi_f] = plo_filter(D[:PW], D[:chipsi_r])
     exit(-1)
 
     # S08: To make sure the projectors orthogonalize with each other
@@ -353,7 +353,7 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
                 @assert ib3 <= PW[p].nbnd
 
                 # We just copy data from chipsi to M
-                M[:, 1:ib3, k, s] = chipsi[:, ib1:ib2, k, s]
+                M[:, 1:ib3, k, s] = chipsi[p][:, ib1:ib2, k, s]
             end
         end
 
