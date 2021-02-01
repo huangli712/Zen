@@ -55,7 +55,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
     # S09: To make sure the projectors orthogonalize with each other
     println("    Normalize Projectors")
-    #plo_orthog(ib_window, D[:PU], D[:chipsi])
+    plo_orthog(D[:PW], D[:PU], D[:chipsi_f])
     exit(-1)
 
     # S10: Write the density matrix and overlap matrix for checking
