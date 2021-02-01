@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/31
+# Last modified: 2021/02/01
 #
 
 module Zen
@@ -293,16 +293,21 @@ export irio_charge
 # Members:
 #
 # plo_adaptor -> Adaptor support
-# plo_fermi   -> Calibrate fermi level for Kohn-Sham eigenvalues
 # plo_group   -> Setup groups of projectors
+# plo_union   -> Setup unions of projectors
+# plo_fermi   -> Calibrate fermi level for Kohn-Sham eigenvalues
+# plo_window  -> Calibrate band window for Kohn-Sham eigenvalues
 # plo_rotate  -> Rotate the projectors
 # plo_filter  -> Extract the projectors within a given energy window
-# plo_orthog  -> Orthogonalize the projectors
+# plo_orthog  -> Orthogonalize / normalize the projectors
+
 # plo_diag    -> Orthogonalizes a projector defined by a rectangular matrix
-# plo_ovlp    -> Calculate overlap matrix
-# plo_dm      -> Calculate density matrix
-# plo_hamk    -> Calculate local hamiltonian
-# plo_dos     -> Calculate density of states
+
+# calc_ovlp   -> Calculate overlap matrix
+# calc_dm     -> Calculate density matrix
+# calc_hamk   -> Calculate local hamiltonian
+# calc_dos    -> Calculate density of states
+
 # view_ovlp   -> Show overlap matrix
 # view_dm     -> Show density matrix
 # view_hamk   -> Show local hamiltonian
@@ -311,16 +316,21 @@ export irio_charge
 include("plo.jl")
 #
 export plo_adaptor
-export plo_fermi
 export plo_group
+export plo_union
+export plo_fermi
+export plo_window
 export plo_rotate
 export plo_filter
 export plo_orthog
+
 export plo_diag
-export plo_ovlp
-export plo_dm
-export plo_hamk
-export plo_dos
+
+export calc_ovlp
+export calc_dm
+export calc_hamk
+export calc_dos
+
 export view_ovlp
 export view_dm
 export view_hamk

@@ -32,11 +32,11 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # S03: Setup the PrGroup strcut further
     println("    Complete Groups")
     plo_group(D[:PG])
-    exit(-1)
 
     # S04:
     println("    Generate Unions")
     D[:PU] = plo_union(D[:PG])
+    exit(-1)
 
     # S03: Adjust the band structure
     println("    Calibrate Fermi Level")
