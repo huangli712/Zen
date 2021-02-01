@@ -29,13 +29,6 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
         @assert haskey(D, k)
     end
 
-    ### DEBUG
-    dm = calc_dm(D[:chipsi], D[:weight], D[:occupy])
-    view_dm(dm)
-    exit(-1)
-
-
-
     # S03: Setup the PrGroup strcut further
     println("    Complete Groups")
     plo_group(D[:PG])
@@ -509,7 +502,7 @@ end
 """
     calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 
-Calculate the overlap matrix out of projectors. A general version.
+Calculate the overlap matrix out of projectors. For raw projectors only.
 """
 function calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
     # Extract some key parameters
@@ -563,7 +556,7 @@ end
 """
     calc_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
 
-Calculate the density matrix out of projectors. For raw projectors.
+Calculate the density matrix out of projectors. For raw projectors only.
 """
 function calc_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
     # Extract some key parameters
