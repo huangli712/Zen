@@ -250,7 +250,7 @@ end
 
 Define the band window of group of projectors.
 
-.bmin -> Minimum band index 
+.bmin -> Minimum band index
 .bmax -> Maximum band index
 .nbnd -> Maximum number of bands in the current window
 .kwin -> Momentum-dependent and spin-dependent band window

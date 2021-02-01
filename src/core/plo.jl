@@ -28,11 +28,11 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     for k in key_list
         @assert haskey(D, k)
     end
-    exit(-1)
 
     # S03: Setup the PrGroup strcut further
     println("    Complete Groups")
     plo_group(D[:PG])
+    exit(-1)
 
     # S04:
     println("    Generate Unions")
@@ -72,68 +72,6 @@ end
 #
 
 """
-    plo_fermi(enk::Array{F64,3}, fermi::F64)
-
-Calibrate the band structure to enforce the fermi level to be zero.
-"""
-function plo_fermi(enk::Array{F64,3}, fermi::F64)
-    @. enk = enk - fermi
-end
-
-"""
-    plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
-
-Calibrate the band window to filter the Kohn-Sham eigenvalues.
-"""
-function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
-
-#
-# Remarks:
-#
-# Here, `window` means energy window or band window. When nwin is 1, it
-# means that all PrGroup share the same window. When nwin is equal to
-# length(PG), it means that each PrGroup has its own window.
-#
-
-    # Deal with the energy window, which is used to filter the eigenvalues.
-    window = get_d("window")
-    nwin = convert(I64, length(window) / 2)
-    @assert nwin === 1 || nwin === length(PG)
-
-    PW = PrWindow[]
-
-    # Scan the groups of projectors, setup PrWindow one by one.
-    for p in eachindex(PG)
-        # Setup bwin. Don't forget it is a Tuple.
-        if nwin === 1
-            # All PrGroup shares the same window
-            bwin = (window[1], window[2])
-        else
-            # Each PrGroup has it own window
-            bwin = (window[2*p-1], window[2*p])
-        end
-        # Examine bwin further
-        @assert bwin[2] > bwin[1]
-
-        # Sanity check. This window must be defined by band indices
-        # (they are integers) or energies (two float numbers).
-        @assert typeof(bwin[1]) === typeof(bwin[2])
-        @assert bwin[1] isa Integer || bwin[1] isa AbstractFloat
-
-        # Perform the filter really
-        if bwin[1] isa Integer
-            kwin = plo_window1(enk, bwin)
-        else
-            kwin = plo_window2(enk, bwin)
-        end
-
-        push!(PW, PrWindow(kwin, bwin))
-    end
-
-    return PW
-end
-
-"""
     plo_group(PG::Array{PrGroup,1})
 
 Use the information contained in the PIMP dict to further complete
@@ -144,7 +82,7 @@ function plo_group(PG::Array{PrGroup,1})
 #
 # Remarks:
 #
-# 1. The PG array was created in vasp.jl/vaspio_projs().  
+# 1. Until now, the PG array was only created in vasp.jl/vaspio_projs().
 #
 # 2. In this function, `corr`, `shell`,  and `Tr` which are members of
 #    PrGroup struct will be modified according to users' configuration
@@ -156,7 +94,7 @@ function plo_group(PG::Array{PrGroup,1})
     @assert get_i("nsite") === length(get_i("shell"))
 
     # The lshell creates a mapping from shell (string) to l (integer).
-    # It is used to parse get_i("shell") to extract the `l` parameter. 
+    # It is used to parse get_i("shell") to extract the `l` parameter.
     lshell = Dict{String,I64}(
                  "s"     => 0,
                  "p"     => 1,
@@ -239,6 +177,82 @@ function plo_group(PG::Array{PrGroup,1})
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
+    plo_fermi(enk::Array{F64,3}, fermi::F64)
+
+Calibrate the band structure to enforce the fermi level to be zero.
+"""
+function plo_fermi(enk::Array{F64,3}, fermi::F64)
+    @. enk = enk - fermi
+end
+
+"""
+    plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
+
+Calibrate the band window to filter the Kohn-Sham eigenvalues.
+"""
+function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
+
+#
+# Remarks:
+#
+# Here, `window` means energy window or band window. When nwin is 1, it
+# means that all PrGroup share the same window. When nwin is equal to
+# length(PG), it means that each PrGroup has its own window.
+#
+
+    # Deal with the energy window, which is used to filter the eigenvalues.
+    window = get_d("window")
+    nwin = convert(I64, length(window) / 2)
+    @assert nwin === 1 || nwin === length(PG)
+
+    PW = PrWindow[]
+
+    # Scan the groups of projectors, setup PrWindow one by one.
+    for p in eachindex(PG)
+        # Setup bwin. Don't forget it is a Tuple.
+        if nwin === 1
+            # All PrGroup shares the same window
+            bwin = (window[1], window[2])
+        else
+            # Each PrGroup has it own window
+            bwin = (window[2*p-1], window[2*p])
+        end
+        # Examine bwin further
+        @assert bwin[2] > bwin[1]
+
+        # Sanity check. This window must be defined by band indices
+        # (they are integers) or energies (two float numbers).
+        @assert typeof(bwin[1]) === typeof(bwin[2])
+        @assert bwin[1] isa Integer || bwin[1] isa AbstractFloat
+
+        # Perform the filter really
+        if bwin[1] isa Integer
+            kwin = plo_window1(enk, bwin)
+        else
+            kwin = plo_window2(enk, bwin)
+        end
+
+        push!(PW, PrWindow(kwin, bwin))
+    end
+
+    return PW
+end
+
 """
     plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 
@@ -281,7 +295,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 
     # Perform rotation or transformation
     for i in eachindex(PG)
-        # Determine the range of original projectors 
+        # Determine the range of original projectors
         p1 = PG[i].Pr[1]
         p2 = PG[i].Pr[end]
 

@@ -157,7 +157,7 @@ function cycle1()
 #
 # Remarks 3:
 #
-# Now everything is ready. We are going to solve the DMFT equation iterately. 
+# Now everything is ready. We are going to solve the DMFT equation iterately.
 #
     exit(-1)
 

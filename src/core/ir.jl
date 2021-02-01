@@ -16,7 +16,7 @@
     ir_adaptor(D::Dict{Symbol,Any})
 
 Write the Kohn-Sham data to specified files using the IR format. Note
-that the Kohn-Sham data are encapsulated in a dict. 
+that the Kohn-Sham data are encapsulated in a dict.
 """
 function ir_adaptor(D::Dict{Symbol,Any})
     # S01: Print the header
