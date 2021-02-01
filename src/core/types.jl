@@ -5,7 +5,7 @@
 # Status  : unstable
 # Comment :
 #
-# Last modified: 2021/01/31
+# Last modified: 2021/02/01
 #
 
 #
@@ -504,5 +504,6 @@ function Base.show(io::IO, PW::PrWindow)
     println(io, ".bmin : ", PW.bmin)
     println(io, ".bmax : ", PW.bmax)
     println(io, ".nbnd : ", PW.nbnd)
+    println(io, ".kwin : ", PW.kwin)
     println(io, ".bwin : ", PW.bwin)
 end

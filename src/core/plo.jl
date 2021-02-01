@@ -330,27 +330,39 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     # Now it is empty, but we will allocate memory for it later.
     chipsi_f = Array{C64,4}[]
 
-    ## Extract some key parameters
-    #nproj, nband, nkpt, nspin = size(chipsi)
+    # Go through each PrWindow / PrGroup / PrUnion
+    for p in eachindex(PW)
+        # Extract some key parameters
+        ndim, nband, nkpt, nspin = size(chipsi[p])
 
-    ## Create arrays
-    ## The chipsi_w is used to store the required projectors
-    #chipsi_w = zeros(C64, nproj, nbmax, nkpt, nspin)
+        # Create a temporary array M
+        M = zeros(C64, ndim, PW[p].nbnd, nkpt, nspin)
 
-    ## Select projectors which live in the given band window
-    ## We just copy data from chipsi to chipsi_w
-    #for s = 1:nspin
-    #    for k = 1:nkpt
-    #        ib1 = ib_window[k, s, 1]
-    #        ib2 = ib_window[k, s, 2]
-    #        ib3 = ib2 - ib1 + 1
-    #        @assert ib3 <= nbmax
-    #        chipsi_w[:, 1:ib3, k, s] = chipsi[:, ib1:ib2, k, s]
-    #    end
-    #end
+        # Go through each spin and k-point
+        for s = 1:nspin
+            for k = 1:nkpt
+                # Select projectors which live in the given band window
+                # `ib1` and `ib2` are the boundaries.
+                ib1 = PW[p].kwin[k, s, 1]
+                ib2 = PW[p].kwin[k, s, 2]
 
-    ## Return the desired arrays
-    #return ib_min, ib_max, ib_window, chipsi_w
+                # `ib3` are total number of bands for given `s` and `k`
+                ib3 = ib2 - ib1 + 1
+
+                # Sanity check
+                @assert ib3 <= PW[p].nbnd
+
+                # We just copy data from chipsi to M
+                M[:, 1:ib3, k, s] = chipsi[:, ib1:ib2, k, s]
+            end
+        end
+
+        # Push M into chipsi_f
+        push!(chipsi_f, M) 
+    end
+
+    # Return the desired arrays
+    return chipsi_f
 end
 
 """
