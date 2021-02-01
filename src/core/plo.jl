@@ -281,7 +281,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     # Extract some key parameters from raw projector matrix
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # Initialize new arrays
+    # Initialize new array. It stores the rotated projectors.
     # Now it is empty, but we will allocate memory for it later.
     chipsi_r = Array{C64,4}[]
 
@@ -321,12 +321,14 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 end
 
 """
-    plo_filter1(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1}
+    plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}}
 
-Filter the projector matrix according to band window or energy window.
-Extract the projectors within a given energy window.
+Filter the projector matrix according to band window.
 """
 function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+    # Initialize new array. It stores the filtered projectors.
+    # Now it is empty, but we will allocate memory for it later.
+    chipsi_f = Array{C64,4}[]
 
     ## Extract some key parameters
     #nproj, nband, nkpt, nspin = size(chipsi)
