@@ -5,7 +5,7 @@
 # Status  : stable
 # Comment :
 #
-# Last modified: 2021/01/27
+# Last modified: 2021/02/01
 #
 
 """
@@ -67,7 +67,7 @@ const __VERSION__ = "0.0.7@devel"
 
 Release date of this julia package
 """
-const __RELEASE__ = "2021/01"
+const __RELEASE__ = "2021/02"
 
 """
     __AUTHORS__
