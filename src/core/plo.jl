@@ -48,12 +48,11 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # S06: Transform the projector matrix
     println("    Rotate Projectors")
     D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
-    exit(-1)
 
     # S07: Filter the projector matrix
     println("    Filter Projectors")
-    #@timev plo_filter(D[:enk], D[:PG], D[:chipsi_r])
-    #bmin, bmax, ib_window, D[:chipsi] = plo_filter(D[:enk], D[:chipsi])
+    D[:chipsi_f] = plo_filter(D[:PW], D[:chipsi_r])
+    exit(-1)
 
     # S08: To make sure the projectors orthogonalize with each other
     println("    Normalize Projectors")
@@ -327,28 +326,29 @@ end
 Filter the projector matrix according to band window or energy window.
 Extract the projectors within a given energy window.
 """
-function plo_filter(enk::Array{F64,3}, PG::Array{PrGroup,1}, chipsi::Array{Array{C64,4},1})
-    # Extract some key parameters
-    nproj, nband, nkpt, nspin = size(chipsi)
+function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
-    # Create arrays
-    # The chipsi_w is used to store the required projectors
-    chipsi_w = zeros(C64, nproj, nbmax, nkpt, nspin)
+    ## Extract some key parameters
+    #nproj, nband, nkpt, nspin = size(chipsi)
 
-    # Select projectors which live in the given band window
-    # We just copy data from chipsi to chipsi_w
-    for s = 1:nspin
-        for k = 1:nkpt
-            ib1 = ib_window[k, s, 1]
-            ib2 = ib_window[k, s, 2]
-            ib3 = ib2 - ib1 + 1
-            @assert ib3 <= nbmax
-            chipsi_w[:, 1:ib3, k, s] = chipsi[:, ib1:ib2, k, s]
-        end
-    end
+    ## Create arrays
+    ## The chipsi_w is used to store the required projectors
+    #chipsi_w = zeros(C64, nproj, nbmax, nkpt, nspin)
 
-    # Return the desired arrays
-    return ib_min, ib_max, ib_window, chipsi_w
+    ## Select projectors which live in the given band window
+    ## We just copy data from chipsi to chipsi_w
+    #for s = 1:nspin
+    #    for k = 1:nkpt
+    #        ib1 = ib_window[k, s, 1]
+    #        ib2 = ib_window[k, s, 2]
+    #        ib3 = ib2 - ib1 + 1
+    #        @assert ib3 <= nbmax
+    #        chipsi_w[:, 1:ib3, k, s] = chipsi[:, ib1:ib2, k, s]
+    #    end
+    #end
+
+    ## Return the desired arrays
+    #return ib_min, ib_max, ib_window, chipsi_w
 end
 
 """
