@@ -29,6 +29,13 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
         @assert haskey(D, k)
     end
 
+    ### DEBUG
+    dm = calc_dm(D[:chipsi], D[:weight], D[:occupy])
+    view_dm(dm)
+    exit(-1)
+
+
+
     # S03: Setup the PrGroup strcut further
     println("    Complete Groups")
     plo_group(D[:PG])
@@ -554,11 +561,11 @@ function plo_ovlp(PU::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,
 end
 
 """
-    plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
+    calc_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
 
-Calculate the density matrix out of projectors. A general version.
+Calculate the density matrix out of projectors. For raw projectors.
 """
-function plo_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
+function calc_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
