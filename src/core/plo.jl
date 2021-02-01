@@ -86,7 +86,7 @@ function plo_group(PG::Array{PrGroup,1})
 #
 # 2. In this function, `corr`, `shell`,  and `Tr` which are members of
 #    PrGroup struct will be modified according to users' configuration
-#    i.e, the case.toml file.
+#    in other words, the case.toml file.
 #
 
     # Additional check for the parameters contained in PIMP dict
@@ -128,14 +128,14 @@ function plo_group(PG::Array{PrGroup,1})
 
         # Loop over each site (quantum impurity problem)
         for i in eachindex(site_l)
-            T = site_l[i]
+            SL = site_l[i]
             # Well, find out the required PrGroup
-            if (PG[g].site, PG[g].l) === (T[1], T[2])
+            if (PG[g].site, PG[g].l) === (SL[1], SL[2])
                 # Setup corr property
                 PG[g].corr = true
 
                 # Setup shell property. Later it will be used to generate `Tr`
-                PG[g].shell = T[3]
+                PG[g].shell = SL[3]
             end
         end
 
@@ -164,7 +164,7 @@ function plo_group(PG::Array{PrGroup,1})
                 PG[g].Tr[3, 4] = 1.0 + 0.0im
                 break
 
-            @case "d_eg"
+            @case "d_eg" # TO_BE_CHECK
                 PG[g].Tr = zeros(C64, 2, 5)
                 PG[g].Tr[1, 3] = 1.0 + 0.0im
                 PG[g].Tr[2, 5] = 1.0 + 0.0im
