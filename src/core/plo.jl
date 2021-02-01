@@ -398,23 +398,37 @@ end
 # Service Functions (Group B)
 #
 
+"""
+    get_win1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
 
-
+Return momentum- and spin-dependent band window.
+"""
 function get_win1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
+    # Here, bwin defines the global band window.
     bmin, bmax = bwin
 
     # Extract some key parameters
     nband, nkpt, nspin = size(enk)
 
-    # Create arrays
-    # The kwin is used to record the band window for each kpt and each spin
+    # Create array kwin, which is used to record the band window for
+    # each kpt and each spin
     kwin = zeros(I64, nkpt, nspin, 2)
 
+    # Fill kwin with global band boundaries
     fill!(kwin[:, :, 1], bmin)
     fill!(kwin[:, :, 2], bmax)
+
+    # Return the desired array
+    return kwin
 end
 
+"""
+    get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
+
+Return momentum- and spin-dependent band window.
+"""
 function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
+    # 
     emin, emax = bwin
 
     # Sanity check. Here we should make sure there is an overlap between
