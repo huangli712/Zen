@@ -300,14 +300,13 @@ export irio_charge
 # plo_rotate  -> Rotate the projectors
 # plo_filter  -> Extract the projectors within a given energy window
 # plo_orthog  -> Orthogonalize / normalize the projectors
-
-# plo_diag    -> Orthogonalizes a projector defined by a rectangular matrix
-
+# get_win1    -> Evaluate band window
+# get_win2    -> Evaluate energy window
+# try_diag    -> Orthogonalizes a projector defined by a rectangular matrix
 # calc_ovlp   -> Calculate overlap matrix
 # calc_dm     -> Calculate density matrix
 # calc_hamk   -> Calculate local hamiltonian
 # calc_dos    -> Calculate density of states
-
 # view_ovlp   -> Show overlap matrix
 # view_dm     -> Show density matrix
 # view_hamk   -> Show local hamiltonian
@@ -323,14 +322,13 @@ export plo_window
 export plo_rotate
 export plo_filter
 export plo_orthog
-
-export plo_diag
-
+export get_win1
+export get_win2
+export try_diag
 export calc_ovlp
 export calc_dm
 export calc_hamk
 export calc_dos
-
 export view_ovlp
 export view_dm
 export view_hamk
