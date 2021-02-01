@@ -366,11 +366,11 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 end
 
 """
-    plo_orthog(window::Array{I64,3}, PU::Array{PrUnion,1}, chipsi::Array{C64,4})
+    plo_orthog(PW::Array{PrWindow,1}, PU::Array{PrUnion,1}, chipsi::Array{Array{C64,4},1})
 
 Try to orthogonalize the projectors group by group (site_l by site_l).
 """
-function plo_orthog(window::Array{I64,3}, PU::Array{PrUnion,1}, chipsi::Array{C64,4})
+function plo_orthog(PW::Array{PrWindow,1}, PU::Array{PrUnion,1}, chipsi::Array{Array{C64,4},1})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
