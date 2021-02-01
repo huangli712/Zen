@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/31
+# last modified: 2021/02/01
 #
 
 #
@@ -17,17 +17,26 @@
 
 Adaptor support. It will postprocess the raw projector matrix. The dict
 D contains all of the necessary Kohn-Sham data, which will be modified
-as well.
+in this function.
 """
 function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # S01: Print the header
     println("  < PLO Adaptor >")
 
-    # S02: Check the validity of the dict
+    # S02: Check the validity of the original dict
     key_list = [:PG, :enk, :fermi, :chipsi]
     for k in key_list
         @assert haskey(D, k)
     end
+    exit(-1)
+
+    # S03: Setup the PrGroup strcut further
+    println("    Complete Groups")
+    plo_group(D[:PG])
+
+    # S04:
+    println("    Generate Unions")
+    D[:PU] = plo_union(D[:PG])
 
     # S03: Adjust the band structure
     println("    Calibrate Fermi Level")
@@ -37,29 +46,25 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     println("    Calibrate Band Window")
     D[:PW] = plo_window(D[:PG], D[:enk])
 
-    # S05: Setup the PrGroup strcut further
-    println("    Group Projectors")
-    plo_group(D[:PG])
-
     # S06: Transform the projector matrix
     println("    Rotate Projectors")
     D[:PU], D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
     exit(-1)
 
     # S07: Filter the projector matrix
-    #println("    Filter Projectors")
+    println("    Filter Projectors")
     #@show typeof(D[:chipsi_r])
     #@timev plo_filter(D[:enk], D[:PG], D[:chipsi_r])
     #bmin, bmax, ib_window, D[:chipsi] = plo_filter(D[:enk], D[:chipsi])
 
     # S08: To make sure the projectors orthogonalize with each other
-    #println("    Normalize Projectors")
+    println("    Normalize Projectors")
     #plo_orthog(ib_window, D[:PU], D[:chipsi])
 
     # S09: Write the density matrix and overlap matrix for checking
-    #if debug
-    #    println("DEBUG!")
-    #end
+    if debug
+        println("DEBUG!")
+    end
 end
 
 #
