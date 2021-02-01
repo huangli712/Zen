@@ -177,7 +177,9 @@ function plo_group(PG::Array{PrGroup,1})
     end
 end
 
+function plo_union(PG::Array{PrGroup,1})
 
+end
 
 
 
