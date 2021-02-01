@@ -33,10 +33,9 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     println("    Complete Groups")
     plo_group(D[:PG])
 
-    # S04:
+    # S04: Create the PrUnion struct
     println("    Generate Unions")
     D[:PU] = plo_union(D[:PG])
-    exit(-1)
 
     # S03: Adjust the band structure
     println("    Calibrate Fermi Level")
@@ -45,6 +44,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # S04: Setup the band / energy window for projectors
     println("    Calibrate Band Window")
     D[:PW] = plo_window(D[:PG], D[:enk])
+    exit(-1)
 
     # S06: Transform the projector matrix
     println("    Rotate Projectors")
@@ -177,21 +177,35 @@ function plo_group(PG::Array{PrGroup,1})
     end
 end
 
+"""
+    plo_union(PG::Array{PrGroup,1})
+
+Generate the PrUnion struct, which is used to describe the projections.
+"""
 function plo_union(PG::Array{PrGroup,1})
+    # Initialize an array of PrUnion struct
+    PU = PrUnion[]
 
+    # Go through each PrGroup
+    for i in eachindex(PG)
+        # Determine how many projectors should be included in this group
+        # according to the rotation matrix (transformation matrix)
+        ndim = size(PG[i].Tr)[1]
+
+        # Create a PrUnion struct and push it into the PU array
+        push!(PU, PrUnion(PG[i].site, PG[i].l, ndim, PG[i].corr, PG[i].shell))
+    end
+
+    # Setup Pr property for each PrUnion struct
+    for i in eachindex(PU)
+        for j = 1:PU[i].ndim
+            PU[i].Pr[j] = j
+        end
+    end
+
+    # Return the desired arrays
+    return PU
 end
-
-
-
-
-
-
-
-
-
-
-
-
 
 """
     plo_fermi(enk::Array{F64,3}, fermi::F64)
@@ -214,19 +228,22 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
 #
 # Here, `window` means energy window or band window. When nwin is 1, it
 # means that all PrGroup share the same window. When nwin is equal to
-# length(PG), it means that each PrGroup has its own window.
+# length(PG), it means that each PrGroup should have its own window.
 #
 
-    # Deal with the energy window, which is used to filter the eigenvalues.
+    # Preprocess the input. Get how many windows there are.
     window = get_d("window")
     nwin = convert(I64, length(window) / 2)
+
+    # Sanity check
     @assert nwin === 1 || nwin === length(PG)
 
+    # Initialize an array of PrWindow struct
     PW = PrWindow[]
 
-    # Scan the groups of projectors, setup PrWindow one by one.
+    # Scan the groups of projectors, setup PrWindow for them.
     for p in eachindex(PG)
-        # Setup bwin. Don't forget it is a Tuple.
+        # Determine bwin. Don't forget it is a Tuple. bwin = (emin, emax).
         if nwin === 1
             # All PrGroup shares the same window
             bwin = (window[1], window[2])
@@ -234,24 +251,27 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
             # Each PrGroup has it own window
             bwin = (window[2*p-1], window[2*p])
         end
-        # Examine bwin further
-        @assert bwin[2] > bwin[1]
 
-        # Sanity check. This window must be defined by band indices
-        # (they are integers) or energies (two float numbers).
+        # Examine bwin further. Its elements should obey the order. This
+        # window must be defined by band indices (they are integers) or
+        # energies (two float numbers).
+        @assert bwin[2] > bwin[1]
         @assert typeof(bwin[1]) === typeof(bwin[2])
         @assert bwin[1] isa Integer || bwin[1] isa AbstractFloat
 
-        # Perform the filter really
+        # The `bwin` is only the global window. But we actually need a
+        # momentum-dependent and spin-dependent window. This is `kwin`.
         if bwin[1] isa Integer
-            kwin = plo_window1(enk, bwin)
+            kwin = get_win1(enk, bwin)
         else
-            kwin = plo_window2(enk, bwin)
+            kwin = get_win2(enk, bwin)
         end
 
+        # Create the PrWindow struct, and push it into the PW array.
         push!(PW, PrWindow(kwin, bwin))
     end
 
+    # Return the desired arrays
     return PW
 end
 
@@ -261,25 +281,6 @@ end
 Perform global rotations or transformations for the projectors.
 """
 function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
-    # Create a array of PrUnion struct
-    PU = PrUnion[]
-    for i in eachindex(PG)
-        # Determine how many projectors should be included in this group
-        # according to the rotation matrix (transformation matrix)
-        ndim = size(PG[i].Tr)[1]
-        # Create a PrUnion struct and push it into the PU array
-        push!(PU, PrUnion(PG[i].site, PG[i].l, ndim, PG[i].corr, PG[i].shell))
-    end
-    #
-    # Setup the Pr property of PrUnion struct
-    for i in eachindex(PU)
-        for j = 1:PU[i].ndim
-            PU[i].Pr[j] = j
-        end
-    end
-    #
-    # Until now PrUnion struct is ready
-
     # Extract some key parameters from raw projector matrix
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -382,7 +383,7 @@ function plo_orthog(window::Array{I64,3}, PU::Array{PrUnion,1}, chipsi::Array{C6
     end
 end
 
-function plo_window1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
+function get_win1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
     bmin, bmax = bwin
 
     # Extract some key parameters
@@ -396,7 +397,7 @@ function plo_window1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
     fill!(kwin[:, :, 2], bmax)
 end
 
-function plo_window2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
+function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
     emin, emax = bwin
 
     # Sanity check. Here we should make sure there is an overlap between
