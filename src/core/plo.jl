@@ -394,6 +394,9 @@ function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     end
 end
 
+#
+# Service Functions (Group B)
+#
 
 
 
@@ -456,11 +459,11 @@ function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
 end
 
 """
-    plo_diag(M::AbstractArray{C64,2})
+    try_diag(M::AbstractArray{C64,2})
 
 Orthogonalize the given matrix.
 """
-function plo_diag(M::AbstractArray{C64,2})
+function try_diag(M::AbstractArray{C64,2})
     # Calculate overlap matrix, it must be a hermitian matrix.
     ovlp = M * M'
     @assert ishermitian(ovlp)
