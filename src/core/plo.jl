@@ -411,7 +411,7 @@ function get_win1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
     nband, nkpt, nspin = size(enk)
 
     # Create array kwin, which is used to record the band window for
-    # each kpt and each spin
+    # each kpt and each spin.
     kwin = zeros(I64, nkpt, nspin, 2)
 
     # Fill kwin with global band boundaries
@@ -428,10 +428,10 @@ end
 Return momentum- and spin-dependent band window.
 """
 function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
-    # 
+    # Here, bwin defines the global energy window
     emin, emax = bwin
 
-    # Sanity check. Here we should make sure there is an overlap between
+    # Sanity check. We should make sure there is an overlap between
     # [emin, emax] and band structure.
     if emax < minimum(enk) || emin > maximum(enk)
         error("Energy window does not overlap with the band structure")
@@ -440,8 +440,8 @@ function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
     # Extract some key parameters
     nband, nkpt, nspin = size(enk)
 
-    # Create arrays
-    # The kwin is used to record the band window for each kpt and each spin
+    # Create array kwin, which is used to record the band window for
+    # each kpt and each spin.
     kwin = zeros(I64, nkpt, nspin, 2)
 
     # Scan the band structure to determine kwin
@@ -462,13 +462,14 @@ function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
             # Check the boundaries
             @assert ib1 <= ib2
 
-            # Save the boundaries
-            # The ib1 and ib2 mean the lower and upper boundaries, respectively.
+            # Save the boundaries. The ib1 and ib2 mean the lower and
+            # upper boundaries, respectively.
             kwin[k, s, 1] = ib1
             kwin[k, s, 2] = ib2
         end
     end
 
+    # Return the desired array
     return kwin
 end
 
