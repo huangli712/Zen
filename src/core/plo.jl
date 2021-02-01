@@ -44,16 +44,14 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # S04: Setup the band / energy window for projectors
     println("    Calibrate Band Window")
     D[:PW] = plo_window(D[:PG], D[:enk])
-    exit(-1)
 
     # S06: Transform the projector matrix
     println("    Rotate Projectors")
-    D[:PU], D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
+    D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
     exit(-1)
 
     # S07: Filter the projector matrix
     println("    Filter Projectors")
-    #@show typeof(D[:chipsi_r])
     #@timev plo_filter(D[:enk], D[:PG], D[:chipsi_r])
     #bmin, bmax, ib_window, D[:chipsi] = plo_filter(D[:enk], D[:chipsi])
 
@@ -284,28 +282,29 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     # Extract some key parameters from raw projector matrix
     nproj, nband, nkpt, nspin = size(chipsi)
 
-    # Initialize new arrays. Now it is empty. We are going to allocate
-    # memory for it later.
+    # Initialize new arrays
+    # Now it is empty, but we will allocate memory for it later.
     chipsi_r = Array{C64,4}[]
 
 #
 # Remarks:
 #
-# 1. The sizes of PG and PU are the same.
-#
-# 2. PG[i].Tr must be a matrix. its size must be (ndim, p2 - p1 + 1)
+# PG[i].Tr must be a matrix. Its size must be (ndim, p2 - p1 + 1).
 #
 
-    # Perform rotation or transformation
+    # Go through each PrGroup and perform the rotation 
     for i in eachindex(PG)
         # Determine the range of original projectors
         p1 = PG[i].Pr[1]
         p2 = PG[i].Pr[end]
 
-        # Create a temporary array M
-        M = zeros(C64, PU[i].ndim, nband, nkpt, nspin)
+        # Determine the number of projectors after rotation
+        ndim = size(PG[i].Tr)[1]
 
-        # Rotate M by Tr
+        # Create a temporary array M
+        M = zeros(C64, ndim, nband, nkpt, nspin)
+
+        # Rotate chipsi by Tr, the results are stored at M.
         for s = 1:nspin
             for k = 1:nkpt
                 for b = 1:nband
@@ -319,7 +318,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     end
 
     # Return the desired arrays
-    return PU, chipsi_r
+    return chipsi_r
 end
 
 """
