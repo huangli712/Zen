@@ -366,35 +366,36 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 end
 
 """
-    plo_orthog(PW::Array{PrWindow,1}, PU::Array{PrUnion,1}, chipsi::Array{Array{C64,4},1})
+    plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
-Try to orthogonalize the projectors group by group (site_l by site_l).
+Try to orthogonalize the projectors group by group.
 """
-function plo_orthog(PW::Array{PrWindow,1}, PU::Array{PrUnion,1}, chipsi::Array{Array{C64,4},1})
-    # Extract some key parameters
-    nproj, nband, nkpt, nspin = size(chipsi)
+function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+    for p in eachindex(PW)
+        # Extract some key parameters
+        ndim, nbnd, nkpt, nspin = size(chipsi[p])
+        @assert nbnd === PW[p].nbnd
 
-    # Loop over spins and kpoints
-    for s = 1:nspin
-        for k = 1:nkpt
-            # Determine band index and band window
-            b1 = window[k, s, 1]
-            b2 = window[k, s, 2]
-            nb = b2 - b1 + 1
-            for p in eachindex(PU)
-                # Determine projector index
-                q1 = PU[p].Pr[1]
-                q2 = PU[p].Pr[end]
+        # Loop over spins and kpoints
+        for s = 1:nspin
+            for k = 1:nkpt
+                # Determine band index and band window
+                ib1 = PW[p].kwin[k, s, 1]
+                ib2 = PW[p].kwin[k, s, 2]
+                ib3 = ib2 - ib1 + 1
 
                 # Make a view for the desired subarray
-                M = view(chipsi, q1:q2, 1:nb, k, s)
+                M = view(chipsi[p], 1:ndim, 1:ib3, k, s)
 
                 # Orthogonalize it (chipsi is update at the same time)
-                plo_diag(M)
+                try_diag(M)
             end
         end
     end
 end
+
+
+
 
 function get_win1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
     bmin, bmax = bwin
