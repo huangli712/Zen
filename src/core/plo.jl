@@ -496,15 +496,15 @@ function try_diag(M::AbstractArray{C64,2})
 end
 
 #
-# Service Functions (Group B)
+# Service Functions (Group C)
 #
 
 """
-    plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
+    calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 
 Calculate the overlap matrix out of projectors. A general version.
 """
-function plo_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
+function calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
 
@@ -714,7 +714,7 @@ function plo_dos(bmin::I64, bmax::I64, PU::Array{PrUnion,1}, chipsi::Array{C64,4
 end
 
 #
-# Service Functions (Group C)
+# Service Functions (Group D)
 #
 
 """
