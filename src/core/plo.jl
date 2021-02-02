@@ -39,15 +39,13 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
     # S05: Adjust the band structure
     println("    Calibrate Fermi Level")
-    @show D[:enk][21, 128, 1]
     plo_fermi(D[:enk], D[:fermi])
-    @show size(D[:enk])
-    @show D[:enk][21, 128, 1] + D[:fermi]
-    exit(-1)
 
     # S06: Setup the band / energy window for projectors
     println("    Calibrate Band Window")
     D[:PW] = plo_window(D[:PG], D[:enk])
+    @show D[:PW]
+    exit(-1)
 
     # S07: Transform the projector matrix
     println("    Rotate Projectors")
@@ -60,7 +58,6 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # S09: To make sure the projectors orthogonalize with each other
     println("    Normalize Projectors")
     plo_orthog(D[:PW], D[:chipsi_f])
-    exit(-1)
 
     # S10: Write the density matrix and overlap matrix for checking
     if debug
