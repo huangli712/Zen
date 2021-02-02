@@ -743,24 +743,23 @@ function view_ovlp(ovlp::Array{F64,3})
 end
 
 """
-    view_ovlp(PU::Array{PrUnion,1}, ovlp::Array{F64,3})
+    view_ovlp(PG::Array{PrGroup,1}, ovlp::Array{Array{F64,3},1})
 
-Output the overlap matrix. It should be block-diagonal.
+Output the overlap matrix. For normalized projectors only.
 """
-function view_ovlp(PU::Array{PrUnion,1}, ovlp::Array{F64,3})
-    # Extract some key parameters
-    _, nproj, nspin = size(ovlp)
-
+function view_ovlp(PG::Array{PrGroup,1}, ovlp::Array{Array{F64,3},1})
     # Output the data
     println("<- Overlap Matrix ->")
-    for s = 1:nspin
-        println("Spin: $s")
-        for p in eachindex(PU)
-            println("site -> $(PU[p].site) l -> $(PU[p].l) shell -> $(PU[p].shell)")
-            q1 = PU[p].Pr[1]
-            q2 = PU[p].Pr[end]
-            for q = q1:q2
-                foreach(x -> @printf("%12.7f", x), ovlp[q, q1:q2, s])
+    for p in eachindex(PU)
+        println("Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
+
+        # Extract some key parameters
+        _, ndim, nspin = size(ovlp[p])
+
+        for s = 1:nspin
+            println("Spin: $s")
+            for q = 1:ndim
+                foreach(x -> @printf("%12.7f", x), ovlp[p][q, 1:ndim, s])
                 println()
             end
         end
@@ -793,7 +792,6 @@ end
 Output the density matrix. For normalized projectors only.
 """
 function view_dm(PG::Array{PrGroup,1}, dm::Array{Array{F64,3},1})
-
     # Output the data
     println("<- Density Matrix ->")
     for p in eachindex(PG)
