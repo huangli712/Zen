@@ -62,6 +62,8 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
         println("DEBUG!")
         dm = calc_dm(D[:PW], D[:chipsi_f], D[:weight], D[:occupy])
         view_dm(D[:PG], dm)
+        ovlp = calc_ovlp(D[:PW], D[:chipsi_f], D[:weight])
+        view_ovlp(D[:PG], ovlp)
     end
 end
 
