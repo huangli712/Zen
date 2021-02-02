@@ -526,28 +526,30 @@ function calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 end
 
 """
-    plo_ovlp(PU::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
+    calc_ovlp(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1})
 
-Calculate the overlap matrix out of projectors. It should be block-diagonal.
+Calculate the overlap matrix out of projectors. For normalized projectors only.
 """
-function plo_ovlp(PU::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1})
-    # Extract some key parameters
-    nproj, nband, nkpt, nspin = size(chipsi)
+function calc_ovlp(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1})
+    ovlp = Array{F64,3}[]
 
-    # Create overlap array
-    ovlp = zeros(F64, nproj, nproj, nspin)
+    for p in eachindex(PW)
+        # Extract some key parameters
+        ndim, nbnd, nkpt, nspin = size(chipsi[p])
+        @assert nbnd === PW[p].nbnd
 
-    # Build overlap array
-    for s = 1:nspin
-        for k = 1:nkpt
-            wght = weight[k] / nkpt
-            for p in eachindex(PU)
-                q1 = PU[p].Pr[1]
-                q2 = PU[p].Pr[end]
-                A = view(chipsi, q1:q2, :, k, s)
-                ovlp[q1:q2, q1:q2, s] = ovlp[q1:q2, q1:q2, s] + real(A * A') * wght
+        # Create overlap array
+        M = zeros(F64, ndim, ndim, nspin)
+
+        # Build overlap array
+        for s = 1:nspin
+            for k = 1:nkpt
+                wght = weight[k] / nkpt
+                A = view(chipsi[p], :, :, k, s)
+                M[:, :, s] = M[:, :, s] + real(A * A') * wght
             end
         end
+        push!(ovlp, M)
     end
 
     # Return the desired array
