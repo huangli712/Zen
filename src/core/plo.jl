@@ -48,7 +48,6 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # S07: Transform the projector matrix
     println("    Rotate Projectors")
     D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
-    exit(-1)
 
     # S08: Filter the projector matrix
     println("    Filter Projectors")
