@@ -60,6 +60,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # S10: Write the density matrix and overlap matrix for checking
     if debug
         println("DEBUG!")
+        calc_dm(D[:PW], D[:chipsi_f], D[:weight], D[:occupy])
     end
 end
 
@@ -587,30 +588,30 @@ end
 Calculate the density matrix out of projectors. For normalized projectors only.
 """
 function calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, occupy::Array{F64,3})
-    # Extract some key parameters
-    nproj, nband, nkpt, nspin = size(chipsi)
+    dm = Array{F64,3}[]
 
-    # Sanity check
-    @assert nband === bmax - bmin + 1
+    for p in eachindex(PW)
+        # Extract some key parameters
+        ndim, nbnd, nkpt, nspin = size(chipsi[p])
+        @assert nbnd === PW[p].nbnd
 
-    # Evaluate spin factor
-    sf = (nspin === 1 ? 2 : 1)
+        # Evaluate spin factor
+        sf = (nspin === 1 ? 2 : 1)
 
-    # Create density matrix array
-    dm = zeros(F64, nproj, nproj, nspin)
+        # Create density matrix array
+        M = zeros(F64, ndim, ndim, nspin)
 
-    # Build density matrix array
-    for s = 1:nspin
-        for k = 1:nkpt
-            wght = weight[k] / nkpt * sf
-            occs = occupy[bmin:bmax, k, s]
-            for p in eachindex(PU)
-                q1 = PU[p].Pr[1]
-                q2 = PU[p].Pr[end]
-                A = view(chipsi, q1:q2, :, k, s)
-                dm[q1:q2, q1:q2, s] = dm[q1:q2, q1:q2, s] + real(A * Diagonal(occs) * A') * wght
+        # Build density matrix array
+        for s = 1:nspin
+            for k = 1:nkpt
+                wght = weight[k] / nkpt * sf
+                occs = occupy[PW[p].bmin:PW[p].bmax, k, s]
+                A = view(chipsi[p], :, :, k, s)
+                M[:, :, s] = dm[:, :, s] + real(A * Diagonal(occs) * A') * wght
             end
         end
+
+        push!(dm, M)
     end
 
     # Return the desired array
