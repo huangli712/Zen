@@ -36,6 +36,9 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # S04: Create the PrUnion struct
     println("    Generate Unions")
     D[:PU] = plo_union(D[:PG])
+    @show D[:PG]
+    @show D[:PU]
+    exit(-1)
 
     # S05: Adjust the band structure
     println("    Calibrate Fermi Level")

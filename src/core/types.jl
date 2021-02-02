@@ -5,7 +5,7 @@
 # Status  : unstable
 # Comment :
 #
-# Last modified: 2021/02/01
+# Last modified: 2021/02/02
 #
 
 #
@@ -476,7 +476,6 @@ function Base.show(io::IO, PG::PrGroup)
     println(io, ".shell : ", PG.shell)
     println(io, ".Pr    : ", PG.Pr)
     println(io, ".Tr    : ", PG.Tr)
-    println(io, ".window: ", PG.window)
 end
 
 """
