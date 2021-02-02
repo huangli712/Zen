@@ -750,7 +750,7 @@ Output the overlap matrix. For normalized projectors only.
 function view_ovlp(PG::Array{PrGroup,1}, ovlp::Array{Array{F64,3},1})
     # Output the data
     println("<- Overlap Matrix ->")
-    for p in eachindex(PU)
+    for p in eachindex(PG)
         println("Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
 
         # Extract some key parameters
