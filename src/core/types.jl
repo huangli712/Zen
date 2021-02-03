@@ -5,7 +5,7 @@
 # Status  : unstable
 # Comment :
 #
-# Last modified: 2021/02/02
+# Last modified: 2021/02/03
 #
 
 #
@@ -215,37 +215,6 @@ mutable struct PrGroup
 end
 
 """
-    PrUnion
-
-Essential information of group of projectors (be transformed or rotated).
-
-Note that the `site`, `l`, `corr`, and `shell` arguments are borrowed
-from the PrGroup struct. In other words, they are just copies of those
-in the PrGroup struct. On the other hand, the `ndim` is new, and the
-`Pr` is different from the one in the PrGroup struct.
-
-.site  -> Site in which the projectors are defined. In principle, the
-          projectors included in the same group should be defined at
-          the same site (or equivalently atom).
-.l     -> Quantum number l. In principle, the projectors included in
-          the same group should have the same quantum number l (but
-          with different m).
-.ndim  -> How many projectors are actually included in this group, which
-          should be equal to the length of vector Pr.
-.corr  -> Test if the projectors in this group are correlated
-.shell -> Type of correlated orbitals. It is infered from the PIMP dict.
-.Pr    -> Array. It contains the indices of projectors.
-"""
-mutable struct PrUnion
-    site  :: I64
-    l     :: I64
-    ndim  :: I64
-    corr  :: Bool
-    shell :: String
-    Pr    :: Array{I64,1}
-end
-
-"""
     PrWindow
 
 Define the band window of group of projectors.
@@ -357,35 +326,6 @@ function PrGroup(site::I64, l::I64)
 end
 
 """
-    PrUnion(site::I64, l::I64, ndim::I64, corr::Bool, shell::String)
-
-Outer constructor for PrUnion struct.
-"""
-function PrUnion(site::I64, l::I64, ndim::I64, corr::Bool, shell::String)
-    # Allocate memory for Pr
-    Pr = zeros(I64, ndim)
-
-    # Call the default constructor
-    PrUnion(site, l, ndim, corr, shell, Pr)
-end
-
-"""
-    PrUnion(PG::PrGroup)
-
-Outer constructor for PrUnion struct.
-"""
-function PrUnion(PG::PrGroup)
-    # Determine ndim
-    ndim = size(PG.Tr)[1]
-
-    # Allocate memory for Pr
-    Pr = zeros(I64, ndim)
-
-    # Call the default constructor
-    PrUnion(PG.site, PG.l, ndim, PG.corr, PG.shell, Pr)
-end
-
-"""
     PrWindow(kwin::Array{I64,3}, bwin::Tuple{R64,R64})
 
 Outer constructor for PrWindow struct.
@@ -476,21 +416,6 @@ function Base.show(io::IO, PG::PrGroup)
     println(io, ".shell : ", PG.shell)
     println(io, ".Pr    : ", PG.Pr)
     println(io, ".Tr    : ", PG.Tr)
-end
-
-"""
-    Base.show(io::IO, PU::PrUnion)
-
-Base.show() function for PrUnion struct.
-"""
-function Base.show(io::IO, PU::PrUnion)
-    println(io, "PrUnion struct")
-    println(io, ".site  : ", PU.site)
-    println(io, ".l     : ", PU.l)
-    println(io, ".ndim  : ", PU.ndim)
-    println(io, ".corr  : ", PU.corr)
-    println(io, ".shell : ", PU.shell)
-    println(io, ".Pr    : ", PU.Pr)
 end
 
 """
