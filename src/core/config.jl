@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/28
+# last modified: 2021/02/03
 #
 
 #
@@ -34,26 +34,26 @@ end
 Display the configuration parameters for reference.
 """
 function exhibit()
-    # S0: Print the header
+    # E0: Print the header
     prompt("ZEN", "Configuration")
 
-    # S1: Show dict PCASE
+    # E1: Show dict PCASE
     println("< Parameters: case >")
     cat_c()
 
-    # S2: Show dict PDFT
+    # E2: Show dict PDFT
     println("< Parameters: dft engine >")
     cat_d()
 
-    # S3: Show dict PDMFT
+    # E3: Show dict PDMFT
     println("< Parameters: dmft engine >")
     cat_m()
 
-    # S4: Show dict PIMP
+    # E4: Show dict PIMP
     println("< Parameters: quantum impurity atoms >")
     cat_i()
 
-    # S5: Show dict PSOLVER
+    # E5: Show dict PSOLVER
     println("< Parameters: quantum impurity solvers >")
     cat_s()
 end
@@ -239,7 +239,7 @@ Verify the value array. Called by chk_dict() function only.
 end
 
 #
-# Service Functions (Group C: cat_xxx())
+# Service Functions (Group C: CAT Functions)
 #
 
 """
@@ -250,7 +250,6 @@ Print the configuration parameters to stdout: for PCASE dict.
 function cat_c()
     # See comments in cat_d()
     println("  case     -> ", str_c("case"))
-    #println()
 end
 
 """
@@ -259,6 +258,7 @@ end
 Print the configuration parameters to stdout: for PDFT dict.
 """
 function cat_d()
+
 #
 # Remarks:
 #
@@ -272,6 +272,7 @@ function cat_d()
 #
 # See config.jl/str_d() function for more details.
 #
+
     println("  engine   -> ", str_d("engine"))
     println("  smear    -> ", str_d("smear"))
     println("  kmesh    -> ", str_d("kmesh"))
@@ -283,7 +284,6 @@ function cat_d()
     println("  lproj    -> ", str_d("lproj"))
     println("  sproj    -> ", str_d("sproj"))
     println("  window   -> ", str_d("window"))
-    #println()
 end
 
 """
@@ -305,7 +305,6 @@ function cat_m()
     println("  lcharge  -> ", str_m("lcharge"))
     println("  lenergy  -> ", str_m("lenergy"))
     println("  lforce   -> ", str_m("lforce"))
-    #println()
 end
 
 """
@@ -324,7 +323,6 @@ function cat_i()
     println("  upara    -> ", str_i("upara"))
     println("  jpara    -> ", str_i("jpara"))
     println("  lpara    -> ", str_i("lpara"))
-    #println()
 end
 
 """
@@ -340,7 +338,7 @@ function cat_s()
 end
 
 #
-# Service Functions (Group D: get_xxx())
+# Service Functions (Group D: GET Functions)
 #
 
 """
@@ -409,7 +407,7 @@ Extract configurations from dict: PSOLVER.
 end
 
 #
-# Service Functions (Group E: str_xxx())
+# Service Functions (Group E: STR Functions)
 #
 
 """
