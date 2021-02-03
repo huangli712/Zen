@@ -108,8 +108,8 @@ const PSOLVER= Dict{String,Array{Any,1}}(
 
 Store the IOStreams for case.log and case.cycle files.
 
-.log   -> IOStream for case.log file
-.cycle -> IOStream for case.cycle file
+.log   -> IOStream for case.log file.
+.cycle -> IOStream for case.cycle file.
 """
 mutable struct Logger
     # Members
@@ -125,12 +125,12 @@ end
 
 Record the DFT + DMFT iteration information.
 
-.dmft1_iter -> Number of iterations between dmft1 and quantum impurity solver
-.dmft2_iter -> Number of iterations between dmft2 and DFT engine
-.dmft_cycle -> Number of DFT + DMFT iterations
-.full_cycle -> Counter for each iteration
-._dft_fermi -> Fermi level obtained by DFT engine
-.dmft_fermi -> Fermi level obtained by DMFT engine (dmft1)
+.dmft1_iter -> Number of iterations between dmft1 and quantum impurity solver.
+.dmft2_iter -> Number of iterations between dmft2 and DFT engine.
+.dmft_cycle -> Number of DFT + DMFT iterations.
+.full_cycle -> Counter for each iteration.
+._dft_fermi -> Fermi level obtained by DFT engine.
+.dmft_fermi -> Fermi level obtained by DMFT engine (dmft1).
 """
 mutable struct IterInfo
     dmft1_iter :: I64
@@ -146,13 +146,13 @@ end
 
 Contain the crystallography information.
 
-._case -> The name of system
+._case -> The name of system.
 .scale -> Universal scaling factor (lattice constant), which is used to
           scale all lattice vectors and all atomic coordinates.
 .lvect -> Three lattice vectors defining the unit cell of the system. Its
           shape must be (3, 3).
-.nsort -> Number of sorts of atoms
-.natom -> Number of atoms
+.nsort -> Number of sorts of atoms.
+.natom -> Number of atoms.
 .sorts -> Sorts of atoms. Its shape must be (nsort, 2).
 .atoms -> Lists of atoms. Its shape must be (natom).
 .coord -> Atomic positions are provided in cartesian coordinates or in
@@ -175,10 +175,10 @@ end
 
 Essential information of a given projector.
 
-.site -> Site in which the projector is defined
-.l    -> Quantum number l
-.m    -> Quantum number m
-.desc -> Projector's specification
+.site -> Site in which the projector is defined.
+.l    -> Quantum number l.
+.m    -> Quantum number m.
+.desc -> Projector's specification.
 """
 mutable struct PrTrait
     site  :: I64
@@ -198,7 +198,7 @@ Essential information of group of projectors.
 .l      -> Quantum number l. In principle, the projectors included in
            the same group should have the same quantum number l (but
            with different m).
-.corr   -> Test if the projectors in this group are correlated
+.corr   -> Test if the projectors in this group are correlated.
 .shell  -> Type of correlated orbitals. It is infered from quantum number l.
 .Pr     -> Array. It contains the indices of projectors.
 .Tr     -> Array. It contains the transformation matrix. This parameter
@@ -219,10 +219,10 @@ end
 
 Define the band window of group of projectors.
 
-.bmin -> Minimum band index
-.bmax -> Maximum band index
-.nbnd -> Maximum number of bands in the current window
-.kwin -> Momentum-dependent and spin-dependent band window
+.bmin -> Minimum band index.
+.bmax -> Maximum band index.
+.nbnd -> Maximum number of bands in the current window.
+.kwin -> Momentum-dependent and spin-dependent band window.
 .bwin -> Tuple. It is the band window or energy window, which is used
          to filter the Kohn-Sham band structure.
 """
@@ -335,7 +335,7 @@ function PrWindow(kwin::Array{I64,3}, bwin::Tuple{R64,R64})
     bmin = minimum(kwin[:, :, 1])
     bmax = maximum(kwin[:, :, 2])
 
-    # Determine the width of the window
+    # Determine the size of the window
     nbnd = bmax - bmin + 1
 
     # Call the default constructor
@@ -352,7 +352,9 @@ end
 Base.show() function for Logger struct.
 """
 function Base.show(io::IO, logger::Logger)
+    # To make sure these IOStreams are alive
     @assert isopen(logger.log) && isopen(logger.cycle)
+
     println(io, "Logger struct")
     println(io, ".log   : ", logger.log  )
     println(io, ".cycle : ", logger.cycle)
