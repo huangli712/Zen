@@ -24,40 +24,36 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     println("  < PLO Adaptor >")
 
     # S02: Check the validity of the original dict
-    key_list = [:PG, :enk, :fermi, :chipsi]
+    key_list = [:enk, :fermi, :chipsi, :PG]
     for k in key_list
         @assert haskey(D, k)
     end
 
-    # S03: Setup the PrGroup strcut further
-    println("    Complete Groups")
-    plo_group(D[:PG])
-
-    # S04: Create the PrUnion struct
-    println("    Generate Unions")
-    D[:PU] = plo_union(D[:PG])
-
-    # S05: Adjust the band structure
+    # S03: Adjust the band structure
     println("    Calibrate Fermi Level")
     plo_fermi(D[:enk], D[:fermi])
 
-    # S06: Setup the band / energy window for projectors
-    println("    Calibrate Band Window")
+    # S04: Setup the PrGroup strcut further
+    println("    Complete Groups")
+    plo_group(D[:PG])
+
+    # S05: Setup the band / energy window for projectors
+    println("    Generate Window")
     D[:PW] = plo_window(D[:PG], D[:enk])
 
-    # S07: Transform the projector matrix
+    # S06: Transform the projector matrix
     println("    Rotate Projectors")
     D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
 
-    # S08: Filter the projector matrix
+    # S07: Filter the projector matrix
     println("    Filter Projectors")
     D[:chipsi_f] = plo_filter(D[:PW], D[:chipsi_r])
 
-    # S09: To make sure the projectors orthogonalize with each other
+    # S08: To make sure the projectors orthogonalize with each other
     println("    Normalize Projectors")
     plo_orthog(D[:PW], D[:chipsi_f])
 
-    # S10: Write the density matrix and overlap matrix for checking
+    # S09: Write the density matrix and overlap matrix for checking
     if debug
         println("DEBUG!")
         dm = calc_dm(D[:PW], D[:chipsi_f], D[:weight], D[:occupy])
