@@ -629,36 +629,36 @@ end
 
 Try to calculate the density of states.
 """
-function plo_dos(bmin::I64, bmax::I64, PU::Array{PrUnion,1}, chipsi::Array{C64,4}, itet::Array{I64,2}, enk::Array{F64,3})
-    # Extract some key parameters
-    nproj, nband, nkpt, nspin = size(chipsi)
-
-    # Sanity check
-    @assert nband === bmax - bmin + 1
-
-    mesh = collect(-4.0:0.01:4.0)
-    pdos = zeros(F64, length(mesh), nproj)
-
-    for i in eachindex(mesh)
-        wght = tetra_dos(mesh[i], itet, enk[bmin:bmax, :, :])
-        for s = 1:nspin
-            for k = 1:nkpt
-                for p in eachindex(PU)
-                    q1 = PU[p].Pr[1]
-                    q2 = PU[p].Pr[end]
-                    for q = q1:q2
-                        for b = 1:nband
-                            pdos[i, q] = pdos[i, q] + wght[b, k, s] * real( chipsi[q, b, k, s] * conj(chipsi[q, b, k, s]) )
-                        end
-                    end
-                end
-            end
-        end
-        print(mesh[i], " ")
-        foreach(x -> @printf("%12.7f", x), pdos[i, :])
-        println()
-    end
-end
+#function plo_dos(bmin::I64, bmax::I64, PU::Array{PrUnion,1}, chipsi::Array{C64,4}, itet::Array{I64,2}, enk::Array{F64,3})
+#    # Extract some key parameters
+#    nproj, nband, nkpt, nspin = size(chipsi)
+#
+#    # Sanity check
+#    @assert nband === bmax - bmin + 1
+#
+#    mesh = collect(-4.0:0.01:4.0)
+#    pdos = zeros(F64, length(mesh), nproj)
+#
+#    for i in eachindex(mesh)
+#        wght = tetra_dos(mesh[i], itet, enk[bmin:bmax, :, :])
+#        for s = 1:nspin
+#            for k = 1:nkpt
+#                for p in eachindex(PU)
+#                    q1 = PU[p].Pr[1]
+#                    q2 = PU[p].Pr[end]
+#                    for q = q1:q2
+#                        for b = 1:nband
+#                            pdos[i, q] = pdos[i, q] + wght[b, k, s] * real( chipsi[q, b, k, s] * conj(chipsi[q, b, k, s]) )
+#                        end
+#                    end
+#                end
+#            end
+#        end
+#        print(mesh[i], " ")
+#        foreach(x -> @printf("%12.7f", x), pdos[i, :])
+#        println()
+#    end
+#end
 
 #
 # Service Functions (Group D)
