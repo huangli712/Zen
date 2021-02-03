@@ -301,7 +301,7 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     # Now it is empty, but we will allocate memory for it later.
     chipsi_f = Array{C64,4}[]
 
-    # Go through each PrWindow / PrGroup / PrUnion
+    # Go through each PrWindow
     for p in eachindex(PW)
         # Extract some key parameters
         ndim, nband, nkpt, nspin = size(chipsi[p])
