@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/28
+# last modified: 2021/02/04
 #
 
 #
@@ -19,32 +19,32 @@ Adaptor support for vasp code. It will read the output files of vasp
 code and then fulfill the DFTData dict (i.e D).
 """
 function vasp_adaptor(D::Dict{Symbol,Any})
-    # S01: Print the header
+    # V01: Print the header
     println("  < VASP Adaptor >")
 
-    # S02: Read in lattice structure
+    # V02: Read in lattice structure
     println("    Get Lattice")
     D[:latt] = vaspio_lattice(pwd())
 
-    # S03: Read in kmesh and the corresponding weights
+    # V03: Read in kmesh and the corresponding weights
     println("    Get Kmesh")
     println("    Get Weight")
     D[:kmesh], D[:weight] = vaspio_kmesh(pwd())
 
-    # S04: Read in band structure and the corresponding occupancies
+    # V04: Read in band structure and the corresponding occupancies
     println("    Get Enk")
     println("    Get Occupy")
     D[:enk], D[:occupy] = vaspio_eigen(pwd())
 
-    # S05: Read in raw projectors, traits, and groups
+    # V05: Read in raw projectors, traits, and groups
     println("    Get Projector")
     D[:PT], D[:PG], D[:chipsi] = vaspio_projs(pwd())
 
-    # S06: Read in fermi level
+    # V06: Read in fermi level
     println("    Get Fermi Level")
     D[:fermi] = vaspio_fermi(pwd())
 
-    # S07: Read in tetrahedron data if they are available
+    # V07: Read in tetrahedron data if they are available
     if get_d("smear") === "tetra"
         println("    Get Tetrahedron")
         D[:volt], D[:itet] = vaspio_tetra(pwd())
@@ -519,6 +519,7 @@ function vaspio_eigen(f::String)
             #    enk[j, i, 1] = parse(F64, arr[2])
             #    occupy[j, i, 1] = parse(F64, arr[3])
             #end
+            #
             #if nspin === 2 # for spin polarized case
             #    enk[j, i, 1] = parse(F64, arr[2])
             #    enk[j, i, 2] = parse(F64, arr[3])

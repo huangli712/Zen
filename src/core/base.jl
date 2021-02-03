@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/28
+# Last modified: 2021/02/04
 #
 
 #
@@ -18,10 +18,10 @@
 Examine whether all the conditions for DFT + DMFT calculations are ready.
 """
 function ready()
-    # S1: Check the input files
+    # R1: Check the input files
     query_inps()
 
-    # S2: Prepare the working directories
+    # R2: Prepare the working directories
     make_trees()
 end
 
@@ -72,10 +72,10 @@ end
 Perform one-shot DFT + DMFT calculations.
 """
 function cycle1()
-    # S-1: Create IterInfo
+    # C-1: Create IterInfo
     it = IterInfo()
 
-    # S00: Create Logger
+    # C00: Create Logger
     lr = Logger()
     lr.log = open(query_case() * ".log", "a")
     lr.cycle = open(query_case() * ".cycle", "a")
@@ -92,18 +92,18 @@ function cycle1()
 # is enough.
 #
 
-    # S01: Perform DFT calculation (for the first time)
+    # C01: Perform DFT calculation (for the first time)
     #
-    # S01.1: Prepare and check essential files for the DFT engine
+    # C01.1: Prepare and check essential files for the DFT engine
     dft_init(it, lr)
     #
-    # S01.2: Perform a self-consitent calculation at the DFT level
+    # C01.2: Perform a self-consitent calculation at the DFT level
     dft_run(it)
     #
-    # S01.3: Backup the output files of the DFT engine
+    # C01.3: Backup the output files of the DFT engine
     dft_save(it)
     #
-    # S01.4: Monitor the status
+    # C01.4: Monitor the status
     monitor(true)
 
     # We want better optimal projectors.
@@ -113,18 +113,18 @@ function cycle1()
     # again within this new window by carrying addition DFT calculation.
     if get_d("loptim")
 
-        # S02: Perform DFT calculation (for the second time)
+        # C02: Perform DFT calculation (for the second time)
         #
-        # S02.1: Prepare and check essential files for the DFT engine
+        # C02.1: Prepare and check essential files for the DFT engine
         dft_init(it, lr)
         #
-        # S02.2: Perform a self-consitent calculation at the DFT level
+        # C02.2: Perform a self-consitent calculation at the DFT level
         dft_run(it)
         #
-        # S02.3: Backup the output files of the DFT engine
+        # C02.3: Backup the output files of the DFT engine
         dft_save(it)
         #
-        # S02.4: Monitor the status
+        # C02.4: Monitor the status
         monitor(true)
 
     end
@@ -140,18 +140,18 @@ function cycle1()
 # write down the processed data to some specified files using the IR format.
 #
 
-    # S03: To bridge the gap between DFT engine and DMFT engine by adaptor
+    # C03: To bridge the gap between DFT engine and DMFT engine by adaptor
     #
-    # S03.1: Prepare and check essential files for the adaptor
+    # C03.1: Prepare and check essential files for the adaptor
     adaptor_init(it, lr)
     #
-    # S03.2: Launch the adaptor
+    # C03.2: Launch the adaptor
     adaptor_run(it)
     #
-    # S03.3: Backup the output files of the adaptor
+    # C03.3: Backup the output files of the adaptor
     adaptor_save(it)
     #
-    # S03.4: Monitor the status
+    # C03.4: Monitor the status
     monitor(true)
 
 #
@@ -162,36 +162,36 @@ function cycle1()
     exit(-1)
 
     for iter = 1:get_m("niter")
-        # S04: Perform DMFT calculation
+        # C04: Perform DMFT calculation
         #
-        # S04.1: Prepare and check essential files for the DMFT engine
+        # C04.1: Prepare and check essential files for the DMFT engine
         dmft_init(it, lr)
         #
-        # S04.2: Launch the DMFT engine (dmft1)
+        # C04.2: Launch the DMFT engine (dmft1)
         dmft_run(it)
         #
-        # S04.3: Backup the output files of the DMFT engine
+        # C04.3: Backup the output files of the DMFT engine
         dmft_save(it)
         #
-        # S04.4: Monitor the status
+        # C04.4: Monitor the status
         monitor(true)
 
-        # S05: Solve the quantum impurity problems
+        # C05: Solve the quantum impurity problems
         #
-        # S05.1: Prepare and check essential files for the quantum impurity solver
+        # C05.1: Prepare and check essential files for the quantum impurity solver
         solver_init(it, lr)
         #
-        # S05.2: Launch the quantum impurity solver
+        # C05.2: Launch the quantum impurity solver
         solver_run(it)
         #
-        # S05.3: Backup the output files of the quantum impurity solver
+        # C05.3: Backup the output files of the quantum impurity solver
         solver_save(it)
         #
-        # S05.4: Monitor the status
+        # C05.4: Monitor the status
         monitor(true)
     end
 
-    # S90: Close Logger
+    # C90: Close Logger
     if isopen(lr.log)
         flush(lr.log)
         close(lr.log)
