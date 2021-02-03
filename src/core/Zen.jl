@@ -37,15 +37,15 @@ using TOML
 #
 # Members:
 #
-# I32, I64    -> Numerical types (Integer)
-# F32, F64    -> Numerical types (Float)
-# C32, C64    -> Numerical types (Complex)
-# R32, R64    -> Numerical types (Union of Integer and Float)
-# N32, N64    -> Numerical types (Union of Integer, Float, and Complex)
-# __LIBNAME__ -> Name of this framework
-# __VERSION__ -> Version of this framework
-# __RELEASE__ -> Released date of this framework
-# __AUTHORS__ -> Authors of this framework
+# I32, I64    -> Numerical types (Integer).
+# F32, F64    -> Numerical types (Float).
+# C32, C64    -> Numerical types (Complex).
+# R32, R64    -> Numerical types (Union of Integer and Float).
+# N32, N64    -> Numerical types (Union of Integer, Float, and Complex).
+# __LIBNAME__ -> Name of this framework.
+# __VERSION__ -> Version of this framework.
+# __RELEASE__ -> Released date of this framework.
+# __AUTHORS__ -> Authors of this framework.
 #
 include("global.jl")
 #
@@ -69,17 +69,17 @@ export __AUTHORS__
 #
 # Members:
 #
-# PCASE    -> Dict for case
-# PDFT     -> Dict for DFT engine
-# PDMFT    -> Dict for DMFT engine
-# PIMP     -> Dict for quantum impurity problems
-# PSOLVER  -> Dict for quantum impurity solvers
-# Logger   -> Struct for logger
-# IterInfo -> Struct for DFT + DMFT iteration information
-# Lattice  -> Struct for crystallography information
-# PrTrait  -> Struct for projectors
-# PrGroup  -> Struct for groups of projectors
-# PrWindow -> Struct for band window
+# PCASE    -> Dict for case.
+# PDFT     -> Dict for DFT engine.
+# PDMFT    -> Dict for DMFT engine.
+# PIMP     -> Dict for quantum impurity problems.
+# PSOLVER  -> Dict for quantum impurity solvers.
+# Logger   -> Struct for logger.
+# IterInfo -> Struct for DFT + DMFT iteration information.
+# Lattice  -> Struct for crystallography information.
+# PrTrait  -> Struct for projectors.
+# PrGroup  -> Struct for groups of projectors.
+# PrWindow -> Struct for band window.
 #
 include("types.jl")
 #
@@ -104,27 +104,27 @@ export PrWindow
 #
 # Members:
 #
-# setup    -> Setup parameters
-# exhibit  -> Display parameters for reference
-# inp_toml -> Parse case.toml, return raw configuration information
-# rev_dict -> Update dicts for configuration
-# chk_dict -> Check dicts for configuration
-# _v       -> Verify dict's values
-# cat_c    -> Print dict (PCASE dict)
-# cat_d    -> Print dict (PDFT dict)
-# cat_m    -> Print dict (PDMFT dict)
-# cat_i    -> Print dict (PIMP dict)
-# cat_s    -> Print dict (PSOLVER dict)
-# get_c    -> Extract value from dict (PCASE dict), return original value
-# get_d    -> Extract value from dict (PDFT dict), return original value
-# get_m    -> Extract value from dict (PDMFT dict), return original value
-# get_i    -> Extract value from dict (PIMP dict), return original value
-# get_s    -> Extract value from dict (PSOLVER dict), return original value
-# str_c    -> Extract value from dict (PCASE dict), return string
-# str_d    -> Extract value from dict (PDFT dict), return string
-# str_m    -> Extract value from dict (PDMFT dict), return string
-# str_i    -> Extract value from dict (PIMP dict), return string
-# str_s    -> Extract value from dict (PSOLVER dict), return string
+# setup    -> Setup parameters.
+# exhibit  -> Display parameters for reference.
+# inp_toml -> Parse case.toml, return raw configuration information.
+# rev_dict -> Update dicts for configuration.
+# chk_dict -> Check dicts for configuration.
+# _v       -> Verify dict's values.
+# cat_c    -> Print dict (PCASE dict).
+# cat_d    -> Print dict (PDFT dict).
+# cat_m    -> Print dict (PDMFT dict).
+# cat_i    -> Print dict (PIMP dict).
+# cat_s    -> Print dict (PSOLVER dict).
+# get_c    -> Extract value from dict (PCASE dict), return raw value.
+# get_d    -> Extract value from dict (PDFT dict), return raw value.
+# get_m    -> Extract value from dict (PDMFT dict), return raw value.
+# get_i    -> Extract value from dict (PIMP dict), return raw value.
+# get_s    -> Extract value from dict (PSOLVER dict), return raw value.
+# str_c    -> Extract value from dict (PCASE dict), return string.
+# str_d    -> Extract value from dict (PDFT dict), return string.
+# str_m    -> Extract value from dict (PDMFT dict), return string.
+# str_i    -> Extract value from dict (PIMP dict), return string.
+# str_s    -> Extract value from dict (PSOLVER dict), return string.
 #
 include("config.jl")
 #
