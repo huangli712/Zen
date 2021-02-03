@@ -12,3 +12,8 @@
 
 include("Zen.jl")
 using .Zen
+
+setup()
+exhibit()
+it = IterInfo()
+adaptor_run(it)

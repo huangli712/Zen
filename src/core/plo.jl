@@ -62,7 +62,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
         view_ovlp(D[:PG], ovlp)
         hamk = calc_hamk(D[:PW], D[:chipsi_f], D[:weight], D[:enk])
         view_hamk(D[:PG], hamk)
-        calc_dos(D[:PW], D[:chipsi_f], D[:itet], D[:enk])
+        #calc_dos(D[:PW], D[:chipsi_f], D[:itet], D[:enk])
     end
 end
 
