@@ -624,32 +624,6 @@ function calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::A
 end
 
 """
-    plo_hamk(chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
-
-Try to build the local hamiltonian. A general version.
-"""
-function plo_hamk(chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
-    # Extract some key parameters
-    nproj, nband, nkpt, nspin = size(chipsi)
-
-    # Create hamiltonian array
-    hamk = zeros(C64, nproj, nproj, nspin)
-
-    # Build hamiltonian array
-    for s = 1:nspin
-        for k = 1:nkpt
-            wght = weight[k] / nkpt
-            eigs = enk[:, k, s]
-            A = view(chipsi, :, :, k, s)
-            hamk[:, :, s] = hamk[:, :, s] + (A * Diagonal(eigs) * A') * wght
-        end
-    end
-
-    # Return the desired array
-    return hamk
-end
-
-"""
     plo_hamk(bmin::I64, bmax::I64, PU::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
 
 Try to build the local hamiltonian. It should be block-diagonal.
