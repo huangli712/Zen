@@ -65,6 +65,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
         ovlp = calc_ovlp(D[:PW], D[:chipsi_f], D[:weight])
         view_ovlp(D[:PG], ovlp)
         hamk = calc_hamk(D[:PW], D[:chipsi_f], D[:weight], D[:enk])
+        view_hamk(D[:PG], hamk)
     end
 end
 
@@ -630,7 +631,7 @@ end
 Try to build the local hamiltonian. For normalized projectors only.
 """
 function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, enk::Array{F64,3})
-    hamk = Array{F64,3}[]
+    hamk = Array{C64,3}[]
 
     for p in eachindex(PW)
         # Extract some key parameters
@@ -807,7 +808,7 @@ function view_hamk(PG::Array{PrGroup,1}, hamk::Array{Array{C64,3},1})
                 println()
             end
             println("Im:")
-            for q = q1:q2
+            for q = 1:ndim
                 foreach(x -> @printf("%12.7f", x), imag(hamk[p][q, 1:ndim, s]))
                 println()
             end
