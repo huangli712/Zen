@@ -786,30 +786,29 @@ function view_dm(PG::Array{PrGroup,1}, dm::Array{Array{F64,3},1})
 end
 
 """
-    view_hamk(PU::Array{PrUnion,1}, hamk::Array{C64,3})
+    view_hamk(PG::Array{PrGroup,1}, hamk::Array{Array{C64,3},1})
 
-Output the local hamiltonian. It should be block-diagonal.
+Output the local hamiltonian. For normalized projectors only.
 """
-function view_hamk(PU::Array{PrUnion,1}, hamk::Array{C64,3})
-    # Extract some key parameters
-    _, nproj, nspin = size(hamk)
-
+function view_hamk(PG::Array{PrGroup,1}, hamk::Array{Array{C64,3},1})
     # Output the data
     println("<- Local Hamiltonian ->")
-    for s = 1:nspin
-        println("Spin: $s")
-        for p in eachindex(PU)
-            println("site -> $(PU[p].site) l -> $(PU[p].l) shell -> $(PU[p].shell)")
+    for p in eachindex(PG)
+        println("Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
+
+        # Extract some key parameters
+        _, ndim, nspin = size(hamk[p])
+
+        for s = 1:nspin
+            println("Spin: $s")
             println("Re:")
-            q1 = PU[p].Pr[1]
-            q2 = PU[p].Pr[end]
-            for q = q1:q2
-                foreach(x -> @printf("%12.7f", x), real(hamk[q, q1:q2, s]))
+            for q = 1:ndim
+                foreach(x -> @printf("%12.7f", x), real(hamk[p][q, 1:ndim, s]))
                 println()
             end
             println("Im:")
             for q = q1:q2
-                foreach(x -> @printf("%12.7f", x), imag(hamk[q, q1:q2, s]))
+                foreach(x -> @printf("%12.7f", x), imag(hamk[p][q, 1:ndim, s]))
                 println()
             end
         end
