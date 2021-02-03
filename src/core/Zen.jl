@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/01
+# Last modified: 2021/02/03
 #
 
 module Zen
@@ -37,11 +37,11 @@ using TOML
 #
 # Members:
 #
-# I32, I64    -> Numerical types (integer)
-# F32, F64    -> Numerical types (float)
-# C32, C64    -> Numerical types (complex)
-# R32, R64    -> Numerical types (union of integer and float)
-# N32, N64    -> Numerical types (union of integer, float, and complex)
+# I32, I64    -> Numerical types (Integer)
+# F32, F64    -> Numerical types (Float)
+# C32, C64    -> Numerical types (Complex)
+# R32, R64    -> Numerical types (Union of Integer and Float)
+# N32, N64    -> Numerical types (Union of Integer, Float, and Complex)
 # __LIBNAME__ -> Name of this framework
 # __VERSION__ -> Version of this framework
 # __RELEASE__ -> Released date of this framework
@@ -122,11 +122,11 @@ export PrWindow
 # get_m    -> Extract value from dict (PDMFT dict), return original value
 # get_i    -> Extract value from dict (PIMP dict), return original value
 # get_s    -> Extract value from dict (PSOLVER dict), return original value
-# str_c    -> Extract value from dict (PCASE dict), return everything as string
-# str_d    -> Extract value from dict (PDFT dict), return everything as string
-# str_m    -> Extract value from dict (PDMFT dict), return everything as string
-# str_i    -> Extract value from dict (PIMP dict), return everything as string
-# str_s    -> Extract value from dict (PSOLVER dict), return everything as string
+# str_c    -> Extract value from dict (PCASE dict), return string
+# str_d    -> Extract value from dict (PDFT dict), return string
+# str_m    -> Extract value from dict (PDMFT dict), return string
+# str_i    -> Extract value from dict (PIMP dict), return string
+# str_s    -> Extract value from dict (PSOLVER dict), return string
 #
 include("config.jl")
 #
