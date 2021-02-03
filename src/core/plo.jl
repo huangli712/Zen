@@ -180,36 +180,6 @@ function plo_group(PG::Array{PrGroup,1})
 end
 
 """
-    plo_union(PG::Array{PrGroup,1})
-
-Generate the PrUnion struct, which is used to describe the projections.
-"""
-function plo_union(PG::Array{PrGroup,1})
-    # Initialize an array of PrUnion struct
-    PU = PrUnion[]
-
-    # Go through each PrGroup
-    for i in eachindex(PG)
-        # Determine how many projectors should be included in this group
-        # according to the rotation matrix (transformation matrix)
-        ndim = size(PG[i].Tr)[1]
-
-        # Create a PrUnion struct and push it into the PU array
-        push!(PU, PrUnion(PG[i].site, PG[i].l, ndim, PG[i].corr, PG[i].shell))
-    end
-
-    # Setup Pr property for each PrUnion struct
-    for i in eachindex(PU)
-        for j = 1:PU[i].ndim
-            PU[i].Pr[j] = j
-        end
-    end
-
-    # Return the desired arrays
-    return PU
-end
-
-"""
     plo_fermi(enk::Array{F64,3}, fermi::F64)
 
 Calibrate the band structure to enforce the fermi level to be zero.
