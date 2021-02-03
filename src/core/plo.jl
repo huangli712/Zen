@@ -64,6 +64,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
         view_dm(D[:PG], dm)
         ovlp = calc_ovlp(D[:PW], D[:chipsi_f], D[:weight])
         view_ovlp(D[:PG], ovlp)
+        hamk = calc_hamk(D[:PW], D[:chipsi_f], D[:weight], D[:enk])
     end
 end
 
@@ -624,32 +625,32 @@ function calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::A
 end
 
 """
-    plo_hamk(bmin::I64, bmax::I64, PU::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
+    calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, enk::Array{F64,3})
 
-Try to build the local hamiltonian. It should be block-diagonal.
+Try to build the local hamiltonian. For normalized projectors only.
 """
-function plo_hamk(bmin::I64, bmax::I64, PU::Array{PrUnion,1}, chipsi::Array{C64,4}, weight::Array{F64,1}, enk::Array{F64,3})
-    # Extract some key parameters
-    nproj, nband, nkpt, nspin = size(chipsi)
+function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, enk::Array{F64,3})
+    hamk = Array{F64,3}[]
 
-    # Sanity check
-    @assert nband === bmax - bmin + 1
+    for p in eachindex(PW)
+        # Extract some key parameters
+        ndim, nbnd, nkpt, nspin = size(chipsi[p])
+        @assert nbnd === PW[p].nbnd
 
-    # Create hamiltonian array
-    hamk = zeros(C64, nproj, nproj, nspin)
+        # Create hamiltonian array
+        H = zeros(C64, ndim, ndim, nspin)
 
-    # Build hamiltonian array
-    for s = 1:nspin
-        for k = 1:nkpt
-            wght = weight[k] / nkpt
-            eigs = enk[bmin:bmax, k, s]
-            for p in eachindex(PU)
-                q1 = PU[p].Pr[1]
-                q2 = PU[p].Pr[end]
-                A = view(chipsi, q1:q2, :, k, s)
-                hamk[q1:q2, q1:q2, s] = hamk[q1:q2, q1:q2, s] + (A * Diagonal(eigs) * A') * wght
+        # Build hamiltonian array
+        for s = 1:nspin
+            for k = 1:nkpt
+                wght = weight[k] / nkpt
+                eigs = enk[PW[p].bmin:PW[p].bmax, k, s]
+                A = view(chipsi[p], :, :, k, s)
+                H[:, :, s] = H[:, :, s] + (A * Diagonal(eigs) * A') * wght
             end
         end
+
+        push!(hamk, H)
     end
 
     # Return the desired array
