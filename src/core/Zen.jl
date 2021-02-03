@@ -293,10 +293,9 @@ export irio_charge
 # Members:
 #
 # plo_adaptor -> Adaptor support
-# plo_group   -> Setup groups of projectors
-# plo_union   -> Setup unions of projectors
 # plo_fermi   -> Calibrate fermi level for Kohn-Sham eigenvalues
-# plo_window  -> Calibrate band window for Kohn-Sham eigenvalues
+# plo_group   -> Setup groups of projectors
+# plo_window  -> Setup band window of projectors
 # plo_rotate  -> Rotate the projectors
 # plo_filter  -> Extract the projectors within a given energy window
 # plo_orthog  -> Orthogonalize / normalize the projectors
@@ -315,9 +314,8 @@ export irio_charge
 include("plo.jl")
 #
 export plo_adaptor
-export plo_group
-export plo_union
 export plo_fermi
+export plo_group
 export plo_window
 export plo_rotate
 export plo_filter
