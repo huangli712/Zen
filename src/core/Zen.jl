@@ -79,7 +79,6 @@ export __AUTHORS__
 # Lattice  -> Struct for crystallography information
 # PrTrait  -> Struct for projectors
 # PrGroup  -> Struct for groups of projectors
-# PrUnion  -> Struct for groups of projectors (transformed)
 # PrWindow -> Struct for band window
 #
 include("types.jl")
@@ -94,7 +93,6 @@ export IterInfo
 export Lattice
 export PrTrait
 export PrGroup
-export PrUnion
 export PrWindow
 
 #
