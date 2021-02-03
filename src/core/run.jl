@@ -7,7 +7,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/01/20
+# Last modified: 2021/02/03
 #
 
 include("Zen.jl")
@@ -25,16 +25,16 @@ overview()
 # S02: Setup the configuration parameters
 setup()
 
-# S03: Print the configuration parameters to stdout
+# S03: Print the configuration parameters
 exhibit()
 
 # S04: Initialize the task
 ready()
 
-# S05: Carry out the calculations
+# S05: Carry out the task
 go()
 
-# S06: Finalize the calculations
+# S06: Finalize the task
 final()
 
 # S07: Say good bye
