@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/28
+# last modified: 2021/02/03
 #
 
 """
@@ -126,8 +126,16 @@ end
 Check whether the essential input files exist.
 """
 function query_inps()
-    # If the DFT engine is vasp, we have to ensure that the required input
-    # files (POSCAR and POTCAR) are present.
+
+#
+# Remarks:
+#
+# For vasp, the essential input files are:
+#    1. POSCAR
+#    2. POTCAR
+# As for the INCAR and KPOINTS, they will be generated automatically.
+#
+
     if get_d("engine") === "vasp"
         if !isfile("POSCAR") || !isfile("POTCAR")
             error("Please provide both POSCAR and POTCAR files")
@@ -143,7 +151,7 @@ end
 Query whether the case.stop file exists.
 """
 function query_stop()
-    isfile(query_case()*".stop")
+    isfile(query_case() * ".stop")
 end
 
 """
