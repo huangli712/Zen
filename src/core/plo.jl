@@ -786,32 +786,6 @@ function view_dm(PG::Array{PrGroup,1}, dm::Array{Array{F64,3},1})
 end
 
 """
-    view_hamk(hamk::Array{C64,3})
-
-Output the local hamiltonian. A general version.
-"""
-function view_hamk(hamk::Array{C64,3})
-    # Extract some key parameters
-    _, nproj, nspin = size(hamk)
-
-    # Output the data
-    println("<- Local Hamiltonian ->")
-    for s = 1:nspin
-        println("Spin: $s")
-        println("Re:")
-        for p in 1:nproj
-            foreach(x -> @printf("%12.7f", x), real(hamk[p, :, s]))
-            println()
-        end
-        println("Im:")
-        for q in 1:nproj
-            foreach(x -> @printf("%12.7f", x), imag(hamk[q, :, s]))
-            println()
-        end
-    end
-end
-
-"""
     view_hamk(PU::Array{PrUnion,1}, hamk::Array{C64,3})
 
 Output the local hamiltonian. It should be block-diagonal.
