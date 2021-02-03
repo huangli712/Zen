@@ -263,7 +263,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 # PG[i].Tr must be a matrix. Its size must be (ndim, p2 - p1 + 1).
 #
 
-    # Go through each PrGroup and perform the rotation 
+    # Go through each PrGroup and perform the rotation
     for i in eachindex(PG)
         # Determine the range of original projectors
         p1 = PG[i].Pr[1]
@@ -330,7 +330,7 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
         end
 
         # Push M into chipsi_f
-        push!(chipsi_f, M) 
+        push!(chipsi_f, M)
     end
 
     # Return the desired arrays
