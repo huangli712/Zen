@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/01/28
+# last modified: 2021/02/04
 #
 
 #
@@ -19,34 +19,34 @@ Write the Kohn-Sham data to specified files using the IR format. Note
 that the Kohn-Sham data are encapsulated in a dict.
 """
 function ir_adaptor(D::Dict{Symbol,Any})
-    # S01: Print the header
+    # I01: Print the header
     println("  < IR Adaptor >")
 
-    # S02: Check the validity of the dict
+    # I02: Check the validity of the dict
     key_list = [:latt, :kmesh, :weight, :enk, :occupy, :chipsi, :fermi]
     for k in key_list
         @assert haskey(D, k)
     end
 
-    # S03: Write lattice structure
+    # I03: Write lattice structure
     println("    Put Lattice")
     irio_lattice(pwd(), D[:latt])
 
-    # S04: Write kmesh and the corresponding weights
+    # I04: Write kmesh and the corresponding weights
     println("    Put Kmesh")
     println("    Put Weight")
     irio_kmesh(pwd(), D[:kmesh], D[:weight])
 
-    # S05: Write band structure and the corresponding occupancies
+    # I05: Write band structure and the corresponding occupancies
     println("    Put Enk")
     println("    Put Occupy")
     irio_eigen(pwd(), D[:enk], D[:occupy])
 
-    # S06: Write projectors, traits, and groups
+    # I06: Write projectors, traits, and groups
     println("    Put Projector")
     irio_projs(pwd(), D[:chipsi])
 
-    # S07: Write fermi level
+    # I07: Write fermi level
     println("    Put Fermi Level")
     irio_fermi(pwd(), D[:fermi])
 
@@ -57,7 +57,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
 # might be absent.
 #
 
-    # S08: Check the validity of the dict further (optional)
+    # I08: Check the validity of the dict further (optional)
     if get_d("smear") === "tetra"
         key_list = [:volt, :itet]
         for k in key_list
@@ -65,7 +65,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
         end
     end
 
-    # S09: Write tetrahedron data if they are available
+    # I09: Write tetrahedron data if they are available
     if get_d("smear") === "tetra"
         println("    Put Tetrahedron")
         irio_tetra(pwd(), D[:volt], D[:itet])
@@ -85,6 +85,8 @@ function ir_save(it::IterInfo)
         cp("eigen.ir", "eigen.ir.$(it.dmft_cycle)", force = true)
         cp("projs.ir", "projs.ir.$(it.dmft_cycle)", force = true)
         cp("fermi.ir", "fermi.ir.$(it.dmft_cycle)", force = true)
+
+        # Optional operation
         if get_d("smear") === "tetra"
             cp("tetra.ir", "tetra.ir.$(it.dmft_cycle)", force = true)
         end
