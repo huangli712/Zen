@@ -285,9 +285,8 @@ function irio_projs(f::String, chipsi::Array{C64,4})
             for k = 1:nkpt
                 for b = 1:nband
                     for p = 1:nproj
-                        _re = real(chipsi[p, b, k, s])
-                        _im = imag(chipsi[p, b, k, s])
-                        @printf(fout, "%16.12f %16.12f\n", _re, _im)
+                        z = chipsi[p, b, k, s]
+                        @printf(fout, "%16.12f %16.12f\n", real(z), imag(z))
                     end
                 end
             end
