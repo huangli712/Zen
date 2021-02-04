@@ -713,7 +713,10 @@ end
 Output the overlap matrix. For normalized projectors only.
 """
 function view_ovlp(PG::Array{PrGroup,1}, ovlp::Array{Array{F64,3},1})
+    # Print the header
     println("<- Overlap Matrix ->")
+
+    # Go through each PrGroup
     for p in eachindex(PG)
         println("Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
 
@@ -734,14 +737,16 @@ end
 """
     view_dm(dm::Array{F64,3})
 
-Output the density matrix. A general version.
+Output the density matrix. For raw projectors only.
 """
 function view_dm(dm::Array{F64,3})
+    # Print the header
+    println("<- Density Matrix ->")
+
     # Extract some key parameters
     _, nproj, nspin = size(dm)
 
     # Output the data
-    println("<- Density Matrix ->")
     for s = 1:nspin
         println("Spin: $s")
         for p = 1:nproj
