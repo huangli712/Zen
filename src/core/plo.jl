@@ -65,16 +65,19 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     println("    Normalize Projectors")
     plo_orthog(D[:PW], D[:chipsi_f])
 
-    # P09: Write the density matrix and overlap matrix for checking
+    # P09: Write the density matrix and overlap matrix etc. for checking
     if debug
-        println("DEBUG!")
-        dm = calc_dm(D[:PW], D[:chipsi_f], D[:weight], D[:occupy])
-        view_dm(D[:PG], dm)
+        # Calculate and output overlap matrix
         ovlp = calc_ovlp(D[:PW], D[:chipsi_f], D[:weight])
         view_ovlp(D[:PG], ovlp)
+
+        # Calculate and output density matrix
+        dm = calc_dm(D[:PW], D[:chipsi_f], D[:weight], D[:occupy])
+        view_dm(D[:PG], dm)
+
+        # Calculate and output local hamiltonian
         hamk = calc_hamk(D[:PW], D[:chipsi_f], D[:weight], D[:enk])
         view_hamk(D[:PG], hamk)
-        #calc_dos(D[:PW], D[:chipsi_f], D[:itet], D[:enk])
     end
 end
 
