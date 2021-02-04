@@ -401,7 +401,7 @@ function get_win1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
     nband, nkpt, nspin = size(enk)
 
     # Create array kwin, which is used to record the band window for
-    # each kpt and each spin.
+    # each k-point and each spin.
     kwin = zeros(I64, nkpt, nspin, 2)
 
     # Fill kwin with global band boundaries
@@ -431,7 +431,7 @@ function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
     nband, nkpt, nspin = size(enk)
 
     # Create array kwin, which is used to record the band window for
-    # each kpt and each spin.
+    # each k-point and each spin.
     kwin = zeros(I64, nkpt, nspin, 2)
 
     # Scan the band structure to determine kwin
