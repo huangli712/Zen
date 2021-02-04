@@ -520,14 +520,16 @@ end
 Calculate the overlap matrix out of projectors. For normalized projectors only.
 """
 function calc_ovlp(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1})
+    # Create an empty array. Next we will fill it.
     ovlp = Array{F64,3}[]
 
+    # Go through each PrWindow / PrGroup
     for p in eachindex(PW)
         # Extract some key parameters
         ndim, nbnd, nkpt, nspin = size(chipsi[p])
         @assert nbnd === PW[p].nbnd
 
-        # Create overlap array
+        # Create a temporary array
         M = zeros(F64, ndim, ndim, nspin)
 
         # Build overlap array
@@ -538,6 +540,8 @@ function calc_ovlp(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight:
                 M[:, :, s] = M[:, :, s] + real(A * A') * wght
             end
         end
+
+        # Push M into ovlp to save it
         push!(ovlp, M)
     end
 
