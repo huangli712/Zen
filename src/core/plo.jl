@@ -762,14 +762,17 @@ end
 Output the density matrix. For normalized projectors only.
 """
 function view_dm(PG::Array{PrGroup,1}, dm::Array{Array{F64,3},1})
-    # Output the data
+    # Print the header
     println("<- Density Matrix ->")
+
+    # Go through each PrGroup
     for p in eachindex(PG)
         println("Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
 
         # Extract some key parameters
         _, ndim, nspin = size(dm[p])
 
+        # Output the data
         for s = 1:nspin
             println("Spin: $s")
             for q = 1:ndim
