@@ -584,8 +584,10 @@ end
 Calculate the density matrix out of projectors. For normalized projectors only.
 """
 function calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, occupy::Array{F64,3})
+    # Create an empty array. Next we will fill it.
     dm = Array{F64,3}[]
 
+    # Go through each PrWindow / PrGroup
     for p in eachindex(PW)
         # Extract some key parameters
         ndim, nbnd, nkpt, nspin = size(chipsi[p])
@@ -594,7 +596,7 @@ function calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::A
         # Evaluate spin factor
         sf = (nspin === 1 ? 2 : 1)
 
-        # Create density matrix array
+        # Create a temporary array
         M = zeros(F64, ndim, ndim, nspin)
 
         # Build density matrix array
@@ -607,6 +609,7 @@ function calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::A
             end
         end
 
+        # Push M into dm to save it
         push!(dm, M)
     end
 
