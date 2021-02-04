@@ -86,6 +86,15 @@ end
 #
 
 """
+    plo_fermi(enk::Array{F64,3}, fermi::F64)
+
+Calibrate the band structure to enforce the fermi level to be zero.
+"""
+function plo_fermi(enk::Array{F64,3}, fermi::F64)
+    @. enk = enk - fermi
+end
+
+"""
     plo_group(PG::Array{PrGroup,1})
 
 Use the information contained in the PIMP dict to further complete
@@ -99,7 +108,7 @@ function plo_group(PG::Array{PrGroup,1})
 # 1. Until now, the PG array was only created in vasp.jl/vaspio_projs().
 #
 # 2. In this function, `corr`, `shell`,  and `Tr` which are members of
-#    PrGroup struct will be modified according to users' configuration
+#    PrGroup struct will be modified according to users' configuration,
 #    in other words, the case.toml file.
 #
 
@@ -192,15 +201,6 @@ function plo_group(PG::Array{PrGroup,1})
 end
 
 """
-    plo_fermi(enk::Array{F64,3}, fermi::F64)
-
-Calibrate the band structure to enforce the fermi level to be zero.
-"""
-function plo_fermi(enk::Array{F64,3}, fermi::F64)
-    @. enk = enk - fermi
-end
-
-"""
     plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
 
 Calibrate the band window to filter the Kohn-Sham eigenvalues.
@@ -287,20 +287,20 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
         # Determine the number of projectors after rotation
         ndim = size(PG[i].Tr)[1]
 
-        # Create a temporary array M
-        M = zeros(C64, ndim, nband, nkpt, nspin)
+        # Create a temporary array R
+        R = zeros(C64, ndim, nband, nkpt, nspin)
 
-        # Rotate chipsi by Tr, the results are stored at M.
+        # Rotate chipsi by Tr, the results are stored at R.
         for s = 1:nspin
             for k = 1:nkpt
                 for b = 1:nband
-                    M[:, b, k, s] = PG[i].Tr * chipsi[p1:p2, b, k, s]
+                    R[:, b, k, s] = PG[i].Tr * chipsi[p1:p2, b, k, s]
                 end
             end
         end
 
-        # Push M into chipsi_r to save it
-        push!(chipsi_r, M)
+        # Push R into chipsi_r to save it
+        push!(chipsi_r, R)
     end
 
     # Return the desired arrays
@@ -322,8 +322,8 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
         # Extract some key parameters
         ndim, nband, nkpt, nspin = size(chipsi[p])
 
-        # Create a temporary array M
-        M = zeros(C64, ndim, PW[p].nbnd, nkpt, nspin)
+        # Create a temporary array F
+        F = zeros(C64, ndim, PW[p].nbnd, nkpt, nspin)
 
         # Go through each spin and k-point
         for s = 1:nspin
@@ -339,13 +339,13 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
                 # Sanity check
                 @assert ib3 <= PW[p].nbnd
 
-                # We just copy data from chipsi to M
-                M[:, 1:ib3, k, s] = chipsi[p][:, ib1:ib2, k, s]
+                # We just copy data from chipsi to F
+                F[:, 1:ib3, k, s] = chipsi[p][:, ib1:ib2, k, s]
             end
         end
 
-        # Push M into chipsi_f
-        push!(chipsi_f, M)
+        # Push F into chipsi_f to save it
+        push!(chipsi_f, F)
     end
 
     # Return the desired arrays
@@ -358,23 +358,26 @@ end
 Try to orthogonalize the projectors group by group.
 """
 function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+    # Go through each PrWindow / PrGroup
     for p in eachindex(PW)
         # Extract some key parameters
         ndim, nbnd, nkpt, nspin = size(chipsi[p])
         @assert nbnd === PW[p].nbnd
 
-        # Loop over spins and kpoints
+        # Loop over spins and k-points
         for s = 1:nspin
             for k = 1:nkpt
-                # Determine band index and band window
+                # Determine band indices
                 ib1 = PW[p].kwin[k, s, 1]
                 ib2 = PW[p].kwin[k, s, 2]
+
+                # Determine band window
                 ib3 = ib2 - ib1 + 1
 
                 # Make a view for the desired subarray
                 M = view(chipsi[p], 1:ndim, 1:ib3, k, s)
 
-                # Orthogonalize it (chipsi is update at the same time)
+                # Orthogonalize it (chipsi[p] is update at the same time)
                 try_diag(M)
             end
         end
