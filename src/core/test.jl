@@ -12,8 +12,10 @@
 
 include("Zen.jl")
 using .Zen
+using Profile
+using BenchmarkTools
 
 setup()
 exhibit()
 it = IterInfo()
-adaptor_run(it)
+@timev adaptor_run(it)
