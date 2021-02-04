@@ -13,11 +13,9 @@
 include("Zen.jl")
 using .Zen
 using Profile
-using BenchmarkTools
-using ProfileView
 
 setup()
 exhibit()
 it = IterInfo()
 @profile adaptor_run(it)
-ProfileView.view()
+Profile.print(maxdepth = 2)
