@@ -623,14 +623,16 @@ end
 Try to build the local hamiltonian. For normalized projectors only.
 """
 function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, enk::Array{F64,3})
+    # Create an empty array. Next we will fill it.
     hamk = Array{C64,3}[]
 
+    # Go through each PrWindow / PrGroup
     for p in eachindex(PW)
         # Extract some key parameters
         ndim, nbnd, nkpt, nspin = size(chipsi[p])
         @assert nbnd === PW[p].nbnd
 
-        # Create hamiltonian array
+        # Create a temporary array
         H = zeros(C64, ndim, ndim, nspin)
 
         # Build hamiltonian array
@@ -643,6 +645,7 @@ function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight:
             end
         end
 
+        # Push H into hamk to save it
         push!(hamk, H)
     end
 
