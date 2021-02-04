@@ -688,14 +688,16 @@ end
 """
     view_ovlp(ovlp::Array{F64,3})
 
-Output the overlap matrix. A general version.
+Output the overlap matrix. For raw projectors only.
 """
 function view_ovlp(ovlp::Array{F64,3})
+    # Print the header
+    println("<- Overlap Matrix ->")
+
     # Extract some key parameters
     _, nproj, nspin = size(ovlp)
 
     # Output the data
-    println("<- Overlap Matrix ->")
     for s = 1:nspin
         println("Spin: $s")
         for p = 1:nproj
@@ -711,7 +713,6 @@ end
 Output the overlap matrix. For normalized projectors only.
 """
 function view_ovlp(PG::Array{PrGroup,1}, ovlp::Array{Array{F64,3},1})
-    # Output the data
     println("<- Overlap Matrix ->")
     for p in eachindex(PG)
         println("Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
@@ -719,6 +720,7 @@ function view_ovlp(PG::Array{PrGroup,1}, ovlp::Array{Array{F64,3},1})
         # Extract some key parameters
         _, ndim, nspin = size(ovlp[p])
 
+        # Output the data
         for s = 1:nspin
             println("Spin: $s")
             for q = 1:ndim
