@@ -14,8 +14,10 @@ include("Zen.jl")
 using .Zen
 using Profile
 using BenchmarkTools
+using ProfileView
 
 setup()
 exhibit()
 it = IterInfo()
-@timev adaptor_run(it)
+@profile adaptor_run(it)
+ProfileView.view()
