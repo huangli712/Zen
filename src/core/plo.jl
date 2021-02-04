@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/03
+# last modified: 2021/02/04
 #
 
 #
@@ -20,40 +20,52 @@ D contains all of the necessary Kohn-Sham data, which will be modified
 in this function.
 """
 function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
-    # S01: Print the header
+    # P01: Print the header
     println("  < PLO Adaptor >")
 
-    # S02: Check the validity of the original dict
+    # P02: Check the validity of the original dict
     key_list = [:enk, :fermi, :chipsi, :PG]
     for k in key_list
         @assert haskey(D, k)
     end
 
-    # S03: Adjust the band structure
+    # P03: Adjust the band structure
+    #
+    # D[:fermi] will be updated
     println("    Calibrate Fermi Level")
     plo_fermi(D[:enk], D[:fermi])
 
-    # S04: Setup the PrGroup strcut further
+    # P04: Setup the PrGroup strcut further
+    #
+    # D[:PG] will be updated
     println("    Complete Groups")
     plo_group(D[:PG])
 
-    # S05: Setup the band / energy window for projectors
+    # P05: Setup the band / energy window for projectors
+    #
+    # D[:PW] will be created
     println("    Generate Window")
     D[:PW] = plo_window(D[:PG], D[:enk])
 
-    # S06: Transform the projector matrix
+    # P06: Transform the projector matrix
+    #
+    # D[:chipsi_r] will be created
     println("    Rotate Projectors")
     D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
 
-    # S07: Filter the projector matrix
+    # P07: Filter the projector matrix
+    #
+    # D[:chipsi_f] will be created
     println("    Filter Projectors")
     D[:chipsi_f] = plo_filter(D[:PW], D[:chipsi_r])
 
-    # S08: To make sure the projectors orthogonalize with each other
+    # P08: To make sure the projectors orthogonalize with each other
+    #
+    # D[:chipsi_f] will be updated
     println("    Normalize Projectors")
     plo_orthog(D[:PW], D[:chipsi_f])
 
-    # S09: Write the density matrix and overlap matrix for checking
+    # P09: Write the density matrix and overlap matrix for checking
     if debug
         println("DEBUG!")
         dm = calc_dm(D[:PW], D[:chipsi_f], D[:weight], D[:occupy])
