@@ -530,19 +530,19 @@ function calc_ovlp(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight:
         @assert nbnd === PW[p].nbnd
 
         # Create a temporary array
-        M = zeros(F64, ndim, ndim, nspin)
+        V = zeros(F64, ndim, ndim, nspin)
 
         # Build overlap array
         for s = 1:nspin
             for k = 1:nkpt
                 wght = weight[k] / nkpt
                 A = view(chipsi[p], :, :, k, s)
-                M[:, :, s] = M[:, :, s] + real(A * A') * wght
+                V[:, :, s] = V[:, :, s] + real(A * A') * wght
             end
         end
 
-        # Push M into ovlp to save it
-        push!(ovlp, M)
+        # Push V into ovlp to save it
+        push!(ovlp, V)
     end
 
     # Return the desired array
@@ -659,32 +659,26 @@ end
 Try to calculate the density of states.
 """
 function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Array{I64,2}, enk::Array{F64,3})
-    mesh = collect(-3.0:0.01:3.0)
-    #pdos = Array{F64,3}[]
-
-    for p in eachindex(PW)
-        # Extract some key parameters
-        ndim, nbnd, nkpt, nspin = size(chipsi[p])
-        @assert nbnd === PW[p].nbnd
-
-        dos = zeros(F64, length(mesh), ndim, nspin)
-
-        for i in eachindex(mesh)
-            wght = tetra_dos(mesh[i], itet, enk[PW[p].bmin:PW[p].bmax, :, :])
-            for q = 1:ndim
-                for s = 1:nspin
-                    for k = 1:nkpt
-                        for b = 1:nbnd
-                            dos[i, q, s] = dos[i, q, s] + wght[b, k, s] * real( chipsi[p][q, b, k, s] * conj(chipsi[p][q, b, k, s]) )
-                        end
-                    end
-                end
-            end
-            print(mesh[i], " ")
-            foreach(x -> @printf("%12.7f", x), dos[i, :, 1])
-            println()
-        end
-    end
+#    mesh = collect(-3.0:0.01:3.0)
+#    #pdos = Array{F64,3}[]
+#
+#    for p in eachindex(PW)
+#        # Extract some key parameters
+#        ndim, nbnd, nkpt, nspin = size(chipsi[p])
+#        @assert nbnd === PW[p].nbnd
+#
+#        dos = zeros(F64, length(mesh), ndim, nspin)
+#
+#        for i in eachindex(mesh)
+#            wght = tetra_dos(mesh[i], itet, enk[PW[p].bmin:PW[p].bmax, :, :])
+#            for q = 1:ndim, s = 1:nspin, k = 1:nkpt, b = 1:nbnd
+#                dos[i, q, s] = dos[i, q, s] + wght[b, k, s] * real( chipsi[p][q, b, k, s] * conj(chipsi[p][q, b, k, s]) )
+#            end
+#            print(mesh[i], " ")
+#            foreach(x -> @printf("%12.7f", x), dos[i, :, 1])
+#            println()
+#        end
+#    end
 end
 
 #
