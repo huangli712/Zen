@@ -390,7 +390,49 @@ end
 Try to orthogonalize the projectors group by group.
 """
 function plo_orthog_new(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+    # Go through each PrWindow / PrGroup
+    nproj = 0
+    nkpt = 0
+    nspin = 0
+    for p in eachindex(PW)
+        # Extract some key parameters
+        ndim, nbnd, nkpt, nspin = size(chipsi[p])
+        @assert nbnd === PW[p].nbnd
+        nproj = nproj + ndim
+    end
 
+    M = zeros(C64, nproj, PW[1].nbnd)
+
+    # Loop over spins and k-points
+    for s = 1:nspin
+        for k = 1:nkpt
+            # Determine band indices
+            ib1 = PW[1].kwin[k, s, 1]
+            ib2 = PW[1].kwin[k, s, 2]
+
+            # Determine band window
+            ib3 = ib2 - ib1 + 1
+            @assert PW[1].nbnd >= ib3
+
+            start = 0
+            for p in eachindex(PW)
+                ndim, _, _, _ = size(chipsi[p])
+                M[start + 1: start + ndim, 1:ib3] = chipsi[p][1:ndim, 1:ib3, k, s]
+                start = start + ndim
+            end
+
+            try_diag(view(M, :, :))
+
+            start = 0
+            for p in eachindex(PW)
+                ndim, _, _, _ = size(chipsi[p])
+                chipsi[p][1:ndim, 1:ib3, k, s] = M[start + 1: start + ndim, 1:ib3]
+                start = start + ndim
+            end
+        end
+    end
+
+    #exit(-1)
 end
 
 #
