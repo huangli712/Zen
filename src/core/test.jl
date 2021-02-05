@@ -7,15 +7,13 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/03
+# Last modified: 2021/02/05
 #
 
 include("Zen.jl")
 using .Zen
-using Profile
 
 setup()
 exhibit()
 it = IterInfo()
-@profile adaptor_run(it)
-Profile.print(maxdepth = 2)
+adaptor_run(it)
