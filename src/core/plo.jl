@@ -384,6 +384,15 @@ function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     end
 end
 
+"""
+    plo_orthog_new(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+
+Try to orthogonalize the projectors group by group.
+"""
+function plo_orthog_new(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+
+end
+
 #
 # Service Functions (Group B)
 #
