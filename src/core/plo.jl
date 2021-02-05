@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/04
+# last modified: 2021/02/05
 #
 
 #
@@ -405,8 +405,8 @@ function get_win1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
     kwin = zeros(I64, nkpt, nspin, 2)
 
     # Fill kwin with global band boundaries
-    fill!(kwin[:, :, 1], bmin)
-    fill!(kwin[:, :, 2], bmax)
+    fill!(view(kwin, :, :, 1), bmin)
+    fill!(view(kwin, :, :, 2), bmax)
 
     # Return the desired array
     return kwin
