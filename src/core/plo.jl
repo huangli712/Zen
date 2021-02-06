@@ -366,7 +366,7 @@ function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     @assert nwin === 1 || nwin === length(PW)
 
     # Choose suitable service functions
-    if nwin === 1
+    if nwin === 1 && length(PW) > 1
         # All the PrGroups share the same energy / band window, we should
         # orthogonal and normalize the projectors as a whole.
         try_blk1(PW, chipsi)
@@ -467,7 +467,7 @@ function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 # Remarks:
 #
 # We assume that the energy / band windows for all of the projectors are
-# the same. In other words, `PW` only has a unique PrWindow object.
+# the same. In other words, `PW` only has an unique PrWindow object.
 # 
 
     # Extract some key parameters
@@ -541,6 +541,9 @@ function try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
                 # Determine band window
                 ib3 = ib2 - ib1 + 1
+
+                # Sanity check
+                @assert ib3 <= PW[p].nbnd
 
                 # Make a view for the desired subarray
                 M = view(chipsi[p], 1:ndim, 1:ib3, k, s)
