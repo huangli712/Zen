@@ -7,7 +7,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/05
+# Last modified: 2021/02/06
 #
 
 include("Zen.jl")
@@ -17,11 +17,3 @@ setup()
 exhibit()
 it = IterInfo()
 adaptor_run(it)
-
-#z = 1.2
-#enk, occupy = vaspio_eigen("../03_SrVO3/dft")
-#fermi = vaspio_fermi("../03_SrVO3/dft")
-#volt, itet = vaspio_tetra("../03_SrVO3/dft")
-#@. enk = enk - fermi
-#wght = tetra_dos(z, itet, enk)
-#println(wght[:,20,1])
