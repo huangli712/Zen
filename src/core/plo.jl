@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/05
+# last modified: 2021/02/06
 #
 
 #
@@ -63,7 +63,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     #
     # D[:chipsi_f] will be updated
     println("    Normalize Projectors")
-    plo_orthog(D[:PW], D[:chipsi_f])
+    plo_orthog_new(D[:PW], D[:chipsi_f])
 
     # P09: Write the density matrix and overlap matrix etc. for checking
     if debug
@@ -390,18 +390,19 @@ end
 Try to orthogonalize the projectors group by group.
 """
 function plo_orthog_new(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
-    # Go through each PrWindow / PrGroup
-    nproj = 0
-    nkpt = 0
-    nspin = 0
-    for p in eachindex(PW)
-        # Extract some key parameters
-        ndim, nbnd, nkpt, nspin = size(chipsi[p])
-        @assert nbnd === PW[p].nbnd
-        nproj = nproj + ndim
+    nkpt = size(chipsi[1], 3)
+    nspin = size(chipsi[1], 4)
+    dims = map(x -> size(x, 1), chipsi)
+    block = Tuple[]
+    start = 0
+    for i in eachindex(dims)
+        push!(block, (start + 1, start + dims[i]))
+        start = start + dims[i]
     end
 
-    M = zeros(C64, nproj, PW[1].nbnd)
+    max_proj = sum(dims)
+    max_band = PW[1].nbnd
+    M = zeros(C64, max_proj, max_band)
 
     # Loop over spins and k-points
     for s = 1:nspin
@@ -414,20 +415,15 @@ function plo_orthog_new(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
             ib3 = ib2 - ib1 + 1
             @assert PW[1].nbnd >= ib3
 
-            start = 0
             for p in eachindex(PW)
-                ndim, _, _, _ = size(chipsi[p])
-                M[start + 1: start + ndim, 1:ib3] = chipsi[p][1:ndim, 1:ib3, k, s]
-                start = start + ndim
+                M[block[p][1]:block[p][2], 1:ib3] = chipsi[p][:, 1:ib3, k, s]
             end
 
-            try_diag(view(M, :, :))
+            #try_diag(view(M, :, :))
+            try_diag(M)
 
-            start = 0
             for p in eachindex(PW)
-                ndim, _, _, _ = size(chipsi[p])
-                chipsi[p][1:ndim, 1:ib3, k, s] = M[start + 1: start + ndim, 1:ib3]
-                start = start + ndim
+                chipsi[p][:, 1:ib3, k, s] = M[block[p][1]:block[p][2], 1:ib3]
             end
         end
     end
