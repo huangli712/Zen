@@ -385,6 +385,9 @@ function plo_monitor(D::Dict{Symbol,Any})
     # Calculate and output local hamiltonian
     hamk = calc_hamk(D[:PW], D[:chipsi_f], D[:weight], D[:enk])
     view_hamk(D[:PG], hamk)
+
+    # Calculate and output full hamiltonian
+    hamk = calc_hamk(D[:PW], D[:chipsi_f], D[:enk])
 end
 
 #
@@ -749,6 +752,73 @@ function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight:
 
         # Push H into hamk to save it
         push!(hamk, H)
+    end
+
+    # Return the desired array
+    return hamk
+end
+
+"""
+    calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Array{F64,3})
+
+Try to build the full hamiltonian. For normalized projectors only.
+"""
+function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Array{F64,3})
+
+#
+# Remarks:
+#
+# We assume that the energy / band windows for all of the projectors are
+# the same. In other words, `PW` only has an unique PrWindow object.
+# 
+
+    # Extract some key parameters
+    nkpt = size(chipsi[1], 3)
+    nspin = size(chipsi[1], 4)
+
+    # Determine number of projectors contained in each group. 
+    dims = map(x -> size(x, 1), chipsi)
+
+    # The `block` is used to store the first index and the last
+    # index for each group of projectors.
+    block = Tuple[]
+    start = 0
+    for i in eachindex(dims)
+        push!(block, (start + 1, start + dims[i]))
+        start = start + dims[i]
+    end
+
+    # Create a temporary arry
+    max_proj = sum(dims)
+    max_band = PW[1].nbnd
+    M = zeros(C64, max_proj, max_band)
+
+    # Create a array for the hamiltonian
+    H = zeros(C64, max_proj, max_proj, nkpt, nspin)
+
+    # Loop over spins and k-points
+    for s = 1:nspin
+        for k = 1:nkpt
+            # Determine band indices
+            ib1 = PW[1].kwin[k, s, 1]
+            ib2 = PW[1].kwin[k, s, 2]
+
+            # Determine band window
+            ib3 = ib2 - ib1 + 1
+
+            # Sanity check
+            @assert max_band >= ib3
+
+            # Try to combine all of the groups of projectors
+            for p in eachindex(PW)
+                M[block[p][1]:block[p][2], 1:ib3] = chipsi[p][:, 1:ib3, k, s]
+            end
+
+            # Build hamiltonian array
+            eigs = enk[ib1:ib2, k, s]
+            A = view(M, :, 1:ib3)
+            H[:, :, k, s] = H[:, :, k, s] + (A * Diagonal(eigs) * A')
+        end
     end
 
     # Return the desired array
