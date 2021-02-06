@@ -520,7 +520,7 @@ function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
             end
 
             # Orthogonalize and normalize it
-            try_diag(M)
+            try_diag(view(M, :, 1:ib3))
 
             # Copy the results back to the sources
             for p in eachindex(PW)
