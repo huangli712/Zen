@@ -356,7 +356,7 @@ function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     @assert nwin === 1 || nwin === length(PW)
 
     # Choose suitable service functions
-    if nwin === 1 && length(PW) > 1
+    if nwin === 1
         # All the PrGroups share the same energy / band window, we should
         # orthogonal and normalize the projectors as a whole.
         try_blk1(PW, chipsi)
