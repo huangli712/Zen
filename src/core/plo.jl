@@ -390,7 +390,9 @@ function plo_monitor(D::Dict{Symbol,Any})
     hamk = calc_hamk(D[:PW], D[:chipsi_f], D[:enk])
     view_hamk(hamk)
 
-    @timev calc_dos(D[:PW], D[:chipsi_f], D[:itet], D[:enk])
+    # Calculate and output density of states
+    @timev dos = calc_dos(D[:PW], D[:chipsi_f], D[:itet], D[:enk])
+    view_dos(dos)
 end
 
 #
@@ -1055,7 +1057,7 @@ end
 """
     view_dos()
 """
-function view_dos() 
+function view_dos(dos::Array{Array{F64,3}, 1}) 
             #print(mesh[i], " ")
             #foreach(x -> @printf("%12.7f", x), M[:, 1, i])
             #println()
