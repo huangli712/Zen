@@ -459,9 +459,73 @@ end
 """
     try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
-Try to orthogonalize the projectors group by group.
+Try to orthogonalize and normalize the projectors as a whole.
 """
 function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+
+#
+# Remarks:
+#
+# We assume that the energy / band windows for all of the projectors are
+# the same. In other words, `PW` only has a unique PrWindow object.
+# 
+
+    # Extract some key parameters
+    nkpt = size(chipsi[1], 3)
+    nspin = size(chipsi[1], 4)
+
+    # Determine number of projectors contained in each group. 
+    dims = map(x -> size(x, 1), chipsi)
+
+    # The `block` is used to store the first index and the last
+    # index for each group of projectors.
+    block = Tuple[]
+    start = 0
+    for i in eachindex(dims)
+        push!(block, (start + 1, start + dims[i]))
+        start = start + dims[i]
+    end
+
+    # Create a temporary arry
+    max_proj = sum(dims)
+    max_band = PW[1].nbnd
+    M = zeros(C64, max_proj, max_band)
+
+    # Loop over spins and k-points
+    for s = 1:nspin
+        for k = 1:nkpt
+            # Determine band indices
+            ib1 = PW[1].kwin[k, s, 1]
+            ib2 = PW[1].kwin[k, s, 2]
+
+            # Determine band window
+            ib3 = ib2 - ib1 + 1
+
+            # Sanity check
+            @assert max_band >= ib3
+
+            # Try to combine all of the groups of projectors
+            for p in eachindex(PW)
+                M[block[p][1]:block[p][2], 1:ib3] = chipsi[p][:, 1:ib3, k, s]
+            end
+
+            # Orthogonalize and normalize it
+            try_diag(M)
+
+            # Copy the results back to the sources
+            for p in eachindex(PW)
+                chipsi[p][:, 1:ib3, k, s] = M[block[p][1]:block[p][2], 1:ib3]
+            end
+        end
+    end
+end
+
+"""
+    try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+
+Try to orthogonalize the projectors group by group.
+"""
+function try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     # Go through each PrWindow / PrGroup
     for p in eachindex(PW)
         # Extract some key parameters
@@ -483,50 +547,6 @@ function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
                 # Orthogonalize it (chipsi[p] is update at the same time)
                 try_diag(M)
-            end
-        end
-    end
-end
-
-"""
-    try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
-
-Try to orthogonalize the projectors group by group.
-"""
-function try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
-    nkpt = size(chipsi[1], 3)
-    nspin = size(chipsi[1], 4)
-    dims = map(x -> size(x, 1), chipsi)
-    block = Tuple[]
-    start = 0
-    for i in eachindex(dims)
-        push!(block, (start + 1, start + dims[i]))
-        start = start + dims[i]
-    end
-
-    max_proj = sum(dims)
-    max_band = PW[1].nbnd
-    M = zeros(C64, max_proj, max_band)
-
-    # Loop over spins and k-points
-    for s = 1:nspin
-        for k = 1:nkpt
-            # Determine band indices
-            ib1 = PW[1].kwin[k, s, 1]
-            ib2 = PW[1].kwin[k, s, 2]
-
-            # Determine band window
-            ib3 = ib2 - ib1 + 1
-            @assert PW[1].nbnd >= ib3
-
-            for p in eachindex(PW)
-                M[block[p][1]:block[p][2], 1:ib3] = chipsi[p][:, 1:ib3, k, s]
-            end
-
-            try_diag(M)
-
-            for p in eachindex(PW)
-                chipsi[p][:, 1:ib3, k, s] = M[block[p][1]:block[p][2], 1:ib3]
             end
         end
     end
