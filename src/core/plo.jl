@@ -388,6 +388,7 @@ function plo_monitor(D::Dict{Symbol,Any})
 
     # Calculate and output full hamiltonian
     hamk = calc_hamk(D[:PW], D[:chipsi_f], D[:enk])
+    view_hamk(hamk)
 end
 
 #
@@ -822,7 +823,7 @@ function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Ar
     end
 
     # Return the desired array
-    return hamk
+    return H
 end
 
 """
@@ -987,6 +988,49 @@ function view_hamk(PG::Array{PrGroup,1}, hamk::Array{Array{C64,3},1})
             for q = 1:ndim
                 foreach(x -> @printf("%12.7f", x), imag(hamk[p][q, 1:ndim, s]))
                 println()
+            end
+        end
+    end
+end
+
+"""
+    view_hamk(hamk::Array{C64,4})
+
+Output the full hamiltonian. For normalized projectors only.
+"""
+function view_hamk(hamk::Array{C64,4})
+
+#
+# Remarks:
+#
+# The data file `hamk.chk` is used to debug. It should not be read by the
+# DMFT engine. That is the reason why we name this function as `view_hamk`
+# and put it in plo.jl.
+#
+
+    # Extract some key parameters
+    nproj, _, nkpt, nspin = size(hamk)
+
+    # Output the data
+    open("hamk.chk", "w") do fout
+        # Write the header
+        println(fout, "# file: hamk.chk")
+        println(fout, "# data: hamk[nproj,nproj,nkpt,nspin]")
+        println(fout)
+        println(fout, "nproj -> $nproj")
+        println(fout, "nkpt  -> $nkpt")
+        println(fout, "nspin -> $nspin")
+        println(fout)
+
+        # Write the body
+        for s = 1:nspin
+            for k = 1:nkpt
+                for b = 1:nproj
+                    for p = 1:nproj
+                        z = hamk[p, b, k, s]
+                        @printf(fout, "%16.12f %16.12f\n", real(z), imag(z))
+                    end
+                end
             end
         end
     end
