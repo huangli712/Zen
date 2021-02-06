@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/03
+# Last modified: 2021/02/06
 #
 
 module Zen
@@ -299,6 +299,8 @@ export irio_charge
 # plo_orthog  -> Orthogonalize / normalize the projectors.
 # get_win1    -> Evaluate band window.
 # get_win2    -> Evaluate energy window.
+# try_blk1    -> Orthogonalize / normalize the projectors group by group.
+# try_blk2    -> Orthogonalize / normalize the projectors with each other.
 # try_diag    -> Orthogonalizes a projector defined by a rectangular matrix.
 # calc_ovlp   -> Calculate overlap matrix.
 # calc_dm     -> Calculate density matrix.
@@ -320,6 +322,8 @@ export plo_filter
 export plo_orthog
 export get_win1
 export get_win2
+export try_blk1
+export try_blk2
 export try_diag
 export calc_ovlp
 export calc_dm
