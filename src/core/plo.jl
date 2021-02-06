@@ -65,19 +65,9 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     println("    Normalize Projectors")
     plo_orthog(D[:PW], D[:chipsi_f])
 
-    # P09: Write the density matrix and overlap matrix etc. for checking
+    # P09: Are the projectors correct?
     if debug
-        # Calculate and output overlap matrix
-        ovlp = calc_ovlp(D[:PW], D[:chipsi_f], D[:weight])
-        view_ovlp(D[:PG], ovlp)
-
-        # Calculate and output density matrix
-        dm = calc_dm(D[:PW], D[:chipsi_f], D[:weight], D[:occupy])
-        view_dm(D[:PG], dm)
-
-        # Calculate and output local hamiltonian
-        hamk = calc_hamk(D[:PW], D[:chipsi_f], D[:weight], D[:enk])
-        view_hamk(D[:PG], hamk)
+        plo_monitor(D)
     end
 end
 
@@ -375,6 +365,26 @@ function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
         # orthogonal and normalize the projectors group by group. 
         try_blk2(PW, chipsi)
     end 
+end
+
+"""
+    plo_monitor(D::Dict{Symbol,Any})
+
+Generate some key physical quantities by using the projectors and the
+Kohn-Sham band structures. It is used for debug only.
+"""
+function plo_monitor(D::Dict{Symbol,Any})
+    # Calculate and output overlap matrix
+    ovlp = calc_ovlp(D[:PW], D[:chipsi_f], D[:weight])
+    view_ovlp(D[:PG], ovlp)
+
+    # Calculate and output density matrix
+    dm = calc_dm(D[:PW], D[:chipsi_f], D[:weight], D[:occupy])
+    view_dm(D[:PG], dm)
+
+    # Calculate and output local hamiltonian
+    hamk = calc_hamk(D[:PW], D[:chipsi_f], D[:weight], D[:enk])
+    view_hamk(D[:PG], hamk)
 end
 
 #

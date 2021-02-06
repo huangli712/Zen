@@ -297,6 +297,7 @@ export irio_charge
 # plo_rotate  -> Rotate the projectors.
 # plo_filter  -> Extract the projectors within a given energy window.
 # plo_orthog  -> Orthogonalize / normalize the projectors.
+# plo_monitor -> Generate some physical quantities using the projectors.
 # get_win1    -> Evaluate band window.
 # get_win2    -> Evaluate energy window.
 # try_blk1    -> Orthogonalize / normalize the projectors group by group.
@@ -320,6 +321,7 @@ export plo_window
 export plo_rotate
 export plo_filter
 export plo_orthog
+export plo_monitor
 export get_win1
 export get_win2
 export try_blk1
