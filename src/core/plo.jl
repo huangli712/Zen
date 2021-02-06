@@ -352,83 +352,7 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     return chipsi_f
 end
 
-"""
-    plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
-
-Try to orthogonalize the projectors group by group.
-"""
 function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
-    # Go through each PrWindow / PrGroup
-    for p in eachindex(PW)
-        # Extract some key parameters
-        ndim, nbnd, nkpt, nspin = size(chipsi[p])
-        @assert nbnd === PW[p].nbnd
-
-        # Loop over spins and k-points
-        for s = 1:nspin
-            for k = 1:nkpt
-                # Determine band indices
-                ib1 = PW[p].kwin[k, s, 1]
-                ib2 = PW[p].kwin[k, s, 2]
-
-                # Determine band window
-                ib3 = ib2 - ib1 + 1
-
-                # Make a view for the desired subarray
-                M = view(chipsi[p], 1:ndim, 1:ib3, k, s)
-
-                # Orthogonalize it (chipsi[p] is update at the same time)
-                try_diag(M)
-            end
-        end
-    end
-end
-
-"""
-    plo_orthog_new(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
-
-Try to orthogonalize the projectors group by group.
-"""
-function plo_orthog_new(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
-    nkpt = size(chipsi[1], 3)
-    nspin = size(chipsi[1], 4)
-    dims = map(x -> size(x, 1), chipsi)
-    block = Tuple[]
-    start = 0
-    for i in eachindex(dims)
-        push!(block, (start + 1, start + dims[i]))
-        start = start + dims[i]
-    end
-
-    max_proj = sum(dims)
-    max_band = PW[1].nbnd
-    M = zeros(C64, max_proj, max_band)
-
-    # Loop over spins and k-points
-    for s = 1:nspin
-        for k = 1:nkpt
-            # Determine band indices
-            ib1 = PW[1].kwin[k, s, 1]
-            ib2 = PW[1].kwin[k, s, 2]
-
-            # Determine band window
-            ib3 = ib2 - ib1 + 1
-            @assert PW[1].nbnd >= ib3
-
-            for p in eachindex(PW)
-                M[block[p][1]:block[p][2], 1:ib3] = chipsi[p][:, 1:ib3, k, s]
-            end
-
-            #try_diag(view(M, :, :))
-            try_diag(M)
-
-            for p in eachindex(PW)
-                chipsi[p][:, 1:ib3, k, s] = M[block[p][1]:block[p][2], 1:ib3]
-            end
-        end
-    end
-
-    #exit(-1)
 end
 
 #
@@ -508,6 +432,82 @@ function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
 
     # Return the desired array
     return kwin
+end
+
+"""
+    try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+
+Try to orthogonalize the projectors group by group.
+"""
+function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+    # Go through each PrWindow / PrGroup
+    for p in eachindex(PW)
+        # Extract some key parameters
+        ndim, nbnd, nkpt, nspin = size(chipsi[p])
+        @assert nbnd === PW[p].nbnd
+
+        # Loop over spins and k-points
+        for s = 1:nspin
+            for k = 1:nkpt
+                # Determine band indices
+                ib1 = PW[p].kwin[k, s, 1]
+                ib2 = PW[p].kwin[k, s, 2]
+
+                # Determine band window
+                ib3 = ib2 - ib1 + 1
+
+                # Make a view for the desired subarray
+                M = view(chipsi[p], 1:ndim, 1:ib3, k, s)
+
+                # Orthogonalize it (chipsi[p] is update at the same time)
+                try_diag(M)
+            end
+        end
+    end
+end
+
+"""
+    try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+
+Try to orthogonalize the projectors group by group.
+"""
+function try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+    nkpt = size(chipsi[1], 3)
+    nspin = size(chipsi[1], 4)
+    dims = map(x -> size(x, 1), chipsi)
+    block = Tuple[]
+    start = 0
+    for i in eachindex(dims)
+        push!(block, (start + 1, start + dims[i]))
+        start = start + dims[i]
+    end
+
+    max_proj = sum(dims)
+    max_band = PW[1].nbnd
+    M = zeros(C64, max_proj, max_band)
+
+    # Loop over spins and k-points
+    for s = 1:nspin
+        for k = 1:nkpt
+            # Determine band indices
+            ib1 = PW[1].kwin[k, s, 1]
+            ib2 = PW[1].kwin[k, s, 2]
+
+            # Determine band window
+            ib3 = ib2 - ib1 + 1
+            @assert PW[1].nbnd >= ib3
+
+            for p in eachindex(PW)
+                M[block[p][1]:block[p][2], 1:ib3] = chipsi[p][:, 1:ib3, k, s]
+            end
+
+            try_diag(M)
+
+            for p in eachindex(PW)
+                chipsi[p][:, 1:ib3, k, s] = M[block[p][1]:block[p][2], 1:ib3]
+            end
+        end
+    end
 end
 
 """
