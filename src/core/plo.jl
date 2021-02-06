@@ -390,7 +390,7 @@ function plo_monitor(D::Dict{Symbol,Any})
     hamk = calc_hamk(D[:PW], D[:chipsi_f], D[:enk])
     view_hamk(hamk)
 
-    calc_dos(D[:PW], D[:chipsi_f], D[:itet], D[:enk])
+    @timev calc_dos(D[:PW], D[:chipsi_f], D[:itet], D[:enk])
 end
 
 #
@@ -829,31 +829,45 @@ function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Ar
 end
 
 """
-    calc_dos()
+    calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Array{I64,2}, enk::Array{F64,3})
 
 Try to calculate the density of states.
 """
 function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Array{I64,2}, enk::Array{F64,3})
+    # Create the mesh
     mesh = collect(-3.0:0.01:3.0)
-    #pdos = Array{F64,3}[]
+    nmesh = length(mesh)
 
+    # Create array of density of states
+    DA = Array{F64,3}[]
+
+    # Go through each PrWindow / PrGroup
     for p in eachindex(PW)
         # Extract some key parameters
         ndim, nbnd, nkpt, nspin = size(chipsi[p])
         @assert nbnd === PW[p].nbnd
 
-        dos = zeros(F64, length(mesh), ndim, nspin)
+        # Create a temporary array
+        M = zeros(F64, ndim, nspin, length(mesh))
 
+        # Go through each mesh point
         for i in eachindex(mesh)
-            wght = tetra_dos(mesh[i], itet, enk[PW[p].bmin:PW[p].bmax, :, :])
-            for q = 1:ndim, s = 1:nspin, k = 1:nkpt, b = 1:nbnd
-                dos[i, q, s] = dos[i, q, s] + wght[b, k, s] * real( chipsi[p][q, b, k, s] * conj(chipsi[p][q, b, k, s]) )
+            # Obtain the integration weights for density of states by
+            # using the analytical tetrahedron method
+            W = tetra_dos(mesh[i], itet, enk[PW[p].bmin:PW[p].bmax, :, :])
+
+            # Perform summation
+            for s = 1:nspin, k = 1:nkpt, b = 1:nbnd, q = 1:ndim
+                M[q, s, i] = M[q, s, i] + W[b, k, s] * abs( chipsi[p][q, b, k, s] )^2
             end
-            print(mesh[i], " ")
-            foreach(x -> @printf("%12.7f", x), dos[i, :, 1])
-            println()
         end
+
+        # Push M into DA to save it
+        push!(DA, M)
     end
+
+    # Return the desired array
+    return DA
 end
 
 #
@@ -1041,4 +1055,8 @@ end
 """
     view_dos()
 """
-function view_dos() end
+function view_dos() 
+            #print(mesh[i], " ")
+            #foreach(x -> @printf("%12.7f", x), M[:, 1, i])
+            #println()
+end
