@@ -310,7 +310,7 @@ function tetra_dos(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
     zc = zeros(F64, 4)
 
     # mass of tetrahedron
-    mtet = sum( itet[:, 5] )
+    mtet = sum( itet[:, 1] )
 
     # initialize weight
     wght = zeros(F64, nband, nkpt, nspin)
@@ -321,7 +321,7 @@ function tetra_dos(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
 
                 # save the four corner energies of one tetrahedron in zc
                 for c = 1:4
-                    k = itet[t, c]
+                    k = itet[t, c + 1]
                     zc[c] = enk[b, k, s]
                 end
 
@@ -330,8 +330,8 @@ function tetra_dos(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
 
                 # stores weights for irreducible k-points
                 for c = 1:4
-                    k = itet[t, c]
-                    wght[b, k, s] = wght[b, k, s] + TW.dw[c] * float(itet[t, 5])
+                    k = itet[t, c + 1]
+                    wght[b, k, s] = wght[b, k, s] + TW.dw[c] * float(itet[t, 1])
                 end
             end
         end

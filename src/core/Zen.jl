@@ -347,6 +347,9 @@ export view_dos
 #
 #
 include("tetra.jl")
+export TetraWeight
+export tetra_weight2
+export tetra_dos
 
 #
 # vasp.jl
