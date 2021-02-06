@@ -1056,6 +1056,8 @@ end
 
 """
     view_dos(mesh::Array{F64,1}, dos::Array{Array{F64,3}, 1})
+
+Output the density of states.
 """
 function view_dos(mesh::Array{F64,1}, dos::Array{Array{F64,3}, 1}) 
     # Go through each PrGroup
