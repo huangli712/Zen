@@ -352,7 +352,29 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     return chipsi_f
 end
 
+"""
+    plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+
+Orthogonalize and normalize the projectors.
+"""
 function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+    # Preprocess the input. Get how many windows there are.
+    window = get_d("window")
+    nwin = convert(I64, length(window) / 2)
+
+    # Sanity check
+    @assert nwin === 1 || nwin === length(PW)
+
+    # Choose suitable service functions
+    if nwin === 1
+        # All the PrGroups share the same energy / band window, we should
+        # orthogonal and normalize the projectors as a whole.
+        try_blk1(PW, chipsi)
+    else
+        # Each PrGroup has its own energy / band window, we have to
+        # orthogonal and normalize the projectors group by group. 
+        try_blk2(PW, chipsi)
+    end 
 end
 
 #
