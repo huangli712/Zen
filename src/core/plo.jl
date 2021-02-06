@@ -1055,10 +1055,34 @@ function view_hamk(hamk::Array{C64,4})
 end
 
 """
-    view_dos()
+    view_dos(mesh::Array{F64,1}, dos::Array{Array{F64,3}, 1})
 """
 function view_dos(mesh::Array{F64,1}, dos::Array{Array{F64,3}, 1}) 
-            #print(mesh[i], " ")
-            #foreach(x -> @printf("%12.7f", x), M[:, 1, i])
-            #println()
+    # Go through each PrGroup
+    for p in eachindex(dos)
+        # Extract some key parameters
+        ndim, nspin, nmesh = size(dos[p])
+        @assert nmesh === length(mesh)
+
+        # Output the data
+        open("dos.chk.$p", "w") do fout
+            # Write the header
+            println(fout, "# file: dos.chk")
+            println(fout, "# data: mesh[nmesh] and dos[ndim,nspin,nmesh]")
+            println(fout)
+            println(fout, "nmesh -> $nmesh")
+            println(fout, "ndim  -> $ndim")
+            println(fout, "nspin -> $nspin")
+            println(fout)
+
+            # Write the body
+            for m = 1:nmesh
+                @printf(fout, "%12.7f", mesh[m])
+                for s = 1:nspin
+                    foreach(x -> @printf(fout, "%12.7f", x), dos[p][:, s, m])
+                end
+                println(fout)
+            end
+        end
+    end
 end
