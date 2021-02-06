@@ -47,23 +47,23 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     println("    Generate Window")
     D[:PW] = plo_window(D[:PG], D[:enk])
 
-    # P06: Transform the projector matrix
+    # P06: Transform the projectors
     #
     # D[:chipsi_r] will be created
     println("    Rotate Projectors")
     D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
 
-    # P07: Filter the projector matrix
+    # P07: Filter the projectors
     #
     # D[:chipsi_f] will be created
     println("    Filter Projectors")
     D[:chipsi_f] = plo_filter(D[:PW], D[:chipsi_r])
 
-    # P08: To make sure the projectors orthogonalize with each other
+    # P08: Orthogonalize and normalize the projectors
     #
     # D[:chipsi_f] will be updated
     println("    Normalize Projectors")
-    plo_orthog_new(D[:PW], D[:chipsi_f])
+    plo_orthog(D[:PW], D[:chipsi_f])
 
     # P09: Write the density matrix and overlap matrix etc. for checking
     if debug
