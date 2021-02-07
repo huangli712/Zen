@@ -24,6 +24,123 @@ struct TetraWeight
 end
 
 """
+    wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
+
+Compute tetrahedron integrated weights for Brillouin zone integration.
+Used to calculate density of states
+"""
+function wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
+    # extract some key parameters
+    ntet, ndim = size(itet)
+    @assert ndim === 5
+
+    # extract some key parameters
+    nband, nkpt, nspin = size(enk)
+
+    # energy at the corner of tetrahedron
+    zc = zeros(F64, 4)
+
+    # mass of tetrahedron
+    mtet = sum( itet[:, 1] )
+
+    # initialize weight
+    wght = zeros(F64, nband, nkpt, nspin)
+
+    for t = 1:ntet
+        for s = 1:nspin
+            for b = 1:nband
+
+                # save the four corner energies of one tetrahedron in zc
+                for c = 1:4
+                    k = itet[t, c + 1]
+                    zc[c] = enk[b, k, s]
+                end
+
+                # actually calculates weights for 4 corners of one tetrahedron
+                TW = tetra_weight(z, zc)
+
+                # stores weights for irreducible k-points
+                for c = 1:4
+                    k = itet[t, c + 1]
+                    wght[b, k, s] = wght[b, k, s] + TW.dw[c] * float(itet[t, 1])
+                end
+            end
+        end
+    end
+
+    # normalize properly
+    @. wght = wght / float(mtet)
+
+    return wght
+end
+
+"""
+    tetra_weight(z::F64, e::Array{F64,1})
+
+Peter E. Blochl algorithm for (integrated) density of states and relevant
+integration weights. Blochl corrections are taken into considersions as
+well. See Phys. Rev. B, 49, 16223 (1994) for more details
+"""
+function tetra_weight(z::F64, e::Array{F64,1})
+    # sort the corner energy according to increasing values
+    sort!(e)
+
+    # remove possible degenerancies in e
+    for i = 1:3
+        if abs( e[i] - e[i+1] ) < eps(F64)
+            e[i] = e[i] + eps(F64) / float(i)
+        end
+    end
+
+    for i = 1:4
+        if abs( e[i] - z ) < eps(F64) / 10.0
+            e[i] = e[i] + eps(F64) / 10.0 / float(i)
+        end
+    end
+
+    # find the case, to calculate TetraWeight (dw, tw, and cw)
+    # case 1, fully unoccupied tetrahedron
+    if z < e[1]
+        TW = tetra_p_ek1()
+
+    # case 2, partially occupied tetrahedron
+    elseif z < e[2] && z > e[1]
+        TW = tetra_p_ek12(z, e)
+
+    # case 3, partially occupied tetrahedron
+    elseif z < e[3] && z > e[2]
+        TW = tetra_p_ek23(z, e)
+
+    # case 4, partially occupied tetrahedron
+    elseif z < e[4] && z > e[3]
+        TW = tetra_p_ek34(z, e)
+
+    # case 5, fully occupied tetrahedron
+    elseif z > e[4]
+        TW = tetra_p_ek4()
+
+    end
+
+    # add up Blochl corrections for density of states weights
+    # apply equation (22)
+    for i = 1:4
+        for j = 1:4
+            TW.dw[i] = TW.dw[i] + ( e[j] - e[i] ) * TW.cw * 0.025
+        end
+    end
+
+    # add up Blochl corrections for integration weights
+    # apply equation (22)
+    for i = 1:4
+        for j = 1:4
+            TW.tw[i] = TW.tw[i] + ( e[j] - e[i] ) * sum(TW.dw) * 0.025
+        end
+    end
+
+    return TW
+end
+
+"""
     tetra_p_ek1()
 
 Blochl algorithm, case 1, for fully unoccupied tetrahedron
@@ -221,121 +338,4 @@ function tetra_p_ek4()
     cw = 0.0
 
     TetraWeight(cw, dw, tw)
-end
-
-"""
-    tetra_weight(z::F64, e::Array{F64,1})
-
-Peter E. Blochl algorithm for (integrated) density of states and relevant
-integration weights. Blochl corrections are taken into considersions as
-well. See Phys. Rev. B, 49, 16223 (1994) for more details
-"""
-function tetra_weight(z::F64, e::Array{F64,1})
-    # sort the corner energy according to increasing values
-    sort!(e)
-
-    # remove possible degenerancies in e
-    for i = 1:3
-        if abs( e[i] - e[i+1] ) < eps(F64)
-            e[i] = e[i] + eps(F64) / float(i)
-        end
-    end
-
-    for i = 1:4
-        if abs( e[i] - z ) < eps(F64) / 10.0
-            e[i] = e[i] + eps(F64) / 10.0 / float(i)
-        end
-    end
-
-    # find the case, to calculate TetraWeight (dw, tw, and cw)
-    # case 1, fully unoccupied tetrahedron
-    if z < e[1]
-        TW = tetra_p_ek1()
-
-    # case 2, partially occupied tetrahedron
-    elseif z < e[2] && z > e[1]
-        TW = tetra_p_ek12(z, e)
-
-    # case 3, partially occupied tetrahedron
-    elseif z < e[3] && z > e[2]
-        TW = tetra_p_ek23(z, e)
-
-    # case 4, partially occupied tetrahedron
-    elseif z < e[4] && z > e[3]
-        TW = tetra_p_ek34(z, e)
-
-    # case 5, fully occupied tetrahedron
-    elseif z > e[4]
-        TW = tetra_p_ek4()
-
-    end
-
-    # add up Blochl corrections for density of states weights
-    # apply equation (22)
-    for i = 1:4
-        for j = 1:4
-            TW.dw[i] = TW.dw[i] + ( e[j] - e[i] ) * TW.cw * 0.025
-        end
-    end
-
-    # add up Blochl corrections for integration weights
-    # apply equation (22)
-    for i = 1:4
-        for j = 1:4
-            TW.tw[i] = TW.tw[i] + ( e[j] - e[i] ) * sum(TW.dw) * 0.025
-        end
-    end
-
-    return TW
-end
-
-"""
-    wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
-
-Compute tetrahedron integrated weights for Brillouin zone integration.
-Used to calculate density of states
-"""
-function wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
-    # extract some key parameters
-    ntet, ndim = size(itet)
-    @assert ndim === 5
-
-    # extract some key parameters
-    nband, nkpt, nspin = size(enk)
-
-    # energy at the corner of tetrahedron
-    zc = zeros(F64, 4)
-
-    # mass of tetrahedron
-    mtet = sum( itet[:, 1] )
-
-    # initialize weight
-    wght = zeros(F64, nband, nkpt, nspin)
-
-    for t = 1:ntet
-        for s = 1:nspin
-            for b = 1:nband
-
-                # save the four corner energies of one tetrahedron in zc
-                for c = 1:4
-                    k = itet[t, c + 1]
-                    zc[c] = enk[b, k, s]
-                end
-
-                # actually calculates weights for 4 corners of one tetrahedron
-                TW = tetra_weight(z, zc)
-
-                # stores weights for irreducible k-points
-                for c = 1:4
-                    k = itet[t, c + 1]
-                    wght[b, k, s] = wght[b, k, s] + TW.dw[c] * float(itet[t, 1])
-                end
-            end
-        end
-    end
-
-    # normalize properly
-    @. wght = wght / float(mtet)
-
-    return wght
 end
