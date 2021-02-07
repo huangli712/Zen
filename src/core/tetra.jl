@@ -196,6 +196,7 @@ function tetra_p_ek12(z::F64, e::Array{F64,1})
     # zei: ze_{i} = e - e_{i}
     # eij: e_{ij} = e_{i} - e_{j}
     ze1 = z - e[1]
+    #
     e21 = e[2] - e[1]
     e31 = e[3] - e[1]
     e41 = e[4] - e[1]
@@ -237,54 +238,55 @@ end
 """
     tetra_p_ek23(z::F64, e::Array{F64,1})
 
-Blochl algorithm, case 3, for partially occupied tetrahedron
+Blochl algorithm, case 3, for partially occupied tetrahedron.
 """
 function tetra_p_ek23(z::F64, e::Array{F64,1})
-    # sainty check
+    # Sainty check
     @assert length(e) === 4
 
-    # setup common variables
+    # Setup common variables
     # zei: ze_{i} = e - e_{i}
     # eij: e_{ij} = e_{i} - e_{j}
     ze1 = z - e[1]
     ze2 = z - e[2]
     ze3 = z - e[3]
     ze4 = z - e[4]
+    #
     e21 = e[2] - e[1]
     e31 = e[3] - e[1]
     e32 = e[3] - e[2]
     e41 = e[4] - e[1]
     e42 = e[4] - e[2]
 
-    # intermediate variables
-    # apply equation (B11)
+    # Intermediate variables
+    # Apply equation (B11)
     c1  = ze1 * ze1 / ( 4.0 * e41 * e31 )
     dc1 = ze1 / ( 2.0 * e41 * e31 )
-
-    # apply equation (B12)
+    #
+    # Apply equation (B12)
     c2  = - ze1 * ze2 * ze3 / ( 4.0 * e41 * e32 * e31 )
     dc2 = ( - ze2 * ze3 - ze1 * ze3 - ze1 * ze2 ) / ( 4.0 * e41 * e32 * e31 )
-
-    # apply equation (B13)
+    #
+    # Apply equation (B13)
     c3  = - ze2 * ze2 * ze4 / ( 4.0 * e42 * e32 * e41 )
     dc3 = ( - 2.0 * ze2 * ze4 - ze2 * ze2 ) / ( 4.0 * e42 * e32 * e41 )
 
-    # integration weights
+    # Integration weights
     tw = zeros(F64, 4)
     #
-    # apply equation (B7)
+    # Apply equation (B7)
     tw[1] = c1 - ( c1 + c2 ) * ze3 / e31 - ( c1 + c2 + c3 ) * ze4 / e41
     #
-    # apply equation (B8)
+    # Apply equation (B8)
     tw[2] = c1 + c2 + c3 - ( c2 + c3 ) * ze3 / e32 - c3 * ze4 / e42
     #
-    # apply equation (B9)
+    # Apply equation (B9)
     tw[3] = ( c1 + c2 ) * ze1 / e31 + ( c2 + c3 ) * ze2 / e32
     #
-    # apply equation (B10)
+    # Apply equation (B10)
     tw[4] = ( c1 + c2 + c3 ) * ze1 / e41 + c3 * ze2 / e42
 
-    # density of states weights
+    # Density of states weights
     dw = zeros(F64, 4)
     #
     dw[1] = dc1 - ( ( dc1 + dc2 ) * ze3 + c1 + c2 ) / e31 - ( ( dc1 + dc2 + dc3 ) * ze4 + c1 + c2 + c3 ) / e41
@@ -292,9 +294,10 @@ function tetra_p_ek23(z::F64, e::Array{F64,1})
     dw[3] = ( ( dc1 + dc2 ) * ze1 + c1 + c2 ) / e31 + ( ( dc2 + dc3 ) * ze2 + c2 + c3 ) / e32
     dw[4] = ( ( dc1 + dc2 + dc3 ) * ze1 + c1 + c2 + c3 ) / e41 + ( dc3 * ze2 + c3 ) / e42
 
-    # corrections for dweight
+    # Corrections for dweight
     cw = 6.0 * ( 1.0 - ( e31 + e42 ) * ze2 / ( e32 * e42 ) ) / ( e31 * e41 )
 
+    # Return TetraWeight struct
     TetraWeight(cw, dw, tw)
 end
 
