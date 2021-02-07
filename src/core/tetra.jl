@@ -70,8 +70,8 @@ function bzint(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
                 end
 
                 # Actually calculates weights for 4 corners of the tetrahedron
-                TW = tetra_weight(z, zc)
-                #TW = gauss_weight(z, zc)
+                #TW = tetra_weight(z, zc)
+                TW = gauss_weight(z, zc)
 
                 # Stores integration weights for irreducible k-points
                 for c = 1:4
@@ -113,7 +113,7 @@ function gauss_weight(z::F64, e::Array{F64,1})
     TW = TetraWeight(cw, dw, tw)
 
     # Parameter for gaussian broadening
-    gamm = 0.15
+    gamm = 0.25
 
     # Further setup the integration weights
     for i = 1:4

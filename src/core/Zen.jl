@@ -354,6 +354,7 @@ export view_dos
 # TetraWeight  -> Struct for integration weights.
 # bzint        -> Compute tetrahedron integrated weights.
 # gauss_weight -> Compute integrated weights using Gaussian broadening.
+# fermi_weight -> Compute integrated weights using Fermi-Dirac broadening.
 # tetra_weight -> Compute integrated weights for a given tetrahedron.
 # tetra_p_ek1  -> Blochl tetrahedron integration algorithm, case 1.
 # tetra_p_ek12 -> Blochl tetrahedron integration algorithm, case 2.
@@ -365,6 +366,7 @@ include("tetra.jl")
 export TetraWeight
 export bzint
 export gauss_weight
+export fermi_weight
 export tetra_weight
 export tetra_p_ek1
 export tetra_p_ek12
