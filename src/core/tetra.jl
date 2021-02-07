@@ -8,6 +8,10 @@
 # last modified: 2021/02/07
 #
 
+#
+# Customized Structs
+#
+
 """
     TetraWeight
 
@@ -22,6 +26,10 @@ struct TetraWeight
     dw :: Array{F64,1}
     tw :: Array{F64,1}
 end
+
+#
+# Driver Functions
+#
 
 """
     wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
@@ -73,6 +81,10 @@ function wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
 
     return wght
 end
+
+#
+# Service Functions (Level 1)
+#
 
 """
     tetra_weight(z::F64, e::Array{F64,1})
@@ -139,6 +151,10 @@ function tetra_weight(z::F64, e::Array{F64,1})
 
     return TW
 end
+
+#
+# Service Functions (Level 2)
+#
 
 """
     tetra_p_ek1()
