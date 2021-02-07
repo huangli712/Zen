@@ -356,17 +356,18 @@ end
 """
     tetra_p_ek4()
 
-Blochl algorithm, case 5, for fully occupied tetrahedron
+Blochl algorithm, case 5, for fully occupied tetrahedron.
 """
 function tetra_p_ek4()
-    # integration weights, apply equation (B19)
+    # Integration weights, apply equation (B19)
     tw = fill(0.25, 4)
 
-    # density of states weights
+    # Density of states weights
     dw = zeros(F64, 4)
 
-    # corrections for dweight
+    # Corrections for dweight
     cw = 0.0
 
+    # Return TetraWeight struct
     TetraWeight(cw, dw, tw)
 end
