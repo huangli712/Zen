@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/07
+# Last modified: 2021/02/08
 #
 
 module Zen
@@ -23,10 +23,16 @@ using Dates
 #
 # Remarks:
 #
-# The TOML package is included in the standard library since v1.6.
+# The TOML.jl package is included in the standard library since v1.6.
 # So, please upgrade your julia environment if it is outdated.
 #
+# The SpecialFunctions.jl was included in the standard library for
+# old version julia. But in the newest julia, it is not included any
+# more. We have to install it by ourselves. We need this package to
+# support the `erf` function.
+#
 using TOML
+using SpecialFunctions
 
 #
 # global.jl
