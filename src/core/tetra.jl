@@ -36,12 +36,12 @@ end
 #
 
 """
-    wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
+    bzint(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
 
 Compute tetrahedron integrated weights for Brillouin zone integration.
 It is used to calculate (partial) density of states.
 """
-function wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
+function bzint(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
     # Extract some key parameters
     ntet, ndim = size(itet)
     @assert ndim === 5
@@ -91,6 +91,13 @@ end
 #
 # Service Functions (Level 1)
 #
+
+"""
+    gauss_weight(z::F64, e::Array{F64,1})
+
+"""
+function gauss_weight(z::F64, e::Array{F64,1})
+end
 
 """
     tetra_weight(z::F64, e::Array{F64,1})

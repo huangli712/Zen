@@ -356,7 +356,8 @@ export view_dos
 #
 include("tetra.jl")
 export TetraWeight
-export wtetra
+export bzint
+export gauss_weight
 export tetra_weight
 export tetra_p_ek1
 export tetra_p_ek12
