@@ -9,6 +9,10 @@
 #
 
 #
+# Remarks:
+#
+
+#
 # Customized Structs
 #
 
@@ -35,24 +39,24 @@ end
     wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
 
 Compute tetrahedron integrated weights for Brillouin zone integration.
-Used to calculate density of states
+It is used to calculate (partial) density of states.
 """
 function wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
-    # extract some key parameters
+    # Extract some key parameters
     ntet, ndim = size(itet)
     @assert ndim === 5
 
-    # extract some key parameters
+    # Extract some key parameters
     nband, nkpt, nspin = size(enk)
 
-    # energy at the corner of tetrahedron
+    # Energy at the corner of tetrahedron
     zc = zeros(F64, 4)
 
-    # mass of tetrahedron
+    # Mass of tetrahedron
     mtet = sum( itet[:, 1] )
 
-    # initialize weight
-    wght = zeros(F64, nband, nkpt, nspin)
+    # Initialize weights. It share the same size with `enk`.
+    W = zeros(F64, nband, nkpt, nspin)
 
     for t = 1:ntet
         for s = 1:nspin
@@ -70,16 +74,16 @@ function wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
                 # stores weights for irreducible k-points
                 for c = 1:4
                     k = itet[t, c + 1]
-                    wght[b, k, s] = wght[b, k, s] + TW.dw[c] * float(itet[t, 1])
+                    W[b, k, s] = W[b, k, s] + TW.dw[c] * float(itet[t, 1])
                 end
             end
         end
     end
 
     # normalize properly
-    @. wght = wght / float(mtet)
+    @. W = W / float(mtet)
 
-    return wght
+    return W
 end
 
 #
