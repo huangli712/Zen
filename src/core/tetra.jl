@@ -167,31 +167,32 @@ end
 """
     tetra_p_ek1()
 
-Blochl algorithm, case 1, for fully unoccupied tetrahedron
+Blochl algorithm, case 1, for fully unoccupied tetrahedron.
 """
 function tetra_p_ek1()
-    # integration weights, apply equation (B1)
+    # Integration weights, apply equation (B1)
     tw = zeros(F64, 4)
 
-    # density of states weights
+    # Density of states weights
     dw = zeros(F64, 4)
 
-    # corrections for dweight
+    # Corrections for dweight
     cw = 0.0
 
+    # Return TetraWeight struct
     TetraWeight(cw, dw, tw)
 end
 
 """
     tetra_p_ek12(z::F64, e::Array{F64,1})
 
-Blochl algorithm, case 2, for partially occupied tetrahedron
+Blochl algorithm, case 2, for partially occupied tetrahedron.
 """
 function tetra_p_ek12(z::F64, e::Array{F64,1})
-    # sainty check
+    # Sainty check
     @assert length(e) === 4
 
-    # setup common variables
+    # Setup common variables
     # zei: ze_{i} = e - e_{i}
     # eij: e_{ij} = e_{i} - e_{j}
     ze1 = z - e[1]
@@ -199,26 +200,26 @@ function tetra_p_ek12(z::F64, e::Array{F64,1})
     e31 = e[3] - e[1]
     e41 = e[4] - e[1]
 
-    # intermediate variable, apply equation (B6)
+    # Intermediate variable, apply equation (B6)
     c = ze1 * ze1 * ze1 / ( 4.0 * e21 * e31 * e41 )
     dc = 3.0 * ze1 * ze1 / ( 4.0 * e21 * e31 * e41 )
 
-    # integration weights
+    # Integration weights
     tw = zeros(F64, 4)
     #
-    # apply equation (B2)
+    # Apply equation (B2)
     tw[1] = c * ( 4.0 - ze1 * ( 1.0 / e21 + 1.0 / e31 + 1.0 / e41 ) )
     #
-    # apply equation (B3)
+    # Apply equation (B3)
     tw[2] = c * ze1 / e21
     #
-    # apply equation (B4)
+    # Apply equation (B4)
     tw[3] = c * ze1 / e31
     #
-    # apply equation (B5)
+    # Apply equation (B5)
     tw[4] = c * ze1 / e41
 
-    # density of states weights
+    # Density of states weights
     dw = zeros(F64, 4)
     #
     dw[1] = 4.0 * dc - ( dc * ze1 + c ) * ( 1.0 / e21 + 1.0 / e31 + 1.0 / e41 )
@@ -226,9 +227,10 @@ function tetra_p_ek12(z::F64, e::Array{F64,1})
     dw[3] = dc * ze1 / e31 + c / e31
     dw[4] = dc * ze1 / e41 + c / e41
 
-    # corrections for dweight
+    # Corrections for dweight
     cw = 6.0 * ze1 / ( e21 * e31 * e41 )
 
+    # Return TetraWeight struct
     TetraWeight(cw, dw, tw)
 end
 
