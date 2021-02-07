@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/06
+# Last modified: 2021/02/07
 #
 
 module Zen
@@ -345,11 +345,24 @@ export view_dos
 #
 # Members:
 #
+# TetraWeight
+# wtetra
+# tetra_weight
+# tetra_p_ek1
+# tetra_p_ek12
+# tetra_p_ek23
+# tetra_p_ek34
+# tetra_p_ek4
 #
 include("tetra.jl")
 export TetraWeight
-export tetra_weight2
-export tetra_dos
+export wtetra
+export tetra_weight
+export tetra_p_ek1
+export tetra_p_ek12
+export tetra_p_ek23
+export tetra_p_ek34
+export tetra_p_ek4
 
 #
 # vasp.jl

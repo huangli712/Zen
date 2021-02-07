@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/06
+# last modified: 2021/02/07
 #
 
 """
@@ -223,17 +223,14 @@ function tetra_p_ek4()
     TetraWeight(cw, dw, tw)
 end
 
-function tetra_weight1()
-end
-
 """
-    tetra_weight2(z::F64, e::Array{F64,1})
+    tetra_weight(z::F64, e::Array{F64,1})
 
 Peter E. Blochl algorithm for (integrated) density of states and relevant
 integration weights. Blochl corrections are taken into considersions as
 well. See Phys. Rev. B, 49, 16223 (1994) for more details
 """
-function tetra_weight2(z::F64, e::Array{F64,1})
+function tetra_weight(z::F64, e::Array{F64,1})
     # sort the corner energy according to increasing values
     sort!(e)
 
@@ -293,12 +290,12 @@ function tetra_weight2(z::F64, e::Array{F64,1})
 end
 
 """
-    tetra_dos(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
+    wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
 
 Compute tetrahedron integrated weights for Brillouin zone integration.
 Used to calculate density of states
 """
-function tetra_dos(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
+function wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
     # extract some key parameters
     ntet, ndim = size(itet)
     @assert ndim === 5
@@ -326,7 +323,7 @@ function tetra_dos(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
                 end
 
                 # actually calculates weights for 4 corners of one tetrahedron
-                TW = tetra_weight2(z, zc)
+                TW = tetra_weight(z, zc)
 
                 # stores weights for irreducible k-points
                 for c = 1:4
