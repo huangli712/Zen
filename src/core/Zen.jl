@@ -346,7 +346,8 @@ export view_dos
 # Members:
 #
 # TetraWeight  -> Struct for integration weights.
-# wtetra       -> Compute tetrahedron integrated weights.
+# bzint        -> Compute tetrahedron integrated weights.
+# gauss_weight -> Compute integrated weights using Gaussian broadening.
 # tetra_weight -> Compute integrated weights for a given tetrahedron.
 # tetra_p_ek1  -> Blochl tetrahedron integration algorithm, case 1.
 # tetra_p_ek12 -> Blochl tetrahedron integration algorithm, case 2.
