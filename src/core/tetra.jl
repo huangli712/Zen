@@ -71,6 +71,7 @@ function bzint(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
 
                 # Actually calculates weights for 4 corners of the tetrahedron
                 TW = tetra_weight(z, zc)
+                #TW = gauss_weight(z, zc)
 
                 # Stores integration weights for irreducible k-points
                 for c = 1:4
