@@ -11,6 +11,16 @@
 #
 # Remarks:
 #
+# This file provides some functions to do the brillouin zone integration.
+# They are very useful for calculating the density of states. So far the
+# following algorithms are supported:
+#     (1) Gaussian broadening method.
+#     (2) Fermi-Dirac broadening method.
+#     (3) Analytical tetrahedron algorithm with Blochl corrections.
+# Note that you have to modify the line 83-85 to choose suitable driver.
+# Perhaps you also need to modify the `gamm` parameter to obtain more
+# reasonable results. Now the default method is (3).
+#
 
 #
 # Customized Structs
@@ -71,8 +81,8 @@ function bzint(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
 
                 # Actually calculates weights for 4 corners of the tetrahedron
                 #TW = gauss_weight(z, zc)
-                TW = fermi_weight(z, zc)
-                #TW = tetra_weight(z, zc)
+                #TW = fermi_weight(z, zc)
+                TW = tetra_weight(z, zc)
 
                 # Stores integration weights for irreducible k-points
                 for c = 1:4
