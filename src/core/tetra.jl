@@ -304,40 +304,41 @@ end
 """
     tetra_p_ek34(z::F64, e::Array{F64,1})
 
-Blochl algorithm, case 4, for partially occupied tetrahedron
+Blochl algorithm, case 4, for partially occupied tetrahedron.
 """
 function tetra_p_ek34(z::F64, e::Array{F64,1})
-    # sainty check
+    # Sainty check
     @assert length(e) === 4
 
-    # setup common variables
+    # Setup common variables
     # zei: ze_{i} = e - e_{i}
     # eij: e_{ij} = e_{i} - e_{j}
     ze4 = z - e[4]
+    #
     e41 = e[4] - e[1]
     e42 = e[4] - e[2]
     e43 = e[4] - e[3]
 
-    # intermediate variables, apply equation (B18)
+    # Intermediate variables, apply equation (B18)
     c = - ze4 * ze4 * ze4 / ( 4.0 * e41 * e42 * e43 )
     dc = - 3.0 * ze4 * ze4 / ( 4.0 * e41 * e42 * e43 )
 
-    # integration weights
+    # Integration weights
     tw = zeros(F64, 4)
     #
-    # apply equation (B14)
+    # Apply equation (B14)
     tw[1] = 0.25 + c * ze4 / e41
     #
-    # apply equation (B15)
+    # Apply equation (B15)
     tw[2] = 0.25 + c * ze4 / e42
     #
-    # apply equation (B16)
+    # Apply equation (B16)
     tw[3] = 0.25 + c * ze4 / e43
     #
-    # apply equation (B17)
+    # Apply equation (B17)
     tw[4] = 0.25 - c * ( 4.0 + ( 1.0 / e41 + 1.0 / e42 + 1.0 / e43 ) * ze4 )
 
-    # density of states weights
+    # Density of states weights
     dw = zeros(F64, 4)
     #
     dw[1] = ( dc * ze4 + c ) / e41
@@ -345,9 +346,10 @@ function tetra_p_ek34(z::F64, e::Array{F64,1})
     dw[3] = ( dc * ze4 + c ) / e43
     dw[4] = - 4.0 * dc - ( 1.0 / e41 + 1.0 / e42 + 1.0 / e43) * ( dc * ze4 + c )
 
-    # corrections for dweight
+    # Corrections for dweight
     cw = 6.0 * ze4 / ( e41 * e42 * e43 )
 
+    # Return TetraWeight struct
     TetraWeight(cw, dw, tw)
 end
 
