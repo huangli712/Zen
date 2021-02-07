@@ -55,23 +55,24 @@ function wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
     # Mass of tetrahedron
     mtet = sum( itet[:, 1] )
 
-    # Initialize weights. It share the same size with `enk`.
+    # Initialize weights. It shares the same size with `enk`.
     W = zeros(F64, nband, nkpt, nspin)
 
+    # Go through each tetrahedron, spin, and band.
     for t = 1:ntet
         for s = 1:nspin
             for b = 1:nband
 
-                # save the four corner energies of one tetrahedron in zc
+                # Store the four corner energies of one tetrahedron in `zc`
                 for c = 1:4
                     k = itet[t, c + 1]
                     zc[c] = enk[b, k, s]
                 end
 
-                # actually calculates weights for 4 corners of one tetrahedron
+                # Actually calculates weights for 4 corners of the tetrahedron
                 TW = tetra_weight(z, zc)
 
-                # stores weights for irreducible k-points
+                # Stores integration weights for irreducible k-points
                 for c = 1:4
                     k = itet[t, c + 1]
                     W[b, k, s] = W[b, k, s] + TW.dw[c] * float(itet[t, 1])
@@ -80,9 +81,10 @@ function wtetra(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
         end
     end
 
-    # normalize properly
+    # Normalize the weights properly
     @. W = W / float(mtet)
 
+    # Return the desired arrays
     return W
 end
 
