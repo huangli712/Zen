@@ -127,6 +127,39 @@ function gauss_weight(z::F64, e::Array{F64,1})
 end
 
 """
+    fermi_weight(z::F64, e::Array{F64,1})
+
+Fermi-Dirac broadening algorithm for (integrated) density of states and
+relevant integration weights.
+"""
+function fermi_weight(z::F64, e::Array{F64,1})
+    # Integration weights, apply equation (B1)
+    tw = zeros(F64, 4)
+
+    # Density of states weights
+    dw = zeros(F64, 4)
+
+    # Corrections for dweight
+    cw = 0.0
+
+    # Create TetraWeight struct
+    TW = TetraWeight(cw, dw, tw)
+
+    # Parameter for gaussian broadening
+    gamm = 0.25
+
+    # Further setup the integration weights
+    for i = 1:4
+        dummy = ( z - e[i] ) / gamm
+        TW.tw[i] = 1.0 / (1.0 +  exp(-dummy) )
+        TW.dw[i] = 0.5 / (1.0 + cosh( dummy) )
+    end
+
+    # Return the TetraWeight struct
+    return TW
+end
+
+"""
     tetra_weight(z::F64, e::Array{F64,1})
 
 Peter E. Blochl algorithm for (integrated) density of states and relevant
