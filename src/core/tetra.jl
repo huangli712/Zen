@@ -140,22 +140,23 @@ function tetra_weight(z::F64, e::Array{F64,1})
     #
     end
 
-    # add up Blochl corrections for density of states weights
-    # apply equation (22)
+    # Add up Blochl corrections for density of states weights
+    # Apply equation (22)
     for i = 1:4
         for j = 1:4
             TW.dw[i] = TW.dw[i] + ( e[j] - e[i] ) * TW.cw * 0.025
         end
     end
 
-    # add up Blochl corrections for integration weights
-    # apply equation (22)
+    # Add up Blochl corrections for integration weights
+    # Apply equation (22)
     for i = 1:4
         for j = 1:4
             TW.tw[i] = TW.tw[i] + ( e[j] - e[i] ) * sum(TW.dw) * 0.025
         end
     end
 
+    # Return the TetraWeight struct
     return TW
 end
 
