@@ -95,8 +95,34 @@ end
 """
     gauss_weight(z::F64, e::Array{F64,1})
 
+Gaussian broadening algorithm for (integrated) density of states and relevant
+integration weights.
 """
 function gauss_weight(z::F64, e::Array{F64,1})
+    # Integration weights, apply equation (B1)
+    tw = zeros(F64, 4)
+
+    # Density of states weights
+    dw = zeros(F64, 4)
+
+    # Corrections for dweight
+    cw = 0.0
+
+    # Create TetraWeight struct
+    TW = TetraWeight(cw, dw, tw)
+
+    # Parameter for gaussian broadening
+    gamm = 0.15
+
+    # Further setup the integration weights
+    for i = 1:4
+        dummy = ( z - e[i] ) / gamm
+        TW.tw[i] = 0.125 * ( 1.0 - erf(-dummy) )
+        TW.dw[i] = 0.25 * exp(-dummy^2.0) / ( sqrt(pi) * gamm )
+    end
+
+    # Return the TetraWeight struct
+    return TW
 end
 
 """
