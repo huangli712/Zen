@@ -856,7 +856,7 @@ function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Ar
         for i in eachindex(mesh)
             # Obtain the integration weights for density of states by
             # using the analytical tetrahedron method
-            W = wtetra(mesh[i], itet, enk[PW[p].bmin:PW[p].bmax, :, :])
+            W = bzint(mesh[i], itet, enk[PW[p].bmin:PW[p].bmax, :, :])
 
             # Perform summation
             for s = 1:nspin, k = 1:nkpt, b = 1:nbnd, q = 1:ndim
