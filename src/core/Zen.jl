@@ -345,14 +345,14 @@ export view_dos
 #
 # Members:
 #
-# TetraWeight
-# wtetra
-# tetra_weight
-# tetra_p_ek1
-# tetra_p_ek12
-# tetra_p_ek23
-# tetra_p_ek34
-# tetra_p_ek4
+# TetraWeight  -> Struct for integration weights.
+# wtetra       -> Compute tetrahedron integrated weights.
+# tetra_weight -> Compute integrated weights for a given tetrahedron.
+# tetra_p_ek1  -> Blochl tetrahedron integration algorithm, case 1.
+# tetra_p_ek12 -> Blochl tetrahedron integration algorithm, case 2.
+# tetra_p_ek23 -> Blochl tetrahedron integration algorithm, case 3.
+# tetra_p_ek34 -> Blochl tetrahedron integration algorithm, case 4.
+# tetra_p_ek4  -> Blochl tetrahedron integration algorithm, case 5.
 #
 include("tetra.jl")
 export TetraWeight
