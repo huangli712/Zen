@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/03
+# last modified: 2021/02/08
 #
 
 """
@@ -115,6 +115,8 @@ end
     query_case()
 
 Return case, in other words, the job's name.
+
+See also: [`query_stop`](@ref).
 """
 function query_case()
     basename( splitext(query_args())[1] )
@@ -149,6 +151,8 @@ end
     query_stop()
 
 Query whether the case.stop file exists.
+
+See also: [`query_case`](@ref).
 """
 function query_stop()
     isfile(query_case() * ".stop")
@@ -158,6 +162,8 @@ end
     query_zen()
 
 Query the home directory of Zen.
+
+See also: [`query_dft`](@ref).
 """
 function query_zen()
     # We have to setup the environment variable ZEN_HOME
@@ -172,6 +178,8 @@ end
     query_dft()
 
 Query the home directory of the DFT engine.
+
+See also: [`query_zen`](@ref).
 """
 function query_dft()
     # We have to setup the environment variable VASP_HOME
