@@ -141,7 +141,7 @@ Record the DFT + DMFT iteration information.
 .dmft2_iter -> Number of iterations between dmft2 and DFT engine.\n
 .dmft_cycle -> Number of DFT + DMFT iterations.\n
 .full_cycle -> Counter for each iteration.\n
-._dft_fermi -> Fermi level obtained by DFT engine.\n
+.dft_fermi  -> Fermi level obtained by DFT engine.\n
 .dmft_fermi -> Fermi level obtained by DMFT engine (dmft1).
 
 See also: [`Logger`](@ref).
@@ -151,7 +151,7 @@ mutable struct IterInfo
     dmft2_iter :: I64
     dmft_cycle :: I64
     full_cycle :: I64
-    _dft_fermi :: F64
+     dft_fermi :: F64
     dmft_fermi :: F64
 end
 
@@ -392,7 +392,7 @@ function Base.show(io::IO, it::IterInfo)
     println(io, ".dmft2_iter : ", it.dmft2_iter)
     println(io, ".dmft_cycle : ", it.dmft_cycle)
     println(io, ".full_cycle : ", it.full_cycle)
-    println(io, "._dft_fermi : ", it._dft_fermi)
+    println(io, ".dft_fermi  : ", it.dft_fermi)
     println(io, ".dmft_fermi : ", it.dmft_fermi)
 end
 

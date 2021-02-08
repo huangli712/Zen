@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/04
+# last modified: 2021/02/08
 #
 
 #
@@ -64,7 +64,7 @@ function vasp_init(it::IterInfo)
         cp("../POSCAR", joinpath(pwd(), "POSCAR"), force = true)
 
         # Generate INCAR automatically
-        vasp_incar(it._dft_fermi)
+        vasp_incar(it.dft_fermi)
     end
 
     # Check essential input files
@@ -121,7 +121,7 @@ end
     vasp_save(it::IterInfo)
 
 Backup the output files of vasp if necessary. Furthermore, the fermi level
-in IterInfo struct is also updated (IterInfo._dft_fermi)
+in IterInfo struct is also updated (IterInfo.dft_fermi)
 """
 function vasp_save(it::IterInfo)
     # Store the data files
@@ -139,8 +139,8 @@ function vasp_save(it::IterInfo)
     end
 
     # Anyway, the fermi level is extracted from DOSCAR, and its value will
-    # be saved at IterInfo._dft_fermi.
-    it._dft_fermi = vaspio_fermi(pwd())
+    # be saved at IterInfo.dft_fermi.
+    it.dft_fermi = vaspio_fermi(pwd())
 end
 
 #
