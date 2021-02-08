@@ -112,6 +112,8 @@ end
 
 Transfer configurations from dict cfg to dicts (PCASE, PDFT, PDMFT,
 PIMP, and PSOLVER).
+
+See also: [`chk_dict`](@ref).
 """
 function rev_dict(cfg::Dict{String,Any})
     # For case block
@@ -164,6 +166,8 @@ end
     chk_dict()
 
 Validate the correctness and consistency of configurations.
+
+See also: [`rev_dict`](@ref).
 """
 function chk_dict()
 
@@ -250,6 +254,8 @@ end
     cat_c()
 
 Print the configuration parameters to stdout: for PCASE dict.
+
+See also: [`get_c`](@ref), [`str_c`](@ref).
 """
 function cat_c()
     # See comments in cat_d()
@@ -260,6 +266,8 @@ end
     cat_d()
 
 Print the configuration parameters to stdout: for PDFT dict.
+
+See also: [`get_d`](@ref), [`str_d`](@ref).
 """
 function cat_d()
 
@@ -270,7 +278,7 @@ function cat_d()
 # low efficiency if we print it directly. So we have to convert it into
 # a string by using the join() function at first.
 #
-# The get_d("window") is actually an Array{F64,N}. It would be quite
+# The get_d("window") is actually an Array{F64,1}. It would be quite
 # low efficiency if we print it directly. So we have to convert it into
 # a string by using the join() function at first.
 #
@@ -294,6 +302,8 @@ end
     cat_m()
 
 Print the configuration parameters to stdout: for PDMFT dict.
+
+See also: [`get_m`](@ref), [`str_m`](@ref).
 """
 function cat_m()
     # See comments in cat_d()
@@ -315,6 +325,8 @@ end
     cat_i()
 
 Print the configuration parameters to stdout: for PIMP dict.
+
+See also: [`get_i`](@ref), [`str_i`](@ref).
 """
 function cat_i()
     # See comments in cat_d()
@@ -333,6 +345,8 @@ end
     cat_s()
 
 Print the configuration parameters to stdout: for PSOLVER dict.
+
+See also: [`get_s`](@ref), [`str_s`](@ref).
 """
 function cat_s()
     # See comments in cat_d()
@@ -349,6 +363,8 @@ end
     get_c(key::String)
 
 Extract configurations from dict: PCASE.
+
+See also: [`cat_c`](@ref), [`str_c`](@ref).
 """
 @inline function get_c(key::String)
     if haskey(PCASE, key)
@@ -362,6 +378,8 @@ end
     get_d(key::String)
 
 Extract configurations from dict: PDFT.
+
+See also: [`cat_d`](@ref), [`str_d`](@ref).
 """
 @inline function get_d(key::String)
     if haskey(PDFT, key)
@@ -375,6 +393,8 @@ end
     get_m(key::String)
 
 Extract configurations from dict: PDMFT.
+
+See also: [`cat_m`](@ref), [`str_m`](@ref).
 """
 @inline function get_m(key::String)
     if haskey(PDMFT, key)
@@ -388,6 +408,8 @@ end
     get_i(key::String)
 
 Extract configurations from dict: PIMP.
+
+See also: [`cat_i`](@ref), [`str_i`](@ref).
 """
 @inline function get_i(key::String)
     if haskey(PIMP, key)
@@ -401,6 +423,8 @@ end
     get_s(key::String)
 
 Extract configurations from dict: PSOLVER.
+
+See also: [`cat_s`](@ref), [`str_s`](@ref).
 """
 @inline function get_s(key::String)
     if haskey(PSOLVER, key)
@@ -418,6 +442,8 @@ end
     str_c(key::String)
 
 Extract configurations from dict: PCASE, convert them into strings.
+
+See also: [`cat_c`](@ref), [`get_c`](@ref).
 """
 @inline function str_c(key::String)
     if haskey(PCASE, key)
@@ -436,6 +462,8 @@ end
     str_d(key::String)
 
 Extract configurations from dict: PDFT, convert them into strings.
+
+See also: [`cat_d`](@ref), [`get_d`](@ref).
 """
 @inline function str_d(key::String)
     if haskey(PDFT, key)
@@ -454,6 +482,8 @@ end
     str_m(key::String)
 
 Extract configurations from dict: PDMFT, convert them into strings.
+
+See also: [`cat_m`](@ref), [`get_m`](@ref).
 """
 @inline function str_m(key::String)
     if haskey(PDMFT, key)
@@ -472,6 +502,8 @@ end
     str_i(key::String)
 
 Extract configurations from dict: PIMP, convert them into strings.
+
+See also: [`cat_i`](@ref), [`get_i`](@ref).
 """
 @inline function str_i(key::String)
     if haskey(PIMP, key)
@@ -490,6 +522,8 @@ end
     str_s(key::String)
 
 Extract configurations from dict: PSOLVER, convert them into strings.
+
+See also: [`cat_s`](@ref), [`get_s`](@ref).
 """
 @inline function str_s(key::String)
     if haskey(PSOLVER, key)
