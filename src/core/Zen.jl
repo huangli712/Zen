@@ -54,10 +54,10 @@ using SpecialFunctions
 # C32, C64    -> Numerical types (Complex).
 # R32, R64    -> Numerical types (Union of Integer and Float).
 # N32, N64    -> Numerical types (Union of Integer, Float, and Complex).
-# __LIBNAME__ -> Name of this framework.
-# __VERSION__ -> Version of this framework.
-# __RELEASE__ -> Released date of this framework.
-# __AUTHORS__ -> Authors of this framework.
+# __LIBNAME__ -> Name of this package.
+# __VERSION__ -> Version of this package.
+# __RELEASE__ -> Released date of this package.
+# __AUTHORS__ -> Authors of this package.
 #
 include("global.jl")
 #
