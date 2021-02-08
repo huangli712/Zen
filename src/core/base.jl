@@ -297,25 +297,17 @@ Remove the working directories finally.
 See also: [`make_trees`](@ref).
 """
 function rm_trees()
-    # For dft
-    if isdir("dft")
-        rm("dft", force = true, recursive = true)
-    end
-
-    # For dmft1
-    if isdir("dmft1")
-        rm("dmft1", force = true, recursive = true)
-    end
-
-    # For dmft2
-    if isdir("dmft2")
-        rm("dmft2", force = true, recursive = true)
-    end
-
-    # For impurity.i
+    # Build an array for folders
+    dir_list = ["dft", "dmft1", "dmft2"]
     for i = 1:get_i("nsite")
-        if isdir("impurity.$i")
-            rm("impurity.$i", force = true, recursive = true)
+        push!(dir_list, "impurity.$i")
+    end
+
+    # Go through these folders, remove them one by one.
+    for i in eachindex(dir_list)
+        dir = dir_list[i]
+        if isdir(dir)
+            rm(dir, force = true, recursive = true)
         end
     end
 end
