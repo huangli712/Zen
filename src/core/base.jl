@@ -316,6 +316,8 @@ end
     adaptor_init(it::IterInfo, lr::Logger)
 
 Initialize the adaptor, to check whether the essential files exist.
+
+See also: [`adaptor_run`](@ref), [`adaptor_save`](@ref).
 """
 function adaptor_init(it::IterInfo, lr::Logger)
     # Enter dft directory
@@ -343,8 +345,10 @@ end
 """
     adaptor_run(it::IterInfo)
 
-Parse the data output by DFT engine, postprocess them, and then transform
-them into IR format.
+Parse the data output by the DFT engine, try to postprocess them, and then
+transform them into IR format.
+
+See also: [`adaptor_init`](@ref), [`adaptor_save`](@ref).
 """
 function adaptor_run(it::IterInfo)
     # Enter dft directory
@@ -353,7 +357,7 @@ function adaptor_run(it::IterInfo)
     # A0: Create a dict named DFTData
     #
     # This dictionary is for storing the Kohn-Sham band structure and
-    # related data. The key-value pairs should be inserted into this
+    # related data. The key-value pairs would be inserted into this
     # dict dynamically.
     #
     DFTData = Dict{Symbol,Any}()
@@ -382,9 +386,9 @@ function adaptor_run(it::IterInfo)
     # Well, now we have the Kohn-Sham data. But they can not be used
     # directly. We have to check and process them carefully. Please
     # pay attention to that the DFTData dict will be modified in
-    # the plo_adaptor() function. Here the parameter (debug = )true
-    # means that we are going to seeing some interesting quantities
-    # to check the correctness of the Kohn-Sham data.
+    # the plo_adaptor() function. Here the parameter `debug` (= true)
+    # means that we are going to calculating some physical quantities
+    # additionally to check the correctness of the Kohn-Sham data.
     #
     println("  Launch PLO Adaptor")
     plo_adaptor(DFTData, true)
@@ -393,7 +397,7 @@ function adaptor_run(it::IterInfo)
     # A3: Output the processed Kohn-Sham data
     #
     # Ok, now the Kohn-Sham data are ready. We would like to write them
-    # to some specified files.
+    # to some specified files with the IR format.
     #
     println("  Launch IR Adaptor")
     ir_adaptor(DFTData)
@@ -413,6 +417,8 @@ end
     adaptor_save(it::IterInfo)
 
 Backup the output files by adaptor.
+
+See also: [`adaptor_init`](@ref), [`adaptor_run`](@ref).
 """
 function adaptor_save(it::IterInfo)
     # Enter dft directory
