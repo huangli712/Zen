@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/03
+# last modified: 2021/02/08
 #
 
 #
@@ -16,6 +16,8 @@
     setup()
 
 Read parameters from configuration file, and then setup the related dicts.
+
+See also: [`inp_toml`](@ref), [`rev_dict`](@ref), [`chk_dict`](@ref).
 """
 function setup()
     # S1: Parse the case.toml file to extract configuration parameters
@@ -32,6 +34,8 @@ end
     exhibit()
 
 Display the configuration parameters for reference.
+
+See also: [`setup`](@ref).
 """
 function exhibit()
     # E0: Print the header
