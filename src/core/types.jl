@@ -118,7 +118,7 @@ const PSOLVER= Dict{String,Array{Any,1}}(
 
 Store the IOStreams for case.log and case.cycle files.
 
-.log   -> IOStream for case.log file.
+.log   -> IOStream for case.log file.\n
 .cycle -> IOStream for case.cycle file.
 
 See also: [`IterInfo`](@ref).
@@ -137,11 +137,11 @@ end
 
 Record the DFT + DMFT iteration information.
 
-.dmft1_iter -> Number of iterations between dmft1 and quantum impurity solver.
-.dmft2_iter -> Number of iterations between dmft2 and DFT engine.
-.dmft_cycle -> Number of DFT + DMFT iterations.
-.full_cycle -> Counter for each iteration.
-._dft_fermi -> Fermi level obtained by DFT engine.
+.dmft1_iter -> Number of iterations between dmft1 and quantum impurity solver.\n
+.dmft2_iter -> Number of iterations between dmft2 and DFT engine.\n
+.dmft_cycle -> Number of DFT + DMFT iterations.\n
+.full_cycle -> Counter for each iteration.\n
+._dft_fermi -> Fermi level obtained by DFT engine.\n
 .dmft_fermi -> Fermi level obtained by DMFT engine (dmft1).
 
 See also: [`Logger`](@ref).
@@ -161,15 +161,15 @@ end
 Contain the crystallography information. This struct is designed for the
 `POSCAR` file used by the vasp code.
 
-._case -> The name of system.
+._case -> The name of system.\n
 .scale -> Universal scaling factor (lattice constant), which is used to
-          scale all lattice vectors and all atomic coordinates.
+          scale all lattice vectors and all atomic coordinates.\n
 .lvect -> Three lattice vectors defining the unit cell of the system. Its
-          shape must be (3, 3).
-.nsort -> Number of sorts of atoms.
-.natom -> Number of atoms.
-.sorts -> Sorts of atoms. Its shape must be (nsort, 2).
-.atoms -> Lists of atoms. Its shape must be (natom).
+          shape must be (3, 3).\n
+.nsort -> Number of sorts of atoms.\n
+.natom -> Number of atoms.\n
+.sorts -> Sorts of atoms. Its shape must be (nsort, 2).\n
+.atoms -> Lists of atoms. Its shape must be (natom).\n
 .coord -> Atomic positions are provided in cartesian coordinates or in
           direct coordinates (respectively fractional coordinates). Its
           shape must be (natom, 3).
@@ -190,9 +190,9 @@ end
 
 Essential information of a given projector.
 
-.site -> Site in which the projector is defined.
-.l    -> Quantum number l.
-.m    -> Quantum number m.
+.site -> Site in which the projector is defined.\n
+.l    -> Quantum number l.\n
+.m    -> Quantum number m.\n
 .desc -> Projector's specification.
 
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
@@ -211,13 +211,13 @@ Essential information of group of projectors.
 
 .site   -> Site in which the projectors are defined. In principle, the
            projectors included in the same group should be defined at
-           the same site (or equivalently atom).
+           the same site (or equivalently atom).\n
 .l      -> Quantum number l. In principle, the projectors included in
            the same group should have the same quantum number l (but
-           with different m).
-.corr   -> Test if the projectors in this group are correlated.
-.shell  -> Type of correlated orbitals. It is infered from quantum number l.
-.Pr     -> Array. It contains the indices of projectors.
+           with different m).\n
+.corr   -> Test if the projectors in this group are correlated.\n
+.shell  -> Type of correlated orbitals. It is infered from quantum number l.\n
+.Pr     -> Array. It contains the indices of projectors.\n
 .Tr     -> Array. It contains the transformation matrix. This parameter
            could be useful to select certain subset of orbitals or perform
            a simple global rotation.
@@ -238,10 +238,10 @@ end
 
 Define the band window for group of projectors.
 
-.bmin -> Minimum band index.
-.bmax -> Maximum band index.
-.nbnd -> Maximum number of bands in the current window (= bmax-bmin+1).
-.kwin -> Momentum-dependent and spin-dependent band window.
+.bmin -> Minimum band index.\n
+.bmax -> Maximum band index.\n
+.nbnd -> Maximum number of bands in the current window (= bmax-bmin+1).\n
+.kwin -> Momentum-dependent and spin-dependent band window.\n
 .bwin -> Tuple. It is the band window or energy window, which is used
          to filter the Kohn-Sham band structure.
 
