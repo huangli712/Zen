@@ -5,7 +5,7 @@
 # Status  : unstable
 # Comment :
 #
-# Last modified: 2021/02/03
+# Last modified: 2021/02/08
 #
 
 #
@@ -28,6 +28,8 @@
     PCASE
 
 Dictionary for configuration parameters: case summary.
+
+See also: [`PDFT`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
 const PCASE = Dict{String,Array{Any,1}}(
           "case"     => [missing, 1, :String, "System's name"]
@@ -37,6 +39,8 @@ const PCASE = Dict{String,Array{Any,1}}(
     PDFT
 
 Dictionary for configuration parameters: density functional theory calculations.
+
+See also: [`PCASE`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
 const PDFT  = Dict{String,Array{Any,1}}(
           "engine"   => [missing, 1, :String, "Engine for density functional theory calculations"],
@@ -56,6 +60,8 @@ const PDFT  = Dict{String,Array{Any,1}}(
     PDMFT
 
 Dictionary for configuration parameters: dynamical mean-field theory calculations.
+
+See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
 const PDMFT = Dict{String,Array{Any,1}}(
           "mode"     => [missing, 1, :I64   , "Scheme of dynamical mean-field theory calculations"],
@@ -76,6 +82,8 @@ const PDMFT = Dict{String,Array{Any,1}}(
     PIMP
 
 Dictionary for configuration parameters: quantum impurity problems.
+
+See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PDMFT`](@ref), [`PSOLVER`](@ref).
 """
 const PIMP  = Dict{String,Array{Any,1}}(
           "nsite"    => [missing, 1, :I64   , "Number of (correlated) impurity sites"],
@@ -93,6 +101,8 @@ const PIMP  = Dict{String,Array{Any,1}}(
     PSOLVER
 
 Dictionary for configuration parameters: quantum impurity solvers.
+
+See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref).
 """
 const PSOLVER= Dict{String,Array{Any,1}}(
           "engine"   => [missing, 1, :String, "Name of quantum impurity solver"],
