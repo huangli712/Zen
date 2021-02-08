@@ -120,6 +120,8 @@ Store the IOStreams for case.log and case.cycle files.
 
 .log   -> IOStream for case.log file.
 .cycle -> IOStream for case.cycle file.
+
+See also: [`IterInfo`](@ref).
 """
 mutable struct Logger
     # Members
@@ -141,6 +143,8 @@ Record the DFT + DMFT iteration information.
 .full_cycle -> Counter for each iteration.
 ._dft_fermi -> Fermi level obtained by DFT engine.
 .dmft_fermi -> Fermi level obtained by DMFT engine (dmft1).
+
+See also: [`Logger`](@ref).
 """
 mutable struct IterInfo
     dmft1_iter :: I64
@@ -154,7 +158,8 @@ end
 """
     Lattice
 
-Contain the crystallography information.
+Contain the crystallography information. This struct is designed for the
+`POSCAR` file used by the vasp code.
 
 ._case -> The name of system.
 .scale -> Universal scaling factor (lattice constant), which is used to
@@ -189,6 +194,8 @@ Essential information of a given projector.
 .l    -> Quantum number l.
 .m    -> Quantum number m.
 .desc -> Projector's specification.
+
+See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
 """
 mutable struct PrTrait
     site  :: I64
@@ -214,6 +221,8 @@ Essential information of group of projectors.
 .Tr     -> Array. It contains the transformation matrix. This parameter
            could be useful to select certain subset of orbitals or perform
            a simple global rotation.
+
+See also: [`PrTrait`](@ref), [`PrWindow`](@ref).
 """
 mutable struct PrGroup
     site  :: I64
@@ -227,14 +236,16 @@ end
 """
     PrWindow
 
-Define the band window of group of projectors.
+Define the band window for group of projectors.
 
 .bmin -> Minimum band index.
 .bmax -> Maximum band index.
-.nbnd -> Maximum number of bands in the current window.
+.nbnd -> Maximum number of bands in the current window (= bmax-bmin+1).
 .kwin -> Momentum-dependent and spin-dependent band window.
 .bwin -> Tuple. It is the band window or energy window, which is used
          to filter the Kohn-Sham band structure.
+
+See also: [`PrTrait`](@ref), [`PrGroup`](@ref).
 """
 mutable struct PrWindow
     bmin  :: I64
@@ -312,7 +323,7 @@ end
 Outer constructor for PrGroup struct.
 """
 function PrGroup(site::I64, l::I64)
-    # The lshell defines a mapping from l (integer) to shell (string)
+    # The dict lshell defines a mapping from l (integer) to shell (string)
     lshell = Dict{I64,String}(
                  0 => "s",
                  1 => "p",
