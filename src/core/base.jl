@@ -247,9 +247,9 @@ function monitor(force_exit::Bool = false)
 # In order to terminate the Zen code, the following two conditions
 # should be fulfilled at the same time.
 #
-# 1. The argument force_exit is true.
+# 1. The argument `force_exit` is true.
 #
-# 2. The case.stop file exists.
+# 2. The case.stop file exists (from query_stop()).
 #
 
     if force_exit && query_stop()
@@ -273,30 +273,17 @@ function make_trees()
 # If they exist already, it would be better to remove them at first.
 #
 
-    # For dft
-    if isdir("dft")
-        rm("dft", force = true, recursive = true)
-    end
-    mkdir("dft")
-
-    # For dmft1
-    if isdir("dmft1")
-        rm("dmft1", force = true, recursive = true)
-    end
-    mkdir("dmft1")
-
-    # For dmft2
-    if isdir("dmft2")
-        rm("dmft2", force = true, recursive = true)
-    end
-    mkdir("dmft2")
-
-    # For impurity.i
+    dir_list = ["dft", "dmft1", "dmft2"]
     for i = 1:get_i("nsite")
-        if isdir("impurity.$i")
-            rm("impurity.$i", force = true, recursive = true)
+        push!(dir_list, "impurity.$i")
+    end
+
+    for i in eachindex(dir_list)
+        dir = dir_list[i]
+        if isdir(dir)
+            rm(dir, force = true, recursive = true)
         end
-        mkdir("impurity.$i")
+        mkdir(dir)
     end
 end
 

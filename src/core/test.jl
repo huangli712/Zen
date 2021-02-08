@@ -15,5 +15,7 @@ using .Zen
 
 setup()
 exhibit()
-it = IterInfo()
-adaptor_run(it)
+#it = IterInfo()
+#adaptor_run(it)
+
+make_trees()
