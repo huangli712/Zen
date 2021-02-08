@@ -7,35 +7,35 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/03
+# Last modified: 2021/02/08
 #
 
 include("Zen.jl")
 using .Zen
 
-# S-1: Check the version of julia runtime environment
+# R-1: Check the version of julia runtime environment
 require()
 
-# S00: Print the welcome message
+# R00: Print the welcome message
 welcome()
 
-# S01: Print the overview for Zen
+# R01: Print the overview for Zen
 overview()
 
-# S02: Setup the configuration parameters
+# R02: Setup the configuration parameters
 setup()
 
-# S03: Print the configuration parameters
+# R03: Print the configuration parameters
 exhibit()
 
-# S04: Initialize the task
+# R04: Initialize the task
 ready()
 
-# S05: Carry out the task
+# R05: Carry out the task
 go()
 
-# S06: Finalize the task
+# R06: Finalize the task
 final()
 
-# S07: Say good bye
+# R07: Say good bye
 goodbye()
