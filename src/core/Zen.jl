@@ -214,7 +214,7 @@ export line_to_array
 # Summary:
 #
 # To provide the core functions to control the DFT engine, DMFT engine,
-# and impurity solvers.
+# and quantum impurity solvers.
 #
 # Members:
 #

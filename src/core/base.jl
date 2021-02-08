@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/04
+# Last modified: 2021/02/09
 #
 
 #
@@ -70,12 +70,14 @@ end
     cycle1()
 
 Perform one-shot DFT + DMFT calculations.
+
+See also: [`cycle2`](@ref).
 """
 function cycle1()
-    # C-1: Create IterInfo
+    # C-1: Create IterInfo struct
     it = IterInfo()
 
-    # C00: Create Logger
+    # C00: Create Logger struct
     lr = Logger()
     lr.log = open(query_case() * ".log", "a")
     lr.cycle = open(query_case() * ".cycle", "a")
@@ -164,31 +166,43 @@ function cycle1()
     for iter = 1:get_m("niter")
         # C04: Perform DMFT calculation
         #
-        # C04.1: Prepare and check essential files for the DMFT engine
+        # C04.1: Prepare and check essential files for the DMFT engine (dmft1)
         dmft_init(it, lr)
         #
         # C04.2: Launch the DMFT engine (dmft1)
         dmft_run(it)
         #
-        # C04.3: Backup the output files of the DMFT engine
+        # C04.3: Backup the output files of the DMFT engine (dmft1)
         dmft_save(it)
         #
         # C04.4: Monitor the status
         monitor(true)
 
-        # C05: Solve the quantum impurity problems
         #
-        # C05.1: Prepare and check essential files for the quantum impurity solver
+        # C05: Split the data
+        #
+
+        # C06: Solve the quantum impurity problems
+        #
+        # C06.1: Prepare and check essential files for the quantum impurity solver
         solver_init(it, lr)
         #
-        # C05.2: Launch the quantum impurity solver
+        # C06.2: Launch the quantum impurity solver
         solver_run(it)
         #
-        # C05.3: Backup the output files of the quantum impurity solver
+        # C06.3: Backup the output files of the quantum impurity solver
         solver_save(it)
         #
-        # C05.4: Monitor the status
+        # C06.4: Monitor the status
         monitor(true)
+
+        #
+        # C07: Combine the data
+        #
+
+        #
+        # C08: Mixer
+        #
     end
 
     # C90: Close Logger
@@ -206,6 +220,8 @@ end
     cycle2()
 
 Perform fully self-consistent DFT + DMFT calculations.
+
+See also: [`cycle1`](@ref).
 """
 function cycle2()
     # TODO
@@ -220,6 +236,8 @@ end
     monitor(force_exit::Bool = false)
 
 Determine whether we need to terminate the Zen code.
+
+See also: [`query_stop`](@ref).
 """
 function monitor(force_exit::Bool = false)
 
@@ -243,6 +261,8 @@ end
     make_trees()
 
 Prepare the working directories at advance.
+
+See also: [`rm_trees`](@ref).
 """
 function make_trees()
 
@@ -284,6 +304,8 @@ end
     rm_trees()
 
 Remove the working directories finally.
+
+See also: [`make_trees`](@ref).
 """
 function rm_trees()
     # For dft
