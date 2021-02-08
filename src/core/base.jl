@@ -273,11 +273,13 @@ function make_trees()
 # If they exist already, it would be better to remove them at first.
 #
 
+    # Build an array for folders
     dir_list = ["dft", "dmft1", "dmft2"]
     for i = 1:get_i("nsite")
         push!(dir_list, "impurity.$i")
     end
 
+    # Go through these folders, create them one by one.
     for i in eachindex(dir_list)
         dir = dir_list[i]
         if isdir(dir)
