@@ -169,13 +169,13 @@ function cycle1()
         # C04: Perform DMFT calculation
         #
         # C04.1: Prepare and check essential files for the DMFT engine (dmft1)
-        dmft_init(it, lr)
+        dmft_init(it, lr, 1)
         #
         # C04.2: Launch the DMFT engine (dmft1)
-        dmft_run(it)
+        dmft_run(it, 1)
         #
         # C04.3: Backup the output files of the DMFT engine (dmft1)
-        dmft_save(it)
+        dmft_save(it, 1)
         #
         # C04.4: Monitor the status
         monitor(true)
@@ -522,21 +522,38 @@ function dft_save(it::IterInfo)
 end
 
 """
-    dmft_init(it::IterInfo, lr::Logger)
+    dmft_init(it::IterInfo, lr::Logger, dmft_mode::I64)
 
 To examine the runtime environment for dynamical mean-field theory engine.
 
 See also [`dmft_run`](@ref), [`dmft_save`])(@ref).
 """
-function dmft_init(it::IterInfo, lr::Logger)
-    # Enter dmft1 directory
-    cd("dmft1")
+function dmft_init(it::IterInfo, lr::Logger, dmft_mode::I64)
+    # Examine the argument `dmft_mode`
+    @assert dmft_mode === 1 || dmft_mode === 2
 
-    # TODO
-    prompt(lr.log, "dmft1")
+    # Solve the DMFT self-consistent equation
+    if dmft_mode === 1
+        # Enter dmft1 directory
+        cd("dmft1")
 
-    # Enter the parent directory
-    cd("..")
+        # TODO
+        prompt(lr.log, "dmft1")
+
+        # Enter the parent directory
+        cd("..")
+
+    # Generate DMFT correction to DFT
+    else
+        # Enter dmft2 directory
+        cd("dmft2")
+
+        # TODO
+        prompt(lr.log, "dmft2")
+
+        # Enter the parent directory
+        cd("..")
+    end
 end
 
 """
