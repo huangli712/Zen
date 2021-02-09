@@ -82,20 +82,17 @@ Backup the files outputed by the adaptor.
 See also: [`ir_adaptor`](@ref).
 """
 function ir_save(it::IterInfo)
-    # Store the data files
-    if it.dmft_cycle == 0
-        cp("lattice.ir", "lattice.ir.$(it.dmft_cycle)", force = true)
-        cp("kmesh.ir", "kmesh.ir.$(it.dmft_cycle)", force = true)
-        cp("eigen.ir", "eigen.ir.$(it.dmft_cycle)", force = true)
-        cp("projs.ir", "projs.ir.$(it.dmft_cycle)", force = true)
-        cp("fermi.ir", "fermi.ir.$(it.dmft_cycle)", force = true)
+    # Create a list of files that need to be backup
+    file_list = ["lattice", "kmesh", "eigen", "projs", "fermi"]
+    if get_d("smear") === "tetra"
+        push!(file_list, "tetra")
+    end
 
-        # Optional operation
-        if get_d("smear") === "tetra"
-            cp("tetra.ir", "tetra.ir.$(it.dmft_cycle)", force = true)
-        end
-    else
-        sorry()
+    # Store the data files
+    for i in eachindex(file_list)
+        file_src = file_list[i] * ".ir"
+        file_dst = file_list[i] * ".ir.$(it.dmft_cycle)"
+        cp(file_src, file_dst, force = true)
     end
 end
 
