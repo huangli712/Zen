@@ -166,7 +166,11 @@ function irio_traits(f::String, D::Dict{Symbol,Any})
         # Write PrWindow[]
         println(fout, "nwnd  -> $nwnd")
         for p in eachindex(D[:PW])
+            PW = D[:PW]
             println(fout, "PrWindow: $p")
+            println(fout, "bmin  -> $(PW[p].bmin)")
+            println(fout, "bmax  -> $(PW[p].bmax)")
+            println(fout, "nbnd  -> $(PW[p].nbnd)")
         end
     end
 end
