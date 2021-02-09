@@ -408,9 +408,8 @@ function adaptor_run(it::IterInfo)
     #
     # A4: Clear the DFTData dict
     #
-    for k in keys(DFTData)
-        delete!(DFTData, k)
-    end
+    empty!(DFTData)
+    @assert isempty(DFTData)
 
     # Enter the parent directory
     cd("..")
@@ -438,6 +437,8 @@ end
     dft_init(it::IterInfo, lr::Logger)
 
 To examine the runtime environment for density functional theory engine.
+
+See also: [`dft_run`](@ref), [`dft_save`](@ref).
 """
 function dft_init(it::IterInfo, lr::Logger)
     # Enter dft directory
@@ -467,6 +468,8 @@ end
     dft_run(it::IterInfo)
 
 Launch the density functional theory engine.
+
+See also: [`dft_init`](@ref), [`dft_save`](@ref).
 """
 function dft_run(it::IterInfo)
     # Enter dft directory
@@ -494,6 +497,8 @@ end
 
 Backup the output files by density functional theory engine
 for next iterations.
+
+See also: [`dft_init`](@ref), [`dft_run`](@ref).
 """
 function dft_save(it::IterInfo)
     # Enter dft directory
@@ -520,6 +525,8 @@ end
     dmft_init(it::IterInfo, lr::Logger)
 
 To examine the runtime environment for dynamical mean-field theory engine.
+
+See also [`dmft_run`](@ref), [`dmft_save`])(@ref).
 """
 function dmft_init(it::IterInfo, lr::Logger)
     # Enter dmft1 directory
@@ -536,6 +543,8 @@ end
     dmft_run(it::IterInfo)
 
 Launch the dynamical mean-field theory engine.
+
+See also [`dmft_init`](@ref), [`dmft_save`])(@ref).
 """
 function dmft_run(it::IterInfo)
     # Enter dmft1 directory
@@ -552,6 +561,8 @@ end
 
 Backup the output files by dynamical mean-field theory engine
 for next iterations.
+
+See also [`dmft_init`](@ref), [`dmft_run`])(@ref).
 """
 function dmft_save(it::IterInfo)
     # Enter dmft1 directory
