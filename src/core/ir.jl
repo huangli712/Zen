@@ -113,7 +113,44 @@ means only the directory that we want to use.
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
 """
 function irio_traits(f::String, D::Dict{Symbol,Any})
+    # Extract some key parameters
+    nband, nkpt, nspin = size(D[:enk])
 
+    # Extract `ntet`
+    if haskey(D, :itet)
+        ntet, _ = size(D[:itet])
+    else
+        ntet = 0
+    end
+
+    # Extract `volt`
+    if haskey(D, :volt)
+        volt = D[:volt]
+    else
+        volt = 0.0
+    end
+
+    # Output the data
+    open(joinpath(f, "traits.ir"), "w") do fout
+        # Write the header
+        println(fout, "# file: traits.ir")
+        println(fout, "# data: some necessary parameters")
+        println(fout)
+
+        # Write basic parameters
+        println(fout, "nband -> $nband")
+        println(fout, "nkpt  -> $nkpt")
+        println(fout, "nspin -> $nspin")
+        println(fout, "ntet  -> $ntet")
+        println(fout, "volt  -> $volt")
+        println(fout)
+
+        # Write PrGroup[]
+        println(fout, "ngrp  -> ")
+
+        # Write PrWindow[]
+        println(fout, "nwnd  -> ")
+    end
 end
 
 """
