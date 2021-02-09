@@ -25,7 +25,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     println("  < IR Adaptor >")
 
     # I02: Check the validity of the `D` dict
-    key_list = [:latt, :kmesh, :weight, :enk, :occupy, :chipsi, :fermi]
+    key_list = [:latt, :kmesh, :weight, :enk, :occupy, :chipsi_f, :fermi]
     for k in key_list
         @assert haskey(D, k)
     end
@@ -46,7 +46,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
 
     # I06: Write projectors, traits, and groups
     println("    Put Projector")
-    irio_projs(pwd(), D[:chipsi])
+    irio_projs(pwd(), D[:chipsi_f])
 
     # I07: Write fermi level
     println("    Put Fermi Level")
@@ -99,6 +99,17 @@ end
 #
 # Service Functions
 #
+
+"""
+    irio_traits(f::String, D::Dict{Symbol,Any})
+
+Write the key parameters extracted from the Kohn-Sham data. Here `f`
+means only the directory that we want to use.
+
+See also: [`PrGroup`](@ref), [`PrWindow`](@ref)
+"""
+function irio_traits(f::String, D::Dict{Symbol,Any})
+end
 
 """
     irio_lattice(f::String, latt::Lattice)
