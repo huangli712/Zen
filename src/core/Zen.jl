@@ -108,6 +108,52 @@ export PrGroup
 export PrWindow
 
 #
+# util.jl
+#
+# Summary:
+#
+# To provide some useful utility functions. They can be used to query
+# the environments and parse the strings, etc.
+#
+# Members:
+#
+# @cswitch      -> C-style switch.
+# @ps1          -> Wrapper for printstyled function.
+# @ps2          -> Wrapper for printstyled function.
+# require       -> Check julia envirnoment.
+# query_args    -> Query program's arguments.
+# query_case    -> Query case (job's name).
+# query_inps    -> Query input files.
+# query_stop    -> Query case.stop file.
+# query_zen     -> Query home directory of Zen.
+# query_dft     -> Query home directory of DFT engine.
+# welcome       -> Print welcome message.
+# overview      -> Print overview of Zen.
+# goodbye       -> Say goodbye.
+# sorry         -> Say sorry.
+# prompt        -> Print some messages to the device.
+# line_to_array -> Convert a line to a string array.
+#
+include("util.jl")
+#
+export @cswitch
+export @ps1
+export @ps2
+export require
+export query_args
+export query_case
+export query_inps
+export query_stop
+export query_zen
+export query_dft
+export welcome
+export overview
+export goodbye
+export sorry
+export prompt
+export line_to_array
+
+#
 # config.jl
 #
 # Summary:
@@ -375,52 +421,6 @@ export tetra_p_ek12
 export tetra_p_ek23
 export tetra_p_ek34
 export tetra_p_ek4
-
-#
-# util.jl
-#
-# Summary:
-#
-# To provide some useful utility functions. They can be used to query
-# the environments and parse the strings, etc.
-#
-# Members:
-#
-# @cswitch      -> C-style switch.
-# @ps1          -> Wrapper for printstyled function.
-# @ps2          -> Wrapper for printstyled function.
-# require       -> Check julia envirnoment.
-# query_args    -> Query program's arguments.
-# query_case    -> Query case (job's name).
-# query_inps    -> Query input files.
-# query_stop    -> Query case.stop file.
-# query_zen     -> Query home directory of Zen.
-# query_dft     -> Query home directory of DFT engine.
-# welcome       -> Print welcome message.
-# overview      -> Print overview of Zen.
-# goodbye       -> Say goodbye.
-# sorry         -> Say sorry.
-# prompt        -> Print some messages to the device.
-# line_to_array -> Convert a line to a string array.
-#
-include("util.jl")
-#
-export @cswitch
-export @ps1
-export @ps2
-export require
-export query_args
-export query_case
-export query_inps
-export query_stop
-export query_zen
-export query_dft
-export welcome
-export overview
-export goodbye
-export sorry
-export prompt
-export line_to_array
 
 """
     __init__()

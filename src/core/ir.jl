@@ -307,6 +307,17 @@ function irio_projs(f::String, chipsi::Array{C64,4})
 end
 
 """
+    irio_projs(f::String, chipsi::Array{Array{C64,4},1})
+
+Write the projectors to projs.ir using the IR format. Here `f` means
+only the directory that we want to use.
+
+See also: [`vaspio_projs`](@ref).
+"""
+function irio_projs(f::String, chipsi::Array{Array{C64,4},1})
+end
+
+"""
     irio_fermi(f::String, fermi::F64)
 
 Write the fermi level to fermi.ir using the IR format. Here `f` means
