@@ -154,11 +154,19 @@ function irio_traits(f::String, D::Dict{Symbol,Any})
         # Write PrGroup[]
         println(fout, "ngrp  -> $ngrp")
         for p in eachindex(D[:PG])
+            PG = D[:PG]
+            println(fout, "PrGroup : $p")
+            println(fout, "site  -> $(PG[p].site)")
+            println(fout, "l     -> $(PG[p].l)")
+            println(fout, "corr  -> $(PG[p].corr)")
+            println(fout, "shell -> $(PG[p].shell)")
+            println(fout, "ndim  -> $(size(PG[p].Tr,1))")
         end
 
         # Write PrWindow[]
         println(fout, "nwnd  -> $nwnd")
         for p in eachindex(D[:PW])
+            println(fout, "PrWindow: $p")
         end
     end
 end
