@@ -627,6 +627,8 @@ end
     solver_init(it::IterInfo, lr::Logger)
 
 To examine the runtime environment for quantum impurity solver.
+
+See also: [`solver_run`](@ref), [`solver_save`](@ref).
 """
 function solver_init(it::IterInfo, lr::Logger)
     # Loop over each impurity site
@@ -669,6 +671,8 @@ end
     solver_run(it::IterInfo)
 
 Launch the quantum impurity solver.
+
+See also: [`solver_init`](@ref), [`solver_save`](@ref).
 """
 function solver_run(it::IterInfo)
     # Loop over each impurity site
@@ -707,6 +711,8 @@ end
     solver_save(it::IterInfo)
 
 Backup the output files by quantum impurity solver for next iterations.
+
+See also: [`solver_init`](@ref), [`solver_run`](@ref).
 """
 function solver_save(it::IterInfo)
     # Loop over each impurity site
