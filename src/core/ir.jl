@@ -131,10 +131,10 @@ function irio_traits(f::String, D::Dict{Symbol,Any})
     end
 
     # Extract `ngrp`
-    ngrp, _ = size(D[:PG])
+    ngrp, = size(D[:PG])
 
     # Extract `nwnd`
-    nwnd, _ = size(D[:PW])
+    nwnd, = size(D[:PW])
 
     # Output the data
     open(joinpath(f, "traits.ir"), "w") do fout
