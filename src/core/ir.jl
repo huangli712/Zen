@@ -105,6 +105,8 @@ end
 
 Write the lattice information to lattice.ir using the IR format. Here `f`
 means only the directory that we want to use.
+
+See also: [`vaspio_lattice`](@ref).
 """
 function irio_lattice(f::String, latt::Lattice)
     # Extract some key parameters
@@ -163,6 +165,8 @@ end
 
 Write the kmesh and weight information to kmesh.ir using the IR format. Here
 `f` means only the directory that we want to use.
+
+See also: [`vaspio_kmesh`](@ref).
 """
 function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
     # Extract some key parameters
@@ -197,6 +201,8 @@ end
 
 Write the tetrahedra information to tetra.ir using the IR format. Here `f`
 means only the directory that we want to use.
+
+See also: [`vaspio_tetra`](@ref).
 """
 function irio_tetra(f::String, volt::F64, itet::Array{I64,2})
     # Extract some key parameters
@@ -225,8 +231,10 @@ end
 """
     irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
 
-Write the eigenvalues to eigen.ir using the IR format. Here `f` means only
-the directory that we want to use.
+Write the eigenvalues to eigen.ir using the IR format. Here `f` means
+only the directory that we want to use.
+
+See also: [`vaspio_eigen`](@ref).
 """
 function irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
     # Extract some key parameters
@@ -263,8 +271,10 @@ end
 """
     irio_projs(f::String, chipsi::Array{C64,4})
 
-Write the projectors to projs.ir using the IR format. Here `f` means only
-the directory that we want to use.
+Write the projectors to projs.ir using the IR format. Here `f` means
+only the directory that we want to use.
+
+See also: [`vaspio_projs`](@ref).
 """
 function irio_projs(f::String, chipsi::Array{C64,4})
     # Extract some key parameters
@@ -299,8 +309,10 @@ end
 """
     irio_fermi(f::String, fermi::F64)
 
-Write the fermi level to fermi.ir using the IR format. Here `f` means only
-the directory that we want to use.
+Write the fermi level to fermi.ir using the IR format. Here `f` means
+only the directory that we want to use.
+
+See also: [`vaspio_fermi`](@ref).
 """
 function irio_fermi(f::String, fermi::F64)
     # Output the data
@@ -322,5 +334,7 @@ end
 
 Write the charge density to charge.ir using the IR format. Here `f` means
 only the directory that we want to use.
+
+See also: [`vaspio_charge`](@ref).
 """
 function irio_charge(f::String) end
