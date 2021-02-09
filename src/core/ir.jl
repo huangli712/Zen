@@ -106,7 +106,7 @@ end
 Write the key parameters extracted from the Kohn-Sham data. Here `f`
 means only the directory that we want to use.
 
-See also: [`PrGroup`](@ref), [`PrWindow`](@ref)
+See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
 """
 function irio_traits(f::String, D::Dict{Symbol,Any})
 
@@ -286,6 +286,8 @@ end
 Write the projectors to projs.ir using the IR format. Here `f` means
 only the directory that we want to use.
 
+The projectors are original data. They have not been modified.
+ 
 See also: [`vaspio_projs`](@ref).
 """
 function irio_projs(f::String, chipsi::Array{C64,4})
@@ -323,6 +325,9 @@ end
 
 Write the projectors to projs.ir using the IR format. Here `f` means
 only the directory that we want to use.
+
+The projectors have been processed to fulfill the requirement of the
+DMFT engine.
 
 See also: [`vaspio_projs`](@ref).
 """
