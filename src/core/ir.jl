@@ -130,6 +130,12 @@ function irio_traits(f::String, D::Dict{Symbol,Any})
         volt = 0.0
     end
 
+    # Extract `ngrp`
+    ngrp = size(D[:PG])
+
+    # Extract `nwnd`
+    nwnd = size(D[:PW])
+
     # Output the data
     open(joinpath(f, "traits.ir"), "w") do fout
         # Write the header
@@ -146,10 +152,10 @@ function irio_traits(f::String, D::Dict{Symbol,Any})
         println(fout)
 
         # Write PrGroup[]
-        println(fout, "ngrp  -> ")
+        println(fout, "ngrp  -> $ngrp")
 
         # Write PrWindow[]
-        println(fout, "nwnd  -> ")
+        println(fout, "nwnd  -> $nwnd")
     end
 end
 
