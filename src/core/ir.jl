@@ -186,7 +186,8 @@ function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
 
         # Write the body
         for k = 1:nkpt
-            @printf(fout, "%16.12f %16.12f %16.12f %8.2f\n", kmesh[k, 1:3]..., weight[k])
+            @printf(fout, "%16.12f %16.12f %16.12f", kmesh[k, 1:3]...)
+            @printf(fout, "%8.2f\n", weight[k])
         end
     end
 end
