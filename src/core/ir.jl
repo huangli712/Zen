@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/04
+# last modified: 2021/02/09
 #
 
 #
@@ -16,13 +16,15 @@
     ir_adaptor(D::Dict{Symbol,Any})
 
 Write the Kohn-Sham data to specified files using the IR format. Note
-that the Kohn-Sham data are encapsulated in a dict.
+that the Kohn-Sham data are encapsulated in the `D` dict.
+
+See also: [`vasp_adaptor`](@ref), [`plo_adaptor`](@ref).
 """
 function ir_adaptor(D::Dict{Symbol,Any})
     # I01: Print the header
     println("  < IR Adaptor >")
 
-    # I02: Check the validity of the dict
+    # I02: Check the validity of the `D` dict
     key_list = [:latt, :kmesh, :weight, :enk, :occupy, :chipsi, :fermi]
     for k in key_list
         @assert haskey(D, k)
@@ -57,7 +59,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
 # might be absent.
 #
 
-    # I08: Check the validity of the dict further (optional)
+    # I08: Check the validity of the `D` dict further (optional)
     if get_d("smear") === "tetra"
         key_list = [:volt, :itet]
         for k in key_list
@@ -76,6 +78,8 @@ end
     ir_save(it::IterInfo)
 
 Backup the files outputed by the adaptor.
+
+See also: [`ir_adaptor`](@ref).
 """
 function ir_save(it::IterInfo)
     # Store the data files

@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/08
+# Last modified: 2021/02/09
 #
 
 module Zen
@@ -163,52 +163,6 @@ export str_i
 export str_s
 
 #
-# util.jl
-#
-# Summary:
-#
-# To provide some useful utility functions. They can be used to query
-# the environments and parse the strings, etc.
-#
-# Members:
-#
-# @cswitch      -> C-style switch.
-# @ps1          -> Wrapper for printstyled function.
-# @ps2          -> Wrapper for printstyled function.
-# require       -> Check julia envirnoment.
-# query_args    -> Query program's arguments.
-# query_case    -> Query case (job's name).
-# query_inps    -> Query input files.
-# query_stop    -> Query case.stop file.
-# query_zen     -> Query home directory of Zen.
-# query_dft     -> Query home directory of DFT engine.
-# welcome       -> Print welcome message.
-# overview      -> Print overview of Zen.
-# goodbye       -> Say goodbye.
-# sorry         -> Say sorry.
-# prompt        -> Print some messages to the device.
-# line_to_array -> Convert a line to a string array.
-#
-include("util.jl")
-#
-export @cswitch
-export @ps1
-export @ps2
-export require
-export query_args
-export query_case
-export query_inps
-export query_stop
-export query_zen
-export query_dft
-export welcome
-export overview
-export goodbye
-export sorry
-export prompt
-export line_to_array
-
-#
 # base.jl
 #
 # Summary:
@@ -349,38 +303,6 @@ export view_hamk
 export view_dos
 
 #
-# tetra.jl
-#
-# Summary:
-#
-# Tools for the analytical tetrahedron method (adaptor).
-#
-# Members:
-#
-# TetraWeight  -> Struct for integration weights.
-# bzint        -> Compute tetrahedron integrated weights.
-# gauss_weight -> Compute integrated weights using Gaussian broadening.
-# fermi_weight -> Compute integrated weights using Fermi-Dirac broadening.
-# tetra_weight -> Compute integrated weights for a given tetrahedron.
-# tetra_p_ek1  -> Blochl tetrahedron integration algorithm, case 1.
-# tetra_p_ek12 -> Blochl tetrahedron integration algorithm, case 2.
-# tetra_p_ek23 -> Blochl tetrahedron integration algorithm, case 3.
-# tetra_p_ek34 -> Blochl tetrahedron integration algorithm, case 4.
-# tetra_p_ek4  -> Blochl tetrahedron integration algorithm, case 5.
-#
-include("tetra.jl")
-export TetraWeight
-export bzint
-export gauss_weight
-export fermi_weight
-export tetra_weight
-export tetra_p_ek1
-export tetra_p_ek12
-export tetra_p_ek23
-export tetra_p_ek34
-export tetra_p_ek4
-
-#
 # vasp.jl
 #
 # Summary:
@@ -421,6 +343,84 @@ export vaspio_eigen
 export vaspio_projs
 export vaspio_fermi
 export vaspio_charge
+
+#
+# tetra.jl
+#
+# Summary:
+#
+# Tools for the analytical tetrahedron method (adaptor).
+#
+# Members:
+#
+# TetraWeight  -> Struct for integration weights.
+# bzint        -> Compute tetrahedron integrated weights.
+# gauss_weight -> Compute integrated weights using Gaussian broadening.
+# fermi_weight -> Compute integrated weights using Fermi-Dirac broadening.
+# tetra_weight -> Compute integrated weights for a given tetrahedron.
+# tetra_p_ek1  -> Blochl tetrahedron integration algorithm, case 1.
+# tetra_p_ek12 -> Blochl tetrahedron integration algorithm, case 2.
+# tetra_p_ek23 -> Blochl tetrahedron integration algorithm, case 3.
+# tetra_p_ek34 -> Blochl tetrahedron integration algorithm, case 4.
+# tetra_p_ek4  -> Blochl tetrahedron integration algorithm, case 5.
+#
+include("tetra.jl")
+export TetraWeight
+export bzint
+export gauss_weight
+export fermi_weight
+export tetra_weight
+export tetra_p_ek1
+export tetra_p_ek12
+export tetra_p_ek23
+export tetra_p_ek34
+export tetra_p_ek4
+
+#
+# util.jl
+#
+# Summary:
+#
+# To provide some useful utility functions. They can be used to query
+# the environments and parse the strings, etc.
+#
+# Members:
+#
+# @cswitch      -> C-style switch.
+# @ps1          -> Wrapper for printstyled function.
+# @ps2          -> Wrapper for printstyled function.
+# require       -> Check julia envirnoment.
+# query_args    -> Query program's arguments.
+# query_case    -> Query case (job's name).
+# query_inps    -> Query input files.
+# query_stop    -> Query case.stop file.
+# query_zen     -> Query home directory of Zen.
+# query_dft     -> Query home directory of DFT engine.
+# welcome       -> Print welcome message.
+# overview      -> Print overview of Zen.
+# goodbye       -> Say goodbye.
+# sorry         -> Say sorry.
+# prompt        -> Print some messages to the device.
+# line_to_array -> Convert a line to a string array.
+#
+include("util.jl")
+#
+export @cswitch
+export @ps1
+export @ps2
+export require
+export query_args
+export query_case
+export query_inps
+export query_stop
+export query_zen
+export query_dft
+export welcome
+export overview
+export goodbye
+export sorry
+export prompt
+export line_to_array
 
 """
     __init__()
