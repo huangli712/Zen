@@ -131,10 +131,10 @@ function irio_traits(f::String, D::Dict{Symbol,Any})
     end
 
     # Extract `ngrp`
-    ngrp = size(D[:PG])
+    ngrp, _ = size(D[:PG])
 
     # Extract `nwnd`
-    nwnd = size(D[:PW])
+    nwnd, _ = size(D[:PW])
 
     # Output the data
     open(joinpath(f, "traits.ir"), "w") do fout
@@ -149,10 +149,11 @@ function irio_traits(f::String, D::Dict{Symbol,Any})
         println(fout, "nspin -> $nspin")
         println(fout, "ntet  -> $ntet")
         println(fout, "volt  -> $volt")
+        println(fout, "ngrp  -> $ngrp")
+        println(fout, "nwnd  -> $nwnd")
         println(fout)
 
         # Write PrGroup[]
-        println(fout, "ngrp  -> $ngrp")
         for p in eachindex(D[:PG])
             PG = D[:PG]
             println(fout, "PrGroup : $p")
@@ -162,9 +163,9 @@ function irio_traits(f::String, D::Dict{Symbol,Any})
             println(fout, "shell -> $(PG[p].shell)")
             println(fout, "ndim  -> $(size(PG[p].Tr,1))")
         end
+        println(fout)
 
         # Write PrWindow[]
-        println(fout, "nwnd  -> $nwnd")
         for p in eachindex(D[:PW])
             PW = D[:PW]
             println(fout, "PrWindow: $p")
@@ -172,6 +173,7 @@ function irio_traits(f::String, D::Dict{Symbol,Any})
             println(fout, "bmax  -> $(PW[p].bmax)")
             println(fout, "nbnd  -> $(PW[p].nbnd)")
         end
+        println(fout)
     end
 end
 
