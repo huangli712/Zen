@@ -315,6 +315,40 @@ only the directory that we want to use.
 See also: [`vaspio_projs`](@ref).
 """
 function irio_projs(f::String, chipsi::Array{Array{C64,4},1})
+    # Output the data
+    open(joinpath(f, "projs.ir"), "w") do fout
+        # Write the header
+        println(fout, "# file: projs.ir")
+        println(fout, "# data: chipsi[nproj,nband,nkpt,nspin]")
+        println(fout)
+
+        # Go through each PrGroup / PrWindow
+        for p in eachindex(chipsi)
+            # Extract some key parameters
+            ndim, nbnd, nkpt, nspin = size(chipsi[p])
+
+            # Write the header
+            println(fout, "Group -> $p")
+            println(fout, "nproj -> $ndim")
+            println(fout, "nband -> $nbnd")
+            println(fout, "nkpt  -> $nkpt ")
+            println(fout, "nspin -> $nspin")
+            println(fout)
+
+            # Write the body
+            for s = 1:nspin
+                for k = 1:nkpt
+                    for b = 1:nbnd
+                        for d = 1:ndim
+                            z = chipsi[p][d, b, k, s]
+                            @printf(fout, "%16.12f %16.12f\n", real(z), imag(z))
+                        end
+                    end
+                end
+            end
+            println(fout)
+        end
+    end
 end
 
 """
