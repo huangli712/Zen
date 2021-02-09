@@ -590,21 +590,37 @@ function dmft_run(it::IterInfo, dmft_mode::I64)
 end
 
 """
-    dmft_save(it::IterInfo)
+    dmft_save(it::IterInfo, dmft_mode::I64)
 
 Backup the output files by dynamical mean-field theory engine
 for next iterations.
 
 See also [`dmft_init`](@ref), [`dmft_run`])(@ref).
 """
-function dmft_save(it::IterInfo)
-    # Enter dmft1 directory
-    cd("dmft1")
+function dmft_save(it::IterInfo, dmft_mode::I64)
+    # Examine the argument `dmft_mode`
+    @assert dmft_mode === 1 || dmft_mode === 2
 
-    # TODO
+    # Solve the DMFT self-consistent equation
+    if dmft_mode === 1
+        # Enter dmft1 directory
+        cd("dmft1")
 
-    # Enter the parent directory
-    cd("..")
+        # TODO
+
+        # Enter the parent directory
+        cd("..")
+
+    # Generate DMFT correction to DFT
+    else
+        # Enter dmft2 directory
+        cd("dmft2")
+
+        # TODO
+
+        # Enter the parent directory
+        cd("..")
+    end
 end
 
 """
