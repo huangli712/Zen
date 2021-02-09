@@ -69,7 +69,9 @@ end
 """
     cycle1()
 
-Perform one-shot DFT + DMFT calculations.
+Perform one-shot DFT + DMFT calculations. In other words, the charge
+density won't be fed back to the DFT engine. The self-consistency is
+only achieved at the DMFT level.
 
 See also: [`cycle2`](@ref).
 """
@@ -219,7 +221,8 @@ end
 """
     cycle2()
 
-Perform fully self-consistent DFT + DMFT calculations.
+Perform fully self-consistent DFT + DMFT calculations. The self-consistency
+is achieved at both DFT and DMFT levels.
 
 See also: [`cycle1`](@ref).
 """
