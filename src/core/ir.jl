@@ -31,8 +31,8 @@ function ir_adaptor(D::Dict{Symbol,Any})
     end
 
     # I03: Write important parameters
-    println("    Put Traits")
-    irio_traits(pwd(), D)
+    println("    Put Params")
+    irio_params(pwd(), D)
 
     # I04: Write lattice structure
     println("    Put Lattice")
@@ -87,7 +87,7 @@ See also: [`ir_adaptor`](@ref).
 """
 function ir_save(it::IterInfo)
     # Create a list of files that need to be backup
-    file_list = ["lattice", "kmesh", "eigen", "projs", "fermi"]
+    file_list = ["params", "lattice", "kmesh", "eigen", "projs", "fermi"]
     if get_d("smear") === "tetra"
         push!(file_list, "tetra")
     end
@@ -105,25 +105,25 @@ end
 #
 
 """
-    irio_traits(f::String, D::Dict{Symbol,Any})
+    irio_params(f::String, D::Dict{Symbol,Any})
 
 Write the key parameters extracted from the Kohn-Sham data. Here `f`
 means only the directory that we want to use.
 
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
 """
-function irio_traits(f::String, D::Dict{Symbol,Any})
+function irio_params(f::String, D::Dict{Symbol,Any})
     # Extract some key parameters
     nband, nkpt, nspin = size(D[:enk])
 
-    # Extract `ntet`
+    # Extract `ntet`, it is optional.
     if haskey(D, :itet)
         ntet, _ = size(D[:itet])
     else
         ntet = 0
     end
 
-    # Extract `volt`
+    # Extract `volt`, it is optional.
     if haskey(D, :volt)
         volt = D[:volt]
     else
@@ -135,15 +135,17 @@ function irio_traits(f::String, D::Dict{Symbol,Any})
 
     # Extract `nwnd`
     nwnd, = size(D[:PW])
+    @assert ngrp === nwnd
 
     # Output the data
-    open(joinpath(f, "traits.ir"), "w") do fout
+    open(joinpath(f, "params.ir"), "w") do fout
         # Write the header
         println(fout, "# file: traits.ir")
         println(fout, "# data: some necessary parameters")
         println(fout)
 
         # Write basic parameters
+        println(fout, "# Common  :")
         println(fout, "nband -> $nband")
         println(fout, "nkpt  -> $nkpt")
         println(fout, "nspin -> $nspin")
@@ -156,7 +158,7 @@ function irio_traits(f::String, D::Dict{Symbol,Any})
         # Write PrGroup[]
         for p in eachindex(D[:PG])
             PG = D[:PG]
-            println(fout, "PrGroup : $p")
+            println(fout, "# PrGroup : $p")
             println(fout, "site  -> $(PG[p].site)")
             println(fout, "l     -> $(PG[p].l)")
             println(fout, "corr  -> $(PG[p].corr)")
@@ -168,7 +170,7 @@ function irio_traits(f::String, D::Dict{Symbol,Any})
         # Write PrWindow[]
         for p in eachindex(D[:PW])
             PW = D[:PW]
-            println(fout, "PrWindow: $p")
+            println(fout, "# PrWindow: $p")
             println(fout, "bmin  -> $(PW[p].bmin)")
             println(fout, "bmax  -> $(PW[p].bmax)")
             println(fout, "nbnd  -> $(PW[p].nbnd)")
