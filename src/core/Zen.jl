@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/09
+# Last modified: 2021/02/10
 #
 
 module Zen
@@ -121,6 +121,7 @@ export PrWindow
 # @ps1          -> Wrapper for printstyled function.
 # @ps2          -> Wrapper for printstyled function.
 # require       -> Check julia envirnoment.
+# setup_args    -> Setup ARGS manually.
 # query_args    -> Query program's arguments.
 # query_case    -> Query case (job's name).
 # query_inps    -> Query input files.
@@ -140,6 +141,7 @@ export @cswitch
 export @ps1
 export @ps2
 export require
+export setup_args
 export query_args
 export query_case
 export query_inps
