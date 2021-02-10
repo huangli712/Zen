@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/08
+# last modified: 2021/02/10
 #
 
 #
@@ -16,7 +16,12 @@
     vasp_adaptor(D::Dict{Symbol,Any})
 
 Adaptor support for vasp code. It will read the output files of vasp
-code and then fulfill the DFTData dict (i.e D).
+code and then fulfill the `DFTData` dict (i.e `D`).
+
+The following vasp's files are needed: `POSCAR`, `IBZKPT`, `EIGENVAL`,
+`LOCPROJ`, and `DOSCAR`.
+
+See also: [`plo_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_run`](@ref).
 """
 function vasp_adaptor(D::Dict{Symbol,Any})
     # V01: Print the header
