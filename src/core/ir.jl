@@ -352,7 +352,7 @@ Write the projectors to projs.ir using the IR format. Here `f` means
 only the directory that we want to use.
 
 The projectors are original data. They have not been modified.
- 
+
 See also: [`vaspio_projs`](@ref).
 """
 function irio_projs(f::String, chipsi::Array{C64,4})

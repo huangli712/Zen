@@ -362,9 +362,9 @@ function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
         try_blk1(PW, chipsi)
     else
         # Each PrGroup has its own energy / band window, we have to
-        # orthogonal and normalize the projectors group by group. 
+        # orthogonal and normalize the projectors group by group.
         try_blk2(PW, chipsi)
-    end 
+    end
 end
 
 """
@@ -486,13 +486,13 @@ function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 #
 # We assume that the energy / band windows for all of the projectors are
 # the same. In other words, `PW` only has an unique PrWindow object.
-# 
+#
 
     # Extract some key parameters
     nkpt = size(chipsi[1], 3)
     nspin = size(chipsi[1], 4)
 
-    # Determine number of projectors contained in each group. 
+    # Determine number of projectors contained in each group.
     dims = map(x -> size(x, 1), chipsi)
 
     # The `block` is used to store the first index and the last
@@ -775,13 +775,13 @@ function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Ar
 #
 # We assume that the energy / band windows for all of the projectors are
 # the same. In other words, `PW` only has an unique PrWindow object.
-# 
+#
 
     # Extract some key parameters
     nkpt = size(chipsi[1], 3)
     nspin = size(chipsi[1], 4)
 
-    # Determine number of projectors contained in each group. 
+    # Determine number of projectors contained in each group.
     dims = map(x -> size(x, 1), chipsi)
 
     # The `block` is used to store the first index and the last
@@ -1059,7 +1059,7 @@ end
 
 Output the density of states.
 """
-function view_dos(mesh::Array{F64,1}, dos::Array{Array{F64,3}, 1}) 
+function view_dos(mesh::Array{F64,1}, dos::Array{Array{F64,3}, 1})
     # Go through each PrGroup
     for p in eachindex(dos)
         # Extract some key parameters

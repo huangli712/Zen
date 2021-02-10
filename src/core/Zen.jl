@@ -34,7 +34,7 @@ using TOML
 #
 # The SpecialFunctions.jl was included in the standard library for
 # old version julia. But in the newest julia, it is not included any
-# more. We have to install it by ourselves. 
+# more. We have to install it by ourselves.
 #
 # We need this package to support the `erf` function.
 #
@@ -273,7 +273,7 @@ export solver_save
 #
 # ir_adaptor   -> Adaptor support.
 # ir_save      -> Save the output files by the adaptor.
-# irio_traits  -> Write key parameters extracted from Kohn-Sham data. 
+# irio_traits  -> Write key parameters extracted from Kohn-Sham data.
 # irio_lattice -> Write lattice information.
 # irio_kmesh   -> Write kmesh.
 # irio_tetra   -> Write tetrahedra.
