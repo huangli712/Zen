@@ -412,7 +412,7 @@ function irio_projs(f::String, chipsi::Array{Array{C64,4},1})
             ndim, nbnd, nkpt, nspin = size(chipsi[p])
 
             # Write the header
-            println(fout, "Group -> $p")
+            println(fout, "group -> $p")
             println(fout, "nproj -> $ndim")
             println(fout, "nband -> $nbnd")
             println(fout, "nkpt  -> $nkpt ")
