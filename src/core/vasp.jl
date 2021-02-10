@@ -159,6 +159,8 @@ end
     vasp_incar(fermi::F64)
 
 Generate an INCAR file. It will be used only when the DFT engine is vasp.
+
+See also: [`vasp_kpoints`](@ref).
 """
 function vasp_incar(fermi::F64)
     # Open the iostream
