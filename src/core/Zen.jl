@@ -275,7 +275,7 @@ export solver_save
 #
 # ir_adaptor   -> Adaptor support.
 # ir_save      -> Save the output files by the adaptor.
-# irio_traits  -> Write key parameters extracted from Kohn-Sham data.
+# irio_params  -> Write key parameters extracted from Kohn-Sham data.
 # irio_lattice -> Write lattice information.
 # irio_kmesh   -> Write kmesh.
 # irio_tetra   -> Write tetrahedra.
@@ -288,7 +288,7 @@ include("ir.jl")
 #
 export ir_adaptor
 export ir_save
-export irio_traits
+export irio_params
 export irio_lattice
 export irio_kmesh
 export irio_tetra

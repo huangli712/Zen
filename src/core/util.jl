@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/08
+# last modified: 2021/02/10
 #
 
 """
@@ -95,6 +95,38 @@ function require()
     if VERSION < v"1.5-"
         error("Please upgrade your julia to v1.5.0 or higher")
     end
+end
+
+"""
+    setup_args(x::Vararg{String})
+
+Setup `ARGS` manually. This function is used only in REPL environment.
+We can use this function to update `ARGS`, so that the `query_args()`
+and the other related functions can work correctly.
+
+# Examples
+```julia-repl
+julia > setup_args("SrVO3.toml")
+1-element Array{String,1}:
+ "SrVO3.toml"
+```
+
+See also: [`query_args`](@ref).
+"""
+function setup_args(x::Vararg{String})
+    # Clean `ARGS`
+    empty!(ARGS)
+
+    # Convert the arguments to an array of strings
+    X = collect(x)
+
+    # Push them into `ARGS` one by one
+    for i in eachindex(X)
+        push!(ARGS, X[i])
+    end
+
+    # Return `ARGS`, only for debug
+    ARGS
 end
 
 """
