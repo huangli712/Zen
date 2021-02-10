@@ -136,21 +136,18 @@ See also: [`vasp_init`](@ref), [`vasp_run`](@ref).
 """
 function vasp_save(it::IterInfo)
     # Store the data files
-    if it.dmft_cycle == 0
-        cp("INCAR", "INCAR.$(it.dmft_cycle)", force = true)
-        cp("CHGCAR", "CHGCAR.$(it.dmft_cycle)", force = true)
-        cp("OUTCAR", "OUTCAR.$(it.dmft_cycle)", force = true)
-        cp("PROJCAR", "PROJCAR.$(it.dmft_cycle)", force = true)
-        cp("LOCPROJ", "LOCPROJ.$(it.dmft_cycle)", force = true)
-        cp("EIGENVAL", "EIGENVAL.$(it.dmft_cycle)", force = true)
-        cp("vasp.out", "vasp.out.$(it.dmft_cycle)", force = true)
-        cp("vasprun.xml", "vasprun.xml.$(it.dmft_cycle)", force = true)
-    else
-        sorry()
+    #
+    # Create list of files
+    fl = ["INCAR", "OUTCAR", "CHGCAR", "vasp.out", "vasprun.xml"]
+    #
+    # Go through the file list, backup the files one by one.
+    for i in eachindex(fl)
+        f = fl[i]
+        cp(f, "$f.$(it.dmft_cycle).$(it.dmft2_iter)", force = true)
     end
 
-    # Anyway, the fermi level is extracted from DOSCAR, and its value will
-    # be saved at IterInfo.dft_fermi.
+    # Anyway, the fermi level is extracted from DOSCAR, and its value
+    # will be saved at IterInfo.dft_fermi.
     it.dft_fermi = vaspio_fermi(pwd())
 end
 
