@@ -318,17 +318,25 @@ end
 """
     vasp_files(f::String)
 
-Check the essential output files by vasp. Here `f` means only the directory
-that contains the desired files.
+Check the essential output files by vasp. Here `f` means only the
+directory that contains the desired files.
+
+See also: [`adaptor_init`](@ref).
 """
 function vasp_files(f::String)
-    @assert isfile(joinpath(f, "POSCAR"))  &&
-            isfile(joinpath(f, "IBZKPT"))  &&
-            isfile(joinpath(f, "DOSCAR"))  &&
-            isfile(joinpath(f, "CHGCAR"))  &&
-            isfile(joinpath(f, "LOCPROJ")) &&
-            isfile(joinpath(f, "EIGENVAL"))
+    fl = ["POSCAR", "IBZKPT", "EIGENVAL", "LOCPROJ", "DOSCAR", "CHGCAR"]
+    for i in eachindex(fl)
+        @assert isfile( joinpath(f, fl[i]) )
+    end
 end
+
+"""
+    vasp_files()
+
+Check the essential output files by vasp in the current directory.
+
+See also: [`adaptor_init`](@ref).
+"""
 vasp_files() = vasp_files(pwd())
 
 #
