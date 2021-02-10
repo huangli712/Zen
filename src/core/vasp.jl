@@ -60,6 +60,8 @@ end
     vasp_init(it::IterInfo)
 
 Check the runtime environment of vasp, prepare necessary input files.
+
+See also: [`vasp_run`](@ref), [`vasp_save`](@ref).
 """
 function vasp_init(it::IterInfo)
     # Prepare essential input files
@@ -86,7 +88,7 @@ function vasp_init(it::IterInfo)
         vasp_incar(it.dmft_fermi)
     end
 
-    # Well, perhaps we need to generate the KPOINTS file by ourselves
+    # Well, perhaps we need to generate the KPOINTS file by ourselves.
     if get_d("kmesh") === "file"
         vasp_kpoints()
     end
@@ -96,6 +98,8 @@ end
     vasp_run(it::IterInfo)
 
 Execute the vasp program.
+
+See also: [`vasp_init`](@ref), [`vasp_save`](@ref).
 """
 function vasp_run(it::IterInfo)
     # Get the home directory of vasp
@@ -126,7 +130,9 @@ end
     vasp_save(it::IterInfo)
 
 Backup the output files of vasp if necessary. Furthermore, the fermi level
-in IterInfo struct is also updated (IterInfo.dft_fermi)
+in `IterInfo` struct is also updated (`IterInfo.dft_fermi`).
+
+See also: [`vasp_init`](@ref), [`vasp_run`](@ref).
 """
 function vasp_save(it::IterInfo)
     # Store the data files
