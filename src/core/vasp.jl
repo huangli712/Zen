@@ -158,7 +158,8 @@ end
 """
     vasp_incar(fermi::F64)
 
-Generate an INCAR file. It will be used only when the DFT engine is vasp.
+Generate an `INCAR` file. It will be used only when the DFT engine
+is vasp.
 
 See also: [`vasp_kpoints`](@ref).
 """
@@ -287,11 +288,13 @@ end
 """
     vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
 
-Generate a valid KPOINTS file for vasp.
+Generate a valid `KPOINTS` file for vasp.
+
+See also: [`vasp_incar`](@ref).
 """
 function vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
-    # If the KPOINTS file is available, we do nothing or else we will
-    # try to create a new one
+    # If the `KPOINTS` file is available, we do nothing or else we will
+    # try to create a new one.
     if !isfile("KPOINTS")
         # Open the iostream
         ios = open("KPOINTS", "w")
