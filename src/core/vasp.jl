@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/10
+# last modified: 2021/02/11
 #
 
 #
@@ -348,6 +348,8 @@ vasp_files() = vasp_files(pwd())
 
 Reading vasp's POSCAR file, return crystallography information. Here `f`
 means only the directory that contains POSCAR.
+
+See also: [`Lattice`](@ref).
 """
 function vaspio_lattice(f::String)
     # Open the iostream
@@ -378,7 +380,7 @@ function vaspio_lattice(f::String)
     natom = sum(numbers)
 
     # Now all the parameters are ready, we would like to create
-    # Lattice struct here.
+    # `Lattice` struct here.
     latt = Lattice(_case, scale, nsort, natom)
 
     # Update latt using the available data
@@ -415,8 +417,10 @@ end
 """
     vaspio_kmesh(f::String)
 
-Reading vasp's IBZKPT file, return kmesh and weight. Here `f` means
+Reading vasp's IBZKPT file, return `kmesh` and `weight`. Here `f` means
 only the directory that contains IBZKPT.
+
+See also: [`vaspio_tetra`](@ref).
 """
 function vaspio_kmesh(f::String)
     # Open the iostream
@@ -450,6 +454,8 @@ end
 
 Reading vasp's IBZKPT file, return tetrahedra information. Here `f` means
 only the directory that contains IBZKPT.
+
+See also: [`vaspio_kmesh`](@ref).
 """
 function vaspio_tetra(f::String)
     # Open the iostream

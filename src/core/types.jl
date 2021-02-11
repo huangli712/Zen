@@ -5,7 +5,7 @@
 # Status  : unstable
 # Comment :
 #
-# Last modified: 2021/02/08
+# Last modified: 2021/02/11
 #
 
 #
@@ -173,6 +173,8 @@ Contain the crystallography information. This struct is designed for the
 .coord -> Atomic positions are provided in cartesian coordinates or in
           direct coordinates (respectively fractional coordinates). Its
           shape must be (natom, 3).
+
+See also: [`vaspio_lattice`](@ref).
 """
 mutable struct Lattice
     _case :: String
