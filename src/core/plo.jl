@@ -224,8 +224,8 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
 # Remarks:
 #
 # Here, `window` means energy window or band window. When nwin is 1, it
-# means that all PrGroup share the same window. When nwin is equal to
-# length(PG), it means that each PrGroup should have its own window.
+# means that all `PrGroup` share the same window. When nwin is equal to
+# length(PG), it means that each `PrGroup` should have its own window.
 #
 
     # Preprocess the input. Get how many windows there are.
