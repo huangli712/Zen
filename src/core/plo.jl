@@ -24,7 +24,7 @@ quantities, such as density matrix, overlap matrix, and hamiltonian,
 and partial density of states, which will be written to external files
 for reference.
 
-See also: [`vasp_adaptor`](@ref), [`ir_adaptor`](@ref).
+See also: [`vasp_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_run`](@ref).
 """
 function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # P01: Print the header
@@ -96,6 +96,8 @@ end
     plo_fermi(enk::Array{F64,3}, fermi::F64)
 
 Calibrate the band structure to enforce the fermi level to be zero.
+
+See also: [`vaspio_fermi`](@ref), [`irio_fermi`](@ref).
 """
 function plo_fermi(enk::Array{F64,3}, fermi::F64)
     @. enk = enk - fermi
@@ -104,8 +106,10 @@ end
 """
     plo_group(PG::Array{PrGroup,1})
 
-Use the information contained in the PIMP dict to further complete
-the PrGroup struct.
+Use the information contained in the `PIMP` dict to further complete
+the `PrGroup` struct.
+
+See also: [`PIMP`](@ref), [`PrGroup`](@ref).
 """
 function plo_group(PG::Array{PrGroup,1})
 
