@@ -838,6 +838,7 @@ function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Ar
     nspin = size(chipsi[1], 4)
 
     # Determine number of projectors contained in each group.
+    # The `ndims` is a array.
     dims = map(x -> size(x, 1), chipsi)
 
     # The `block` is used to store the first index and the last
@@ -849,7 +850,7 @@ function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Ar
         start = start + dims[i]
     end
 
-    # Create a temporary arry
+    # Create a temporary array
     max_proj = sum(dims)
     max_band = PW[1].nbnd
     M = zeros(C64, max_proj, max_band)
@@ -889,11 +890,14 @@ end
 """
     calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Array{I64,2}, enk::Array{F64,3})
 
-Try to calculate the density of states.
+Try to calculate the partial density of states using the analytical
+tetrahedron method.
+
+See also: [`PrWindow`](@ref).
 """
 function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Array{I64,2}, enk::Array{F64,3})
-    # Create the mesh
-    mesh = collect(-3.0:0.01:3.0)
+    # Create the mesh [-4:4.0]
+    mesh = collect(-4.0:0.01:4.0)
     nmesh = length(mesh)
 
     # Create array of density of states
