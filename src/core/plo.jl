@@ -242,10 +242,10 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
     for p in eachindex(PG)
         # Determine bwin. Don't forget it is a Tuple. bwin = (emin, emax).
         if nwin === 1
-            # All PrGroup shares the same window
+            # All `PrGroup` shares the same window
             bwin = (window[1], window[2])
         else
-            # Each PrGroup has it own window
+            # Each `PrGroup` has it own window
             bwin = (window[2*p-1], window[2*p])
         end
 
@@ -264,7 +264,7 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
             kwin = get_win2(enk, bwin)
         end
 
-        # Create the PrWindow struct, and push it into the PW array.
+        # Create the `PrWindow` struct, and push it into the PW array.
         push!(PW, PrWindow(kwin, bwin))
     end
 
@@ -275,7 +275,11 @@ end
 """
     plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 
-Perform global rotations or transformations for the projectors.
+Perform global rotations or transformations for the projectors. In
+this function, the projectors will be classified into different
+groups, and then they will be rotated group by group.
+
+See also: [`PrGroup`](@ref), [`plo_filter`](@ref), [`plo_orthog`](@ref).
 """
 function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     # Extract some key parameters from raw projector matrix
