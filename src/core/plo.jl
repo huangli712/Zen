@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/07
+# last modified: 2021/02/12
 #
 
 #
@@ -16,8 +16,15 @@
     plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
 Adaptor support. It will postprocess the raw projector matrix. The dict
-D contains all of the necessary Kohn-Sham data, which will be modified
+`D` contains all of the necessary Kohn-Sham data, which will be modified
 in this function.
+
+If `debug` is true, this function will try to calculate some physical
+quantities, such as density matrix, overlap matrix, and hamiltonian,
+and partial density of states, which will be written to external files
+for reference.
+
+See also: [`vasp_adaptor`](@ref), [`ir_adaptor`](@ref).
 """
 function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # P01: Print the header
