@@ -346,10 +346,10 @@ vasp_files() = vasp_files(pwd())
 """
     vaspio_lattice(f::String)
 
-Reading vasp's POSCAR file, return crystallography information. Here `f`
-means only the directory that contains POSCAR.
+Reading vasp's `POSCAR` file, return crystallography information. Here `f`
+means only the directory that contains `POSCAR`.
 
-See also: [`Lattice`](@ref).
+See also: [`Lattice`](@ref), [`irio_lattice`](@ref).
 """
 function vaspio_lattice(f::String)
     # Open the iostream
@@ -417,10 +417,10 @@ end
 """
     vaspio_kmesh(f::String)
 
-Reading vasp's IBZKPT file, return `kmesh` and `weight`. Here `f` means
-only the directory that contains IBZKPT.
+Reading vasp's `IBZKPT` file, return `kmesh` and `weight`. Here `f` means
+only the directory that contains `IBZKPT`.
 
-See also: [`vaspio_tetra`](@ref).
+See also: [`vaspio_tetra`](@ref), [`irio_kmesh`](@ref).
 """
 function vaspio_kmesh(f::String)
     # Open the iostream
@@ -452,10 +452,10 @@ end
 """
     vaspio_tetra(f::String)
 
-Reading vasp's IBZKPT file, return tetrahedra information. Here `f` means
-only the directory that contains IBZKPT.
+Reading vasp's `IBZKPT` file, return tetrahedra information. Here `f`
+means only the directory that contains `IBZKPT`.
 
-See also: [`vaspio_kmesh`](@ref).
+See also: [`vaspio_kmesh`](@ref), [`irio_tetra`](@ref).
 """
 function vaspio_tetra(f::String)
     # Open the iostream
@@ -501,8 +501,10 @@ end
 """
     vaspio_eigen(f::String)
 
-Reading vasp's EIGENVAL file, return energy band information. Here `f`
-means only the directory that contains EIGENVAL.
+Reading vasp's `EIGENVAL` file, return energy band information. Here `f`
+means only the directory that contains `EIGENVAL`.
+
+See also: [`irio_eigen`](@ref).
 """
 function vaspio_eigen(f::String)
     # Open the iostream
@@ -574,8 +576,10 @@ end
 """
     vaspio_projs(f::String)
 
-Reading vasp's LOCPROJ file, return raw projector matrix. Here `f` means
-only the directory that contains LOCPROJ.
+Reading vasp's `LOCPROJ` file, return raw projector matrix. Here `f` means
+only the directory that contains `LOCPROJ`.
+
+See also: [`irio_projs`](@ref).
 """
 function vaspio_projs(f::String)
     # Open the iostream
@@ -671,7 +675,7 @@ function vaspio_projs(f::String)
 
     # Return the desired arrays
     # Note: PG should be further setup at plo_group() function.
-    return PT, PG, chipsi
+    #return PT, PG, chipsi
 end
 
 """
