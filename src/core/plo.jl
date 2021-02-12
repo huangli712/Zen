@@ -623,6 +623,8 @@ end
     try_diag(M::AbstractArray{C64,2})
 
 Orthogonalize the given matrix.
+
+See also: [`try_blk1`](@ref), [`try_blk2`](@ref).
 """
 function try_diag(M::AbstractArray{C64,2})
     # Calculate overlap matrix, it must be a hermitian matrix.
