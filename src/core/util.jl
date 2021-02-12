@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/10
+# last modified: 2021/02/12
 #
 
 """
@@ -327,4 +327,19 @@ Convert a string (AbstractString) to a string array.
 """
 @inline function line_to_array(str::AbstractString)
     split(str, " ", keepempty = false)
+end
+
+"""
+    line_to_cmplx(io::IOStream)
+
+Convert a line (reading from an iostream) to a cmplx number. It is used
+to parse the `LOCPROJ` file.
+
+See also: [`vaspio_projs`](@ref).
+"""
+@inline function line_to_cmplx(io::IOStream)
+    str = readline(io)
+    _re = str[10:28]
+    _im = str[30:end]
+    return parse(F64, _re) + parse(F64, _im) * im
 end

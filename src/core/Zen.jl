@@ -139,6 +139,7 @@ export PrWindow
 # sorry         -> Say sorry.
 # prompt        -> Print some messages to the device.
 # line_to_array -> Convert a line to a string array.
+# line_to_cmplx -> Convert a line to a cmplx number.
 #
 include("util.jl")
 #
@@ -159,6 +160,7 @@ export goodbye
 export sorry
 export prompt
 export line_to_array
+export line_to_cmplx
 
 #
 # config.jl

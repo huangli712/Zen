@@ -643,29 +643,16 @@ function vaspio_projs(f::String)
     chipsi = zeros(C64, nproj, nband, nkpt, nspin)
 
     # Read in raw projector data
-    readline(fin)
     for s = 1:nspin
         for k = 1:nkpt
             for b = 1:nband
-                # Extract some indices information
-                arr = line_to_array(fin)
-                _spin = parse(I64, arr[2])
-                _kpt = parse(I64, arr[3])
-                _band = parse(I64, arr[4])
-
-                # Check consistency of parameters
-                @assert _spin === s
-                @assert _kpt === k
-                @assert _band === b
-
-                # Parse the input data
-                for p = 1:nproj
-                    _re, _im = parse.(F64, line_to_array(fin)[2:3])
-                    chipsi[p, b, k, s] = _re + _im * im
-                end
-
-                # Skip one empty line
+                # Skip two empty lines
                 readline(fin)
+
+                # Parse the data line by line
+                for p = 1:nproj
+                    chipsi[p, b, k, s] = line_to_cmplx(fin)
+                end
             end
         end
     end
