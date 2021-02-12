@@ -519,6 +519,8 @@ end
     try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
 Try to orthogonalize and normalize the projectors as a whole.
+
+See also: [`PrWindow`](@ref), [`try_blk2`](@ref), [`plo_orthog`](@ref).
 """
 function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
@@ -534,6 +536,7 @@ function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     nspin = size(chipsi[1], 4)
 
     # Determine number of projectors contained in each group.
+    # The `ndims` is a array.
     dims = map(x -> size(x, 1), chipsi)
 
     # The `block` is used to store the first index and the last
@@ -545,7 +548,7 @@ function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
         start = start + dims[i]
     end
 
-    # Create a temporary arry
+    # Create a temporary array
     max_proj = sum(dims)
     max_band = PW[1].nbnd
     M = zeros(C64, max_proj, max_band)
@@ -583,6 +586,8 @@ end
     try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
 Try to orthogonalize the projectors group by group.
+
+See also: [`PrWindow`](@ref), [`try_blk1`](@ref), [`plo_orthog`](@ref).
 """
 function try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     # Go through each PrWindow / PrGroup
