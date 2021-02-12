@@ -464,16 +464,17 @@ end
 """
     get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
 
-Return momentum- and spin-dependent band window (case 2).
+Return momentum- and spin-dependent band window (case 2). The users
+provide only the maximum and minimum energies for the window.
 
 See also: [`plo_window`](@ref).
 """
 function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
-    # Here, bwin defines the global energy window
+    # Here, `bwin` defines the global energy window.
     emin, emax = bwin
 
     # Sanity check. We should make sure there is an overlap between
-    # [emin, emax] and band structure.
+    # [emin, emax] and the band structure.
     if emax < minimum(enk) || emin > maximum(enk)
         error("Energy window does not overlap with the band structure")
     end
@@ -481,11 +482,11 @@ function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
     # Extract some key parameters
     nband, nkpt, nspin = size(enk)
 
-    # Create array kwin, which is used to record the band window for
-    # each k-point and each spin.
+    # Create array `kwin`, which is used to record the band window
+    # for each k-point and each spin.
     kwin = zeros(I64, nkpt, nspin, 2)
 
-    # Scan the band structure to determine kwin
+    # Scan the band structure to determine `kwin`
     for s = 1:nspin
         for k = 1:nkpt
             # For lower boundary
