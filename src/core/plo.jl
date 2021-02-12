@@ -676,6 +676,8 @@ end
     calc_ovlp(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1})
 
 Calculate the overlap matrix out of projectors. For normalized projectors only.
+
+See also: [`PrWindow`](@ref).
 """
 function calc_ovlp(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1})
     # Create an empty array. Next we will fill it.
@@ -740,6 +742,8 @@ end
     calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, occupy::Array{F64,3})
 
 Calculate the density matrix out of projectors. For normalized projectors only.
+
+See also: [`PrWindow`](@ref).
 """
 function calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, occupy::Array{F64,3})
     # Create an empty array. Next we will fill it.
@@ -779,6 +783,8 @@ end
     calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, enk::Array{F64,3})
 
 Try to build the local hamiltonian. For normalized projectors only.
+
+See also: [`PrWindow`](@ref).
 """
 function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, enk::Array{F64,3})
     # Create an empty array. Next we will fill it.
@@ -815,6 +821,8 @@ end
     calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Array{F64,3})
 
 Try to build the full hamiltonian. For normalized projectors only.
+
+See also: [`PrWindow`](@ref).
 """
 function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Array{F64,3})
 
