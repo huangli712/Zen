@@ -437,20 +437,23 @@ end
 """
     get_win1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
 
-Return momentum- and spin-dependent band window.
+Return momentum- and spin-dependent band window (case 1). The users
+provide only the band indices for the window.
+
+See also: [`plo_window`](@ref).
 """
 function get_win1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
-    # Here, bwin defines the global band window.
+    # Here, `bwin` defines the global band window.
     bmin, bmax = bwin
 
     # Extract some key parameters
     nband, nkpt, nspin = size(enk)
 
-    # Create array kwin, which is used to record the band window for
-    # each k-point and each spin.
+    # Create array `kwin`, which is used to record the band window
+    # for each k-point and each spin.
     kwin = zeros(I64, nkpt, nspin, 2)
 
-    # Fill kwin with global band boundaries
+    # Fill `kwin` with global band boundaries
     fill!(view(kwin, :, :, 1), bmin)
     fill!(view(kwin, :, :, 2), bmax)
 
@@ -461,7 +464,9 @@ end
 """
     get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
 
-Return momentum- and spin-dependent band window.
+Return momentum- and spin-dependent band window (case 2).
+
+See also: [`plo_window`](@ref).
 """
 function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
     # Here, bwin defines the global energy window
