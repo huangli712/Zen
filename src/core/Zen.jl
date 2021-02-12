@@ -5,9 +5,14 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/10
+# Last modified: 2021/02/12
 #
 
+"""
+    Zen
+
+Zen is a modern DFT + DMFT computation framework.
+"""
 module Zen
 
 #
