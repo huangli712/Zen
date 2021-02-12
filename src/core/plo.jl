@@ -328,6 +328,8 @@ end
     plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}}
 
 Filter the projector matrix according to band window.
+
+See also: [`PrWindow`](@ref), [`plo_rotate`](@ref), [`plo_orthog`](@ref).
 """
 function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     # Initialize new array. It stores the filtered projectors.
@@ -356,7 +358,7 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
                 # Sanity check
                 @assert ib3 <= PW[p].nbnd
 
-                # We just copy data from chipsi to F
+                # We just copy data from chipsi[p] to F
                 F[:, 1:ib3, k, s] = chipsi[p][:, ib1:ib2, k, s]
             end
         end
@@ -373,6 +375,8 @@ end
     plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
 Orthogonalize and normalize the projectors.
+
+See also: [`PrWindow`](@ref), [`plo_rotate`](@ref), [`plo_filter`](@ref).
 """
 function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     # Preprocess the input. Get how many windows there are.
@@ -385,11 +389,11 @@ function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     # Choose suitable service functions
     if nwin === 1
         # All the PrGroups share the same energy / band window, we should
-        # orthogonal and normalize the projectors as a whole.
+        # orthogonalize and normalize the projectors as a whole.
         try_blk1(PW, chipsi)
     else
         # Each PrGroup has its own energy / band window, we have to
-        # orthogonal and normalize the projectors group by group.
+        # orthogonalize and normalize the projectors group by group.
         try_blk2(PW, chipsi)
     end
 end
@@ -399,6 +403,8 @@ end
 
 Generate some key physical quantities by using the projectors and the
 Kohn-Sham band structures. It is used for debug only.
+
+See also: [`plo_adaptor`](@ref).
 """
 function plo_monitor(D::Dict{Symbol,Any})
     # Calculate and output overlap matrix
@@ -418,8 +424,10 @@ function plo_monitor(D::Dict{Symbol,Any})
     view_hamk(hamk)
 
     # Calculate and output density of states
-    @timev mesh, dos = calc_dos(D[:PW], D[:chipsi_f], D[:itet], D[:enk])
-    view_dos(mesh, dos)
+    if get_d("smear") === "tetra"
+        mesh, dos = calc_dos(D[:PW], D[:chipsi_f], D[:itet], D[:enk])
+        view_dos(mesh, dos)
+    end
 end
 
 #
