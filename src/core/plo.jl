@@ -215,6 +215,8 @@ end
     plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
 
 Calibrate the band window to filter the Kohn-Sham eigenvalues.
+
+See also: [`PrWindow`](@ref), [`get_win1`](@ref), [`get_win2`](@ref).
 """
 function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
 
