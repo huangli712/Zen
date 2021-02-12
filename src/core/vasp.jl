@@ -648,6 +648,7 @@ function vaspio_projs(f::String)
             for b = 1:nband
                 # Skip two empty lines
                 readline(fin)
+                readline(fin)
 
                 # Parse the data line by line
                 for p = 1:nproj
@@ -662,14 +663,16 @@ function vaspio_projs(f::String)
 
     # Return the desired arrays
     # Note: PG should be further setup at plo_group() function.
-    #return PT, PG, chipsi
+    return PT, PG, chipsi
 end
 
 """
     vaspio_fermi(f::String)
 
-Reading vasp's DOSCAR file, return the fermi level. Here `f` means
-only the directory that contains DOSCAR.
+Reading vasp's `DOSCAR` file, return the fermi level. Here `f` means
+only the directory that contains `DOSCAR`.
+
+See also: [`irio_fermi`](@ref).
 """
 function vaspio_fermi(f::String)
     # Open the iostream
