@@ -4,7 +4,7 @@ This package is currently under developement. **IT DOESN'T WORK NOW!**
 
 ## Version
 
-v0.0.8 (devel)
+v0.0.9 (devel)
 
 ## License
 
