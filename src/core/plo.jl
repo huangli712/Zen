@@ -788,7 +788,7 @@ end
 
 Try to build the local hamiltonian. For normalized projectors only.
 
-See also: [`PrWindow`](@ref).
+See also: [`view_hamk`](@ref), [`PrWindow`](@ref).
 """
 function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, enk::Array{F64,3})
     # Create an empty array. Next we will fill it.
@@ -826,7 +826,7 @@ end
 
 Try to build the full hamiltonian. For normalized projectors only.
 
-See also: [`PrWindow`](@ref).
+See also: [`view_hamk`](@ref), [`PrWindow`](@ref).
 """
 function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Array{F64,3})
 
@@ -897,7 +897,7 @@ end
 Try to calculate the partial density of states using the analytical
 tetrahedron method.
 
-See also: [`PrWindow`](@ref).
+See also: [`view_dos`](@ref), [`PrWindow`](@ref).
 """
 function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Array{I64,2}, enk::Array{F64,3})
     # Create the mesh [-4:4.0]
@@ -943,7 +943,9 @@ end
 """
     view_ovlp(ovlp::Array{F64,3})
 
-Output the overlap matrix. For raw projectors only.
+Output the overlap matrix to screen. For raw projectors only.
+
+See also: [`calc_ovlp`](@ref).
 """
 function view_ovlp(ovlp::Array{F64,3})
     # Print the header
@@ -965,7 +967,9 @@ end
 """
     view_ovlp(PG::Array{PrGroup,1}, ovlp::Array{Array{F64,3},1})
 
-Output the overlap matrix. For normalized projectors only.
+Output the overlap matrix to screen. For normalized projectors only.
+
+See also: [`calc_ovlp`](@ref), [`PrGroup`](@ref).
 """
 function view_ovlp(PG::Array{PrGroup,1}, ovlp::Array{Array{F64,3},1})
     # Print the header
@@ -992,7 +996,9 @@ end
 """
     view_dm(dm::Array{F64,3})
 
-Output the density matrix. For raw projectors only.
+Output the density matrix to screen. For raw projectors only.
+
+See also: [`calc_dm`](@ref).
 """
 function view_dm(dm::Array{F64,3})
     # Print the header
@@ -1014,7 +1020,9 @@ end
 """
     view_dm(PG::Array{PrGroup,1}, dm::Array{Array{F64,3},1})
 
-Output the density matrix. For normalized projectors only.
+Output the density matrix to screen. For normalized projectors only.
+
+See also: [`calc_dm`](@ref), [`PrGroup`](@ref).
 """
 function view_dm(PG::Array{PrGroup,1}, dm::Array{Array{F64,3},1})
     # Print the header
@@ -1041,7 +1049,9 @@ end
 """
     view_hamk(PG::Array{PrGroup,1}, hamk::Array{Array{C64,3},1})
 
-Output the local hamiltonian. For normalized projectors only.
+Output the local hamiltonian to screen. For normalized projectors only.
+
+See also: [`calc_hamk`](@ref), [`PrGroup`](@ref).
 """
 function view_hamk(PG::Array{PrGroup,1}, hamk::Array{Array{C64,3},1})
     # Print the header
