@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/08
+# last modified: 2021/02/13
 #
 
 #
@@ -17,7 +17,7 @@
 #     (1) Gaussian broadening method.
 #     (2) Fermi-Dirac broadening method.
 #     (3) Analytical tetrahedron algorithm with Blochl corrections.
-# Note that you have to modify the line 83-85 to choose suitable driver.
+# Note that you have to modify the line 85-87 to choose suitable driver.
 # Perhaps you also need to modify the `gamm` parameter to obtain more
 # reasonable results. Now the default method is (3).
 #
@@ -50,6 +50,8 @@ end
 
 Compute tetrahedron integrated weights for Brillouin zone integration.
 It is used to calculate (partial) density of states.
+
+See also: [`gauss_weight`](@ref), [`fermi_weight`](@ref), [`tetra_weight`](@ref).
 """
 function bzint(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
     # Extract some key parameters
@@ -109,6 +111,8 @@ end
 
 Gaussian broadening algorithm for (integrated) density of states and relevant
 integration weights.
+
+See also: [`TetraWeight`](@ref).
 """
 function gauss_weight(z::F64, e::Array{F64,1})
     # Integration weights, apply equation (B1)
@@ -142,6 +146,8 @@ end
 
 Fermi-Dirac broadening algorithm for (integrated) density of states and
 relevant integration weights.
+
+See also: [`TetraWeight`](@ref).
 """
 function fermi_weight(z::F64, e::Array{F64,1})
     # Integration weights, apply equation (B1)
@@ -176,6 +182,8 @@ end
 Peter E. Blochl algorithm for (integrated) density of states and relevant
 integration weights. Blochl corrections are taken into considersions as
 well. See Phys. Rev. B, 49, 16223 (1994) for more details.
+
+See also: [`TetraWeight`](@ref).
 """
 function tetra_weight(z::F64, e::Array{F64,1})
     # Sort the corner energy according to increasing values
