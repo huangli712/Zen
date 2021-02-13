@@ -425,7 +425,7 @@ function plo_monitor(D::Dict{Symbol,Any})
 
     # Calculate and output density of states
     if get_d("smear") === "tetra"
-        mesh, dos = calc_dos(D[:PW], D[:chipsi_f], D[:itet], D[:enk])
+        @timev mesh, dos = calc_dos(D[:PW], D[:chipsi_f], D[:itet], D[:enk])
         view_dos(mesh, dos)
     end
 end

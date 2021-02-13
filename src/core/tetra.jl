@@ -254,6 +254,8 @@ end
     tetra_p_ek1()
 
 Blochl algorithm, case 1, for fully unoccupied tetrahedron.
+
+See also: [`tetra_weight`](@ref).
 """
 function tetra_p_ek1()
     # Integration weights, apply equation (B1)
@@ -273,6 +275,8 @@ end
     tetra_p_ek12(z::F64, e::Array{F64,1})
 
 Blochl algorithm, case 2, for partially occupied tetrahedron.
+
+See also: [`tetra_weight`](@ref).
 """
 function tetra_p_ek12(z::F64, e::Array{F64,1})
     # Sainty check
@@ -325,6 +329,8 @@ end
     tetra_p_ek23(z::F64, e::Array{F64,1})
 
 Blochl algorithm, case 3, for partially occupied tetrahedron.
+
+See also: [`tetra_weight`](@ref).
 """
 function tetra_p_ek23(z::F64, e::Array{F64,1})
     # Sainty check
@@ -391,6 +397,8 @@ end
     tetra_p_ek34(z::F64, e::Array{F64,1})
 
 Blochl algorithm, case 4, for partially occupied tetrahedron.
+
+See also: [`tetra_weight`](@ref).
 """
 function tetra_p_ek34(z::F64, e::Array{F64,1})
     # Sainty check
@@ -443,6 +451,8 @@ end
     tetra_p_ek4()
 
 Blochl algorithm, case 5, for fully occupied tetrahedron.
+
+See also: [`tetra_weight`](@ref).
 """
 function tetra_p_ek4()
     # Integration weights, apply equation (B19)
