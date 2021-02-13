@@ -31,9 +31,9 @@
 
 Integration weights for analytical tetrahedron algorithm.
 
-.cw -> Blochl corrections for `dw`.
-.dw -> Density of states weights at the four corners of a given tetrahedron.
-.tw -> Integration weights at the four corners of a given tetrahedron.
+.cw -> Blochl corrections for `dw`.\n
+.dw -> Density of states weights at the four corners of a given tetrahedron.\n
+.tw -> Integration weights at the four corners of a given tetrahedron.\n
 """
 struct TetraWeight
     cw :: F64
