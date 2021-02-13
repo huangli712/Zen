@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/12
+# last modified: 2021/02/13
 #
 
 #
@@ -22,7 +22,7 @@ in this function.
 If `debug` is true, this function will try to calculate some physical
 quantities, such as density matrix, overlap matrix, and hamiltonian,
 and partial density of states, which will be written to external files
-for reference.
+or screen for reference.
 
 See also: [`vasp_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_run`](@ref).
 """
@@ -76,7 +76,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # P09: Are the projectors correct?
     #
     # We will try to calculate some physical quantitites, which
-    # will be written to external files for reference.
+    # will be written to external files or screen for reference.
     #
     # These physical quantities include density matrix, overlap
     # matrix, local hamiltonian, full hamiltonian, and partial
@@ -651,6 +651,8 @@ end
     calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 
 Calculate the overlap matrix out of projectors. For raw projectors only.
+
+See also: [`view_ovlp`](@ref).
 """
 function calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
     # Extract some key parameters
@@ -677,7 +679,7 @@ end
 
 Calculate the overlap matrix out of projectors. For normalized projectors only.
 
-See also: [`PrWindow`](@ref).
+See also: [`view_ovlp`](@ref), [`PrWindow`](@ref).
 """
 function calc_ovlp(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1})
     # Create an empty array. Next we will fill it.
@@ -713,6 +715,8 @@ end
     calc_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
 
 Calculate the density matrix out of projectors. For raw projectors only.
+
+See also: [`view_dm`](@ref).
 """
 function calc_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
     # Extract some key parameters
@@ -743,7 +747,7 @@ end
 
 Calculate the density matrix out of projectors. For normalized projectors only.
 
-See also: [`PrWindow`](@ref).
+See also: [`view_dm`](@ref), [`PrWindow`](@ref).
 """
 function calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, occupy::Array{F64,3})
     # Create an empty array. Next we will fill it.
