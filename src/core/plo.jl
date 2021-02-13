@@ -900,7 +900,7 @@ tetrahedron method.
 See also: [`view_dos`](@ref), [`PrWindow`](@ref).
 """
 function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Array{I64,2}, enk::Array{F64,3})
-    # Create the mesh [-4:4.0]
+    # Create the mesh [-4.0:4.0]
     mesh = collect(-4.0:0.01:4.0)
     nmesh = length(mesh)
 
