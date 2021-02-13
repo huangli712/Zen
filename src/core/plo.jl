@@ -1088,7 +1088,9 @@ end
 """
     view_hamk(hamk::Array{C64,4})
 
-Output the full hamiltonian. For normalized projectors only.
+Output the full hamiltonian to `hamk.chk`. For normalized projectors only.
+
+See also: [`calc_hamk`](@ref).
 """
 function view_hamk(hamk::Array{C64,4})
 
@@ -1131,7 +1133,9 @@ end
 """
     view_dos(mesh::Array{F64,1}, dos::Array{Array{F64,3}, 1})
 
-Output the density of states.
+Output the density of states to `dos.chk`. For normalized projectors only.
+
+See also: [`calc_dos`](@ref).
 """
 function view_dos(mesh::Array{F64,1}, dos::Array{Array{F64,3}, 1})
     # Go through each PrGroup
