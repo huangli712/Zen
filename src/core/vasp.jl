@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/11
+# last modified: 2021/02/14
 #
 
 #
@@ -412,6 +412,29 @@ function vaspio_lattice(f::String)
 
     # Return the desired struct
     return latt
+end
+
+"""
+    vaspio_nelect(f::String)
+"""
+function vaspio_nelect(f::String)
+    # Open the iostream
+    fin = open(joinpath(f, "POTCAR"), "r")
+
+    # Read the POTCAR
+    strs = readlines(fin)   
+
+    # Extract the lines that contains the `ZVAL`
+    filter!(x -> contains(x, "ZVAL"), strs)
+
+    # Extract ZVAL, convert it into float, than save it.
+    zval = map(x -> parse(F64, line_to_array(x)[6]), strs)
+ 
+    # Close the iostream
+    close(fin)
+
+    # Return the desired arrays
+    return zval
 end
 
 """
