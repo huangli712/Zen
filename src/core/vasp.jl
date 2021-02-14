@@ -345,13 +345,46 @@ vasp_files() = vasp_files(pwd())
 
 """
     vaspio_nband(f::String)
+
+Reading vasp's `POSCAR` and `POTCAR` files, evaluate number of bands. It
+will be used to create the `INCAR` file. Here `f` means only the directory
+that contains `POSCAR` and `POTCAR`.
+
+See also: [`vasp_incar`](@ref).
 """
 function vaspio_nband(f::String)
+    # Extract crystallography information from `POSCAR`
     latt = vaspio_lattice(f)
+
+    # Extract number of valence electrons from `POTCAR`
     zval = vaspio_valence(f)
 
-    @show latt
-    @show zval
+    # Sanity check
+    nsort, _ = size(latt.sorts)
+    @assert nsort === length(zval)
+
+    # Evaluate number of electrons in total
+    nelect = sum(@. latt.sorts[:, 2] * zval)
+
+#
+# Remarks:
+#
+# In vasp, the `NBAND` parameter is determined automatically. According
+# to the wiki of vasp, it is equal to nelect / 2 + latt.natom / 2 for
+# paramagnetic case by default. However, it may be insufficient for
+# generating projectors. For example, for SrVO3, the default `NBAND`
+# parameter is only 20. It is too small to determine the five V-3d
+# projectors. It would be better to increase it to 30. 
+#
+# Here, we increase `NBAND` to `1.6 * NBAND`. The `1.6` is a magic
+# number, you can adjust it by yourself.
+#
+
+    # Evaluate number of bands
+    nband = floor(I64, (nelect / 2 + latt.natom / 2) * 1.6)
+
+    # Return the desired nband 
+    return nband 
 end
 
 """

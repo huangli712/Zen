@@ -375,7 +375,7 @@ export view_dos
 # vasp_files     -> Check essential output files.
 # vaspio_nband   -> Determine number of bands.
 # vaspio_lattice -> Read lattice information.
-# vaspio_valence -> Read number of valence electrons.
+# vaspio_valence -> Read number of valence electrons per sorts.
 # vaspio_kmesh   -> Read kmesh.
 # vaspio_tetra   -> Read tetrahedra.
 # vaspio_eigen   -> Read eigenvalues.
