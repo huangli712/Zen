@@ -135,6 +135,7 @@ export PrWindow
 # prompt        -> Print some messages to the device.
 # line_to_array -> Convert a line to a string array.
 # line_to_cmplx -> Convert a line to a cmplx number.
+# erf           -> Gauss error function. 
 #
 include("util.jl")
 #
@@ -156,6 +157,7 @@ export sorry
 export prompt
 export line_to_array
 export line_to_cmplx
+export erf
 
 #
 # config.jl
