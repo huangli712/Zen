@@ -257,7 +257,7 @@ function vasp_incar(fermi::F64)
     end
 
     # For optimized projectors
-    ewidth = 3.0 # A magic number
+    ewidth = 4.0 # A magic number
     loptim = get_d("loptim")
     if !isa(ewidth, Missing) && !isa(loptim, Missing)
         if loptim
