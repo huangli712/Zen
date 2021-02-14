@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/12
+# last modified: 2021/02/14
 #
 
 """
@@ -342,4 +342,18 @@ See also: [`vaspio_projs`](@ref).
     _re = str[10:28]
     _im = str[30:end]
     return parse(F64, _re) + parse(F64, _im) * im
+end
+
+"""
+    erf(x::F64)
+
+Calculate the Gauss error function.
+
+This implementation is taken from the SpecialFunctions.jl. See:
+    https://github.com/JuliaMath/SpecialFunctions.jl
+
+See also: [`gauss_weight`](@ref).
+"""
+function erf(x::F64)
+    ccall(("erf", libm), F64, (F64,), x)
 end
