@@ -344,6 +344,17 @@ vasp_files() = vasp_files(pwd())
 #
 
 """
+    vaspio_nband(f::String)
+"""
+function vaspio_nband(f::String)
+    latt = vaspio_lattice(f)
+    zval = vaspio_valence(f)
+
+    @show latt
+    @show zval
+end
+
+"""
     vaspio_lattice(f::String)
 
 Reading vasp's `POSCAR` file, return crystallography information. Here `f`
@@ -415,9 +426,17 @@ function vaspio_lattice(f::String)
 end
 
 """
-    vaspio_nelect(f::String)
+    vaspio_valence(f::String)
+
+Reading vasp's `POTCAR` file, return `ZVAL`. Here `f` means only the
+directory that contains `POTCAR`.
+
+The information about `ZVAL` will be used to determine `nband` in the
+`INCAR` file.
+
+See also: [`vasp_incar`](@ref).
 """
-function vaspio_nelect(f::String)
+function vaspio_valence(f::String)
     # Open the iostream
     fin = open(joinpath(f, "POTCAR"), "r")
 

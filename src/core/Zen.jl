@@ -373,8 +373,9 @@ export view_dos
 # vasp_incar     -> Make essential input file (INCAR).
 # vasp_kpoints   -> Make essential input file (KPOINTS).
 # vasp_files     -> Check essential output files.
+# vaspio_nband   -> Determine number of bands.
 # vaspio_lattice -> Read lattice information.
-# vaspio_nelect  -> Read number of valence electrons.
+# vaspio_valence -> Read number of valence electrons.
 # vaspio_kmesh   -> Read kmesh.
 # vaspio_tetra   -> Read tetrahedra.
 # vaspio_eigen   -> Read eigenvalues.
@@ -391,8 +392,9 @@ export vasp_save
 export vasp_incar
 export vasp_kpoints
 export vasp_files
+export vaspio_nband
 export vaspio_lattice
-export vaspio_nelect
+export vaspio_valence
 export vaspio_kmesh
 export vaspio_tetra
 export vaspio_eigen
