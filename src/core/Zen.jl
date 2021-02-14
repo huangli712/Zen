@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/12
+# Last modified: 2021/02/14
 #
 
 """
@@ -18,13 +18,17 @@ module Zen
 #
 # Using standard libraries
 #
+
 using LinearAlgebra
 using Distributed
 using Printf
 using Dates
+using Base.Math: libm
 
 #
 # Using third-party libraries
+#
+
 #
 # Remarks:
 #
@@ -33,17 +37,8 @@ using Dates
 #
 # We need this package to parse the configuration file.
 #
+
 using TOML
-#
-# Remarks:
-#
-# The SpecialFunctions.jl was included in the standard library for
-# old version julia. But in the newest julia, it is not included any
-# more. We have to install it by ourselves.
-#
-# We need this package to support the `erf` function.
-#
-using SpecialFunctions
 
 #
 # global.jl
