@@ -281,6 +281,10 @@ function vasp_incar(fermi::F64)
         end
     end
 
+    # For number of bands
+    nband = vaspio_nband(pwd())
+    write(ios, "NBAND    = $nband \n")
+    
     # Close the iostream
     close(ios)
 end
