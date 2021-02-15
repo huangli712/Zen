@@ -10,6 +10,7 @@ lspinorb = false
 loptim = true
 lproj = true
 sproj = ["2 : d : Pr", "3 : p : Pr", "4 : p : Pr", "5 : p : Pr"]
+window = [-8.0, 2.0]
 
 [dmft]
 mode = 1
