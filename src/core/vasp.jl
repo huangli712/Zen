@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/14
+# last modified: 2021/02/15
 #
 
 #
@@ -282,8 +282,8 @@ function vasp_incar(fermi::F64)
     end
 
     # For number of bands
-    nband = vaspio_nband(pwd())
-    write(ios, "NBAND    = $nband \n")
+    nbands = vaspio_nband(pwd())
+    write(ios, "NBANDS   = $nbands \n")
     
     # Close the iostream
     close(ios)
