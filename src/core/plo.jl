@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/13
+# last modified: 2021/02/15
 #
 
 #
@@ -306,6 +306,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 
         # Create a temporary array R
         R = zeros(C64, ndim, nband, nkpt, nspin)
+        @assert nband >= ndim
 
         # Rotate chipsi by Tr, the results are stored at R.
         for s = 1:nspin
@@ -343,6 +344,7 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
         # Create a temporary array F
         F = zeros(C64, ndim, PW[p].nbnd, nkpt, nspin)
+        @assert PW[p].nbnd >= ndim
 
         # Go through each spin and k-point
         for s = 1:nspin
@@ -565,6 +567,7 @@ function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
             # Sanity check
             @assert max_band >= ib3
+            @assert ib3 >= max_proj
 
             # Try to combine all of the groups of projectors
             for p in eachindex(PW)
@@ -608,6 +611,7 @@ function try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
                 # Sanity check
                 @assert ib3 <= PW[p].nbnd
+                @assert ib3 >= ndim
 
                 # Make a view for the desired subarray
                 M = view(chipsi[p], 1:ndim, 1:ib3, k, s)
