@@ -284,7 +284,7 @@ function vasp_incar(fermi::F64)
     # For number of bands
     nbands = vaspio_nband(pwd())
     write(ios, "NBANDS   = $nbands \n")
-    
+
     # Close the iostream
     close(ios)
 end
@@ -373,22 +373,22 @@ function vaspio_nband(f::String)
 #
 # Remarks:
 #
-# In vasp, the `NBAND` parameter is determined automatically. According
+# In vasp, the `NBANDS` parameter is determined automatically. According
 # to the wiki of vasp, it is equal to nelect / 2 + latt.natom / 2 for
 # paramagnetic case by default. However, it may be insufficient for
-# generating projectors. For example, for SrVO3, the default `NBAND`
+# generating projectors. For example, for SrVO3, the default `NBANDS`
 # parameter is only 20. It is too small to determine the five V-3d
-# projectors. It would be better to increase it to 30. 
+# projectors. It would be better to increase it to 30.
 #
-# Here, we increase `NBAND` to `1.6 * NBAND`. The `1.6` is a magic
+# Here, we increase `NBANDS` to `1.6 * NBANDS`. The `1.6` is a magic
 # number, you can adjust it by yourself.
 #
 
     # Evaluate number of bands
     nband = floor(I64, (nelect / 2 + latt.natom / 2) * 1.6)
 
-    # Return the desired nband 
-    return nband 
+    # Return the desired nband
+    return nband
 end
 
 """
@@ -468,7 +468,7 @@ end
 Reading vasp's `POTCAR` file, return `ZVAL`. Here `f` means only the
 directory that contains `POTCAR`.
 
-The information about `ZVAL` will be used to determine `nband` in the
+The information about `ZVAL` will be used to determine `NBANDS` in the
 `INCAR` file.
 
 See also: [`vasp_incar`](@ref).
@@ -478,14 +478,14 @@ function vaspio_valence(f::String)
     fin = open(joinpath(f, "POTCAR"), "r")
 
     # Read the POTCAR
-    strs = readlines(fin)   
+    strs = readlines(fin)
 
     # Extract the lines that contains the `ZVAL`
     filter!(x -> contains(x, "ZVAL"), strs)
 
     # Extract ZVAL, convert it into float, than save it.
     zval = map(x -> parse(F64, line_to_array(x)[6]), strs)
- 
+
     # Close the iostream
     close(fin)
 

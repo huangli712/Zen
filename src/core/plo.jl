@@ -69,7 +69,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # P08: Orthogonalize and normalize the projectors
     #
     # D[:chipsi_f] will be updated. It contains the final data
-    # for projector matrix. 
+    # for projector matrix.
     println("    Normalize Projectors")
     plo_orthog(D[:PW], D[:chipsi_f])
 
@@ -82,7 +82,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # matrix, local hamiltonian, full hamiltonian, and partial
     # density of states. Of course, it is time-comsuming to do
     # these things. So it is a good idea to turn off this feature
-    # if everything is on the way. 
+    # if everything is on the way.
     if debug
         plo_monitor(D)
     end
