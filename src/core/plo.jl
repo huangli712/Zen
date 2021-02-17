@@ -916,16 +916,27 @@ function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Ar
         ndim, nbnd, nkpt, nspin = size(chipsi[p])
         @assert nbnd === PW[p].nbnd
 
-        # Create the mesh
+        # Create the mesh. It depends on PrWindow.bwin
+        #
+        # Extract the band window / energy window
         emin, emax = PW[p].bwin
+        #
+        # If it is the band window, then we will create a default mesh
+        # from -4.0 to +4.0.
         if emin isa Integer
             M = collect(-4.0:0.01:4.0)
+        #
+        # If it is the energy window, then we will create a mesh from
+        # emin to emax.
         else
+            @assert emin isa AbstractFloat
             M = collect(emin:0.01:emax)
         end
+        #
+        # Evaluate number of mesh points
         nmesh = length(M)
 
-        # Create a temporary array
+        # Create a temporary array for density of states
         D = zeros(F64, ndim, nspin, nmesh)
 
         # Go through each mesh point
@@ -934,7 +945,7 @@ function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Ar
             # using the analytical tetrahedron method
             W = bzint(M[i], itet, enk[PW[p].bmin:PW[p].bmax, :, :])
 
-            # Perform summation
+            # Perform brillouin zone summation
             for s = 1:nspin, k = 1:nkpt, b = 1:nbnd, q = 1:ndim
                 D[q, s, i] = D[q, s, i] + W[b, k, s] * abs( chipsi[p][q, b, k, s] )^2
             end
