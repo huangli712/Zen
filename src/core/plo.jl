@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/15
+# last modified: 2021/02/17
 #
 
 #
@@ -904,9 +904,8 @@ tetrahedron method.
 See also: [`view_dos`](@ref), [`PrWindow`](@ref).
 """
 function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Array{I64,2}, enk::Array{F64,3})
-    # Create the mesh [-4.0:4.0]
-    mesh = collect(-2.0:0.01:6.0)
-    nmesh = length(mesh)
+    # Create array of mesh
+    MA = Array{F64,1}[]
 
     # Create array of density of states
     DA = Array{F64,3}[]
@@ -917,27 +916,39 @@ function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Ar
         ndim, nbnd, nkpt, nspin = size(chipsi[p])
         @assert nbnd === PW[p].nbnd
 
+        # Create the mesh
+        emin, emax = PW[p].bwin
+        if emin isa Integer
+            M = collect(-4.0:0.01:4.0)
+        else
+            M = collect(emin:0.01:emax)
+        end
+        nmesh = length(M)
+
         # Create a temporary array
-        M = zeros(F64, ndim, nspin, length(mesh))
+        D = zeros(F64, ndim, nspin, nmesh)
 
         # Go through each mesh point
-        for i in eachindex(mesh)
+        for i in 1:nmesh
             # Obtain the integration weights for density of states by
             # using the analytical tetrahedron method
-            W = bzint(mesh[i], itet, enk[PW[p].bmin:PW[p].bmax, :, :])
+            W = bzint(M[i], itet, enk[PW[p].bmin:PW[p].bmax, :, :])
 
             # Perform summation
             for s = 1:nspin, k = 1:nkpt, b = 1:nbnd, q = 1:ndim
-                M[q, s, i] = M[q, s, i] + W[b, k, s] * abs( chipsi[p][q, b, k, s] )^2
+                D[q, s, i] = D[q, s, i] + W[b, k, s] * abs( chipsi[p][q, b, k, s] )^2
             end
         end
 
-        # Push M into DA to save it
-        push!(DA, M)
+        # Push M into MA to save it
+        push!(MA, M)
+
+        # Push D into DA to save it
+        push!(DA, D)
     end
 
     # Return the desired array
-    return mesh, DA
+    return MA, DA
 end
 
 #
