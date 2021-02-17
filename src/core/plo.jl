@@ -1157,18 +1157,18 @@ function view_hamk(hamk::Array{C64,4})
 end
 
 """
-    view_dos(mesh::Array{F64,1}, dos::Array{Array{F64,3}, 1})
+    view_dos(mesh::Array{Array{F64,1},1}, dos::Array{Array{F64,3},1})
 
 Output the density of states to `dos.chk`. For normalized projectors only.
 
 See also: [`calc_dos`](@ref).
 """
-function view_dos(mesh::Array{F64,1}, dos::Array{Array{F64,3}, 1})
+function view_dos(mesh::Array{Array{F64,1},1}, dos::Array{Array{F64,3},1})
     # Go through each PrGroup
     for p in eachindex(dos)
         # Extract some key parameters
         ndim, nspin, nmesh = size(dos[p])
-        @assert nmesh === length(mesh)
+        @assert nmesh === length(mesh[p])
 
         # Output the data
         open("dos.chk.$p", "w") do fout
@@ -1183,7 +1183,7 @@ function view_dos(mesh::Array{F64,1}, dos::Array{Array{F64,3}, 1})
 
             # Write the body
             for m = 1:nmesh
-                @printf(fout, "%12.7f", mesh[m])
+                @printf(fout, "%12.7f", mesh[p][m])
                 for s = 1:nspin
                     foreach(x -> @printf(fout, "%12.7f", x), dos[p][:, s, m])
                 end
