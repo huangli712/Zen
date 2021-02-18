@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/14
+# Last modified: 2021/02/18
 #
 
 """
@@ -382,6 +382,7 @@ export view_dos
 # vaspio_projs   -> Read projectors.
 # vaspio_fermi   -> Read fermi level.
 # vaspio_charge  -> Read charge density.
+# vaspio_procar  -> Read PROCAR file.
 #
 include("vasp.jl")
 #
@@ -401,6 +402,7 @@ export vaspio_eigen
 export vaspio_projs
 export vaspio_fermi
 export vaspio_charge
+export vaspio_procar
 
 #
 # tetra.jl
