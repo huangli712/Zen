@@ -203,6 +203,10 @@ function chk_dict()
     @assert get_m("niter") > 0
     @assert get_m("dcount") in ("fll1", "fll2", "amf", "exact")
     @assert get_m("beta") >= 0.0
+    @assert get_m("mixer") >= 0.0 && @assert get_m("mixer") <= 1.0
+    #
+    # Check impurity block
+    @assert get_i("nsite") >= 1 && @assert get_i("nsite") <= 99
     #
     # Check solver block
     @assert get_s("engine") in ("ct_hyb1", "ct_hyb2", "hub1", "norg")
