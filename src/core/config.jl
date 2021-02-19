@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/08
+# last modified: 2021/02/19
 #
 
 #
@@ -71,6 +71,8 @@ end
 
 Parse the configuration file (toml format). It reads only parts of the
 configuration file, which depends on the value of `key`.
+
+See also: [`setup`](@ref).
 """
 function inp_toml(f::String, key::String, necessary::Bool)
     if isfile(f)
@@ -94,6 +96,8 @@ end
     inp_toml(f::String, necessary::Bool)
 
 Parse the configuration file (toml format). It reads the whole file.
+
+See also: [`setup`](@ref).
 """
 function inp_toml(f::String, necessary::Bool)
     if isfile(f)
