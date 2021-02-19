@@ -171,7 +171,7 @@ end
 
 Validate the correctness and consistency of configurations.
 
-See also: [`rev_dict`](@ref).
+See also: [`rev_dict`](@ref), [`_v`](@ref).
 """
 function chk_dict()
 
@@ -241,6 +241,8 @@ end
     _v(val::Array{Any,1})
 
 Verify the value array. Called by chk_dict() function only.
+
+See also: [`chk_dict`](@ref).
 """
 @inline function _v(val::Array{Any,1})
     # To check if the value is updated
