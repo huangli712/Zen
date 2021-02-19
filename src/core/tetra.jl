@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/13
+# last modified: 2021/02/20
 #
 
 #
@@ -17,9 +17,9 @@
 #     (1) Gaussian broadening method.
 #     (2) Fermi-Dirac broadening method.
 #     (3) Analytical tetrahedron algorithm with Blochl corrections.
-# Note that you have to modify the line 85-87 to choose suitable driver.
+# Note that you have to modify the line 87-89 to choose suitable driver.
 # Perhaps you also need to modify the `gamm` parameter to obtain more
-# reasonable results. Now the default method is (3).
+# reasonable results. Now the default algorithm is (3).
 #
 
 #
@@ -29,7 +29,9 @@
 """
     TetraWeight
 
-Integration weights for analytical tetrahedron algorithm.
+Struct. Integration weights for analytical tetrahedron algorithm.
+
+## Members
 
 .cw -> Blochl corrections for `dw`.\n
 .dw -> Density of states weights at the four corners of a given tetrahedron.\n
@@ -115,7 +117,7 @@ integration weights.
 See also: [`TetraWeight`](@ref).
 """
 function gauss_weight(z::F64, e::Array{F64,1})
-    # Integration weights, apply equation (B1)
+    # Integration weights, apply equation (B1).
     tw = zeros(F64, 4)
 
     # Density of states weights
