@@ -200,8 +200,8 @@ function irio_lattice(f::String, latt::Lattice)
     # Output the data
     open(joinpath(f, "lattice.ir"), "w") do fout
         # Write the header
-        println(fout, "# file: lattice.ir")
-        println(fout, "# data: Lattice struct")
+        println(fout, "# File: lattice.ir")
+        println(fout, "# Data: Lattice struct")
         println(fout)
         println(fout, "scale -> $_case")
         println(fout, "scale -> $scale")
@@ -266,8 +266,8 @@ function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
     # Output the data
     open(joinpath(f, "kmesh.ir"), "w") do fout
         # Write the header
-        println(fout, "# file: kmesh.ir")
-        println(fout, "# data: kmesh[nkpt,ndir] and weight[nkpt]")
+        println(fout, "# File: kmesh.ir")
+        println(fout, "# Data: kmesh[nkpt,ndir] and weight[nkpt]")
         println(fout)
         println(fout, "nkpt -> $nkpt")
         println(fout, "ndir -> $ndir")
@@ -299,8 +299,8 @@ function irio_tetra(f::String, volt::F64, itet::Array{I64,2})
     # Output the data
     open(joinpath(f, "tetra.ir"), "w") do fout
         # Write the header
-        println(fout, "# file: tetra.ir")
-        println(fout, "# data: itet[ntet,5]")
+        println(fout, "# File: tetra.ir")
+        println(fout, "# Data: itet[ntet,5]")
         println(fout)
         println(fout, "ntet -> $ntet")
         println(fout, "volt -> $volt")
@@ -334,8 +334,8 @@ function irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
     # Output the data
     open(joinpath(f, "eigen.ir"), "w") do fout
         # Write the header
-        println(fout, "# file: eigen.ir")
-        println(fout, "# data: enk[nband,nkpt,nspin] and occupy[nband,nkpt,nspin]")
+        println(fout, "# File: eigen.ir")
+        println(fout, "# Data: enk[nband,nkpt,nspin] and occupy[nband,nkpt,nspin]")
         println(fout)
         println(fout, "nband -> $nband")
         println(fout, "nkpt  -> $nkpt ")
