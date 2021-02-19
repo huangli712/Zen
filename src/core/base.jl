@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/09
+# Last modified: 2021/02/19
 #
 
 #
@@ -16,6 +16,8 @@
     ready()
 
 Examine whether all the conditions for DFT + DMFT calculations are ready.
+
+See also: [`go`](@ref).
 """
 function ready()
     # R1: Check the input files
@@ -181,7 +183,7 @@ function cycle1()
         monitor(true)
 
         #
-        # C05: Split the data
+        # C05: Split and distribute the data
         #
 
         # C06: Solve the quantum impurity problems
@@ -199,7 +201,7 @@ function cycle1()
         monitor(true)
 
         #
-        # C07: Combine the data
+        # C07: Gather and combine the data
         #
 
         #
@@ -207,11 +209,13 @@ function cycle1()
         #
     end
 
-    # C90: Close Logger
+    # C98: Close Logger.log
     if isopen(lr.log)
         flush(lr.log)
         close(lr.log)
     end
+
+    # C99: Close Logger.cycle
     if isopen(lr.cycle)
         flush(lr.cycle)
         close(lr.cycle)
@@ -444,7 +448,7 @@ function dft_init(it::IterInfo, lr::Logger)
     # Enter dft directory
     cd("dft")
 
-    # Choose suitable DFT engine, then initialize it's input files
+    # Choose suitable DFT engine, then initialize it's input files.
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
@@ -475,7 +479,7 @@ function dft_run(it::IterInfo)
     # Enter dft directory
     cd("dft")
 
-    # Choose suitable DFT engine, then launch it
+    # Choose suitable DFT engine, then launch it.
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
@@ -504,7 +508,7 @@ function dft_save(it::IterInfo)
     # Enter dft directory
     cd("dft")
 
-    # Choose suitable DFT engine, then backup some essential output files
+    # Choose suitable DFT engine, then backup some essential output files.
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
