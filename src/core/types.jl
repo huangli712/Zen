@@ -116,7 +116,9 @@ const PSOLVER= Dict{String,Array{Any,1}}(
 """
     Logger
 
-Store the IOStreams for case.log and case.cycle files.
+Mutable struct. Store the IOStreams for case.log and case.cycle files.
+
+## Members
 
 .log   -> IOStream for case.log file.\n
 .cycle -> IOStream for case.cycle file.
@@ -135,7 +137,9 @@ end
 """
     IterInfo
 
-Record the DFT + DMFT iteration information.
+Mutable struct. Record the DFT + DMFT iteration information.
+
+## Members
 
 .dmft1_iter -> Number of iterations between dmft1 and quantum impurity solver.\n
 .dmft2_iter -> Number of iterations between dmft2 and DFT engine.\n
@@ -158,8 +162,10 @@ end
 """
     Lattice
 
-Contain the crystallography information. This struct is designed for the
-`POSCAR` file used by the vasp code.
+Mutable struct. Contain the crystallography information. This struct is
+designed for the `POSCAR` file used by the vasp code.
+
+## Members
 
 ._case -> The name of system.\n
 .scale -> Universal scaling factor (lattice constant), which is used to
@@ -190,7 +196,9 @@ end
 """
     PrTrait
 
-Essential information of a given projector.
+Mutable struct. Essential information of a given projector.
+
+## Members
 
 .site -> Site in which the projector is defined.\n
 .l    -> Quantum number l.\n
@@ -209,7 +217,9 @@ end
 """
     PrGroup
 
-Essential information of group of projectors.
+Mutable struct. Essential information of group of projectors.
+
+## Members
 
 .site   -> Site in which the projectors are defined. In principle, the
            projectors included in the same group should be defined at
@@ -238,14 +248,17 @@ end
 """
     PrWindow
 
-Define the band window for group of projectors.
+Mutable struct. Define the band window for group of projectors.
+
+## Members
 
 .bmin -> Minimum band index.\n
 .bmax -> Maximum band index.\n
 .nbnd -> Maximum number of bands in the current window (= bmax-bmin+1).\n
 .kwin -> Momentum-dependent and spin-dependent band window.\n
 .bwin -> Tuple. It is the band window or energy window, which is used
-         to filter the Kohn-Sham band structure.
+         to filter the Kohn-Sham band structure. The mesh for calculating
+         density of states is also deduced from `bwin`. 
 
 See also: [`PrTrait`](@ref), [`PrGroup`](@ref).
 """
