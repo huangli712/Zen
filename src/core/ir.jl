@@ -48,7 +48,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     println("    Put Occupy")
     irio_eigen(pwd(), D[:enk], D[:occupy])
 
-    # I07: Write projectors, traits, and groups
+    # I07: Write normalized projectors
     println("    Put Projector")
     irio_projs(pwd(), D[:chipsi_f])
 
