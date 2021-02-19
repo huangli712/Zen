@@ -370,8 +370,8 @@ function irio_projs(f::String, chipsi::Array{C64,4})
     # Output the data
     open(joinpath(f, "projs.ir"), "w") do fout
         # Write the header
-        println(fout, "# file: projs.ir")
-        println(fout, "# data: chipsi[nproj,nband,nkpt,nspin]")
+        println(fout, "# File: projs.ir")
+        println(fout, "# Data: chipsi[nproj,nband,nkpt,nspin]")
         println(fout)
         println(fout, "nproj -> $nproj")
         println(fout, "nband -> $nband")
@@ -408,8 +408,8 @@ function irio_projs(f::String, chipsi::Array{Array{C64,4},1})
     # Output the data
     open(joinpath(f, "projs.ir"), "w") do fout
         # Write the header
-        println(fout, "# file: projs.ir")
-        println(fout, "# data: chipsi[nproj,nband,nkpt,nspin]")
+        println(fout, "# File: projs.ir")
+        println(fout, "# Data: chipsi[nproj,nband,nkpt,nspin]")
         println(fout)
 
         # Go through each PrGroup / PrWindow
@@ -453,8 +453,8 @@ function irio_fermi(f::String, fermi::F64)
     # Output the data
     open(joinpath(f, "fermi.ir"), "w") do fout
         # Write the header
-        println(fout, "# file: fermi.ir")
-        println(fout, "# data: fermi")
+        println(fout, "# File: fermi.ir")
+        println(fout, "# Data: fermi")
         println(fout)
         println(fout, "fermi -> $fermi")
         println(fout)
