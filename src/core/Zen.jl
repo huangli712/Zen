@@ -31,6 +31,13 @@ module Zen
 # Using standard libraries
 #
 
+#
+# Remarks:
+#
+# Here we import libm explicitly to provide a callable interface for the
+# erf function.
+#
+
 using LinearAlgebra
 using Distributed
 using Printf
