@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/10
+# last modified: 2021/02/20
 #
 
 #
@@ -113,6 +113,9 @@ means only the directory that we want to use.
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
 """
 function irio_params(f::String, D::Dict{Symbol,Any})
+    # Extract the fermi level
+    fermi = D[:fermi]
+
     # Extract some key parameters
     nband, nkpt, nspin = size(D[:enk])
 
@@ -135,17 +138,20 @@ function irio_params(f::String, D::Dict{Symbol,Any})
 
     # Extract `nwnd`
     nwnd, = size(D[:PW])
+
+    # D[:PW] and D[:PG] should have the same size
     @assert ngrp === nwnd
 
     # Output the data
     open(joinpath(f, "params.ir"), "w") do fout
         # Write the header
-        println(fout, "# file: traits.ir")
-        println(fout, "# data: some necessary parameters")
+        println(fout, "# File: params.ir")
+        println(fout, "# Data: some necessary parameters")
         println(fout)
 
         # Write basic parameters
         println(fout, "# Common  :")
+        println(fout, "fermi -> $fermi")
         println(fout, "nband -> $nband")
         println(fout, "nkpt  -> $nkpt")
         println(fout, "nspin -> $nspin")
