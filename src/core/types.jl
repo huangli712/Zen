@@ -5,7 +5,7 @@
 # Status  : unstable
 # Comment :
 #
-# Last modified: 2021/02/11
+# Last modified: 2021/02/19
 #
 
 #
@@ -44,13 +44,13 @@ See also: [`PCASE`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
 const PDFT  = Dict{String,Array{Any,1}}(
           "engine"   => [missing, 1, :String, "Engine for density functional theory calculations"],
-          "smear"    => [missing, 0, :String, "Scheme for smearing"],
-          "kmesh"    => [missing, 0, :String, "K-mesh for brillouin zone sampling / integration"],
+          "smear"    => [missing, 1, :String, "Scheme for smearing"],
+          "kmesh"    => [missing, 1, :String, "K-mesh for brillouin zone sampling / integration"],
           "magmom"   => [missing, 0, :String, "Initial magnetic moments"],
-          "lsymm"    => [missing, 0, :Bool  , "The symmetry is turned on or off"],
-          "lspins"   => [missing, 0, :Bool  , "The spin orientations are polarized or not"],
-          "lspinorb" => [missing, 0, :Bool  , "The spin-orbit coupling is considered or not"],
-          "loptim"   => [missing, 0, :Bool  , "The generated projectors are optimized or not"],
+          "lsymm"    => [missing, 1, :Bool  , "The symmetry is turned on or off"],
+          "lspins"   => [missing, 1, :Bool  , "The spin orientations are polarized or not"],
+          "lspinorb" => [missing, 1, :Bool  , "The spin-orbit coupling is considered or not"],
+          "loptim"   => [missing, 1, :Bool  , "The generated projectors are optimized or not"],
           "lproj"    => [missing, 1, :Bool  , "The projectors are generated or not"],
           "sproj"    => [missing, 1, :Array , "Specifications for generating projectors"],
           "window"   => [missing, 1, :Array , "Band / energy window for orthogonalizing projectors"],
@@ -69,7 +69,7 @@ const PDMFT = Dict{String,Array{Any,1}}(
           "niter"    => [missing, 1, :I64   , "Maximum number of iterations"],
           "dcount"   => [missing, 1, :String, "Scheme of double counting term"],
           "beta"     => [missing, 1, :F64   , "Inverse system temperature"],
-          "mixer"    => [missing, 0, :F64   , "Mixing factor"],
+          "mixer"    => [missing, 1, :F64   , "Mixing factor"],
           "cc"       => [missing, 0, :F64   , "Convergence criterion of charge"],
           "ec"       => [missing, 0, :F64   , "Convergence criterion of total energy"],
           "fc"       => [missing, 0, :F64   , "Convergence criterion of force"],
