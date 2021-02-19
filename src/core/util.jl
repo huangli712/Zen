@@ -67,7 +67,15 @@ end
 """
     @ps1(str, c)
 
-Wrapper for printstyled function.
+Wrapper for printstyled function. Here `str` is a string, and `c`
+denotes color.
+
+# Examples
+```julia
+@ps1 "Hello world!" :green
+```
+
+See also: [`@ps2`](@ref).
 """
 macro ps1(str, c)
     return :( printstyled($str, color = $c) )
@@ -76,7 +84,10 @@ end
 """
     @ps2(str1, c1, str2, c2)
 
-Wrapper for printstyled function.
+Wrapper for printstyled function. Here `str1` and `str2` are strings,
+and `c1` and `c2` denote colors.
+
+See also: [`@ps1`](@ref).
 """
 macro ps2(str1, c1, str2, c2)
     ex = quote
@@ -133,6 +144,8 @@ end
     query_args()
 
 Check whether the configuration file (case.toml) is provided.
+
+See also: [`setup_args`](@ref).
 """
 function query_args()
     nargs = length(ARGS)
@@ -164,7 +177,7 @@ function query_inps()
 #
 # Remarks:
 #
-# For vasp, the essential input files are:
+# For vasp, the essential input files include:
 #    1. POSCAR
 #    2. POTCAR
 # As for the INCAR and KPOINTS, they will be generated automatically.
