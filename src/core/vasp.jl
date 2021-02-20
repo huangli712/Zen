@@ -468,6 +468,7 @@ function vaspio_procar(f::String)
 
     # Parse the `PROCAR` file
     # Go through each k-point 
+    println("Parsing PROCAR...")
     for k = 1:nkpt
         # Blank line
         readline(fin)
@@ -533,15 +534,31 @@ function vaspio_procar(f::String)
     #for b = 1:nband
     #     println("$b :", oab[5:9, 2, b])
     #end
-    #println(sortperm(oab[7, 2, :], rev = true))
 
-    # Print essential information  
+    # Print essential information
+    println() 
     println("Number of spins: $nspin")
     println("Number of k-points: $nkpt")
     println("Number of bands: $nband")
     println("Number of atoms: $natom")
     println("Number of orbitals: $norbs")
 
+    while true
+        print("Please input atom index: ")
+        atom_index = parse(I64, readline(stdin))
+        println("Orbitals:", orb_labels)
+        print("Please input orbital index: ")
+        orbital_index = parse(I64, readline(stdin))
+        println("Atom_index: $atom_index")
+        println("Orbital_index: $orbital_index")
+        println("Orbital_label: $(orb_labels[orbital_index])")
+        println(sortperm(oab[orbital_index, atom_index, :], rev = true))
+        println("If you want to continue, please enter `c` key, or else press `q` key")
+        q = readline(stdin)
+        if q === "q"
+            break
+        end 
+    end
 end
 
 """
