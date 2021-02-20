@@ -404,6 +404,37 @@ function vaspio_nband(f::String)
 end
 
 """
+    vaspio_valence(f::String)
+
+Reading vasp's `POTCAR` file, return `ZVAL`. Here `f` means only the
+directory that contains `POTCAR`.
+
+The information about `ZVAL` will be used to determine `NBANDS` in the
+`INCAR` file.
+
+See also: [`vasp_incar`](@ref).
+"""
+function vaspio_valence(f::String)
+    # Open the iostream
+    fin = open(joinpath(f, "POTCAR"), "r")
+
+    # Read the POTCAR
+    strs = readlines(fin)
+
+    # Extract the lines that contains the `ZVAL`
+    filter!(x -> contains(x, "ZVAL"), strs)
+
+    # Extract ZVAL, convert it into float, than save it.
+    zval = map(x -> parse(F64, line_to_array(x)[6]), strs)
+
+    # Close the iostream
+    close(fin)
+
+    # Return the desired arrays
+    return zval
+end
+
+"""
     vaspio_lattice(f::String)
 
 Reading vasp's `POSCAR` file, return crystallography information. Here `f`
@@ -472,37 +503,6 @@ function vaspio_lattice(f::String)
 
     # Return the desired struct
     return latt
-end
-
-"""
-    vaspio_valence(f::String)
-
-Reading vasp's `POTCAR` file, return `ZVAL`. Here `f` means only the
-directory that contains `POTCAR`.
-
-The information about `ZVAL` will be used to determine `NBANDS` in the
-`INCAR` file.
-
-See also: [`vasp_incar`](@ref).
-"""
-function vaspio_valence(f::String)
-    # Open the iostream
-    fin = open(joinpath(f, "POTCAR"), "r")
-
-    # Read the POTCAR
-    strs = readlines(fin)
-
-    # Extract the lines that contains the `ZVAL`
-    filter!(x -> contains(x, "ZVAL"), strs)
-
-    # Extract ZVAL, convert it into float, than save it.
-    zval = map(x -> parse(F64, line_to_array(x)[6]), strs)
-
-    # Close the iostream
-    close(fin)
-
-    # Return the desired arrays
-    return zval
 end
 
 """
