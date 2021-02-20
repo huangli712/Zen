@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/15
+# last modified: 2021/02/20
 #
 
 #
@@ -65,32 +65,32 @@ See also: [`vasp_run`](@ref), [`vasp_save`](@ref).
 """
 function vasp_init(it::IterInfo)
     # Prepare essential input files
+    #
+    # Copy POTCAR and POSCAR
+    cp("../POTCAR", joinpath(pwd(), "POTCAR"), force = true)
+    cp("../POSCAR", joinpath(pwd(), "POSCAR"), force = true)
+    #
+    # How about INCAR
     if it.dmft_cycle == 0
-        # Copy POTCAR and POSCAR
-        cp("../POTCAR", joinpath(pwd(), "POTCAR"), force = true)
-        cp("../POSCAR", joinpath(pwd(), "POSCAR"), force = true)
-
         # Generate INCAR automatically
         vasp_incar(it.dft_fermi)
-    end
-
-    # Check essential input files
-    if it.dmft_cycle >= 1
-        flist = ("INCAR", "POSCAR", "POTCAR")
-        for i in eachindex(flist)
-            filename = flist[i]
-            if !isfile(filename)
-                error("Please make sure the file $filename is available")
-            end
-        end
-
+    else
         # Maybe we need to update INCAR file here
         vasp_incar(it.dmft_fermi)
     end
-
+    #
     # Well, perhaps we need to generate the KPOINTS file by ourselves.
     if get_d("kmesh") === "file"
         vasp_kpoints()
+    end
+
+    # Check essential input files
+    flist = ("INCAR", "POSCAR", "POTCAR")
+    for i in eachindex(flist)
+        filename = flist[i]
+        if !isfile(filename)
+            error("Please make sure the file $filename is available")
+        end
     end
 end
 
