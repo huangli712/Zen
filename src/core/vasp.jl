@@ -449,12 +449,52 @@ function vaspio_procar(f::String)
     # Open the iostream
     fin = open(joinpath(f, "PROCAR"), "r")
 
+    # Skip one line
     readline(fin)
+
+    # Determine key parameters: nkpt, nband, and natom 
     arr = line_to_array(fin)
     nkpt = parse(I64, arr[4])
     nband = parse(I64, arr[8])
     natom = parse(I64, arr[12])
+    nspin = 1
+    norbs = 9
     @show nkpt, nband, natom
+
+    worb = zeros(F64, norbs, natom, nband, nkpt, nspin)
+
+    for k = 1:nkpt
+        readline(fin) # Blank line
+
+        arr = line_to_array(fin)
+        kp = parse(I64, arr[2])
+        @assert k === kp
+        println("k: $kp ")
+
+        for b = 1:nband
+            readline(fin) # Blank line
+            arr = line_to_array(fin)
+            bp = parse(I64, arr[2])
+            @assert b === bp
+            println("b: $bp ")
+            readline(fin)
+            readline(fin)
+            for a = 1:natom
+                arr = line_to_array(fin)
+                @assert parse(I64, arr[1]) === a
+                
+                worb[:, a, b, k, 1] = parse.(F64, arr[2:10])
+            end
+            readline(fin)
+            readline(fin)
+            for a = 1:natom
+                readline(fin)
+            end
+            readline(fin)
+        end
+
+        readline(fin)
+    end 
 
     # Close the iostream
     close(fin)
