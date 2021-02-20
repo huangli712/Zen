@@ -446,6 +446,8 @@ the most relevant, and then use the obtain information to customize their
 case.toml file (specifically, the `window` parameter in the `dft` block).
 """
 function vaspio_procar(f::String)
+    orb_labels = ["s", "py", "pz", "px", "dxy", "dyz", "dz2", "dxz", "dx2-y2"]
+
     # Open the iostream
     fin = open(joinpath(f, "PROCAR"), "r")
 
@@ -454,14 +456,15 @@ function vaspio_procar(f::String)
 
     # Determine key parameters: nkpt, nband, and natom 
     arr = line_to_array(fin)
+    nspin = 1
     nkpt = parse(I64, arr[4])
     nband = parse(I64, arr[8])
     natom = parse(I64, arr[12])
-    nspin = 1
-    norbs = 9
-    @show nkpt, nband, natom
+    norbs = length(orb_labels)
+
 
     worb = zeros(F64, norbs, natom, nband, nkpt, nspin)
+    oab = zeros(F64, norbs, natom, nband)
 
     for k = 1:nkpt
         readline(fin) # Blank line
@@ -498,6 +501,28 @@ function vaspio_procar(f::String)
 
     # Close the iostream
     close(fin)
+
+    for b = 1:nband
+        for a = 1:natom
+            for o = 1:norbs
+                oab[o, a, b] = sum(worb[o, a, b, :, :]) / float(nkpt * nspin)
+            end
+        end
+    end
+
+    for b = 1:nband
+         println("$b :", oab[5:9, 2, b])
+    end
+    println(sortperm(oab[7, 2, :], rev = true))
+
+    # Print essential information  
+    println("Number of spins: $nspin")
+    println("Number of k-points: $nkpt")
+    println("Number of bands: $nband")
+    println("Number of atoms: $natom")
+    println("Number of orbitals: $norbs")
+    exit(-1)
+
 end
 
 """
