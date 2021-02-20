@@ -114,6 +114,7 @@ function vasp_run(it::IterInfo)
     else
         vasp_exec = "$dft_home/vasp_std"
     end
+    @assert isfile(vasp_exec)
 
     # Assemble command
     if isnothing(mpi_prefix)
@@ -281,6 +282,17 @@ function vasp_incar(fermi::F64)
         end
     end
 
+#
+# Remarks:
+#
+# The parameter `NBANDS` is quite important. Sometimes its default value
+# is too small. The adaptor will fail to generate reasonable projectors.  
+# At this case, you will see an error thrown by the try_diag() function.
+# The solution is simple, i.e., increasing `NBANDS` a bit.  
+#
+# The current algorithm is suitable for paramagnetic systems. It has not
+# been tested for magnetically ordered materials.
+#
     # For number of bands
     nbands = vaspio_nband(pwd())
     write(ios, "NBANDS   = $nbands \n")
