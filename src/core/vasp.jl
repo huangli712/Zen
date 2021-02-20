@@ -435,6 +435,12 @@ function vaspio_valence(f::String)
 end
 
 """
+    vaspio_procar(f::String)
+"""
+function vaspio_procar(f::String)
+end
+
+"""
     vaspio_lattice(f::String)
 
 Reading vasp's `POSCAR` file, return crystallography information. Here `f`
