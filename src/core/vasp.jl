@@ -436,8 +436,28 @@ end
 
 """
     vaspio_procar(f::String)
+
+Reading vasp's `PROCAR` file, return orbital weight information. Here `f`
+means only the directory that contains `PROCAR`.
+
+This function is not invoked directly during the DFT + DMFT iteration. It
+is designed for users merely. They can use it to judge which orbitals are
+the most relevant, and then use the obtain information to customize their
+case.toml file (specifically, the `window` parameter in the `dft` block).
 """
 function vaspio_procar(f::String)
+    # Open the iostream
+    fin = open(joinpath(f, "PROCAR"), "r")
+
+    readline(fin)
+    arr = line_to_array(fin)
+    nkpt = parse(I64, arr[4])
+    nband = parse(I64, arr[8])
+    natom = parse(I64, arr[12])
+    @show nkpt, nband, natom
+
+    # Close the iostream
+    close(fin)
 end
 
 """
