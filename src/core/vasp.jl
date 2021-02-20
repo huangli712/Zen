@@ -531,10 +531,6 @@ function vaspio_procar(f::String)
         end
     end
 
-    #for b = 1:nband
-    #     println("$b :", oab[5:9, 2, b])
-    #end
-
     # Print essential information
     println() 
     println("Number of spins: $nspin")
