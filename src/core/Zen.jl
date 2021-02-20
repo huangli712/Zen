@@ -393,15 +393,15 @@ export view_dos
 # vasp_kpoints   -> Make essential input file (KPOINTS).
 # vasp_files     -> Check essential output files.
 # vaspio_nband   -> Determine number of bands.
-# vaspio_lattice -> Read lattice information.
 # vaspio_valence -> Read number of valence electrons per sorts.
+# vaspio_procar  -> Read PROCAR file.
+# vaspio_lattice -> Read lattice information.
 # vaspio_kmesh   -> Read kmesh.
 # vaspio_tetra   -> Read tetrahedra.
 # vaspio_eigen   -> Read eigenvalues.
 # vaspio_projs   -> Read projectors.
 # vaspio_fermi   -> Read fermi level.
 # vaspio_charge  -> Read charge density.
-# vaspio_procar  -> Read PROCAR file.
 #
 include("vasp.jl")
 #
@@ -413,15 +413,15 @@ export vasp_incar
 export vasp_kpoints
 export vasp_files
 export vaspio_nband
-export vaspio_lattice
 export vaspio_valence
+export vaspio_procar
+export vaspio_lattice
 export vaspio_kmesh
 export vaspio_tetra
 export vaspio_eigen
 export vaspio_projs
 export vaspio_fermi
 export vaspio_charge
-export vaspio_procar
 
 #
 # tetra.jl
