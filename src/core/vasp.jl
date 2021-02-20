@@ -454,7 +454,7 @@ function vaspio_procar(f::String)
     # Skip one line
     readline(fin)
 
-    # Determine key parameters: nkpt, nband, and natom 
+    # Determine key parameters: nspin, nkpt, nband, natom, and norbs.
     arr = line_to_array(fin)
     nspin = 1
     nkpt = parse(I64, arr[4])
@@ -462,46 +462,66 @@ function vaspio_procar(f::String)
     natom = parse(I64, arr[12])
     norbs = length(orb_labels)
 
-
+    # Create arrays
     worb = zeros(F64, norbs, natom, nband, nkpt, nspin)
     oab = zeros(F64, norbs, natom, nband)
 
+    # Parse the `PROCAR` file
+    # Go through each k-point 
     for k = 1:nkpt
-        readline(fin) # Blank line
+        # Blank line
+        readline(fin)
 
+        # Check k-index
         arr = line_to_array(fin)
         kp = parse(I64, arr[2])
         @assert k === kp
-        println("k: $kp ")
+        println("Finishing kpt: $kp")
 
+        # Go through each band for the given k-point
         for b = 1:nband
-            readline(fin) # Blank line
+            # Blank line
+            readline(fin)
+
+            # Check band index
             arr = line_to_array(fin)
             bp = parse(I64, arr[2])
             @assert b === bp
-            println("b: $bp ")
+
+            # Blank lines
             readline(fin)
             readline(fin)
+
+            # Parse weights
+            # Go through each atom and orbital
             for a = 1:natom
                 arr = line_to_array(fin)
                 @assert parse(I64, arr[1]) === a
-                
                 worb[:, a, b, k, 1] = parse.(F64, arr[2:10])
             end
+
+            # Blank lines
             readline(fin)
             readline(fin)
+
+            # Parse phase factors
+            # Go through each atom and orbital
             for a = 1:natom
                 readline(fin)
             end
+
+            # Blank line
             readline(fin)
         end
 
+        # Blank line
         readline(fin)
     end 
 
     # Close the iostream
     close(fin)
 
+    # Try to build `oab` by k-summation
     for b = 1:nband
         for a = 1:natom
             for o = 1:norbs
@@ -510,10 +530,10 @@ function vaspio_procar(f::String)
         end
     end
 
-    for b = 1:nband
-         println("$b :", oab[5:9, 2, b])
-    end
-    println(sortperm(oab[7, 2, :], rev = true))
+    #for b = 1:nband
+    #     println("$b :", oab[5:9, 2, b])
+    #end
+    #println(sortperm(oab[7, 2, :], rev = true))
 
     # Print essential information  
     println("Number of spins: $nspin")
@@ -521,7 +541,6 @@ function vaspio_procar(f::String)
     println("Number of bands: $nband")
     println("Number of atoms: $natom")
     println("Number of orbitals: $norbs")
-    exit(-1)
 
 end
 
