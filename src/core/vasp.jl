@@ -362,11 +362,11 @@ vasp_files() = vasp_files(pwd())
 """
     vaspio_nband(f::String)
 
-Reading vasp's `POSCAR` and `POTCAR` files, evaluate number of bands. It
+Reading vasp's `POSCAR` and `POTCAR` files, evaluating number of bands. It
 will be used to create the `INCAR` file. Here `f` means only the directory
 that contains `POSCAR` and `POTCAR`.
 
-See also: [`vasp_incar`](@ref).
+See also: [`vasp_incar`](@ref), [`vaspio_valence`](@ref), [`vaspio_lattice`](@ref).
 """
 function vaspio_nband(f::String)
     # Extract crystallography information from `POSCAR`
@@ -412,7 +412,7 @@ directory that contains `POTCAR`.
 The information about `ZVAL` will be used to determine `NBANDS` in the
 `INCAR` file.
 
-See also: [`vasp_incar`](@ref).
+See also: [`vasp_incar`](@ref), [`vaspio_nband`](@ref).
 """
 function vaspio_valence(f::String)
     # Open the iostream
