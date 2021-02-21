@@ -437,7 +437,7 @@ end
 """
     vaspio_procar(f::String)
 
-Reading vasp's `PROCAR` file, return orbital weight information. Here `f`
+Reading vasp's `PROCAR` file, extract orbital weight information. Here `f`
 means only the directory that contains `PROCAR`.
 
 This function is not invoked directly during the DFT + DMFT iteration. It
@@ -561,19 +561,25 @@ function vaspio_procar(f::String)
         atom_index = parse(I64, readline(stdin))
 
         # Get orbital index
-        println("Orbitals:", orb_labels)
+        println("Orbitals: ", orb_labels)
         print("Please input orbital index (integer, from 1 to $norbs): ")
         orbital_index = parse(I64, readline(stdin))
 
         # Output the gathered information
-        println("Atom_index: $atom_index")
-        println("Orbital_index: $orbital_index")
-        println("Orbital_label: $(orb_labels[orbital_index])")
+        println("Selected atom index: $atom_index")
+        println("Selected orbital index: $orbital_index")
+        println("Selected orbital label: $(orb_labels[orbital_index])")
 
         # Sort, find out the most relevant orbitals
         v = sortperm(oab[orbital_index, atom_index, :], rev = true)
-        println(v[1:5])
-        println(oab[orbital_index, atom_index, v[1:5]])
+
+        # Output the band indices and weights
+        print("Band index :")
+        foreach(x -> @printf("%12i", x), v[1:5])
+        println()
+        print("Band weight:")
+        foreach(x -> @printf("%12.7f", x), oab[orbital_index, atom_index, v[1:5]])
+        println()
 
         # Prompt whether the users want to continue or quit 
         println("If you want to continue, please enter `c` key, or else press `q` key")
