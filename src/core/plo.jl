@@ -927,8 +927,8 @@ function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Ar
         # Extract the band window / energy window
         emin, emax = PW[p].bwin
         #
-        # If it is the band window, then we will create a default mesh
-        # from -4.0 to +4.0.
+        # If it is the band window, then we will create a mesh from
+        # minimum(enk[emin,:,:]) to maximum(enk[emax,:,:]).
         if emin isa Integer
             M = collect(minimum(enk[emin,:,:]):0.01:maximum(enk[emax,:,:]))
         #
@@ -1140,8 +1140,8 @@ function view_hamk(hamk::Array{C64,4})
     # Output the data
     open("hamk.chk", "w") do fout
         # Write the header
-        println(fout, "# file: hamk.chk")
-        println(fout, "# data: hamk[nproj,nproj,nkpt,nspin]")
+        println(fout, "# File: hamk.chk")
+        println(fout, "# Data: hamk[nproj,nproj,nkpt,nspin]")
         println(fout)
         println(fout, "nproj -> $nproj")
         println(fout, "nkpt  -> $nkpt")
@@ -1179,8 +1179,8 @@ function view_dos(mesh::Array{Array{F64,1},1}, dos::Array{Array{F64,3},1})
         # Output the data
         open("dos.chk.$p", "w") do fout
             # Write the header
-            println(fout, "# file: dos.chk")
-            println(fout, "# data: mesh[nmesh] and dos[ndim,nspin,nmesh]")
+            println(fout, "# File: dos.chk")
+            println(fout, "# Data: mesh[nmesh] and dos[ndim,nspin,nmesh]")
             println(fout)
             println(fout, "nmesh -> $nmesh")
             println(fout, "ndim  -> $ndim")
