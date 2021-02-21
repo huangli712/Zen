@@ -22,7 +22,7 @@ in this function.
 If `debug` is true, this function will try to calculate some physical
 quantities, such as density matrix, overlap matrix, and hamiltonian,
 and partial density of states, which will be written to external files
-or screen for reference.
+or terminal for reference.
 
 See also: [`vasp_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_run`](@ref).
 """
@@ -76,7 +76,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # P09: Are the projectors correct?
     #
     # We will try to calculate some physical quantitites, which
-    # will be written to external files or screen for reference.
+    # will be written to external files or terminal for reference.
     #
     # These physical quantities include density matrix, overlap
     # matrix, local hamiltonian, full hamiltonian, and partial
@@ -168,7 +168,8 @@ function plo_group(PG::Array{PrGroup,1})
                 # Setup corr property
                 PG[g].corr = true
 
-                # Setup shell property. Later it will be used to generate `Tr`
+                # Setup shell property
+                # Later it will be used to generate `Tr`
                 PG[g].shell = SL[3]
             end
         end
@@ -227,6 +228,8 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
 # means that all `PrGroup` share the same window. When nwin is equal to
 # length(PG), it means that each `PrGroup` should have its own window.
 #
+# If nwin is neither 1 nor length(PG), there must be something wrong.
+#
 
     # Preprocess the input. Get how many windows there are.
     window = get_d("window")
@@ -249,7 +252,7 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
             bwin = (window[2*p-1], window[2*p])
         end
 
-        # Examine bwin further. Its elements should obey the order. This
+        # Examine `bwin` further. Its elements should obey the order. This
         # window must be defined by band indices (they are integers) or
         # energies (two float numbers).
         @assert bwin[2] > bwin[1]
@@ -303,6 +306,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 
         # Determine the number of projectors after rotation
         ndim = size(PG[i].Tr)[1]
+        @assert size(PG[i].Tr)[2] === (p2 - p1 + 1)
 
         # Create a temporary array R
         R = zeros(C64, ndim, nband, nkpt, nspin)
@@ -353,6 +357,7 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
                 # `ib1` and `ib2` are the boundaries.
                 ib1 = PW[p].kwin[k, s, 1]
                 ib2 = PW[p].kwin[k, s, 2]
+                @assert ib1 <= ib2
 
                 # `ib3` are total number of bands for given `s` and `k`
                 ib3 = ib2 - ib1 + 1
@@ -450,6 +455,7 @@ function get_win1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
 
     # Extract some key parameters
     nband, nkpt, nspin = size(enk)
+    @assert nband >= bmin && nband >= bmax
 
     # Create array `kwin`, which is used to record the band window
     # for each k-point and each spin.
