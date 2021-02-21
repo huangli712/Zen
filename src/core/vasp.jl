@@ -448,7 +448,9 @@ in the `dft` block).
 """
 function vaspio_procar(f::String)
     # Define orbital labels
-    orb_labels = ["s", "py", "pz", "px", "dxy", "dyz", "dz2", "dxz", "dx2-y2"]
+    orb_labels = ["s",
+                  "py", "pz", "px",
+                  "dxy", "dyz", "dz2", "dxz", "dx2-y2"]
 
     # Open the iostream
     fin = open(joinpath(f, "PROCAR"), "r")
@@ -473,6 +475,8 @@ function vaspio_procar(f::String)
     norbs = length(orb_labels)
 
     # Create arrays
+    # `worb` is used to save the raw data, while `oab` is used to save
+    # the processed data.
     worb = zeros(F64, norbs, natom, nband, nkpt, nspin)
     oab = zeros(F64, norbs, natom, nband)
 
@@ -527,7 +531,7 @@ function vaspio_procar(f::String)
 
         # Blank line
         readline(fin)
-    end 
+    end
 
     # Close the iostream
     close(fin)
@@ -541,6 +545,7 @@ function vaspio_procar(f::String)
         end
     end
 
+    # The data are ready, then this function will interact with the users.
     # Print essential information
     println() 
     println("Number of spins: $nspin")
@@ -549,20 +554,32 @@ function vaspio_procar(f::String)
     println("Number of atoms: $natom")
     println("Number of orbitals: $norbs")
 
+    # Enter a infinite loop until the users enter `q`
     while true
-        print("Please input atom index: ")
+        # Get atom index
+        print("Please input atom index (integer, from 1 to $natom): ")
         atom_index = parse(I64, readline(stdin))
+
+        # Get orbital index
         println("Orbitals:", orb_labels)
-        print("Please input orbital index: ")
+        print("Please input orbital index (integer, from 1 to $norbs): ")
         orbital_index = parse(I64, readline(stdin))
+
+        # Output the gathered information
         println("Atom_index: $atom_index")
         println("Orbital_index: $orbital_index")
         println("Orbital_label: $(orb_labels[orbital_index])")
+
+        # Sort, find out the most relevant orbitals
         v = sortperm(oab[orbital_index, atom_index, :], rev = true)
         println(v)
         println(oab[orbital_index, atom_index, v])
+
+        # Prompt whether the users want to continue or quit 
         println("If you want to continue, please enter `c` key, or else press `q` key")
         q = readline(stdin)
+
+        # Quit the loop 
         if q === "q"
             break
         end 
