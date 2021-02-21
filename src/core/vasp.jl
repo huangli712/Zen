@@ -447,6 +447,7 @@ their case.toml configuration file (specifically, the `window` parameter
 in the `dft` block).
 """
 function vaspio_procar(f::String)
+    # Define orbital labels
     orb_labels = ["s", "py", "pz", "px", "dxy", "dyz", "dz2", "dxz", "dx2-y2"]
 
     # Open the iostream
@@ -454,6 +455,14 @@ function vaspio_procar(f::String)
 
     # Skip one line
     readline(fin)
+
+#
+# Remarks:
+#
+# Now this function only supports paramagnetic system, so `nspin`
+# is always 1. Next, we will extend it to support non-collinear
+# magnetism and collinear magnetism materials.
+#
 
     # Determine key parameters: nspin, nkpt, nband, natom, and norbs.
     arr = line_to_array(fin)
