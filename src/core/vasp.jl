@@ -572,8 +572,8 @@ function vaspio_procar(f::String)
 
         # Sort, find out the most relevant orbitals
         v = sortperm(oab[orbital_index, atom_index, :], rev = true)
-        println(v)
-        println(oab[orbital_index, atom_index, v])
+        println(v[1:5])
+        println(oab[orbital_index, atom_index, v[1:5]])
 
         # Prompt whether the users want to continue or quit 
         println("If you want to continue, please enter `c` key, or else press `q` key")
