@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/20
+# last modified: 2021/02/21
 #
 
 #
@@ -442,8 +442,9 @@ means only the directory that contains `PROCAR`.
 
 This function is not invoked directly during the DFT + DMFT iteration. It
 is designed for users merely. They can use it to judge which orbitals are
-the most relevant, and then use the obtain information to customize their
-case.toml file (specifically, the `window` parameter in the `dft` block).
+the most relevant, and then apply the obtained information to customize
+their case.toml configuration file (specifically, the `window` parameter
+in the `dft` block).
 """
 function vaspio_procar(f::String)
     orb_labels = ["s", "py", "pz", "px", "dxy", "dyz", "dz2", "dxz", "dx2-y2"]
@@ -548,7 +549,9 @@ function vaspio_procar(f::String)
         println("Atom_index: $atom_index")
         println("Orbital_index: $orbital_index")
         println("Orbital_label: $(orb_labels[orbital_index])")
-        println(sortperm(oab[orbital_index, atom_index, :], rev = true))
+        v = sortperm(oab[orbital_index, atom_index, :], rev = true)
+        println(v)
+        println(oab[orbital_index, atom_index, v])
         println("If you want to continue, please enter `c` key, or else press `q` key")
         q = readline(stdin)
         if q === "q"
