@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/17
+# last modified: 2021/02/21
 #
 
 #
@@ -56,22 +56,22 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
     # P06: Transform the projectors
     #
-    # D[:chipsi_r] will be created
+    # D[:Rchipsi] will be created
     println("    Rotate Projectors")
-    D[:chipsi_r] = plo_rotate(D[:PG], D[:chipsi])
+    D[:Rchipsi] = plo_rotate(D[:PG], D[:chipsi])
 
     # P07: Filter the projectors
     #
-    # D[:chipsi_f] will be created
+    # D[:Fchipsi] will be created
     println("    Filter Projectors")
-    D[:chipsi_f] = plo_filter(D[:PW], D[:chipsi_r])
+    D[:Fchipsi] = plo_filter(D[:PW], D[:Rchipsi])
 
     # P08: Orthogonalize and normalize the projectors
     #
-    # D[:chipsi_f] will be updated. It contains the final data
+    # D[:Fchipsi] will be updated. It contains the final data
     # for projector matrix.
     println("    Normalize Projectors")
-    plo_orthog(D[:PW], D[:chipsi_f])
+    plo_orthog(D[:PW], D[:Fchipsi])
 
     # P09: Are the projectors correct?
     #
@@ -287,7 +287,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 
     # Initialize new array. It stores the rotated projectors.
     # Now it is empty, but we will allocate memory for it later.
-    chipsi_r = Array{C64,4}[]
+    Rchipsi = Array{C64,4}[]
 
 #
 # Remarks:
@@ -317,12 +317,12 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
             end
         end
 
-        # Push R into chipsi_r to save it
-        push!(chipsi_r, R)
+        # Push R into Rchipsi to save it
+        push!(Rchipsi, R)
     end
 
     # Return the desired arrays
-    return chipsi_r
+    return Rchipsi
 end
 
 """
@@ -335,7 +335,7 @@ See also: [`PrWindow`](@ref), [`plo_rotate`](@ref), [`plo_orthog`](@ref).
 function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     # Initialize new array. It stores the filtered projectors.
     # Now it is empty, but we will allocate memory for it later.
-    chipsi_f = Array{C64,4}[]
+    Fchipsi = Array{C64,4}[]
 
     # Go through each PrWindow
     for p in eachindex(PW)
@@ -365,12 +365,12 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
             end
         end
 
-        # Push F into chipsi_f to save it
-        push!(chipsi_f, F)
+        # Push F into Fchipsi to save it
+        push!(Fchipsi, F)
     end
 
     # Return the desired arrays
-    return chipsi_f
+    return Fchipsi
 end
 
 """
@@ -410,24 +410,24 @@ See also: [`plo_adaptor`](@ref).
 """
 function plo_monitor(D::Dict{Symbol,Any})
     # Calculate and output overlap matrix
-    ovlp = calc_ovlp(D[:PW], D[:chipsi_f], D[:weight])
+    ovlp = calc_ovlp(D[:PW], D[:Fchipsi], D[:weight])
     view_ovlp(D[:PG], ovlp)
 
     # Calculate and output density matrix
-    dm = calc_dm(D[:PW], D[:chipsi_f], D[:weight], D[:occupy])
+    dm = calc_dm(D[:PW], D[:Fchipsi], D[:weight], D[:occupy])
     view_dm(D[:PG], dm)
 
     # Calculate and output local hamiltonian
-    hamk = calc_hamk(D[:PW], D[:chipsi_f], D[:weight], D[:enk])
+    hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
     view_hamk(D[:PG], hamk)
 
     # Calculate and output full hamiltonian
-    hamk = calc_hamk(D[:PW], D[:chipsi_f], D[:enk])
+    hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:enk])
     view_hamk(hamk)
 
     # Calculate and output density of states
     if get_d("smear") === "tetra"
-        mesh, dos = calc_dos(D[:PW], D[:chipsi_f], D[:itet], D[:enk])
+        mesh, dos = calc_dos(D[:PW], D[:Fchipsi], D[:itet], D[:enk])
         view_dos(mesh, dos)
     end
 end
