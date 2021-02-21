@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/20
+# last modified: 2021/02/21
 #
 
 #
@@ -25,7 +25,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     println("  < IR Adaptor >")
 
     # I02: Check the validity of the `D` dict
-    key_list = [:latt, :kmesh, :weight, :enk, :occupy, :chipsi_f, :fermi]
+    key_list = [:latt, :kmesh, :weight, :enk, :occupy, :Fchipsi, :fermi]
     for k in key_list
         @assert haskey(D, k)
     end
@@ -50,7 +50,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
 
     # I07: Write normalized projectors
     println("    Put Projector")
-    irio_projs(pwd(), D[:chipsi_f])
+    irio_projs(pwd(), D[:Fchipsi])
 
     # I08: Write fermi level
     println("    Put Fermi Level")
