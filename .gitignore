@@ -18,3 +18,5 @@
 .DS_Store
 fort.*
 test/*/dft
+ctqmc
+dmft
