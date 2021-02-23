@@ -3,7 +3,7 @@
 ## Introduction
 ## ============
 ##
-## Makefile for iqist/src/ct_hyb1 directory.
+## Makefile for zen/src/dmft directory.
 ##
 ## Usage
 ## =====
@@ -20,8 +20,8 @@
 ## History
 ## =======
 ##
-## 02/28/2015 by li huang (created)
-## 04/12/2019 by li huang (last modified)
+## 02/23/2021 by li huang (created)
+## 02/23/2021 by li huang (last modified)
 ##
 ##
 
@@ -29,16 +29,14 @@
 
 include ../../build/make.sys
 
-modc = ctqmc_control.o ctqmc_context.o
-dmft = ctqmc_dmft.o
-core = ctqmc_solver.o
-lev1 = ctqmc_flavor.o ctqmc_hybmat.o ctqmc_update.o
-lev2 = ctqmc_record.o ctqmc_status.o ctqmc_stream.o ctqmc_util.o
-lev3 = ctqmc_dump.o ctqmc_print.o
-main = ctqmc_main.o
+modc = dmft_control.o dmft_context.o
+core = dmft_core.o dmft_task.o
+lev1 = dmft_stream.o dmft_util.o
+lev2 = dmft_dump.o dmft_print.o
+main = dmft_main.o
 mlib = libflink.a
 
-objects = $(modc) $(dmft) $(core) $(lev1) $(lev2) $(lev3) $(main) $(mlib)
+objects = $(modc) $(core) $(lev1) $(lev2) $(main) $(mlib)
 
 default: all
 
@@ -59,7 +57,7 @@ flink_mod:
 	cp $(FLINK)/version.mod .
 
 exe: flink $(objects)
-	$(LINKER) $(objects) -o ctqmc $(LFLAGS) $(LIBS)
+	$(LINKER) $(objects) -o dmft $(LFLAGS) $(LIBS)
 
 .f90.o:
 	$(F90) $(FFLAGS) $*.f90
@@ -67,7 +65,7 @@ exe: flink $(objects)
 clean:
 	rm -f *.mod
 	rm -f *.o
-	rm -f ctqmc
+	rm -f dmft
 	rm -f libflink.a
 
 clean-dat:
