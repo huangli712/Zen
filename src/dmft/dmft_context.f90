@@ -1,7 +1,7 @@
 !!!-----------------------------------------------------------------------
 !!! project : gardenia
 !!! program : context    module
-!!! source  : ctqmc_context.f90
+!!! source  : dmft_context.f90
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
