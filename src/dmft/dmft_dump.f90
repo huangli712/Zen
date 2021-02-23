@@ -2,7 +2,7 @@
 !!! project : gardenia
 !!! program : 
 !!! source  : dmft_dump.f90
-!!! type    : module
+!!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
 !!!           02/23/2021 by li huang (last modified)
