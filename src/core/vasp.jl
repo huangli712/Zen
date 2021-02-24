@@ -286,9 +286,9 @@ function vasp_incar(fermi::F64)
 # Remarks:
 #
 # The parameter `NBANDS` is quite important. Sometimes its default value
-# is too small. The adaptor will fail to generate reasonable projectors.  
+# is too small. The adaptor will fail to generate reasonable projectors.
 # At this case, you will see an error thrown by the try_diag() function.
-# The solution is simple, i.e., increasing `NBANDS` a bit.  
+# The solution is simple, i.e., increasing `NBANDS` a bit.
 #
 # The current algorithm is suitable for paramagnetic systems. It has not
 # been tested for magnetically ordered materials.
@@ -481,7 +481,7 @@ function vaspio_procar(f::String)
     oab = zeros(F64, norbs, natom, nband)
 
     # Parse the `PROCAR` file
-    # Go through each k-point 
+    # Go through each k-point
     println("Parsing PROCAR...")
     for k = 1:nkpt
         # Blank line
@@ -547,7 +547,7 @@ function vaspio_procar(f::String)
 
     # The data are ready, then this function will interact with the users.
     # Print essential information
-    println() 
+    println()
     println("Number of spins: $nspin")
     println("Number of k-points: $nkpt")
     println("Number of bands: $nband")
@@ -581,14 +581,14 @@ function vaspio_procar(f::String)
         foreach(x -> @printf("%12.7f", x), oab[orbital_index, atom_index, v[1:5]])
         println()
 
-        # Prompt whether the users want to continue or quit 
+        # Prompt whether the users want to continue or quit
         println("If you want to continue, please enter `c` key, or else press `q` key")
         q = readline(stdin)
 
-        # Quit the loop 
+        # Quit the loop
         if q === "q"
             break
-        end 
+        end
     end
 end
 

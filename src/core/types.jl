@@ -258,7 +258,7 @@ Mutable struct. Define the band window for group of projectors.
 .kwin -> Momentum-dependent and spin-dependent band window.\n
 .bwin -> Tuple. It is the band window or energy window, which is used
          to filter the Kohn-Sham band structure. The mesh for calculating
-         density of states is also deduced from `bwin`. 
+         density of states is also deduced from `bwin`.
 
 See also: [`PrTrait`](@ref), [`PrGroup`](@ref).
 """

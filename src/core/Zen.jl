@@ -21,7 +21,7 @@ Now this framework is under heavy development. **PLEASE USE IT AT YOUR
 OWN RISK**.
 
 For more details about how to install and use the Zen framework, please
-check the following website: 
+check the following website:
 
 http://doc.zen
 """
