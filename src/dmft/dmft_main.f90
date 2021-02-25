@@ -1,14 +1,13 @@
 !!!=========+=========+=========+=========+=========+=========+=========+!
 !!! ZEN @ JACARANDA                                                      !
 !!!                                                                      !
-!!! A highly optimized hybridization expansion version continuous time   !
-!!! quantum Monte Carlo (CTQMC) quantum impurity solver plus a classic   !
-!!! dynamical mean field theory (DMFT) self-consistent engine            !
+!!! A highly optimized dynamical mean field theory self-consistent calc- !
+!!! ulation engine, which will be used together with density functional  !
+!!! theory codes to explore the realistic correlated electron materials. !
 !!!                                                                      !
 !!! author  : Li Huang (China Academy of Engineering Physics)            !
 !!! status  : (WARNING) IN TESTING STAGE, USE IT IN YOUR RISK            !
-!!! comment : this impurity solver is based on segment picture formalism !
-!!!           any question, please contact with lihuang.dmft@gmail.com   !
+!!! comment : any question, please contact with lihuang.dmft@gmail.com   !
 !!!=========+=========+=========+=========+=========+=========+=========+!
 
 !!========================================================================
