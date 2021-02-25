@@ -1,6 +1,6 @@
-# ZEN (A Modern DFT + DMFT Computation Framework)
+# ZEN
 
-This package is currently under developement. **IT DOESN'T WORK NOW!**
+ZEN is a modern DFT + DMFT computation framework. This package is currently under developement. **IT DOESN'T WORK NOW!**
 
 ## Version
 
