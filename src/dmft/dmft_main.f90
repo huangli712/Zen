@@ -20,9 +20,40 @@
      use mmpi, only : mp_comm_rank ! get index of current process
      use mmpi, only : mp_comm_size ! get number of processes
 
+     use control, only : nprocs    ! number of processes
+     use control, only : myid      ! index of current process
+     use control, only : master    ! index of master process
+
      implicit none
 
-     print *, "Hello world!"
+! initialize mpi envirnoment
+# if defined (MPI)
+
+! initialize the mpi execution environment
+     call mp_init()
+
+! determines the rank of the calling process in the communicator
+     call mp_comm_rank(myid)
+
+! determines the size of the group associated with a communicator
+     call mp_comm_size(nprocs)
+
+# endif  /* MPI */
+
+     if ( myid == master ) then
+         print *, myid, nprocs
+     endif
+
+! finalize mpi envirnoment
+# if defined (MPI)
+
+! blocks until all processes have reached this routine
+     call mp_barrier()
+
+! terminates mpi execution environment
+     call mp_finalize()
+
+# endif  /* MPI */
 
 !!========================================================================
   END PROGRAM DMFT_MAIN !                                              <<<
