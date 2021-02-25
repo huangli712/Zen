@@ -1,5 +1,5 @@
 !!!-----------------------------------------------------------------------
-!!! project : gardenia
+!!! project : jacaranda
 !!! program : 
 !!! source  : dmft_util.f90
 !!! type    : subroutines

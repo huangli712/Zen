@@ -1,5 +1,5 @@
 !!!-----------------------------------------------------------------------
-!!! project : gardenia
+!!! project : jacaranda
 !!! program : control    module
 !!! source  : dmft_control.f90
 !!! type    : module
