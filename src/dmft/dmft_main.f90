@@ -1,5 +1,5 @@
 !!!=========+=========+=========+=========+=========+=========+=========+!
-!!! ZEN @ GARDENIA                                                       !
+!!! ZEN @ JACARANDA                                                      !
 !!!                                                                      !
 !!! A highly optimized hybridization expansion version continuous time   !
 !!! quantum Monte Carlo (CTQMC) quantum impurity solver plus a classic   !

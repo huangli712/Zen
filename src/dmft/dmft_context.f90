@@ -1,5 +1,5 @@
 !!!-----------------------------------------------------------------------
-!!! project : gardenia
+!!! project : jacaranda
 !!! program : context    module
 !!! source  : dmft_context.f90
 !!! type    : module
