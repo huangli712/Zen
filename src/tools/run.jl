@@ -1,17 +1,21 @@
 #!/usr/bin/env julia
 
 #
-# Project : Pansy
+# Project : Begonia
 # Source  : run.jl
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/08
+# Last modified: 2021/02/28
 #
 
+# Update LOAD_PATH
+push!(LOAD_PATH, joinpath(ENV["ZEN_HOME"], "/src/core"))
+
+# Use the ZEN Framework
 include("Zen.jl")
-using .Zen
+using Zen
 
 # R-1: Check the version of julia runtime environment
 require()
