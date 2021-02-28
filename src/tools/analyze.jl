@@ -2,7 +2,7 @@
 
 #
 # Project : Begonia
-# Source  : run.jl
+# Source  : analyze.jl
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 # Comment :
@@ -16,8 +16,9 @@ push!(LOAD_PATH, joinpath(ENV["ZEN_HOME"], "src/core"))
 # Use the ZEN Framework
 using Zen
 
-print("Please input atom index (integer, from 1 to $natom): ")
-
+print("Please specify the folder that contains the PROCAR file: ")
+path = readline(stdin)
+vaspio_procar(path)
 
 exit()
 
