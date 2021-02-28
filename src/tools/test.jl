@@ -1,18 +1,23 @@
 #!/usr/bin/env julia
 
 #
-# Project : Pansy
+# Project : Begonia
 # Source  : test.jl
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/06
+# Last modified: 2021/02/28
 #
 
-include("Zen.jl")
-using .Zen
+# Update LOAD_PATH
+push!(LOAD_PATH, joinpath(ENV["ZEN_HOME"], "/src/core"))
 
+# Use the ZEN Framework
+include("Zen.jl")
+using Zen
+
+# Put your codes here
 setup()
 exhibit()
 it = IterInfo()
