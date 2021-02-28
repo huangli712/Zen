@@ -2,14 +2,15 @@ case = "Ce"
 
 [dft]
 engine = "vasp"
-smear = "m-p"
+smear = "tetra"
 kmesh = "medium"
 lsymm = false
 lspins = false
 lspinorb = false
-loptim = false
+loptim = true
 lproj = true
 sproj = ["1 : f : Pr"]
+window = [-5.0, 5.0]
 
 [dmft]
 mode = 1
