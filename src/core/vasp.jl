@@ -492,13 +492,39 @@ function vaspio_procar(f::String)
 
         @cswitch lc begin
             @case 3
+                break
+            
             @case 6
+                nspin = 4
+                break
+
             @default
                 error("Something wrong in PROCAR")
         end
-    else
+    else # natom > 1
+        lc = 0
+        for line in eachline(fin)
+            if contains(line, "tot ")
+                lc = lc + 1
+            end
+            if contains(line, "ion ")
+                break
+            end
+        end
+
+        @cswitch lc begin
+            @case 1
+                break
+
+            @case 4
+                nspin = 4
+                break
+
+            @default
+                error("Something wrong in PROCAR")
+        end
     end
-    @show lc
+    seekstart(fin)
     @show norbs, natom, nband, nkpt, nspin
     exit(-1)
 
