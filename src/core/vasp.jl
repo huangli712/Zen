@@ -480,7 +480,8 @@ function vaspio_procar(f::String)
     seekstart(fin)
 
     # Determine whether spin-orbit coupling is activated
-    A = readuntil(fin, "ion ")
+    readuntil(fin, "ion ")
+    soc = false
     if natom == 1
         lc = 0
         for line in eachline(fin)
@@ -492,9 +493,11 @@ function vaspio_procar(f::String)
 
         @cswitch lc begin
             @case 3
+                soc = false
                 break
             
             @case 6
+                soc = true
                 nspin = 4
                 break
 
@@ -514,9 +517,11 @@ function vaspio_procar(f::String)
 
         @cswitch lc begin
             @case 1
+                soc = false
                 break
 
             @case 4
+                soc = true
                 nspin = 4
                 break
 
@@ -525,8 +530,12 @@ function vaspio_procar(f::String)
         end
     end
     seekstart(fin)
-    @show norbs, natom, nband, nkpt, nspin
+    @show norbs, natom, nband, nkpt, nspin, soc
     exit(-1)
+
+
+
+
 
     # Skip one line
     A = readline(fin)
