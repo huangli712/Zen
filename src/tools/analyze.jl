@@ -16,7 +16,15 @@ push!(LOAD_PATH, joinpath(ENV["ZEN_HOME"], "src/core"))
 # Use the ZEN Framework
 using Zen
 
+print("Please input atom index (integer, from 1 to $natom): ")
+
+
 exit()
+
+    # Define orbital labels
+    orb_labels = ["s",
+                  "py", "pz", "px",
+                  "dxy", "dyz", "dz2", "dxz", "dx2-y2"]
 
 # The data are ready, then this function will interact with the users.
 # Print essential information
