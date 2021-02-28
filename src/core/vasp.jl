@@ -533,15 +533,6 @@ function vaspio_procar(f::String)
     @show norbs, natom, nband, nkpt, nspin, soc
     exit(-1)
 
-
-
-
-
-    # Skip one line
-    A = readline(fin)
-    println(A)
-    exit(-1)
-
     # Create arrays
     # `worb` is used to save the raw data, while `oab` is used to save
     # the processed data.
