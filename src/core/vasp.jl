@@ -456,6 +456,14 @@ function vaspio_procar(f::String)
     # Open the iostream
     fin = open(joinpath(f, "PROCAR"), "r")
 
+    # Determine key parameters: nkpt, nband, and natom.
+    readline(fin)
+    arr = line_to_array(fin)
+    nkpt = parse(I64, arr[4])
+    nband = parse(I64, arr[8])
+    natom = parse(I64, arr[12])
+    seekstart(fin)
+
     # Determine key parameters: norbs
     readuntil(fin, "ion ")
     arr = line_to_array(fin)
@@ -470,22 +478,13 @@ function vaspio_procar(f::String)
         end
     end
     seekstart(fin)
-    @show norbs, nspin
-
+    @show norbs, natom, nband, nkpt, nspin
     exit(-1)
 
     # Skip one line
     A = readline(fin)
     println(A)
     exit(-1)
-
-    # Determine key parameters: nkpt, nband, and natom.
-    arr = line_to_array(fin)
-    nspin = 1
-    nkpt = parse(I64, arr[4])
-    nband = parse(I64, arr[8])
-    natom = parse(I64, arr[12])
-    norbs = length(orb_labels)
 
     # Create arrays
     # `worb` is used to save the raw data, while `oab` is used to save
