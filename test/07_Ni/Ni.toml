@@ -2,15 +2,16 @@ case = "Ni"
 
 [dft]
 engine = "vasp"
-smear = "m-p"
+smear = "tetra"
 kmesh = "medium"
 magmom = "1.0"
 lsymm = false
 lspins = true
 lspinorb = false
-loptim = false
+loptim = true
 lproj = true
 sproj = ["1 : d : Pr"]
+window = [-5.0, 5.0]
 
 [dmft]
 mode = 1
