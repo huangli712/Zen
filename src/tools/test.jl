@@ -11,7 +11,7 @@
 #
 
 # Update LOAD_PATH
-push!(LOAD_PATH, ENV["ZEN_HOME"])
+push!(LOAD_PATH, ENV["ZEN_CORE"])
 
 # Use the ZEN Framework
 using Zen
