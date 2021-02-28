@@ -11,10 +11,9 @@
 #
 
 # Update LOAD_PATH
-push!(LOAD_PATH, joinpath(ENV["ZEN_HOME"], "/src/core"))
+push!(LOAD_PATH, joinpath(ENV["ZEN_HOME"], "src/core"))
 
 # Use the ZEN Framework
-include("Zen.jl")
 using Zen
 
 # Put your codes here
