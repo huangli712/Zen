@@ -397,7 +397,11 @@ function vaspio_nband(f::String)
 #
 
     # Evaluate number of bands
-    nband = floor(I64, (nelect / 2 + latt.natom / 2) * 1.6)
+    if get_d("lspins")
+        nband = floor(I64, nelect * 1.2)
+    else
+        nband = floor(I64, (nelect / 2 + latt.natom / 2) * 1.6)
+    end
 
     # Return the desired nband
     return nband
