@@ -455,22 +455,31 @@ See also: [`tools/analyze.jl`](@ref).
 function vaspio_procar(f::String)
     # Open the iostream
     fin = open(joinpath(f, "PROCAR"), "r")
+
+    # Determine key parameters: norbs
     readuntil(fin, "ion ")
+    arr = line_to_array(fin)
+    norbs = length(arr) - 1
+    seekstart(fin)
+
+    # Determine key parameters: nspin
+    nspin = 0
+    for line in eachline(fin)
+        if contains(line, "k-points")
+            nspin = nspin + 1
+        end
+    end
+    seekstart(fin)
+    @show norbs, nspin
+
+    exit(-1)
 
     # Skip one line
     A = readline(fin)
     println(A)
     exit(-1)
 
-#
-# Remarks:
-#
-# Now this function only supports paramagnetic system, so `nspin`
-# is always 1. Next, we will extend it to support non-collinear
-# magnetism and collinear magnetism materials.
-#
-
-    # Determine key parameters: nspin, nkpt, nband, natom, and norbs.
+    # Determine key parameters: nkpt, nband, and natom.
     arr = line_to_array(fin)
     nspin = 1
     nkpt = parse(I64, arr[4])
