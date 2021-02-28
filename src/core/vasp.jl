@@ -445,13 +445,10 @@ is designed for users merely. They can use it to judge which orbitals are
 the most relevant, and then apply the obtained information to customize
 their case.toml configuration file (specifically, the `window` parameter
 in the `dft` block).
+
+See also: [`tools/analyze.jl`](@ref).
 """
 function vaspio_procar(f::String)
-    # Define orbital labels
-    orb_labels = ["s",
-                  "py", "pz", "px",
-                  "dxy", "dyz", "dz2", "dxz", "dx2-y2"]
-
     # Open the iostream
     fin = open(joinpath(f, "PROCAR"), "r")
 
