@@ -451,9 +451,12 @@ See also: [`tools/analyze.jl`](@ref).
 function vaspio_procar(f::String)
     # Open the iostream
     fin = open(joinpath(f, "PROCAR"), "r")
+    readuntil(fin, "ion ")
 
     # Skip one line
-    readline(fin)
+    A = readline(fin)
+    println(A)
+    exit(-1)
 
 #
 # Remarks:
