@@ -481,12 +481,22 @@ function vaspio_procar(f::String)
 
     # Determine whether spin-orbit coupling is activated
     A = readuntil(fin, "ion ")
-    lc = 0
-    for line in eachline(fin)
-        lc = lc + 1
-        if contains(line, "ion ")
-            break
+    if natom == 1
+        lc = 0
+        for line in eachline(fin)
+            lc = lc + 1
+            if contains(line, "ion ")
+                break
+            end
         end
+
+        @cswitch lc begin
+            @case 3
+            @case 6
+            @default
+                error("Something wrong in PROCAR")
+        end
+    else
     end
     @show lc
     @show norbs, natom, nband, nkpt, nspin
