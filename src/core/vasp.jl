@@ -458,28 +458,31 @@ function vaspio_procar(f::String)
     # Open the iostream
     fin = open(joinpath(f, "PROCAR"), "r")
 
-    # Determine key parameters: nkpt, nband, and natom.
+    # We have to determine the dimensional parameters at first
+    #
+    # (1) Determine key parameters: nkpt, nband, and natom.
     readline(fin)
     arr = line_to_array(fin)
     nkpt = parse(I64, arr[4])
     nband = parse(I64, arr[8])
     natom = parse(I64, arr[12])
-    seekstart(fin)
-
-    # Determine key parameters: norbs
+    seekstart(fin) # Rewind the stream
+    #
+    # (2) Determine key parameters: norbs.
     readuntil(fin, "ion ")
     arr = line_to_array(fin)
     norbs = length(arr) - 1
-    seekstart(fin)
-
-    # Determine key parameters: nspin
+    @assert norbs === 9 || norbs === 16
+    seekstart(fin) # Rewind the stream
+    #
+    # (3) Determine key parameters: nspin
     nspin = 0
     for line in eachline(fin)
         if contains(line, "k-points")
             nspin = nspin + 1
         end
     end
-    seekstart(fin)
+    seekstart(fin) # Rewind the stream
 
     # Determine whether spin-orbit coupling is activated
     readuntil(fin, "ion ")
@@ -497,7 +500,7 @@ function vaspio_procar(f::String)
             @case 3
                 soc = false
                 break
-            
+
             @case 6
                 soc = true
                 nspin = 4
