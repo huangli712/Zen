@@ -475,7 +475,7 @@ function vaspio_procar(f::String)
     @assert norbs === 9 || norbs === 16
     seekstart(fin) # Rewind the stream
     #
-    # (3) Determine key parameters: nspin
+    # (3) Determine key parameters: nspin.
     nspin = 0
     for line in eachline(fin)
         if contains(line, "k-points")
@@ -483,8 +483,8 @@ function vaspio_procar(f::String)
         end
     end
     seekstart(fin) # Rewind the stream
-
-    # Determine whether spin-orbit coupling is activated
+    #
+    # (4) Determine whether spin-orbit coupling is activated
     readuntil(fin, "ion ")
     soc = false
     if natom == 1
@@ -503,7 +503,6 @@ function vaspio_procar(f::String)
 
             @case 6
                 soc = true
-                nspin = 4
                 break
 
             @default
@@ -527,20 +526,25 @@ function vaspio_procar(f::String)
 
             @case 4
                 soc = true
-                nspin = 4
                 break
 
             @default
                 error("Something wrong in PROCAR")
         end
     end
-    seekstart(fin)
+    seekstart(fin) # Rewind the stream
+    #
+    # (5) Additional check. `soc` must be compatible with `nspin` 
+    if soc
+        @assert nspin === 1
+    end
+    #
+    # (6) Debug
     @show norbs, natom, nband, nkpt, nspin, soc
-    exit(-1)
 
     # Create arrays
-    # `worb` is used to save the raw data, while `oab` is used to save
-    # the processed data.
+    # The `worb` is used to save the raw data, while `oab` is used to
+    # save the processed data.
     worb = zeros(F64, norbs, natom, nband, nkpt, nspin)
     oab = zeros(F64, norbs, natom, nband)
 
