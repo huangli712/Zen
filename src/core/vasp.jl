@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/28
+# last modified: 2021/03/01
 #
 
 #
@@ -183,8 +183,12 @@ function vasp_incar(fermi::F64)
     # For smearing
     smear = get_d("smear")
     @cswitch smear begin
-        @case "m-p"
+        @case "mp2"
             write(ios, "ISMEAR   = 2 \n")
+            break
+
+        @case "mp1"
+            write(ios, "ISMEAR   = 1 \n")
             break
 
         @case "gauss"
@@ -240,9 +244,7 @@ function vasp_incar(fermi::F64)
     end
 
     # For spin polarizations
-    #
-    # If spin-orbit coupling is on, spin orientations must be polarized.
-    lspins = get_d("lspins") || get_d("lspinorb")
+    lspins = get_d("lspins")
     if lspins
         write(ios, "ISPIN    = 2 \n")
     else

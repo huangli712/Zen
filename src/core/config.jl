@@ -193,7 +193,7 @@ function chk_dict()
     #
     # Check dft block
     @assert get_d("engine") in ("vasp", "wannier")
-    @assert get_d("smear") in ("m-p", "gauss", "tetra")
+    @assert get_d("smear") in ("mp2", "mp1", "gauss", "tetra")
     @assert get_d("kmesh") in ("accurate", "medium", "coarse", "file")
     @assert iseven( length( get_d("window") ) )
     #
