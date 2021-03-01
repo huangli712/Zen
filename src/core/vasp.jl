@@ -544,9 +544,10 @@ function vaspio_procar(f::String)
 
     # Create arrays
     # The `worb` is used to save the raw data, while `oab` is used to
-    # save the processed data.
+    # save the processed data. The `enk` denotes the eigenvalues.
     worb = zeros(F64, norbs, natom, nband, nkpt, nspin)
-    oab = zeros(F64, norbs, natom, nband)
+    oab = zeros(F64, norbs, natom, nband, nspin)
+    enk = zeros(F64, nband, nkpt, nspin)
 
     # Parse the `PROCAR` file
     # Go through each k-point
