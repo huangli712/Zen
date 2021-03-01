@@ -567,6 +567,7 @@ function vaspio_procar(f::String)
             arr = line_to_array(fin)
             kp = parse(I64, arr[2])
             @assert k === kp
+            println("Finishing spin $s k-point $k")
 
             # Go through each band for the given k-point and spin
             for b = 1:nband
@@ -577,7 +578,6 @@ function vaspio_procar(f::String)
                 arr = line_to_array(fin)
                 bp = parse(I64, arr[2])
                 @assert b === bp
-                println("Finishing spin $s k-point $k band $b")
 
                 # WE SHOULD READ EIGENVALUES HERE!
 
@@ -605,6 +605,9 @@ function vaspio_procar(f::String)
                 if natom > 1
                     readline(fin)
                 end
+                if !soc && norbs === 16 && natom > 1
+                    readline(fin)
+                end
                 readline(fin)
 
                 # Parse phase factors
@@ -615,6 +618,9 @@ function vaspio_procar(f::String)
 
                 # Blank line
                 if natom > 1
+                    readline(fin)
+                end
+                if !soc && norbs === 16 && natom > 1
                     readline(fin)
                 end
                 if soc && natom > 1
