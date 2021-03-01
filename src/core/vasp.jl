@@ -549,23 +549,24 @@ function vaspio_procar(f::String)
     oab = zeros(F64, norbs, natom, nband, nspin)
     enk = zeros(F64, nband, nkpt, nspin)
 
-    # Parse the `PROCAR` file
+    # Start to parse the `PROCAR` file
     println("Parsing PROCAR...")
-    readline(fin) # Skip two lines
-    readline(fin)
 
     # Go through each spin orientation
     for s = 1:nspin
+        # Blank line
+        readline(fin)
+
         # Go through each k-point
         for k = 1:nkpt
-            # Blank line
+            # Blank lines
+            readline(fin)
             readline(fin)
 
             # Check k-index
             arr = line_to_array(fin)
             kp = parse(I64, arr[2])
             @assert k === kp
-            println("Finishing kpt: $kp for spin $s")
 
             # Go through each band for the given k-point and spin
             for b = 1:nband
@@ -576,6 +577,8 @@ function vaspio_procar(f::String)
                 arr = line_to_array(fin)
                 bp = parse(I64, arr[2])
                 @assert b === bp
+                println("Finishing spin $s k-point $k band $b")
+
                 # WE SHOULD READ EIGENVALUES HERE!
 
                 # Blank lines
@@ -591,11 +594,17 @@ function vaspio_procar(f::String)
                 end
                 # Special treatment for SOC case
                 if soc
-                    foreach(x -> readline(fin), 1:1:(3*(2+natom)+1))
+                    if natom > 1
+                        foreach(x -> readline(fin), 1:1:(3*(2+natom)+1))
+                    else
+                        foreach(x -> readline(fin), 1:1:3)
+                    end
                 end
 
                 # Blank lines
-                readline(fin)
+                if natom > 1
+                    readline(fin)
+                end
                 readline(fin)
 
                 # Parse phase factors
@@ -605,16 +614,20 @@ function vaspio_procar(f::String)
                 end
 
                 # Blank line
-                readline(fin)
+                if natom > 1
+                    readline(fin)
+                end
+                if soc && natom > 1
+                    readline(fin)
+                end
             end # Loop for bands
-
-            # Blank line
-            readline(fin)
         end # Loop for k-points
     end # Loop for spins
 
     # Close the iostream
     close(fin)
+
+    exit(-1)
 
     # Try to build `oab` by k-summation
     for b = 1:nband
