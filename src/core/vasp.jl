@@ -550,57 +550,68 @@ function vaspio_procar(f::String)
     enk = zeros(F64, nband, nkpt, nspin)
 
     # Parse the `PROCAR` file
-    # Go through each k-point
     println("Parsing PROCAR...")
-    for k = 1:nkpt
-        # Blank line
-        readline(fin)
+    readline(fin) # Skip two lines
+    readline(fin)
 
-        # Check k-index
-        arr = line_to_array(fin)
-        kp = parse(I64, arr[2])
-        @assert k === kp
-        println("Finishing kpt: $kp")
-
-        # Go through each band for the given k-point
-        for b = 1:nband
+    # Go through each spin orientation
+    for s = 1:nspin
+        # Go through each k-point
+        for k = 1:nkpt
             # Blank line
             readline(fin)
 
-            # Check band index
+            # Check k-index
             arr = line_to_array(fin)
-            bp = parse(I64, arr[2])
-            @assert b === bp
+            kp = parse(I64, arr[2])
+            @assert k === kp
+            println("Finishing kpt: $kp for spin $s")
 
-            # Blank lines
-            readline(fin)
-            readline(fin)
-
-            # Parse weights
-            # Go through each atom and orbital
-            for a = 1:natom
-                arr = line_to_array(fin)
-                @assert parse(I64, arr[1]) === a
-                worb[:, a, b, k, 1] = parse.(F64, arr[2:10])
-            end
-
-            # Blank lines
-            readline(fin)
-            readline(fin)
-
-            # Parse phase factors
-            # Go through each atom and orbital
-            for a = 1:natom
+            # Go through each band for the given k-point and spin
+            for b = 1:nband
+                # Blank line
                 readline(fin)
-            end
+
+                # Check band index
+                arr = line_to_array(fin)
+                bp = parse(I64, arr[2])
+                @assert b === bp
+                # WE SHOULD READ EIGENVALUES HERE!
+
+                # Blank lines
+                readline(fin)
+                readline(fin)
+
+                # Parse weights
+                # Go through each atom and orbital
+                for a = 1:natom
+                    arr = line_to_array(fin)
+                    @assert parse(I64, arr[1]) === a
+                    worb[:, a, b, k, s] = parse.(F64, arr[2:end-1])
+                end
+                # Special treatment for SOC case
+                if soc
+                    foreach(x -> readline(fin), 1:1:(3*(2+natom)+1))
+                end
+
+                # Blank lines
+                readline(fin)
+                readline(fin)
+
+                # Parse phase factors
+                # Go through each atom and orbital
+                for a = 1:natom
+                    readline(fin)
+                end
+
+                # Blank line
+                readline(fin)
+            end # Loop for bands
 
             # Blank line
             readline(fin)
-        end
-
-        # Blank line
-        readline(fin)
-    end
+        end # Loop for k-points
+    end # Loop for spins
 
     # Close the iostream
     close(fin)
