@@ -5,7 +5,7 @@
 # Status  : stable
 # Comment :
 #
-# Last modified: 2021/02/08
+# Last modified: 2021/03/01
 #
 
 """
@@ -83,7 +83,7 @@ Release date of this julia package.
 
 See also: [`__AUTHORS__`](@ref).
 """
-const __RELEASE__ = "2021/02"
+const __RELEASE__ = "2021/03"
 
 """
     __AUTHORS__

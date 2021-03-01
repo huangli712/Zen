@@ -5,7 +5,7 @@
 # status  : unstable
 # comment :
 #
-# last modified: 2021/02/21
+# last modified: 2021/03/01
 #
 
 #
@@ -217,7 +217,7 @@ function chk_dict()
     #
     # Check dft block
     if get_d("lspinorb")
-        @assert get_d("lspins")
+        @assert !get_d("lspins")
     end
     if get_d("lproj")
         @assert !get_d("lsymm") && !isa(get_d("sproj"), Missing)
