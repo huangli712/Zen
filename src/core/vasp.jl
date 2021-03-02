@@ -542,6 +542,25 @@ function vaspio_procar(f::String)
     # (6) Debug
     @show norbs, natom, nband, nkpt, nspin, soc
 
+    fstr = ""
+    if natom === 1
+        fstr = fstr * "1"
+    else
+        fstr = fstr * "2"
+    end
+    if norbs === 9
+        fstr = fstr * "d"
+    else
+        fstr = fstr * "f"
+    end
+    if soc
+        fstr = fstr * "s"
+    else
+        fstr = fstr * "n"
+    end
+    @show fstr
+    #exit(-1)
+
     # Create arrays
     # The `worb` is used to save the raw data, while `oab` is used to
     # save the processed data. The `enk` denotes the eigenvalues.
@@ -565,8 +584,7 @@ function vaspio_procar(f::String)
 
             # Check k-index
             arr = line_to_array(fin)
-            kp = parse(I64, arr[2])
-            @assert k === kp
+            @assert k === parse(I64, arr[2])
             println("Finishing spin $s k-point $k")
 
             # Go through each band for the given k-point and spin
@@ -576,10 +594,9 @@ function vaspio_procar(f::String)
 
                 # Check band index
                 arr = line_to_array(fin)
-                bp = parse(I64, arr[2])
-                @assert b === bp
+                @assert b === parse(I64, arr[2])
 
-                # WE SHOULD READ EIGENVALUES HERE!
+                # WE SHOULD PARSER EIGENVALUES HERE!
 
                 # Blank lines
                 readline(fin)
@@ -592,22 +609,40 @@ function vaspio_procar(f::String)
                     @assert parse(I64, arr[1]) === a
                     worb[:, a, b, k, s] = parse.(F64, arr[2:end-1])
                 end
-                # Special treatment for SOC case
-                if soc
-                    if natom > 1
-                        foreach(x -> readline(fin), 1:1:(3*(2+natom)+1))
-                    else
-                        foreach(x -> readline(fin), 1:1:3)
-                    end
-                end
 
-                # Blank lines
-                if natom > 1
-                    readline(fin)
+                @cswitch fstr begin
+                    @case "1dn"
+                        break
+
+                    @case "2dn"
+                        readline(fin)
+                        break
+
+                    @case "1fn"
+                        break
+
+                    @default
+                        sorry()
+                        break
                 end
-                if !soc && norbs === 16 && natom > 1
-                    readline(fin)
-                end
+ 
+                ### Special treatment for SOC case
+                ##if soc
+                ##    if natom > 1
+                ##        foreach(x -> readline(fin), 1:1:(3*(2+natom)+1))
+                ##    else
+                ##        foreach(x -> readline(fin), 1:1:3)
+                ##    end
+                ##end
+
+                ### Blank lines
+                ##if natom > 1
+                ##    readline(fin)
+                ##end
+                ##if !soc && norbs === 16 && natom > 1
+                ##    readline(fin)
+                ##end
+
                 readline(fin)
 
                 # Parse phase factors
@@ -616,16 +651,32 @@ function vaspio_procar(f::String)
                     readline(fin)
                 end
 
-                # Blank line
-                if natom > 1
-                    readline(fin)
+                @cswitch fstr begin
+                    @case "1dn"
+                        break
+
+                    @case "2dn"
+                        readline(fin)
+                        break
+
+                    @case "1fn"
+                        break
+
+                    @default
+                        sorry()
+                        break
                 end
-                if !soc && norbs === 16 && natom > 1
-                    readline(fin)
-                end
-                if soc && natom > 1
-                    readline(fin)
-                end
+
+                ### Blank line
+                ##if natom > 1
+                ##    readline(fin)
+                ##end
+                ##if !soc && norbs === 16 && natom > 1
+                ##    readline(fin)
+                ##end
+                ##if soc && natom > 1
+                ##    readline(fin)
+                ##end
             end # Loop for bands
         end # Loop for k-points
     end # Loop for spins
