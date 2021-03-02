@@ -558,6 +558,7 @@ function vaspio_procar(f::String)
     else
         fstr = fstr * "n"
     end
+    @assert fstr in ["1ds", "1dn", "1fs", "1fn", "2ds", "2dn", "2fs", "2fn"]
     @show fstr
     #exit(-1)
 
@@ -610,60 +611,54 @@ function vaspio_procar(f::String)
                     worb[:, a, b, k, s] = parse.(F64, arr[2:end-1])
                 end
 
+                # Skip useless lines
                 @cswitch fstr begin
+                    @case "1ds"
+                        sorry()
+                        break
+
                     @case "1dn"
-                        break
-
-                    @case "2dn"
-                        readline(fin)
-                        break
-
-                    @case "1fn"
-                        break
-
-                    @case "2fn"
-                        readline(fin)
-                        readline(fin)
                         break
 
                     @case "1fs"
                         foreach(x -> readline(fin), 1:1:3)
                         break
 
+                    @case "1fn"
+                        break
+
+                    @case "2ds"
+                        sorry()
+                        break
+
+                    @case "2dn"
+                        readline(fin)
+                        break
+
                     @case "2fs"
                         foreach(x -> readline(fin), 1:1:(3*(2+natom)+2))
+                        break
+
+                    @case "2fn"
+                        readline(fin)
+                        readline(fin)
                         break
 
                     @default
                         sorry()
                         break
                 end
- 
-                ### Special treatment for SOC case
-                ##if soc
-                ##    if natom > 1
-                ##        foreach(x -> readline(fin), 1:1:(3*(2+natom)+1))
-                ##    else
-                ##        foreach(x -> readline(fin), 1:1:3)
-                ##    end
-                ##end
 
-                ### Blank lines
-                ##if natom > 1
-                ##    readline(fin)
-                ##end
-                ##if !soc && norbs === 16 && natom > 1
-                ##    readline(fin)
-                ##end
-
+                # Skip blank line which starts with "ion ..." 
                 readline(fin)
 
                 # Parse phase factors
                 # Go through each atom and orbital
                 for a = 1:natom
                     readline(fin)
-                end
+                end # @cswitch
 
+                # Skip useless lines
                 @cswitch fstr begin
                     @case "1dn"
                         break
@@ -691,18 +686,7 @@ function vaspio_procar(f::String)
                     @default
                         sorry()
                         break
-                end
-
-                ### Blank line
-                ##if natom > 1
-                ##    readline(fin)
-                ##end
-                ##if !soc && norbs === 16 && natom > 1
-                ##    readline(fin)
-                ##end
-                ##if soc && natom > 1
-                ##    readline(fin)
-                ##end
+                end # @cswitch
             end # Loop for bands
         end # Loop for k-points
     end # Loop for spins
