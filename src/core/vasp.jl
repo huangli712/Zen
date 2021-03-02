@@ -542,25 +542,36 @@ function vaspio_procar(f::String)
     # (6) Debug
     @show norbs, natom, nband, nkpt, nspin, soc
 
+    # Build `str`, which is used to tell the parser how to skip the
+    # blank lines for various situations.
+    #
+    # (1) Init the string
     fstr = ""
+    #
+    # (2) Single atom vs. multiple atoms
     if natom === 1
         fstr = fstr * "1"
     else
         fstr = fstr * "2"
     end
+    #
+    # (3) d system vs. f system
     if norbs === 9
         fstr = fstr * "d"
     else
         fstr = fstr * "f"
     end
+    #
+    # (4) SOC or not
     if soc
         fstr = fstr * "s"
     else
         fstr = fstr * "n"
     end
+    #
+    # (5) Eight cases
     @assert fstr in ["1ds", "1dn", "1fs", "1fn", "2ds", "2dn", "2fs", "2fn"]
     @show fstr
-    #exit(-1)
 
     # Create arrays
     # The `worb` is used to save the raw data, while `oab` is used to
