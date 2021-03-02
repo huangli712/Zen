@@ -1,11 +1,11 @@
 #
-# project : pansy
-# source  : util.jl
-# author  : Li Huang (lihuang.dmft@gmail.com)
-# status  : unstable
-# comment :
+# Project : Pansy
+# Source  : util.jl
+# Author  : Li Huang (lihuang.dmft@gmail.com)
+# Status  : Unstable
+# Comment :
 #
-# last modified: 2021/02/19
+# Last modified: 2021/03/02
 #
 
 """

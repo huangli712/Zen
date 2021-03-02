@@ -1,11 +1,11 @@
 #
-# Project : pansy
+# Project : Pansy
 # Source  : types.jl
 # Author  : Li Huang (lihuang.dmft@gmail.com)
-# Status  : unstable
+# Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/19
+# Last modified: 2021/03/02
 #
 
 #
