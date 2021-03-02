@@ -621,6 +621,10 @@ function vaspio_procar(f::String)
                     @case "1fn"
                         break
 
+                    @case "1fs"
+                        foreach(x -> readline(fin), 1:1:3)
+                        break
+
                     @default
                         sorry()
                         break
@@ -660,6 +664,9 @@ function vaspio_procar(f::String)
                         break
 
                     @case "1fn"
+                        break
+
+                    @case "1fs"
                         break
 
                     @default
