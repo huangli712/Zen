@@ -621,8 +621,17 @@ function vaspio_procar(f::String)
                     @case "1fn"
                         break
 
+                    @case "2fn"
+                        readline(fin)
+                        readline(fin)
+                        break
+
                     @case "1fs"
                         foreach(x -> readline(fin), 1:1:3)
+                        break
+
+                    @case "2fs"
+                        foreach(x -> readline(fin), 1:1:(3*(2+natom)+2))
                         break
 
                     @default
@@ -666,7 +675,17 @@ function vaspio_procar(f::String)
                     @case "1fn"
                         break
 
+                    @case "2fn"
+                        readline(fin)
+                        readline(fin)
+                        break
+
                     @case "1fs"
+                        break
+
+                    @case "2fs"
+                        readline(fin)
+                        readline(fin)
                         break
 
                     @default
