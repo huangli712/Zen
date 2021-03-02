@@ -613,7 +613,7 @@ function vaspio_procar(f::String)
 
                 # Skip useless lines
                 @cswitch fstr begin
-                    @case "1ds"
+                    @case "1ds" # TO_BE_DONE
                         sorry()
                         break
 
@@ -627,7 +627,7 @@ function vaspio_procar(f::String)
                     @case "1fn"
                         break
 
-                    @case "2ds"
+                    @case "2ds" # TO_BE_DONE
                         sorry()
                         break
 
@@ -660,25 +660,33 @@ function vaspio_procar(f::String)
 
                 # Skip useless lines
                 @cswitch fstr begin
+                    @case "1ds" # TO_BE_DONE
+                        sorry()
+                        break
+
                     @case "1dn"
+                        break
+
+                    @case "1fs"
+                        break
+
+                    @case "1fn"
+                        break
+
+                    @case "2ds" # TO_BE_DONE
+                        sorry()
                         break
 
                     @case "2dn"
                         readline(fin)
                         break
 
-                    @case "1fn"
+                    @case "2fs"
+                        readline(fin)
+                        readline(fin)
                         break
 
                     @case "2fn"
-                        readline(fin)
-                        readline(fin)
-                        break
-
-                    @case "1fs"
-                        break
-
-                    @case "2fs"
                         readline(fin)
                         readline(fin)
                         break
