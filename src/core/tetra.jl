@@ -1,11 +1,11 @@
 #
-# project : pansy
-# source  : tetra.jl
-# author  : Li Huang (lihuang.dmft@gmail.com)
-# status  : unstable
-# comment :
+# Project : Pansy
+# Source  : tetra.jl
+# Author  : Li Huang (lihuang.dmft@gmail.com)
+# Status  : Unstable
+# Comment :
 #
-# last modified: 2021/02/20
+# Last modified: 2021/03/02
 #
 
 #
