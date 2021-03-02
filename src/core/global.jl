@@ -1,11 +1,11 @@
 #
-# Project : pansy
+# Project : Pansy
 # Source  : global.jl
 # Author  : Li Huang (lihuang.dmft@gmail.com)
-# Status  : stable
+# Status  : Stable
 # Comment :
 #
-# Last modified: 2021/03/01
+# Last modified: 2021/03/02
 #
 
 """
