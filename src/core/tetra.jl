@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/03/02
+# Last modified: 2021/03/04
 #
 
 #
@@ -35,7 +35,7 @@ Struct. Integration weights for analytical tetrahedron algorithm.
 
 .cw -> Blochl corrections for `dw`.\n
 .dw -> Density of states weights at the four corners of a given tetrahedron.\n
-.tw -> Integration weights at the four corners of a given tetrahedron.\n
+.tw -> Integration weights at the four corners of a given tetrahedron.
 """
 struct TetraWeight
     cw :: F64
