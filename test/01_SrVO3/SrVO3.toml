@@ -2,6 +2,7 @@ case = "SrVO3"
 
 [dft]
 engine = "vasp"
+projtype = "plo"
 smear = "tetra"
 kmesh = "medium"
 lsymm = false
