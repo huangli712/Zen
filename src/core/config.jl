@@ -298,6 +298,7 @@ function cat_d()
 #
 
     println("  engine   -> ", str_d("engine"))
+    println("  projtype -> ", str_d("projtype"))
     println("  smear    -> ", str_d("smear"))
     println("  kmesh    -> ", str_d("kmesh"))
     println("  magmom   -> ", str_d("magmom"))
