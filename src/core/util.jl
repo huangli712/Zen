@@ -100,7 +100,8 @@ end
 """
     require()
 
-Check the version of julia runtime environment.
+Check the version of julia runtime environment. It should be higher
+than v1.5.x.
 """
 function require()
     if VERSION < v"1.5-"
@@ -136,7 +137,7 @@ function setup_args(x::Vararg{String})
         push!(ARGS, X[i])
     end
 
-    # Return `ARGS`, only for debug
+    # Return `ARGS`, only for debug.
     ARGS
 end
 
