@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/19
+# Last modified: 2021/03/04
 #
 
 #
@@ -397,8 +397,18 @@ function adaptor_run(it::IterInfo)
     # means that we are going to calculating some physical quantities
     # additionally to check the correctness of the Kohn-Sham data.
     #
-    println("  Launch PLO Adaptor")
-    plo_adaptor(DFTData, true)
+    projtype = get_d("projtype")
+    @cswitch projtype begin
+        @case "plo"
+            println("  Launch PLO Adaptor")
+            plo_adaptor(DFTData, true)
+            break
+
+        @case "wannier"
+            println("  Launch WANNIER Adaptor")
+            sorry()
+            break
+    end
 
     #
     # A3: Output the processed Kohn-Sham data
