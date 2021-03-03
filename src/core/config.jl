@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/03/02
+# Last modified: 2021/03/04
 #
 
 #
@@ -192,7 +192,8 @@ function chk_dict()
     # C2. Check rationalities
     #
     # Check dft block
-    @assert get_d("engine") in ("vasp", "wannier")
+    @assert get_d("engine") in ("vasp",)
+    @assert get_d("projtype") in ("plo", "wannier")
     @assert get_d("smear") in ("mp2", "mp1", "gauss", "tetra")
     @assert get_d("kmesh") in ("accurate", "medium", "coarse", "file")
     @assert iseven( length( get_d("window") ) )
@@ -216,6 +217,7 @@ function chk_dict()
     # C3. Check self-consistency
     #
     # Check dft block
+    @assert get_d("projtype") === "plo"
     if get_d("lspinorb")
         @assert !get_d("lspins")
     end
@@ -226,7 +228,7 @@ function chk_dict()
     # Check solver block
     if get_s("engine") in ("ct_hyb1", "ct_hyb2", "hub1")
         @assert get_m("axis") === 1 # Imaginary axis
-    elseif get_s("engine") in ("norg")
+    elseif get_s("engine") in ("norg",)
         @assert get_m("axis") === 2 # Real axis
     end
     #
