@@ -186,7 +186,7 @@ function chk_dict()
     #
     # Check all blocks one by one
     for P in (PCASE, PDFT, PDMFT, PIMP, PSOLVER)
-        foreach(x -> _v(x.second), P)
+        foreach(x -> _v(x.first, x.second), P)
     end
 
     # C2. Check rationalities
@@ -240,21 +240,21 @@ end
 #
 
 """
-    _v(val::Array{Any,1})
+    _v(key::String, val::Array{Any,1})
 
 Verify the value array. Called by chk_dict() function only.
 
 See also: [`chk_dict`](@ref).
 """
-@inline function _v(val::Array{Any,1})
+@inline function _v(key::String, val::Array{Any,1})
     # To check if the value is updated
     if isa(val[1], Missing) && val[2] > 0
-        error("Sorry, key shoule be set")
+        error("Sorry, key ($key) shoule be set")
     end
 
     # To check if the type of value is correct
     if !isa(val[1], Missing) && !isa(val[1], eval(val[3]))
-        error("Sorry, type of key is wrong")
+        error("Sorry, type of key ($key) is wrong")
     end
 end
 
