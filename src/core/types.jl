@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/03/02
+# Last modified: 2021/03/03
 #
 
 #
@@ -44,6 +44,7 @@ See also: [`PCASE`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
 const PDFT  = Dict{String,Array{Any,1}}(
           "engine"   => [missing, 1, :String, "Engine for density functional theory calculations"],
+          "projtype" => [missing, 1, :String, "Types of projectors"],
           "smear"    => [missing, 1, :String, "Scheme for smearing"],
           "kmesh"    => [missing, 1, :String, "K-mesh for brillouin zone sampling / integration"],
           "magmom"   => [missing, 0, :String, "Initial magnetic moments"],
@@ -66,7 +67,7 @@ See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 const PDMFT = Dict{String,Array{Any,1}}(
           "mode"     => [missing, 1, :I64   , "Scheme of dynamical mean-field theory calculations"],
           "axis"     => [missing, 1, :I64   , "Imaginary-time axis or real-frequency axis"],
-          "niter"    => [missing, 1, :I64   , "Maximum number of iterations"],
+          "niter"    => [missing, 1, :I64   , "Maximum number of all iterations"],
           "dcount"   => [missing, 1, :String, "Scheme of double counting term"],
           "beta"     => [missing, 1, :F64   , "Inverse system temperature"],
           "mixer"    => [missing, 1, :F64   , "Mixing factor"],

@@ -36,7 +36,7 @@ module Zen
 # Remarks:
 #
 # Here we import `libm` explicitly to provide a callable interface for
-# the erf function.
+# the erf function. See tetra.jl/gauss_weight() for more details.
 #
 
 using LinearAlgebra
