@@ -54,7 +54,7 @@ using Base.Math: libm
 # The TOML.jl package is included in the standard library since v1.6.
 # So, please upgrade your julia environment if it is outdated.
 #
-# We need this package to parse the configuration file.
+# We need this package to parse the configuration file (TOML format).
 #
 
 using TOML
