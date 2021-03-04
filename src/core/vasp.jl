@@ -540,6 +540,7 @@ function vaspio_procar(f::String)
     end
     #
     # (6) Debug
+    print("Parameters: ")
     @show norbs, natom, nband, nkpt, nspin, soc
 
     # Build `str`, which is used to tell the parser how to skip the
@@ -571,7 +572,7 @@ function vaspio_procar(f::String)
     #
     # (5) Eight valid cases
     @assert fstr in ["1ds", "1dn", "1fs", "1fn", "2ds", "2dn", "2fs", "2fn"]
-    @show fstr
+    println("PROCAR format: $fstr")
 
     # Create arrays
     # The `worb` is used to save the raw data, while `oab` is used to
