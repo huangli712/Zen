@@ -5,9 +5,17 @@
 # Source  : analyze.jl
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
-# Comment :
 #
 # Last modified: 2021/03/04
+#
+
+#
+# Remarks:
+#
+# This script is used to parse the PROCAR file. The users can use it to
+# figure out which bands are the most relevant and the corresponding
+# energy window for these bands. These information is quite useful. Then
+# we can determine the `window` entry in the `case.toml` file.  
 #
 
 # Update LOAD_PATH
