@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/03/03
+# Last modified: 2021/03/04
 #
 
 """
@@ -39,11 +39,12 @@ module Zen
 # the erf function. See util.jl/erf() for more details.
 #
 
+using Reexport
 using LinearAlgebra
 using Distributed
-using Printf
 using Dates
 using Base.Math: libm
+@reexport using Printf
 
 #
 # Using third-party libraries
