@@ -99,6 +99,10 @@ while true
     print("Please input spin index (integer, from 1 to $nspin): ")
     spin_index = parse(I64, readline(stdin))
 
+    # Get fermi level
+    print("Please input fermi level (float): ")
+    fermi = parse(F64, readline(stdin))
+
     # Get band index
     print("Please input index for the low-lying band (integer, from 1 to $nband):")
     low_band_index = parse(I64, readline(stdin))
@@ -107,10 +111,18 @@ while true
     print("Please input index for the high-lying band (integer, from 1 to $nband):")
     high_band_index = parse(I64, readline(stdin))
 
-    # Sainty check
+    # Sanity check
     @assert low_band_index >= 1 && low_band_index <= nband
     @assert high_band_index >= 1 && high_band_index <= nband
     @assert low_band_index <= high_band_index
+
+    # Evaluate the energy window for the selected band window
+    min_ene = minimum(enk[low_band_index:high_band_index, :, spin_index])
+    max_ene = maximum(enk[low_band_index:high_band_index, :, spin_index])
+    println("The energy window for the selected band window is:")
+    println("band window: $low_band_index -> $high_band_index")
+    println("energy window: $min_ene -> $max_ene")
+    println("energy window: $(min_ene - fermi) -> $(max_ene - fermi) (adjusted)")
 
     # Prompt whether the users want to continue or quit
     println("If you want to continue, please enter `c` key, or else press `q` key")
