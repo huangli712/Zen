@@ -7,7 +7,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/02/28
+# Last modified: 2021/03/04
 #
 
 # Update LOAD_PATH
@@ -16,9 +16,10 @@ push!(LOAD_PATH, ENV["ZEN_CORE"])
 # Use the ZEN Framework
 using Zen
 
+# Parse the PROCAR file if it is available
 print("Please specify the folder that contains the PROCAR file: ")
 path = readline(stdin)
-vaspio_procar(path)
+oab, enk, occ = vaspio_procar(path)
 
 exit()
 
