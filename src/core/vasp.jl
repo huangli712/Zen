@@ -5,7 +5,7 @@
 # Status  : Unstable
 # Comment :
 #
-# Last modified: 2021/03/02
+# Last modified: 2021/03/04
 #
 
 #
@@ -484,7 +484,7 @@ function vaspio_procar(f::String)
     end
     seekstart(fin) # Rewind the stream
     #
-    # (4) Determine whether spin-orbit coupling is activated
+    # (4) Determine whether spin-orbit coupling is activated.
     readuntil(fin, "ion ")
     soc = false
     if natom == 1
@@ -534,7 +534,7 @@ function vaspio_procar(f::String)
     end
     seekstart(fin) # Rewind the stream
     #
-    # (5) Additional check. `soc` must be compatible with `nspin` 
+    # (5) Additional check. `soc` must be compatible with `nspin`.
     if soc
         @assert nspin === 1
     end
@@ -543,7 +543,7 @@ function vaspio_procar(f::String)
     @show norbs, natom, nband, nkpt, nspin, soc
 
     # Build `str`, which is used to tell the parser how to skip the
-    # blank lines for various situations.
+    # blank lines for various cases.
     #
     # (1) Init the string
     fstr = ""
@@ -569,16 +569,18 @@ function vaspio_procar(f::String)
         fstr = fstr * "n"
     end
     #
-    # (5) Eight cases
+    # (5) Eight valid cases
     @assert fstr in ["1ds", "1dn", "1fs", "1fn", "2ds", "2dn", "2fs", "2fn"]
     @show fstr
 
     # Create arrays
     # The `worb` is used to save the raw data, while `oab` is used to
-    # save the processed data. The `enk` denotes the eigenvalues.
+    # save the processed data. The `enk` denotes the eigenvalues and
+    # `occ` denotes the occupations.
     worb = zeros(F64, norbs, natom, nband, nkpt, nspin)
     oab = zeros(F64, norbs, natom, nband, nspin)
     enk = zeros(F64, nband, nkpt, nspin)
+    occ = zeros(F64, nband, nkpt, nspin)
 
     # Start to parse the `PROCAR` file
     println("Parsing PROCAR...")
@@ -608,7 +610,9 @@ function vaspio_procar(f::String)
                 arr = line_to_array(fin)
                 @assert b === parse(I64, arr[2])
 
-                # WE SHOULD PARSER EIGENVALUES HERE!
+                # Parse eigenvalues and occupations
+                enk[b, k, s] = parse(F64, arr[5])
+                occ[b, k, s] = parse(F64, arr[8])
 
                 # Blank lines
                 readline(fin)
@@ -619,6 +623,7 @@ function vaspio_procar(f::String)
                 for a = 1:natom
                     arr = line_to_array(fin)
                     @assert parse(I64, arr[1]) === a
+                    @assert norbs === length(arr) - 2
                     worb[:, a, b, k, s] = parse.(F64, arr[2:end-1])
                 end
 
@@ -658,7 +663,7 @@ function vaspio_procar(f::String)
                     @default
                         sorry()
                         break
-                end
+                end # @cswitch
 
                 # Skip blank line which starts with "ion ..." 
                 readline(fin)
@@ -667,7 +672,7 @@ function vaspio_procar(f::String)
                 # Go through each atom and orbital
                 for a = 1:natom
                     readline(fin)
-                end # @cswitch
+                end
 
                 # Skip useless lines
                 @cswitch fstr begin
@@ -713,16 +718,19 @@ function vaspio_procar(f::String)
     # Close the iostream
     close(fin)
 
-    exit(-1)
-
     # Try to build `oab` by k-summation
-    for b = 1:nband
-        for a = 1:natom
-            for o = 1:norbs
-                oab[o, a, b] = sum(worb[o, a, b, :, :]) / float(nkpt * nspin)
+    for s = 1:nspin
+        for b = 1:nband
+            for a = 1:natom
+                for o = 1:norbs
+                    oab[o, a, b, s] = sum(worb[o, a, b, :, s]) / float(nkpt)
+                end
             end
         end
     end
+
+    # Return the desired arrays
+    return oab, enk, occ
 end
 
 """
