@@ -15,13 +15,12 @@ push!(LOAD_PATH, ENV["ZEN_CORE"])
 
 # Use the ZEN Framework
 using Zen
-using Printf
 
 # Define orbital labels
-orb_labels = ["s",
-              "py", "pz", "px",
-              "dxy", "dyz", "dz2", "dxz", "dx2-y2",
-              "fz3", "fxz2", "fyz2", "fz(x2-y2)", "fxyz", "fx(x2-3y2)", "fy(3x2-y2)"]
+orb_labels = ["1:s",
+              "2:py", "3:pz", "4:px",
+              "5:dxy", "6:dyz", "7:dz2", "8:dxz", "9:dx2-y2",
+              "10:fz3", "11:fxz2", "12:fyz2", "13:fz(x2-y2)", "14:fxyz", "15:fx(x2-3y2)", "16:fy(3x2-y2)"]
 
 # Parse the PROCAR file if it is available
 print("Please specify the folder that contains the PROCAR file: ")
@@ -32,7 +31,7 @@ oab, enk, occ = vaspio_procar(path)
 norbs, natom, nband, nspin = size(oab)
 _, nkpt, _ = size(enk)
 
-# The data are ready.
+# Now the data are ready.
 # Then this function will interact with the users.
 # Print essential information
 println()
@@ -41,8 +40,11 @@ println("Number of k-points: $nkpt")
 println("Number of bands: $nband")
 println("Number of atoms: $natom")
 println("Number of atomic orbitals: $norbs")
+println()
 
-# Enter a infinite loop until the users enter `q`
+# To tell us which bands are relevant
+# Enter an infinite loop until the users enter `q`
+println("Next we will enter an infinite loop to find out which bands are relevant")
 while true
     # Get spin index
     print("Please input spin index (integer, from 1 to $nspin): ")
@@ -53,7 +55,7 @@ while true
     atom_index = parse(I64, readline(stdin))
 
     # Get atomic orbital index
-    println("Atomic orbitals: ", orb_labels)
+    println("Atomic orbitals: ", orb_labels[1:norbs])
     print("Please input atomic orbital index (integer, from 1 to $norbs): ")
     orbital_index = parse(I64, readline(stdin))
 
@@ -72,10 +74,11 @@ while true
     v = sortperm(oab[orbital_index, atom_index, :, spin_index], rev = true)
 
     # Output the band indices and weights
-    print("Band index :")
+    println("The following bands are relevant:")
+    print("band index :")
     foreach(x -> @printf("%12i", x), v[1:nview])
     println()
-    print("Band weight:")
+    print("band weight:")
     foreach(x -> @printf("%12.7f", x), oab[orbital_index, atom_index, v[1:nview], spin_index])
     println()
 
@@ -89,4 +92,32 @@ while true
     end
 end
 
-println("Haha")
+println()
+println("Next we will try to determine the energy window for the selected bands")
+while true
+    # Get spin index
+    print("Please input spin index (integer, from 1 to $nspin): ")
+    spin_index = parse(I64, readline(stdin))
+
+    # Get band index
+    print("Please input index for the low-lying band (integer, from 1 to $nband):")
+    low_band_index = parse(I64, readline(stdin))
+
+    # Get band index
+    print("Please input index for the high-lying band (integer, from 1 to $nband):")
+    high_band_index = parse(I64, readline(stdin))
+
+    # Sainty check
+    @assert low_band_index >= 1 && low_band_index <= nband
+    @assert high_band_index >= 1 && high_band_index <= nband
+    @assert low_band_index <= high_band_index
+
+    # Prompt whether the users want to continue or quit
+    println("If you want to continue, please enter `c` key, or else press `q` key")
+    q = readline(stdin)
+
+    # Quit the loop
+    if q === "q"
+        break
+    end
+end
