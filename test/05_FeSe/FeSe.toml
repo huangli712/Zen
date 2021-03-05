@@ -2,6 +2,7 @@ case = "FeSe"
 
 [dft]
 engine = "vasp"
+projtype = "plo"
 smear = "tetra"
 kmesh = "medium"
 lsymm = false
@@ -10,7 +11,7 @@ lspinorb = false
 loptim = true
 lproj = true
 sproj = ["1 : d : Pr", "2 : d : Pr"]
-window = [-5.0, 5.0, -5.0, 5.0]
+window = [-2.8, 2.6, -2.8, 2.6]
 
 [dmft]
 mode = 1
