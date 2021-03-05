@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/04
+# Last modified: 2021/03/05
 #
 
 #
@@ -629,8 +629,8 @@ function vaspio_procar(f::String)
 
                 # Skip useless lines
                 @cswitch fstr begin
-                    @case "1ds" # TO_BE_DONE
-                        sorry()
+                    @case "1ds"
+                        foreach(x -> readline(fin), 1:1:3)
                         break
 
                     @case "1dn"
@@ -643,8 +643,8 @@ function vaspio_procar(f::String)
                     @case "1fn"
                         break
 
-                    @case "2ds" # TO_BE_DONE
-                        sorry()
+                    @case "2ds"
+                        foreach(x -> readline(fin), 1:1:(3*(1+natom)+1))
                         break
 
                     @case "2dn"
@@ -676,8 +676,7 @@ function vaspio_procar(f::String)
 
                 # Skip useless lines
                 @cswitch fstr begin
-                    @case "1ds" # TO_BE_DONE
-                        sorry()
+                    @case "1ds"
                         break
 
                     @case "1dn"
@@ -689,8 +688,8 @@ function vaspio_procar(f::String)
                     @case "1fn"
                         break
 
-                    @case "2ds" # TO_BE_DONE
-                        sorry()
+                    @case "2ds"
+                        readline(fin)
                         break
 
                     @case "2dn"
