@@ -27,6 +27,8 @@
 !!
      character(len = 09), public, save :: cname = 'JACARANDA'
 
+     integer, public, save :: nband = 1
+
 !!========================================================================
 !!>>> MPI related common variables                                     <<<
 !!========================================================================
