@@ -322,6 +322,7 @@ Print a format Zen message to the given IOStream.
 function prompt(io::IOStream, msg::String)
     date = Dates.format(now(), "yyyy-mm-dd / HH:MM:SS")
     println(io, "$date  $msg")
+    flush(io)
 end
 
 """
