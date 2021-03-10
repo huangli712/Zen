@@ -665,7 +665,7 @@ function vaspio_procar(f::String)
                         break
                 end # @cswitch
 
-                # Skip blank line which starts with "ion ..." 
+                # Skip blank line which starts with "ion ..."
                 readline(fin)
 
                 # Parse phase factors

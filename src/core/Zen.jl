@@ -18,7 +18,7 @@ correlated materials. Now this framework is under heavy development.
 Zen supports the following DFT backends:
 * `VASP`
 
-Zen supports the following schemes of local orbitals:
+Zen supports the following local orbitals:
 * `PLO`
 * `WANNIER`
 

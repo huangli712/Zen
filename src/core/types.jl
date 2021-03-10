@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/03
+# Last modified: 2021/03/10
 #
 
 #
@@ -120,8 +120,8 @@ Mutable struct. Store the IOStreams for case.log and case.cycle files.
 
 ## Members
 
-.log   -> IOStream for case.log file.\n
-.cycle -> IOStream for case.cycle file.
+log   -> IOStream for case.log file.\n
+cycle -> IOStream for case.cycle file.
 
 See also: [`IterInfo`](@ref).
 """
@@ -141,12 +141,12 @@ Mutable struct. Record the DFT + DMFT iteration information.
 
 ## Members
 
-.dmft1_iter -> Number of iterations between dmft1 and quantum impurity solver.\n
-.dmft2_iter -> Number of iterations between dmft2 and DFT engine.\n
-.dmft_cycle -> Number of DFT + DMFT iterations.\n
-.full_cycle -> Counter for each iteration.\n
-.dft_fermi  -> Fermi level obtained by DFT engine.\n
-.dmft_fermi -> Fermi level obtained by DMFT engine (dmft1).
+dmft1_iter -> Number of iterations between dmft1 and quantum impurity solver.\n
+dmft2_iter -> Number of iterations between dmft2 and DFT engine.\n
+dmft_cycle -> Number of DFT + DMFT iterations.\n
+full_cycle -> Counter for each iteration.\n
+dft_fermi  -> Fermi level obtained by DFT engine.\n
+dmft_fermi -> Fermi level obtained by DMFT engine (dmft1).
 
 See also: [`Logger`](@ref).
 """
@@ -167,18 +167,18 @@ designed for the `POSCAR` file used by the vasp code.
 
 ## Members
 
-._case -> The name of system.\n
-.scale -> Universal scaling factor (lattice constant), which is used to
-          scale all lattice vectors and all atomic coordinates.\n
-.lvect -> Three lattice vectors defining the unit cell of the system. Its
-          shape must be (3, 3).\n
-.nsort -> Number of sorts of atoms.\n
-.natom -> Number of atoms.\n
-.sorts -> Sorts of atoms. Its shape must be (nsort, 2).\n
-.atoms -> Lists of atoms. Its shape must be (natom).\n
-.coord -> Atomic positions are provided in cartesian coordinates or in
-          direct coordinates (respectively fractional coordinates). Its
-          shape must be (natom, 3).
+_case -> The name of system.\n
+scale -> Universal scaling factor (lattice constant), which is used to
+         scale all lattice vectors and all atomic coordinates.\n
+lvect -> Three lattice vectors defining the unit cell of the system. Its
+         shape must be (3, 3).\n
+nsort -> Number of sorts of atoms.\n
+natom -> Number of atoms.\n
+sorts -> Sorts of atoms. Its shape must be (nsort, 2).\n
+atoms -> Lists of atoms. Its shape must be (natom).\n
+coord -> Atomic positions are provided in cartesian coordinates or in
+         direct coordinates (respectively fractional coordinates). Its
+         shape must be (natom, 3).
 
 See also: [`vaspio_lattice`](@ref).
 """
@@ -200,10 +200,10 @@ Mutable struct. Essential information of a given projector.
 
 ## Members
 
-.site -> Site in which the projector is defined.\n
-.l    -> Quantum number l.\n
-.m    -> Quantum number m.\n
-.desc -> Projector's specification.
+site -> Site in which the projector is defined.\n
+l    -> Quantum number l.\n
+m    -> Quantum number m.\n
+desc -> Projector's specification.
 
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
 """
@@ -221,18 +221,18 @@ Mutable struct. Essential information of group of projectors.
 
 ## Members
 
-.site   -> Site in which the projectors are defined. In principle, the
-           projectors included in the same group should be defined at
-           the same site (or equivalently atom).\n
-.l      -> Quantum number l. In principle, the projectors included in
-           the same group should have the same quantum number l (but
-           with different m).\n
-.corr   -> Test if the projectors in this group are correlated.\n
-.shell  -> Type of correlated orbitals. It is infered from quantum number l.\n
-.Pr     -> Array. It contains the indices of projectors.\n
-.Tr     -> Array. It contains the transformation matrix. This parameter
-           could be useful to select certain subset of orbitals or perform
-           a simple global rotation.
+site   -> Site in which the projectors are defined. In principle, the
+          projectors included in the same group should be defined at
+          the same site (or equivalently atom).\n
+l      -> Quantum number l. In principle, the projectors included in
+          the same group should have the same quantum number l (but
+          with different m).\n
+corr   -> Test if the projectors in this group are correlated.\n
+shell  -> Type of correlated orbitals. It is infered from quantum number l.\n
+Pr     -> Array. It contains the indices of projectors.\n
+Tr     -> Array. It contains the transformation matrix. This parameter
+          could be useful to select certain subset of orbitals or perform
+          a simple global rotation.
 
 See also: [`PrTrait`](@ref), [`PrWindow`](@ref).
 """
@@ -252,13 +252,13 @@ Mutable struct. Define the band window for group of projectors.
 
 ## Members
 
-.bmin -> Minimum band index.\n
-.bmax -> Maximum band index.\n
-.nbnd -> Maximum number of bands in the current window (= bmax-bmin+1).\n
-.kwin -> Momentum-dependent and spin-dependent band window.\n
-.bwin -> Tuple. It is the band window or energy window, which is used
-         to filter the Kohn-Sham band structure. The mesh for calculating
-         density of states is also deduced from `bwin`.
+bmin -> Minimum band index.\n
+bmax -> Maximum band index.\n
+nbnd -> Maximum number of bands in the current window (= bmax-bmin+1).\n
+kwin -> Momentum-dependent and spin-dependent band window.\n
+bwin -> Tuple. It is the band window or energy window, which is used
+        to filter the Kohn-Sham band structure. The mesh for calculating
+        density of states is also deduced from `bwin`.
 
 See also: [`PrTrait`](@ref), [`PrGroup`](@ref).
 """
@@ -392,8 +392,8 @@ function Base.show(io::IO, logger::Logger)
     @assert isopen(logger.log) && isopen(logger.cycle)
 
     println(io, "Logger struct")
-    println(io, ".log   : ", logger.log  )
-    println(io, ".cycle : ", logger.cycle)
+    println(io, "log   : ", logger.log  )
+    println(io, "cycle : ", logger.cycle)
 end
 
 """
@@ -403,12 +403,12 @@ Base.show() function for IterInfo struct.
 """
 function Base.show(io::IO, it::IterInfo)
     println(io, "IterInfo struct")
-    println(io, ".dmft1_iter : ", it.dmft1_iter)
-    println(io, ".dmft2_iter : ", it.dmft2_iter)
-    println(io, ".dmft_cycle : ", it.dmft_cycle)
-    println(io, ".full_cycle : ", it.full_cycle)
-    println(io, ".dft_fermi  : ", it.dft_fermi)
-    println(io, ".dmft_fermi : ", it.dmft_fermi)
+    println(io, "dmft1_iter : ", it.dmft1_iter)
+    println(io, "dmft2_iter : ", it.dmft2_iter)
+    println(io, "dmft_cycle : ", it.dmft_cycle)
+    println(io, "full_cycle : ", it.full_cycle)
+    println(io, "dft_fermi  : ", it.dft_fermi)
+    println(io, "dmft_fermi : ", it.dmft_fermi)
 end
 
 """
@@ -418,14 +418,14 @@ Base.show() function for Lattice struct.
 """
 function Base.show(io::IO, latt::Lattice)
     println(io, "Lattice struct")
-    println(io, "._case : ", latt._case)
-    println(io, ".scale : ", latt.scale)
-    println(io, ".lvect : ", latt.lvect)
-    println(io, ".nsort : ", latt.nsort)
-    println(io, ".natom : ", latt.natom)
-    println(io, ".sorts : ", latt.sorts)
-    println(io, ".atoms : ", latt.atoms)
-    println(io, ".coord : ", latt.coord)
+    println(io, "_case : ", latt._case)
+    println(io, "scale : ", latt.scale)
+    println(io, "lvect : ", latt.lvect)
+    println(io, "nsort : ", latt.nsort)
+    println(io, "natom : ", latt.natom)
+    println(io, "sorts : ", latt.sorts)
+    println(io, "atoms : ", latt.atoms)
+    println(io, "coord : ", latt.coord)
 end
 
 """
@@ -435,10 +435,10 @@ Base.show() function for PrTrait struct.
 """
 function Base.show(io::IO, PT::PrTrait)
     println(io, "PrTrait struct")
-    println(io, ".site : ", PT.site)
-    println(io, ".l    : ", PT.l)
-    println(io, ".m    : ", PT.m)
-    println(io, ".desc : ", PT.desc)
+    println(io, "site : ", PT.site)
+    println(io, "l    : ", PT.l)
+    println(io, "m    : ", PT.m)
+    println(io, "desc : ", PT.desc)
 end
 
 """
@@ -448,12 +448,12 @@ Base.show() function for PrGroup struct.
 """
 function Base.show(io::IO, PG::PrGroup)
     println(io, "PrGroup struct")
-    println(io, ".site  : ", PG.site)
-    println(io, ".l     : ", PG.l)
-    println(io, ".corr  : ", PG.corr)
-    println(io, ".shell : ", PG.shell)
-    println(io, ".Pr    : ", PG.Pr)
-    println(io, ".Tr    : ", PG.Tr)
+    println(io, "site  : ", PG.site)
+    println(io, "l     : ", PG.l)
+    println(io, "corr  : ", PG.corr)
+    println(io, "shell : ", PG.shell)
+    println(io, "Pr    : ", PG.Pr)
+    println(io, "Tr    : ", PG.Tr)
 end
 
 """
@@ -463,9 +463,9 @@ Base.show() function for PrWindow struct.
 """
 function Base.show(io::IO, PW::PrWindow)
     println(io, "PrWindow struct")
-    println(io, ".bmin : ", PW.bmin)
-    println(io, ".bmax : ", PW.bmax)
-    println(io, ".nbnd : ", PW.nbnd)
-    println(io, ".kwin : ", PW.kwin)
-    println(io, ".bwin : ", PW.bwin)
+    println(io, "bmin : ", PW.bmin)
+    println(io, "bmax : ", PW.bmax)
+    println(io, "nbnd : ", PW.nbnd)
+    println(io, "kwin : ", PW.kwin)
+    println(io, "bwin : ", PW.bwin)
 end
