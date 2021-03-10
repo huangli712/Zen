@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/10
+# Last modified: 2021/03/11
 #
 
 """
@@ -363,7 +363,7 @@ end
     line_to_cmplx(io::IOStream)
 
 Convert a line (reading from an iostream) to a cmplx number. It is used
-to parse the `LOCPROJ` file.
+to parse the `LOCPROJ` file only.
 
 See also: [`vaspio_projs`](@ref).
 """
