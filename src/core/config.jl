@@ -113,8 +113,8 @@ end
 """
     rev_dict(cfg::Dict{String,Any})
 
-Transfer configurations from dict cfg to dicts (PCASE, PDFT, PDMFT,
-PIMP, and PSOLVER).
+Transfer configurations from dict `cfg` to dicts (including `PCASE`,
+`PDFT`, `PDMFT`, `PIMP`, and `PSOLVER`).
 
 See also: [`chk_dict`](@ref).
 """
