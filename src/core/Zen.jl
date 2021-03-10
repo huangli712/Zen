@@ -153,7 +153,8 @@ export PrWindow
 # query_case    -> Query case (job's name).
 # query_inps    -> Query input files.
 # query_stop    -> Query case.stop file.
-# query_zen     -> Query home directory of Zen.
+# query_home    -> Query home directory of Zen.
+# query_core    -> Query core directory of Zen.
 # query_dft     -> Query home directory of DFT engine.
 # welcome       -> Print welcome message.
 # overview      -> Print overview of Zen.
@@ -175,7 +176,8 @@ export query_args
 export query_case
 export query_inps
 export query_stop
-export query_zen
+export query_home
+export query_core
 export query_dft
 export welcome
 export overview

@@ -4,14 +4,14 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/02
+# Last modified: 2021/03/10
 #
 
 """
     @cswitch(constexpr, body)
 
 Provides C-like switch statement with the ``falling through'' behavior. This
-implement is borrowed from the following github repo.:
+implementation was borrowed from the following github repo.:
     https://github.com/Gnimuc/CSyntax.jl
 
 # Examples
@@ -204,13 +204,13 @@ function query_stop()
 end
 
 """
-    query_zen()
+    query_home()
 
 Query the home directory of Zen.
 
-See also: [`query_dft`](@ref).
+See also: [`query_core`](@ref).
 """
-function query_zen()
+function query_home()
     # We have to setup the environment variable ZEN_HOME
     if haskey(ENV, "ZEN_HOME")
         ENV["ZEN_HOME"]
