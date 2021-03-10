@@ -4,24 +4,31 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/04
+# Last modified: 2021/03/10
 #
 
 """
     Zen
 
-Zen is a modern DFT + DMFT computation framework. Now it adopts the
-`VASP` code as the DFT backend. Various quantum impurity solvers are
-supported, such as hybridization expansion continuous-time quantum
-Monte Carlo impurity solver (`CT-HYB`), natural orbital renormalization
-group impurity solver (`NORG`), and Hubbard-I approximation impurity
-solver (`HIA`), etc. This framework can be used to study the correlated
-electronic structures of a wide range of strongly correlated materials.
-Now this framework is under heavy development. **PLEASE USE IT AT YOUR
-OWN RISK**.
+Zen is a modern DFT + DMFT computation framework. It can be used to
+study the correlated electronic structures of a wide range of strongly
+correlated materials. Now this framework is under heavy development.
+**PLEASE USE IT AT YOUR OWN RISK**.
+
+Zen supports the following DFT backends:
+* `VASP`
+
+Zen supports the following schemes of local orbitals:
+* `PLO`
+* `WANNIER`
+
+Zen supports the following quantum impurity solvers:
+* `CT-HYB`
+* `HIA`
+* `NORG`
 
 For more details about how to install and use the Zen framework, please
-check the following website:
+visit the following website:
 
 `http://doc.zen`
 """
