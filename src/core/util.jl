@@ -220,6 +220,22 @@ function query_home()
 end
 
 """
+    query_core()
+
+Query the core directory of Zen.
+
+See also: [`query_home`](@ref).
+"""
+function query_core()
+    # We have to setup the environment variable ZEN_CORE
+    if haskey(ENV, "ZEN_CORE")
+        ENV["ZEN_CORE"]
+    else
+        error("ZEN_CORE is undefined")
+    end
+end
+
+"""
     query_dft()
 
 Query the home directory of the DFT engine.
