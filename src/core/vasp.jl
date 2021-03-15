@@ -380,7 +380,7 @@ function vaspio_nband(f::String)
     nsort, _ = size(latt.sorts)
     @assert nsort === length(zval)
 
-    # Evaluate number of electrons in total
+    # Evaluate number of valence electrons in total
     nelect = sum(@. latt.sorts[:, 2] * zval)
 
 #
@@ -407,6 +407,16 @@ function vaspio_nband(f::String)
     # Return the desired nband
     return nband
 end
+
+"""
+    vaspio_nband()
+
+Reading vasp's `POSCAR` and `POTCAR` files, evaluating number of bands. It
+will be used to create the `INCAR` file.
+
+See also: [`vasp_incar`](@ref), [`vaspio_valence`](@ref), [`vaspio_lattice`](@ref).
+"""
+vaspio_nband() = vaspio_nband(pwd())
 
 """
     vaspio_valence(f::String)
@@ -438,6 +448,18 @@ function vaspio_valence(f::String)
     # Return the desired arrays
     return zval
 end
+
+"""
+    vaspio_valence()
+
+Reading vasp's `POTCAR` file, return `ZVAL`.
+
+The information about `ZVAL` will be used to determine `NBANDS` in the
+`INCAR` file.
+
+See also: [`vasp_incar`](@ref), [`vaspio_nband`](@ref).
+"""
+vaspio_valence() = vaspio_valence(pwd())
 
 """
     vaspio_procar(f::String)
@@ -733,6 +755,21 @@ function vaspio_procar(f::String)
 end
 
 """
+    vaspio_procar()
+
+Reading vasp's `PROCAR` file, extract orbital weight information.
+
+This function is not invoked directly during the DFT + DMFT iteration. It
+is designed for users merely. They can use it to judge which orbitals are
+the most relevant, and then apply the obtained information to customize
+their case.toml configuration file (specifically, the `window` parameter
+in the `dft` block).
+
+See also: [`tools/analyze.jl`](@ref).
+"""
+vaspio_procar() = vaspio_procar(pwd())
+
+"""
     vaspio_lattice(f::String)
 
 Reading vasp's `POSCAR` file, return crystallography information. Here `f`
@@ -804,6 +841,15 @@ function vaspio_lattice(f::String)
 end
 
 """
+    vaspio_lattice()
+
+Reading vasp's `POSCAR` file, return crystallography information.
+
+See also: [`Lattice`](@ref), [`irio_lattice`](@ref).
+"""
+vaspio_lattice() = vaspio_lattice(pwd())
+
+"""
     vaspio_kmesh(f::String)
 
 Reading vasp's `IBZKPT` file, return `kmesh` and `weight`. Here `f` means
@@ -837,6 +883,15 @@ function vaspio_kmesh(f::String)
     # Return the desired arrays
     return kmesh, weight
 end
+
+"""
+    vaspio_kmesh()
+
+Reading vasp's `IBZKPT` file, return `kmesh` and `weight`.
+
+See also: [`vaspio_tetra`](@ref), [`irio_kmesh`](@ref).
+"""
+vaspio_kmesh() = vaspio_kmesh(pwd())
 
 """
     vaspio_tetra(f::String)
@@ -886,6 +941,15 @@ function vaspio_tetra(f::String)
     # Return the desired arrays
     return volt, itet
 end
+
+"""
+    vaspio_tetra()
+
+Reading vasp's `IBZKPT` file, return tetrahedra information.
+
+See also: [`vaspio_kmesh`](@ref), [`irio_tetra`](@ref).
+"""
+vaspio_tetra() = vaspio_tetra(pwd())
 
 """
     vaspio_eigen(f::String)
@@ -961,6 +1025,15 @@ function vaspio_eigen(f::String)
     # return the desired arrays
     return enk, occupy
 end
+
+"""
+    vaspio_eigen()
+
+Reading vasp's `EIGENVAL` file, return energy band information.
+
+See also: [`irio_eigen`](@ref).
+"""
+vaspio_eigen() = vaspio_eigen(pwd())
 
 """
     vaspio_projs(f::String)
@@ -1056,6 +1129,15 @@ function vaspio_projs(f::String)
 end
 
 """
+    vaspio_projs()
+
+Reading vasp's `LOCPROJ` file, return raw projector matrix.
+
+See also: [`irio_projs`](@ref).
+"""
+vaspio_projs() = vaspio_projs(pwd())
+
+"""
     vaspio_fermi(f::String)
 
 Reading vasp's `DOSCAR` file, return the fermi level. Here `f` means
@@ -1083,6 +1165,16 @@ function vaspio_fermi(f::String)
 end
 
 """
+    vaspio_fermi(f::String)
+
+Reading vasp's `DOSCAR` file, return the fermi level. Here `f` means
+only the directory that contains `DOSCAR`.
+
+See also: [`irio_fermi`](@ref).
+"""
+vaspio_fermi() = vaspio_fermi(pwd())
+
+"""
     vaspio_charge(f::String)
 
 Reading vasp's `CHGCAR` file, return the charge density. Here `f` means
@@ -1091,3 +1183,12 @@ only the directory that contains `CHGCAR`.
 See also: [`irio_charge`](@ref).
 """
 function vaspio_charge(f::String) end
+
+"""
+    vaspio_charge()
+
+Reading vasp's `CHGCAR` file, return the charge density.
+
+See also: [`irio_charge`](@ref).
+"""
+vaspio_charge() = vaspio_charge(pwd())
