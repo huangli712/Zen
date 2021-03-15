@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/05
+# Last modified: 2021/03/15
 #
 
 #
@@ -1165,10 +1165,9 @@ function vaspio_fermi(f::String)
 end
 
 """
-    vaspio_fermi(f::String)
+    vaspio_fermi()
 
-Reading vasp's `DOSCAR` file, return the fermi level. Here `f` means
-only the directory that contains `DOSCAR`.
+Reading vasp's `DOSCAR` file, return the fermi level.
 
 See also: [`irio_fermi`](@ref).
 """
