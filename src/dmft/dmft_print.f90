@@ -45,7 +45,7 @@
 
 # endif  /* MPI */
 
-     write(mystd,'(2X,a)') 'A Modern Dynamical Mean-Field Theory Computation Engine'
+     write(mystd,'(2X,a)') 'A Modern Dynamical Mean-Field Theory Booster'
      write(mystd,*)
 
      write(mystd,'(2X,a)') 'Version: '//V_FULL_ZD//' (built at '//__TIME__//" "//__DATE__//')'
@@ -101,3 +101,6 @@
 
      return
   end subroutine dmft_print_footer
+
+  subroutine dmft_print_summary()
+  end subroutine dmft_print_summary

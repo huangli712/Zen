@@ -40,9 +40,19 @@
 
 # endif  /* MPI */
 
-     if ( myid == master ) then
-         print *, myid, nprocs
-     endif
+     DMFT_START: BLOCK
+
+! print the welcome messages
+         if ( myid == master ) then ! only master node can do it
+             call dmft_print_header()
+         endif ! back if ( myid == master ) block
+
+! print the runtime parameters
+         if ( myid == master ) then ! only master node can do it
+             call dmft_print_summary()
+         endif ! back if ( myid == master ) block
+
+     END BLOCK DMFT_START
 
 ! finalize mpi envirnoment
 # if defined (MPI)
