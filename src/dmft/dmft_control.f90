@@ -45,7 +45,6 @@
 !!>>> integer variables                                                <<<
 !!========================================================================
 
-     integer, public, save :: mode   = 1
      integer, public, save :: task   = 1
      integer, public, save :: axis   = 1
      integer, public, save :: dcount = 1
