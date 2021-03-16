@@ -47,6 +47,9 @@
              call dmft_print_header()
          endif ! back if ( myid == master ) block
 
+! allocate memory spaces
+         call dmft_alloc_array()
+
 ! print the runtime parameters
          if ( myid == master ) then ! only master node can do it
              call dmft_print_summary()
@@ -57,7 +60,7 @@
      DMFT_SLEEP: BLOCK
 
 ! deallocate memory spaces
-         !call dmft_final_array()
+         call dmft_final_array()
 
 ! print the ending messages
          if ( myid == master ) then ! only master node can do it
