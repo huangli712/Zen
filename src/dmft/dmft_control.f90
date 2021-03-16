@@ -27,8 +27,29 @@
 !!
      character(len = 09), public, save :: cname = 'JACARANDA'
 
-     integer, public, save :: nband = 1
-     integer, public, save :: nspin = 2
+!!========================================================================
+!!>>> integer variables                                                <<<
+!!========================================================================
+
+     integer, public, save :: mode   = 1
+     integer, public, save :: task   = 1
+     integer, public, save :: axis   = 1
+     integer, public, save :: dcount = 1
+
+     integer, public, save :: nband  = 30
+     integer, public, save :: nkpt   = 729
+     integer, public, save :: nspin  = 1
+     integer, public, save :: ntet   = 4374
+     integer, public, save :: ngrp   = 1
+     integer, public, save :: nwnd   = 1
+
+!!========================================================================
+!!>>> real variables                                                   <<<
+!!========================================================================
+
+     real(dp), public, save :: beta  = 8.00_dp
+     real(dp), public, save :: volt  = 1.00_dp
+     real(dp), public, save :: fermi = 0.00_dp
 
 !!========================================================================
 !!>>> MPI related common variables                                     <<<
