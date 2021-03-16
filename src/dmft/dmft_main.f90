@@ -54,6 +54,18 @@
 
      END BLOCK DMFT_START
 
+     DMFT_SLEEP: BLOCK
+
+! deallocate memory spaces
+         !call dmft_final_array()
+
+! print the ending messages
+         if ( myid == master ) then ! only master node can do it
+             call dmft_print_footer()
+         endif ! back if ( myid == master ) block
+
+     END BLOCK DMFT_SLEEP
+
 ! finalize mpi envirnoment
 # if defined (MPI)
 
