@@ -5,7 +5,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           02/23/2021 by li huang (last modified)
+!!!           03/16/2021 by li huang (last modified)
 !!! purpose : 
 !!! status  : unstable
 !!! comment :
@@ -17,11 +17,11 @@
   subroutine dmft_print_header()
      use constants, only : mystd
 
-     use version, only : V_FULL_IQ
-     use version, only : V_AUTH_IQ
-     use version, only : V_INST_IQ
-     use version, only : V_MAIL_IQ
-     use version, only : V_GPL3_IQ
+     use version, only : V_FULL_ZD
+     use version, only : V_AUTH_ZD
+     use version, only : V_INST_ZD
+     use version, only : V_MAIL_ZD
+     use version, only : V_GPL3_ZD
 
      use control, only : cname
      use control, only : nprocs
@@ -45,13 +45,13 @@
 
 # endif  /* MPI */
 
-     write(mystd,'(2X,a)') 'A Modern Continuous Time Quantum Monte Carlo Impurity Solver'
+     write(mystd,'(2X,a)') 'A Modern Dynamical Mean-Field Theory Computation Engine'
      write(mystd,*)
 
-     write(mystd,'(2X,a)') 'Version: '//V_FULL_IQ//' (built at '//__TIME__//" "//__DATE__//')'
-     write(mystd,'(2X,a)') 'Develop: '//V_AUTH_IQ//' ('//V_INST_IQ//')'
-     write(mystd,'(2X,a)') 'Support: '//V_MAIL_IQ
-     write(mystd,'(2X,a)') 'License: '//V_GPL3_IQ
+     write(mystd,'(2X,a)') 'Version: '//V_FULL_ZD//' (built at '//__TIME__//" "//__DATE__//')'
+     write(mystd,'(2X,a)') 'Develop: '//V_AUTH_ZD//' ('//V_INST_ZD//')'
+     write(mystd,'(2X,a)') 'Support: '//V_MAIL_ZD
+     write(mystd,'(2X,a)') 'License: '//V_GPL3_ZD
      write(mystd,*)
 
      write(mystd,'(2X,a)') 'start running at '//date_time_string
