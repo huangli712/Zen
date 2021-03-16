@@ -5,7 +5,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           02/26/2021 by li huang (last modified)
+!!!           03/16/2021 by li huang (last modified)
 !!! purpose : 
 !!! status  : unstable
 !!! comment :
@@ -15,6 +15,20 @@
      use constants, only : dp
 
      implicit none
+
+     type group_t
+         integer :: site
+         integer :: l
+         integer :: corr
+         integer :: shell
+         integer :: ndim
+     end type group_t
+
+     type window_t
+         integer :: bmin
+         integer :: bmax
+         integer :: bnd
+     end type window_t
 
 !!========================================================================
 !!>>> character variables                                              <<<
