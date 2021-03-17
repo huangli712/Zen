@@ -83,6 +83,19 @@
      volt  = 1.00_dp
      fermi = 0.00_dp
 
+! read in input file if possible, only master node can do it
+     if ( myid == master ) then
+         exists = .false.
+
+! inquire file status: dmft.in
+         inquire (file = 'dmft.in', exist = exists)
+
+! read in parameters, default setting should be overrided
+         if ( exists .eqv. .true. ) then
+
+         endif ! back if ( exists .eqv. .true. ) block
+     endif ! back if ( myid == master ) block
+
      return 
   end subroutine dmft_setup_param
 
