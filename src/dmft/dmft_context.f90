@@ -245,8 +245,19 @@
      return
   end subroutine cat_alloc_window
 
+!!
+!! @sub cat_alloc_lattice
+!!
   subroutine cat_alloc_lattice()
      implicit none
+
+! allocate memory
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_lattice','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
 
      return
   end subroutine cat_alloc_lattice
