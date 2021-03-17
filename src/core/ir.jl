@@ -31,7 +31,9 @@ function ir_adaptor(D::Dict{Symbol,Any})
 
     # I03: Write important parameters
     println("    Put Params")
+    println("    Put Groups")
     irio_params(pwd(), D)
+    irio_groups(pwd(), D[:PG], D[:PW])
 
     # I04: Write lattice structure
     println("    Put Lattice")
@@ -168,11 +170,22 @@ function irio_params(f::String, D::Dict{Symbol,Any})
         println(fout, "volt  -> $volt")
         println(fout, "ngrp  -> $ngrp")
         println(fout, "nwnd  -> $nwnd")
-        println(fout)
+    end
+end
 
+"""
+    irio_groups(f::String, PG::Array{PrGroup,1}, PW::Array{PrWindow,1})
+
+Write the information contained in PrGroup and PrWindow. Here `f`
+means only the directory that we want to use.
+
+See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
+"""
+function irio_groups(f::String, PG::Array{PrGroup,1}, PW::Array{PrWindow,1})
+    # Output the data
+    open(joinpath(f, "groups.ir"), "w") do fout
         # Write PrGroup[]
-        for p in eachindex(D[:PG])
-            PG = D[:PG]
+        for p in eachindex(PG)
             println(fout, "# PrGroup : $p")
             println(fout, "site  -> $(PG[p].site)")
             println(fout, "l     -> $(PG[p].l)")
@@ -183,14 +196,12 @@ function irio_params(f::String, D::Dict{Symbol,Any})
         println(fout)
 
         # Write PrWindow[]
-        for p in eachindex(D[:PW])
-            PW = D[:PW]
+        for p in eachindex(PW)
             println(fout, "# PrWindow: $p")
             println(fout, "bmin  -> $(PW[p].bmin)")
             println(fout, "bmax  -> $(PW[p].bmax)")
             println(fout, "nbnd  -> $(PW[p].nbnd)")
         end
-        println(fout)
     end
 end
 

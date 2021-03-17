@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/10
+# Last modified: 2021/03/17
 #
 
 """
@@ -309,6 +309,7 @@ export solver_save
 # ir_adaptor   -> Adaptor support.
 # ir_save      -> Save the output files by the adaptor.
 # irio_params  -> Write key parameters extracted from Kohn-Sham data.
+# irio_groups  -> Write PrGroup and PrWindow.
 # irio_lattice -> Write lattice information.
 # irio_kmesh   -> Write kmesh.
 # irio_tetra   -> Write tetrahedra.
@@ -322,6 +323,7 @@ include("ir.jl")
 export ir_adaptor
 export ir_save
 export irio_params
+export irio_groups
 export irio_lattice
 export irio_kmesh
 export irio_tetra
