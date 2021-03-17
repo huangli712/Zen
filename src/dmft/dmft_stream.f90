@@ -20,6 +20,7 @@
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
 
+     use constants, only : mytmp
      use control
 
      implicit none
@@ -94,6 +95,10 @@
          if ( exists .eqv. .true. ) then
 
              open(mytmp, file='params.ir', form='formatted', status='unknown')
+             read(mytmp,*)
+             read(mytmp,*)
+             read(mytmp,*)
+             read(mytmp,*)
              close(mytmp)
 
          endif ! back if ( exists .eqv. .true. ) block
