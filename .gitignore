@@ -18,5 +18,8 @@
 .DS_Store
 fort.*
 test/*/dft
+test/*/dmft1
+test/*/dmft2
+test/*/impurity.*
 ctqmc
 dmft
