@@ -97,6 +97,8 @@
      use constants, only : dp
      use constants, only : zero, czero
 
+     use dmft_lattice
+
      implicit none
 
 !!========================================================================
@@ -110,14 +112,32 @@
 !!>>> declare accessibility for module routines                        <<<
 !!========================================================================
 
+! declaration of module procedures: allocate memory
+     public :: cat_alloc_lattice
+
+! declaration of module procedures: deallocate memory
+     public :: cat_free_lattice
+
   contains ! encapsulated functionality
 
 !!========================================================================
 !!>>> allocate memory subroutines                                      <<<
 !!========================================================================
 
+  subroutine cat_alloc_lattice()
+     implicit none
+
+     return
+  end subroutine cat_alloc_lattice
+
 !!========================================================================
 !!>>> deallocate memory subroutines                                    <<<
 !!========================================================================
+
+  subroutine cat_free_lattice()
+     implicit none
+
+     return
+  end subroutine cat_free_lattice
 
   end module context
