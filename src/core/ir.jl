@@ -157,30 +157,30 @@ function irio_params(f::String, D::Dict{Symbol,Any})
         println(fout)
 
         # Write basic parameters
-        println(fout, "# Lattice :")
+        println(fout, "# Lattice:")
         println(fout, "model -> $_case")
         println(fout, "scale -> $scale")
         println(fout, "nsort -> $nsort")
         println(fout, "natom -> $natom")
         println(fout)
 
-        println(fout, "# Eigen   :")
+        println(fout, "# Eigen:")
         println(fout, "nband -> $nband")
         println(fout, "nkpt  -> $nkpt")
         println(fout, "nspin -> $nspin")
         println(fout, "fermi -> $fermi")
         println(fout)
 
-        println(fout, "# Tetra   :")
+        println(fout, "# Tetra:")
         println(fout, "ntet  -> $ntet")
         println(fout, "volt  -> $volt")
         println(fout)
 
-        println(fout, "# Group   :")
+        println(fout, "# Group:")
         println(fout, "ngrp  -> $ngrp")
         println(fout)
 
-        println(fout, "# Window  :")
+        println(fout, "# Window:")
         println(fout, "nwnd  -> $nwnd")
         println(fout)
     end
