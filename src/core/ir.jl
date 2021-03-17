@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/02/21
+# Last modified: 2021/03/17
 #
 
 #
@@ -20,14 +20,14 @@ that the Kohn-Sham data are encapsulated in the `D` dict.
 See also: [`vasp_adaptor`](@ref), [`plo_adaptor`](@ref).
 """
 function ir_adaptor(D::Dict{Symbol,Any})
-    # I01: Print the header
-    println("  < IR Adaptor >")
-
-    # I02: Check the validity of the `D` dict
+    # I01: Check the validity of the `D` dict
     key_list = [:latt, :kmesh, :weight, :enk, :occupy, :Fchipsi, :fermi]
     for k in key_list
         @assert haskey(D, k)
     end
+
+    # I02: Print the header
+    println("  < IR Adaptor >")
 
     # I03: Write important parameters
     println("    Put Params")
@@ -112,6 +112,12 @@ means only the directory that we want to use.
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
 """
 function irio_params(f::String, D::Dict{Symbol,Any})
+    # Extract crystallography information
+    _case = D[:latt]._case
+    scale = D[:latt].scale
+    nsort = D[:latt].nsort
+    natom = D[:latt].natom 
+
     # Extract the fermi level
     fermi = D[:fermi]
 
@@ -150,7 +156,11 @@ function irio_params(f::String, D::Dict{Symbol,Any})
 
         # Write basic parameters
         println(fout, "# Common  :")
+        println(fout, "model -> $_case")
         println(fout, "fermi -> $fermi")
+        println(fout, "scale -> $scale")
+        println(fout, "nsort -> $nsort")
+        println(fout, "natom -> $natom")
         println(fout, "nband -> $nband")
         println(fout, "nkpt  -> $nkpt")
         println(fout, "nspin -> $nspin")
