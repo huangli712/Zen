@@ -157,6 +157,7 @@
      use constants, only : zero, czero
 
      use control, only : ngrp, nwnd, nkpt, nspin
+     use control, only : natom, nsort
 
      use dmft_group
      use dmft_window
@@ -252,12 +253,23 @@
      implicit none
 
 ! allocate memory
+     allocate(sorts(nsort), stat = istat)
+     allocate(atoms(natom), stat = istat)
+     allocate(sortn(nsort), stat = istat)
+     allocate(lvect(3,3), stat = istat)
+     allocate(coord(natom,3), stat = istat)
+
 ! check the status
      if ( istat /= 0 ) then
          call s_print_error('cat_alloc_lattice','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
+     sorts = 'X'
+     atoms = 'X'
+     sortn = 0
+     lvect = zero
+     coord = zero
 
      return
   end subroutine cat_alloc_lattice
