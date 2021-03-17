@@ -28,6 +28,7 @@
   module dmft_group
      implicit none
 
+     integer, public, save :: max_ndim
      integer, public, save, allocatable :: site(:,:)
      integer, public, save, allocatable :: l(:,:)
      logical, public, save, allocatable :: corr(:,:)
@@ -42,6 +43,7 @@
   module dmft_window
      implicit none
 
+     integer, public, save :: max_nbnd
      integer, public, save, allocatable :: bmin(:,:)
      integer, public, save, allocatable :: bmax(:,:)
      integer, public, save, allocatable :: nbnd(:,:)
@@ -105,6 +107,13 @@
 !! @mod dmft_eigen
 !!
   module dmft_eigen
+     use constants, only : dp
+
+     implicit none
+
+     real(dp), public, save, allocatable :: enk(:,:,:)
+     real(dp), public, save, allocatable :: occupy(:,:,:)
+
   end module dmft_eigen
 
 !!
@@ -115,7 +124,7 @@
 
      implicit none
 
-     complex(dp), public, save, allocatable :: psichi(:)
+     complex(dp), public, save, allocatable :: psichi(:,:,:,:,:)
 
   end module dmft_projs
 
@@ -124,6 +133,7 @@
 !!
   module dmft_sigma
      implicit none
+
   end module dmft_sigma
 
 !!
@@ -131,6 +141,7 @@
 !!
   module dmft_green
      implicit none
+
   end module dmft_green
 
 !!
@@ -138,6 +149,7 @@
 !!
   module dmft_weiss
      implicit none
+
   end module dmft_weiss
 
   module context
