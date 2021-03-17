@@ -87,8 +87,8 @@
      if ( myid == master ) then
          exists = .false.
 
-! inquire file status: dmft.in
-         inquire (file = 'dmft.in', exist = exists)
+! inquire file status: params.in
+         inquire (file = 'params.ir', exist = exists)
 
 ! read in parameters, default setting should be overrided
          if ( exists .eqv. .true. ) then
