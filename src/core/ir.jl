@@ -210,8 +210,8 @@ function irio_groups(f::String, PG::Array{PrGroup,1}, PW::Array{PrWindow,1})
             println(fout, "corr  -> $(PG[p].corr)")
             println(fout, "shell -> $(PG[p].shell)")
             println(fout, "ndim  -> $(size(PG[p].Tr,1))")
+            println(fout)
         end
-        println(fout)
 
         # Write PrWindow[]
         for p in eachindex(PW)
@@ -219,6 +219,15 @@ function irio_groups(f::String, PG::Array{PrGroup,1}, PW::Array{PrWindow,1})
             println(fout, "bmin  -> $(PW[p].bmin)")
             println(fout, "bmax  -> $(PW[p].bmax)")
             println(fout, "nbnd  -> $(PW[p].nbnd)")
+            println(fout, "kwin  ->")
+            nkpt, nspin, ndir = size(PW[p].kwin)
+            @assert ndir === 2
+            for s = 1:nspin
+                for k = 1:nkpt
+                    @printf(fout, "%8i %8i %8i %8i\n", k, s, PW[p].kwin[k, s, :]...)
+                end
+            end
+            println(fout)
         end
     end
 end
