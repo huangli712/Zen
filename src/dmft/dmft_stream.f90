@@ -70,6 +70,19 @@
 
 # endif  /* MPI */
 
+     nsort  = 3
+     natom  = 5
+     nband  = 30
+     nkpt   = 729
+     nspin  = 1
+     ntet   = 4374
+     ngrp   = 1
+     nwnd   = 1
+
+     scal  = 4.00_dp
+     volt  = 1.00_dp
+     fermi = 0.00_dp
+
      return 
   end subroutine dmft_setup_param
 

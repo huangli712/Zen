@@ -61,10 +61,7 @@
 !!>>> real variables                                                   <<<
 !!========================================================================
 
-     real(dp), public, save :: scal  = 4.00_dp
      real(dp), public, save :: beta  = 8.00_dp
-     real(dp), public, save :: volt  = 1.00_dp
-     real(dp), public, save :: fermi = 0.00_dp
 
 !!========================================================================
 !!>>> MPI related common variables                                     <<<
