@@ -156,6 +156,8 @@
      use constants, only : dp
      use constants, only : zero, czero
 
+     use dmft_group
+     use dmft_window
      use dmft_lattice
 
      implicit none
@@ -172,6 +174,8 @@
 !!========================================================================
 
 ! declaration of module procedures: allocate memory
+     public :: cat_alloc_group
+     public :: cat_alloc_window
      public :: cat_alloc_lattice
 
 ! declaration of module procedures: deallocate memory
