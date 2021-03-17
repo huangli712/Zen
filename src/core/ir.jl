@@ -184,6 +184,11 @@ See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
 function irio_groups(f::String, PG::Array{PrGroup,1}, PW::Array{PrWindow,1})
     # Output the data
     open(joinpath(f, "groups.ir"), "w") do fout
+        # Write the header
+        println(fout, "# File: groups.ir")
+        println(fout, "# Data: some necessary data structures")
+        println(fout)
+
         # Write PrGroup[]
         for p in eachindex(PG)
             println(fout, "# PrGroup : $p")
