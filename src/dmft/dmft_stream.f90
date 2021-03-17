@@ -93,6 +93,9 @@
 ! read in parameters, default setting should be overrided
          if ( exists .eqv. .true. ) then
 
+             open(mytmp, file='params.ir', form='formatted', status='unknown')
+             close(mytmp)
+
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
 
