@@ -1,6 +1,17 @@
 !!!-----------------------------------------------------------------------
 !!! project : jacaranda
-!!! program : context    module
+!!! program : dmft_group
+!!!           dmft_window
+!!!           dmft_lattice
+!!!           dmft_kmesh
+!!!           dmft_fmesh
+!!!           dmft_tetra
+!!!           dmft_eigen
+!!!           dmft_projs
+!!!           dmft_sigma
+!!!           dmft_green
+!!!           dmft_weiss
+!!!           context    module
 !!! source  : dmft_context.f90
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
@@ -10,6 +21,33 @@
 !!! status  : unstable
 !!! comment :
 !!!-----------------------------------------------------------------------
+
+!!
+!! @mod dmft_group
+!!
+  module dmft_group
+     implicit none
+
+     integer, public, save, allocatable :: site(:,:)
+     integer, public, save, allocatable :: l(:,:)
+     logical, public, save, allocatable :: corr(:,:)
+     character(len=4), public, save, allocatable :: shell(:,:)
+     integer, public, save, allocatable :: ndim(:,:)
+
+  end module dmft_group
+
+!!
+!! @mod dmft_window
+!!
+  module dmft_window
+     implicit none
+
+     integer, public, save, allocatable :: bmin(:,:)
+     integer, public, save, allocatable :: bmax(:,:)
+     integer, public, save, allocatable :: nbnd(:,:)
+     integer, public, save, allocatable :: kwin(:,:,:,:)
+
+  end module dmft_window
 
 !!
 !! @mod dmft_lattice
@@ -85,13 +123,22 @@
 !! @mod dmft_sigma
 !!
   module dmft_sigma
+     implicit none
   end module dmft_sigma
 
 !!
 !! @mod dmft_green
 !!
   module dmft_green
+     implicit none
   end module dmft_green
+
+!!
+!! @mod dmft_weiss
+!!
+  module dmft_weiss
+     implicit none
+  end module dmft_weiss
 
   module context
      use constants, only : dp

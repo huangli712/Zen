@@ -16,20 +16,6 @@
 
      implicit none
 
-     type group_t
-         integer :: site
-         integer :: l
-         integer :: corr
-         integer :: shell
-         integer :: ndim
-     end type group_t
-
-     type window_t
-         integer :: bmin
-         integer :: bmax
-         integer :: bnd
-     end type window_t
-
 !!========================================================================
 !!>>> character variables                                              <<<
 !!========================================================================
