@@ -29,11 +29,11 @@
      implicit none
 
      integer, public, save :: max_ndim
-     integer, public, save, allocatable :: site(:,:)
-     integer, public, save, allocatable :: l(:,:)
-     logical, public, save, allocatable :: corr(:,:)
-     character(len=4), public, save, allocatable :: shell(:,:)
-     integer, public, save, allocatable :: ndim(:,:)
+     integer, public, save, allocatable :: site(:)
+     integer, public, save, allocatable :: l(:)
+     logical, public, save, allocatable :: corr(:)
+     character(len=4), public, save, allocatable :: shell(:)
+     integer, public, save, allocatable :: ndim(:)
 
   end module dmft_group
 
@@ -44,9 +44,9 @@
      implicit none
 
      integer, public, save :: max_nbnd
-     integer, public, save, allocatable :: bmin(:,:)
-     integer, public, save, allocatable :: bmax(:,:)
-     integer, public, save, allocatable :: nbnd(:,:)
+     integer, public, save, allocatable :: bmin(:)
+     integer, public, save, allocatable :: bmax(:)
+     integer, public, save, allocatable :: nbnd(:)
      integer, public, save, allocatable :: kwin(:,:,:,:)
 
   end module dmft_window
@@ -180,7 +180,7 @@
 
 ! declaration of module procedures: deallocate memory
      public :: cat_free_group
-     public :: cat_Free_window
+     public :: cat_free_window
      public :: cat_free_lattice
 
   contains ! encapsulated functionality
@@ -189,13 +189,35 @@
 !!>>> allocate memory subroutines                                      <<<
 !!========================================================================
 
-  subroutine cat_alloc_group
+!!
+!! @sub cat_alloc_group
+!!
+  subroutine cat_alloc_group()
      implicit none
+
+! allocate memory
+     allocate(site(ngrp), stat = istat)
+     allocate(l(ngrp), stat = istat)
+     allocate(corr(ngrp), stat = istat)
+     allocate(shell(ngrp), stat = istat)
+     allocate(ndim(ngrp), stat = istat)
+
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_group','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
+     site = 0
+     l = 0
+     corr = .false.
+     shell = 's'
+     ndim = 0
 
      return
   end subroutine cat_alloc_group
 
-  subroutine cat_alloc_window
+  subroutine cat_alloc_window()
      implicit none
 
      return
@@ -210,6 +232,18 @@
 !!========================================================================
 !!>>> deallocate memory subroutines                                    <<<
 !!========================================================================
+
+  subroutine cat_free_group()
+     implicit none
+
+     return
+  end subroutine cat_free_group
+
+  subroutine cat_free_window()
+     implicit none
+
+     return
+  end subroutine cat_free_window
 
   subroutine cat_free_lattice()
      implicit none
