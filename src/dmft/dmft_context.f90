@@ -179,6 +179,8 @@
      public :: cat_alloc_lattice
 
 ! declaration of module procedures: deallocate memory
+     public :: cat_free_group
+     public :: cat_Free_window
      public :: cat_free_lattice
 
   contains ! encapsulated functionality
@@ -186,6 +188,18 @@
 !!========================================================================
 !!>>> allocate memory subroutines                                      <<<
 !!========================================================================
+
+  subroutine cat_alloc_group
+     implicit none
+
+     return
+  end subroutine cat_alloc_group
+
+  subroutine cat_alloc_window
+     implicit none
+
+     return
+  end subroutine cat_alloc_window
 
   subroutine cat_alloc_lattice()
      implicit none
