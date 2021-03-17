@@ -217,8 +217,28 @@
      return
   end subroutine cat_alloc_group
 
+!!
+!! @sub cat_alloc_window
+!!
   subroutine cat_alloc_window()
      implicit none
+
+! allocate memory
+     allocate(bmin(nwnd), stat = istat)
+     allocate(bmax(nwnd), stat = istat)
+     allocate(nbnd(nwnd), stat = istat)
+     allocate(kwin(nkpt,nspin,2,nwnd), stat = istat)
+
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_window','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
+     bmin = 0
+     bmax = 0
+     nbnd = 0
+     kwin = 0
 
      return
   end subroutine cat_alloc_window
