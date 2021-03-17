@@ -12,16 +12,20 @@
 !!!-----------------------------------------------------------------------
 
 !!
-!! @mod dmft_maps
+!! @mod dmft_lattice
 !!
-  module dmft_maps
-  end module dmft_maps
+  module dmft_lattice
+     use constants, only : dp
 
-!!
-!! @mod dmft_atoms
-!!
-  module dmft_atoms
-  end module dmft_atoms
+     implicit none
+
+     character(len=2), public, save, allocatable :: sorts(:)
+     character(len=2), public, save, allocatable :: atoms(:)
+     integer,  public, save, allocatable :: sortn(:)
+     real(dp), public, save, allocatable :: lvect(:,:)
+     real(dp), public, save, allocatable :: coord(:,:)
+
+  end module dmft_lattice
 
 !!
 !! @mod dmft_kmesh
@@ -35,6 +39,19 @@
      real(dp), public, save, allocatable :: wghts(:)
 
   end module dmft_kmesh
+
+!!
+!! @mod dmft_fmesh
+!!
+  module dmft_fmesh
+     use constants, only : dp
+
+     implicit none
+
+     real(dp), public, save, allocatable :: imesh(:)
+     real(dp), public, save, allocatable :: rmesh(:)
+
+  end module dmft_fmesh
 
 !!
 !! @mod dmft_tetra

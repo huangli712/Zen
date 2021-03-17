@@ -5,7 +5,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           03/16/2021 by li huang (last modified)
+!!!           03/17/2021 by li huang (last modified)
 !!! purpose : 
 !!! status  : unstable
 !!! comment :
@@ -47,8 +47,9 @@
 
      integer, public, save :: task   = 1
      integer, public, save :: axis   = 1
-     integer, public, save :: dcount = 1
 
+     integer, public, save :: nsort  = 3
+     integer, public, save :: natom  = 5
      integer, public, save :: nband  = 30
      integer, public, save :: nkpt   = 729
      integer, public, save :: nspin  = 1
@@ -60,6 +61,7 @@
 !!>>> real variables                                                   <<<
 !!========================================================================
 
+     real(dp), public, save :: scal  = 4.00_dp
      real(dp), public, save :: beta  = 8.00_dp
      real(dp), public, save :: volt  = 1.00_dp
      real(dp), public, save :: fermi = 0.00_dp
