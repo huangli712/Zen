@@ -156,6 +156,8 @@
      use constants, only : dp
      use constants, only : zero, czero
 
+     use control, only : ngrp, nwnd, nkpt, nspin
+
      use dmft_group
      use dmft_window
      use dmft_lattice
