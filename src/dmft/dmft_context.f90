@@ -4,10 +4,10 @@
 !!!           dmft_window
 !!!           dmft_lattice
 !!!           dmft_bzone
-!!!           dmft_fmesh
 !!!           dmft_tetra
 !!!           dmft_eigen
 !!!           dmft_projs
+!!!           dmft_fmesh
 !!!           dmft_sigma
 !!!           dmft_green
 !!!           dmft_weiss
@@ -81,19 +81,6 @@
   end module dmft_bzone
 
 !!
-!! @mod dmft_fmesh
-!!
-  module dmft_fmesh
-     use constants, only : dp
-
-     implicit none
-
-     real(dp), public, save, allocatable :: imesh(:)
-     real(dp), public, save, allocatable :: rmesh(:)
-
-  end module dmft_fmesh
-
-!!
 !! @mod dmft_tetra
 !!
   module dmft_tetra
@@ -129,6 +116,19 @@
   end module dmft_projs
 
 !!
+!! @mod dmft_fmesh
+!!
+  module dmft_fmesh
+     use constants, only : dp
+
+     implicit none
+
+     real(dp), public, save, allocatable :: imesh(:)
+     real(dp), public, save, allocatable :: rmesh(:)
+
+  end module dmft_fmesh
+
+!!
 !! @mod dmft_sigma
 !!
   module dmft_sigma
@@ -159,12 +159,15 @@
      use control, only : ngrp, nwnd, nkpt, nspin
      use control, only : natom, nsort
      use control, only : mfreq, nfreq
+     use control, only : ntet
 
      use dmft_group
      use dmft_window
      use dmft_lattice
      use dmft_bzone
+     use dmft_tetra
      use dmft_fmesh
+     
 
      implicit none
 
@@ -184,6 +187,7 @@
      public :: cat_alloc_window
      public :: cat_alloc_lattice
      public :: cat_alloc_bzone
+     public :: cat_alloc_tetra
      public :: cat_alloc_fmesh
 
 ! declaration of module procedures: deallocate memory
@@ -191,6 +195,7 @@
      public :: cat_free_window
      public :: cat_free_lattice
      public :: cat_free_bzone
+     public :: cat_free_tetra
      public :: cat_free_fmesh
 
   contains ! encapsulated functionality
@@ -302,6 +307,9 @@
 
      return
   end subroutine cat_alloc_bzone
+
+  subroutine cat_alloc_tetra()
+  end subroutine cat_alloc_tetra
 
 !!
 !! @sub cat_alloc_fmesh
