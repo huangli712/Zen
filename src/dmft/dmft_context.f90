@@ -162,6 +162,7 @@
      use dmft_group
      use dmft_window
      use dmft_lattice
+     use dmft_kmesh
 
      implicit none
 
