@@ -332,7 +332,26 @@
      return
   end subroutine cat_alloc_tetra
 
+!!
+!! @sub cat_alloc_eigen
+!!
   subroutine cat_alloc_eigen()
+     implicit none
+
+! allocate memory
+     allocate(eigen(nband,nkpt,nspin), stat = istat)
+     allocate(occupy(nband,nkpt,nspin), stat = istat)
+
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_eigen','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
+     eigen = zero
+     occupy = zero
+     
+     return
   end subroutine cat_alloc_eigen
 
 !!
