@@ -309,6 +309,9 @@
      implicit none
 
 ! allocate memory
+     allocate(imesh(), stat = istat)
+     allocate(rmesh(), stat = istat)
+
 ! check the status
      if ( istat /= 0 ) then
          call s_print_error('cat_alloc_fmesh','can not allocate enough memory')
