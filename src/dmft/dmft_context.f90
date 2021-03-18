@@ -16,7 +16,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           03/17/2021 by li huang (last modified)
+!!!           03/18/2021 by li huang (last modified)
 !!! purpose : 
 !!! status  : unstable
 !!! comment :
@@ -180,11 +180,13 @@
      public :: cat_alloc_group
      public :: cat_alloc_window
      public :: cat_alloc_lattice
+     public :: cat_alloc_kmesh
 
 ! declaration of module procedures: deallocate memory
      public :: cat_free_group
      public :: cat_free_window
      public :: cat_free_lattice
+     public :: cat_free_kmesh
 
   contains ! encapsulated functionality
 
@@ -273,6 +275,28 @@
 
      return
   end subroutine cat_alloc_lattice
+
+!!
+!! @sub cat_alloc_kmesh
+!!
+  subroutine cat_alloc_kmesh()
+     implicit none
+
+! allocate memory
+     allocate(kpts(nkpt,3), stat = istat)
+     allocate(wghts(nkpt), stat = istat)
+
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_kmesh','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
+     kpts = zero
+     wghts = zero
+
+     return
+  end subroutine cat_alloc_kmesh
 
 !!========================================================================
 !!>>> deallocate memory subroutines                                    <<<
