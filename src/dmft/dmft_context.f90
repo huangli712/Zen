@@ -314,6 +314,17 @@
   subroutine cat_alloc_tetra()
      implicit none
 
+! allocate memory
+     allocate(tetra(ntet,5), stat = istat)
+
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_tetra','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
+     tetra = 0
+
      return
   end subroutine cat_alloc_tetra
 
