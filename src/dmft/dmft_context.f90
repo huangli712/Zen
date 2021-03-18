@@ -168,6 +168,7 @@
      use dmft_bzone
      use dmft_tetra
      use dmft_eigen
+     use dmft_projs
      use dmft_fmesh
      
 
@@ -191,6 +192,7 @@
      public :: cat_alloc_bzone
      public :: cat_alloc_tetra
      public :: cat_alloc_eigen
+     public :: cat_alloc_projs
      public :: cat_alloc_fmesh
 
 ! declaration of module procedures: deallocate memory
@@ -200,6 +202,7 @@
      public :: cat_free_bzone
      public :: cat_free_tetra
      public :: cat_free_eigen
+     public :: cat_free_projs
      public :: cat_free_fmesh
 
   contains ! encapsulated functionality
@@ -355,6 +358,15 @@
   end subroutine cat_alloc_eigen
 
 !!
+!! @sub cat_alloc_projs
+!!
+  subroutine cat_alloc_projs()
+     implicit none
+
+     return
+  end subroutine cat_alloc_projs
+
+!!
 !! @sub cat_alloc_fmesh
 !!
   subroutine cat_alloc_fmesh()
@@ -415,6 +427,12 @@
 
      return
   end subroutine cat_free_eigen
+
+  subroutine cat_free_projs()
+     implicit none
+
+     return
+  end subroutine cat_free_projs
 
   subroutine cat_free_fmesh()
      implicit none
