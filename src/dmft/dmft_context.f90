@@ -410,6 +410,12 @@
      return
   end subroutine cat_free_tetra
 
+  subroutine cat_free_eigen()
+     implicit none
+
+     return
+  end subroutine cat_free_eigen
+
   subroutine cat_free_fmesh()
      implicit none
 
