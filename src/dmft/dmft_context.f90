@@ -308,7 +308,13 @@
      return
   end subroutine cat_alloc_bzone
 
+!!
+!! @sub cat_alloc_tetra
+!!
   subroutine cat_alloc_tetra()
+     implicit none
+
+     return
   end subroutine cat_alloc_tetra
 
 !!
@@ -360,6 +366,12 @@
 
      return
   end subroutine cat_free_bzone
+
+  subroutine cat_free_tetra()
+     implicit none
+
+     return
+  end subroutine cat_free_tetra
 
   subroutine cat_free_fmesh()
      implicit none
