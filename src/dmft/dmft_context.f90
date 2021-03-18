@@ -302,6 +302,25 @@
      return
   end subroutine cat_alloc_bzone
 
+!!
+!! @sub cat_alloc_fmesh
+!!
+  subroutine cat_alloc_fmesh()
+     implicit none
+
+! allocate memory
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_fmesh','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
+     imesh = zero
+     rmesh = zero
+
+     return
+  end subroutine cat_alloc_fmesh
+
 !!========================================================================
 !!>>> deallocate memory subroutines                                    <<<
 !!========================================================================
