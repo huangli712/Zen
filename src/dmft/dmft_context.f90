@@ -158,6 +158,7 @@
 
      use control, only : ngrp, nwnd, nkpt, nspin
      use control, only : natom, nsort
+     use control, only : mfreq, nfreq
 
      use dmft_group
      use dmft_window
@@ -309,8 +310,8 @@
      implicit none
 
 ! allocate memory
-     allocate(imesh(), stat = istat)
-     allocate(rmesh(), stat = istat)
+     allocate(imesh(mfreq), stat = istat)
+     allocate(rmesh(nfreq), stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then

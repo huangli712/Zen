@@ -5,7 +5,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           03/17/2021 by li huang (last modified)
+!!!           03/18/2021 by li huang (last modified)
 !!! purpose : 
 !!! status  : unstable
 !!! comment :
@@ -42,6 +42,8 @@
      integer, public, save :: ntet   = 4374
      integer, public, save :: ngrp   = 1
      integer, public, save :: nwnd   = 1
+     integer, public, save :: mfreq  = 8193
+     integer, public, save :: nfreq  = 513
 
 !!========================================================================
 !!>>> real variables                                                   <<<
