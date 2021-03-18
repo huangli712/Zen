@@ -342,7 +342,7 @@
      implicit none
 
 ! allocate memory
-     allocate(eigen(nband,nkpt,nspin), stat = istat)
+     allocate(enk(nband,nkpt,nspin), stat = istat)
      allocate(occupy(nband,nkpt,nspin), stat = istat)
 
 ! check the status
@@ -351,7 +351,7 @@
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
-     eigen = zero
+     enk = zero
      occupy = zero
      
      return
