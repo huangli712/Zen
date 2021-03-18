@@ -156,7 +156,8 @@
      use constants, only : dp
      use constants, only : zero, czero
 
-     use control, only : ngrp, nwnd, nkpt, nspin
+     use control, only : ngrp, nwnd
+     use control, only : nband, nkpt, nspin
      use control, only : natom, nsort
      use control, only : mfreq, nfreq
      use control, only : ntet
@@ -166,6 +167,7 @@
      use dmft_lattice
      use dmft_bzone
      use dmft_tetra
+     use dmft_eigen
      use dmft_fmesh
      
 
@@ -188,6 +190,7 @@
      public :: cat_alloc_lattice
      public :: cat_alloc_bzone
      public :: cat_alloc_tetra
+     public :: cat_alloc_eigen
      public :: cat_alloc_fmesh
 
 ! declaration of module procedures: deallocate memory
@@ -196,6 +199,7 @@
      public :: cat_free_lattice
      public :: cat_free_bzone
      public :: cat_free_tetra
+     public :: cat_free_eigen
      public :: cat_free_fmesh
 
   contains ! encapsulated functionality
@@ -327,6 +331,9 @@
 
      return
   end subroutine cat_alloc_tetra
+
+  subroutine cat_alloc_eigen()
+  end subroutine cat_alloc_eigen
 
 !!
 !! @sub cat_alloc_fmesh
