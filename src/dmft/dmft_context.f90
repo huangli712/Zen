@@ -321,4 +321,10 @@
      return
   end subroutine cat_free_lattice
 
+  subroutine cat_free_kmesh()
+     implicit none
+
+     return
+  end subroutine cat_free_kmesh
+
   end module context
