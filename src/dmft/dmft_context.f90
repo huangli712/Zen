@@ -363,6 +363,17 @@
   subroutine cat_alloc_projs()
      implicit none
 
+! allocate memory
+     allocate(psichi(max_ndim,max_nbnd,nkpt,nspin,ngrp), stat = istat)
+
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_projs','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
+     psichi = czero
+
      return
   end subroutine cat_alloc_projs
 
