@@ -3,7 +3,7 @@
 !!! program : dmft_group
 !!!           dmft_window
 !!!           dmft_lattice
-!!!           dmft_kmesh
+!!!           dmft_bzone
 !!!           dmft_fmesh
 !!!           dmft_tetra
 !!!           dmft_eigen
@@ -68,17 +68,17 @@
   end module dmft_lattice
 
 !!
-!! @mod dmft_kmesh
+!! @mod dmft_bzone
 !!
-  module dmft_kmesh
+  module dmft_bzone
      use constants, only : dp
 
      implicit none
 
-     real(dp), public, save, allocatable :: kpts(:,:)
-     real(dp), public, save, allocatable :: wghts(:)
+     real(dp), public, save, allocatable :: kmesh(:,:)
+     real(dp), public, save, allocatable :: weight(:)
 
-  end module dmft_kmesh
+  end module dmft_bzone
 
 !!
 !! @mod dmft_fmesh
@@ -162,7 +162,8 @@
      use dmft_group
      use dmft_window
      use dmft_lattice
-     use dmft_kmesh
+     use dmft_bzone
+     use dmft_fmesh
 
      implicit none
 
@@ -181,13 +182,15 @@
      public :: cat_alloc_group
      public :: cat_alloc_window
      public :: cat_alloc_lattice
-     public :: cat_alloc_kmesh
+     public :: cat_alloc_bzone
+     public :: cat_alloc_fmesh
 
 ! declaration of module procedures: deallocate memory
      public :: cat_free_group
      public :: cat_free_window
      public :: cat_free_lattice
-     public :: cat_free_kmesh
+     public :: cat_free_bzone
+     public :: cat_free_fmesh
 
   contains ! encapsulated functionality
 
@@ -278,26 +281,26 @@
   end subroutine cat_alloc_lattice
 
 !!
-!! @sub cat_alloc_kmesh
+!! @sub cat_alloc_bzone
 !!
-  subroutine cat_alloc_kmesh()
+  subroutine cat_alloc_bzone()
      implicit none
 
 ! allocate memory
-     allocate(kpts(nkpt,3), stat = istat)
-     allocate(wghts(nkpt), stat = istat)
+     allocate(kmesh(nkpt,3), stat = istat)
+     allocate(weight(nkpt), stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
-         call s_print_error('cat_alloc_kmesh','can not allocate enough memory')
+         call s_print_error('cat_alloc_bzone','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
-     kpts = zero
-     wghts = zero
+     kmesh = zero
+     weight = zero
 
      return
-  end subroutine cat_alloc_kmesh
+  end subroutine cat_alloc_bzone
 
 !!========================================================================
 !!>>> deallocate memory subroutines                                    <<<
@@ -321,10 +324,16 @@
      return
   end subroutine cat_free_lattice
 
-  subroutine cat_free_kmesh()
+  subroutine cat_free_bzone()
      implicit none
 
      return
-  end subroutine cat_free_kmesh
+  end subroutine cat_free_bzone
+
+  subroutine cat_free_fmesh()
+     implicit none
+
+     return
+  end subroutine cat_free_fmesh
 
   end module context
