@@ -224,10 +224,10 @@
      implicit none
 
 ! allocate memory
+     allocate(shell(ngrp), stat = istat)
      allocate(site(ngrp), stat = istat)
      allocate(l(ngrp), stat = istat)
      allocate(corr(ngrp), stat = istat)
-     allocate(shell(ngrp), stat = istat)
      allocate(ndim(ngrp), stat = istat)
 
 ! check the status
@@ -236,10 +236,10 @@
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
+     shell = 's'
      site = 0
      l = 0
      corr = .false.
-     shell = 's'
      ndim = 0
 
      return
