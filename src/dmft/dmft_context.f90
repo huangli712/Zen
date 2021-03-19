@@ -444,6 +444,12 @@
   subroutine cat_free_lattice()
      implicit none
 
+     if ( allocated(sorts) ) deallocate(sorts)
+     if ( allocated(atoms) ) deallocate(atoms)
+     if ( allocated(sortn) ) deallocate(sortn)
+     if ( allocated(lvect) ) deallocate(lvect)
+     if ( allocated(coord) ) deallocate(coord)
+
      return
   end subroutine cat_free_lattice
 
