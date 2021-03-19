@@ -163,7 +163,7 @@
      use constants, only : dp
      use constants, only : zero, czero
 
-     use control, only : ngrp, nwnd
+     use control, only : nsite, ngrp, nwnd
      use control, only : nband, nkpt, nspin
      use control, only : natom, nsort
      use control, only : mfreq, nfreq
