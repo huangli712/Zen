@@ -482,6 +482,9 @@
   subroutine cat_free_eigen()
      implicit none
 
+     if ( allocated(enk)    ) deallocate(enk)
+     if ( allocated(occupy) ) deallocate(occupy)
+
      return
   end subroutine cat_free_eigen
 
