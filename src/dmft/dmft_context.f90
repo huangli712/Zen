@@ -253,9 +253,9 @@
 
 ! allocate memory
      allocate(shell(ngrp), stat = istat)
+     allocate(corr(ngrp), stat = istat)
      allocate(site(ngrp), stat = istat)
      allocate(l(ngrp), stat = istat)
-     allocate(corr(ngrp), stat = istat)
      allocate(ndim(ngrp), stat = istat)
 
 ! check the status
@@ -265,9 +265,9 @@
 
 ! initialize them
      shell = 's'
+     corr = .false.
      site = 0
      l = 0
-     corr = .false.
      ndim = 0
 
      return
@@ -470,9 +470,9 @@
      implicit none
 
      if ( allocated(shell) ) deallocate(shell)
+     if ( allocated(corr)  ) deallocate(corr)
      if ( allocated(site)  ) deallocate(site)
      if ( allocated(l)     ) deallocate(l)
-     if ( allocated(corr)  ) deallocate(corr)
      if ( allocated(ndim)  ) deallocate(ndim)
 
      return
