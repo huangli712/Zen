@@ -1,12 +1,12 @@
 !!!-----------------------------------------------------------------------
 !!! project : jacaranda
-!!! program : 
+!!! program :
 !!! source  : dmft_stream.f90
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
 !!!           03/17/2021 by li huang (last modified)
-!!! purpose : 
+!!! purpose :
 !!! status  : unstable
 !!! comment :
 !!!-----------------------------------------------------------------------
@@ -104,7 +104,7 @@
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
 
-     return 
+     return
   end subroutine dmft_setup_param
 
   subroutine dmft_alloc_array()

@@ -6,7 +6,7 @@
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
 !!!           03/18/2021 by li huang (last modified)
-!!! purpose : 
+!!! purpose :
 !!! status  : unstable
 !!! comment :
 !!!-----------------------------------------------------------------------

@@ -16,8 +16,8 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           03/18/2021 by li huang (last modified)
-!!! purpose : 
+!!!           03/19/2021 by li huang (last modified)
+!!! purpose :
 !!! status  : unstable
 !!! comment :
 !!!-----------------------------------------------------------------------
@@ -29,10 +29,10 @@
      implicit none
 
      integer, public, save :: max_ndim
+     character(len=4), public, save, allocatable :: shell(:)
      integer, public, save, allocatable :: site(:)
      integer, public, save, allocatable :: l(:)
      logical, public, save, allocatable :: corr(:)
-     character(len=4), public, save, allocatable :: shell(:)
      integer, public, save, allocatable :: ndim(:)
 
   end module dmft_group
@@ -134,6 +134,10 @@
   module dmft_sigma
      implicit none
 
+     complex(dp), public, save, allocatable :: sigdc
+     complex(dp), public, save, allocatable :: sig_l
+     complex(dp), public, save, allocatable :: sig_k
+
   end module dmft_sigma
 
 !!
@@ -170,7 +174,7 @@
      use dmft_eigen
      use dmft_projs
      use dmft_fmesh
-     
+     use dmft_sigma
 
      implicit none
 
@@ -353,7 +357,7 @@
 ! initialize them
      enk = zero
      occupy = zero
-     
+
      return
   end subroutine cat_alloc_eigen
 
@@ -403,12 +407,18 @@
 !!>>> deallocate memory subroutines                                    <<<
 !!========================================================================
 
+!!
+!! @sub cat_free_group
+!!
   subroutine cat_free_group()
      implicit none
 
      return
   end subroutine cat_free_group
 
+!!
+!! @sub cat_free_window
+!!
   subroutine cat_free_window()
      implicit none
 
