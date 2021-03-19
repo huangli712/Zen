@@ -132,6 +132,8 @@
 !! @mod dmft_sigma
 !!
   module dmft_sigma
+     use constants, only : dp
+
      implicit none
 
      complex(dp), public, save, allocatable :: sigdc(:,:)
