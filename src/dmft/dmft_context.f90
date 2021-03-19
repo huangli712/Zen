@@ -198,6 +198,7 @@
      public :: cat_alloc_eigen
      public :: cat_alloc_projs
      public :: cat_alloc_fmesh
+     public :: cat_alloc_sigma
 
 ! declaration of module procedures: deallocate memory
      public :: cat_free_group
@@ -208,6 +209,7 @@
      public :: cat_free_eigen
      public :: cat_free_projs
      public :: cat_free_fmesh
+     public :: cat_free_sigma
 
   contains ! encapsulated functionality
 
@@ -460,5 +462,11 @@
 
      return
   end subroutine cat_free_fmesh
+
+  subroutine cat_free_sigma()
+     implicit none
+
+     return
+  end subroutine cat_free_sigma
 
   end module context
