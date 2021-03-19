@@ -25,14 +25,39 @@
 !!
 !! @mod dmft_group
 !!
+!! specify the traits of each group of projectors
+!!
   module dmft_group
      implicit none
 
+!!
+!! @var max_ndim
+!!
      integer, public, save :: max_ndim
+
+!!
+!! @var shell
+!!
      character(len=4), public, save, allocatable :: shell(:)
-     integer, public, save, allocatable :: site(:)
-     integer, public, save, allocatable :: l(:)
+
+!!
+!! @var corr
+!!
      logical, public, save, allocatable :: corr(:)
+
+!!
+!! @var site
+!!
+     integer, public, save, allocatable :: site(:)
+
+!!
+!! @var l
+!!
+     integer, public, save, allocatable :: l(:)
+
+!!
+!! @var ndim
+!!
      integer, public, save, allocatable :: ndim(:)
 
   end module dmft_group
