@@ -471,6 +471,8 @@
   subroutine cat_free_tetra()
      implicit none
 
+     if ( allocated(tetra) ) deallocate(tetra)
+
      return
   end subroutine cat_free_tetra
 
