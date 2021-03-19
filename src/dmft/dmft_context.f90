@@ -430,6 +430,11 @@
   subroutine cat_free_window()
      implicit none
 
+     if ( allocated(bmin) ) deallocate(bmin)
+     if ( allocated(bmax) ) deallocate(bmax)
+     if ( allocated(nbnd) ) deallocate(nbnd)
+     if ( allocated(kwin) ) deallocate(kwin)
+
      return
   end subroutine cat_free_window
 
