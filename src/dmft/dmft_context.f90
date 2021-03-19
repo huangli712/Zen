@@ -427,24 +427,36 @@
      return
   end subroutine cat_free_window
 
+!!
+!! @sub cat_free_lattice
+!!
   subroutine cat_free_lattice()
      implicit none
 
      return
   end subroutine cat_free_lattice
 
+!!
+!! @sub cat_free_bzone
+!!
   subroutine cat_free_bzone()
      implicit none
 
      return
   end subroutine cat_free_bzone
 
+!!
+!! @sub cat_free_tetra
+!!
   subroutine cat_free_tetra()
      implicit none
 
      return
   end subroutine cat_free_tetra
 
+!!
+!! @sub cat_free_eigen
+!!
   subroutine cat_free_eigen()
      implicit none
 
