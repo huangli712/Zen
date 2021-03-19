@@ -494,6 +494,8 @@
   subroutine cat_free_projs()
      implicit none
 
+     if ( allocated(psichi) ) deallocate(psichi)
+
      return
   end subroutine cat_free_projs
 
