@@ -415,6 +415,12 @@
   subroutine cat_free_group()
      implicit none
 
+     if ( allocated(shell) ) deallocate(shell)
+     if ( allocated(site)  ) deallocate(site)
+     if ( allocated(l)     ) deallocate(l)
+     if ( allocated(corr)  ) deallocate(corr)
+     if ( allocated(ndim)  ) deallocate(ndim)
+
      return
   end subroutine cat_free_group
 
