@@ -405,6 +405,15 @@
      return
   end subroutine cat_alloc_fmesh
 
+!!
+!! @sub cat_alloc_sigma
+!!
+  subroutine cat_alloc_sigma()
+     implicit none
+
+     return
+  end subroutine cat_alloc_sigma
+
 !!========================================================================
 !!>>> deallocate memory subroutines                                    <<<
 !!========================================================================
