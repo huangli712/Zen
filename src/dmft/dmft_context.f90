@@ -505,6 +505,9 @@
   subroutine cat_free_fmesh()
      implicit none
 
+     if ( allocated(imesh) ) deallocate(imesh)
+     if ( allocated(rmesh) ) deallocate(rmesh)
+
      return
   end subroutine cat_free_fmesh
 
