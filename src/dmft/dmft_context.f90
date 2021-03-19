@@ -451,18 +451,27 @@
      return
   end subroutine cat_free_eigen
 
+!!
+!! @sub cat_free_projs
+!!
   subroutine cat_free_projs()
      implicit none
 
      return
   end subroutine cat_free_projs
 
+!!
+!! @sub cat_free_fmesh
+!!
   subroutine cat_free_fmesh()
      implicit none
 
      return
   end subroutine cat_free_fmesh
 
+!!
+!! @sub cat_free_sigma
+!!
   subroutine cat_free_sigma()
      implicit none
 
