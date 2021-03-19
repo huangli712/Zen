@@ -459,6 +459,9 @@
   subroutine cat_free_bzone()
      implicit none
 
+     if ( allocated(kmesh)  ) deallocate(kmesh)
+     if ( allocated(weight) ) deallocate(weight)
+
      return
   end subroutine cat_free_bzone
 
