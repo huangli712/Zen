@@ -546,6 +546,11 @@
   subroutine cat_free_sigma()
      implicit none
 
+     if ( allocated(sigdc) ) deallocate(sigdc)
+     if ( allocated(sig_i) ) deallocate(sig_i)
+     if ( allocated(sig_r) ) deallocate(sig_r)
+     if ( allocated(sig_k) ) deallocate(sig_k)
+
      return
   end subroutine cat_free_sigma
 
