@@ -134,9 +134,10 @@
   module dmft_sigma
      implicit none
 
-     complex(dp), public, save, allocatable :: sigdc
-     complex(dp), public, save, allocatable :: sig_l
-     complex(dp), public, save, allocatable :: sig_k
+     complex(dp), public, save, allocatable :: sigdc(:,:)
+     complex(dp), public, save, allocatable :: sig_i(:,:,:)
+     complex(dp), public, save, allocatable :: sig_r(:,:,:)
+     complex(dp), public, save, allocatable :: sig_k(:,:,:)
 
   end module dmft_sigma
 
@@ -410,6 +411,23 @@
 !!
   subroutine cat_alloc_sigma()
      implicit none
+
+! allocate memory
+     allocate(sigdc(max_ndim,nsite), stat = istat)
+     allocate(sig_i(mfreq,max_ndim,nsite), stat = istat)
+     allocate(sig_r(nfreq,max_ndim,nsite), stat = istat)
+     allocate(sig_k(nband,nkpt,nspin), stat = istat)
+
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_sigma','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
+     sigdc = czero
+     sig_i = czero
+     sig_r = czero
+     sig_k = czero
 
      return
   end subroutine cat_alloc_sigma
