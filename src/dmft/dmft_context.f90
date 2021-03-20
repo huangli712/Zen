@@ -65,6 +65,8 @@
 !!
 !! @mod dmft_window
 !!
+!! specify the band windows of each group of projectors
+!!
   module dmft_window
      implicit none
 
