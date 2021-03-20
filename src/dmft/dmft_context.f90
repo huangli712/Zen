@@ -70,10 +70,29 @@
   module dmft_window
      implicit none
 
+!!
+!! @var max_nbnd
+!!
      integer, public, save :: max_nbnd
+
+!!
+!! @var bmin
+!!
      integer, public, save, allocatable :: bmin(:)
+
+!!
+!! @var bmax
+!!
      integer, public, save, allocatable :: bmax(:)
+
+!!
+!! @var nbnd
+!!
      integer, public, save, allocatable :: nbnd(:)
+
+!!
+!! @var kwin
+!!
      integer, public, save, allocatable :: kwin(:,:,:,:)
 
   end module dmft_window
