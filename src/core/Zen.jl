@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/17
+# Last modified: 2021/03/21
 #
 
 """
@@ -434,6 +434,10 @@ export vaspio_eigen
 export vaspio_projs
 export vaspio_fermi
 export vaspio_charge
+
+include("dmft.jl")
+include("solver.jl")
+include("sigma.jl")
 
 #
 # tetra.jl
