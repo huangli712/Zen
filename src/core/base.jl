@@ -785,6 +785,11 @@ function dcount_init(it::IterInfo, lr::Logger)
     # Enter dmft1 directory
     cd("dmft1")
 
+    prompt(lr.log, "dcount")
+    prompt("Sigma : dcount")
+    println("  Init Sigma")
+    sigma_init(it)
+
     # Enter the parent directory
     cd("..")
 end
@@ -796,6 +801,9 @@ function dcount_run(it::IterInfo)
     # Enter dmft1 directory
     cd("dmft1")
 
+    println("  Evaluate dcount")
+    sigma_run(it)
+
     # Enter the parent directory
     cd("..")
 end
@@ -806,6 +814,10 @@ end
 function dcount_save(it::IterInfo)
     # Enter dmft1 directory
     cd("dmft1")
+
+    # Save the essential files
+    println("  Backup Sigma")
+    sigma_save(it)
 
     # Enter the parent directory
     cd("..")
