@@ -467,9 +467,35 @@ export irio_projs
 export irio_fermi
 export irio_charge
 
+#
+# dmft.jl
+#
+# Summary:
+#
+# Wrapper for dynamical mean-field theory engine.
+#
 include("dmft.jl")
+#
+
+#
+# solver.jl
+#
+# Summary:
+#
+# Wrapper for quantum impurity solvers.
+#
 include("solver.jl")
+#
+
+#
+# sigma.jl
+#
+# Summary:
+#
+# Tools for tackling the self-energy functions.
+#
 include("sigma.jl")
+#
 
 """
     __init__()
