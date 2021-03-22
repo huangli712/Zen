@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/21
+# Last modified: 2021/03/22
 #
 
 """
@@ -99,42 +99,6 @@ export __RELEASE__
 export __AUTHORS__
 
 #
-# types.jl
-#
-# Summary:
-#
-# Define some dicts and structs, which store the config parameters or
-# represent some essential data structures.
-#
-# Members:
-#
-# PCASE    -> Dict for case.
-# PDFT     -> Dict for DFT engine.
-# PDMFT    -> Dict for DMFT engine.
-# PIMP     -> Dict for quantum impurity problems.
-# PSOLVER  -> Dict for quantum impurity solvers.
-# Logger   -> Struct for logger.
-# IterInfo -> Struct for DFT + DMFT iteration information.
-# Lattice  -> Struct for crystallography information.
-# PrTrait  -> Struct for projectors.
-# PrGroup  -> Struct for groups of projectors.
-# PrWindow -> Struct for band window.
-#
-include("types.jl")
-#
-export PCASE
-export PDFT
-export PDMFT
-export PIMP
-export PSOLVER
-export Logger
-export IterInfo
-export Lattice
-export PrTrait
-export PrGroup
-export PrWindow
-
-#
 # util.jl
 #
 # Summary:
@@ -187,6 +151,74 @@ export prompt
 export line_to_array
 export line_to_cmplx
 export erf
+
+#
+# tetra.jl
+#
+# Summary:
+#
+# Tools for the analytical tetrahedron method.
+#
+# Members:
+#
+# TetraWeight  -> Struct for integration weights.
+# bzint        -> Compute tetrahedron integrated weights.
+# gauss_weight -> Compute integrated weights using Gaussian broadening.
+# fermi_weight -> Compute integrated weights using Fermi-Dirac broadening.
+# tetra_weight -> Compute integrated weights for a given tetrahedron.
+# tetra_p_ek1  -> Blochl tetrahedron integration algorithm, case 1.
+# tetra_p_ek12 -> Blochl tetrahedron integration algorithm, case 2.
+# tetra_p_ek23 -> Blochl tetrahedron integration algorithm, case 3.
+# tetra_p_ek34 -> Blochl tetrahedron integration algorithm, case 4.
+# tetra_p_ek4  -> Blochl tetrahedron integration algorithm, case 5.
+#
+include("tetra.jl")
+export TetraWeight
+export bzint
+export gauss_weight
+export fermi_weight
+export tetra_weight
+export tetra_p_ek1
+export tetra_p_ek12
+export tetra_p_ek23
+export tetra_p_ek34
+export tetra_p_ek4
+
+#
+# types.jl
+#
+# Summary:
+#
+# Define some dicts and structs, which store the config parameters or
+# represent some essential data structures.
+#
+# Members:
+#
+# PCASE    -> Dict for case.
+# PDFT     -> Dict for DFT engine.
+# PDMFT    -> Dict for DMFT engine.
+# PIMP     -> Dict for quantum impurity problems.
+# PSOLVER  -> Dict for quantum impurity solvers.
+# Logger   -> Struct for logger.
+# IterInfo -> Struct for DFT + DMFT iteration information.
+# Lattice  -> Struct for crystallography information.
+# PrTrait  -> Struct for projectors.
+# PrGroup  -> Struct for groups of projectors.
+# PrWindow -> Struct for band window.
+#
+include("types.jl")
+#
+export PCASE
+export PDFT
+export PDMFT
+export PIMP
+export PSOLVER
+export Logger
+export IterInfo
+export Lattice
+export PrTrait
+export PrGroup
+export PrWindow
 
 #
 # config.jl
@@ -298,39 +330,52 @@ export solver_run
 export solver_save
 
 #
-# ir.jl
+# vasp.jl
 #
 # Summary:
 #
-# Tools for the intermediate representation format (adaptor).
+# Tools for the vasp software package (adaptor). It provide a lot of
+# functions to deal with the vasp-related files.
 #
 # Members:
 #
-# ir_adaptor   -> Adaptor support.
-# ir_save      -> Save the output files by the adaptor.
-# irio_params  -> Write key parameters extracted from Kohn-Sham data.
-# irio_groups  -> Write PrGroup and PrWindow.
-# irio_lattice -> Write lattice information.
-# irio_kmesh   -> Write kmesh.
-# irio_tetra   -> Write tetrahedra.
-# irio_eigen   -> Write eigenvalues.
-# irio_projs   -> Write projectors.
-# irio_fermi   -> Write fermi level.
-# irio_charge  -> Write charge density.
+# vasp_adaptor   -> Adaptor support.
+# vasp_init      -> Prepare vasp's input files.
+# vasp_run       -> Execute vasp program.
+# vasp_save      -> Backup vasp's output files.
+# vasp_incar     -> Make essential input file (INCAR).
+# vasp_kpoints   -> Make essential input file (KPOINTS).
+# vasp_files     -> Check essential output files.
+# vaspio_nband   -> Determine number of bands.
+# vaspio_valence -> Read number of valence electrons per sorts.
+# vaspio_procar  -> Read PROCAR file.
+# vaspio_lattice -> Read lattice information.
+# vaspio_kmesh   -> Read kmesh.
+# vaspio_tetra   -> Read tetrahedra.
+# vaspio_eigen   -> Read eigenvalues.
+# vaspio_projs   -> Read projectors.
+# vaspio_fermi   -> Read fermi level.
+# vaspio_charge  -> Read charge density.
 #
-include("ir.jl")
+include("vasp.jl")
 #
-export ir_adaptor
-export ir_save
-export irio_params
-export irio_groups
-export irio_lattice
-export irio_kmesh
-export irio_tetra
-export irio_eigen
-export irio_projs
-export irio_fermi
-export irio_charge
+export vasp_adaptor
+export vasp_init
+export vasp_run
+export vasp_save
+export vasp_incar
+export vasp_kpoints
+export vasp_files
+export vaspio_nband
+export vaspio_valence
+export vaspio_procar
+export vaspio_lattice
+export vaspio_kmesh
+export vaspio_tetra
+export vaspio_eigen
+export vaspio_projs
+export vaspio_fermi
+export vaspio_charge
 
 #
 # plo.jl
@@ -388,88 +433,43 @@ export view_hamk
 export view_dos
 
 #
-# vasp.jl
+# ir.jl
 #
 # Summary:
 #
-# Tools for the vasp software package (adaptor). It provide a lot of
-# functions to deal with the vasp-related files.
+# Tools for the intermediate representation format (adaptor).
 #
 # Members:
 #
-# vasp_adaptor   -> Adaptor support.
-# vasp_init      -> Prepare vasp's input files.
-# vasp_run       -> Execute vasp program.
-# vasp_save      -> Backup vasp's output files.
-# vasp_incar     -> Make essential input file (INCAR).
-# vasp_kpoints   -> Make essential input file (KPOINTS).
-# vasp_files     -> Check essential output files.
-# vaspio_nband   -> Determine number of bands.
-# vaspio_valence -> Read number of valence electrons per sorts.
-# vaspio_procar  -> Read PROCAR file.
-# vaspio_lattice -> Read lattice information.
-# vaspio_kmesh   -> Read kmesh.
-# vaspio_tetra   -> Read tetrahedra.
-# vaspio_eigen   -> Read eigenvalues.
-# vaspio_projs   -> Read projectors.
-# vaspio_fermi   -> Read fermi level.
-# vaspio_charge  -> Read charge density.
+# ir_adaptor   -> Adaptor support.
+# ir_save      -> Save the output files by the adaptor.
+# irio_params  -> Write key parameters extracted from Kohn-Sham data.
+# irio_groups  -> Write PrGroup and PrWindow.
+# irio_lattice -> Write lattice information.
+# irio_kmesh   -> Write kmesh.
+# irio_tetra   -> Write tetrahedra.
+# irio_eigen   -> Write eigenvalues.
+# irio_projs   -> Write projectors.
+# irio_fermi   -> Write fermi level.
+# irio_charge  -> Write charge density.
 #
-include("vasp.jl")
+include("ir.jl")
 #
-export vasp_adaptor
-export vasp_init
-export vasp_run
-export vasp_save
-export vasp_incar
-export vasp_kpoints
-export vasp_files
-export vaspio_nband
-export vaspio_valence
-export vaspio_procar
-export vaspio_lattice
-export vaspio_kmesh
-export vaspio_tetra
-export vaspio_eigen
-export vaspio_projs
-export vaspio_fermi
-export vaspio_charge
+export ir_adaptor
+export ir_save
+export irio_params
+export irio_groups
+export irio_lattice
+export irio_kmesh
+export irio_tetra
+export irio_eigen
+export irio_projs
+export irio_fermi
+export irio_charge
 
 include("dmft.jl")
 include("solver.jl")
 include("sigma.jl")
-
-#
-# tetra.jl
-#
-# Summary:
-#
-# Tools for the analytical tetrahedron method (adaptor).
-#
-# Members:
-#
-# TetraWeight  -> Struct for integration weights.
-# bzint        -> Compute tetrahedron integrated weights.
-# gauss_weight -> Compute integrated weights using Gaussian broadening.
-# fermi_weight -> Compute integrated weights using Fermi-Dirac broadening.
-# tetra_weight -> Compute integrated weights for a given tetrahedron.
-# tetra_p_ek1  -> Blochl tetrahedron integration algorithm, case 1.
-# tetra_p_ek12 -> Blochl tetrahedron integration algorithm, case 2.
-# tetra_p_ek23 -> Blochl tetrahedron integration algorithm, case 3.
-# tetra_p_ek34 -> Blochl tetrahedron integration algorithm, case 4.
-# tetra_p_ek4  -> Blochl tetrahedron integration algorithm, case 5.
-#
-include("tetra.jl")
-export TetraWeight
-export bzint
-export gauss_weight
-export fermi_weight
-export tetra_weight
-export tetra_p_ek1
-export tetra_p_ek12
-export tetra_p_ek23
-export tetra_p_ek34
-export tetra_p_ek4
 
 """
     __init__()
