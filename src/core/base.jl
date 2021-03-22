@@ -778,11 +778,35 @@ function solver_save(it::IterInfo)
     end
 end
 
+"""
+    dcount_init(it::IterInfo, lr::Logger)
+"""
 function dcount_init(it::IterInfo, lr::Logger)
+    # Enter dmft1 directory
+    cd("dmft1")
+
+    # Enter the parent directory
+    cd("..")
 end
 
+"""
+    dcount_run(it::IterInfo)
+"""
 function dcount_run(it::IterInfo)
+    # Enter dmft1 directory
+    cd("dmft1")
+
+    # Enter the parent directory
+    cd("..")
 end
 
+"""
+    dcount_save(it::IterInfo)
+"""
 function dcount_save(it::IterInfo)
+    # Enter dmft1 directory
+    cd("dmft1")
+
+    # Enter the parent directory
+    cd("..")
 end
