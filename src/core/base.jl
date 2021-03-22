@@ -63,7 +63,6 @@ end
 Finalize the DFT + DMFT calculations.
 """
 function final()
-    # TODO
     sorry()
 end
 
@@ -164,47 +163,50 @@ function cycle1()
 #
 # Now everything is ready. We are going to solve the DMFT equation iterately.
 #
-    exit(-1)
 
     for iter = 1:get_m("niter")
-        # C04: Perform DMFT calculation
+        # C04:
         #
-        # C04.1: Prepare and check essential files for the DMFT engine (dmft1)
+        #
+
+        # C05: Perform DMFT calculation
+        #
+        # C05.1: Prepare and check essential files for the DMFT engine (dmft1)
         dmft_init(it, lr, 1)
         #
-        # C04.2: Launch the DMFT engine (dmft1)
+        # C05.2: Launch the DMFT engine (dmft1)
         dmft_run(it, 1)
         #
-        # C04.3: Backup the output files of the DMFT engine (dmft1)
+        # C05.3: Backup the output files of the DMFT engine (dmft1)
         dmft_save(it, 1)
         #
-        # C04.4: Monitor the status
+        # C05.4: Monitor the status
         monitor(true)
 
         #
-        # C05: Split and distribute the data
+        # C06: Split and distribute the data
         #
 
-        # C06: Solve the quantum impurity problems
+        # C07: Solve the quantum impurity problems
         #
-        # C06.1: Prepare and check essential files for the quantum impurity solver
+        # C07.1: Prepare and check essential files for the quantum impurity solver
         solver_init(it, lr)
         #
-        # C06.2: Launch the quantum impurity solver
+        # C07.2: Launch the quantum impurity solver
         solver_run(it)
         #
-        # C06.3: Backup the output files of the quantum impurity solver
+        # C07.3: Backup the output files of the quantum impurity solver
         solver_save(it)
         #
-        # C06.4: Monitor the status
+        # C07.4: Monitor the status
         monitor(true)
 
         #
-        # C07: Gather and combine the data
+        # C08: Gather and combine the data
         #
 
         #
-        # C08: Mixer
+        # C09: Mixer
         #
     end
 
@@ -405,6 +407,10 @@ function adaptor_run(it::IterInfo)
 
         @case "wannier"
             println("  Launch WANNIER Adaptor")
+            sorry()
+            break
+
+        @default
             sorry()
             break
     end
@@ -672,6 +678,10 @@ function solver_init(it::IterInfo, lr::Logger)
                 prompt(lr.log, "norg")
                 sorry()
                 break
+
+            @default
+                sorry()
+                break
         end
 
         # Enter the parent directory
@@ -712,6 +722,10 @@ function solver_run(it::IterInfo)
             @case "norg"
                 sorry()
                 break
+
+            @default
+                sorry()
+                break
         end
 
         # Enter the parent directory
@@ -750,6 +764,10 @@ function solver_save(it::IterInfo)
                 break
 
             @case "norg"
+                sorry()
+                break
+
+            @default
                 sorry()
                 break
         end
