@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/22
+# Last modified: 2021/03/23
 #
 
 #
@@ -776,4 +776,13 @@ function solver_save(it::IterInfo)
         cd("..")
 
     end
+end
+
+function dcount_init(it::IterInfo, lr::Logger)
+end
+
+function dcount_run(it::IterInfo)
+end
+
+function dcount_save(it::IterInfo)
 end
