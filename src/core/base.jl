@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/04
+# Last modified: 2021/03/22
 #
 
 #
@@ -20,7 +20,7 @@ See also: [`go`](@ref).
 """
 function ready()
     # R1: Check the input files
-    query_inps()
+    query_inps(get_d("engine"))
 
     # R2: Prepare the working directories
     make_trees()
