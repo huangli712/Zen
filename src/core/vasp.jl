@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/15
+# Last modified: 2021/03/22
 #
 
 #
@@ -102,7 +102,7 @@ See also: [`vasp_init`](@ref), [`vasp_save`](@ref).
 """
 function vasp_run(it::IterInfo)
     # Get the home directory of vasp
-    dft_home = query_dft()
+    dft_home = query_dft("vasp")
 
     # Determine mpi prefix (whether the vasp is executed sequentially)
     mpi_prefix = inp_toml("../MPI.toml", "dft", false)
