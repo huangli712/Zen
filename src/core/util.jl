@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/11
+# Last modified: 2021/03/22
 #
 
 """
@@ -168,11 +168,13 @@ function query_case()
 end
 
 """
-    query_inps()
+    query_inps(engine::String)
 
 Check whether the essential input files exist.
+
+See also: [`query_inps`](@ref).
 """
-function query_inps()
+function query_inps(engine::String)
 
 #
 # Remarks:
@@ -183,12 +185,16 @@ function query_inps()
 # As for the INCAR and KPOINTS, they will be generated automatically.
 #
 
-    if get_d("engine") === "vasp"
-        if !isfile("POSCAR") || !isfile("POTCAR")
-            error("Please provide both POSCAR and POTCAR files")
-        end
-    else
-        sorry()
+    @cswitch engine begin
+        @case "vasp"
+            if !isfile("POSCAR") || !isfile("POTCAR")
+                error("Please provide both POSCAR and POTCAR files")
+            end
+            break
+
+        @default
+            sorry()
+            break
     end
 end
 
