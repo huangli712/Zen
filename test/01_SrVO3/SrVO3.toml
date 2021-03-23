@@ -17,6 +17,7 @@ window = [-1.4, 6.0]
 mode = 1
 axis = 1
 niter = 60
+nmesh = 8193
 dcount = "fll1"
 beta = 40.0
 mixer = 0.5
