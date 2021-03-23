@@ -492,10 +492,21 @@ include("solver.jl")
 #
 # Summary:
 #
-# Tools for tackling the self-energy functions.
+# Tools for tackling with the self-energy functions.
+#
+# Members:
+#
+# sigma_reset  -> Create initial self-energy functions.
+# sigma_dcount -> Calculate double counting term.
+# sigma_split  -> Split the self-energy functions or hybridization functions.
+# sigma_gather -> Gather and combine the self-energy functions.
 #
 include("sigma.jl")
 #
+export sigma_reset
+export sigma_dcount
+export sigma_split
+export sigma_gather
 
 """
     __init__()
