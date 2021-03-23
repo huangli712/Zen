@@ -8,8 +8,10 @@
 #
 
 """
-    sigma_reset()
+    sigma_reset(lr::Logger)
 """
-function sigma_reset()
+function sigma_reset(lr::Logger)
+    prompt(lr.log, "sigma::reset")
+    prompt("Sigma : Reset")
     println("here")
 end
