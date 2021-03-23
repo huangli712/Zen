@@ -80,9 +80,7 @@ function cycle1()
     it = IterInfo()
 
     # C00: Create Logger struct
-    lr = Logger()
-    lr.log = open(query_case() * ".log", "a")
-    lr.cycle = open(query_case() * ".cycle", "a")
+    lr = Logger(query_case())
 
 #
 # Remarks 1:
