@@ -158,6 +158,10 @@ function cycle1()
     # C03.4: Monitor the status
     monitor(true)
 
+    # C04: Generate initial self-energy functions  
+    sigma_reset()
+    exit(-1)
+
 #
 # Remarks 3:
 #
@@ -165,45 +169,42 @@ function cycle1()
 #
 
     for iter = 1:get_m("niter")
-        # C04:
-        #
-        #
+        # C05: Tackle with the double counting term
+        sigma_dcount()
 
-        # C05: Perform DMFT calculation
+        # C06: Perform DMFT calculation
         #
-        # C05.1: Prepare and check essential files for the DMFT engine (dmft1)
+        # C06.1: Prepare and check essential files for the DMFT engine (dmft1)
         dmft_init(it, lr, 1)
         #
-        # C05.2: Launch the DMFT engine (dmft1)
+        # C06.2: Launch the DMFT engine (dmft1)
         dmft_run(it, 1)
         #
-        # C05.3: Backup the output files of the DMFT engine (dmft1)
+        # C06.3: Backup the output files of the DMFT engine (dmft1)
         dmft_save(it, 1)
         #
-        # C05.4: Monitor the status
+        # C06.4: Monitor the status
         monitor(true)
 
-        #
-        # C06: Split and distribute the data
-        #
+        # C07: Split and distribute the data
+        sigma_split()
 
-        # C07: Solve the quantum impurity problems
+        # C08: Solve the quantum impurity problems
         #
-        # C07.1: Prepare and check essential files for the quantum impurity solver
+        # C08.1: Prepare and check essential files for the quantum impurity solver
         solver_init(it, lr)
         #
-        # C07.2: Launch the quantum impurity solver
+        # C08.2: Launch the quantum impurity solver
         solver_run(it)
         #
-        # C07.3: Backup the output files of the quantum impurity solver
+        # C08.3: Backup the output files of the quantum impurity solver
         solver_save(it)
         #
-        # C07.4: Monitor the status
+        # C08.4: Monitor the status
         monitor(true)
 
-        #
-        # C08: Gather and combine the data
-        #
+        # C09: Gather and combine the data
+        sigma_gather()
 
         #
         # C09: Mixer
