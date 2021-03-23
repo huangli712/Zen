@@ -15,15 +15,20 @@ function sigma_reset(lr::Logger)
     prompt("Sigma : Reset")
 
     # Create frequency mesh
-    fmesh = zeros(F64, get_m("nmesh"))
-    if get_m("axis") === 1 # Imaginary axis
+    axis = get_m("axis")
+    nmesh = get_m("nmesh")
+    beta = get_m("beta")
+    fmesh = zeros(F64, nmesh)
+    if axis === 1 # Imaginary axis
         for i = 1:nmesh
-            fmesh[i] = (2 * i - 1) * pi / get_m("beta")
+            fmesh[i] = (2 * i - 1) * pi / beta
         end
     else # Real axis
         sorry()
     end
-    @show fmesh
+
+    # Create self-energy functions
+    # sigma = zeros(C64, nmesh, nsite)
 end
 
 function sigma_dcount(lr::Logger)
