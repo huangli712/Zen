@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/23
+# Last modified: 2021/03/24
 #
 
 #
@@ -403,7 +403,7 @@ function adaptor_run(it::IterInfo)
     @cswitch projtype begin
         @case "plo"
             println("  Launch PLO Adaptor")
-            plo_adaptor(DFTData, true)
+            plo_adaptor(DFTData, false) # Without debug
             break
 
         @case "wannier"
@@ -447,6 +447,7 @@ function adaptor_save(it::IterInfo)
     cd("dft")
 
     # Save the essential files
+    println("  Backup IR Adaptor's output data\n")
     ir_save(it)
 
     # Enter the parent directory
