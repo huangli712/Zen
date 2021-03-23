@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/04
+# Last modified: 2021/03/23
 #
 
 #
@@ -201,6 +201,7 @@ function chk_dict()
     @assert get_m("mode") in (1, 2)
     @assert get_m("axis") in (1, 2)
     @assert get_m("niter") > 0
+    @assert get_m("nmesh") > 0
     @assert get_m("dcount") in ("fll1", "fll2", "amf", "exact")
     @assert get_m("beta") >= 0.0
     @assert get_m("mixer") >= 0.0 && get_m("mixer") <= 1.0
@@ -322,6 +323,7 @@ function cat_m()
     println("  mode     -> ", str_m("mode"))
     println("  axis     -> ", str_m("axis"))
     println("  niter    -> ", str_m("niter"))
+    println("  nmesh    -> ", str_m("nmesh"))
     println("  dcount   -> ", str_m("dcount"))
     println("  beta     -> ", str_m("beta"))
     println("  mixer    -> ", str_m("mixer"))

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/10
+# Last modified: 2021/03/23
 #
 
 #
@@ -67,6 +67,7 @@ const PDMFT = Dict{String,Array{Any,1}}(
           "mode"     => [missing, 1, :I64   , "Scheme of dynamical mean-field theory calculations"],
           "axis"     => [missing, 1, :I64   , "Imaginary-time axis or real-frequency axis"],
           "niter"    => [missing, 1, :I64   , "Maximum number of all iterations"],
+          "nmesh"    => [missing, 1, :I64   , "Number of frequency points"],
           "dcount"   => [missing, 1, :String, "Scheme of double counting term"],
           "beta"     => [missing, 1, :F64   , "Inverse system temperature"],
           "mixer"    => [missing, 1, :F64   , "Mixing factor"],
