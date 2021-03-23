@@ -11,7 +11,7 @@
     sigma_init(it::IterInfo)
 """
 function sigma_init(it::IterInfo)
-    if it.
+    #if it.
 end
 
 """
