@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/23
+# Last modified: 2021/03/24
 #
 
 #
@@ -127,12 +127,8 @@ cycle -> IOStream for case.cycle file.
 See also: [`IterInfo`](@ref).
 """
 mutable struct Logger
-    # Members
     log   :: IOStream
     cycle :: IOStream
-
-    # Default constructor
-    Logger() = new()
 end
 
 """
@@ -274,6 +270,28 @@ end
 #
 # Customized Constructors
 #
+
+"""
+    Logger()
+
+Outer constructor for Logger struct.
+"""
+function Logger()
+    log = open("case.log", "a")
+    cycle = open("case.cycle", "a")
+    Logger(log, cycle)
+end
+
+"""
+    Logger(case::String)
+
+Outer constructor for Logger struct.
+"""
+function Logger(case::String)
+    log = open("$case.log", "a")
+    cycle = open("$case.cycle", "a")
+    Logger(log, cycle)
+end
 
 """
     IterInfo(iter::I64 = 0, fermi::F64 = 0.0)
