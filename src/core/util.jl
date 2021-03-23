@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/22
+# Last modified: 2021/03/23
 #
 
 """
@@ -253,7 +253,7 @@ function query_dft(engine::String)
         # We have to setup the environment variable VASP_HOME
         @case "vasp"
             if haskey(ENV, "VASP_HOME")
-                ENV["VASP_HOME"]
+                return ENV["VASP_HOME"]
             else
                 error("VASP_HOME is undefined")
             end
