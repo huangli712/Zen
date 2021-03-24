@@ -75,6 +75,8 @@ function sigma_reset(lr::Logger)
         println(fout, "# File: sigma.bare")
         println(fout, "# Data: bare self-energy functions")
         println(fout)
+        println(fout, "axis  -> $axis")
+        println(fout, "beta  -> $beta")
         println(fout, "nsite -> $nsite") 
         println(fout, "nmesh -> $nmesh")
         println(fout, "nspin -> $nspin")
@@ -89,6 +91,7 @@ function sigma_reset(lr::Logger)
             for s = 1:nspin
                 println(fout, "# site: $i spin: $s")
                 for m = 1:nmesh
+                    @printf(fout, "%16.12f", fmesh[m])
                     foreach(x -> @printf(fout, "%16.12f %16.12f", real(x), imag(x)), SA[i][m, :, s])
                     println(fout)
                 end
