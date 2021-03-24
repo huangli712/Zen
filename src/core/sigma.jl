@@ -111,6 +111,9 @@ them to `sigma.dc`.
 See also: [`sigma_reset`](@ref).
 """
 function sigma_dcount(lr::Logger)
+    # Print the log
+    prompt(lr.log, "sigma::dcount")
+    prompt("Sigma : Dcount")
 end
 
 """
@@ -122,6 +125,9 @@ distribute them into the `impurity.i` folder.
 See also: [`sigma_gather`](@ref).
 """
 function sigma_split(lr::Logger)
+    # Print the log
+    prompt(lr.log, "sigma::split")
+    prompt("Sigma : Split")
 end
 
 """
@@ -133,4 +139,7 @@ Gather the self-energy functions (or similar local functions) from the
 See also: [`sigma_split`](@ref).
 """
 function sigma_gather(lr::Logger)
+    # Print the log
+    prompt(lr.log, "sigma::gather")
+    prompt("Sigma : Gather")
 end
