@@ -272,24 +272,16 @@ end
 #
 
 """
-    Logger()
+    Logger(case::String = "case")
 
 Outer constructor for Logger struct.
 """
-function Logger()
-    log = open("case.log", "a")
-    cycle = open("case.cycle", "a")
-    Logger(log, cycle)
-end
-
-"""
-    Logger(case::String)
-
-Outer constructor for Logger struct.
-"""
-function Logger(case::String)
+function Logger(case::String = "case")
+    # Open the streams for IO
     log = open("$case.log", "a")
     cycle = open("$case.cycle", "a")
+
+    # Call the default constructor
     Logger(log, cycle)
 end
 
