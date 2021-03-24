@@ -114,11 +114,23 @@ function sigma_dcount(lr::Logger)
 end
 
 """
+    sigma_split(lr::Logger)
+
+Split the hybridization functions (or similar local functions) and then
+distribute them into the `impurity.i` folder.
+
+See also: [`sigma_gather`](@ref).
 """
 function sigma_split(lr::Logger)
 end
 
 """
+    sigma_gather(lr::Logger)
+
+Gather the self-energy functions (or similar local functions) from the
+`impurity.i` folder and then combine them into a single `sigma.bare` file.
+
+See also: [`sigma_split`](@ref).
 """
 function sigma_gather(lr::Logger)
 end
