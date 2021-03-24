@@ -4,24 +4,40 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/24
+# Last modified: 2021/03/25
 #
 
 """
     sigma_reset(lr::Logger)
 
-Create initial self-energy functions and write them to `sigma.bare`. 
+Create initial self-energy functions and write them to `sigma.bare`.
 
 See also: [`sigma_dcount`](@ref).
 """
 function sigma_reset(lr::Logger)
+    # Print the log
     prompt(lr.log, "sigma::reset")
     prompt("Sigma : Reset")
 
-    # Create frequency mesh
+    # The sdim creates a mapping from shell (string) to ndim (integer).
+    # It is used to parse get_i("shell") to extract the `ndim` parameter.
+    sdim = Dict{String,I64}(
+               "s"     => 1,
+               "p"     => 3,
+               "d"     => 5,
+               "f"     => 7,
+               "d_t2g" => 3, # Only a subset of d orbitals
+               "d_eg"  => 2, # Only a subset of d orbitals
+           )
+
+    # Extract some necessary parameters
     axis = get_m("axis")
     nmesh = get_m("nmesh")
     beta = get_m("beta")
+    nsite = get_i("nsite")
+    nspin = 2
+
+    # Create frequency mesh
     fmesh = zeros(F64, nmesh)
     if axis === 1 # Imaginary axis
         for i = 1:nmesh
@@ -32,7 +48,27 @@ function sigma_reset(lr::Logger)
     end
 
     # Create self-energy functions
-    # sigma = zeros(C64, nmesh, nsite)
+    #
+    # Initialize an array for self-energy functions
+    SA = Array{C64,3}[]
+    #
+    # Go through the impurity problems
+    for i = 1:nsite
+        # Retrieve specification for impurity problem
+        str = get_i("shell")[i]
+
+        # Get the dimension of impurity problem
+        ndim = get(sdim, str, 1)
+
+        # Create a temporary array for self-energy function
+        S = zeros(C64, nmesh, ndim, nspin)
+
+        # Push S into SA to save it
+        push!(SA, S)
+    end
+
+    # Write self-energy functions to sigma.init
+
 end
 
 """
@@ -46,8 +82,12 @@ See also: [`sigma_reset`](@ref).
 function sigma_dcount(lr::Logger)
 end
 
+"""
+"""
 function sigma_split(lr::Logger)
 end
 
+"""
+"""
 function sigma_gather(lr::Logger)
 end

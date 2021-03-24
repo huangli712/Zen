@@ -118,7 +118,7 @@ function irio_params(f::String, D::Dict{Symbol,Any})
     _case = D[:latt]._case
     scale = D[:latt].scale
     nsort = D[:latt].nsort
-    natom = D[:latt].natom 
+    natom = D[:latt].natom
 
     # Extract the fermi level
     fermi = D[:fermi]

@@ -156,7 +156,7 @@ function cycle1()
     # C03.4: Monitor the status
     monitor(true)
 
-    # C04: Generate initial self-energy functions  
+    # C04: Generate initial self-energy functions
     sigma_reset(lr)
     exit(-1)
 
