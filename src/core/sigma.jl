@@ -51,6 +51,7 @@ function sigma_reset(lr::Logger)
     #
     # Initialize an array for self-energy functions
     SA = Array{C64,3}[]
+    D = I64[]
     #
     # Go through the impurity problems
     for i = 1:nsite
@@ -59,6 +60,7 @@ function sigma_reset(lr::Logger)
 
         # Get the dimension of impurity problem
         ndim = get(sdim, str, 1)
+        push!(D, ndim)
 
         # Create a temporary array for self-energy function
         S = zeros(C64, nmesh, ndim, nspin)
@@ -67,8 +69,34 @@ function sigma_reset(lr::Logger)
         push!(SA, S)
     end
 
-    # Write self-energy functions to sigma.init
+    # Write self-energy functions to sigma.bare
+    open("sigma.bare", "w") do fout
+        # Write the header
+        println(fout, "# File: sigma.bare")
+        println(fout, "# Data: bare self-energy functions")
+        println(fout)
+        println(fout, "nsite -> $nsite") 
+        println(fout, "nmesh -> $nmesh")
+        println(fout, "nspin -> $nspin")
+        for i = 1:nsite
+            println(fout, "ndim$i -> $(D[i])")
+        end
+        println(fout)
 
+        # Write the body
+        # Go through each impurity problem
+        for i = 1:nsite
+            for s = 1:nspin
+                println(fout, "# site: $i spin: $s")
+                for m = 1:nmesh
+                    foreach(x -> @printf(fout, "%16.12f %16.12f", real(x), imag(x)), SA[i][m, :, s])
+                    println(fout)
+                end
+                println(fout)
+                println(fout)
+            end
+        end
+    end
 end
 
 """
