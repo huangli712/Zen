@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/23
+# Last modified: 2021/03/25
 #
 
 """
@@ -513,7 +513,48 @@ export sigma_gather
 
 This function would be executed immediately after the module is loaded at
 runtime for the first time.
+
+Here, we will try to precompile the whole Zen package to speed up
+the later calculations.
 """
-function __init__() end
+function __init__()
+    prompt("ZEN", "Loading...")
+
+    # Get an array of the names exported by the `Zen` module
+    nl = names(Zen)
+
+    # Go through each name
+    cf = 0 # Counter
+    for i in eachindex(nl)
+        # Please pay attention to that nl[i] is a Symbol, we need to convert it
+        # into string and function, respectively.
+        str = string(nl[i])
+        fun = eval(nl[i])
+
+        # For methods only (macro must be excluded)
+        if fun isa Function && !startswith(str, "@")
+            # Increase the counter
+            cf = cf + 1
+
+            # Extract the signature of the function
+            # Actually, `types` is a Core.SimpleVector.
+            types = typeof(fun).name.mt.defs.sig.types
+
+            # Convert `types` from SimpleVector into Tuple
+            # If length(types) is 1, the method is without arguments.
+            T = ()
+            if length(types) > 1
+                T = tuple(types[2:end]...)
+            end
+
+            # Precompile them one by one
+            # println(i, " -> ", str, " -> ", length(types), " -> ", T)
+            precompile(fun, T)
+        end
+    end
+
+    prompt("ZEN", "Well, $cf functions are compiled. We are ready to go!")
+    println()
+end
 
 end
