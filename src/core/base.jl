@@ -94,6 +94,7 @@ function cycle1()
 #
 
     # C01: Perform DFT calculation (for the first time)
+    prompt("DFT")
     #
     # C01.1: Prepare and check essential files for the DFT engine
     dft_init(it, lr)
@@ -115,6 +116,7 @@ function cycle1()
     if get_d("loptim")
 
         # C02: Perform DFT calculation (for the second time)
+        prompt("DFT")
         #
         # C02.1: Prepare and check essential files for the DFT engine
         dft_init(it, lr)
@@ -142,6 +144,7 @@ function cycle1()
 #
 
     # C03: To bridge the gap between DFT engine and DMFT engine by adaptor
+    prompt("Adaptor")
     #
     # C03.1: Prepare and check essential files for the adaptor
     adaptor_init(it, lr)
@@ -156,6 +159,7 @@ function cycle1()
     monitor(true)
 
     # C04: Generate initial self-energy functions
+    prompt("Sigma")
     sigma_reset(lr)
     exit(-1)
 
@@ -329,8 +333,6 @@ function adaptor_init(it::IterInfo, lr::Logger)
     # Enter dft directory
     cd("dft")
 
-    prompt("Adaptor")
-
     # Choose suitable adaptor according to DFT engine
     engine = get_d("engine")
     @cswitch engine begin
@@ -456,8 +458,6 @@ See also: [`dft_run`](@ref), [`dft_save`](@ref).
 function dft_init(it::IterInfo, lr::Logger)
     # Enter dft directory
     cd("dft")
-
-    prompt("DFT")
 
     # Choose suitable DFT engine, then initialize it's input files.
     engine = get_d("engine")

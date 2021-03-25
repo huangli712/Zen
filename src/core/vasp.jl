@@ -102,7 +102,7 @@ See also: [`vasp_init`](@ref), [`vasp_save`](@ref).
 """
 function vasp_run(it::IterInfo)
     # Print the header
-    println("< Engine : vasp >")
+    println("< Engine : VASP >")
 
     # Get the home directory of vasp
     dft_home = query_dft("vasp")

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/25
+# Last modified: 2021/03/26
 #
 
 """
@@ -17,7 +17,7 @@ See also: [`sigma_dcount`](@ref).
 function sigma_reset(lr::Logger)
     # Print the log
     prompt(lr.log, "sigma::reset")
-    prompt("Sigma : Reset")
+    println("< Sigma : Reset >")
 
     # The sdim creates a mapping from shell (string) to ndim (integer).
     # It is used to parse get_i("shell") to extract the `ndim` parameter.
