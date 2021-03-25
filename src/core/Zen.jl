@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/25
+# Last modified: 2021/03/26
 #
 
 """
@@ -553,7 +553,8 @@ function __init__()
         end
     end
 
-    prompt("ZEN", "Well, $cf functions are compiled. We are ready to go!")
+    prompt("ZEN", "Well, Zen (including $cf functions) are compiled.")
+    prompt("ZEN", "We are ready to go!")
     println()
 end
 
