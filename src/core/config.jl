@@ -41,23 +41,23 @@ function exhibit()
     prompt("ZEN", "Configuration")
 
     # E1: Show dict PCASE
-    println("< Parameters: case >")
+    println("< Parameters : case >")
     cat_c()
 
     # E2: Show dict PDFT
-    println("< Parameters: dft engine >")
+    println("< Parameters : dft engine >")
     cat_d()
 
     # E3: Show dict PDMFT
-    println("< Parameters: dmft engine >")
+    println("< Parameters : dmft engine >")
     cat_m()
 
     # E4: Show dict PIMP
-    println("< Parameters: quantum impurity atoms >")
+    println("< Parameters : quantum impurity atoms >")
     cat_i()
 
     # E5: Show dict PSOLVER
-    println("< Parameters: quantum impurity solvers >")
+    println("< Parameters : quantum impurity solvers >")
     cat_s()
 end
 

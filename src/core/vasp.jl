@@ -24,7 +24,7 @@ See also: [`plo_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_run`](@ref).
 """
 function vasp_adaptor(D::Dict{Symbol,Any})
     # V01: Print the header
-    println("< Adaptor: vasp >")
+    println("< Adaptor : VASP >")
 
     # V02: Read in lattice structure
     println("  Get lattice")
@@ -102,7 +102,7 @@ See also: [`vasp_init`](@ref), [`vasp_save`](@ref).
 """
 function vasp_run(it::IterInfo)
     # Print the header
-    println("< Engine: vasp >")
+    println("< Engine : vasp >")
 
     # Get the home directory of vasp
     dft_home = query_dft("vasp")
@@ -110,7 +110,7 @@ function vasp_run(it::IterInfo)
     # Determine mpi prefix (whether the vasp is executed sequentially)
     mpi_prefix = inp_toml("../MPI.toml", "dft", false)
     numproc = parse(I64, line_to_array(mpi_prefix)[3])
-    println("  Para: Using $numproc processors")
+    println("  Para : Using $numproc processors")
 
     # Select suitable vasp program
     if get_d("lspinorb")
@@ -119,7 +119,7 @@ function vasp_run(it::IterInfo)
         vasp_exec = "$dft_home/vasp_std"
     end
     @assert isfile(vasp_exec)
-    println("  Exec: $vasp_exec")
+    println("  Exec : $vasp_exec")
 
     # Assemble command
     if isnothing(mpi_prefix)

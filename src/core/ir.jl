@@ -27,7 +27,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     end
 
     # I02: Print the header
-    println("  < Adaptor: ir >")
+    println("  < Adaptor : IR >")
 
     # I03: Write important parameters
     println("  Store params")
