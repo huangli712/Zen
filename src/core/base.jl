@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/24
+# Last modified: 2021/03/26
 #
 
 #
@@ -39,19 +39,16 @@ function go()
     @cswitch mode begin
         # One-shot DFT + DMFT calculations
         @case 1
-            prompt("ZEN", "Cycling")
             cycle1()
             break
 
         # Fully self-consistent DFT + DMFT calculations
         @case 2
-            prompt("ZEN", "Cycling")
             cycle2()
             break
 
         # To be implemented
         @default
-            prompt("ZEN", "Nothing")
             sorry()
             break
     end
@@ -81,6 +78,8 @@ function cycle1()
 
     # C00: Create Logger struct
     lr = Logger(query_case())
+
+    prompt("ZEN", "Initialization")
 
 #
 # Remarks 1:
@@ -463,18 +462,18 @@ function dft_init(it::IterInfo, lr::Logger)
     # Enter dft directory
     cd("dft")
 
+    prompt("DFT")
+
     # Choose suitable DFT engine, then initialize it's input files.
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
             prompt(lr.log, "vasp")
-            prompt("DFT : VASP")
-            println("  Init VASP")
             vasp_init(it)
             break
 
         @default
-            prompt("DFT : Undef")
+            prompt(lr.log, "undef")
             sorry()
             break
     end
@@ -498,7 +497,6 @@ function dft_run(it::IterInfo)
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
-            println("  Launch VASP")
             vasp_run(it)
             break
 
