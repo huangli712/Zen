@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/02
+# Last modified: 2021/03/26
 #
 
 #
@@ -27,7 +27,7 @@ See also: [`vasp_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_run`](@ref).
 """
 function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # P01: Print the header
-    println("  < PLO Adaptor >")
+    println("< Adaptor: plo >")
 
     # P02: Check the validity of the original dict
     key_list = [:enk, :fermi, :chipsi, :PG]
@@ -38,38 +38,38 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # P03: Adjust the band structure
     #
     # D[:fermi] will be updated
-    println("    Calibrate Fermi Level")
+    println("  Calibrate fermi level")
     plo_fermi(D[:enk], D[:fermi])
 
     # P04: Setup the PrGroup strcut further
     #
     # D[:PG] will be updated
-    println("    Complete Groups")
+    println("  Complete groups")
     plo_group(D[:PG])
 
     # P05: Setup the band / energy window for projectors
     #
     # D[:PW] will be created
-    println("    Generate Window")
+    println("  Generate window")
     D[:PW] = plo_window(D[:PG], D[:enk])
 
     # P06: Transform the projectors
     #
     # D[:Rchipsi] will be created
-    println("    Rotate Projectors")
+    println("  Rotate projectors")
     D[:Rchipsi] = plo_rotate(D[:PG], D[:chipsi])
 
     # P07: Filter the projectors
     #
     # D[:Fchipsi] will be created
-    println("    Filter Projectors")
+    println("  Filter projectors")
     D[:Fchipsi] = plo_filter(D[:PW], D[:Rchipsi])
 
     # P08: Orthogonalize and normalize the projectors
     #
     # D[:Fchipsi] will be updated. It contains the final data
     # for projector matrix.
-    println("    Normalize Projectors")
+    println("  Normalize projectors")
     plo_orthog(D[:PW], D[:Fchipsi])
 
     # P09: Are the projectors correct?

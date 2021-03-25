@@ -329,13 +329,13 @@ function adaptor_init(it::IterInfo, lr::Logger)
     # Enter dft directory
     cd("dft")
 
+    prompt("Adaptor")
+
     # Choose suitable adaptor according to DFT engine
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
             prompt(lr.log, "adaptor")
-            prompt("Adaptor : VASP")
-            println("  Init VASP Adaptor")
             vasp_files()
             break
 
@@ -377,7 +377,6 @@ function adaptor_run(it::IterInfo)
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
-            println("  Launch VASP Adaptor")
             vasp_adaptor(DFTData)
             break
 
@@ -399,12 +398,10 @@ function adaptor_run(it::IterInfo)
     projtype = get_d("projtype")
     @cswitch projtype begin
         @case "plo"
-            println("  Launch PLO Adaptor")
             plo_adaptor(DFTData, false) # Without debug
             break
 
         @case "wannier"
-            println("  Launch WANNIER Adaptor")
             sorry()
             break
 
@@ -419,7 +416,6 @@ function adaptor_run(it::IterInfo)
     # Ok, now the Kohn-Sham data are ready. We would like to write them
     # to some specified files with the IR format.
     #
-    println("  Launch IR Adaptor")
     ir_adaptor(DFTData)
 
     #
@@ -444,7 +440,6 @@ function adaptor_save(it::IterInfo)
     cd("dft")
 
     # Save the essential files
-    println("  Backup IR Adaptor's output data\n")
     ir_save(it)
 
     # Enter the parent directory
@@ -525,7 +520,6 @@ function dft_save(it::IterInfo)
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
-            println("  Backup VASP's output data\n")
             vasp_save(it)
             break
 

@@ -24,33 +24,33 @@ See also: [`plo_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_run`](@ref).
 """
 function vasp_adaptor(D::Dict{Symbol,Any})
     # V01: Print the header
-    println("  < VASP Adaptor >")
+    println("< Adaptor: vasp >")
 
     # V02: Read in lattice structure
-    println("    Get Lattice")
+    println("  Get lattice")
     D[:latt] = vaspio_lattice(pwd())
 
     # V03: Read in kmesh and the corresponding weights
-    println("    Get Kmesh")
-    println("    Get Weight")
+    println("  Get kmesh")
+    println("  Get weight")
     D[:kmesh], D[:weight] = vaspio_kmesh(pwd())
 
     # V04: Read in band structure and the corresponding occupancies
-    println("    Get Enk")
-    println("    Get Occupy")
+    println("  Get enk")
+    println("  Get occupy")
     D[:enk], D[:occupy] = vaspio_eigen(pwd())
 
     # V05: Read in raw projectors, traits, and groups
-    println("    Get Projector")
+    println("  Get projector")
     D[:PT], D[:PG], D[:chipsi] = vaspio_projs(pwd())
 
     # V06: Read in fermi level
-    println("    Get Fermi Level")
+    println("  Get fermi level")
     D[:fermi] = vaspio_fermi(pwd())
 
     # V07: Read in tetrahedron data if they are available
     if get_d("smear") === "tetra"
-        println("    Get Tetrahedron")
+        println("  Get tetrahedron")
         D[:volt], D[:itet] = vaspio_tetra(pwd())
     end
 end
@@ -102,7 +102,7 @@ See also: [`vasp_init`](@ref), [`vasp_save`](@ref).
 """
 function vasp_run(it::IterInfo)
     # Print the header
-    println("< VASP Engine >")
+    println("< Engine: vasp >")
 
     # Get the home directory of vasp
     dft_home = query_dft("vasp")

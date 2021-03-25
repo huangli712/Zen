@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/17
+# Last modified: 2021/03/26
 #
 
 #
@@ -27,34 +27,34 @@ function ir_adaptor(D::Dict{Symbol,Any})
     end
 
     # I02: Print the header
-    println("  < IR Adaptor >")
+    println("  < Adaptor: ir >")
 
     # I03: Write important parameters
-    println("    Put Params")
-    println("    Put Groups")
+    println("  Store params")
+    println("  Store groups")
     irio_params(pwd(), D)
     irio_groups(pwd(), D[:PG], D[:PW])
 
     # I04: Write lattice structure
-    println("    Put Lattice")
+    println("  Store lattice")
     irio_lattice(pwd(), D[:latt])
 
     # I05: Write kmesh and the corresponding weights
-    println("    Put Kmesh")
-    println("    Put Weight")
+    println("  Store kmesh")
+    println("  Store weight")
     irio_kmesh(pwd(), D[:kmesh], D[:weight])
 
     # I06: Write band structure and the corresponding occupancies
-    println("    Put Enk")
-    println("    Put Occupy")
+    println("  Store enk")
+    println("  Store occupy")
     irio_eigen(pwd(), D[:enk], D[:occupy])
 
     # I07: Write normalized projectors
-    println("    Put Projector")
+    println("  Store projector")
     irio_projs(pwd(), D[:Fchipsi])
 
     # I08: Write fermi level
-    println("    Put Fermi Level")
+    println("  Store fermi level")
     irio_fermi(pwd(), D[:fermi])
 
 #
@@ -74,7 +74,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
 
     # I10: Write tetrahedron data if they are available
     if get_d("smear") === "tetra"
-        println("    Put Tetrahedron")
+        println("  Store tetrahedron")
         irio_tetra(pwd(), D[:volt], D[:itet])
     end
 end
