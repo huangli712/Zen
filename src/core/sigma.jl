@@ -70,7 +70,7 @@ function sigma_reset(lr::Logger)
     end
 
     # Write self-energy functions to sigma.bare
-    open("sigma.bare", "w") do fout
+    open("dmft1/sigma.bare", "w") do fout
         # Write the header
         println(fout, "# File: sigma.bare")
         println(fout, "# Data: bare self-energy functions")
@@ -100,6 +100,9 @@ function sigma_reset(lr::Logger)
             end
         end
     end
+
+    # Print blank line for better visualization
+    println()
 end
 
 """

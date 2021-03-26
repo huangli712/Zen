@@ -182,6 +182,8 @@ function cycle1()
     prompt("ZEN", "Iterations")
 
     for iter = 1:get_m("niter")
+        prompt("ZEN", "Cycle $iter")
+
         # C05: Tackle with the double counting term
         prompt("Sigma")
         #
