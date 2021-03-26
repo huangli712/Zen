@@ -233,7 +233,7 @@ function cycle1()
         # C09: Gather and combine the data
         prompt("Sigma")
         #
-        # C09.1:
+        # C09.1: Collect impurity self-energy functions and combine them
         sigma_gather(lr)
         #
         # C09.2: Monitor the status
@@ -685,22 +685,18 @@ function solver_init(it::IterInfo, lr::Logger)
         @cswitch engine begin
             @case "ct_hyb1"
                 prompt(lr.log, "ct_hyb1")
-                sorry()
                 break
 
             @case "ct_hyb2"
                 prompt(lr.log, "ct_hyb2")
-                sorry()
                 break
 
             @case "hub1"
                 prompt(lr.log, "hub1")
-                sorry()
                 break
 
             @case "norg"
                 prompt(lr.log, "norg")
-                sorry()
                 break
 
             @default
@@ -732,19 +728,15 @@ function solver_run(it::IterInfo)
         engine = get_s("engine")
         @cswitch engine begin
             @case "ct_hyb1"
-                sorry()
                 break
 
             @case "ct_hyb2"
-                sorry()
                 break
 
             @case "hub1"
-                sorry()
                 break
 
             @case "norg"
-                sorry()
                 break
 
             @default
@@ -776,19 +768,15 @@ function solver_save(it::IterInfo)
         engine = get_s("engine")
         @cswitch engine begin
             @case "ct_hyb1"
-                sorry()
                 break
 
             @case "ct_hyb2"
-                sorry()
                 break
 
             @case "hub1"
-                sorry()
                 break
 
             @case "norg"
-                sorry()
                 break
 
             @default
