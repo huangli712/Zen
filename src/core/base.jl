@@ -161,10 +161,14 @@ function cycle1()
     # C03.4: Monitor the status
     monitor(true)
 
-    # C04: Generate initial self-energy functions
+    # C04: Prepare default self-energy functions
     prompt("Sigma")
+    #
+    # C04.1: Generate default self-energy functions and store them
     sigma_reset(lr)
-    exit(-1)
+    #
+    # C04.2: Monitor the status
+    monitor(true)
 
 #
 # Remarks 3:
@@ -172,9 +176,23 @@ function cycle1()
 # Now everything is ready. We are going to solve the DMFT equation iterately.
 #
 
+#
+# Iterations (C05-C09)
+#
+    prompt("ZEN", "Iterations")
+
     for iter = 1:get_m("niter")
         # C05: Tackle with the double counting term
-        sigma_dcount()
+        prompt("Sigma")
+        #
+        # C05.1:
+        sigma_dcount(lr)
+        #
+        # C05.2: Monitor the status
+        monitor(true)
+
+        # DEBUG
+        exit(-1)
 
         # C06: Perform DMFT calculation
         #
@@ -338,9 +356,9 @@ function adaptor_init(it::IterInfo, lr::Logger)
 
     # Choose suitable adaptor according to DFT engine
     engine = get_d("engine")
+    prompt(lr.log, "adaptor")
     @cswitch engine begin
         @case "vasp"
-            prompt(lr.log, "adaptor")
             vasp_files()
             break
 
@@ -402,8 +420,9 @@ function adaptor_run(it::IterInfo)
     #
     projtype = get_d("projtype")
     @cswitch projtype begin
+        # Now we disable debug
         @case "plo"
-            plo_adaptor(DFTData, false) # Without debug
+            plo_adaptor(DFTData, false)
             break
 
         @case "wannier"
