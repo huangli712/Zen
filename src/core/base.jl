@@ -231,7 +231,13 @@ function cycle1()
         monitor(true)
 
         # C09: Gather and combine the data
-        sigma_gather()
+        prompt("Sigma")
+        #
+        # C09.1:
+        sigma_gather(lr)
+        #
+        # C09.2: Monitor the status
+        monitor(true)
 
         #
         # C09: Mixer
