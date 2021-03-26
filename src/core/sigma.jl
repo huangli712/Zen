@@ -77,7 +77,7 @@ function sigma_reset(lr::Logger)
         println(fout)
         println(fout, "axis  -> $axis")
         println(fout, "beta  -> $beta")
-        println(fout, "nsite -> $nsite") 
+        println(fout, "nsite -> $nsite")
         println(fout, "nmesh -> $nmesh")
         println(fout, "nspin -> $nspin")
         for i = 1:nsite
