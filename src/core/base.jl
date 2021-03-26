@@ -60,7 +60,7 @@ end
 Finalize the DFT + DMFT calculations.
 """
 function final()
-    sorry()
+    #sorry()
 end
 
 """
