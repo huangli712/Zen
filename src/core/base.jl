@@ -79,6 +79,9 @@ function cycle1()
     # C00: Create Logger struct
     lr = Logger(query_case())
 
+#
+# Initialization (C01-C04)
+#
     prompt("ZEN", "Initialization")
 
 #
@@ -461,14 +464,13 @@ function dft_init(it::IterInfo, lr::Logger)
 
     # Choose suitable DFT engine, then initialize it's input files.
     engine = get_d("engine")
+    prompt(lr.log, engine)
     @cswitch engine begin
         @case "vasp"
-            prompt(lr.log, "vasp")
             vasp_init(it)
             break
 
         @default
-            prompt(lr.log, "undef")
             sorry()
             break
     end
