@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/23
+# Last modified: 2021/03/26
 #
 
 """
@@ -125,6 +125,9 @@ julia > setup_args("SrVO3.toml")
 See also: [`query_args`](@ref).
 """
 function setup_args(x::Vararg{String})
+    # Make sure it is the REPL
+    @assert isinteractive()
+
     # Clean `ARGS`
     empty!(ARGS)
 
@@ -228,7 +231,7 @@ end
 """
     query_core()
 
-Query the core directory of Zen.
+Query the src/core directory of Zen.
 
 See also: [`query_home`](@ref).
 """
