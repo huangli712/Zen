@@ -185,16 +185,14 @@ function cycle1()
         # C05: Tackle with the double counting term
         prompt("Sigma")
         #
-        # C05.1:
+        # C05.1: Calculate the double counting term and store it
         sigma_dcount(lr)
         #
         # C05.2: Monitor the status
         monitor(true)
 
-        # DEBUG
-        exit(-1)
-
         # C06: Perform DMFT calculation
+        prompt("DMFT")
         #
         # C06.1: Prepare and check essential files for the DMFT engine (dmft1)
         dmft_init(it, lr, 1)
@@ -209,7 +207,7 @@ function cycle1()
         monitor(true)
 
         # C07: Split and distribute the data
-        sigma_split()
+        sigma_split(lr)
 
         # C08: Solve the quantum impurity problems
         #
