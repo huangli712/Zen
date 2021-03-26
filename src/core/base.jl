@@ -207,9 +207,16 @@ function cycle1()
         monitor(true)
 
         # C07: Split and distribute the data
+        prompt("Sigma")
+        #
+        # C07.1: Split the hybridization functions and store them
         sigma_split(lr)
+        #
+        # C07.2: Monitor the status
+        monitor(true)
 
         # C08: Solve the quantum impurity problems
+        prompt("Solvers")
         #
         # C08.1: Prepare and check essential files for the quantum impurity solver
         solver_init(it, lr)

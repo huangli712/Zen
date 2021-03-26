@@ -17,7 +17,7 @@ See also: [`sigma_dcount`](@ref).
 function sigma_reset(lr::Logger)
     # Print the log
     prompt(lr.log, "sigma::reset")
-    println("< Sigma : Reset >")
+    println("[ Sigma : Reset ]")
 
     # The sdim creates a mapping from shell (string) to ndim (integer).
     # It is used to parse get_i("shell") to extract the `ndim` parameter.
@@ -113,7 +113,7 @@ See also: [`sigma_reset`](@ref).
 function sigma_dcount(lr::Logger)
     # Print the log
     prompt(lr.log, "sigma::dcount")
-    prompt("Sigma : Dcount")
+    println("[ Sigma : Dcount ]")
 end
 
 """
@@ -127,7 +127,7 @@ See also: [`sigma_gather`](@ref).
 function sigma_split(lr::Logger)
     # Print the log
     prompt(lr.log, "sigma::split")
-    prompt("Sigma : Split")
+    println("[ Sigma : Split ]")
 end
 
 """
@@ -141,5 +141,5 @@ See also: [`sigma_split`](@ref).
 function sigma_gather(lr::Logger)
     # Print the log
     prompt(lr.log, "sigma::gather")
-    prompt("Sigma : Gather")
+    println("[ Sigma : Gather ]")
 end
