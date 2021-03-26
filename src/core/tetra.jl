@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/04
+# Last modified: 2021/03/26
 #
 
 #
@@ -16,9 +16,9 @@
 #     (1) Gaussian broadening method.
 #     (2) Fermi-Dirac broadening method.
 #     (3) Analytical tetrahedron algorithm with Blochl corrections.
-# Note that you have to modify the line 87-89 to choose suitable driver.
-# Perhaps you also need to modify the `gamm` parameter to obtain more
-# reasonable results. Now the default algorithm is (3).
+# Note that you have to modify the line 86-88 to choose suitable driver.
+# Perhaps you also need to modify the `gamm` parameter (line 132 or 167)
+# to obtain more reasonable results. Now the default algorithm is (3).
 #
 
 #
