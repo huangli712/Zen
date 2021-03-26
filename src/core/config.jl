@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/23
+# Last modified: 2021/03/26
 #
 
 #
@@ -45,19 +45,19 @@ function exhibit()
     cat_c()
 
     # E2: Show dict PDFT
-    println("< Parameters : DFT Engine >")
+    println("< Parameters : DFT >")
     cat_d()
 
     # E3: Show dict PDMFT
-    println("< Parameters : DMFT Engine >")
+    println("< Parameters : DMFT >")
     cat_m()
 
     # E4: Show dict PIMP
-    println("< Parameters : Quantum Impurity Atoms >")
+    println("< Parameters : Impurities >")
     cat_i()
 
     # E5: Show dict PSOLVER
-    println("< Parameters : Quantum Impurity Solvers >")
+    println("< Parameters : Solvers >")
     cat_s()
 end
 
