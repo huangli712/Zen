@@ -498,6 +498,9 @@ function dft_core(it::IterInfo, lr::Logger)
 
     # Backup the output files of the DFT engine
     dft_save(it)
+
+    # Monitor the status
+    monitor(true)
 end
 
 """
