@@ -269,7 +269,6 @@ is achieved at both DFT and DMFT levels.
 See also: [`cycle1`](@ref).
 """
 function cycle2()
-    # TODO
     sorry()
 end
 
@@ -355,6 +354,9 @@ function rm_trees()
             rm(dir, force = true, recursive = true)
         end
     end
+end
+
+function adaptor_core()
 end
 
 """
@@ -484,6 +486,9 @@ function adaptor_save(it::IterInfo)
     cd("..")
 end
 
+function dft_core()
+end
+
 """
     dft_init(it::IterInfo, lr::Logger)
 
@@ -565,6 +570,9 @@ function dft_save(it::IterInfo)
 
     # Enter the parent directory
     cd("..")
+end
+
+function dmft_core()
 end
 
 """
@@ -667,6 +675,9 @@ function dmft_save(it::IterInfo, dmft_mode::I64)
         # Enter the parent directory
         cd("..")
     end
+end
+
+function solver_init()
 end
 
 """
