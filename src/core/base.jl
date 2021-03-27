@@ -486,7 +486,18 @@ function adaptor_save(it::IterInfo)
     cd("..")
 end
 
-function dft_core()
+"""
+    dft_core(it::IterInfo, lr::Logger)
+"""
+function dft_core(it::IterInfo, lr::Logger)
+    # Prepare and check essential files for the DFT engine
+    dft_init(it, lr)
+
+    # Perform a self-consitent calculation at the DFT level
+    dft_run(it)
+
+    # Backup the output files of the DFT engine
+    dft_save(it)
 end
 
 """
