@@ -117,7 +117,7 @@ function cycle1()
     end
 
 #
-# Remarks 2:
+# Remarks 3:
 #
 # The key Kohn-Sham data inclue lattice structures, k-mesh and its weights,
 # tetrahedra data, eigenvalues, raw projectors, and fermi level, etc. At
@@ -129,18 +129,7 @@ function cycle1()
 
     # C03: To bridge the gap between DFT engine and DMFT engine by adaptor
     prompt("Adaptor")
-    #
-    # C03.1: Prepare and check essential files for the adaptor
-    adaptor_init(it, lr)
-    #
-    # C03.2: Launch the adaptor
-    adaptor_run(it)
-    #
-    # C03.3: Backup the output files of the adaptor
-    adaptor_save(it)
-    #
-    # C03.4: Monitor the status
-    monitor(true)
+    adaptor_core(it, lr)
 
     # C04: Prepare default self-energy functions
     prompt("Sigma")
@@ -336,7 +325,21 @@ function rm_trees()
     end
 end
 
-function adaptor_core()
+"""
+    adaptor_core(it::IterInfo, lr::Logger)
+"""
+function adaptor_core(it::IterInfo, lr::Logger)
+    # Prepare and check essential files for the adaptor
+    adaptor_init(it, lr)
+
+    # Launch the adaptor
+    adaptor_run(it)
+
+    # Backup the output files of the adaptor
+    adaptor_save(it)
+
+    # Monitor the status
+    monitor(true)
 end
 
 """
