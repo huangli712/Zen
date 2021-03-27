@@ -97,20 +97,7 @@ function cycle1()
 
     # C01: Perform DFT calculation (for the first time)
     prompt("DFT")
-    #
-    begin
-        # C01.1: Prepare and check essential files for the DFT engine
-        dft_init(it, lr)
-        #
-        # C01.2: Perform a self-consitent calculation at the DFT level
-        dft_run(it)
-        #
-        # C01.3: Backup the output files of the DFT engine
-        dft_save(it)
-        #
-        # C01.4: Monitor the status
-        monitor(true)
-    end
+    dft_core(it, lr)
 
     # We want better optimal projectors.
     # In the previous DFT run, initial fermi level = 0 -> wrong energy
