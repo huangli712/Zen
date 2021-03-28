@@ -544,6 +544,13 @@ function dft_save(it::IterInfo)
     cd("..")
 end
 
+"""
+    dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
+
+Simple driver for DMFT engine.
+
+See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`solver_run`](@ref).
+"""
 function dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
         #
         # C06.1: Prepare and check essential files for the DMFT engine (dmft1)
