@@ -285,102 +285,6 @@ function rm_trees()
 end
 
 """
-    adaptor_run(it::IterInfo, lr::Logger)
-
-Simple driver for the adaptor.
-Initialize the adaptor, to check whether the essential files exist.
-Parse the data output by the DFT engine, try to postprocess them, and then
-transform them into IR format.
-Backup the output files by adaptor.
-
-See also: [`dft_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
-"""
-function adaptor_exec(it::IterInfo)
-    # Enter dft directory
-    cd("dft")
-
-    #
-    # A0: Create a dict named DFTData
-    #
-    # This dictionary is for storing the Kohn-Sham band structure and
-    # related data. The key-value pairs would be inserted into this
-    # dict dynamically.
-    #
-    DFTData = Dict{Symbol,Any}()
-
-    #
-    # A1: Parse the original Kohn-Sham data
-    #
-    # Choose suitable driver function according to DFT engine. The
-    # Kohn-Sham data will be stored in the DFTData dict.
-    #
-    engine = get_d("engine")
-    prompt(lr.log, "adaptor")
-    @cswitch engine begin
-        # For VASP
-        @case "vasp"
-            vasp_files()
-            vasp_adaptor(DFTData)
-            break
-
-        @default
-            sorry()
-            break
-    end
-
-    #
-    # A2: Process the original Kohn-Sham data
-    #
-    # Well, now we have the Kohn-Sham data. But they can not be used
-    # directly. We have to check and process them carefully. Please
-    # pay attention to that the DFTData dict will be modified in
-    # the plo_adaptor() function. Here the parameter `debug` (= true)
-    # means that we are going to calculating some physical quantities
-    # additionally to check the correctness of the Kohn-Sham data.
-    #
-    projtype = get_d("projtype")
-    @cswitch projtype begin
-        # For projected local orbital scheme
-        # Now we disable debug
-        @case "plo"
-            plo_adaptor(DFTData, false)
-            break
-
-        # For maximally localized wannier function scheme
-        @case "wannier"
-            sorry()
-            break
-
-        @default
-            sorry()
-            break
-    end
-
-    #
-    # A3: Output the processed Kohn-Sham data
-    #
-    # Ok, now the Kohn-Sham data are ready. We would like to write them
-    # to some specified files with the IR format.
-    #
-    ir_adaptor(DFTData)
-
-    #
-    # A4: Clear the DFTData dict
-    #
-    empty!(DFTData)
-    @assert isempty(DFTData)
-
-    # Save the essential files
-    ir_save(it)
-
-    # Enter the parent directory
-    cd("..")
-
-    # Monitor the status
-    monitor(true)
-end
-
-"""
     dft_run(it::IterInfo, lr::Logger)
 
 Simple driver for DFT engine. Firstly, examine the runtime environment
@@ -502,6 +406,102 @@ function solver_run(it::IterInfo, lr::Logger)
         cd("..")
 
     end
+
+    # Monitor the status
+    monitor(true)
+end
+
+"""
+    adaptor_run(it::IterInfo, lr::Logger)
+
+Simple driver for the adaptor.
+Initialize the adaptor, to check whether the essential files exist.
+Parse the data output by the DFT engine, try to postprocess them, and then
+transform them into IR format.
+Backup the output files by adaptor.
+
+See also: [`dft_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
+"""
+function adaptor_run(it::IterInfo)
+    # Enter dft directory
+    cd("dft")
+
+    #
+    # A0: Create a dict named DFTData
+    #
+    # This dictionary is for storing the Kohn-Sham band structure and
+    # related data. The key-value pairs would be inserted into this
+    # dict dynamically.
+    #
+    DFTData = Dict{Symbol,Any}()
+
+    #
+    # A1: Parse the original Kohn-Sham data
+    #
+    # Choose suitable driver function according to DFT engine. The
+    # Kohn-Sham data will be stored in the DFTData dict.
+    #
+    engine = get_d("engine")
+    prompt(lr.log, "adaptor")
+    @cswitch engine begin
+        # For VASP
+        @case "vasp"
+            vasp_files()
+            vasp_adaptor(DFTData)
+            break
+
+        @default
+            sorry()
+            break
+    end
+
+    #
+    # A2: Process the original Kohn-Sham data
+    #
+    # Well, now we have the Kohn-Sham data. But they can not be used
+    # directly. We have to check and process them carefully. Please
+    # pay attention to that the DFTData dict will be modified in
+    # the plo_adaptor() function. Here the parameter `debug` (= true)
+    # means that we are going to calculating some physical quantities
+    # additionally to check the correctness of the Kohn-Sham data.
+    #
+    projtype = get_d("projtype")
+    @cswitch projtype begin
+        # For projected local orbital scheme
+        # Now we disable debug
+        @case "plo"
+            plo_adaptor(DFTData, false)
+            break
+
+        # For maximally localized wannier function scheme
+        @case "wannier"
+            sorry()
+            break
+
+        @default
+            sorry()
+            break
+    end
+
+    #
+    # A3: Output the processed Kohn-Sham data
+    #
+    # Ok, now the Kohn-Sham data are ready. We would like to write them
+    # to some specified files with the IR format.
+    #
+    ir_adaptor(DFTData)
+
+    #
+    # A4: Clear the DFTData dict
+    #
+    empty!(DFTData)
+    @assert isempty(DFTData)
+
+    # Save the essential files
+    ir_save(it)
+
+    # Enter the parent directory
+    cd("..")
 
     # Monitor the status
     monitor(true)
