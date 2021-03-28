@@ -4,19 +4,18 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/26
+# Last modified: 2021/03/29
 #
 
 """
-    sigma_reset(lr::Logger)
+    sigma_reset()
 
 Create initial self-energy functions and write them to `sigma.bare`.
 
 See also: [`sigma_dcount`](@ref).
 """
-function sigma_reset(lr::Logger)
+function sigma_reset()
     # Print the log
-    prompt(lr.log, "sigma::reset")
     println("[ Sigma : Reset ]")
 
     # The sdim creates a mapping from shell (string) to ndim (integer).
@@ -106,43 +105,40 @@ function sigma_reset(lr::Logger)
 end
 
 """
-    sigma_dcount(lr::Logger)
+    sigma_dcount()
 
 Calculate double counting terms for self-energy functions and write
 them to `sigma.dc`.
 
 See also: [`sigma_reset`](@ref).
 """
-function sigma_dcount(lr::Logger)
+function sigma_dcount()
     # Print the log
-    prompt(lr.log, "sigma::dcount")
     println("[ Sigma : Dcount ]")
 end
 
 """
-    sigma_split(lr::Logger)
+    sigma_split()
 
 Split the hybridization functions (or similar local functions) and then
 distribute them into the `impurity.i` folder.
 
 See also: [`sigma_gather`](@ref).
 """
-function sigma_split(lr::Logger)
+function sigma_split()
     # Print the log
-    prompt(lr.log, "sigma::split")
     println("[ Sigma : Split ]")
 end
 
 """
-    sigma_gather(lr::Logger)
+    sigma_gather()
 
 Gather the self-energy functions (or similar local functions) from the
 `impurity.i` folder and then combine them into a single `sigma.bare` file.
 
 See also: [`sigma_split`](@ref).
 """
-function sigma_gather(lr::Logger)
+function sigma_gather()
     # Print the log
-    prompt(lr.log, "sigma::gather")
     println("[ Sigma : Gather ]")
 end

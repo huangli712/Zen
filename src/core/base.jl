@@ -820,25 +820,26 @@ end
 See also: [`mixer_core`](@ref).
 """
 function sigma_core(lr::Logger, task::String = "reset")
+    prompt(lr.log, "sigma::$task")
     @cswitch task begin
         # Generate default self-energy functions and store them
         @case "reset"
-            sigma_reset(lr)
+            sigma_reset()
             break
 
         # Calculate the double counting term and store it
         @case "dcount"
-            sigma_dcount(lr)
+            sigma_dcount()
             break
 
         # Split the hybridization functions and store them
         @case "split"
-            sigma_split(lr)
+            sigma_split()
             break
 
         # Collect impurity self-energy functions and combine them
         @case "gather"
-            sigma_gather(lr)
+            sigma_gather()
             break
 
         @default
