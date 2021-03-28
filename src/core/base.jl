@@ -440,98 +440,25 @@ end
 """
     dft_run(it::IterInfo, lr::Logger)
 
-Simple driver for DFT engine.
+Simple driver for DFT engine. Firstly, examine the runtime environment
+for the density functional theory engine. Secondly, launch the density
+functional theory engine. Finally, backup the output files by density
+functional theory engine for next iterations.
 
 See also: [`adaptor_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
 function dft_run(it::IterInfo, lr::Logger)
-    # Prepare and check essential files for the DFT engine
-    dft_init(it, lr)
-
-    # Perform a self-consitent calculation at the DFT level
-    dft_exec(it)
-
-    # Backup the output files of the DFT engine
-    dft_save(it)
-
-    # Monitor the status
-    monitor(true)
-end
-
-"""
-    dft_init(it::IterInfo, lr::Logger)
-
-To examine the runtime environment for density functional theory engine.
-
-See also: [`dft_exec`](@ref), [`dft_save`](@ref).
-"""
-function dft_init(it::IterInfo, lr::Logger)
     # Enter dft directory
     cd("dft")
 
-    # Choose suitable DFT engine, then initialize it's input files.
+    # Choose suitable DFT engine
     engine = get_d("engine")
     prompt(lr.log, engine)
     @cswitch engine begin
         # For VASP
         @case "vasp"
             vasp_init(it)
-            break
-
-        @default
-            sorry()
-            break
-    end
-
-    # Enter the parent directory
-    cd("..")
-end
-
-"""
-    dft_exec(it::IterInfo)
-
-Launch the density functional theory engine.
-
-See also: [`dft_init`](@ref), [`dft_save`](@ref).
-"""
-function dft_exec(it::IterInfo)
-    # Enter dft directory
-    cd("dft")
-
-    # Choose suitable DFT engine, then launch it.
-    engine = get_d("engine")
-    @cswitch engine begin
-        # For VASP
-        @case "vasp"
             vasp_exec(it)
-            break
-
-        @default
-            sorry()
-            break
-    end
-
-    # Enter the parent directory
-    cd("..")
-end
-
-"""
-    dft_save(it::IterInfo)
-
-Backup the output files by density functional theory engine
-for next iterations.
-
-See also: [`dft_init`](@ref), [`dft_exec`](@ref).
-"""
-function dft_save(it::IterInfo)
-    # Enter dft directory
-    cd("dft")
-
-    # Choose suitable DFT engine, then backup some essential output files.
-    engine = get_d("engine")
-    @cswitch engine begin
-        # For VASP
-        @case "vasp"
             vasp_save(it)
             break
 
@@ -542,6 +469,9 @@ function dft_save(it::IterInfo)
 
     # Enter the parent directory
     cd("..")
+
+    # Monitor the status
+    monitor(true)
 end
 
 """
