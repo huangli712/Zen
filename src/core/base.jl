@@ -60,6 +60,7 @@ end
 Finalize the DFT + DMFT calculations.
 """
 function final()
+    sorry()
 end
 
 """
@@ -69,7 +70,7 @@ Perform one-shot DFT + DMFT calculations. In other words, the charge
 density won't be fed back to the DFT engine. The self-consistency is
 only achieved at the DMFT level.
 
-See also: [`cycle2`](@ref).
+See also: [`cycle2`](@ref), [`go`](@ref).
 """
 function cycle1()
     # C-1: Create IterInfo struct
@@ -107,7 +108,7 @@ function cycle1()
 # In the previous DFT run, initial fermi level = 0 -> wrong energy
 # window -> wrong optimial projectors. But at this point, the fermi
 # level is updated, so we have to generate the optimal projectors
-# again within this new window by carrying addition DFT calculation.
+# again within this new window by doing addition DFT calculation.
 #
 
     # C02: Perform DFT calculation (for the second time)
@@ -133,12 +134,8 @@ function cycle1()
 
     # C04: Prepare default self-energy functions
     prompt("Sigma")
-    #
-    # C04.1: Generate default self-energy functions and store them
-    sigma_reset(lr)
-    #
-    # C04.2: Monitor the status
-    monitor(true)
+    sigma_core()
+    exit(-1)
 
 #
 # Remarks 3:
@@ -802,9 +799,30 @@ function solver_save(it::IterInfo)
 end
 
 """
-    sigma_core()
+    sigma_core(lr::Logger, task::String = "reset")
 """
-function sigma_core()
+function sigma_core(lr::Logger, task::String = "reset")
+    @cswitch task begin
+        # Generate default self-energy functions and store them
+        @case "reset"
+            sigma_reset(lr)
+            break
+
+        @case "dcount"
+            sigma_dcount(lr)
+            break
+
+        @case "split"
+            sigma_split(lr)
+            break
+
+        @case "gather"
+            sigma_gather(lr)
+            break
+    end
+
+    # Monitor the status
+    monitor(true)
 end
 
 """
