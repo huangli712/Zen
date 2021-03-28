@@ -478,31 +478,14 @@ end
     dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
 
 Simple driver for DMFT engine.
+To examine the runtime environment for dynamical mean-field theory engine.
+Launch the dynamical mean-field theory engine.
+Backup the output files by dynamical mean-field theory engine
+for next iterations.
 
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`solver_run`](@ref).
 """
 function dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
-    # Prepare and check essential files for the DMFT engine
-    dmft_init(it, lr, dmft_mode)
-
-    # Launch the DMFT engine
-    dmft_exec(it, dmft_mode)
-
-    # Backup the output files of the DMFT engine
-    dmft_save(it, dmft_mode)
-
-    # Monitor the status
-    monitor(true)
-end
-
-"""
-    dmft_init(it::IterInfo, lr::Logger, dmft_mode::I64)
-
-To examine the runtime environment for dynamical mean-field theory engine.
-
-See also [`dmft_exec`](@ref), [`dmft_save`])(@ref).
-"""
-function dmft_init(it::IterInfo, lr::Logger, dmft_mode::I64)
     # Examine the argument `dmft_mode`
     @assert dmft_mode === 1 || dmft_mode === 2
 
@@ -525,69 +508,9 @@ function dmft_init(it::IterInfo, lr::Logger, dmft_mode::I64)
 
     # Enter the parent directory
     cd("..")
-end
 
-"""
-    dmft_exec(it::IterInfo, dmft_mode::I64)
-
-Launch the dynamical mean-field theory engine.
-
-See also [`dmft_init`](@ref), [`dmft_save`])(@ref).
-"""
-function dmft_exec(it::IterInfo, dmft_mode::I64)
-    # Examine the argument `dmft_mode`
-    @assert dmft_mode === 1 || dmft_mode === 2
-
-    # Enter dmft1 or dmft2 directory
-    cd("dmft$dmft_mode")
-
-    # Choose suitable DMFT engine, then launch it.
-    @cswitch dmft_mode begin
-        # Solve the DMFT self-consistent equation
-        @case 1
-            sorry()
-            break
-
-        # Generate DMFT correction to DFT
-        @case 2
-            sorry()
-            break
-    end
-
-    # Enter the parent directory
-    cd("..")
-end
-
-"""
-    dmft_save(it::IterInfo, dmft_mode::I64)
-
-Backup the output files by dynamical mean-field theory engine
-for next iterations.
-
-See also [`dmft_init`](@ref), [`dmft_exec`])(@ref).
-"""
-function dmft_save(it::IterInfo, dmft_mode::I64)
-    # Examine the argument `dmft_mode`
-    @assert dmft_mode === 1 || dmft_mode === 2
-
-    # Enter dmft1 or dmft2 directory
-    cd("dmft$dmft_mode")
-
-    # Choose suitable DMFT engine, then backup some essential output files.
-    @cswitch dmft_mode begin
-        # Solve the DMFT self-consistent equation
-        @case 1
-            sorry()
-            break
-
-        # Generate DMFT correction to DFT
-        @case 2
-            sorry()
-            break
-    end
-
-    # Enter the parent directory
-    cd("..")
+    # Monitor the status
+    monitor(true)
 end
 
 """
