@@ -697,21 +697,22 @@ function solver_init(it::IterInfo, lr::Logger)
 
         # Choose suitable quantum impurity solver
         engine = get_s("engine")
+        prompt(lr.log, engine)
         @cswitch engine begin
             @case "ct_hyb1"
-                prompt(lr.log, "ct_hyb1")
+                sorry()
                 break
 
             @case "ct_hyb2"
-                prompt(lr.log, "ct_hyb2")
+                sorry()
                 break
 
             @case "hub1"
-                prompt(lr.log, "hub1")
+                sorry()
                 break
 
             @case "norg"
-                prompt(lr.log, "norg")
+                sorry()
                 break
 
             @default
