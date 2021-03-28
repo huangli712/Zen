@@ -660,6 +660,13 @@ function dmft_save(it::IterInfo, dmft_mode::I64)
     cd("..")
 end
 
+"""
+    solver_run(it::IterInfo, lr::Logger)
+
+Simple driver for quantum impurity solvers.
+
+See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`dmft_run`](@ref).
+"""
 function solver_run(it::IterInfo, lr::Logger)
        # C08.1: Prepare and check essential files for the quantum impurity solver
         solver_init(it, lr)
