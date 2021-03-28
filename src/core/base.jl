@@ -517,31 +517,13 @@ end
     solver_run(it::IterInfo, lr::Logger)
 
 Simple driver for quantum impurity solvers.
+To examine the runtime environment for quantum impurity solver.
+Launch the quantum impurity solver.
+Backup the output files by quantum impurity solver for next iterations.
 
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`dmft_run`](@ref).
 """
 function solver_run(it::IterInfo, lr::Logger)
-    # Prepare and check essential files for the quantum impurity solver
-    solver_init(it, lr)
-
-    # Launch the quantum impurity solver
-    solver_exec(it)
-
-    # Backup the output files of the quantum impurity solver
-    solver_save(it)
-
-    # Monitor the status
-    monitor(true)
-end
-
-"""
-    solver_init(it::IterInfo, lr::Logger)
-
-To examine the runtime environment for quantum impurity solver.
-
-See also: [`solver_exec`](@ref), [`solver_save`](@ref).
-"""
-function solver_init(it::IterInfo, lr::Logger)
     # Loop over each impurity site
     for i = 1:get_i("nsite")
 
@@ -577,94 +559,9 @@ function solver_init(it::IterInfo, lr::Logger)
         cd("..")
 
     end
-end
 
-"""
-    solver_exec(it::IterInfo)
-
-Launch the quantum impurity solver.
-
-See also: [`solver_init`](@ref), [`solver_save`](@ref).
-"""
-function solver_exec(it::IterInfo)
-    # Loop over each impurity site
-    for i = 1:get_i("nsite")
-
-        # Enter impurity.i directory
-        cd("impurity.$i")
-
-        # Choose suitable quantum impurity solver
-        engine = get_s("engine")
-        @cswitch engine begin
-            @case "ct_hyb1"
-                sorry()
-                break
-
-            @case "ct_hyb2"
-                sorry()
-                break
-
-            @case "hub1"
-                sorry()
-                break
-
-            @case "norg"
-                sorry()
-                break
-
-            @default
-                sorry()
-                break
-        end
-
-        # Enter the parent directory
-        cd("..")
-
-    end
-end
-
-"""
-    solver_save(it::IterInfo)
-
-Backup the output files by quantum impurity solver for next iterations.
-
-See also: [`solver_init`](@ref), [`solver_exec`](@ref).
-"""
-function solver_save(it::IterInfo)
-    # Loop over each impurity site
-    for i = 1:get_i("nsite")
-
-        # Enter impurity.i directory
-        cd("impurity.$i")
-
-        # Choose suitable quantum impurity solver
-        engine = get_s("engine")
-        @cswitch engine begin
-            @case "ct_hyb1"
-                sorry()
-                break
-
-            @case "ct_hyb2"
-                sorry()
-                break
-
-            @case "hub1"
-                sorry()
-                break
-
-            @case "norg"
-                sorry()
-                break
-
-            @default
-                sorry()
-                break
-        end
-
-        # Enter the parent directory
-        cd("..")
-
-    end
+    # Monitor the status
+    monitor(true)
 end
 
 """
