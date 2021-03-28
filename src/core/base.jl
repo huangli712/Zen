@@ -801,8 +801,14 @@ function solver_save(it::IterInfo)
     end
 end
 
+"""
+    sigma_core()
+"""
 function sigma_core()
 end
 
+"""
+    mixer_core()
+"""
 function mixer_core()
 end
