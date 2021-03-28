@@ -744,15 +744,19 @@ function solver_exec(it::IterInfo)
         engine = get_s("engine")
         @cswitch engine begin
             @case "ct_hyb1"
+                sorry()
                 break
 
             @case "ct_hyb2"
+                sorry()
                 break
 
             @case "hub1"
+                sorry()
                 break
 
             @case "norg"
+                sorry()
                 break
 
             @default
