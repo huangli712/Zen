@@ -320,6 +320,7 @@ function adaptor_init(it::IterInfo, lr::Logger)
     engine = get_d("engine")
     prompt(lr.log, "adaptor")
     @cswitch engine begin
+        # For VASP
         @case "vasp"
             vasp_files()
             break
@@ -472,6 +473,7 @@ function dft_init(it::IterInfo, lr::Logger)
     engine = get_d("engine")
     prompt(lr.log, engine)
     @cswitch engine begin
+        # For VASP
         @case "vasp"
             vasp_init(it)
             break
@@ -499,6 +501,7 @@ function dft_exec(it::IterInfo)
     # Choose suitable DFT engine, then launch it.
     engine = get_d("engine")
     @cswitch engine begin
+        # For VASP
         @case "vasp"
             vasp_exec(it)
             break
@@ -527,6 +530,7 @@ function dft_save(it::IterInfo)
     # Choose suitable DFT engine, then backup some essential output files.
     engine = get_d("engine")
     @cswitch engine begin
+        # For VASP
         @case "vasp"
             vasp_save(it)
             break
