@@ -170,9 +170,9 @@ function cycle1()
         prompt("Sigma")
         sigma_core(lr, "gather")
 
-        #
         # C10: Mixer
-        #
+        prompt("Mixer")
+        mixer_core()
     end
 
     # C98: Close Logger.log
@@ -821,4 +821,6 @@ end
     mixer_core()
 """
 function mixer_core()
+    # Monitor the status
+    monitor(true)
 end
