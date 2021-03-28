@@ -156,18 +156,7 @@ function cycle1()
 
         # C06: Perform DMFT calculation
         prompt("DMFT")
-        #
-        # C06.1: Prepare and check essential files for the DMFT engine (dmft1)
-        dmft_init(it, lr, 1)
-        #
-        # C06.2: Launch the DMFT engine (dmft1)
-        dmft_exec(it, 1)
-        #
-        # C06.3: Backup the output files of the DMFT engine (dmft1)
-        dmft_save(it, 1)
-        #
-        # C06.4: Monitor the status
-        monitor(true)
+        dmft_run(it, lr, 1)
 
         # C07: Split and distribute the data
         prompt("Sigma")
@@ -539,7 +528,19 @@ function dft_save(it::IterInfo)
     cd("..")
 end
 
-function dmft_run()
+function dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
+        #
+        # C06.1: Prepare and check essential files for the DMFT engine (dmft1)
+        dmft_init(it, lr, dmft_mode)
+        #
+        # C06.2: Launch the DMFT engine (dmft1)
+        dmft_exec(it, dmft_mode)
+        #
+        # C06.3: Backup the output files of the DMFT engine (dmft1)
+        dmft_save(it, dmft_mode)
+        #
+        # C06.4: Monitor the status
+        monitor(true)
 end
 
 """
