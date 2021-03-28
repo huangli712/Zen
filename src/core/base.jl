@@ -816,6 +816,8 @@ end
 
 """
     sigma_core(lr::Logger, task::String = "reset")
+
+See also: [`mixer_core`](@ref).
 """
 function sigma_core(lr::Logger, task::String = "reset")
     @cswitch task begin
@@ -849,7 +851,9 @@ function sigma_core(lr::Logger, task::String = "reset")
 end
 
 """
-    mixer_core()
+    mixer_core(lr::Logger)
+
+See also: [`sigma_core`](@ref).
 """
 function mixer_core(lr::Logger)
     # Monitor the status
