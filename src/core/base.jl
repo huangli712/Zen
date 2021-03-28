@@ -288,59 +288,12 @@ end
     adaptor_run(it::IterInfo, lr::Logger)
 
 Simple driver for the adaptor.
-
-See also: [`dft_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
-"""
-function adaptor_run(it::IterInfo, lr::Logger)
-    # Prepare and check essential files for the adaptor
-    adaptor_init(it, lr)
-
-    # Launch the adaptor
-    adaptor_exec(it)
-
-    # Backup the output files of the adaptor
-    adaptor_save(it)
-
-    # Monitor the status
-    monitor(true)
-end
-
-"""
-    adaptor_init(it::IterInfo, lr::Logger)
-
 Initialize the adaptor, to check whether the essential files exist.
-
-See also: [`adaptor_exec`](@ref), [`adaptor_save`](@ref).
-"""
-function adaptor_init(it::IterInfo, lr::Logger)
-    # Enter dft directory
-    cd("dft")
-
-    # Choose suitable adaptor according to DFT engine
-    engine = get_d("engine")
-    prompt(lr.log, "adaptor")
-    @cswitch engine begin
-        # For VASP
-        @case "vasp"
-            vasp_files()
-            break
-
-        @default
-            sorry()
-            break
-    end
-
-    # Enter the parent directory
-    cd("..")
-end
-
-"""
-    adaptor_exec(it::IterInfo)
-
 Parse the data output by the DFT engine, try to postprocess them, and then
 transform them into IR format.
+Backup the output files by adaptor.
 
-See also: [`adaptor_init`](@ref), [`adaptor_save`](@ref).
+See also: [`dft_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
 function adaptor_exec(it::IterInfo)
     # Enter dft directory
@@ -362,9 +315,11 @@ function adaptor_exec(it::IterInfo)
     # Kohn-Sham data will be stored in the DFTData dict.
     #
     engine = get_d("engine")
+    prompt(lr.log, "adaptor")
     @cswitch engine begin
         # For VASP
         @case "vasp"
+            vasp_files()
             vasp_adaptor(DFTData)
             break
 
@@ -415,26 +370,14 @@ function adaptor_exec(it::IterInfo)
     empty!(DFTData)
     @assert isempty(DFTData)
 
-    # Enter the parent directory
-    cd("..")
-end
-
-"""
-    adaptor_save(it::IterInfo)
-
-Backup the output files by adaptor.
-
-See also: [`adaptor_init`](@ref), [`adaptor_exec`](@ref).
-"""
-function adaptor_save(it::IterInfo)
-    # Enter dft directory
-    cd("dft")
-
     # Save the essential files
     ir_save(it)
 
     # Enter the parent directory
     cd("..")
+
+    # Monitor the status
+    monitor(true)
 end
 
 """
