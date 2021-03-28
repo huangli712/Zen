@@ -820,7 +820,9 @@ end
 """
     mixer_core()
 """
-function mixer_core()
+function mixer_core(lr::Logger)
     # Monitor the status
     monitor(true)
+
+    println()
 end
