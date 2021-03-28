@@ -97,7 +97,7 @@ function cycle1()
 
     # C01: Perform DFT calculation (for the first time)
     prompt("DFT")
-    dft_core(it, lr)
+    dft_run(it, lr)
 
 #
 # Remarks 2:
@@ -113,7 +113,7 @@ function cycle1()
     # C02: Perform DFT calculation (for the second time)
     if get_d("loptim")
         prompt("DFT")
-        dft_core(it, lr)
+        dft_run(it, lr)
     end
 
 #
@@ -129,7 +129,7 @@ function cycle1()
 
     # C03: To bridge the gap between DFT engine and DMFT engine by adaptor
     prompt("Adaptor")
-    adaptor_core(it, lr)
+    adaptor_run(it, lr)
 
     # C04: Prepare default self-energy functions
     prompt("Sigma")
@@ -326,9 +326,9 @@ function rm_trees()
 end
 
 """
-    adaptor_core(it::IterInfo, lr::Logger)
+    adaptor_run(it::IterInfo, lr::Logger)
 """
-function adaptor_core(it::IterInfo, lr::Logger)
+function adaptor_run(it::IterInfo, lr::Logger)
     # Prepare and check essential files for the adaptor
     adaptor_init(it, lr)
 
@@ -470,9 +470,9 @@ function adaptor_save(it::IterInfo)
 end
 
 """
-    dft_core(it::IterInfo, lr::Logger)
+    dft_run(it::IterInfo, lr::Logger)
 """
-function dft_core(it::IterInfo, lr::Logger)
+function dft_run(it::IterInfo, lr::Logger)
     # Prepare and check essential files for the DFT engine
     dft_init(it, lr)
 
@@ -569,7 +569,7 @@ function dft_save(it::IterInfo)
     cd("..")
 end
 
-function dmft_core()
+function dmft_run()
 end
 
 """
@@ -674,7 +674,7 @@ function dmft_save(it::IterInfo, dmft_mode::I64)
     end
 end
 
-function solver_init()
+function solver_run()
 end
 
 """
