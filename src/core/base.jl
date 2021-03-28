@@ -552,18 +552,17 @@ Simple driver for DMFT engine.
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`solver_run`](@ref).
 """
 function dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
-        #
-        # C06.1: Prepare and check essential files for the DMFT engine (dmft1)
-        dmft_init(it, lr, dmft_mode)
-        #
-        # C06.2: Launch the DMFT engine (dmft1)
-        dmft_exec(it, dmft_mode)
-        #
-        # C06.3: Backup the output files of the DMFT engine (dmft1)
-        dmft_save(it, dmft_mode)
-        #
-        # C06.4: Monitor the status
-        monitor(true)
+    # Prepare and check essential files for the DMFT engine
+    dmft_init(it, lr, dmft_mode)
+
+    # Launch the DMFT engine
+    dmft_exec(it, dmft_mode)
+
+    # Backup the output files of the DMFT engine
+    dmft_save(it, dmft_mode)
+
+    # Monitor the status
+    monitor(true)
 end
 
 """
