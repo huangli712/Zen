@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/28
+# Last modified: 2021/03/29
 #
 
 #
@@ -154,11 +154,11 @@ function cycle1()
         prompt("Sigma")
         sigma_core(lr, "dcount")
 
-        # C06: Perform DMFT calculation
+        # C06: Perform DMFT calculation with `dmft_mode` = 1
         prompt("DMFT")
         dmft_run(it, lr, 1)
 
-        # C07: Split and distribute the data
+        # C07: Split and distribute the data (hybridization functions)
         prompt("Sigma")
         sigma_core(lr, "split")
 
@@ -166,13 +166,13 @@ function cycle1()
         prompt("Solvers")
         solver_run(it, lr)
  
-        # C09: Gather and combine the data
+        # C09: Gather and combine the data (impurity self-functions)
         prompt("Sigma")
         sigma_core(lr, "gather")
 
         # C10: Mixer
         prompt("Mixer")
-        mixer_core()
+        mixer_core(lr)
     end
 
     # C98: Close Logger.log
