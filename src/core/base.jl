@@ -170,7 +170,7 @@ function cycle1()
         dmft_init(it, lr, 1)
         #
         # C06.2: Launch the DMFT engine (dmft1)
-        dmft_run(it, 1)
+        dmft_exec(it, 1)
         #
         # C06.3: Backup the output files of the DMFT engine (dmft1)
         dmft_save(it, 1)
@@ -194,7 +194,7 @@ function cycle1()
         solver_init(it, lr)
         #
         # C08.2: Launch the quantum impurity solver
-        solver_run(it)
+        solver_exec(it)
         #
         # C08.3: Backup the output files of the quantum impurity solver
         solver_save(it)
@@ -333,7 +333,7 @@ function adaptor_core(it::IterInfo, lr::Logger)
     adaptor_init(it, lr)
 
     # Launch the adaptor
-    adaptor_run(it)
+    adaptor_exec(it)
 
     # Backup the output files of the adaptor
     adaptor_save(it)
@@ -347,7 +347,7 @@ end
 
 Initialize the adaptor, to check whether the essential files exist.
 
-See also: [`adaptor_run`](@ref), [`adaptor_save`](@ref).
+See also: [`adaptor_exec`](@ref), [`adaptor_save`](@ref).
 """
 function adaptor_init(it::IterInfo, lr::Logger)
     # Enter dft directory
@@ -371,14 +371,14 @@ function adaptor_init(it::IterInfo, lr::Logger)
 end
 
 """
-    adaptor_run(it::IterInfo)
+    adaptor_exec(it::IterInfo)
 
 Parse the data output by the DFT engine, try to postprocess them, and then
 transform them into IR format.
 
 See also: [`adaptor_init`](@ref), [`adaptor_save`](@ref).
 """
-function adaptor_run(it::IterInfo)
+function adaptor_exec(it::IterInfo)
     # Enter dft directory
     cd("dft")
 
@@ -456,7 +456,7 @@ end
 
 Backup the output files by adaptor.
 
-See also: [`adaptor_init`](@ref), [`adaptor_run`](@ref).
+See also: [`adaptor_init`](@ref), [`adaptor_exec`](@ref).
 """
 function adaptor_save(it::IterInfo)
     # Enter dft directory
@@ -477,7 +477,7 @@ function dft_core(it::IterInfo, lr::Logger)
     dft_init(it, lr)
 
     # Perform a self-consitent calculation at the DFT level
-    dft_run(it)
+    dft_exec(it)
 
     # Backup the output files of the DFT engine
     dft_save(it)
@@ -491,7 +491,7 @@ end
 
 To examine the runtime environment for density functional theory engine.
 
-See also: [`dft_run`](@ref), [`dft_save`](@ref).
+See also: [`dft_exec`](@ref), [`dft_save`](@ref).
 """
 function dft_init(it::IterInfo, lr::Logger)
     # Enter dft directory
@@ -515,13 +515,13 @@ function dft_init(it::IterInfo, lr::Logger)
 end
 
 """
-    dft_run(it::IterInfo)
+    dft_exec(it::IterInfo)
 
 Launch the density functional theory engine.
 
 See also: [`dft_init`](@ref), [`dft_save`](@ref).
 """
-function dft_run(it::IterInfo)
+function dft_exec(it::IterInfo)
     # Enter dft directory
     cd("dft")
 
@@ -529,7 +529,7 @@ function dft_run(it::IterInfo)
     engine = get_d("engine")
     @cswitch engine begin
         @case "vasp"
-            vasp_run(it)
+            vasp_exec(it)
             break
 
         @default
@@ -547,7 +547,7 @@ end
 Backup the output files by density functional theory engine
 for next iterations.
 
-See also: [`dft_init`](@ref), [`dft_run`](@ref).
+See also: [`dft_init`](@ref), [`dft_exec`](@ref).
 """
 function dft_save(it::IterInfo)
     # Enter dft directory
@@ -577,7 +577,7 @@ end
 
 To examine the runtime environment for dynamical mean-field theory engine.
 
-See also [`dmft_run`](@ref), [`dmft_save`])(@ref).
+See also [`dmft_exec`](@ref), [`dmft_save`])(@ref).
 """
 function dmft_init(it::IterInfo, lr::Logger, dmft_mode::I64)
     # Examine the argument `dmft_mode`
@@ -608,13 +608,13 @@ function dmft_init(it::IterInfo, lr::Logger, dmft_mode::I64)
 end
 
 """
-    dmft_run(it::IterInfo, dmft_mode::I64)
+    dmft_exec(it::IterInfo, dmft_mode::I64)
 
 Launch the dynamical mean-field theory engine.
 
 See also [`dmft_init`](@ref), [`dmft_save`])(@ref).
 """
-function dmft_run(it::IterInfo, dmft_mode::I64)
+function dmft_exec(it::IterInfo, dmft_mode::I64)
     # Examine the argument `dmft_mode`
     @assert dmft_mode === 1 || dmft_mode === 2
 
@@ -646,7 +646,7 @@ end
 Backup the output files by dynamical mean-field theory engine
 for next iterations.
 
-See also [`dmft_init`](@ref), [`dmft_run`])(@ref).
+See also [`dmft_init`](@ref), [`dmft_exec`])(@ref).
 """
 function dmft_save(it::IterInfo, dmft_mode::I64)
     # Examine the argument `dmft_mode`
@@ -682,7 +682,7 @@ end
 
 To examine the runtime environment for quantum impurity solver.
 
-See also: [`solver_run`](@ref), [`solver_save`](@ref).
+See also: [`solver_exec`](@ref), [`solver_save`](@ref).
 """
 function solver_init(it::IterInfo, lr::Logger)
     # Loop over each impurity site
@@ -722,13 +722,13 @@ function solver_init(it::IterInfo, lr::Logger)
 end
 
 """
-    solver_run(it::IterInfo)
+    solver_exec(it::IterInfo)
 
 Launch the quantum impurity solver.
 
 See also: [`solver_init`](@ref), [`solver_save`](@ref).
 """
-function solver_run(it::IterInfo)
+function solver_exec(it::IterInfo)
     # Loop over each impurity site
     for i = 1:get_i("nsite")
 
@@ -766,7 +766,7 @@ end
 
 Backup the output files by quantum impurity solver for next iterations.
 
-See also: [`solver_init`](@ref), [`solver_run`](@ref).
+See also: [`solver_init`](@ref), [`solver_exec`](@ref).
 """
 function solver_save(it::IterInfo)
     # Loop over each impurity site
