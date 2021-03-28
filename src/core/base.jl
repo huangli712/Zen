@@ -422,7 +422,7 @@ Backup the output files by adaptor.
 
 See also: [`dft_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
-function adaptor_run(it::IterInfo)
+function adaptor_run(it::IterInfo, lr::Logger)
     # Enter dft directory
     cd("dft")
 
