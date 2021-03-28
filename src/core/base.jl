@@ -194,7 +194,7 @@ end
 Perform fully self-consistent DFT + DMFT calculations. The self-consistency
 is achieved at both DFT and DMFT levels.
 
-See also: [`cycle1`](@ref).
+See also: [`cycle1`](@ref), [`go`](@ref).
 """
 function cycle2()
     sorry()
@@ -286,6 +286,10 @@ end
 
 """
     adaptor_run(it::IterInfo, lr::Logger)
+
+Simple driver for the adaptor.
+
+See also: [`dft_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
 function adaptor_run(it::IterInfo, lr::Logger)
     # Prepare and check essential files for the adaptor
@@ -341,6 +345,7 @@ function adaptor_exec(it::IterInfo)
     # Enter dft directory
     cd("dft")
 
+    #
     # A0: Create a dict named DFTData
     #
     # This dictionary is for storing the Kohn-Sham band structure and
@@ -357,6 +362,7 @@ function adaptor_exec(it::IterInfo)
     #
     engine = get_d("engine")
     @cswitch engine begin
+        # For VASP
         @case "vasp"
             vasp_adaptor(DFTData)
             break
@@ -378,11 +384,13 @@ function adaptor_exec(it::IterInfo)
     #
     projtype = get_d("projtype")
     @cswitch projtype begin
+        # For projected local orbital scheme
         # Now we disable debug
         @case "plo"
             plo_adaptor(DFTData, false)
             break
 
+        # For maximally localized wannier function scheme
         @case "wannier"
             sorry()
             break
@@ -430,6 +438,10 @@ end
 
 """
     dft_run(it::IterInfo, lr::Logger)
+
+Simple driver for DFT engine.
+
+See also: [`adaptor_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
 function dft_run(it::IterInfo, lr::Logger)
     # Prepare and check essential files for the DFT engine
