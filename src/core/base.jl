@@ -170,7 +170,7 @@ function cycle1()
         prompt("Sigma")
         sigma_core(lr, "gather")
 
-        # C10: Mixer
+        # C10: Mixer for self-energy functions or hybridization functions
         prompt("Mixer")
         mixer_core(lr)
     end
