@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/26
+# Last modified: 2021/03/28
 #
 
 #
@@ -20,7 +20,7 @@ code and then fulfill the `DFTData` dict (i.e `D`).
 The following vasp's files are needed: `POSCAR`, `IBZKPT`, `EIGENVAL`,
 `LOCPROJ`, and `DOSCAR`.
 
-See also: [`plo_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_run`](@ref).
+See also: [`plo_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_exec`](@ref).
 """
 function vasp_adaptor(D::Dict{Symbol,Any})
     # V01: Print the header
@@ -60,7 +60,7 @@ end
 
 Check the runtime environment of vasp, prepare necessary input files.
 
-See also: [`vasp_run`](@ref), [`vasp_save`](@ref).
+See also: [`vasp_exec`](@ref), [`vasp_save`](@ref).
 """
 function vasp_init(it::IterInfo)
     # Prepare essential input files
@@ -94,13 +94,13 @@ function vasp_init(it::IterInfo)
 end
 
 """
-    vasp_run(it::IterInfo)
+    vasp_exec(it::IterInfo)
 
 Execute the vasp program.
 
 See also: [`vasp_init`](@ref), [`vasp_save`](@ref).
 """
-function vasp_run(it::IterInfo)
+function vasp_exec(it::IterInfo)
     # Print the header
     println("[ Engine : VASP ]")
 
@@ -138,7 +138,7 @@ end
 Backup the output files of vasp if necessary. Furthermore, the fermi level
 in `IterInfo` struct is also updated (`IterInfo.dft_fermi`).
 
-See also: [`vasp_init`](@ref), [`vasp_run`](@ref).
+See also: [`vasp_init`](@ref), [`vasp_exec`](@ref).
 """
 function vasp_save(it::IterInfo)
     # Store the data files
