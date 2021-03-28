@@ -668,17 +668,17 @@ Simple driver for quantum impurity solvers.
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`dmft_run`](@ref).
 """
 function solver_run(it::IterInfo, lr::Logger)
-       # C08.1: Prepare and check essential files for the quantum impurity solver
-        solver_init(it, lr)
-        #
-        # C08.2: Launch the quantum impurity solver
-        solver_exec(it)
-        #
-        # C08.3: Backup the output files of the quantum impurity solver
-        solver_save(it)
-        #
-        # C08.4: Monitor the status
-        monitor(true)
+    # Prepare and check essential files for the quantum impurity solver
+    solver_init(it, lr)
+
+    # Launch the quantum impurity solver
+    solver_exec(it)
+
+    # Backup the output files of the quantum impurity solver
+    solver_save(it)
+
+    # Monitor the status
+    monitor(true)
 end
 
 """
