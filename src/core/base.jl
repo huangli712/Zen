@@ -134,11 +134,10 @@ function cycle1()
 
     # C04: Prepare default self-energy functions
     prompt("Sigma")
-    sigma_core()
-    exit(-1)
+    sigma_core(lr, "reset")
 
 #
-# Remarks 3:
+# Remarks 4:
 #
 # Now everything is ready. We are going to solve the DMFT equation iterately.
 #
@@ -153,12 +152,7 @@ function cycle1()
 
         # C05: Tackle with the double counting term
         prompt("Sigma")
-        #
-        # C05.1: Calculate the double counting term and store it
-        sigma_dcount(lr)
-        #
-        # C05.2: Monitor the status
-        monitor(true)
+        sigma_core(lr, "dcount")
 
         # C06: Perform DMFT calculation
         prompt("DMFT")
@@ -177,12 +171,7 @@ function cycle1()
 
         # C07: Split and distribute the data
         prompt("Sigma")
-        #
-        # C07.1: Split the hybridization functions and store them
-        sigma_split(lr)
-        #
-        # C07.2: Monitor the status
-        monitor(true)
+        sigma_core(lr, "split")
 
         # C08: Solve the quantum impurity problems
         prompt("Solvers")
@@ -201,15 +190,10 @@ function cycle1()
 
         # C09: Gather and combine the data
         prompt("Sigma")
-        #
-        # C09.1: Collect impurity self-energy functions and combine them
-        sigma_gather(lr)
-        #
-        # C09.2: Monitor the status
-        monitor(true)
+        sigma_core(lr, "gather")
 
         #
-        # C09: Mixer
+        # C10: Mixer
         #
     end
 
@@ -808,14 +792,17 @@ function sigma_core(lr::Logger, task::String = "reset")
             sigma_reset(lr)
             break
 
+        # Calculate the double counting term and store it
         @case "dcount"
             sigma_dcount(lr)
             break
 
+        # Split the hybridization functions and store them
         @case "split"
             sigma_split(lr)
             break
 
+        # Collect impurity self-energy functions and combine them
         @case "gather"
             sigma_gather(lr)
             break
