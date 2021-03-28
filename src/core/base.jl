@@ -640,26 +640,24 @@ function dmft_save(it::IterInfo, dmft_mode::I64)
     # Examine the argument `dmft_mode`
     @assert dmft_mode === 1 || dmft_mode === 2
 
-    # Solve the DMFT self-consistent equation
-    if dmft_mode === 1
-        # Enter dmft1 directory
-        cd("dmft1")
+    # Enter dmft1 or dmft2 directory
+    cd("dmft$dmft_mode")
 
-        # TODO
+    # Choose suitable DMFT engine, then backup some essential output files.
+    @cswitch dmft_mode begin
+        # Solve the DMFT self-consistent equation
+        @case 1
+            sorry()
+            break
 
-        # Enter the parent directory
-        cd("..")
-
-    # Generate DMFT correction to DFT
-    else
-        # Enter dmft2 directory
-        cd("dmft2")
-
-        # TODO
-
-        # Enter the parent directory
-        cd("..")
+        # Generate DMFT correction to DFT
+        @case 2
+            sorry()
+            break
     end
+
+    # Enter the parent directory
+    cd("..")
 end
 
 function solver_run(it::IterInfo, lr::Logger)
