@@ -819,6 +819,10 @@ function sigma_core(lr::Logger, task::String = "reset")
         @case "gather"
             sigma_gather(lr)
             break
+
+        @default
+            sorry()
+            break
     end
 
     # Monitor the status
