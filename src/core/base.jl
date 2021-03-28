@@ -820,6 +820,8 @@ end
 See also: [`mixer_core`](@ref).
 """
 function sigma_core(lr::Logger, task::String = "reset")
+    @assert task in ("reset", "dcount", "split", "gather")
+
     prompt(lr.log, "sigma::$task")
     @cswitch task begin
         # Generate default self-energy functions and store them
