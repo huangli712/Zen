@@ -175,19 +175,8 @@ function cycle1()
 
         # C08: Solve the quantum impurity problems
         prompt("Solvers")
-        #
-        # C08.1: Prepare and check essential files for the quantum impurity solver
-        solver_init(it, lr)
-        #
-        # C08.2: Launch the quantum impurity solver
-        solver_exec(it)
-        #
-        # C08.3: Backup the output files of the quantum impurity solver
-        solver_save(it)
-        #
-        # C08.4: Monitor the status
-        monitor(true)
-
+        solver_run(it, lr)
+ 
         # C09: Gather and combine the data
         prompt("Sigma")
         sigma_core(lr, "gather")
@@ -655,7 +644,18 @@ function dmft_save(it::IterInfo, dmft_mode::I64)
     end
 end
 
-function solver_run()
+function solver_run(it::IterInfo, lr::Logger)
+       # C08.1: Prepare and check essential files for the quantum impurity solver
+        solver_init(it, lr)
+        #
+        # C08.2: Launch the quantum impurity solver
+        solver_exec(it)
+        #
+        # C08.3: Backup the output files of the quantum impurity solver
+        solver_save(it)
+        #
+        # C08.4: Monitor the status
+        monitor(true)
 end
 
 """
