@@ -133,7 +133,7 @@ function sigma_dcount()
     nsite = get_i("nsite")
     nspin = 2
 
-    # Create double-counting terms for self-energy functions
+    # Create double counting terms for self-energy functions
     #
     # Initialize an array for dc
     sigdc = zeros(F64, nsite)
@@ -199,7 +199,14 @@ function sigma_gather()
     println("[ Sigma : Gather ]")
 end
 
-function cal_dc_fll()
+"""
+    cal_dc_fll(U::F64, J::F64, N::F64)
+
+Evaluate the double counting term by the fully localized limit scheme.
+
+See also: [`cal_dc_amf`](@ref), [`cal_dc_exact`](@ref).
+"""
+function cal_dc_fll(U::F64, J::F64, N::F64)
 end
 
 function cal_dc_amf()
