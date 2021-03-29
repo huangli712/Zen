@@ -198,3 +198,12 @@ function sigma_gather()
     # Print the log
     println("[ Sigma : Gather ]")
 end
+
+function cal_dc_fll()
+end
+
+function cal_dc_amf()
+end
+
+function cal_dc_exact()
+end
