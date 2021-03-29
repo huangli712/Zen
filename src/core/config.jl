@@ -271,7 +271,7 @@ See also: [`get_c`](@ref), [`str_c`](@ref).
 """
 function cat_c()
     # See comments in cat_d()
-    println("  pcase   | case     -> ", str_c("case"))
+    println("  case   | case     -> ", str_c("case"))
 end
 
 """
@@ -320,19 +320,19 @@ See also: [`get_m`](@ref), [`str_m`](@ref).
 """
 function cat_m()
     # See comments in cat_d()
-    println("  dmft   | mode     -> ", str_m("mode"))
-    println("  dmft   | axis     -> ", str_m("axis"))
-    println("  dmft   | niter    -> ", str_m("niter"))
-    println("  dmft   | nmesh    -> ", str_m("nmesh"))
-    println("  dmft   | dcount   -> ", str_m("dcount"))
-    println("  dmft   | beta     -> ", str_m("beta"))
-    println("  dmft   | mixer    -> ", str_m("mixer"))
-    println("  dmft   | cc       -> ", str_m("cc"))
-    println("  dmft   | ec       -> ", str_m("ec"))
-    println("  dmft   | fc       -> ", str_m("fc"))
-    println("  dmft   | lcharge  -> ", str_m("lcharge"))
-    println("  dmft   | lenergy  -> ", str_m("lenergy"))
-    println("  dmft   | lforce   -> ", str_m("lforce"))
+    println("  dmft     | mode     -> ", str_m("mode"))
+    println("  dmft     | axis     -> ", str_m("axis"))
+    println("  dmft     | niter    -> ", str_m("niter"))
+    println("  dmft     | nmesh    -> ", str_m("nmesh"))
+    println("  dmft     | dcount   -> ", str_m("dcount"))
+    println("  dmft     | beta     -> ", str_m("beta"))
+    println("  dmft     | mixer    -> ", str_m("mixer"))
+    println("  dmft     | cc       -> ", str_m("cc"))
+    println("  dmft     | ec       -> ", str_m("ec"))
+    println("  dmft     | fc       -> ", str_m("fc"))
+    println("  dmft     | lcharge  -> ", str_m("lcharge"))
+    println("  dmft     | lenergy  -> ", str_m("lenergy"))
+    println("  dmft     | lforce   -> ", str_m("lforce"))
 end
 
 """
@@ -344,15 +344,15 @@ See also: [`get_i`](@ref), [`str_i`](@ref).
 """
 function cat_i()
     # See comments in cat_d()
-    println("  imp    | nsite    -> ", str_i("nsite"))
-    println("  imp    | atoms    -> ", str_i("atoms"))
-    println("  imp    | equiv    -> ", str_i("equiv"))
-    println("  imp    | shell    -> ", str_i("shell"))
-    println("  imp    | ising    -> ", str_i("ising"))
-    println("  imp    | occup    -> ", str_i("occup"))
-    println("  imp    | upara    -> ", str_i("upara"))
-    println("  imp    | jpara    -> ", str_i("jpara"))
-    println("  imp    | lpara    -> ", str_i("lpara"))
+    println("  impurity | nsite    -> ", str_i("nsite"))
+    println("  impurity | atoms    -> ", str_i("atoms"))
+    println("  impurity | equiv    -> ", str_i("equiv"))
+    println("  impurity | shell    -> ", str_i("shell"))
+    println("  impurity | ising    -> ", str_i("ising"))
+    println("  impurity | occup    -> ", str_i("occup"))
+    println("  impurity | upara    -> ", str_i("upara"))
+    println("  impurity | jpara    -> ", str_i("jpara"))
+    println("  impurity | lpara    -> ", str_i("lpara"))
 end
 
 """
@@ -364,8 +364,8 @@ See also: [`get_s`](@ref), [`str_s`](@ref).
 """
 function cat_s()
     # See comments in cat_d()
-    println("  solver | engine   -> ", str_s("engine"))
-    println("  solver | params   -> ", str_s("params"))
+    println("  solver   | engine   -> ", str_s("engine"))
+    println("  solver   | params   -> ", str_s("params"))
     println()
 end
 
