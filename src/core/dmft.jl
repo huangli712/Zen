@@ -13,6 +13,23 @@
 See also: [`dmft_exec`](@ref), [`dmft_save`](@ref).
 """
 function dmft_init(it::IterInfo)
+    # Prepare essential input files, i.e., dmft.in.
+    # If the `dmft.in` file exists already, it will be overwritten.
+    open("dmft.in", "w") do fout
+        println(fout, "task = ")
+        println(fout, "axis = ")
+        println(fout, "beta = ")
+    end
+
+    # Check essential input files
+    flist = ("INCAR", "POSCAR", "POTCAR")
+    for i in eachindex(flist)
+        filename = flist[i]
+        if !isfile(filename)
+            error("Please make sure the file $filename is available")
+        end
+    end
+    exit(-1)
 end
 
 """
