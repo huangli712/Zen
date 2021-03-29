@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/26
+# Last modified: 2021/03/29
 #
 
 #
@@ -27,7 +27,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     end
 
     # I02: Print the header
-    println("[ Adaptor : IR ]")
+    println("  Adaptor : IR")
 
     # I03: Write important parameters
     println("  Store params")
@@ -77,6 +77,9 @@ function ir_adaptor(D::Dict{Symbol,Any})
         println("  Store tetrahedron")
         irio_tetra(pwd(), D[:volt], D[:itet])
     end
+
+    # I11: Print the footer
+    println()
 end
 
 """
