@@ -151,7 +151,6 @@ function cycle1()
 
         # C05: Tackle with the double counting term
         sigma_core(lr, "dcount")
-        exit(-1)
 
         # C06: Perform DMFT calculation with `dmft_mode` = 1
         dmft_run(it, lr, 1)
@@ -346,7 +345,9 @@ function dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
     @cswitch dmft_mode begin
         # Solve the DMFT self-consistent equation
         @case 1
-            # sorry()
+            dmft_init()
+            dmft_exec()
+            dmft_save()
             break
 
         # Generate DMFT correction for DFT charge density

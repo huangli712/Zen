@@ -462,8 +462,17 @@ export irio_charge
 #
 # Wrapper for dynamical mean-field theory engine.
 #
+# Members:
+#
+# dmft_init -> Prepare input files for the DMFT engine.
+# dmft_exec -> Execute the DMFT engine.
+# dmft_save -> Backup output files of the DMFT engine.
+#
 include("dmft.jl")
 #
+export dmft_init
+export dmft_exec
+export dmft_save
 
 #
 # solver.jl
