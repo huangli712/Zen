@@ -272,6 +272,7 @@ See also: [`get_c`](@ref), [`str_c`](@ref).
 function cat_c()
     # See comments in cat_d()
     println("  case     | case     -> ", str_c("case"))
+    println()
 end
 
 """
@@ -309,6 +310,7 @@ function cat_d()
     println("  dft      | lproj    -> ", str_d("lproj"))
     println("  dft      | sproj    -> ", str_d("sproj"))
     println("  dft      | window   -> ", str_d("window"))
+    println()
 end
 
 """
@@ -333,6 +335,7 @@ function cat_m()
     println("  dmft     | lcharge  -> ", str_m("lcharge"))
     println("  dmft     | lenergy  -> ", str_m("lenergy"))
     println("  dmft     | lforce   -> ", str_m("lforce"))
+    println()
 end
 
 """
@@ -353,6 +356,7 @@ function cat_i()
     println("  impurity | upara    -> ", str_i("upara"))
     println("  impurity | jpara    -> ", str_i("jpara"))
     println("  impurity | lpara    -> ", str_i("lpara"))
+    println()
 end
 
 """
