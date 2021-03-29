@@ -41,23 +41,23 @@ function exhibit()
     prompt("ZEN", "Configuration")
 
     # E1: Show dict PCASE
-    println("[ Parameters : Case ]")
+    # println("[ Parameters : Case ]")
     cat_c()
 
     # E2: Show dict PDFT
-    println("[ Parameters : DFT ]")
+    # println("[ Parameters : DFT ]")
     cat_d()
 
     # E3: Show dict PDMFT
-    println("[ Parameters : DMFT ]")
+    # println("[ Parameters : DMFT ]")
     cat_m()
 
     # E4: Show dict PIMP
-    println("[ Parameters : Impurities ]")
+    # println("[ Parameters : Impurities ]")
     cat_i()
 
     # E5: Show dict PSOLVER
-    println("[ Parameters : Solvers ]")
+    # println("[ Parameters : Solvers ]")
     cat_s()
 end
 
@@ -332,7 +332,7 @@ function cat_m()
     println("  fc       -> ", str_m("fc"))
     println("  lcharge  -> ", str_m("lcharge"))
     println("  lenergy  -> ", str_m("lenergy"))
-    println("  lforce   -> ", str_m("lforce"))
+    println("  dmft   | lforce   -> ", str_m("lforce"))
 end
 
 """
@@ -344,15 +344,15 @@ See also: [`get_i`](@ref), [`str_i`](@ref).
 """
 function cat_i()
     # See comments in cat_d()
-    println("  nsite    -> ", str_i("nsite"))
-    println("  atoms    -> ", str_i("atoms"))
-    println("  equiv    -> ", str_i("equiv"))
-    println("  shell    -> ", str_i("shell"))
-    println("  ising    -> ", str_i("ising"))
-    println("  occup    -> ", str_i("occup"))
-    println("  upara    -> ", str_i("upara"))
-    println("  jpara    -> ", str_i("jpara"))
-    println("  lpara    -> ", str_i("lpara"))
+    println("  imp    | nsite    -> ", str_i("nsite"))
+    println("  imp    | atoms    -> ", str_i("atoms"))
+    println("  imp    | equiv    -> ", str_i("equiv"))
+    println("  imp    | shell    -> ", str_i("shell"))
+    println("  imp    | ising    -> ", str_i("ising"))
+    println("  imp    | occup    -> ", str_i("occup"))
+    println("  imp    | upara    -> ", str_i("upara"))
+    println("  imp    | jpara    -> ", str_i("jpara"))
+    println("  imp    | lpara    -> ", str_i("lpara"))
 end
 
 """
@@ -364,8 +364,8 @@ See also: [`get_s`](@ref), [`str_s`](@ref).
 """
 function cat_s()
     # See comments in cat_d()
-    println("  engine   -> ", str_s("engine"))
-    println("  params   -> ", str_s("params"))
+    println("  solver | engine   -> ", str_s("engine"))
+    println("  solver | params   -> ", str_s("params"))
     println()
 end
 
