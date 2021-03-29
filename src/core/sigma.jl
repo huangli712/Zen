@@ -149,12 +149,12 @@ function sigma_dcount()
 
         # Choose suitable double counting scheme
         @cswitch get_m("dcount") begin
-            # Fully localized limit scheme (occupation number is fixed)
+            # Fully localized limit scheme with fixed occupation number
             @case "fll1"
                 sigdc[i] = cal_dc_fll(U, J, N)
                 break
 
-            # Fully localized limit scheme (occupation number is adjusted)
+            # Fully localized limit scheme with dynamic occupation number
             @case "fll2"
                 sorry()
                 break
