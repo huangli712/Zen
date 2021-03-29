@@ -345,7 +345,7 @@ function dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
     @cswitch dmft_mode begin
         # Solve the DMFT self-consistent equation
         @case 1
-            dmft_init(it)
+            dmft_init(it, 1)
             dmft_exec(it)
             dmft_save(it)
             break

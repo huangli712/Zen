@@ -8,17 +8,21 @@
 #
 
 """
-    dmft_init(it::IterInfo)
+    dmft_init(it::IterInfo, task::I64)
 
 See also: [`dmft_exec`](@ref), [`dmft_save`](@ref).
 """
-function dmft_init(it::IterInfo)
+function dmft_init(it::IterInfo, task::I64)
+    # Extract key parameters
+    axis = get_m("axis")
+    beta = get_m("beta")
+
     # Prepare essential input files, i.e., dmft.in.
     # If the `dmft.in` file exists already, it will be overwritten.
     open("dmft.in", "w") do fout
-        println(fout, "task = ")
-        println(fout, "axis = ")
-        println(fout, "beta = ")
+        println(fout, "task = $task")
+        println(fout, "axis = $axis")
+        println(fout, "beta = $beta")
     end
 
     # Check essential input files
