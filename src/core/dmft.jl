@@ -69,6 +69,8 @@ end
 """
     dmft_exec(it::IterInfo)
 
+Execute the dynamical mean-field theory engine.
+
 See also: [`dmft_init`](@ref), [`dmft_save`](@ref).
 """
 function dmft_exec(it::IterInfo)
