@@ -10,6 +10,9 @@
 """
     dmft_init(it::IterInfo, task::I64)
 
+Initialize the dynamical mean-field theory engine. Prepare the necessary
+files, and generate the configuration file.
+
 See also: [`dmft_exec`](@ref), [`dmft_save`](@ref).
 """
 function dmft_init(it::IterInfo, task::I64)
