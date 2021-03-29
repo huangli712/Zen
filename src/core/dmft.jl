@@ -13,6 +13,17 @@
 See also: [`dmft_exec`](@ref), [`dmft_save`](@ref).
 """
 function dmft_init(it::IterInfo, task::I64)
+    # Well, determine which files are necessary.
+    #
+    # Self-energy functions
+    fsig = ("sigma.bare", "sigma.dc")
+    #
+    # Kohn-Sham data (including projectors) in IR format
+    fir  = ("params.ir", "lattice.ir")
+    #
+    # Configuration file for DMFT engine
+    fdmft = ("dmft.in")
+
     # Extract key parameters
     axis = get_m("axis")
     beta = get_m("beta")
@@ -26,9 +37,7 @@ function dmft_init(it::IterInfo, task::I64)
     end
 
     # Check essential input files
-    fsig = ("sigma.bare", "sigma.dc")
-    fir  = ("params.ir", "lattice.ir")
-    flist = ("dmft.in", fsig..., fir...)
+    flist = (fdmft, fsig..., fir...)
     for i in eachindex(flist)
         filename = flist[i]
         if !isfile(filename)
