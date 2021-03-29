@@ -19,10 +19,13 @@ function dmft_init(it::IterInfo, task::I64)
     # Well, determine which files are necessary.
     #
     # Self-energy functions
-    fsig = ("sigma.bare", "sigma.dc")
+    fsig = ["sigma.bare", "sigma.dc"]
     #
     # Kohn-Sham data (including projectors) in IR format
-    fir  = ("params.ir", "lattice.ir")
+    fir  = ["params.ir", "groups.ir", "lattice.ir", "kmesh.ir", "eigen.ir", "projs.ir"]
+    if get_d("smear") === "tetra"
+        push!(fir, "tetra.ir")
+    end
     #
     # Configuration file for DMFT engine
     fdmft = ("dmft.in")
@@ -54,7 +57,6 @@ function dmft_init(it::IterInfo, task::I64)
             error("Please make sure the file $filename is available")
         end
     end
-    exit(-1)
 end
 
 """
