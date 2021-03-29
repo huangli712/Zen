@@ -526,13 +526,22 @@ end
 """
     sigma_core(lr::Logger, task::String = "reset")
 
+Simple driver for functions for processing the self-energy functions
+and hybridization functions.
+
+Now it supports four tasks: `reset`, `dcount`, `split`, `gather`.
+
 See also: [`mixer_core`](@ref).
 """
 function sigma_core(lr::Logger, task::String = "reset")
-    prompt("Sigma")
+    # Check the given task
     @assert task in ("reset", "dcount", "split", "gather")
 
+    # Print the log
+    prompt("Sigma")
     prompt(lr.log, "sigma::$task")
+
+    # Launch suitable subroutine
     @cswitch task begin
         # Generate default self-energy functions and store them
         @case "reset"
