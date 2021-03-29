@@ -345,9 +345,9 @@ function dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
     @cswitch dmft_mode begin
         # Solve the DMFT self-consistent equation
         @case 1
-            dmft_init()
-            dmft_exec()
-            dmft_save()
+            dmft_init(it)
+            dmft_exec(it)
+            dmft_save(it)
             break
 
         # Generate DMFT correction for DFT charge density
