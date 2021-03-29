@@ -133,6 +133,7 @@ function cycle1()
 
     # C04: Prepare default self-energy functions
     sigma_core(lr, "reset")
+    exit(-1)
 
 #
 # Remarks 4:

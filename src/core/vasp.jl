@@ -31,26 +31,26 @@ function vasp_adaptor(D::Dict{Symbol,Any})
     D[:latt] = vaspio_lattice(pwd())
 
     # V03: Read in kmesh and the corresponding weights
-    println("  Get kmesh")
-    println("  Get weight")
+    println("  Parse kmesh")
+    println("  Parse weight")
     D[:kmesh], D[:weight] = vaspio_kmesh(pwd())
 
     # V04: Read in band structure and the corresponding occupancies
-    println("  Get enk")
-    println("  Get occupy")
+    println("  Parse enk")
+    println("  Parse occupy")
     D[:enk], D[:occupy] = vaspio_eigen(pwd())
 
     # V05: Read in raw projectors, traits, and groups
-    println("  Get projector")
+    println("  Parse projector")
     D[:PT], D[:PG], D[:chipsi] = vaspio_projs(pwd())
 
     # V06: Read in fermi level
-    println("  Get fermi level")
+    println("  Parse fermi level")
     D[:fermi] = vaspio_fermi(pwd())
 
     # V07: Read in tetrahedron data if they are available
     if get_d("smear") === "tetra"
-        println("  Get tetrahedron")
+        println("  Parse tetrahedron")
         D[:volt], D[:itet] = vaspio_tetra(pwd())
     end
 
