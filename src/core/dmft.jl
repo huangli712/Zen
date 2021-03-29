@@ -26,7 +26,9 @@ function dmft_init(it::IterInfo, task::I64)
     end
 
     # Check essential input files
-    flist = ("INCAR", "POSCAR", "POTCAR")
+    fsig = ("sigma.bare", "sigma.dc")
+    fir  = ("params.ir", "lattice.ir")
+    flist = ("dmft.in", fsig..., fir...)
     for i in eachindex(flist)
         filename = flist[i]
         if !isfile(filename)
