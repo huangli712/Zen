@@ -297,18 +297,18 @@ function cat_d()
 # See config.jl/str_d() function for more details.
 #
 
-    println("  engine   -> ", str_d("engine"))
-    println("  projtype -> ", str_d("projtype"))
-    println("  smear    -> ", str_d("smear"))
-    println("  kmesh    -> ", str_d("kmesh"))
-    println("  magmom   -> ", str_d("magmom"))
-    println("  lsymm    -> ", str_d("lsymm"))
-    println("  lspins   -> ", str_d("lspins"))
-    println("  lspinorb -> ", str_d("lspinorb"))
-    println("  loptim   -> ", str_d("loptim"))
-    println("  lproj    -> ", str_d("lproj"))
-    println("  sproj    -> ", str_d("sproj"))
-    println("  window   -> ", str_d("window"))
+    println("  dft    | engine   -> ", str_d("engine"))
+    println("  dft    | projtype -> ", str_d("projtype"))
+    println("  dft    | smear    -> ", str_d("smear"))
+    println("  dft    | kmesh    -> ", str_d("kmesh"))
+    println("  dft    | magmom   -> ", str_d("magmom"))
+    println("  dft    | lsymm    -> ", str_d("lsymm"))
+    println("  dft    | lspins   -> ", str_d("lspins"))
+    println("  dft    | lspinorb -> ", str_d("lspinorb"))
+    println("  dft    | loptim   -> ", str_d("loptim"))
+    println("  dft    | lproj    -> ", str_d("lproj"))
+    println("  dft    | sproj    -> ", str_d("sproj"))
+    println("  dft    | window   -> ", str_d("window"))
 end
 
 """
