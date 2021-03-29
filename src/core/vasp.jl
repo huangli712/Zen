@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/28
+# Last modified: 2021/03/29
 #
 
 #
@@ -102,7 +102,7 @@ See also: [`vasp_init`](@ref), [`vasp_save`](@ref).
 """
 function vasp_exec(it::IterInfo)
     # Print the header
-    println("[ Engine : VASP ]")
+    println("  Engine : VASP")
 
     # Get the home directory of vasp
     dft_home = query_dft("vasp")
@@ -130,6 +130,9 @@ function vasp_exec(it::IterInfo)
 
     # Launch it, the terminal output is redirected to vasp.out
     run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
+
+    # Print the footer
+    println()
 end
 
 """
