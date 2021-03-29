@@ -117,6 +117,47 @@ See also: [`sigma_reset`](@ref).
 function sigma_dcount()
     # Print the log
     println("[ Sigma : Dcount ]")
+
+    # The sdim creates a mapping from shell (string) to ndim (integer).
+    # It is used to parse get_i("shell") to extract the `ndim` parameter.
+    sdim = Dict{String,I64}(
+               "s"     => 1,
+               "p"     => 3,
+               "d"     => 5,
+               "f"     => 7,
+               "d_t2g" => 3, # Only a subset of d orbitals
+               "d_eg"  => 2, # Only a subset of d orbitals
+           )
+
+    # Extract some necessary parameters
+    nsite = get_i("nsite")
+    nspin = 2
+
+    # Create double-counting terms for self-energy functions
+    #
+    # Initialize an array for dc
+    sigdc = zeros(F64, nsite)
+    #
+    # Go through the impurity problems
+    for i = 1:nsite
+        @cswitch get_m("dcount") begin
+            @case "fll1"
+                break
+
+            @case "fll2"
+                sorry()
+                break
+
+            @case "amf"
+                sorry()
+                break
+
+            @case "exact"
+                sorry()
+                break
+        end
+    end
+
 end
 
 """
