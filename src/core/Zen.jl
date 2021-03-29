@@ -488,6 +488,9 @@ include("solver.jl")
 # sigma_dcount -> Calculate double counting term.
 # sigma_split  -> Split the self-energy functions or hybridization functions.
 # sigma_gather -> Gather and combine the self-energy functions.
+# cal_dc_fll   -> Fully localized limit scheme for double counting term.
+# cal_dc_amf   -> Around mean-field scheme for double counting term.
+# cal_dc_exact -> Exact double counting scheme.
 #
 include("sigma.jl")
 #
@@ -495,6 +498,9 @@ export sigma_reset
 export sigma_dcount
 export sigma_split
 export sigma_gather
+export cal_dc_fll
+export cal_dc_amf
+export cal_dc_exact
 
 """
     __init__()
