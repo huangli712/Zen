@@ -429,11 +429,13 @@ the adaptor, to check whether the essential files exist. (2) Parse the
 Kohn-Sham data output by the DFT engine, try to postprocess them, and
 then transform them into IR format. (3) Backup the files by adaptor.
 
+For the first task, only the VASP adaptor is supported. While for the
+second task, only the PLO adaptor is supported. If you want to support
+more adaptor, please adapt this function.
+
 See also: [`dft_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
 function adaptor_run(it::IterInfo, lr::Logger)
-    prompt("Adaptor")
-
     # Enter dft directory
     cd("dft")
 
@@ -453,7 +455,8 @@ function adaptor_run(it::IterInfo, lr::Logger)
     # Kohn-Sham data will be stored in the DFTData dict.
     #
     engine = get_d("engine")
-    prompt(lr.log, "adaptor")
+    prompt("Adaptor")
+    prompt(lr.log, "adaptor::$engine")
     @cswitch engine begin
         # For VASP
         @case "vasp"
@@ -477,9 +480,10 @@ function adaptor_run(it::IterInfo, lr::Logger)
     # additionally to check the correctness of the Kohn-Sham data.
     #
     projtype = get_d("projtype")
+    prompt("Adaptor")
+    prompt(lr.log, "adaptor::$projtype")
     @cswitch projtype begin
-        # For projected local orbital scheme
-        # Now we disable debug
+        # For projected local orbital scheme (Now we disable debug)
         @case "plo"
             plo_adaptor(DFTData, false)
             break
@@ -500,6 +504,8 @@ function adaptor_run(it::IterInfo, lr::Logger)
     # Ok, now the Kohn-Sham data are ready. We would like to write them
     # to some specified files with the IR format.
     #
+    prompt("Adaptor")
+    prompt(lr.log, "adaptor::ir")
     ir_adaptor(DFTData)
 
     #
