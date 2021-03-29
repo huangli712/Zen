@@ -24,7 +24,7 @@ See also: [`plo_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_exec`](@ref).
 """
 function vasp_adaptor(D::Dict{Symbol,Any})
     # V01: Print the header
-    println("[ Adaptor : VASP ]")
+    println("  Adaptor : VASP")
 
     # V02: Read in lattice structure
     println("  Get lattice")
@@ -53,6 +53,9 @@ function vasp_adaptor(D::Dict{Symbol,Any})
         println("  Get tetrahedron")
         D[:volt], D[:itet] = vaspio_tetra(pwd())
     end
+
+    # V08: Print the footer
+    println()
 end
 
 """
