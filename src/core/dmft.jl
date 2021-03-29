@@ -13,6 +13,9 @@
 See also: [`dmft_exec`](@ref), [`dmft_save`](@ref).
 """
 function dmft_init(it::IterInfo, task::I64)
+    # Check the task
+    @assert task in (1, 2) 
+
     # Well, determine which files are necessary.
     #
     # Self-energy functions
@@ -24,11 +27,18 @@ function dmft_init(it::IterInfo, task::I64)
     # Configuration file for DMFT engine
     fdmft = ("dmft.in")
 
+    # Next, we have to copy Kohn-Sham data from `dft` to `dmft1`.
+    for i in eachindex(fir)
+        file_src = joinpath("../dft", fir[i])
+        file_dst = fir[i]
+        cp(file_src, file_dst, force = true)
+    end
+
     # Extract key parameters
     axis = get_m("axis")
     beta = get_m("beta")
 
-    # Prepare essential input files, i.e., dmft.in.
+    # Generate essential input files, such as dmft.in, dynamically.
     # If the `dmft.in` file exists already, it will be overwritten.
     open("dmft.in", "w") do fout
         println(fout, "task = $task")
