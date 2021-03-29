@@ -165,7 +165,7 @@ function cycle1()
         # C08: Solve the quantum impurity problems
         prompt("Solvers")
         solver_run(it, lr)
- 
+
         # C09: Gather and combine the data (impurity self-functions)
         prompt("Sigma")
         sigma_core(lr, "gather")

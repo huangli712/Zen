@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/28
+# Last modified: 2021/03/29
 #
 
 """
@@ -285,20 +285,20 @@ export str_s
 #
 # Members:
 #
-# ready        -> Prepare runtime environment for DFT + DMFT calculations.
-# go           -> Dispatcher for DFT + DMFT calculations.
-# final        -> Finalize the DFT + DMFT calculations.
-# cycle1       -> Perform DFT + DMFT calculations (one-shot mode).
-# cycle2       -> Perform DFT + DMFT calculations (fully self-consistent mode).
-# monitor      -> Monitor the DFT + DMFT calculations.
-# make_trees   -> Make working directories.
-# rm_trees     -> Remove working directories.
-# dft_run      -> Driver for DFT engine.
-# dmft_run     -> Driver for DMFT engine.
-# solver_run   -> Driver for quantum impurity solvers.
-# adaptor_run  -> Driver for DFT_DMFT adaptor.
-# sigma_core   -> Entry for functions for self-energy functions.
-# mixer_core   -> Entry for mixer.
+# ready       -> Prepare runtime environment for DFT + DMFT calculations.
+# go          -> Dispatcher for DFT + DMFT calculations.
+# final       -> Finalize the DFT + DMFT calculations.
+# cycle1      -> Perform DFT + DMFT calculations (one-shot mode).
+# cycle2      -> Perform DFT + DMFT calculations (fully self-consistent mode).
+# monitor     -> Monitor the DFT + DMFT calculations.
+# make_trees  -> Make working directories.
+# rm_trees    -> Remove working directories.
+# dft_run     -> Driver for DFT engine.
+# dmft_run    -> Driver for DMFT engine.
+# solver_run  -> Driver for quantum impurity solvers.
+# adaptor_run -> Driver for DFT_DMFT adaptor.
+# sigma_core  -> Entry for functions for self-energy functions.
+# mixer_core  -> Entry for mixer.
 #
 include("base.jl")
 #
@@ -499,8 +499,8 @@ export sigma_gather
 """
     __init__()
 
-This function would be executed immediately after the module is loaded at
-runtime for the first time.
+This function would be executed immediately after the module is loaded
+at runtime for the first time.
 
 Here, we will try to precompile the whole Zen package to speed up
 the later calculations.
