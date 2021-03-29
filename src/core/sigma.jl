@@ -170,6 +170,7 @@ function sigma_dcount()
                 break
         end
     end
+    println("  Create double counting terms with $(get_m("dcount")) scheme")
 
     # Write double counting terms to sigma.dc
     open("dmft1/sigma.dc", "w") do fout
