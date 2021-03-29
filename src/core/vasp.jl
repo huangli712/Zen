@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/29
+# Last modified: 2021/03/30
 #
 
 #
@@ -117,18 +117,18 @@ function vasp_exec(it::IterInfo)
 
     # Select suitable vasp program
     if get_d("lspinorb")
-        vasp_exec = "$dft_home/vasp_ncl"
+        vasp_exe = "$dft_home/vasp_ncl"
     else
-        vasp_exec = "$dft_home/vasp_std"
+        vasp_exe = "$dft_home/vasp_std"
     end
-    @assert isfile(vasp_exec)
-    println("  Exec : $vasp_exec")
+    @assert isfile(vasp_exe)
+    println("  Exec : $vasp_exe")
 
     # Assemble command
     if isnothing(mpi_prefix)
-        vasp_cmd = vasp_exec
+        vasp_cmd = vasp_exe
     else
-        vasp_cmd = split("$mpi_prefix $vasp_exec", " ")
+        vasp_cmd = split("$mpi_prefix $vasp_exe", " ")
     end
 
     # Launch it, the terminal output is redirected to vasp.out

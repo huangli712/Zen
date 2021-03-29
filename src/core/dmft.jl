@@ -74,6 +74,34 @@ Execute the dynamical mean-field theory engine.
 See also: [`dmft_init`](@ref), [`dmft_save`](@ref).
 """
 function dmft_exec(it::IterInfo)
+    # Print the header
+    println("Engine : DMFT1")
+
+    # Get the home directory of Zen
+    zen_home = query_home()
+
+    # Determine mpi prefix (whether the dmft is executed sequentially)
+    mpi_prefix = inp_toml("../MPI.toml", "dmft", false)
+    numproc = parse(I64, line_to_array(mpi_prefix)[3])
+    println("  Para : Using $numproc processors")
+
+    # Select suitable dmft program
+    dmft_exe = "$zen_home/src/dmft/dmft"
+    @assert isfile(dmft_exe)
+    println("  Exec : $dmft_exe")
+
+    # Assemble command
+    if isnothing(mpi_prefix)
+        dmft_cmd = dmft_exe
+    else
+        dmft_cmd = split("$mpi_prefix $dmft_exe", " ")
+    end
+
+    # Launch it, the terminal output is redirected to dmft.out
+    run(pipeline(`$dmft_cmd`, stdout = "dmft.out"))
+
+    # Print the footer
+    println()
 end
 
 """
