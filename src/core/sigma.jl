@@ -207,6 +207,7 @@ Evaluate the double counting term by the fully localized limit scheme.
 See also: [`cal_dc_amf`](@ref), [`cal_dc_exact`](@ref).
 """
 function cal_dc_fll(U::F64, J::F64, N::F64)
+    U * ( N - 0.5 ) - J / 2.0 * ( N - 1.0 )
 end
 
 function cal_dc_amf()
