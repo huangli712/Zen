@@ -140,18 +140,31 @@ function sigma_dcount()
     #
     # Go through the impurity problems
     for i = 1:nsite
+        # Get interaction parameters
+        U = get_i("upara")[i]
+        J = get_i("jpara")[i]
+
+        # Get occupation numbers
+        N = get_i("occup")[i]
+
+        # Choose suitable double counting scheme
         @cswitch get_m("dcount") begin
+            # Fully localized limit scheme (occupation number is fixed)
             @case "fll1"
+                sigdc[i] = cal_dc_fll(U, J, N)
                 break
 
+            # Fully localized limit scheme (occupation number is adjusted)
             @case "fll2"
                 sorry()
                 break
 
+            # Around mean-field scheme
             @case "amf"
                 sorry()
                 break
 
+            # Exact double counting scheme
             @case "exact"
                 sorry()
                 break
