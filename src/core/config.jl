@@ -271,7 +271,7 @@ See also: [`get_c`](@ref), [`str_c`](@ref).
 """
 function cat_c()
     # See comments in cat_d()
-    println("  case     -> ", str_c("case"))
+    println("  pcase   | case     -> ", str_c("case"))
 end
 
 """
