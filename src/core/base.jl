@@ -424,11 +424,10 @@ end
 """
     adaptor_run(it::IterInfo, lr::Logger)
 
-Simple driver for the adaptor.
-Initialize the adaptor, to check whether the essential files exist.
-Parse the data output by the DFT engine, try to postprocess them, and then
-transform them into IR format.
-Backup the output files by adaptor.
+Simple driver for the adaptor. It performs three tasks: (1) Initialize
+the adaptor, to check whether the essential files exist. (2) Parse the
+Kohn-Sham data output by the DFT engine, try to postprocess them, and
+then transform them into IR format. (3) Backup the files by adaptor.
 
 See also: [`dft_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
