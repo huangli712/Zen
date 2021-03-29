@@ -138,7 +138,7 @@ function sigma_dcount()
     # Initialize an array for dc
     sigdc = zeros(F64, nsite)
     #
-    # Go through the impurity problems
+    # Go through the impurity problems and calculate dc
     for i = 1:nsite
         # Get interaction parameters
         U = get_i("upara")[i]
@@ -171,6 +171,25 @@ function sigma_dcount()
         end
     end
 
+    # Write double counting terms to sigma.dc
+    open("dmft1/sigma.dc", "w") do fout
+        # Write the header
+        println(fout, "# File: sigma.dc")
+        println(fout, "# Data: double counting terms")
+        println(fout)
+        println(fout, "nsite -> $nsite")
+        println(fout, "nspin -> $nspin")
+        println(fout)
+
+        # Write the body
+        # Go through each impurity problem
+        for i = 1:nsite
+            @printf(fout, "%16.12f", sigdc[i])
+        end
+    end
+
+    # Print blank line for better visualization
+    println()
 end
 
 """
@@ -183,7 +202,10 @@ See also: [`sigma_gather`](@ref).
 """
 function sigma_split()
     # Print the log
-    println("[ Sigma : Split ]")
+    println("Sigma : Split")
+
+    # Print blank line for better visualization
+    println()
 end
 
 """
@@ -196,7 +218,10 @@ See also: [`sigma_split`](@ref).
 """
 function sigma_gather()
     # Print the log
-    println("[ Sigma : Gather ]")
+    println("Sigma : Gather")
+
+    # Print blank line for better visualization
+    println()
 end
 
 """
