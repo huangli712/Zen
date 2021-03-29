@@ -352,7 +352,9 @@ function dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
 
         # Generate DMFT correction for DFT charge density
         @case 2
-            # sorry()
+            dmft_init(it, 2)
+            dmft_exec(it)
+            dmft_save(it)
             break
     end
 
@@ -398,15 +400,15 @@ function solver_run(it::IterInfo, lr::Logger)
                 break
 
             @case "ct_hyb2"
-                #sorry()
+                sorry()
                 break
 
             @case "hub1"
-                #sorry()
+                sorry()
                 break
 
             @case "norg"
-                #sorry()
+                sorry()
                 break
 
             @default
