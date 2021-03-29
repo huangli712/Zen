@@ -24,7 +24,7 @@ See also: [`plo_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_exec`](@ref).
 """
 function vasp_adaptor(D::Dict{Symbol,Any})
     # V01: Print the header
-    println("  Adaptor : VASP")
+    println("Adaptor : VASP")
 
     # V02: Read in lattice structure
     println("  Get lattice")
@@ -105,7 +105,7 @@ See also: [`vasp_init`](@ref), [`vasp_save`](@ref).
 """
 function vasp_exec(it::IterInfo)
     # Print the header
-    println("  Engine : VASP")
+    println("Engine : VASP")
 
     # Get the home directory of vasp
     dft_home = query_dft("vasp")
