@@ -210,8 +210,24 @@ function cal_dc_fll(U::F64, J::F64, N::F64)
     U * ( N - 0.5 ) - J / 2.0 * ( N - 1.0 )
 end
 
-function cal_dc_amf()
+"""
+    cal_dc_amf(U::F64, J::F64, N::F64)
+
+Evaluate the double counting term by the around mean-field scheme.
+
+See also: [`cal_dc_fll`](@ref), [`cal_dc_exact`](@ref).
+"""
+function cal_dc_amf(U::F64, J::F64, N::F64)
+    sorry()
 end
 
-function cal_dc_exact()
+"""
+    cal_dc_exact(U::F64, J::F64, N::F64)
+
+Evaluate the double counting term by the exact scheme.
+
+See also: [`cal_dc_fll`](@ref), [`cal_dc_amf`](@ref).
+"""
+function cal_dc_exact(U::F64, J::F64, N::F64)
+    sorry()
 end
