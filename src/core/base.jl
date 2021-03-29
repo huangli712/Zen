@@ -502,20 +502,19 @@ function adaptor_run(it::IterInfo, lr::Logger)
     # A3: Output the processed Kohn-Sham data
     #
     # Ok, now the Kohn-Sham data are ready. We would like to write them
-    # to some specified files with the IR format.
+    # to some specified files with the IR format. Then these files will
+    # be saved immediately.
     #
     prompt("Adaptor")
     prompt(lr.log, "adaptor::ir")
     ir_adaptor(DFTData)
+    ir_save(it)
 
     #
     # A4: Clear the DFTData dict
     #
     empty!(DFTData)
     @assert isempty(DFTData)
-
-    # Save the essential files
-    ir_save(it)
 
     # Enter the parent directory
     cd("..")
