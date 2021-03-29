@@ -30,6 +30,8 @@ end
     go()
 
 Dispatcher for DFT + DMFT calculations.
+
+See also: [`ready`](@ref).
 """
 function go()
     # Get calculation mode
@@ -97,7 +99,6 @@ function cycle1()
 #
 
     # C01: Perform DFT calculation (for the first time)
-    prompt("DFT")
     dft_run(it, lr)
 
 #
@@ -113,7 +114,6 @@ function cycle1()
 
     # C02: Perform DFT calculation (for the second time)
     if get_d("loptim")
-        prompt("DFT")
         dft_run(it, lr)
     end
 
@@ -129,17 +129,16 @@ function cycle1()
 #
 
     # C03: To bridge the gap between DFT engine and DMFT engine by adaptor
-    prompt("Adaptor")
     adaptor_run(it, lr)
 
     # C04: Prepare default self-energy functions
-    prompt("Sigma")
     sigma_core(lr, "reset")
 
 #
 # Remarks 4:
 #
-# Now everything is ready. We are going to solve the DMFT equation iterately.
+# Now everything is ready. We are going to solve the DMFT self-consistent
+# equation iterately.
 #
 
 #
@@ -151,27 +150,21 @@ function cycle1()
         prompt("ZEN", "Cycle $iter")
 
         # C05: Tackle with the double counting term
-        prompt("Sigma")
         sigma_core(lr, "dcount")
 
         # C06: Perform DMFT calculation with `dmft_mode` = 1
-        prompt("DMFT")
         dmft_run(it, lr, 1)
 
         # C07: Split and distribute the data (hybridization functions)
-        prompt("Sigma")
         sigma_core(lr, "split")
 
         # C08: Solve the quantum impurity problems
-        prompt("Solvers")
         solver_run(it, lr)
 
         # C09: Gather and combine the data (impurity self-functions)
-        prompt("Sigma")
         sigma_core(lr, "gather")
 
         # C10: Mixer for self-energy functions or hybridization functions
-        prompt("Mixer")
         mixer_core(lr)
     end
 
@@ -287,20 +280,27 @@ end
 """
     dft_run(it::IterInfo, lr::Logger)
 
-Simple driver for DFT engine. Firstly, examine the runtime environment
-for the density functional theory engine. Secondly, launch the density
-functional theory engine. Finally, backup the output files by density
-functional theory engine for next iterations.
+Simple driver for DFT engine. It performs three tasks: (1) Examine
+the runtime environment for the DFT engine. (2) Launch the DFT engine.
+(3) Backup the output files by DFT engine for next iterations.
+
+Now only the VASP engine is supported. If you want to support the other
+DFT engine, this function must be adapted.
 
 See also: [`adaptor_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
 function dft_run(it::IterInfo, lr::Logger)
+    # Determine the chosen engine 
+    engine = get_d("engine")
+
+    # Print the log
+    prompt("DFT")
+    prompt(lr.log, engine)
+
     # Enter dft directory
     cd("dft")
 
-    # Choose suitable DFT engine
-    engine = get_d("engine")
-    prompt(lr.log, engine)
+    # activate the chosen DFT engine
     @cswitch engine begin
         # For VASP
         @case "vasp"
@@ -333,6 +333,7 @@ for next iterations.
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`solver_run`](@ref).
 """
 function dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
+    prompt("DMFT")
     # Examine the argument `dmft_mode`
     @assert dmft_mode === 1 || dmft_mode === 2
 
@@ -371,6 +372,8 @@ Backup the output files by quantum impurity solver for next iterations.
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`dmft_run`](@ref).
 """
 function solver_run(it::IterInfo, lr::Logger)
+    prompt("Solvers")
+
     # Loop over each impurity site
     for i = 1:get_i("nsite")
 
@@ -423,6 +426,8 @@ Backup the output files by adaptor.
 See also: [`dft_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
 function adaptor_run(it::IterInfo, lr::Logger)
+    prompt("Adaptor")
+
     # Enter dft directory
     cd("dft")
 
@@ -513,6 +518,7 @@ end
 See also: [`mixer_core`](@ref).
 """
 function sigma_core(lr::Logger, task::String = "reset")
+    prompt("Sigma")
     @assert task in ("reset", "dcount", "split", "gather")
 
     prompt(lr.log, "sigma::$task")
@@ -552,6 +558,7 @@ end
 See also: [`sigma_core`](@ref).
 """
 function mixer_core(lr::Logger)
+    prompt("Mixer")
     # Monitor the status
     monitor(true)
 
