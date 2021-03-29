@@ -27,7 +27,7 @@ See also: [`vasp_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_exec`](@ref).
 """
 function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # P01: Print the header
-    println("[ Adaptor : PLO ]")
+    println("  Adaptor : PLO")
 
     # P02: Check the validity of the original dict
     key_list = [:enk, :fermi, :chipsi, :PG]
@@ -85,6 +85,9 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     if debug
         plo_monitor(D)
     end
+
+    # P10: Print the footer
+    println()
 end
 
 #
