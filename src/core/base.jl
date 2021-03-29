@@ -300,7 +300,7 @@ function dft_run(it::IterInfo, lr::Logger)
     # Enter dft directory
     cd("dft")
 
-    # activate the chosen DFT engine
+    # Activate the chosen DFT engine
     @cswitch engine begin
         # For VASP
         @case "vasp"
@@ -324,31 +324,31 @@ end
 """
     dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
 
-Simple driver for DMFT engine.
-To examine the runtime environment for dynamical mean-field theory engine.
-Launch the dynamical mean-field theory engine.
-Backup the output files by dynamical mean-field theory engine
-for next iterations.
+Simple driver for DMFT engine. It performs three tasks: (1) Examine
+the runtime environment for the DMFT engine. (2) Launch the DMFT engine.
+(3) Backup the output files by DMFT engine for next iterations.
 
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`solver_run`](@ref).
 """
 function dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
-    prompt("DMFT")
     # Examine the argument `dmft_mode`
     @assert dmft_mode === 1 || dmft_mode === 2
+
+    # Print the log
+    prompt("DMFT")
+    prompt(lr.log, "dmft$dmft_mode")
 
     # Enter dmft1 or dmft2 directory
     cd("dmft$dmft_mode")
 
-    # Choose suitable DMFT engine, then initialize it's input files.
-    prompt(lr.log, "dmft$dmft_mode")
+    # Activate the chosen DMFT engine
     @cswitch dmft_mode begin
         # Solve the DMFT self-consistent equation
         @case 1
             sorry()
             break
 
-        # Generate DMFT correction to DFT
+        # Generate DMFT correction for DFT charge density
         @case 2
             sorry()
             break
