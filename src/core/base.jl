@@ -575,12 +575,16 @@ end
 """
     mixer_core(lr::Logger)
 
+Simple driver for the mixer. It will try to mix the self-energy functions
+or hybridization functions and generate a new one.
+
 See also: [`sigma_core`](@ref).
 """
 function mixer_core(lr::Logger)
+    # Print the log
     prompt("Mixer")
+    prompt(lr.log, "mixer")
+
     # Monitor the status
     monitor(true)
-
-    println()
 end
