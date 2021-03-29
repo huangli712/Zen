@@ -133,7 +133,6 @@ function cycle1()
 
     # C04: Prepare default self-energy functions
     sigma_core(lr, "reset")
-    exit(-1)
 
 #
 # Remarks 4:
@@ -152,6 +151,7 @@ function cycle1()
 
         # C05: Tackle with the double counting term
         sigma_core(lr, "dcount")
+        exit(-1)
 
         # C06: Perform DMFT calculation with `dmft_mode` = 1
         dmft_run(it, lr, 1)

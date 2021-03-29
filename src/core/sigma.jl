@@ -116,7 +116,7 @@ See also: [`sigma_reset`](@ref).
 """
 function sigma_dcount()
     # Print the log
-    println("[ Sigma : Dcount ]")
+    println("Sigma : Dcount")
 
     # The sdim creates a mapping from shell (string) to ndim (integer).
     # It is used to parse get_i("shell") to extract the `ndim` parameter.
@@ -170,7 +170,7 @@ function sigma_dcount()
                 break
         end
     end
-    println("  Create double counting terms with $(get_m("dcount")) scheme")
+    println("  Create double counting terms")
 
     # Write double counting terms to sigma.dc
     open("dmft1/sigma.dc", "w") do fout
