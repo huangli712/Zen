@@ -4,13 +4,9 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/28
+# Last modified: 2021/03/29
 #
 
-function dmft1_init() end
-function dmft1_exec() end
-function dmft1_save() end
-
-function dmft2_init() end
-function dmft2_exec() end
-function dmft2_save() end
+function dmft_init() end
+function dmft_exec() end
+function dmft_save() end
