@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/29
+# Last modified: 2021/03/30
 #
 
 """
@@ -40,6 +40,8 @@ function dmft_init(it::IterInfo, task::I64)
     # Extract key parameters
     axis = get_m("axis")
     beta = get_m("beta")
+    lfermi = true
+    ltetra = ( get_d("smear") === "tetra" )
 
     # Generate essential input files, such as dmft.in, dynamically.
     # If the `dmft.in` file exists already, it will be overwritten.
@@ -47,6 +49,8 @@ function dmft_init(it::IterInfo, task::I64)
         println(fout, "task = $task")
         println(fout, "axis = $axis")
         println(fout, "beta = $beta")
+        println(fout, "lfermi = $lfermi")
+        println(fout, "ltetra = $ltetra")
     end
 
     # Check essential input files
