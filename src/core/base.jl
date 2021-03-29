@@ -376,32 +376,35 @@ solvers, this function must be adapted.
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`dmft_run`](@ref).
 """
 function solver_run(it::IterInfo, lr::Logger)
-    prompt("Solvers")
-
     # Loop over each impurity site
     for i = 1:get_i("nsite")
+
+        # Determine the chosen solver
+        engine = get_s("engine")
+
+        # Print the log
+        prompt("Solvers")
+        prompt(lr.log, engine)
 
         # Enter impurity.i directory
         cd("impurity.$i")
 
-        # Choose suitable quantum impurity solver
-        engine = get_s("engine")
-        prompt(lr.log, engine)
+        # Activate the chosen quantum impurity solver
         @cswitch engine begin
             @case "ct_hyb1"
-                sorry()
+                #sorry()
                 break
 
             @case "ct_hyb2"
-                sorry()
+                #sorry()
                 break
 
             @case "hub1"
-                sorry()
+                #sorry()
                 break
 
             @case "norg"
-                sorry()
+                #sorry()
                 break
 
             @default
