@@ -45,6 +45,7 @@ function sigma_reset()
     else # Real axis
         sorry()
     end
+    println("  Create frequency mesh")
 
     # Create self-energy functions
     #
@@ -57,7 +58,7 @@ function sigma_reset()
         # Retrieve specification for impurity problem
         str = get_i("shell")[i]
 
-        # Get the dimension of impurity problem
+        # Get the dimension of impurity problem (save it)
         ndim = get(sdim, str, 1)
         push!(D, ndim)
 
@@ -67,6 +68,7 @@ function sigma_reset()
         # Push S into SA to save it
         push!(SA, S)
     end
+    println("  Create self-energy functions")
 
     # Write self-energy functions to sigma.bare
     open("dmft1/sigma.bare", "w") do fout
