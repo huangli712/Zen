@@ -345,12 +345,12 @@ function dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
     @cswitch dmft_mode begin
         # Solve the DMFT self-consistent equation
         @case 1
-            sorry()
+            # sorry()
             break
 
         # Generate DMFT correction for DFT charge density
         @case 2
-            sorry()
+            # sorry()
             break
     end
 
