@@ -364,10 +364,14 @@ end
 """
     solver_run(it::IterInfo, lr::Logger)
 
-Simple driver for quantum impurity solvers.
-To examine the runtime environment for quantum impurity solver.
-Launch the quantum impurity solver.
-Backup the output files by quantum impurity solver for next iterations.
+Simple driver for quantum impurity solvers. It performs three tasks: (1)
+Examine the runtime environment for quantum impurity solver. (2) Launch
+the quantum impurity solver. (3) Backup output files by quantum impurity
+solver for next iterations.
+
+Now only the `ct_hyb1`, `ct_hyb2`, `hub1`, and `norg` quantum impurity
+solvers are supported. If you want to support the other quantum impurity
+solvers, this function must be adapted.
 
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`dmft_run`](@ref).
 """
