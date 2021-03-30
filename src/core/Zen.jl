@@ -483,8 +483,23 @@ export dmft_save
 #
 # Wrapper for quantum impurity solvers.
 #
+# Members:
+#
+# s_qmc1_init
+# s_qmc1_exec
+# s_qmc1_save
+# s_qmc2_init
+# s_qmc2_exec
+# s_qmc2_save
+#
 include("solver.jl")
 #
+export s_qmc1_init
+export s_qmc1_exec
+export s_qmc1_save
+export s_qmc2_init
+export s_qmc2_exec
+export s_qmc2_save
 
 #
 # sigma.jl
