@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Stable
 #
-# Last modified: 2021/03/02
+# Last modified: 2021/03/30
 #
 
 """
@@ -73,7 +73,7 @@ Version of this julia package.
 
 See also: [`__RELEASE__`](@ref).
 """
-const __VERSION__ = "0.0.9@devel"
+const __VERSION__ = "0.1.0@devel"
 
 """
     __RELEASE__
@@ -82,7 +82,7 @@ Release date of this julia package.
 
 See also: [`__AUTHORS__`](@ref).
 """
-const __RELEASE__ = "2021/03"
+const __RELEASE__ = "2021/04"
 
 """
     __AUTHORS__
@@ -99,3 +99,13 @@ const __AUTHORS__ = [(name = "Li Huang", email = "lihuang.dmft@gmail.com")]
 # The Array's element should be a NamedTuple object, such as:
 #     (name = "name", email = "email").
 #
+
+"""
+    authors()
+
+Print the authors of the Zen Framework.
+
+See also: [`__AUTHORS__`](@ref).
+"""
+function authors()
+end

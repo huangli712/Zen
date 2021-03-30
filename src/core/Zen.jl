@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/29
+# Last modified: 2021/03/30
 #
 
 """
@@ -85,6 +85,7 @@ using TOML
 # __VERSION__ -> Version of this package.
 # __RELEASE__ -> Released date of this package.
 # __AUTHORS__ -> Authors of this package.
+# authors     -> Print the authors to the screen.
 #
 include("global.jl")
 #
@@ -97,6 +98,7 @@ export __LIBNAME__
 export __VERSION__
 export __RELEASE__
 export __AUTHORS__
+export authors
 
 #
 # util.jl
