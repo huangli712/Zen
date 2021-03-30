@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/30
+# Last modified: 2021/03/31
 #
 
 """
@@ -85,7 +85,7 @@ using TOML
 # __VERSION__ -> Version of this package.
 # __RELEASE__ -> Released date of this package.
 # __AUTHORS__ -> Authors of this package.
-# authors     -> Print the authors to the screen.
+# authors     -> Print the authors of Zen to the screen.
 #
 include("global.jl")
 #
@@ -120,13 +120,15 @@ export authors
 # query_inps    -> Query input files.
 # query_stop    -> Query case.stop file.
 # query_home    -> Query home directory of Zen.
-# query_core    -> Query core directory of Zen.
+# query_core    -> Query core directory of Zen (where is Zen.jl).
 # query_dft     -> Query home directory of DFT engine.
+# query_dmft    -> Query home directory of DMFT engine.
+# query_solver  -> Query home directory of quantum impurity solvers.
 # welcome       -> Print welcome message.
 # overview      -> Print overview of Zen.
 # goodbye       -> Say goodbye.
 # sorry         -> Say sorry.
-# prompt        -> Print some messages to the device.
+# prompt        -> Print some messages or logs to the device.
 # line_to_array -> Convert a line to a string array.
 # line_to_cmplx -> Convert a line to a cmplx number.
 # erf           -> Gauss error function.
@@ -145,6 +147,8 @@ export query_stop
 export query_home
 export query_core
 export query_dft
+export query_dmft
+export query_solver
 export welcome
 export overview
 export goodbye
