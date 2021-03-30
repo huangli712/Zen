@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/24
+# Last modified: 2021/03/31
 #
 
 #
@@ -71,9 +71,11 @@ const PDMFT = Dict{String,Array{Any,1}}(
           "dcount"   => [missing, 1, :String, "Scheme of double counting term"],
           "beta"     => [missing, 1, :F64   , "Inverse system temperature"],
           "mixer"    => [missing, 1, :F64   , "Mixing factor"],
+          "mc"       => [missing, 0, :F64   , "Convergence criterion of chemical potential"],      
           "cc"       => [missing, 0, :F64   , "Convergence criterion of charge"],
           "ec"       => [missing, 0, :F64   , "Convergence criterion of total energy"],
           "fc"       => [missing, 0, :F64   , "Convergence criterion of force"],
+          "lmune"    => [missing, 0, :Bool  , "Test whether chemical potential is updated"],
           "lcharge"  => [missing, 0, :Bool  , "Test whether charge is converged"],
           "lenergy"  => [missing, 0, :Bool  , "Test whether total energy is converged"],
           "lforce"   => [missing, 0, :Bool  , "Test whether force is converged"],
@@ -397,6 +399,8 @@ end
     Base.show(io::IO, it::IterInfo)
 
 Base.show() function for Logger struct.
+
+See also: [`Logger`](@ref).
 """
 function Base.show(io::IO, logger::Logger)
     # To make sure these IOStreams are alive
@@ -411,6 +415,8 @@ end
     Base.show(io::IO, it::IterInfo)
 
 Base.show() function for IterInfo struct.
+
+See also: [`IterInfo`](@ref).
 """
 function Base.show(io::IO, it::IterInfo)
     println(io, "IterInfo struct")
@@ -426,6 +432,8 @@ end
     Base.show(io::IO, latt::Lattice)
 
 Base.show() function for Lattice struct.
+
+See also: [`Lattice`](@ref).
 """
 function Base.show(io::IO, latt::Lattice)
     println(io, "Lattice struct")
@@ -443,6 +451,8 @@ end
     Base.show(io::IO, PT::PrTrait)
 
 Base.show() function for PrTrait struct.
+
+See also: [`PrTrait`](@ref).
 """
 function Base.show(io::IO, PT::PrTrait)
     println(io, "PrTrait struct")
@@ -456,6 +466,8 @@ end
     Base.show(io::IO, PG::PrGroup)
 
 Base.show() function for PrGroup struct.
+
+See also: [`PrGroup`](@ref).
 """
 function Base.show(io::IO, PG::PrGroup)
     println(io, "PrGroup struct")
@@ -471,6 +483,8 @@ end
     Base.show(io::IO, PW::PrWindow)
 
 Base.show() function for PrWindow struct.
+
+See also: [`PrWindow`](@ref).
 """
 function Base.show(io::IO, PW::PrWindow)
     println(io, "PrWindow struct")
