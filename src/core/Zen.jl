@@ -491,6 +491,12 @@ export dmft_save
 # s_qmc2_init
 # s_qmc2_exec
 # s_qmc2_save
+# s_hub1_init
+# s_hub1_exec
+# s_hub1_save
+# s_norg_init
+# s_norg_exec
+# s_norg_save
 #
 include("solver.jl")
 #
@@ -500,6 +506,12 @@ export s_qmc1_save
 export s_qmc2_init
 export s_qmc2_exec
 export s_qmc2_save
+export s_hub1_init
+export s_hub1_exec
+export s_hub1_save
+export s_norg_init
+export s_norg_exec
+export s_norg_save
 
 #
 # sigma.jl
