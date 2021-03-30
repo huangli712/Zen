@@ -8,15 +8,33 @@
 #
 
 #
-# CT-HYB1
+# CT-HYB1 Quantum Impurity Solver
 #
 
-#
-# CT-HYB2
-#
+function s_qmc1_init()
+end
+
+function s_qmc1_exec()
+end
+
+function s_qmc1_save()
+end
 
 #
-# HUB-I
+# CT-HYB2 Quantum Impurity Solver
+#
+
+function s_qmc2_init()
+end
+
+function s_qmc2_exec()
+end
+
+function s_qmc2_save()
+end
+
+#
+# HUB-I Quantum Impurity Solver
 #
 
 function s_hub1_init()
