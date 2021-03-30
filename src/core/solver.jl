@@ -60,6 +60,11 @@ function s_qmc2_exec()
     sorry()
 end
 
+"""
+    s_qmc2_save()
+
+See also: [`s_qmc2_init`](@ref), [`s_qmc2_exec`](@ref).
+"""
 function s_qmc2_save()
     sorry()
 end
