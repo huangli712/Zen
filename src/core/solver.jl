@@ -42,10 +42,20 @@ end
 # CT-HYB2 Quantum Impurity Solver
 #
 
+"""
+    s_qmc2_init()
+
+See also: [`s_qmc2_exec`](@ref), [`s_qmc2_save`](@ref).
+"""
 function s_qmc2_init()
     sorry()
 end
 
+"""
+    s_qmc2_exec()
+
+See also: [`s_qmc2_init`](@ref), [`s_qmc2_save`](@ref).
+"""
 function s_qmc2_exec()
     sorry()
 end
