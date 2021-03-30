@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/02/08
+# Last modified: 2021/03/30
 #
 
 # CT-HYB1
@@ -13,4 +13,15 @@
 
 # HUB-I
 
-# NORG
+#
+# NORG Quantum Impurity Solver
+#
+
+function s_norg_init()
+end
+
+function s_norg_exec()
+end
+
+function s_norg_save()
+end
