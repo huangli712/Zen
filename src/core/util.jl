@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/26
+# Last modified: 2021/03/30
 #
 
 """
@@ -173,7 +173,8 @@ end
 """
     query_inps(engine::String)
 
-Check whether the essential input files exist.
+Check whether the essential input files exist. This function is designed
+for DFT engine only.
 
 See also: [`query_inps`](@ref).
 """
@@ -215,7 +216,8 @@ end
 """
     query_home()
 
-Query the home directory of Zen.
+Query the home directory of Zen. Actually, the `ZEN_HOME` means the
+directory that the Zen Framework is installed.
 
 See also: [`query_core`](@ref).
 """
@@ -231,7 +233,8 @@ end
 """
     query_core()
 
-Query the src/core directory of Zen.
+Query the src/core directory of Zen. Actually, the `ZEN_CORE` denotes
+the directory that contains the Zen.jl file.
 
 See also: [`query_home`](@ref).
 """
