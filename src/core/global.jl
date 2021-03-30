@@ -108,4 +108,8 @@ Print the authors of the Zen Framework.
 See also: [`__AUTHORS__`](@ref).
 """
 function authors()
+    println("Authors (Until $__RELEASE__):")
+    for a in __AUTHORS__
+        println("  $(a.name) (email: $(a.email))")
+    end
 end
