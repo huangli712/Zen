@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/29
+# Last modified: 2021/03/31
 #
 
 #
@@ -113,8 +113,8 @@ end
 """
     rev_dict(cfg::Dict{String,Any})
 
-Transfer configurations from dict `cfg` to dicts (including `PCASE`,
-`PDFT`, `PDMFT`, `PIMP`, and `PSOLVER`).
+Transfer configurations from dict `cfg` to internal dicts (including
+`PCASE`, `PDFT`, `PDMFT`, `PIMP`, and `PSOLVER`).
 
 See also: [`chk_dict`](@ref).
 """
@@ -329,9 +329,11 @@ function cat_m()
     println("  dmft     | dcount   -> ", str_m("dcount"))
     println("  dmft     | beta     -> ", str_m("beta"))
     println("  dmft     | mixer    -> ", str_m("mixer"))
+    println("  dmft     | mc       -> ", str_m("mc"))
     println("  dmft     | cc       -> ", str_m("cc"))
     println("  dmft     | ec       -> ", str_m("ec"))
     println("  dmft     | fc       -> ", str_m("fc"))
+    println("  dmft     | lmune    -> ", str_m("lmune"))
     println("  dmft     | lcharge  -> ", str_m("lcharge"))
     println("  dmft     | lenergy  -> ", str_m("lenergy"))
     println("  dmft     | lforce   -> ", str_m("lforce"))
