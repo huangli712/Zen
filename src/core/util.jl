@@ -282,6 +282,7 @@ function query_dmft()
     # We have to setup the environment variable ZEN_DMFT
     if haskey(ENV, "ZEN_DMFT")
         ENV["ZEN_DMFT"]
+    # For develop stage only
     else
         joinpath(query_home(), "src/dmft")
     end
@@ -298,6 +299,7 @@ function query_solver(engine::String)
     # We have to setup the environment variable ZEN_SOLVER
     if haskey(ENV, "ZEN_SOLVER")
         ENV["ZEN_SOLVER"]
+    # For develop stage only
     else
         @cswitch engine begin
             @case "ct_hyb1"
