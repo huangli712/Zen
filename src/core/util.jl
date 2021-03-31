@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/30
+# Last modified: 2021/03/31
 #
 
 """
@@ -274,9 +274,17 @@ end
 """
     query_dmft()
 
+Query the home directory of the DMFT engine.
+
 See also: [`query_dft`](@ref), [`query_solver`](@ref).
 """
 function query_dmft()
+    # We have to setup the environment variable ZEN_DMFT
+    if haskey(ENV, "ZEN_DMFT")
+        ENV["ZEN_DMFT"]
+    else
+        joinpath(query_home(), "src/dmft")
+    end
 end
 
 """
