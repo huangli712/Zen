@@ -99,14 +99,29 @@ end
 # HUB-I Quantum Impurity Solver
 #
 
+"""
+    s_hub1_init()
+
+See also: [`s_hub1_exec`](@ref), [`s_hub1_save`](@ref).
+"""
 function s_hub1_init()
     sorry()
 end
 
+"""
+    s_hub1_exec()
+
+See also: [`s_hub1_init`](@ref), [`s_hub1_save`](@ref).
+"""
 function s_hub1_exec()
     sorry()
 end
 
+"""
+    s_hub1_save()
+
+See also: [`s_hub1_init`](@ref), [`s_hub1_exec`](@ref).
+"""
 function s_hub1_save()
     sorry()
 end
