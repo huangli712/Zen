@@ -271,9 +271,16 @@ function query_dft(engine::String)
     end
 end
 
+"""
+    query_dmft()
+
+See also: [`query_dft`](@ref), [`query_solver`](@ref).
+"""
 function query_dmft()
 end
 
+"""
+"""
 function query_solver()
 end
 
