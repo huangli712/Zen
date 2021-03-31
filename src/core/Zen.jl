@@ -85,7 +85,7 @@ using TOML
 # __VERSION__ -> Version of this package.
 # __RELEASE__ -> Released date of this package.
 # __AUTHORS__ -> Authors of this package.
-# authors     -> Print the authors of Zen to the screen.
+# authors     -> Print the authors of Zen to screen.
 #
 include("global.jl")
 #
@@ -472,7 +472,7 @@ export irio_charge
 #
 # dmft_init -> Prepare input files for the DMFT engine.
 # dmft_exec -> Execute the DMFT engine.
-# dmft_save -> Backup output files of the DMFT engine.
+# dmft_save -> Backup output files for the DMFT engine.
 #
 include("dmft.jl")
 #
@@ -485,22 +485,22 @@ export dmft_save
 #
 # Summary:
 #
-# Wrapper for quantum impurity solvers.
+# Wrapper for various quantum impurity solvers.
 #
 # Members:
 #
-# s_qmc1_init
-# s_qmc1_exec
-# s_qmc1_save
-# s_qmc2_init
-# s_qmc2_exec
-# s_qmc2_save
-# s_hub1_init
-# s_hub1_exec
-# s_hub1_save
-# s_norg_init
-# s_norg_exec
-# s_norg_save
+# s_qmc1_init -> Prepare input files for the CT-HYB1 impurity solver.
+# s_qmc1_exec -> Execute the CT-HYB1 impurity solver.
+# s_qmc1_save -> Backup output files for the CT-HYB1 impurity solver.
+# s_qmc2_init -> Prepare input files for the CT-HYB2 impurity solver.
+# s_qmc2_exec -> Execute the CT-HYB2 impurity solver.
+# s_qmc2_save -> Backup output files for the CT-HYB2 impurity solver.
+# s_hub1_init -> Prepare input files for the HIA impurity solver.
+# s_hub1_exec -> Execute the HIA impurity solver.
+# s_hub1_save -> Backup output files for the HIA impurity solver.
+# s_norg_init -> Prepare input files for the NORG impurity solver.
+# s_norg_exec -> Execute the NORG impurity solver.
+# s_norg_save -> Backup output files for the NORG impurity solver.
 #
 include("solver.jl")
 #
