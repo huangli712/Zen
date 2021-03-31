@@ -102,6 +102,9 @@ end
 """
     s_hub1_init()
 
+Check the runtime environment of HIA quantum impurity solver. Prepare
+the necessary input files.
+
 See also: [`s_hub1_exec`](@ref), [`s_hub1_save`](@ref).
 """
 function s_hub1_init()
@@ -111,6 +114,8 @@ end
 """
     s_hub1_exec()
 
+Launch the HIA quantum impurity solver.
+
 See also: [`s_hub1_init`](@ref), [`s_hub1_save`](@ref).
 """
 function s_hub1_exec()
@@ -119,6 +124,8 @@ end
 
 """
     s_hub1_save()
+
+Backup the output files of the HIA quantum impurity solver.
 
 See also: [`s_hub1_init`](@ref), [`s_hub1_exec`](@ref).
 """
