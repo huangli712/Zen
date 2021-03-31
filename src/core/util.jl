@@ -252,7 +252,7 @@ end
 
 Query the home directory of the DFT engine.
 
-See also: [`query_inps`](@ref).
+See also: [`query_dmft`](@ref), [`query_solver`](@ref).
 """
 function query_dft(engine::String)
     @cswitch engine begin
@@ -288,8 +288,14 @@ function query_dmft()
 end
 
 """
+    query_solver(engine::String)
+
+Query the home directory of the quantum impurity solver.
+
+See also: [`query_dft`](@ref), [`query_dmft`](@ref).
 """
-function query_solver()
+function query_solver(engine::String)
+
 end
 
 """
