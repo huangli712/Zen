@@ -28,6 +28,10 @@ end
 """
     s_qmc1_exec()
 
+Launch the CT-HYB1 quantum impurity solver.
+
+This quantum impurity solver is from the `iQIST` software package.
+
 See also: [`s_qmc1_init`](@ref), [`s_qmc1_save`](@ref).
 """
 function s_qmc1_exec()
@@ -36,6 +40,10 @@ end
 
 """
     s_qmc1_save()
+
+Backup the output files of the CT-HYB1 quantum impurity solver.
+
+This quantum impurity solver is from the `iQIST` software package.
 
 See also: [`s_qmc1_init`](@ref), [`s_qmc1_exec`](@ref).
 """
