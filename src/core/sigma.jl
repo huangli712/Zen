@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/29
+# Last modified: 2021/03/31
 #
 
 """
@@ -91,6 +91,7 @@ function sigma_reset()
         for i = 1:nsite
             for s = 1:nspin
                 println(fout, "# site: $i spin: $s")
+                # There are 2 * ndim columns
                 for m = 1:nmesh
                     @printf(fout, "%16.12f", fmesh[m])
                     foreach(x -> @printf(fout, "%16.12f %16.12f", real(x), imag(x)), SA[i][m, :, s])
