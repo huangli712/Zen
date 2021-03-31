@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/30
+# Last modified: 2021/03/31
 #
 
 #
@@ -13,6 +13,11 @@
 
 """
     s_qmc1_init()
+
+Check the runtime environment of CT-HYB1 quantum impurity solver. Prepare
+the necessary input files.
+
+This quantum impurity solver is from the `iQIST` software package.
 
 See also: [`s_qmc1_exec`](@ref), [`s_qmc1_save`](@ref).
 """
