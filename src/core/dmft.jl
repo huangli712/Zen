@@ -19,7 +19,8 @@ function dmft_init(it::IterInfo, task::I64)
     # Check the task
     @assert task in (1, 2) 
 
-    # Well, determine which files are necessary.
+    # Well, determine which files are necessary. They are defined in
+    # `fsig`, `fir`, and `fdmft`.
     #
     # Self-energy functions
     fsig = ["sigma.bare", "sigma.dc"]
