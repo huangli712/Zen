@@ -14,7 +14,7 @@
 """
     s_qmc1_init()
 
-Check the runtime environment of CT-HYB1 quantum impurity solver. Prepare
+Check runtime environment of the CT-HYB1 quantum impurity solver. Prepare
 the necessary input files.
 
 This quantum impurity solver is from the `iQIST` software package.
@@ -41,7 +41,7 @@ end
 """
     s_qmc1_save()
 
-Backup the output files of the CT-HYB1 quantum impurity solver.
+Backup output files of the CT-HYB1 quantum impurity solver.
 
 This quantum impurity solver is from the `iQIST` software package.
 
@@ -58,7 +58,7 @@ end
 """
     s_qmc2_init()
 
-Check the runtime environment of CT-HYB2 quantum impurity solver. Prepare
+Check runtime environment of the CT-HYB2 quantum impurity solver. Prepare
 the necessary input files.
 
 This quantum impurity solver is from the `iQIST` software package.
@@ -85,7 +85,7 @@ end
 """
     s_qmc2_save()
 
-Backup the output files of the CT-HYB2 quantum impurity solver.
+Backup output files of the CT-HYB2 quantum impurity solver.
 
 This quantum impurity solver is from the `iQIST` software package.
 
@@ -102,7 +102,7 @@ end
 """
     s_hub1_init()
 
-Check the runtime environment of HIA quantum impurity solver. Prepare
+Check runtime environment of the HIA quantum impurity solver. Prepare
 the necessary input files.
 
 See also: [`s_hub1_exec`](@ref), [`s_hub1_save`](@ref).
@@ -125,7 +125,7 @@ end
 """
     s_hub1_save()
 
-Backup the output files of the HIA quantum impurity solver.
+Backup output files of the HIA quantum impurity solver.
 
 See also: [`s_hub1_init`](@ref), [`s_hub1_exec`](@ref).
 """
@@ -140,6 +140,9 @@ end
 """
     s_norg_init()
 
+Check runtime environment of the NORG quantum impurity solver. Prepare
+the necessary input files.
+
 See also: [`s_norg_exec`](@ref), [`s_norg_save`](@ref).
 """
 function s_norg_init()
@@ -149,6 +152,8 @@ end
 """
     s_norg_exec()
 
+Launch the NORG quantum impurity solver.
+
 See also: [`s_norg_init`](@ref), [`s_norg_save`](@ref).
 """
 function s_norg_exec()
@@ -157,6 +162,8 @@ end
 
 """
     s_norg_save()
+
+Backup output files of the NORG quantum impurity solver.
 
 See also: [`s_norg_init`](@ref), [`s_norg_exec`](@ref).
 """
