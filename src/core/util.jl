@@ -301,29 +301,30 @@ function query_solver(engine::String)
     else
         @cswitch engine begin
             @case "ct_hyb1"
-                joinpath(query_home(), "src/solver/ct_hyb1")
+                solver_dir = joinpath(query_home(), "src/solver/ct_hyb1")
                 break
 
             @case "ct_hyb2"
-                joinpath(query_home(), "src/solver/ct_hyb2")
+                solver_dir = joinpath(query_home(), "src/solver/ct_hyb2")
                 break
 
             @case "hub1"
-                joinpath(query_home(), "src/solver/hub1")
+                solver_dir = joinpath(query_home(), "src/solver/hub1")
                 break
 
             @case "norg"
-                joinpath(query_home(), "src/solver/norg")
+                solver_dir = joinpath(query_home(), "src/solver/norg")
                 break
 
             @case "atomic"
-                joinpath(query_home(), "src/solver/atomic")
+                solver_dir = joinpath(query_home(), "src/solver/atomic")
                 break
 
             @default
                 sorry()
                 break
         end
+        solver_dir
     end
 end
 
