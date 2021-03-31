@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/30
+# Last modified: 2021/03/31
 #
 
 """
@@ -44,7 +44,8 @@ function dmft_init(it::IterInfo, task::I64)
     # Extract key parameters
     axis = get_m("axis")
     beta = get_m("beta")
-    lfermi = true
+    mc = ( get_m("mc") isa Missing ? 0.001 : get_m("mc") )
+    lfermi = ( get_m("lfermi") isa Missing ? true : get_m("lfermi") )
     ltetra = ( get_d("smear") === "tetra" )
 
     # Generate essential input files, such as dmft.in, dynamically.
@@ -53,6 +54,7 @@ function dmft_init(it::IterInfo, task::I64)
         println(fout, "task = $task")
         println(fout, "axis = $axis")
         println(fout, "beta = $beta")
+        println(fout, "mc   = $mc")
         println(fout, "lfermi = $lfermi")
         println(fout, "ltetra = $ltetra")
     end
@@ -68,15 +70,18 @@ function dmft_init(it::IterInfo, task::I64)
 end
 
 """
-    dmft_exec(it::IterInfo)
+    dmft_exec(it::IterInfo, task::I64)
 
 Execute the dynamical mean-field theory engine.
 
 See also: [`dmft_init`](@ref), [`dmft_save`](@ref).
 """
-function dmft_exec(it::IterInfo)
+function dmft_exec(it::IterInfo, task::I64)
+    # Check the task
+    @assert task in (1, 2) 
+
     # Print the header
-    println("Engine : DMFT1")
+    println("Engine : DMFT$task")
 
     # Get the home directory of Zen
     zen_home = query_home()
