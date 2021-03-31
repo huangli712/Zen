@@ -58,6 +58,11 @@ end
 """
     s_qmc2_init()
 
+Check the runtime environment of CT-HYB2 quantum impurity solver. Prepare
+the necessary input files.
+
+This quantum impurity solver is from the `iQIST` software package.
+
 See also: [`s_qmc2_exec`](@ref), [`s_qmc2_save`](@ref).
 """
 function s_qmc2_init()
@@ -67,6 +72,10 @@ end
 """
     s_qmc2_exec()
 
+Launch the CT-HYB2 quantum impurity solver.
+
+This quantum impurity solver is from the `iQIST` software package.
+
 See also: [`s_qmc2_init`](@ref), [`s_qmc2_save`](@ref).
 """
 function s_qmc2_exec()
@@ -75,6 +84,10 @@ end
 
 """
     s_qmc2_save()
+
+Backup the output files of the CT-HYB2 quantum impurity solver.
+
+This quantum impurity solver is from the `iQIST` software package.
 
 See also: [`s_qmc2_init`](@ref), [`s_qmc2_exec`](@ref).
 """
