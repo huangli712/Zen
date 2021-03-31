@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/31
+# Last modified: 2021/04/01
 #
 
 #
@@ -145,14 +145,17 @@ function cycle1()
 # Iterations (C05-C09)
 #
     prompt("ZEN", "Iterations")
+    it.dmft_cycle = 1
 
     for iter = 1:get_m("niter")
         prompt("ZEN", "Cycle $iter")
+        it.dmft1_iter = it.dmft1_iter + 1
+        it.full_cycle = it.full_cycle + 1
 
         # C05: Tackle with the double counting term
         sigma_core(lr, "dcount")
 
-        # C06: Perform DMFT calculation with `dmft_mode` = 1
+        # C06: Perform DMFT calculation with `task` = 1
         dmft_run(it, lr, 1)
 
         # C07: Split and distribute the data (hybridization functions)
@@ -396,7 +399,9 @@ function solver_run(it::IterInfo, lr::Logger)
         # Activate the chosen quantum impurity solver
         @cswitch engine begin
             @case "ct_hyb1"
-                #sorry()
+                s_qmc1_init(it)
+                s_qmc1_exec(it)
+                s_qmc1_save(it)
                 break
 
             @case "ct_hyb2"

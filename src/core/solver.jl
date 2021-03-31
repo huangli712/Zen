@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/31
+# Last modified: 2021/04/01
 #
 
 #
@@ -12,7 +12,7 @@
 #
 
 """
-    s_qmc1_init()
+    s_qmc1_init(it::IterInfo)
 
 Check runtime environment of the CT-HYB1 quantum impurity solver. Prepare
 the necessary input files.
@@ -21,12 +21,11 @@ This quantum impurity solver is from the `iQIST` software package.
 
 See also: [`s_qmc1_exec`](@ref), [`s_qmc1_save`](@ref).
 """
-function s_qmc1_init()
-    sorry()
+function s_qmc1_init(it::IterInfo)
 end
 
 """
-    s_qmc1_exec()
+    s_qmc1_exec(it::IterInfo)
 
 Launch the CT-HYB1 quantum impurity solver.
 
@@ -34,12 +33,16 @@ This quantum impurity solver is from the `iQIST` software package.
 
 See also: [`s_qmc1_init`](@ref), [`s_qmc1_save`](@ref).
 """
-function s_qmc1_exec()
-    sorry()
+function s_qmc1_exec(it::IterInfo)
+    # Print the header
+    println("Engine : CT-HYB1")
+
+    # Print the footer for a better visualization
+    println()
 end
 
 """
-    s_qmc1_save()
+    s_qmc1_save(it::IterInfo)
 
 Backup output files of the CT-HYB1 quantum impurity solver.
 
@@ -47,8 +50,7 @@ This quantum impurity solver is from the `iQIST` software package.
 
 See also: [`s_qmc1_init`](@ref), [`s_qmc1_exec`](@ref).
 """
-function s_qmc1_save()
-    sorry()
+function s_qmc1_save(it::IterInfo)
 end
 
 #
@@ -56,7 +58,7 @@ end
 #
 
 """
-    s_qmc2_init()
+    s_qmc2_init(it::IterInfo)
 
 Check runtime environment of the CT-HYB2 quantum impurity solver. Prepare
 the necessary input files.
@@ -65,12 +67,12 @@ This quantum impurity solver is from the `iQIST` software package.
 
 See also: [`s_qmc2_exec`](@ref), [`s_qmc2_save`](@ref).
 """
-function s_qmc2_init()
+function s_qmc2_init(it::IterInfo)
     sorry()
 end
 
 """
-    s_qmc2_exec()
+    s_qmc2_exec(it::IterInfo)
 
 Launch the CT-HYB2 quantum impurity solver.
 
@@ -78,12 +80,16 @@ This quantum impurity solver is from the `iQIST` software package.
 
 See also: [`s_qmc2_init`](@ref), [`s_qmc2_save`](@ref).
 """
-function s_qmc2_exec()
-    sorry()
+function s_qmc2_exec(it::IterInfo)
+    # Print the header
+    println("Engine : CT-HYB2")
+
+    # Print the footer for a better visualization
+    println()
 end
 
 """
-    s_qmc2_save()
+    s_qmc2_save(it::IterInfo)
 
 Backup output files of the CT-HYB2 quantum impurity solver.
 
@@ -91,7 +97,7 @@ This quantum impurity solver is from the `iQIST` software package.
 
 See also: [`s_qmc2_init`](@ref), [`s_qmc2_exec`](@ref).
 """
-function s_qmc2_save()
+function s_qmc2_save(it::IterInfo)
     sorry()
 end
 
@@ -100,36 +106,40 @@ end
 #
 
 """
-    s_hub1_init()
+    s_hub1_init(it::IterInfo)
 
 Check runtime environment of the HIA quantum impurity solver. Prepare
 the necessary input files.
 
 See also: [`s_hub1_exec`](@ref), [`s_hub1_save`](@ref).
 """
-function s_hub1_init()
+function s_hub1_init(it::IterInfo)
     sorry()
 end
 
 """
-    s_hub1_exec()
+    s_hub1_exec(it::IterInfo)
 
 Launch the HIA quantum impurity solver.
 
 See also: [`s_hub1_init`](@ref), [`s_hub1_save`](@ref).
 """
-function s_hub1_exec()
-    sorry()
+function s_hub1_exec(it::IterInfo)
+    # Print the header
+    println("Engine : HIA")
+
+    # Print the footer for a better visualization
+    println()
 end
 
 """
-    s_hub1_save()
+    s_hub1_save(it::IterInfo)
 
 Backup output files of the HIA quantum impurity solver.
 
 See also: [`s_hub1_init`](@ref), [`s_hub1_exec`](@ref).
 """
-function s_hub1_save()
+function s_hub1_save(it::IterInfo)
     sorry()
 end
 
@@ -138,35 +148,39 @@ end
 #
 
 """
-    s_norg_init()
+    s_norg_init(it::IterInfo)
 
 Check runtime environment of the NORG quantum impurity solver. Prepare
 the necessary input files.
 
 See also: [`s_norg_exec`](@ref), [`s_norg_save`](@ref).
 """
-function s_norg_init()
+function s_norg_init(it::IterInfo)
     sorry()
 end
 
 """
-    s_norg_exec()
+    s_norg_exec(it::IterInfo)
 
 Launch the NORG quantum impurity solver.
 
 See also: [`s_norg_init`](@ref), [`s_norg_save`](@ref).
 """
-function s_norg_exec()
-    sorry()
+function s_norg_exec(it::IterInfo)
+    # Print the header
+    println("Engine : NORG")
+
+    # Print the footer for a better visualization
+    println()
 end
 
 """
-    s_norg_save()
+    s_norg_save(it::IterInfo)
 
 Backup output files of the NORG quantum impurity solver.
 
 See also: [`s_norg_init`](@ref), [`s_norg_exec`](@ref).
 """
-function s_norg_save()
+function s_norg_save(it::IterInfo)
     sorry()
 end
