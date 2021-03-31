@@ -594,6 +594,8 @@ function mixer_core(lr::Logger)
     prompt("Mixer")
     prompt(lr.log, "mixer")
 
+    println()
+
     # Monitor the status
     monitor(true)
 end
