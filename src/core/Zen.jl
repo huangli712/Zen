@@ -586,11 +586,11 @@ function __init__()
             # Precompile them one by one
             # println(i, " -> ", str, " -> ", length(types), " -> ", T)
             precompile(fun, T)
-            print("Function $str (#$cf) is compiled.\r")
+            @printf("Function %15s (#%3i) is compiled.\r", str, cf)
         end
     end
 
-    prompt("ZEN", "Well, Zen (including $cf functions) are compiled.")
+    prompt("ZEN", "Well, Zen are compiled and loaded.")
     prompt("ZEN", "We are ready to go!")
     println()
 end
