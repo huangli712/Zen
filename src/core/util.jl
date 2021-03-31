@@ -271,6 +271,12 @@ function query_dft(engine::String)
     end
 end
 
+function query_dmft()
+end
+
+function query_solver()
+end
+
 """
     welcome()
 
