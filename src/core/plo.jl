@@ -86,7 +86,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
         plo_monitor(D)
     end
 
-    # P10: Print the footer
+    # P10: Print the footer for a better visualization
     println()
 end
 

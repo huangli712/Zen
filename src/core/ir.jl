@@ -78,7 +78,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
         irio_tetra(pwd(), D[:volt], D[:itet])
     end
 
-    # I11: Print the footer
+    # I11: Print the footer for a better visualization
     println()
 end
 
