@@ -586,6 +586,7 @@ function __init__()
             # Precompile them one by one
             # println(i, " -> ", str, " -> ", length(types), " -> ", T)
             precompile(fun, T)
+            print("Function $str (#$cf) is compiled.\r")
         end
     end
 
