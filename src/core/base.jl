@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/29
+# Last modified: 2021/03/31
 #
 
 #
@@ -346,15 +346,15 @@ function dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
         # Solve the DMFT self-consistent equation
         @case 1
             dmft_init(it, 1)
-            dmft_exec(it)
-            dmft_save(it)
+            dmft_exec(it, 1)
+            dmft_save(it, 1)
             break
 
         # Generate DMFT correction for DFT charge density
         @case 2
             dmft_init(it, 2)
-            dmft_exec(it)
-            dmft_save(it)
+            dmft_exec(it, 2)
+            dmft_save(it, 2)
             break
     end
 
