@@ -83,8 +83,8 @@ function dmft_exec(it::IterInfo, task::I64)
     # Print the header
     println("Engine : DMFT$task")
 
-    # Get the home directory of Zen
-    zen_home = query_home()
+    # Get the home directory of DMFT engine
+    dmft_home = query_dmft()
 
     # Determine mpi prefix (whether the dmft is executed sequentially)
     mpi_prefix = inp_toml("../MPI.toml", "dmft", false)
@@ -92,7 +92,7 @@ function dmft_exec(it::IterInfo, task::I64)
     println("  Para : Using $numproc processors")
 
     # Select suitable dmft program
-    dmft_exe = "$zen_home/src/dmft/dmft"
+    dmft_exe = "$dmft_home/dmft"
     @assert isfile(dmft_exe)
     println("  Exec : $dmft_exe")
 
@@ -106,14 +106,15 @@ function dmft_exec(it::IterInfo, task::I64)
     # Launch it, the terminal output is redirected to dmft.out
     run(pipeline(`$dmft_cmd`, stdout = "dmft.out"))
 
-    # Print the footer
+    # Print the footer for a better visualization
     println()
 end
 
 """
-    dmft_save(it::IterInfo)
+    dmft_save(it::IterInfo, task::I64)
 
 See also: [`dmft_init`](@ref), [`dmft_exec`](@ref).
 """
-function dmft_save(it::IterInfo)
+function dmft_save(it::IterInfo, task::I64)
+    sorry()
 end
