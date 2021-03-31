@@ -137,14 +137,29 @@ end
 # NORG Quantum Impurity Solver
 #
 
+"""
+    s_norg_init()
+
+See also: [`s_norg_exec`](@ref), [`s_norg_save`](@ref).
+"""
 function s_norg_init()
     sorry()
 end
 
+"""
+    s_norg_exec()
+
+See also: [`s_norg_init`](@ref), [`s_norg_save`](@ref).
+"""
 function s_norg_exec()
     sorry()
 end
 
+"""
+    s_norg_save()
+
+See also: [`s_norg_init`](@ref), [`s_norg_exec`](@ref).
+"""
 function s_norg_save()
     sorry()
 end
