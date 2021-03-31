@@ -54,7 +54,7 @@ function vasp_adaptor(D::Dict{Symbol,Any})
         D[:volt], D[:itet] = vaspio_tetra(pwd())
     end
 
-    # V08: Print the footer
+    # V08: Print the footer for a better visualization
     println()
 end
 
