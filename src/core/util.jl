@@ -295,7 +295,36 @@ Query the home directory of the quantum impurity solver.
 See also: [`query_dft`](@ref), [`query_dmft`](@ref).
 """
 function query_solver(engine::String)
+    # We have to setup the environment variable ZEN_SOLVER
+    if haskey(ENV, "ZEN_SOLVER")
+        ENV["ZEN_SOLVER"]
+    else
+        @cswitch engine begin
+            @case "ct_hyb1"
+                joinpath(query_home(), "src/solver/ct_hyb1")
+                break
 
+            @case "ct_hyb2"
+                joinpath(query_home(), "src/solver/ct_hyb2")
+                break
+
+            @case "hub1"
+                joinpath(query_home(), "src/solver/hub1")
+                break
+
+            @case "norg"
+                joinpath(query_home(), "src/solver/norg")
+                break
+
+            @case "atomic"
+                joinpath(query_home(), "src/solver/atomic")
+                break
+
+            @default
+                sorry()
+                break
+        end
+    end
 end
 
 """
