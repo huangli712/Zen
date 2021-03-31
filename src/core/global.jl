@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Stable
 #
-# Last modified: 2021/03/30
+# Last modified: 2021/03/31
 #
 
 """
@@ -103,7 +103,7 @@ const __AUTHORS__ = [(name = "Li Huang", email = "lihuang.dmft@gmail.com")]
 """
     authors()
 
-Print the authors of the Zen Framework.
+Print authors / contributors of the Zen Framework.
 
 See also: [`__AUTHORS__`](@ref).
 """
