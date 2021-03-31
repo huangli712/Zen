@@ -590,7 +590,7 @@ function __init__()
         end
     end
 
-    prompt("ZEN", "Well, Zen are compiled and loaded.")
+    prompt("ZEN", "Well, Zen are compiled and loaded ($cf functions).")
     prompt("ZEN", "We are ready to go!")
     println()
 end
