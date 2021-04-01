@@ -145,10 +145,12 @@ function cycle1()
 # Iterations (C05-C09)
 #
     prompt("ZEN", "Iterations")
-    it.dmft_cycle = 1
 
     for iter = 1:get_m("niter")
         prompt("ZEN", "Cycle $iter")
+
+        # Update IterInfo
+        it.dmft_cycle = 1
         it.dmft1_iter = it.dmft1_iter + 1
         it.full_cycle = it.full_cycle + 1
 
@@ -325,7 +327,7 @@ function dft_run(it::IterInfo, lr::Logger)
 end
 
 """
-    dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
+    dmft_run(it::IterInfo, lr::Logger, task::I64)
 
 Simple driver for DMFT engine. It performs three tasks: (1) Examine
 the runtime environment for the DMFT engine. (2) Launch the DMFT engine.
@@ -333,19 +335,19 @@ the runtime environment for the DMFT engine. (2) Launch the DMFT engine.
 
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`solver_run`](@ref).
 """
-function dmft_run(it::IterInfo, lr::Logger, dmft_mode::I64)
-    # Examine the argument `dmft_mode`
-    @assert dmft_mode === 1 || dmft_mode === 2
+function dmft_run(it::IterInfo, lr::Logger, task::I64)
+    # Examine the argument `task`
+    @assert task === 1 || task === 2
 
     # Print the log
     prompt("DMFT")
-    prompt(lr.log, "dmft$dmft_mode")
+    prompt(lr.log, "dmft$task")
 
     # Enter dmft1 or dmft2 directory
-    cd("dmft$dmft_mode")
+    cd("dmft$task")
 
     # Activate the chosen DMFT engine
-    @cswitch dmft_mode begin
+    @cswitch task begin
         # Solve the DMFT self-consistent equation
         @case 1
             dmft_init(it, 1)
