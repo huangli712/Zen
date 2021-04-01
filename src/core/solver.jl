@@ -35,7 +35,7 @@ See also: [`s_qmc1_init`](@ref), [`s_qmc1_save`](@ref).
 """
 function s_qmc1_exec(it::IterInfo)
     # Print the header
-    println("Engine : CT-HYB1")
+    println("Engine : CT-HYB$(subscript(1))")
 
     # Print the footer for a better visualization
     println()
@@ -82,7 +82,7 @@ See also: [`s_qmc2_init`](@ref), [`s_qmc2_save`](@ref).
 """
 function s_qmc2_exec(it::IterInfo)
     # Print the header
-    println("Engine : CT-HYB2")
+    println("Engine : CT-HYB$(subscript(2))")
 
     # Print the footer for a better visualization
     println()
