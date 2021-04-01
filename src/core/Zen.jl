@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/31
+# Last modified: 2021/04/01
 #
 
 """
@@ -132,6 +132,7 @@ export authors
 # line_to_array -> Convert a line to a string array.
 # line_to_cmplx -> Convert a line to a cmplx number.
 # erf           -> Gauss error function.
+# subscript     -> Convert a number to subscript.
 #
 include("util.jl")
 #
@@ -157,6 +158,7 @@ export prompt
 export line_to_array
 export line_to_cmplx
 export erf
+export subscript
 
 #
 # tetra.jl
