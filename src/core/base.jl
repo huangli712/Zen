@@ -407,15 +407,21 @@ function solver_run(it::IterInfo, lr::Logger)
                 break
 
             @case "ct_hyb2"
-                sorry()
+                s_qmc2_init(it)
+                s_qmc2_exec(it)
+                s_qmc2_save(it)
                 break
 
             @case "hub1"
-                sorry()
+                s_hub1_init(it)
+                s_hub1_exec(it)
+                s_hub1_save(it)
                 break
 
             @case "norg"
-                sorry()
+                s_norg_init(it)
+                s_norg_exec(it)
+                s_norg_save(it)
                 break
 
             @default
