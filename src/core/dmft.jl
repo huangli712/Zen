@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/31
+# Last modified: 2021/04/01
 #
 
 """
@@ -81,7 +81,7 @@ function dmft_exec(it::IterInfo, task::I64)
     @assert task in (1, 2) 
 
     # Print the header
-    println("Engine : DMFT$task")
+    println("Engine : DMFT$(subscript(task))")
 
     # Get the home directory of DMFT engine
     dmft_home = query_dmft()
