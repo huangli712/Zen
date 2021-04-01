@@ -148,6 +148,8 @@ function cycle1()
 
     for iter = 1:get_m("niter")
         prompt("ZEN", "Cycle $iter")
+        prompt(lr.log, "")
+        prompt(lr.log, "< dft_dmft_cycle >")
 
         # Update IterInfo
         it.dmft_cycle = 1
