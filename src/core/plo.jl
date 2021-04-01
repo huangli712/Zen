@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/29
+# Last modified: 2021/04/01
 #
 
 #
@@ -37,8 +37,8 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
 
     # P03: Adjust the band structure
     #
-    # D[:fermi] will be updated
-    println("  Calibrate fermi level")
+    # D[:enk] will be updated
+    println("  Calibrate eigenvalues")
     plo_fermi(D[:enk], D[:fermi])
 
     # P04: Setup the PrGroup strcut further
