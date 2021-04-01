@@ -28,11 +28,40 @@
      character(len = 09), public, save :: cname = 'JACARANDA'
 
 !!========================================================================
-!!>>> integer variables                                                <<<
+!!>>> integer variables: from dmft.in                                  <<<
 !!========================================================================
 
      integer, public, save :: task   = 1
      integer, public, save :: axis   = 1
+
+!!========================================================================
+!!>>> logical variables: from dmft.in                                  <<<
+!!========================================================================
+
+     logical, public, save :: lfermi = .true.
+     logical, public, save :: ltetra = .true.
+
+!!========================================================================
+!!>>> real variables: from dmft.in                                     <<<
+!!========================================================================
+
+     real(dp), public, save :: beta  = 8.00_dp
+     real(dp), public, save :: mc    = 0.0001_dp
+
+!!========================================================================
+!!>>> integer variables: from params.ir                                <<<
+!!========================================================================
+
+!!========================================================================
+!!>>> real variables: from params.ir                                   <<<
+!!========================================================================
+
+
+
+
+
+
+
 
      integer, public, save :: nsort  = 3
      integer, public, save :: natom  = 5
@@ -46,11 +75,7 @@
      integer, public, save :: mfreq  = 8193
      integer, public, save :: nfreq  = 513
 
-!!========================================================================
-!!>>> real variables                                                   <<<
-!!========================================================================
 
-     real(dp), public, save :: beta  = 8.00_dp
      real(dp), public, save :: scal  = 4.00_dp
      real(dp), public, save :: volt  = 1.00_dp
      real(dp), public, save :: fermi = 0.00_dp
