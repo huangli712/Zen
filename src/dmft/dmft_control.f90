@@ -27,6 +27,13 @@
 !!
      character(len = 09), public, save :: cname = 'JACARANDA'
 
+!!
+!! @var model
+!!
+!! name of strongly correlated materials or models
+!!
+     character(len = 99), public, save :: model = 'SrVO3'
+
 !!========================================================================
 !!>>> integer variables: from dmft.in                                  <<<
 !!========================================================================
@@ -114,33 +121,29 @@
 !!>>> integer variables: from params.ir                                <<<
 !!========================================================================
 
-!!========================================================================
-!!>>> real variables: from params.ir                                   <<<
-!!========================================================================
-
-
-
-
-
-
-
-
      integer, public, save :: nsort  = 3
      integer, public, save :: natom  = 5
      integer, public, save :: nband  = 30
      integer, public, save :: nkpt   = 729
      integer, public, save :: nspin  = 1
      integer, public, save :: ntet   = 4374
-     integer, public, save :: nsite  = 1
      integer, public, save :: ngrp   = 1
      integer, public, save :: nwnd   = 1
-     integer, public, save :: mfreq  = 8193
-     integer, public, save :: nfreq  = 513
 
+!!========================================================================
+!!>>> real variables: from params.ir                                   <<<
+!!========================================================================
 
-     real(dp), public, save :: scal  = 4.00_dp
-     real(dp), public, save :: volt  = 1.00_dp
+     real(dp), public, save :: scale = 4.00_dp
      real(dp), public, save :: fermi = 0.00_dp
+     real(dp), public, save :: volt  = 1.00_dp
+
+!!========================================================================
+!!>>> integer variables: from sigma.bare and sigma.dc                  <<<
+!!========================================================================
+
+     integer, public, save :: nsite  = 1
+     integer, public, save :: nmesh  = 8193
 
 !!========================================================================
 !!>>> MPI related common variables                                     <<<
