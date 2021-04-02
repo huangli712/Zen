@@ -217,6 +217,12 @@
 !! in which the correlated effect is important
 !!
      integer, public, save :: nsite  = 1
+
+!!
+!! @var nmesh
+!!
+!! number of frequency points
+!!
      integer, public, save :: nmesh  = 8193
 
 !!========================================================================
