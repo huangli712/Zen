@@ -124,20 +124,51 @@
 !!
 !! @var nsort
 !!
-!! number of atomic sorts
+!! number of atomic sorts in the model
 !!
      integer, public, save :: nsort  = 3
 
 !!
 !! @var natom
 !!
-!! number of atoms
+!! number of atoms in the model
 !!
      integer, public, save :: natom  = 5
+
+!!
+!! @var nband
+!!
+!! number of bands
+!!
      integer, public, save :: nband  = 30
+
+!!
+!! @var nkpt
+!!
+!! number of k-mesh points
+!!
      integer, public, save :: nkpt   = 729
+
+!!
+!! @var nspin
+!!
+!! number of spin orientations
+!!
      integer, public, save :: nspin  = 1
-     integer, public, save :: ntet   = 4374
+
+!!
+!! @var ntet
+!!
+!! number of tetrahedra. note that ntet = 0 means that the tetrahedron
+!! data are absent and lfermi must be .false. 
+!!
+     integer, public, save :: ntet   = 0
+
+!!
+!! @var ngrp
+!!
+!!
+!!
      integer, public, save :: ngrp   = 1
      integer, public, save :: nwnd   = 1
 
