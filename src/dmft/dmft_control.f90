@@ -51,7 +51,13 @@
 !!
 !! @var axis
 !!
-!! control flag,
+!! control flag, determine the axis for brillouin zone integration
+!!
+!! if axis == 1:
+!!     imaginary axis
+!!
+!! if axis == 2:
+!!     real axis
 !!
      integer, public, save :: axis   = 1
 
