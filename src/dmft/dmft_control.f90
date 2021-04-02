@@ -77,6 +77,19 @@
 !!     fix the fermi leve. in other words, the dft fermi level is used
 !!
      logical, public, save :: lfermi = .true.
+
+!!
+!! @var ltetra
+!!
+!! control flag, determine whether the analytical tetrahedron method is
+!! used to do the brillouin zone integration
+!!
+!! if ltetra == .true.
+!!     use the analytical tetrahedron algorithm
+!!
+!! if ltetra == .false.
+!!     use the direct algorithm
+!!
      logical, public, save :: ltetra = .true.
 
 !!========================================================================
