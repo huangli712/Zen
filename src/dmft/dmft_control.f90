@@ -210,6 +210,12 @@
 !!>>> integer variables: from sigma.bare and sigma.dc                  <<<
 !!========================================================================
 
+!!
+!! @var nsite
+!!
+!! number of correlated electron problems, i.e, number of impurity sites
+!! in which the correlated effect is important
+!!
      integer, public, save :: nsite  = 1
      integer, public, save :: nmesh  = 8193
 
