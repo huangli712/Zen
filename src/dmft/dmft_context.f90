@@ -16,7 +16,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           03/19/2021 by li huang (last modified)
+!!!           04/02/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -33,6 +33,8 @@
 !!
 !! @var max_ndim
 !!
+!! maximum number of correlated orbitals in all groups
+!!
      integer, public, save :: max_ndim
 
 !!
@@ -43,20 +45,28 @@
 !!
 !! @var corr
 !!
+!! test which group is correlated
+!!
      logical, public, save, allocatable :: corr(:)
 
 !!
 !! @var site
+!!
+!! the corresponding site of each group
 !!
      integer, public, save, allocatable :: site(:)
 
 !!
 !! @var l
 !!
+!! the corresponding angular momentum of each group
+!!
      integer, public, save, allocatable :: l(:)
 
 !!
 !! @var ndim
+!!
+!! number of correlated orbitals of each group
 !!
      integer, public, save, allocatable :: ndim(:)
 
