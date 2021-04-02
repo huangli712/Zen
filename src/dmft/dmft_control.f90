@@ -121,7 +121,18 @@
 !!>>> integer variables: from params.ir                                <<<
 !!========================================================================
 
+!!
+!! @var nsort
+!!
+!! number of atomic sorts
+!!
      integer, public, save :: nsort  = 3
+
+!!
+!! @var natom
+!!
+!! number of atoms
+!!
      integer, public, save :: natom  = 5
      integer, public, save :: nband  = 30
      integer, public, save :: nkpt   = 729
