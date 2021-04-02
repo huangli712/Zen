@@ -184,8 +184,26 @@
 !!>>> real variables: from params.ir                                   <<<
 !!========================================================================
 
+!!
+!! @var scale
+!!
+!! an universal scaling factor for the lattice constants
+!!
      real(dp), public, save :: scale = 4.00_dp
+
+!!
+!! @var fermi
+!!
+!! default fermi level, which is usually from the dft calculations
+!!
      real(dp), public, save :: fermi = 0.00_dp
+
+!!
+!! @var volt
+!!
+!! volume of a tetrahedron, which is used to renormalize the integration
+!! by using the analytical tetrahedron algorithm
+!!
      real(dp), public, save :: volt  = 1.00_dp
 
 !!========================================================================
