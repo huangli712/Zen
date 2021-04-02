@@ -167,9 +167,17 @@
 !!
 !! @var ngrp
 !!
-!!
+!! number of groups of projectors which are used to create the Hilbert
+!! subspace for correlated orbitals
 !!
      integer, public, save :: ngrp   = 1
+
+!!
+!! @var nwnd
+!!
+!! number of energy windows or band windows, which are used to restrict
+!! the correlated subspace
+!!
      integer, public, save :: nwnd   = 1
 
 !!========================================================================
