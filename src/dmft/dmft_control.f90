@@ -5,7 +5,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           03/19/2021 by li huang (last modified)
+!!!           04/02/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -31,7 +31,28 @@
 !!>>> integer variables: from dmft.in                                  <<<
 !!========================================================================
 
+!!
+!! @var task
+!!
+!! control flag, determine the running mode of the code
+!!
+!! if task == 0:
+!!     search the fermi level only
+!!
+!! if task == 1:
+!!     calculate the local hybridization function. of course, the fermi
+!!     level should be updated as well
+!!
+!! if task == 2:
+!!     calculate charge correction due to the electronic correlation
+!!
      integer, public, save :: task   = 1
+
+!!
+!! @var axis
+!!
+!! control flag,
+!!
      integer, public, save :: axis   = 1
 
 !!========================================================================
