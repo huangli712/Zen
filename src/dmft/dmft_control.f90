@@ -96,7 +96,18 @@
 !!>>> real variables: from dmft.in                                     <<<
 !!========================================================================
 
+!!
+!! @var beta
+!!
+!! inverse temperature, \beta = 1 / T
+!!
      real(dp), public, save :: beta  = 8.00_dp
+
+!!
+!! @var mc
+!!
+!! convergence criterion for fermi level search
+!!
      real(dp), public, save :: mc    = 0.0001_dp
 
 !!========================================================================
