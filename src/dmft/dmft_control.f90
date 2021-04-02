@@ -65,6 +65,17 @@
 !!>>> logical variables: from dmft.in                                  <<<
 !!========================================================================
 
+!!
+!! @var lfermi
+!!
+!! control flag, determine whether the fermi level should be updated
+!!
+!! if lfermi == .true.
+!!     search the fermi level
+!!
+!! if lfermi == .false.
+!!     fix the fermi leve. in other words, the dft fermi level is used
+!!
      logical, public, save :: lfermi = .true.
      logical, public, save :: ltetra = .true.
 
