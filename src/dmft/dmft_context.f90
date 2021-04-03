@@ -295,7 +295,7 @@
 !!
 !! @var sig_l
 !!
-!! local self-energy function. it is usually taken from the output of
+!! local self-energy functions. they are usually taken from the output of
 !! various quantum impurity solver
 !!
      complex(dp), public, save, allocatable :: sig_l(:,:,:)
@@ -303,7 +303,7 @@
 !!
 !! @var sig_k
 !!
-!! self-energy function embedded in k-space
+!! self-energy functions embedded in k-space
 !!
      complex(dp), public, save, allocatable :: sig_k(:,:,:)
 
@@ -312,7 +312,7 @@
 !!
 !! @mod dmft_green
 !!
-!! contain the green's function
+!! contain the green's functions
 !!
   module dmft_green
      implicit none
@@ -320,14 +320,14 @@
 !!
 !! @var grn_l
 !!
-!! local green's function
+!! local green's functions
 !!
      complex(dp), public, save, allocatable :: grn_l(:,:,:)
 
 !!
 !! @var grn_k
 !!
-!! lattice green's function
+!! lattice green's functions
 !!
      complex(dp), public, save, allocatable :: grn_k(:,:,:)
 
@@ -335,6 +335,8 @@
 
 !!
 !! @mod dmft_weiss
+!!
+!! contain weiss function and hybridization function
 !!
   module dmft_weiss
      implicit none
