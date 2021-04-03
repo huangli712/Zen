@@ -240,11 +240,18 @@
 !!
 !! @mod dmft_projs
 !!
+!! contain the local orbital projections
+!!
   module dmft_projs
      use constants, only : dp
 
      implicit none
 
+!!
+!! @var psichi
+!!
+!! overlap matrix between the Kohn-Sham basis and the local orbitals
+!!
      complex(dp), public, save, allocatable :: psichi(:,:,:,:,:)
 
   end module dmft_projs
