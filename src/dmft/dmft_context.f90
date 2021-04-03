@@ -690,6 +690,8 @@
 !!
 !! @sub cat_alloc_sigma
 !!
+!! allocate memory for sigma-related variables
+!!
   subroutine cat_alloc_sigma()
      implicit none
 
