@@ -278,14 +278,33 @@
 !!
 !! @mod dmft_sigma
 !!
+!! contain the self-energy functions
+!!
   module dmft_sigma
      use constants, only : dp
 
      implicit none
 
+!!
+!! @var sigdc
+!!
+!! dobule counting term for self-energy functions
+!!
      complex(dp), public, save, allocatable :: sigdc(:,:)
-     complex(dp), public, save, allocatable :: sig_i(:,:,:)
-     complex(dp), public, save, allocatable :: sig_r(:,:,:)
+
+!!
+!! @var sig_l
+!!
+!! local self-energy function. it is usually taken from the output of
+!! various quantum impurity solver
+!!
+     complex(dp), public, save, allocatable :: sig_l(:,:,:)
+
+!!
+!! @var sig_k
+!!
+!! self-energy function embedded in k-space
+!!
      complex(dp), public, save, allocatable :: sig_k(:,:,:)
 
   end module dmft_sigma
