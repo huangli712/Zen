@@ -202,6 +202,11 @@
   module dmft_tetra
      implicit none
 
+!!
+!! @var tetra
+!!
+!! tetrahedron information
+!!
      integer, public, save, allocatable :: tetra(:,:)
 
   end module dmft_tetra
