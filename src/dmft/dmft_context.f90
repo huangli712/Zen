@@ -382,12 +382,26 @@
 !!
 !! @mod dmft_weiss
 !!
-!! contain weiss functions and hybridization functions
+!! contain bath weiss functions and hybridization functions
 !!
   module dmft_weiss
      use constants, only : dp
 
      implicit none
+
+!!
+!! @var wss_l
+!!
+!! local bath weiss functions
+!!
+     complex(dp), public, save, allocatable :: wss_l(:,:,:)
+
+!!
+!! @var wss_k
+!!
+!! lattice bath weiss functions
+!!
+     complex(dp), public, save, allocatable :: wss_k(:,:,:)
 
 !!
 !! @var hyb_l
