@@ -415,11 +415,12 @@
      use constants, only : dp
      use constants, only : zero, czero
 
-     use control, only : nsite, ngrp, nwnd
+     use control, only : nsort, natom
      use control, only : nband, nkpt, nspin
-     use control, only : natom, nsort
-     use control, only : mfreq, nfreq
      use control, only : ntet
+     use control, only : ngrp, nwnd
+     use control, only : nsite
+     use control, only : nmesh
 
      use dmft_group
      use dmft_window
@@ -430,6 +431,8 @@
      use dmft_projs
      use dmft_fmesh
      use dmft_sigma
+     use dmft_green
+     use dmft_weiss
 
      implicit none
 
