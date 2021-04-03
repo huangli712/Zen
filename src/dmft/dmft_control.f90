@@ -89,7 +89,7 @@
 !! @var ltetra
 !!
 !! control flag, determine whether the analytical tetrahedron method is
-!! used to do the brillouin zone integration
+!! used to perform the brillouin zone integration
 !!
 !! if ltetra == .true.
 !!     use the analytical tetrahedron algorithm
@@ -138,7 +138,7 @@
 !!
 !! @var nband
 !!
-!! number of bands
+!! number of dft bands
 !!
      integer, public, save :: nband  = 30
 
@@ -159,15 +159,15 @@
 !!
 !! @var ntet
 !!
-!! number of tetrahedra. note that ntet = 0 means that the tetrahedron
-!! data are absent and lfermi must be .false. 
+!! number of tetrahedra. note that ntet = 1 means that the tetrahedron
+!! data are absent and ltetra must be .false. 
 !!
-     integer, public, save :: ntet   = 0
+     integer, public, save :: ntet   = 1
 
 !!
 !! @var ngrp
 !!
-!! number of groups of projectors which are used to create the Hilbert
+!! number of groups of projectors, which are used to create the Hilbert
 !! subspace for correlated orbitals
 !!
      integer, public, save :: ngrp   = 1
@@ -194,7 +194,7 @@
 !!
 !! @var fermi
 !!
-!! default fermi level, which is usually from the dft calculations
+!! default fermi level, which is usually taken from the dft calculations
 !!
      real(dp), public, save :: fermi = 0.00_dp
 
@@ -214,7 +214,7 @@
 !! @var nsite
 !!
 !! number of correlated electron problems, i.e, number of impurity sites
-!! in which the correlated effect is important
+!! in which the correlated effect is considered
 !!
      integer, public, save :: nsite  = 1
 
