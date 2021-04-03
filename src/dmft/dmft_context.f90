@@ -863,10 +863,12 @@
 !!
 !! @sub cat_free_eigen
 !!
+!! deallocate memory for eigen-related variables
+!!
   subroutine cat_free_eigen()
      implicit none
 
-     if ( allocated(enk)    ) deallocate(enk)
+     if ( allocated(enk)    ) deallocate(enk   )
      if ( allocated(occupy) ) deallocate(occupy)
 
      return
@@ -874,6 +876,8 @@
 
 !!
 !! @sub cat_free_projs
+!!
+!! deallocate memory for projs-related variables
 !!
   subroutine cat_free_projs()
      implicit none
