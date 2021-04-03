@@ -836,10 +836,12 @@
 !!
 !! @sub cat_free_bzone
 !!
+!! deallocate memory for bzone-related variables
+!!
   subroutine cat_free_bzone()
      implicit none
 
-     if ( allocated(kmesh)  ) deallocate(kmesh)
+     if ( allocated(kmesh)  ) deallocate(kmesh )
      if ( allocated(weight) ) deallocate(weight)
 
      return
@@ -847,6 +849,8 @@
 
 !!
 !! @sub cat_free_tetra
+!!
+!! deallocate memory for tetra-related variables
 !!
   subroutine cat_free_tetra()
      implicit none
