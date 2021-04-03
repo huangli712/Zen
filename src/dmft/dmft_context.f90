@@ -646,6 +646,8 @@
 !!
 !! @sub cat_alloc_projs
 !!
+!! allocate memory for projs-related variables
+!!
   subroutine cat_alloc_projs()
      implicit none
 
