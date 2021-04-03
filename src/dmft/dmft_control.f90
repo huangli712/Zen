@@ -48,7 +48,7 @@
 !!
 !! if task == 1:
 !!     calculate the local hybridization function. of course, the fermi
-!!     level should be updated as well
+!!     level might be updated as well (depends on lfermi)
 !!
 !! if task == 2:
 !!     calculate charge correction due to the electronic correlation
