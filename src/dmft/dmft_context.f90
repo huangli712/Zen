@@ -760,15 +760,19 @@
      implicit none
 
 ! allocate memory
+     allocate(wss_l(nmesh,max_ndim,nsite), stat = istat)
+     allocate(wss_k(nband,nkpt,nspin),     stat = istat)
      allocate(hyb_l(nmesh,max_ndim,nsite), stat = istat)
      allocate(hyb_k(nband,nkpt,nspin),     stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
-         call s_print_error('cat_alloc_green','can not allocate enough memory')
+         call s_print_error('cat_alloc_weiss','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
+     wss_l = czero
+     wss_k = czero
      hyb_l = czero
      hyb_k = czero
 
