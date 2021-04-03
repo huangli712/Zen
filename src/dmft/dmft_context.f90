@@ -205,7 +205,7 @@
 !!
 !! @var tetra
 !!
-!! tetrahedron information
+!! contain tetrahedron information
 !!
      integer, public, save, allocatable :: tetra(:,:)
 
@@ -214,12 +214,25 @@
 !!
 !! @mod dmft_eigen
 !!
+!! contain the Kohn-Sham eigenvalues and occupations
+!!
   module dmft_eigen
      use constants, only : dp
 
      implicit none
 
+!!
+!! @var enk
+!!
+!! eigenvalues in the Kohn-Sham basis
+!!
      real(dp), public, save, allocatable :: enk(:,:,:)
+
+!!
+!! @var occupy
+!!
+!! occupations in the Kohn-Sham basis
+!!
      real(dp), public, save, allocatable :: occupy(:,:,:)
 
   end module dmft_eigen
