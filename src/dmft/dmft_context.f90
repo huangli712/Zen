@@ -903,12 +903,13 @@
 !!
 !! @sub cat_free_sigma
 !!
+!! deallocate memory for sigma-related variables
+!!
   subroutine cat_free_sigma()
      implicit none
 
      if ( allocated(sigdc) ) deallocate(sigdc)
-     if ( allocated(sig_i) ) deallocate(sig_i)
-     if ( allocated(sig_r) ) deallocate(sig_r)
+     if ( allocated(sig_l) ) deallocate(sig_l)
      if ( allocated(sig_k) ) deallocate(sig_k)
 
      return
