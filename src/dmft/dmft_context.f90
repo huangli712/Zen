@@ -890,11 +890,12 @@
 !!
 !! @sub cat_free_fmesh
 !!
+!! deallocate memory for fmesh-related variables
+!!
   subroutine cat_free_fmesh()
      implicit none
 
-     if ( allocated(imesh) ) deallocate(imesh)
-     if ( allocated(rmesh) ) deallocate(rmesh)
+     if ( allocated(fmesh) ) deallocate(fmesh)
 
      return
   end subroutine cat_free_fmesh
