@@ -505,10 +505,10 @@
 
 ! initialize them
      shell = 's'
-     corr = .false.
-     site = 0
-     l = 0
-     ndim = 0
+     corr  = .false.
+     site  = 0
+     l     = 0
+     ndim  = 0
      max_ndim = 0
 
      return
@@ -516,6 +516,8 @@
 
 !!
 !! @sub cat_alloc_window
+!!
+!! allocate memory for window-related variables
 !!
   subroutine cat_alloc_window()
      implicit none
