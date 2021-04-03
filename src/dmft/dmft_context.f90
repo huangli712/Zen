@@ -317,7 +317,18 @@
   module dmft_green
      implicit none
 
+!!
+!! @var grn_l
+!!
+!! local green's function
+!!
      complex(dp), public, save, allocatable :: grn_l(:,:,:)
+
+!!
+!! @var grn_k
+!!
+!! lattice green's function
+!!
      complex(dp), public, save, allocatable :: grn_k(:,:,:)
 
   end module dmft_green
