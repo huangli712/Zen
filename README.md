@@ -4,7 +4,7 @@ ZEN is a modern DFT + DMFT computation framework. This package is currently unde
 
 ## Version
 
-v0.0.9 (devel)
+v0.1.0 (devel)
 
 ## License
 
