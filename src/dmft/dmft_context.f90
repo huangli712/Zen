@@ -696,10 +696,9 @@
      implicit none
 
 ! allocate memory
-     allocate(sigdc(max_ndim,nsite), stat = istat)
-     allocate(sig_i(mfreq,max_ndim,nsite), stat = istat)
-     allocate(sig_r(nfreq,max_ndim,nsite), stat = istat)
-     allocate(sig_k(nband,nkpt,nspin), stat = istat)
+     allocate(sigdc(max_ndim,nsite),       stat = istat)
+     allocate(sig_l(nmesh,max_ndim,nsite), stat = istat)
+     allocate(sig_k(nband,nkpt,nspin),     stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -708,8 +707,7 @@
 
 ! initialize them
      sigdc = czero
-     sig_i = czero
-     sig_r = czero
+     sig_l = czero
      sig_k = czero
 
      return
