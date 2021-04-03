@@ -693,6 +693,18 @@
      return
   end subroutine cat_alloc_sigma
 
+  subroutine cat_alloc_green()
+     implicit none
+
+     return
+  end subroutine cat_alloc_green
+
+  subroutine cat_alloc_weiss()
+     implicit none
+
+     return
+  end subroutine cat_alloc_weiss
+
 !!========================================================================
 !!>>> deallocate memory subroutines                                    <<<
 !!========================================================================
