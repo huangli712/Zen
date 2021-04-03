@@ -17,7 +17,7 @@ See also: [`dmft_exec`](@ref), [`dmft_save`](@ref).
 """
 function dmft_init(it::IterInfo, task::I64)
     # Check the task
-    @assert task in (1, 2) 
+    @assert task in (1, 2)
 
     # Well, determine which files are necessary. They are defined in
     # `fsig`, `fir`, and `fdmft`.
@@ -78,7 +78,7 @@ See also: [`dmft_init`](@ref), [`dmft_save`](@ref).
 """
 function dmft_exec(it::IterInfo, task::I64)
     # Check the task
-    @assert task in (1, 2) 
+    @assert task in (1, 2)
 
     # Print the header
     println("Engine : DMFT$(subscript(task))")

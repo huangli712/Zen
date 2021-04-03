@@ -297,7 +297,7 @@ DFT engine, this function must be adapted.
 See also: [`adaptor_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
 function dft_run(it::IterInfo, lr::Logger)
-    # Determine the chosen engine 
+    # Determine the chosen engine
     engine = get_d("engine")
 
     # Print the log
