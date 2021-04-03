@@ -668,12 +668,13 @@
 !!
 !! @sub cat_alloc_fmesh
 !!
+!! allocate memory for fmesh-related variables
+!!
   subroutine cat_alloc_fmesh()
      implicit none
 
 ! allocate memory
-     allocate(imesh(mfreq), stat = istat)
-     allocate(rmesh(nfreq), stat = istat)
+     allocate(fmesh(nmesh), stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -681,8 +682,7 @@
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
-     imesh = zero
-     rmesh = zero
+     fmesh = zero
 
      return
   end subroutine cat_alloc_fmesh
