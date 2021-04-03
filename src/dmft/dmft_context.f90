@@ -170,12 +170,25 @@
 !!
 !! @mod dmft_bzone
 !!
+!! contain the k-mesh and the corresponding integration weights  
+!!
   module dmft_bzone
      use constants, only : dp
 
      implicit none
 
+!!
+!! @var kmesh
+!!
+!! k-mesh in the brillouin zone
+!!
      real(dp), public, save, allocatable :: kmesh(:,:)
+
+!!
+!! @var weight
+!!
+!! integration weights for k-points
+!!
      real(dp), public, save, allocatable :: weight(:)
 
   end module dmft_bzone
