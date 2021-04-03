@@ -621,11 +621,13 @@
 !!
 !! @sub cat_alloc_eigen
 !!
+!! allocate memory for eigen-related variables
+!!
   subroutine cat_alloc_eigen()
      implicit none
 
 ! allocate memory
-     allocate(enk(nband,nkpt,nspin), stat = istat)
+     allocate(enk(nband,nkpt,nspin),    stat = istat)
      allocate(occupy(nband,nkpt,nspin), stat = istat)
 
 ! check the status
@@ -634,7 +636,7 @@
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
-     enk = zero
+     enk    = zero
      occupy = zero
 
      return
