@@ -81,7 +81,7 @@
 !!     search the fermi level
 !!
 !! if lfermi == .false.
-!!     fix the fermi leve. in other words, the dft fermi level is used
+!!     fix the fermi level. in other words, the dft fermi level is used
 !!
      logical, public, save :: lfermi = .true.
 
