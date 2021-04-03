@@ -122,15 +122,47 @@
 !!
 !! @mod dmft_lattice
 !!
+!! specify crystallography information (i.e. crystal structures) for the
+!! strongly correlated materials
+!!
   module dmft_lattice
      use constants, only : dp
 
      implicit none
 
+!!
+!! @var sorts
+!!
+!! sorts of atoms
+!!
      character(len=2), public, save, allocatable :: sorts(:)
+
+!!
+!! @var atoms
+!!
+!! list of atoms
+!!
      character(len=2), public, save, allocatable :: atoms(:)
+
+!!
+!! @var sortn
+!!
+!! number of atoms of sorts
+!!
      integer,  public, save, allocatable :: sortn(:)
+
+!!
+!! @var lvect
+!!
+!! three lattice vectors
+!!
      real(dp), public, save, allocatable :: lvect(:,:)
+
+!!
+!! @var coord
+!!
+!! atomic positions
+!!
      real(dp), public, save, allocatable :: coord(:,:)
 
   end module dmft_lattice
