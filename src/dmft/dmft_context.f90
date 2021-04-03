@@ -122,7 +122,7 @@
 !!
 !! @mod dmft_lattice
 !!
-!! specify crystallography information (i.e. crystal structures) for the
+!! contain crystallography information (i.e. crystal structures) for the
 !! strongly correlated materials
 !!
   module dmft_lattice
@@ -195,6 +195,9 @@
 
 !!
 !! @mod dmft_tetra
+!!
+!! contain the tetrahedron information, which is used to carry out the
+!! brillouin zone integration
 !!
   module dmft_tetra
      implicit none
