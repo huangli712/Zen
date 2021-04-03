@@ -344,10 +344,14 @@
 !!
 !! @var hyb_l
 !!
+!! local hybridization functions
+!!
      complex(dp), public, save, allocatable :: hyb_l(:,:,:)
 
 !!
 !! @var hyb_k
+!!
+!! lattice hybridization functions
 !!
      complex(dp), public, save, allocatable :: hyb_k(:,:,:)
 
