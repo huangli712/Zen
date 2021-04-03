@@ -259,13 +259,19 @@
 !!
 !! @mod dmft_fmesh
 !!
+!! contain the frequency mesh
+!!
   module dmft_fmesh
      use constants, only : dp
 
      implicit none
 
-     real(dp), public, save, allocatable :: imesh(:)
-     real(dp), public, save, allocatable :: rmesh(:)
+!!
+!! @var fmesh
+!!
+!! frequency mesh. it can be defined on imaginary axis or real axis
+!!
+     real(dp), public, save, allocatable :: fmesh(:)
 
   end module dmft_fmesh
 
