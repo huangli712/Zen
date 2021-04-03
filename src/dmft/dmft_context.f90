@@ -312,8 +312,13 @@
 !!
 !! @mod dmft_green
 !!
+!! contain the green's function
+!!
   module dmft_green
      implicit none
+
+     complex(dp), public, save, allocatable :: grn_l(:,:,:)
+     complex(dp), public, save, allocatable :: grn_k(:,:,:)
 
   end module dmft_green
 
