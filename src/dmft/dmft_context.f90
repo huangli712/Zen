@@ -16,7 +16,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/02/2021 by li huang (last modified)
+!!!           04/03/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -25,7 +25,7 @@
 !!
 !! @mod dmft_group
 !!
-!! specify the traits of each group of projectors
+!! specify the traits of groups of projectors
 !!
   module dmft_group
      implicit none
@@ -40,6 +40,8 @@
 !!
 !! @var shell
 !!
+!! specification of orbital shell
+!!
      character(len=4), public, save, allocatable :: shell(:)
 
 !!
@@ -52,21 +54,21 @@
 !!
 !! @var site
 !!
-!! the corresponding site of each group
+!! the corresponding atomic site of group
 !!
      integer, public, save, allocatable :: site(:)
 
 !!
 !! @var l
 !!
-!! the corresponding angular momentum of each group
+!! the corresponding angular momentum quantum number of group
 !!
      integer, public, save, allocatable :: l(:)
 
 !!
 !! @var ndim
 !!
-!! number of correlated orbitals of each group
+!! number of projectors (orbitals) of group
 !!
      integer, public, save, allocatable :: ndim(:)
 
@@ -75,7 +77,7 @@
 !!
 !! @mod dmft_window
 !!
-!! specify the band windows of each group of projectors
+!! specify the band windows of groups of projectors
 !!
   module dmft_window
      implicit none

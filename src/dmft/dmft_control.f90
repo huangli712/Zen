@@ -5,7 +5,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/02/2021 by li huang (last modified)
+!!!           04/03/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -160,7 +160,7 @@
 !! @var ntet
 !!
 !! number of tetrahedra. note that ntet = 1 means that the tetrahedron
-!! data are absent and ltetra must be .false. 
+!! data are absent and ltetra must be .false.
 !!
      integer, public, save :: ntet   = 1
 
