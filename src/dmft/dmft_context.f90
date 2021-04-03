@@ -599,6 +599,8 @@
 !!
 !! @sub cat_alloc_tetra
 !!
+!! allocate memory for tetra-related variables
+!!
   subroutine cat_alloc_tetra()
      implicit none
 
