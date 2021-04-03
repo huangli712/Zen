@@ -721,6 +721,19 @@
   subroutine cat_alloc_green()
      implicit none
 
+! allocate memory
+     allocate(grn_l(nmesh,max_ndim,nsite), stat = istat)
+     allocate(grn_k(nband,nkpt,nspin),     stat = istat)
+
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_green','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
+     grn_l = czero
+     grn_k = czero
+
      return
   end subroutine cat_alloc_green
 
