@@ -915,6 +915,11 @@
      return
   end subroutine cat_free_sigma
 
+!!
+!! @sub cat_free_green
+!!
+!! deallocate memory for green-related variables
+!!
   subroutine cat_free_green()
      implicit none
 
