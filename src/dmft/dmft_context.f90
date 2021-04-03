@@ -355,6 +355,8 @@
 !! contain the green's functions
 !!
   module dmft_green
+     use constants, only : dp
+
      implicit none
 
 !!
@@ -383,6 +385,8 @@
 !! contain weiss functions and hybridization functions
 !!
   module dmft_weiss
+     use constants, only : dp
+
      implicit none
 
 !!
