@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/01
+# Last modified: 2021/04/03
 #
 
 #
@@ -942,13 +942,13 @@ function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Ar
         end
         #
         # Evaluate number of mesh points
-        nmesh = length(M)
+        npnts = length(M)
 
         # Create a temporary array for density of states
-        D = zeros(F64, ndim, nspin, nmesh)
+        D = zeros(F64, ndim, nspin, npnts)
 
         # Go through each mesh point
-        for i in 1:nmesh
+        for i in 1:npnts
             # Obtain the integration weights for density of states by
             # using the analytical tetrahedron method.
             W = bzint(M[i], itet, enk[PW[p].bmin:PW[p].bmax, :, :])
@@ -1175,22 +1175,22 @@ function view_dos(mesh::Array{Array{F64,1},1}, dos::Array{Array{F64,3},1})
     # Go through each PrGroup
     for p in eachindex(dos)
         # Extract some key parameters
-        ndim, nspin, nmesh = size(dos[p])
-        @assert nmesh === length(mesh[p])
+        ndim, nspin, npnts = size(dos[p])
+        @assert npnts === length(mesh[p])
 
         # Output the data
         open("dos.chk.$p", "w") do fout
             # Write the header
             println(fout, "# File: dos.chk")
-            println(fout, "# Data: mesh[nmesh] and dos[ndim,nspin,nmesh]")
+            println(fout, "# Data: mesh[npnts] and dos[ndim,nspin,npnts]")
             println(fout)
-            println(fout, "nmesh -> $nmesh")
+            println(fout, "npnts -> $npnts")
             println(fout, "ndim  -> $ndim")
             println(fout, "nspin -> $nspin")
             println(fout)
 
             # Write the body
-            for m = 1:nmesh
+            for m = 1:npnts
                 @printf(fout, "%12.7f", mesh[p][m])
                 for s = 1:nspin
                     foreach(x -> @printf(fout, "%12.7f", x), dos[p][:, s, m])
