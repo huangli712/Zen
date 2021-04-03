@@ -813,4 +813,10 @@
      return
   end subroutine cat_free_sigma
 
+  subroutine cat_free_green()
+     implicit none
+
+     return
+  end
+
   end module context
