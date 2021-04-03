@@ -85,6 +85,8 @@
 !!
 !! @var max_nbnd
 !!
+!! maximum number of bands for the band windows
+!!
      integer, public, save :: max_nbnd
 
 !!
