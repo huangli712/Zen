@@ -92,20 +92,28 @@
 !!
 !! @var bmin
 !!
+!! lower boundaries for the band windows
+!!
      integer, public, save, allocatable :: bmin(:)
 
 !!
 !! @var bmax
+!!
+!! upper boundaries for the band windows
 !!
      integer, public, save, allocatable :: bmax(:)
 
 !!
 !! @var nbnd
 !!
+!! number of bands for the band windows
+!!
      integer, public, save, allocatable :: nbnd(:)
 
 !!
 !! @var kwin
+!!
+!! momentum- and spin-dependent band windows
 !!
      integer, public, save, allocatable :: kwin(:,:,:,:)
 
