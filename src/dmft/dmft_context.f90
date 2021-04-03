@@ -545,14 +545,16 @@
 !!
 !! @sub cat_alloc_lattice
 !!
+!! allocate memory for lattice-related variables
+!!
   subroutine cat_alloc_lattice()
      implicit none
 
 ! allocate memory
-     allocate(sorts(nsort), stat = istat)
-     allocate(atoms(natom), stat = istat)
-     allocate(sortn(nsort), stat = istat)
-     allocate(lvect(3,3), stat = istat)
+     allocate(sorts(nsort),   stat = istat)
+     allocate(atoms(natom),   stat = istat)
+     allocate(sortn(nsort),   stat = istat)
+     allocate(lvect(3,3),     stat = istat)
      allocate(coord(natom,3), stat = istat)
 
 ! check the status
