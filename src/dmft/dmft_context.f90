@@ -401,6 +401,16 @@
 
   end module dmft_weiss
 
+!!========================================================================
+!!>>> module context                                                   <<<
+!!========================================================================
+
+!!
+!! @mod context
+!!
+!! containing memory management subroutines, which initialize all of the
+!! global variables and arrays
+!!
   module context
      use constants, only : dp
      use constants, only : zero, czero
