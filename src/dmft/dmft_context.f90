@@ -803,6 +803,8 @@
 !!
 !! @sub cat_free_window
 !!
+!! deallocate memory for window-related variables
+!!
   subroutine cat_free_window()
      implicit none
 
@@ -816,6 +818,8 @@
 
 !!
 !! @sub cat_free_lattice
+!!
+!! deallocate memory for lattice-related variables
 !!
   subroutine cat_free_lattice()
      implicit none
