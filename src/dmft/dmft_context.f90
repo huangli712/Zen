@@ -575,12 +575,14 @@
 !!
 !! @sub cat_alloc_bzone
 !!
+!! allocate memory for bzone-related variables
+!!
   subroutine cat_alloc_bzone()
      implicit none
 
 ! allocate memory
      allocate(kmesh(nkpt,3), stat = istat)
-     allocate(weight(nkpt), stat = istat)
+     allocate(weight(nkpt),  stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -588,7 +590,7 @@
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
-     kmesh = zero
+     kmesh  = zero
      weight = zero
 
      return
