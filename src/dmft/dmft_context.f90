@@ -457,6 +457,8 @@
      public :: cat_alloc_projs
      public :: cat_alloc_fmesh
      public :: cat_alloc_sigma
+     public :: cat_alloc_green
+     public :: cat_alloc_weiss
 
 ! declaration of module procedures: deallocate memory
      public :: cat_free_group
@@ -468,6 +470,8 @@
      public :: cat_free_projs
      public :: cat_free_fmesh
      public :: cat_free_sigma
+     public :: cat_free_green
+     public :: cat_free_weiss
 
   contains ! encapsulated functionality
 
