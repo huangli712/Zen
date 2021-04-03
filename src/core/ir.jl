@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/29
+# Last modified: 2021/04/03
 #
 
 #
@@ -133,14 +133,14 @@ function irio_params(f::String, D::Dict{Symbol,Any})
     if haskey(D, :itet)
         ntet, _ = size(D[:itet])
     else
-        ntet = 0
+        ntet = 1 # To avoid null array
     end
 
     # Extract `volt`, it is optional.
     if haskey(D, :volt)
         volt = D[:volt]
     else
-        volt = 0.0
+        volt = 1.0 # To avoid wrong renormalization
     end
 
     # Extract `ngrp`
@@ -151,6 +151,13 @@ function irio_params(f::String, D::Dict{Symbol,Any})
 
     # D[:PW] and D[:PG] should have the same size
     @assert ngrp === nwnd
+
+    # Extract `nsite` and `nmesh`
+    nmesh = get_m("nmesh")
+    nsite = get_i("nsite")
+
+    # To make sure the validaty of nsite
+    @assert nsite <= ngrp
 
     # Output the data
     open(joinpath(f, "params.ir"), "w") do fout
@@ -185,6 +192,11 @@ function irio_params(f::String, D::Dict{Symbol,Any})
 
         println(fout, "# Window:")
         println(fout, "nwnd  -> $nwnd")
+        println(fout)
+
+        println(fout, "# Sigma:")
+        println(fout, "nsite -> $nsite")
+        println(fout, "nmesh -> $nmesh")
         println(fout)
     end
 end
