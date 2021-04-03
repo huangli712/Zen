@@ -713,6 +713,11 @@
      return
   end subroutine cat_alloc_sigma
 
+!!
+!! @sub cat_alloc_green
+!!
+!! allocate memory for green-related variables
+!!
   subroutine cat_alloc_green()
      implicit none
 
