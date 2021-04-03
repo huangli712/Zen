@@ -336,10 +336,20 @@
 !!
 !! @mod dmft_weiss
 !!
-!! contain weiss function and hybridization function
+!! contain weiss functions and hybridization functions
 !!
   module dmft_weiss
      implicit none
+
+!!
+!! @var hyb_l
+!!
+     complex(dp), public, save, allocatable :: hyb_l(:,:,:)
+
+!!
+!! @var hyb_k
+!!
+     complex(dp), public, save, allocatable :: hyb_k(:,:,:)
 
   end module dmft_weiss
 
