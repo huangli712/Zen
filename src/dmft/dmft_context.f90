@@ -482,15 +482,17 @@
 !!
 !! @sub cat_alloc_group
 !!
+!! allocate memory for group-related variables
+!!
   subroutine cat_alloc_group()
      implicit none
 
 ! allocate memory
      allocate(shell(ngrp), stat = istat)
-     allocate(corr(ngrp), stat = istat)
-     allocate(site(ngrp), stat = istat)
-     allocate(l(ngrp), stat = istat)
-     allocate(ndim(ngrp), stat = istat)
+     allocate(corr(ngrp),  stat = istat)
+     allocate(site(ngrp),  stat = istat)
+     allocate(l(ngrp),     stat = istat)
+     allocate(ndim(ngrp),  stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -503,6 +505,7 @@
      site = 0
      l = 0
      ndim = 0
+     max_ndim = 0
 
      return
   end subroutine cat_alloc_group
