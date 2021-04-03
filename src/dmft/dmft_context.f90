@@ -927,12 +927,22 @@
      if ( allocated(grn_k) ) deallocate(grn_k)
 
      return
-  end
+  end subroutine cat_free_green
 
+!!
+!! @sub cat_free_weiss
+!!
+!! deallocate memory for weiss-related variables
+!!
   subroutine cat_free_weiss()
      implicit none
 
+     if ( allocated(wss_l) ) deallocate(wss_l)
+     if ( allocated(wss_k) ) deallocate(wss_k)
+     if ( allocated(hyb_l) ) deallocate(hyb_l)
+     if ( allocated(hyb_k) ) deallocate(hyb_k)
+
      return
-  end
+  end subroutine cat_free_weiss
 
   end module context
