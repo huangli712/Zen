@@ -923,6 +923,9 @@
   subroutine cat_free_green()
      implicit none
 
+     if ( allocated(grn_l) ) deallocate(grn_l)
+     if ( allocated(grn_k) ) deallocate(grn_k)
+
      return
   end
 
