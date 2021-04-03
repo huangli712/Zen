@@ -538,6 +538,7 @@
      bmax = 0
      nbnd = 0
      kwin = 0
+     max_nbnd = 0
 
      return
   end subroutine cat_alloc_window
