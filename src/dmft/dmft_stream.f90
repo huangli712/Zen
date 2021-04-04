@@ -1,6 +1,10 @@
 !!!-----------------------------------------------------------------------
 !!! project : jacaranda
-!!! program :
+!!! program : dmft_setup_tasks
+!!!           dmft_setup_param
+!!!           dmft_setup_system
+!!!           dmft_alloc_array
+!!!           dmft_final_array
 !!! source  : dmft_stream.f90
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
