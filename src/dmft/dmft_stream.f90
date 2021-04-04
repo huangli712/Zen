@@ -23,6 +23,9 @@
      use control, only : beta
      use control, only : myid, master
 
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
+
      implicit none
 
 ! local variables
@@ -133,8 +136,6 @@
      !use parser, only : p_get
      !use parser, only : p_destroy
 
-     !use mmpi, only : mp_bcast
-     !use mmpi, only : mp_barrier
 
      !use constants, only : mytmp
      !use control
