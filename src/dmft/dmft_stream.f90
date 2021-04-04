@@ -75,10 +75,13 @@
   end subroutine dmft_setup_tasks
 
   subroutine dmft_setup_param()
+     use constants, only : dp
+
      use control, only : nsort, natom
      use control, only : nband, nkpt, nspin
      use control, only : ntet
      use control, only : ngrp, nwnd
+     use control, only : scale, fermi, volt
 
      implicit none
 
@@ -90,6 +93,10 @@
      ntet   = 4374
      ngrp   = 1
      nwnd   = 1
+
+     scale  = 4.00_dp
+     fermi = 0.00_dp
+     volt  = 1.00_dp
 
      return
   end subroutine dmft_setup_param
@@ -108,9 +115,6 @@
 
      implicit none
 
-     scal  = 4.00_dp
-     volt  = 1.00_dp
-     fermi = 0.00_dp
 
 ! read in input file if possible, only master node can do it
      if ( myid == master ) then
