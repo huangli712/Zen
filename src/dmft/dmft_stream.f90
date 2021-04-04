@@ -11,18 +11,7 @@
 !!! comment :
 !!!-----------------------------------------------------------------------
 
-  subroutine dmft_setup_param()
-     use parser, only : p_create
-     use parser, only : p_parse
-     use parser, only : p_get
-     use parser, only : p_destroy
-
-     use mmpi, only : mp_bcast
-     use mmpi, only : mp_barrier
-
-     use constants, only : mytmp
-     use control
-
+  subroutine dmft_setup_tasks()
      implicit none
 
 ! local variables
@@ -70,6 +59,24 @@
      call mp_barrier()
 
 # endif  /* MPI */
+
+     return
+  end subroutine dmft_setup_tasks
+
+  subroutine dmft_setup_param()
+     use parser, only : p_create
+     use parser, only : p_parse
+     use parser, only : p_get
+     use parser, only : p_destroy
+
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
+
+     use constants, only : mytmp
+     use control
+
+     implicit none
+
 
      nsort  = 3
      natom  = 5
