@@ -76,6 +76,7 @@
 
   subroutine dmft_setup_param()
      use constants, only : dp
+     use constants, only : mytmp
 
      use control, only : nsort, natom
      use control, only : nband, nkpt, nspin
