@@ -82,6 +82,7 @@
      use control, only : ntet
      use control, only : ngrp, nwnd
      use control, only : scale, fermi, volt
+     use control, only : myid, master
 
      implicit none
 
