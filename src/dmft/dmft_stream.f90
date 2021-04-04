@@ -124,6 +124,18 @@
      return
   end subroutine dmft_setup_system
 
+  subroutine dmft_input_group()
+  end
+
+  subroutine dmft_input_window()
+  end
+
+  subroutine dmft_input_lattice()
+  end
+
+  subroutine dft_input_bzone()
+  end
+ 
   subroutine dmft_alloc_array()
      implicit none
 
