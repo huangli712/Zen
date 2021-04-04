@@ -26,6 +26,11 @@
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
 
+     use parser, only : p_create
+     use parser, only : p_parse
+     use parser, only : p_get
+     use parser, only : p_destroy
+
      implicit none
 
 ! local variables
@@ -131,10 +136,7 @@
   end subroutine dmft_setup_param
 
   subroutine dmft_setup_param1()
-     !use parser, only : p_create
-     !use parser, only : p_parse
-     !use parser, only : p_get
-     !use parser, only : p_destroy
+
 
 
      !use constants, only : mytmp
