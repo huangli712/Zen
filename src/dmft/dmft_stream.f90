@@ -135,20 +135,6 @@
      return
   end subroutine dmft_setup_param
 
-  subroutine dmft_setup_param1()
-
-
-
-     !use constants, only : mytmp
-     !use control
-
-     implicit none
-
-
-
-     return
-  end subroutine dmft_setup_param1
-
   subroutine dmft_setup_system()
      implicit none
 
