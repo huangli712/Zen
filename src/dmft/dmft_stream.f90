@@ -86,6 +86,10 @@
 
      implicit none
 
+! local variables
+! used to check whether the input file (params.ir) exists
+     logical :: exists
+
      nsort  = 3
      natom  = 5
      nband  = 30
