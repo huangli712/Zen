@@ -75,9 +75,18 @@
   end subroutine dmft_setup_tasks
 
   subroutine dmft_setup_param()
+     use control, only : nsort, natom
+     use control, only : nband, nkpt, nspin
+     use control, only : ntet
+
      implicit none
 
      nsort  = 3
+     natom  = 5
+     nband  = 30
+     nkpt   = 729
+     nspin  = 1
+     ntet   = 4374
 
      return
   end subroutine dmft_setup_param
@@ -97,11 +106,7 @@
      implicit none
 
 
-     natom  = 5
-     nband  = 30
-     nkpt   = 729
-     nspin  = 1
-     ntet   = 4374
+
      ngrp   = 1
      nwnd   = 1
 
