@@ -78,6 +78,7 @@
      use control, only : nsort, natom
      use control, only : nband, nkpt, nspin
      use control, only : ntet
+     use control, only : ngrp, nwnd
 
      implicit none
 
@@ -87,6 +88,8 @@
      nkpt   = 729
      nspin  = 1
      ntet   = 4374
+     ngrp   = 1
+     nwnd   = 1
 
      return
   end subroutine dmft_setup_param
@@ -104,11 +107,6 @@
      !use control
 
      implicit none
-
-
-
-     ngrp   = 1
-     nwnd   = 1
 
      scal  = 4.00_dp
      volt  = 1.00_dp
