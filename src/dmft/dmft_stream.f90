@@ -16,6 +16,13 @@
 !!!-----------------------------------------------------------------------
 
   subroutine dmft_setup_tasks()
+     use constants, only : dp
+
+     use control, only : task
+     use control, only : axis
+     use control, only : beta
+     use control, only : myid, master
+
      implicit none
 
 ! local variables
@@ -68,21 +75,28 @@
   end subroutine dmft_setup_tasks
 
   subroutine dmft_setup_param()
-     use parser, only : p_create
-     use parser, only : p_parse
-     use parser, only : p_get
-     use parser, only : p_destroy
+     implicit none
 
-     use mmpi, only : mp_bcast
-     use mmpi, only : mp_barrier
+     nsort  = 3
 
-     use constants, only : mytmp
-     use control
+     return
+  end subroutine dmft_setup_param
+
+  subroutine dmft_setup_param1()
+     !use parser, only : p_create
+     !use parser, only : p_parse
+     !use parser, only : p_get
+     !use parser, only : p_destroy
+
+     !use mmpi, only : mp_bcast
+     !use mmpi, only : mp_barrier
+
+     !use constants, only : mytmp
+     !use control
 
      implicit none
 
 
-     nsort  = 3
      natom  = 5
      nband  = 30
      nkpt   = 729
@@ -116,7 +130,7 @@
      endif ! back if ( myid == master ) block
 
      return
-  end subroutine dmft_setup_param
+  end subroutine dmft_setup_param1
 
   subroutine dmft_setup_system()
      implicit none
