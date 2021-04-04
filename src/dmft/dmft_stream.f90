@@ -99,24 +99,6 @@
      fermi = 0.00_dp
      volt  = 1.00_dp
 
-     return
-  end subroutine dmft_setup_param
-
-  subroutine dmft_setup_param1()
-     !use parser, only : p_create
-     !use parser, only : p_parse
-     !use parser, only : p_get
-     !use parser, only : p_destroy
-
-     !use mmpi, only : mp_bcast
-     !use mmpi, only : mp_barrier
-
-     !use constants, only : mytmp
-     !use control
-
-     implicit none
-
-
 ! read in input file if possible, only master node can do it
      if ( myid == master ) then
          exists = .false.
@@ -136,6 +118,25 @@
 
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
+
+     return
+  end subroutine dmft_setup_param
+
+  subroutine dmft_setup_param1()
+     !use parser, only : p_create
+     !use parser, only : p_parse
+     !use parser, only : p_get
+     !use parser, only : p_destroy
+
+     !use mmpi, only : mp_bcast
+     !use mmpi, only : mp_barrier
+
+     !use constants, only : mytmp
+     !use control
+
+     implicit none
+
+
 
      return
   end subroutine dmft_setup_param1
