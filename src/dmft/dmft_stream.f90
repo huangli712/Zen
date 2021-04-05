@@ -9,12 +9,18 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/04/2021 by li huang (last modified)
+!!!           04/05/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
 !!!-----------------------------------------------------------------------
 
+!!
+!! @sub dmft_setup_tasks
+!!
+!! setup control parameters for the dynamical mean-field theory engine.
+!! note that these parameters are extracted from the dmft.in file
+!!
   subroutine dmft_setup_tasks()
      use constants, only : dp
 
@@ -39,7 +45,10 @@
 
      task = 1
      axis = 1
+     lfermi = .true.
+     ltetra = .true.
      beta = 8.00_dp
+     mc = 0.0001_dp
 
 ! read in input file if possible, only master node can do it
      if ( myid == master ) then
