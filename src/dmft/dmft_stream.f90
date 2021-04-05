@@ -162,6 +162,10 @@
 
   subroutine dft_input_bzone()
   end
+
+!!========================================================================
+!!>>> manage memory for dynamical mean-field theory engine             <<<
+!!========================================================================
  
   subroutine dmft_alloc_array()
      implicit none
