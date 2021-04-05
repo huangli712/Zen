@@ -26,7 +26,8 @@
 
      use control, only : task
      use control, only : axis
-     use control, only : beta
+     use control, only : lfermi, ltetra
+     use control, only : beta, mc
      use control, only : myid, master
 
      use mmpi, only : mp_bcast
