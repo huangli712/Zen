@@ -311,7 +311,33 @@
 
      implicit none
 
-     
+! local variables
+! used to check whether the input file (groups.ir) exists
+     logical  :: exists
+
+! dummy character variables
+     character(len = 5) :: chr1
+     character(len = 2) :: chr2
+
+! read in groups of projectors if available
+!-------------------------------------------------------------------------
+     if ( myid == master ) then ! only master node can do it
+         exists = .false.
+
+! inquire about file's existence
+         inquire (file = 'groups.ir', exist = exists)
+
+! find input file: groups.ir, read it
+         if ( exists .eqv. .false. ) then
+         endif ! back if ( exists .eqv. .false. ) block
+
+! read data from groups.ir
+         open(mytmp, file='groups.ir', form='formatted', status='unknown')
+         close(mytmp)
+
+     endif ! back if ( myid == master ) block
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
      return
   end subroutine dmft_input_group
 
