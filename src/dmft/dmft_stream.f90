@@ -205,8 +205,12 @@
              read(mytmp,*) chr1, chr2, nwnd
              read(mytmp,*)
 
-             print *, model, scale, nband, fermi, ntet, ngrp, nwnd
-             
+             read(mytmp,*) ! for sigma block
+             read(mytmp,*) chr1, chr2, nsite
+             read(mytmp,*) chr1, chr2, nmesh
+             read(mytmp,*)
+
+             print *, model, scale, nband, fermi, ntet, ngrp, nwnd, nmesh
 
              close(mytmp)
 
