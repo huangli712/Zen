@@ -352,7 +352,11 @@
 
          do i=1,ngrp
              read(mytmp,*)
-             read(mytmp,*) chr1, chr2, site[i]
+             read(mytmp,*) chr1, chr2, site(i)
+             read(mytmp,*) chr1, chr2, l(i)
+             read(mytmp,*) chr1, chr2, corr(i)
+             read(mytmp,*) chr1, chr2, shell(i)
+             read(mytmp,*) chr1, chr2, ndim(i)
          enddo ! over i={1,ngrp} loop
 
          close(mytmp)
