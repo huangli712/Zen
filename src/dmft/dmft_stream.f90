@@ -86,18 +86,20 @@
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
 
-     print *, lfermi, ltetra
-     STOP
-
 ! since config parameters may be updated in master node, it is crucial
 ! to broadcast config parameters from root to all children processes
 # if defined (MPI)
 
-     call mp_bcast( task , master )
-     call mp_bcast( axis , master )
+     call mp_bcast( task  , master )
+     call mp_bcast( axis  , master )
      call mp_barrier()
 
-     call mp_bcast( beta , master )
+     call mp_bcast( lfermi, master )
+     call mp_bcast( ltetra, master )
+     call mp_barrier()
+
+     call mp_bcast( beta  , master )
+     call mp_bcast( mc    , master )
      call mp_barrier()
 
 # endif  /* MPI */
