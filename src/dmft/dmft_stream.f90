@@ -344,29 +344,29 @@
 !!
 !! @sub dft_input_projs
 !!
-  subroutine dft_input_projs()
+  subroutine dmft_input_projs()
      implicit none
 
      return
-  end subroutine dft_input_projs
+  end subroutine dmft_input_projs
 
 !!
 !! @sub dft_input_sigdc
 !!
-  subroutine dft_input_sigdc()
+  subroutine dmft_input_sigdc()
      implicit none
 
      return
-  end subroutine dft_input_sigdc
+  end subroutine dmft_input_sigdc
 
 !!
 !! @sub dft_input_sig_l
 !!
-  subroutine dft_input_sig_l()
+  subroutine dmft_input_sig_l()
      implicit none
 
      return
-  end subroutine dft_input_sig_l
+  end subroutine dmft_input_sig_l
 
 !!========================================================================
 !!>>> manage memory for dynamical mean-field theory engine             <<<
