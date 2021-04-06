@@ -313,8 +313,11 @@
      implicit none
 
 ! local variables
+! dummy integer variables
+     integer :: itmp
+
 ! used to check whether the input file (groups.ir) exists
-     logical  :: exists
+     logical :: exists
 
 ! dummy character variables
      character(len = 5) :: chr1
@@ -338,6 +341,8 @@
          read(mytmp,*) ! skip header
          read(mytmp,*)
          read(mytmp,*)
+         read(mytmp,*) chr1, chr1, itmp
+         call s_assert2(itmp == ngrp, "ngrp is wrong")
 
          close(mytmp)
 
