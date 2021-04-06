@@ -313,6 +313,9 @@
      implicit none
 
 ! local variables
+! loop index
+     integer :: i
+
 ! dummy integer variables
      integer :: itmp
 
@@ -338,11 +341,19 @@
 
 ! read data from groups.ir
          open(mytmp, file='groups.ir', form='formatted', status='unknown')
+
          read(mytmp,*) ! skip header
          read(mytmp,*)
+
+         read(mytmp,*) ! check ngrp
+         read(mytmp,*) chr1, chr2, itmp
          read(mytmp,*)
-         read(mytmp,*) chr1, chr1, itmp
          call s_assert2(itmp == ngrp, "ngrp is wrong")
+
+         do i=1,ngrp
+             read(mytmp,*)
+             read(mytmp,*) chr1, chr2, site[i]
+         enddo ! over i={1,ngrp} loop
 
          close(mytmp)
 
