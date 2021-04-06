@@ -299,8 +299,19 @@
 !! correlated subspace 
 !!
   subroutine dmft_input_group()
+     use constants, only : mytmp
+
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
+
+     use control, only : ngrp
+
+     use context, only : max_ndim
+     use context, only : shell, corr, site, l, ndim
+
      implicit none
 
+     
      return
   end subroutine dmft_input_group
 
