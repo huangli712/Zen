@@ -1556,6 +1556,41 @@
      end subroutine mp_bcast_int5
 
 !!
+!! @sub mp_bcast_chr0
+!!
+!! broadcasts character from the process with rank "root"
+!!
+     subroutine mp_bcast_chr0(data, root, gid)
+         implicit none
+
+! external arguments
+         character(len = *), intent(in) :: data
+         integer, intent(in) :: root
+         integer, optional, intent(in) :: gid
+
+! set current communicator
+         if ( present(gid) .eqv. .true. ) then
+             group = gid
+         else
+             group = MPI_COMM_WORLD
+         endif ! back if ( present(gid) .eqv. .true. ) block
+
+! barrier until all processes reach here
+         call mp_barrier(group)
+
+! invoke realted MPI subroutines
+         call MPI_BCAST(data, 1, m_chr, root, group, ierror)
+
+! handler for return code
+         call mp_error('mp_bcast_chr0', ierror)
+
+         return
+     end subroutine mp_bcast_chr0
+
+     subroutine mp_bcast_chr1()
+     end subroutine mp_bcast_chr1
+
+!!
 !! @sub mp_bcast_rdp0
 !!
 !! broadcasts real from the process with rank "root"
