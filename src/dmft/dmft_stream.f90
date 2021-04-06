@@ -121,6 +121,7 @@
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
 
+     use control, only : model
      use control, only : nsort, natom
      use control, only : nband, nkpt, nspin
      use control, only : ntet
@@ -135,7 +136,13 @@
 ! used to check whether the input file (params.ir) exists
      logical :: exists
 
+! dummy character variables
+     character(len = 5) :: chr1
+     character(len = 2) :: chr2
+
 ! setup default parameters
+!-------------------------------------------------------------------------
+     model  = 'SrVO3'   ! name of system
 !-------------------------------------------------------------------------
      nsort  = 3         ! number of atomic sorts
      natom  = 5         ! number of atoms
@@ -166,14 +173,22 @@
          if ( exists .eqv. .true. ) then
 
              open(mytmp, file='params.ir', form='formatted', status='unknown')
+
+             read(mytmp,*) ! skip header
              read(mytmp,*)
+             read(mytmp,*) ! skip title
              read(mytmp,*)
-             read(mytmp,*)
-             read(mytmp,*)
+             read(mytmp,*) chr1, chr2, 
+             read(mytmp,*) chr1, chr2, scale
+             print *, chr1, chr2, scale
+             
+
              close(mytmp)
 
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
+
+     print *, 'hehe'
 
      return
   end subroutine dmft_setup_param
