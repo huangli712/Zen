@@ -9,7 +9,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/05/2021 by li huang (last modified)
+!!!           04/06/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -173,6 +173,11 @@
      return
   end subroutine dmft_alloc_array
 
+!!
+!! @sub dmft_final_array
+!!
+!! garbage collection for this code, please refer to dmft_alloc_array
+!!
   subroutine dmft_final_array()
      implicit none
 
