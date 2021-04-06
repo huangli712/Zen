@@ -185,6 +185,10 @@
              read(mytmp,*)
              read(mytmp,*) ! for eigen block
              read(mytmp,*) chr1, chr2, nband
+             read(mytmp,*) chr1, chr2, nkpt
+             read(mytmp,*) chr1, chr2, nspin
+             read(mytmp,*) chr1, chr2, fermi
+             read(mytmp,*)
 
              print *, model, scale, nband
              
