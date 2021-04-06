@@ -72,9 +72,14 @@
              call p_parse('dmft.in')
 
 ! extract parameters
-             call p_get('task', task)
-             call p_get('axis', axis)
-             call p_get('beta', beta)
+             call p_get('task'  , task  )
+             call p_get('axis'  , axis  )
+
+             call p_get('lfermi', lfermi)
+             call p_get('ltetra', ltetra)
+
+             call p_get('beta'  , beta  )
+             call p_get('mc'    , mc    )
 
 ! destroy the parser
              call p_destroy()
