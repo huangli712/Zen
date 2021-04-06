@@ -178,9 +178,9 @@
              read(mytmp,*)
              read(mytmp,*) ! skip title
              read(mytmp,*)
-             read(mytmp,*) chr1, chr2, 
+             read(mytmp,*) chr1, chr2, model
              read(mytmp,*) chr1, chr2, scale
-             print *, chr1, chr2, scale
+             print *, model, scale
              
 
              close(mytmp)
