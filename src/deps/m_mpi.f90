@@ -5,7 +5,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 08/09/2006 by li huang (created)
-!!!           04/10/2019 by li huang (last modified)
+!!!           04/06/2021 by li huang (last modified)
 !!! purpose : define my own mpi calls, inspired by famous quantum espresso
 !!!           code. we note that the original mpi interfaces/subroutines
 !!!           are rather complicated for newbies, thus we try to wrap the
@@ -129,6 +129,9 @@
 
 ! m_int: datatype, integer
      integer, private, parameter :: m_int = MPI_INTEGER
+
+! m_chr: datatype, character
+     integer, private, parameter :: m_chr = MPI_CHARACTER
 
 ! m_rdp: datatype, double precision float
      integer, private, parameter :: m_rdp = MPI_DOUBLE_PRECISION
@@ -270,6 +273,12 @@
 
 ! broadcasting int(:,:,:,:,:)
      private :: mp_bcast_int5
+
+! broadcasting character
+     private :: mp_bcast_chr0
+
+! broadcasting character(:)
+     private :: mp_bcast_chr1
 
 ! broadcasting real
      private :: mp_bcast_rdp0
