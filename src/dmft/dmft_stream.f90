@@ -164,6 +164,12 @@
   subroutine dft_input_bzone()
   end subroutine dft_input_bzone
 
+  subroutine dft_input_tetra()
+  end subroutine dft_input_tetra
+
+  subroutine dft_input_eigen()
+  end subroutine dft_input_eigen
+
 !!========================================================================
 !!>>> manage memory for dynamical mean-field theory engine             <<<
 !!========================================================================
