@@ -305,6 +305,7 @@
      use mmpi, only : mp_barrier
 
      use control, only : ngrp
+     use control, only : myid, master
 
      use context, only : max_ndim
      use context, only : shell, corr, site, l, ndim
