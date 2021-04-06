@@ -268,6 +268,9 @@
 !!
 !! @sub dmft_setup_system
 !!
+!! parse Kohn-Sham data for dynamical mean-field theory engine. this is
+!! an entry for the other individual subroutines
+!!
   subroutine dmft_setup_system()
      implicit none
 
