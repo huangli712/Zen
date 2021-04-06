@@ -86,6 +86,8 @@
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
 
+     STOP
+
 ! since config parameters may be updated in master node, it is crucial
 ! to broadcast config parameters from root to all children processes
 # if defined (MPI)

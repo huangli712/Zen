@@ -48,7 +48,9 @@
          endif ! back if ( myid == master ) block
 
 ! setup the parameters
+         call dmft_setup_tasks()
          call dmft_setup_param()
+         STOP
 
 ! allocate memory spaces
          call dmft_alloc_array()
