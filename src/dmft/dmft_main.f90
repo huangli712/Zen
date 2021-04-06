@@ -47,15 +47,17 @@
              call dmft_print_header()
          endif ! back if ( myid == master ) block
 
-! setup the parameters
+! setup the parameters (control part)
          call dmft_setup_tasks()
+
+! setup the parameters (dimensional part)
          call dmft_setup_param()
 
 ! allocate memory spaces
          call dmft_alloc_array()
 
+! setup the correlated systems
          call dmft_setup_system()
-         STOP
 
 ! print the runtime parameters
          if ( myid == master ) then ! only master node can do it
@@ -63,6 +65,8 @@
          endif ! back if ( myid == master ) block
 
      END BLOCK DMFT_START
+
+     STOP
 
      DMFT_SLEEP: BLOCK
 
