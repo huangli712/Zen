@@ -170,6 +170,9 @@
   subroutine dft_input_eigen()
   end subroutine dft_input_eigen
 
+  subroutine dft_input_projs()
+  end subroutine dft_input_projs
+
 !!========================================================================
 !!>>> manage memory for dynamical mean-field theory engine             <<<
 !!========================================================================
