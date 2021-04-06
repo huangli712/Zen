@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/03
+# Last modified: 2021/04/06
 #
 
 #
@@ -31,9 +31,13 @@ function ir_adaptor(D::Dict{Symbol,Any})
 
     # I03: Write important parameters
     println("  Store params")
-    println("  Store groups")
     irio_params(pwd(), D)
-    irio_groups(pwd(), D[:PG], D[:PW])
+    #
+    println("  Store groups")
+    irio_groups(pwd(), D[:PG])
+    #
+    println("  Store windows")
+    irio_windows(pwd(), D[:PW])
 
     # I04: Write lattice structure
     println("  Store lattice")
