@@ -399,10 +399,6 @@
 
 # endif  /* MPI */
 
-     call mp_barrier()
-     print *, myid, shell
-     call mp_barrier()
-
      print *, myid, Tchr
      call mp_barrier()
 
