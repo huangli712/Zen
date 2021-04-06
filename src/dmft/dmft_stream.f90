@@ -325,6 +325,8 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
+     character(len = 10) :: Tchr(3)
+
 ! read in groups of projectors if available
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
@@ -367,6 +369,9 @@
 ! close file handler
          close(mytmp)
 
+         Tchr(1) = 'li'
+         Tchr(2) = 'huang'
+         Tchr(3) = 'me'
      endif ! back if ( myid == master ) block
 !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -389,6 +394,9 @@
 ! block until all processes have reached here
      call mp_barrier()
 
+     call mp_bcast( Tchr, master )
+     call mp_barrier()
+
 # endif  /* MPI */
 
      call mp_barrier()
@@ -397,6 +405,9 @@
 
      call mp_barrier()
      print *, myid, corr
+     call mp_barrier()
+
+     print *, myid, Tchr
      call mp_barrier()
 
      return
