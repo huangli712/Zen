@@ -371,7 +371,7 @@
 
          Tchr(1) = 'li'
          Tchr(2) = 'huang'
-         Tchr(3) = 'me'
+         Tchr(3) = 'mejjj'
      endif ! back if ( myid == master ) block
 !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
