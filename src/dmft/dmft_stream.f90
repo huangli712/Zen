@@ -86,6 +86,7 @@
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
 
+     print *, lfermi, ltetra
      STOP
 
 ! since config parameters may be updated in master node, it is crucial
