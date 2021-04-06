@@ -6,7 +6,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/02/28
+# Last modified: 2021/04/06
 #
 
 # Update LOAD_PATH
@@ -19,4 +19,5 @@ using Zen
 setup()
 exhibit()
 it = IterInfo()
-adaptor_run(it)
+lr = Logger(query_case())
+adaptor_run(it, lr)
