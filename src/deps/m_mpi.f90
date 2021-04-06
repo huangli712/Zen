@@ -1596,7 +1596,7 @@
          implicit none
 
 ! external arguments
-         integer, intent(in) :: data(:)
+         character(len = *), intent(in) :: data(:)
          integer, intent(in) :: root
          integer, optional, intent(in) :: gid
 
@@ -1611,7 +1611,7 @@
          call mp_barrier(group)
 
 ! setup element count
-         isize = size(data)
+         isize = size(data) * len(data(1))
 
 ! invoke realted MPI subroutines
          call MPI_BCAST(data, isize, m_chr, root, group, ierror)
