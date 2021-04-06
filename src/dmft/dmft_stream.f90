@@ -317,29 +317,29 @@
 !!
 !! @sub dft_input_bzone
 !!
-  subroutine dft_input_bzone()
+  subroutine dmft_input_bzone()
      implicit none
 
      return
-  end subroutine dft_input_bzone
+  end subroutine dmft_input_bzone
 
 !!
 !! @sub dft_input_tetra
 !!
-  subroutine dft_input_tetra()
+  subroutine dmft_input_tetra()
      implicit none
 
      return
-  end subroutine dft_input_tetra
+  end subroutine dmft_input_tetra
 
 !!
 !! @sub dft_input_eigen
 !!
-  subroutine dft_input_eigen()
+  subroutine dmft_input_eigen()
      implicit none
 
      return
-  end subroutine dft_input_eigen
+  end subroutine dmft_input_eigen
 
 !!
 !! @sub dft_input_projs
