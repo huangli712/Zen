@@ -274,6 +274,9 @@
   subroutine dmft_setup_system()
      implicit none
 
+     call dmft_input_group()
+     call dmft_input_window()
+
      return
   end subroutine dmft_setup_system
 
