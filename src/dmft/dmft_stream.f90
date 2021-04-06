@@ -156,7 +156,7 @@
   end subroutine dmft_input_group
 
   subroutine dmft_input_window()
-  end dmft_input_window
+  end subroutine dmft_input_window
 
   subroutine dmft_input_lattice()
   end subroutine dmft_input_lattice
