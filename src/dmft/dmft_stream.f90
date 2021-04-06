@@ -145,61 +145,90 @@
      return
   end subroutine dmft_setup_param
 
+!!
+!! @sub dmft_setup_system
+!!
   subroutine dmft_setup_system()
      implicit none
 
      return
   end subroutine dmft_setup_system
 
-
+!!
+!! @sub dmft_input_group
+!!
   subroutine dmft_input_group()
      implicit none
 
      return
   end subroutine dmft_input_group
 
+!!
+!! @sub dmft_input_window
+!!
   subroutine dmft_input_window()
      implicit none
 
      return
   end subroutine dmft_input_window
 
+!!
+!! @sub dmft_input_lattice
+!!
   subroutine dmft_input_lattice()
      implicit none
 
      return
   end subroutine dmft_input_lattice
 
+!!
+!! @sub dft_input_bzone
+!!
   subroutine dft_input_bzone()
      implicit none
 
      return
   end subroutine dft_input_bzone
 
+!!
+!! @sub dft_input_tetra
+!!
   subroutine dft_input_tetra()
      implicit none
 
      return
   end subroutine dft_input_tetra
 
+!!
+!! @sub dft_input_eigen
+!!
   subroutine dft_input_eigen()
      implicit none
 
      return
   end subroutine dft_input_eigen
 
+!!
+!! @sub dft_input_projs
+!!
   subroutine dft_input_projs()
      implicit none
 
      return
   end subroutine dft_input_projs
 
+!!
+!! @sub dft_input_sigdc
+!!
   subroutine dft_input_sigdc()
      implicit none
 
      return
   end subroutine dft_input_sigdc
 
+!!
+!! @sub dft_input_sig_l
+!!
   subroutine dft_input_sig_l()
      implicit none
 
