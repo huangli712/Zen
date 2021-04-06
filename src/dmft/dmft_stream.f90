@@ -224,8 +224,7 @@
 # if defined (MPI)
 
 ! for lattice block
-! note: module mmpi doesn't support this call, later we will fix it
-!<     call mp_bcast( model , master )
+     call mp_bcast( model , master )
      call mp_bcast( scale , master )
      call mp_bcast( nsort , master )
      call mp_bcast( natom , master )
@@ -381,7 +380,7 @@
      call mp_barrier()
 
 ! broadcast data
-     call mp_bcast( shell, master )
+!<     call mp_bcast( shell, master )
      call mp_bcast( corr , master )
      call mp_bcast( site , master )
      call mp_bcast( l    , master )
