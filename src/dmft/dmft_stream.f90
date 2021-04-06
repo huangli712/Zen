@@ -220,6 +220,12 @@
 # if defined (MPI)
 
      call mp_bcast( nband , master )
+     call mp_bcast( scale , master )
+     call mp_bcast( nsort , master )
+     call mp_bcast( natom , master )
+     call mp_barrier()
+
+     call mp_bcast( nband , master )
      call mp_bcast( nkpt  , master )
      call mp_bcast( nspin , master )
      call mp_bcast( fermi , master )
