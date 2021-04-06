@@ -274,13 +274,16 @@
   subroutine dmft_setup_system()
      implicit none
 
+! 
      call dmft_input_group()
      call dmft_input_window()
+
      call dmft_input_lattice()
      call dmft_input_bzone()
      call dmft_input_tetra()
      call dmft_input_eigen()
      call dmft_input_projs()
+
      call dmft_input_sigdc()
      call dmft_input_sig_l()
 
