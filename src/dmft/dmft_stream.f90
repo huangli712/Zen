@@ -189,8 +189,12 @@
              read(mytmp,*) chr1, chr2, nspin
              read(mytmp,*) chr1, chr2, fermi
              read(mytmp,*)
+             read(mytmp,*) ! for tetra block
+             read(mytmp,*) chr1, chr2, ntet
+             read(mytmp,*) chr1, chr2, volt
+             read(mytmp,*)
 
-             print *, model, scale, nband
+             print *, model, scale, nband, fermi, ntet
              
 
              close(mytmp)
