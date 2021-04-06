@@ -173,7 +173,25 @@
 !! allocate memory for global variables and then initialize them
 !! 
   subroutine dmft_alloc_array()
+     use context ! ALL
+
      implicit none
+
+! allocate memory for context module
+     call cat_alloc_group()
+     call cat_alloc_window()
+
+     call cat_alloc_lattice()
+     call cat_alloc_bzone()
+     call cat_alloc_tetra()
+     call cat_alloc_eigen()
+     call cat_alloc_projs()
+
+     call cat_alloc_fmesh()
+
+     call cat_alloc_sigma()
+     call cat_alloc_green()
+     call cat_alloc_weiss()
 
      return
   end subroutine dmft_alloc_array
