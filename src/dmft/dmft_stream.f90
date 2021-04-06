@@ -177,24 +177,35 @@
              read(mytmp,*) ! skip header
              read(mytmp,*)
              read(mytmp,*)
+
              read(mytmp,*) ! for lattice block
              read(mytmp,*) chr1, chr2, model
              read(mytmp,*) chr1, chr2, scale
              read(mytmp,*) chr1, chr2, nsort
              read(mytmp,*) chr1, chr2, natom
              read(mytmp,*)
+
              read(mytmp,*) ! for eigen block
              read(mytmp,*) chr1, chr2, nband
              read(mytmp,*) chr1, chr2, nkpt
              read(mytmp,*) chr1, chr2, nspin
              read(mytmp,*) chr1, chr2, fermi
              read(mytmp,*)
+
              read(mytmp,*) ! for tetra block
              read(mytmp,*) chr1, chr2, ntet
              read(mytmp,*) chr1, chr2, volt
              read(mytmp,*)
 
-             print *, model, scale, nband, fermi, ntet
+             read(mytmp,*) ! for group block
+             read(mytmp,*) chr1, chr2, ngrp
+             read(mytmp,*)
+
+             read(mytmp,*) ! for window block
+             read(mytmp,*) chr1, chr2, nwnd
+             read(mytmp,*)
+
+             print *, model, scale, nband, fermi, ntet, ngrp, nwnd
              
 
              close(mytmp)
