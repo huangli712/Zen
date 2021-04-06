@@ -24,19 +24,19 @@
   subroutine dmft_setup_tasks()
      use constants, only : dp
 
+     use parser, only : p_create
+     use parser, only : p_parse
+     use parser, only : p_get
+     use parser, only : p_destroy
+
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
+
      use control, only : task
      use control, only : axis
      use control, only : lfermi, ltetra
      use control, only : beta, mc
      use control, only : myid, master
-
-     use mmpi, only : mp_bcast
-     use mmpi, only : mp_barrier
-
-     use parser, only : p_create
-     use parser, only : p_parse
-     use parser, only : p_get
-     use parser, only : p_destroy
 
      implicit none
 
