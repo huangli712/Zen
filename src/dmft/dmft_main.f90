@@ -50,10 +50,11 @@
 ! setup the parameters
          call dmft_setup_tasks()
          call dmft_setup_param()
-         STOP
 
 ! allocate memory spaces
          call dmft_alloc_array()
+
+         call dmft_setup_system()
 
 ! print the runtime parameters
          if ( myid == master ) then ! only master node can do it
