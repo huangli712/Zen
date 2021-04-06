@@ -315,7 +315,7 @@
   end subroutine dmft_input_lattice
 
 !!
-!! @sub dft_input_bzone
+!! @sub dmft_input_bzone
 !!
   subroutine dmft_input_bzone()
      implicit none
@@ -324,7 +324,7 @@
   end subroutine dmft_input_bzone
 
 !!
-!! @sub dft_input_tetra
+!! @sub dmft_input_tetra
 !!
   subroutine dmft_input_tetra()
      implicit none
@@ -333,7 +333,7 @@
   end subroutine dmft_input_tetra
 
 !!
-!! @sub dft_input_eigen
+!! @sub dmft_input_eigen
 !!
   subroutine dmft_input_eigen()
      implicit none
@@ -342,7 +342,7 @@
   end subroutine dmft_input_eigen
 
 !!
-!! @sub dft_input_projs
+!! @sub dmft_input_projs
 !!
   subroutine dmft_input_projs()
      implicit none
@@ -351,7 +351,7 @@
   end subroutine dmft_input_projs
 
 !!
-!! @sub dft_input_sigdc
+!! @sub dmft_input_sigdc
 !!
   subroutine dmft_input_sigdc()
      implicit none
@@ -360,7 +360,7 @@
   end subroutine dmft_input_sigdc
 
 !!
-!! @sub dft_input_sig_l
+!! @sub dmft_input_sig_l
 !!
   subroutine dmft_input_sig_l()
      implicit none
