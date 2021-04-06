@@ -358,6 +358,7 @@
              read(mytmp,*) chr1, chr2, shell(i)
              read(mytmp,*) chr1, chr2, ndim(i)
          enddo ! over i={1,ngrp} loop
+         max_ndim = maxval(ndim)
 
          close(mytmp)
 
