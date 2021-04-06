@@ -221,7 +221,10 @@ function irio_groups(f::String, PG::Array{PrGroup,1})
         println(fout, "# Data: some necessary data structures")
         println(fout)
 
-        # Write PrGroup[]
+        # Write each PrGroup
+        ngrp = length(PG)
+        println(fout, "ngrp  -> $ngrp")
+        println(fout)
         for p in eachindex(PG)
             println(fout, "# PrGroup : $p")
             println(fout, "site  -> $(PG[p].site)")
@@ -250,7 +253,10 @@ function irio_windows(f::String, PW::Array{PrWindow,1})
         println(fout, "# Data: some necessary data structures")
         println(fout)
 
-        # Write PrWindow[]
+        # Write each PrWindow
+        nwnd = length(PW)
+        println(fout, "nwnd  -> $nwnd")
+        println(fout)
         for p in eachindex(PW)
             println(fout, "# PrWindow: $p")
             println(fout, "bmin  -> $(PW[p].bmin)")
