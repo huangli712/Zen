@@ -219,6 +219,12 @@
 ! to broadcast config parameters from root to all children processes
 # if defined (MPI)
 
+     call mp_bcast( nband , master )
+     call mp_bcast( nkpt  , master )
+     call mp_bcast( nspin , master )
+     call mp_bcast( fermi , master )
+     call mp_barrier()
+
      call mp_bcast( ntet  , master )
      call mp_bcast( volt  , master )
      call mp_barrier()
