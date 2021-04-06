@@ -166,7 +166,12 @@
 !!========================================================================
 !!>>> manage memory for dynamical mean-field theory engine             <<<
 !!========================================================================
- 
+
+!!
+!! @sub dmft_alloc_array
+!!
+!! allocate memory for global variables and then initialize them
+!! 
   subroutine dmft_alloc_array()
      implicit none
 
