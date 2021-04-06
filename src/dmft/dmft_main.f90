@@ -55,6 +55,7 @@
          call dmft_alloc_array()
 
          call dmft_setup_system()
+         STOP
 
 ! print the runtime parameters
          if ( myid == master ) then ! only master node can do it
