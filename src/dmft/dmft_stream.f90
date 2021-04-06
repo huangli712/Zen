@@ -173,6 +173,12 @@
   subroutine dft_input_projs()
   end subroutine dft_input_projs
 
+  subroutine dft_input_sigdc()
+  end subroutine dft_input_sigdc
+
+  subroutine dft_input_sig_l()
+  end subroutine dft_input_sig_l
+
 !!========================================================================
 !!>>> manage memory for dynamical mean-field theory engine             <<<
 !!========================================================================
