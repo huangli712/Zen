@@ -107,14 +107,25 @@
      return
   end subroutine dmft_setup_tasks
 
+!!
+!! @sub dmft_setup_param
+!!
+!! setup dimensional parameters and some real constants for the dynamical
+!! mean-field theory engine. note that these parameters are extracted
+!! from the dmft.in file
+!!
   subroutine dmft_setup_param()
      use constants, only : dp
      use constants, only : mytmp
+
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
 
      use control, only : nsort, natom
      use control, only : nband, nkpt, nspin
      use control, only : ntet
      use control, only : ngrp, nwnd
+     use control, only : nsite, nmesh
      use control, only : scale, fermi, volt
      use control, only : myid, master
 
@@ -124,18 +135,25 @@
 ! used to check whether the input file (params.ir) exists
      logical :: exists
 
-     nsort  = 3
-     natom  = 5
-     nband  = 30
-     nkpt   = 729
-     nspin  = 1
-     ntet   = 4374
-     ngrp   = 1
-     nwnd   = 1
-
-     scale  = 4.00_dp
-     fermi = 0.00_dp
-     volt  = 1.00_dp
+! setup default parameters
+!-------------------------------------------------------------------------
+     nsort  = 3         !
+     natom  = 5         !
+     nband  = 30        !
+     nkpt   = 729       !
+     nspin  = 1         !
+     ntet   = 4374      !
+!-------------------------------------------------------------------------
+     ngrp   = 1         !
+     nwnd   = 1         !
+!-------------------------------------------------------------------------
+     nsite  = 1         !
+     nmesh  = 8193      !
+!-------------------------------------------------------------------------
+     scale  = 4.00_dp   !
+     fermi  = 0.00_dp   !
+     volt   = 1.00_dp   !
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! read in input file if possible, only master node can do it
      if ( myid == master ) then
