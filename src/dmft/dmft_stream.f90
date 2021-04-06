@@ -329,6 +329,7 @@
 
 ! find input file: groups.ir, read it
          if ( exists .eqv. .false. ) then
+             call s_print_error('dmft_input_group','file groups.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
 ! read data from groups.ir
