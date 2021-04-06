@@ -371,6 +371,27 @@
      endif ! back if ( myid == master ) block
 !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+! broadcast data from master node to all children nodes
+# if defined (MPI)
+
+! broadcast data
+     call mp_bcast( max_ndim, master )
+
+! block until all processes have reached here
+     call mp_barrier()
+
+! broadcast data
+     call mp_bcast( shell, master )
+     call mp_bcast( corr , master )
+     call mp_bcast( site , master )
+     call mp_bcast( l    , master )
+     call mp_bcast( ndim , master )
+
+! block until all processes have reached here
+     call mp_barrier()
+
+# endif  /* MPI */
+
      return
   end subroutine dmft_input_group
 
