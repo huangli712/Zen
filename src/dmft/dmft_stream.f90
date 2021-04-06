@@ -380,7 +380,7 @@
      call mp_barrier()
 
 ! broadcast data
-!<     call mp_bcast( shell, master )
+     call mp_bcast( shell, master )
      call mp_bcast( corr , master )
      call mp_bcast( site , master )
      call mp_bcast( l    , master )
@@ -390,6 +390,11 @@
      call mp_barrier()
 
 # endif  /* MPI */
+
+     print *, myid, shell
+     call mp_barrier()
+     print *, myid, corr
+     call mp_barrier()
 
      return
   end subroutine dmft_input_group
