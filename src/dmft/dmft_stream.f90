@@ -137,22 +137,22 @@
 
 ! setup default parameters
 !-------------------------------------------------------------------------
-     nsort  = 3         !
-     natom  = 5         !
-     nband  = 30        !
-     nkpt   = 729       !
-     nspin  = 1         !
-     ntet   = 4374      !
+     nsort  = 3         ! number of atomic sorts
+     natom  = 5         ! number of atoms
+     nband  = 30        ! number of bands
+     nkpt   = 729       ! number of k-points
+     nspin  = 1         ! number of spins
+     ntet   = 4374      ! number of tetrahedra
 !-------------------------------------------------------------------------
-     ngrp   = 1         !
-     nwnd   = 1         !
+     ngrp   = 1         ! number of groups for projectors
+     nwnd   = 1         ! number of windows for projectors
 !-------------------------------------------------------------------------
-     nsite  = 1         !
-     nmesh  = 8193      !
+     nsite  = 1         ! number of impurity sites
+     nmesh  = 8193      ! number of frequency points
 !-------------------------------------------------------------------------
-     scale  = 4.00_dp   !
-     fermi  = 0.00_dp   !
-     volt   = 1.00_dp   !
+     scale  = 4.00_dp   ! scale factor for lattice constants
+     fermi  = 0.00_dp   ! default fermi level
+     volt   = 1.00_dp   ! volume of a tetrahedron
 !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! read in input file if possible, only master node can do it
