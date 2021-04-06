@@ -44,12 +44,17 @@
 ! used to check whether the input file (dmft.in) exists
      logical :: exists
 
-     task = 1
-     axis = 1
-     lfermi = .true.
-     ltetra = .true.
-     beta = 8.00_dp
-     mc = 0.0001_dp
+! setup default parameters
+!-------------------------------------------------------------------------
+     task   = 1         ! computational task
+     axis   = 1         ! frequency mesh
+!-------------------------------------------------------------------------
+     lfermi = .true.    ! fermi level search
+     ltetra = .true.    ! tetrahedron algorithm
+!-------------------------------------------------------------------------
+     beta   = 8.00_dp   ! inverse temperature
+     mc     = 0.0001_dp ! convergence criterion for fermi level search
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! read in input file if possible, only master node can do it
      if ( myid == master ) then
