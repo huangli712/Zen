@@ -202,7 +202,25 @@
 !! garbage collection for this code, please refer to dmft_alloc_array
 !!
   subroutine dmft_final_array()
+     use context ! ALL
+
      implicit none
+
+! deallocate memory for context module
+     call cat_free_group()
+     call cat_free_window()
+
+     call cat_free_lattice()
+     call cat_free_bzone()
+     call cat_free_tetra()
+     call cat_free_eigen()
+     call cat_free_projs()
+
+     call cat_free_fmesh()
+
+     call cat_free_sigma()
+     call cat_free_green()
+     call cat_free_weiss()
 
      return
   end subroutine dmft_final_array
