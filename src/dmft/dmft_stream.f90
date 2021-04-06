@@ -176,11 +176,17 @@
 
              read(mytmp,*) ! skip header
              read(mytmp,*)
-             read(mytmp,*) ! skip title
              read(mytmp,*)
+             read(mytmp,*) ! for lattice block
              read(mytmp,*) chr1, chr2, model
              read(mytmp,*) chr1, chr2, scale
-             print *, model, scale
+             read(mytmp,*) chr1, chr2, nsort
+             read(mytmp,*) chr1, chr2, natom
+             read(mytmp,*)
+             read(mytmp,*) ! for eigen block
+             read(mytmp,*) chr1, chr2, nband
+
+             print *, model, scale, nband
              
 
              close(mytmp)
