@@ -295,6 +295,9 @@
 !!
 !! @sub dmft_input_group
 !!
+!! read in groups of projectors. the data are used to construct the
+!! correlated subspace 
+!!
   subroutine dmft_input_group()
      implicit none
 
