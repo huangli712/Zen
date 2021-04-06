@@ -1579,7 +1579,7 @@
          call mp_barrier(group)
 
 ! invoke realted MPI subroutines
-         call MPI_BCAST(data, 1, m_chr, root, group, ierror)
+         call MPI_BCAST(data, len(data), m_chr, root, group, ierror)
 
 ! handler for return code
          call mp_error('mp_bcast_chr0', ierror)
