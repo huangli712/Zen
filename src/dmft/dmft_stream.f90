@@ -335,6 +335,10 @@
 
 ! read data from groups.ir
          open(mytmp, file='groups.ir', form='formatted', status='unknown')
+         read(mytmp,*) ! skip header
+         read(mytmp,*)
+         read(mytmp,*)
+
          close(mytmp)
 
      endif ! back if ( myid == master ) block
