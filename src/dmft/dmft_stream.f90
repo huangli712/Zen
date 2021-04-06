@@ -151,17 +151,18 @@
      return
   end subroutine dmft_setup_system
 
+
   subroutine dmft_input_group()
-  end
+  end subroutine dmft_input_group
 
   subroutine dmft_input_window()
-  end
+  end dmft_input_window
 
   subroutine dmft_input_lattice()
-  end
+  end subroutine dmft_input_lattice
 
   subroutine dft_input_bzone()
-  end
+  end subroutine dft_input_bzone
 
 !!========================================================================
 !!>>> manage memory for dynamical mean-field theory engine             <<<
