@@ -1587,7 +1587,39 @@
          return
      end subroutine mp_bcast_chr0
 
-     subroutine mp_bcast_chr1()
+!!
+!! @sub mp_bcast_chr1
+!!
+!! broadcasts character(:) from the process with rank "root"
+!!
+     subroutine mp_bcast_chr1(data, root, gid)
+         implicit none
+
+! external arguments
+         integer, intent(in) :: data(:)
+         integer, intent(in) :: root
+         integer, optional, intent(in) :: gid
+
+! set current communicator
+         if ( present(gid) .eqv. .true. ) then
+             group = gid
+         else
+             group = MPI_COMM_WORLD
+         endif ! back if ( present(gid) .eqv. .true. ) block
+
+! barrier until all processes reach here
+         call mp_barrier(group)
+
+! setup element count
+         isize = size(data)
+
+! invoke realted MPI subroutines
+         call MPI_BCAST(data, isize, m_chr, root, group, ierror)
+
+! handler for return code
+         call mp_error('mp_bcast_chr1', ierror)
+
+         return
      end subroutine mp_bcast_chr1
 
 !!
