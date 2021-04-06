@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/01
+# Last modified: 2021/04/06
 #
 
 """
@@ -26,7 +26,7 @@ function dmft_init(it::IterInfo, task::I64)
     fsig = ["sigma.bare", "sigma.dc"]
     #
     # Kohn-Sham data (including projectors) in IR format
-    fir  = ["params.ir", "groups.ir", "lattice.ir", "kmesh.ir", "eigen.ir", "projs.ir"]
+    fir  = ["params.ir", "groups.ir", "windows.ir", "lattice.ir", "kmesh.ir", "eigen.ir", "projs.ir"]
     if get_d("smear") === "tetra"
         push!(fir, "tetra.ir")
     end
