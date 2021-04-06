@@ -153,30 +153,57 @@
 
 
   subroutine dmft_input_group()
+     implicit none
+
+     return
   end subroutine dmft_input_group
 
   subroutine dmft_input_window()
+     implicit none
+
+     return
   end subroutine dmft_input_window
 
   subroutine dmft_input_lattice()
+     implicit none
+
+     return
   end subroutine dmft_input_lattice
 
   subroutine dft_input_bzone()
+     implicit none
+
+     return
   end subroutine dft_input_bzone
 
   subroutine dft_input_tetra()
+     implicit none
+
+     return
   end subroutine dft_input_tetra
 
   subroutine dft_input_eigen()
+     implicit none
+
+     return
   end subroutine dft_input_eigen
 
   subroutine dft_input_projs()
+     implicit none
+
+     return
   end subroutine dft_input_projs
 
   subroutine dft_input_sigdc()
+     implicit none
+
+     return
   end subroutine dft_input_sigdc
 
   subroutine dft_input_sig_l()
+     implicit none
+
+     return
   end subroutine dft_input_sig_l
 
 !!========================================================================
