@@ -219,28 +219,34 @@
 ! to broadcast config parameters from root to all children processes
 # if defined (MPI)
 
-     call mp_bcast( nband , master )
+     ! for lattice block
+     call mp_bcast( model , master )
      call mp_bcast( scale , master )
      call mp_bcast( nsort , master )
      call mp_bcast( natom , master )
      call mp_barrier()
 
+     ! for eigen block
      call mp_bcast( nband , master )
      call mp_bcast( nkpt  , master )
      call mp_bcast( nspin , master )
      call mp_bcast( fermi , master )
      call mp_barrier()
 
+     ! for tetra block
      call mp_bcast( ntet  , master )
      call mp_bcast( volt  , master )
      call mp_barrier()
 
+     ! for group block
      call mp_bcast( ngrp  , master )
      call mp_barrier()
 
+     ! for window block
      call mp_bcast( nwnd  , master )
      call mp_barrier()
 
+     ! for sigma block
      call mp_bcast( nsite , master )
      call mp_bcast( nmesh , master )
      call mp_barrier()
