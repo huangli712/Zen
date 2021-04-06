@@ -210,12 +210,20 @@
              read(mytmp,*) chr1, chr2, nmesh
              read(mytmp,*)
 
-             print *, model, scale, nband, fermi, ntet, ngrp, nwnd, nmesh
-
              close(mytmp)
 
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
+
+! since config parameters may be updated in master node, it is crucial
+! to broadcast config parameters from root to all children processes
+# if defined (MPI)
+
+     call mp_bcast( nsite , master )
+     call mp_bcast( nmesh , master )
+     call mp_barrier()
+
+# endif  /* MPI */
 
      print *, 'hehe'
 
