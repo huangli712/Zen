@@ -334,22 +334,25 @@
 ! inquire about file's existence
          inquire (file = 'groups.ir', exist = exists)
 
-! find input file: groups.ir, read it
+! file groups.ir must be present
          if ( exists .eqv. .false. ) then
              call s_print_error('dmft_input_group','file groups.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! read data from groups.ir
+! open file groups.ir for reading
          open(mytmp, file='groups.ir', form='formatted', status='unknown')
 
-         read(mytmp,*) ! skip header
+! skip header
+         read(mytmp,*)
          read(mytmp,*)
 
-         read(mytmp,*) ! check ngrp
+! check ngrp
+         read(mytmp,*)
          read(mytmp,*) chr1, chr2, itmp
          read(mytmp,*)
          call s_assert2(itmp == ngrp, "ngrp is wrong")
 
+! read data
          do i=1,ngrp
              read(mytmp,*)
              read(mytmp,*) chr1, chr2, site(i)
@@ -358,8 +361,11 @@
              read(mytmp,*) chr1, chr2, shell(i)
              read(mytmp,*) chr1, chr2, ndim(i)
          enddo ! over i={1,ngrp} loop
+
+! evaluate max_ndim
          max_ndim = maxval(ndim)
 
+! close file handler
          close(mytmp)
 
      endif ! back if ( myid == master ) block
