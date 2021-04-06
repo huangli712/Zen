@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/01
+# Last modified: 2021/04/06
 #
 
 """
@@ -440,7 +440,8 @@ export view_dos
 # ir_adaptor   -> Adaptor support.
 # ir_save      -> Save the output files by the adaptor.
 # irio_params  -> Write key parameters extracted from Kohn-Sham data.
-# irio_groups  -> Write PrGroup and PrWindow.
+# irio_groups  -> Write PrGroup.
+# irio_windows -> Write PrWindow.
 # irio_lattice -> Write lattice information.
 # irio_kmesh   -> Write kmesh.
 # irio_tetra   -> Write tetrahedra.
@@ -455,6 +456,7 @@ export ir_adaptor
 export ir_save
 export irio_params
 export irio_groups
+export irio_windows
 export irio_lattice
 export irio_kmesh
 export irio_tetra
