@@ -3,7 +3,7 @@
 !!!                                                                      !
 !!! A highly optimized dynamical mean field theory self-consistent calc- !
 !!! ulation engine, which will be used together with density functional  !
-!!! theory codes to explore the realistic correlated electron materials. !
+!!! theory codes to study the realistic correlated electron materials.   !
 !!!                                                                      !
 !!! author  : Li Huang (China Academy of Engineering Physics)            !
 !!! status  : (WARNING) IN TESTING STAGE, USE IT IN YOUR RISK            !
