@@ -573,6 +573,12 @@
          call s_assert2(itmp == natom, "natom is wrong")
          read(mytmp,*) ! empty line
 
+! read sorts
+
+! read atoms
+! read lvect
+! read coord
+
 ! close file handler
          close(mytmp)
 
@@ -586,16 +592,11 @@
      call mp_barrier()
 
 ! broadcast data
-     call mp_bcast( max_nbnd, master )
-
-! block until all processes have reached here
-     call mp_barrier()
-
-! broadcast data
-     call mp_bcast( bmin , master )
-     call mp_bcast( bmax , master )
-     call mp_bcast( nbnd , master )
-     call mp_bcast( kwin , master )
+     call mp_bcast( sorts, master )
+     call mp_bcast( atoms, master )
+     call mp_bcast( sortn, master )
+     call mp_bcast( lvect, master )
+     call mp_bcast( coord, master )
 
 ! block until all processes have reached here
      call mp_barrier()
@@ -603,6 +604,7 @@
 # endif  /* MPI */
 
      print *, 'eeee'
+
      return
   end subroutine dmft_input_lattice
 
