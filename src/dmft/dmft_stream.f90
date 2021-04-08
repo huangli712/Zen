@@ -448,11 +448,11 @@
          read(mytmp,*)
          read(mytmp,*)
 
-! check ngrp
+! check nwnd
          read(mytmp,*)
          read(mytmp,*) chr1, chr2, itmp
          read(mytmp,*)
-         call s_assert2(itmp == ngrp, "ngrp is wrong")
+         call s_assert2(itmp == nwnd, "nwnd is wrong")
 
 ! read data
          do i=1,ngrp
