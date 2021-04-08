@@ -410,6 +410,7 @@
      use control, only : myid, master
 
      use context, only : max_nbnd
+     use context, only : bmin, bmax, nbnd, kwin
 
      implicit none
 
