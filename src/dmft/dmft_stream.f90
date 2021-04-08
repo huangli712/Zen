@@ -401,6 +401,16 @@
 !! used to embed or downfold the self-energy functions
 !!
   subroutine dmft_input_window()
+     use constants, only : mytmp
+
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
+
+     use control, only : nwnd
+     use control, only : myid, master
+
+     use context, only : max_nbnd
+
      implicit none
 
      return
