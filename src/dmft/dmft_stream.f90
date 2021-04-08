@@ -464,7 +464,7 @@
          enddo ! over i={1,ngrp} loop
 
 ! evaluate max_nbnd
-         max_ndim = maxval(nbnd)
+         max_nbnd = maxval(nbnd)
 
 ! close file handler
          close(mytmp)
