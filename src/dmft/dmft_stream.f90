@@ -590,10 +590,13 @@
              read(mytmp,*) lvect(i,1:3)
          enddo
          read(mytmp,*) ! empty line
-         print *, lvect
-
 
 ! read coord
+         read(mytmp,*) ! header
+         do i=1,natom
+             read(mytmp,*) coord(i,1:3)
+         enddo ! over i={1,natom} loop
+         print *, coord
 
 ! close file handler
          close(mytmp)
