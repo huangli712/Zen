@@ -640,6 +640,79 @@
 
      implicit none
 
+! local variables
+! loop index
+     integer :: i
+
+! dummy integer variables
+     integer :: itmp
+
+! used to check whether the input file (kmesh.ir) exists
+     logical :: exists
+
+! dummy character variables
+     character(len = 5) :: chr1
+     character(len = 2) :: chr2
+
+! read in crystallography information if available
+!-------------------------------------------------------------------------
+     if ( myid == master ) then ! only master node can do it
+         exists = .false.
+
+! inquire about file's existence
+         inquire (file = 'lattice.ir', exist = exists)
+
+! file lattice.ir must be present
+         if ( exists .eqv. .false. ) then
+             call s_print_error('dmft_input_lattice','file lattice.ir is absent')
+         endif ! back if ( exists .eqv. .false. ) block
+
+! open file lattice.ir for reading
+         open(mytmp, file='lattice.ir', form='formatted', status='unknown')
+
+! skip header
+         read(mytmp,*)
+         read(mytmp,*)
+
+! check nsort and natom
+         read(mytmp,*) ! empty line
+         read(mytmp,*) ! skip _case
+         read(mytmp,*) ! skip scale
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nsort, "nsort is wrong")
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == natom, "natom is wrong")
+         read(mytmp,*) ! empty line
+
+! read sorts
+         read(mytmp,*) ! header
+         read(mytmp,*) sorts
+         read(mytmp,*) sortn
+         read(mytmp,*) ! empty line
+
+! read atoms
+         read(mytmp,*) ! header
+         read(mytmp,*) atoms
+         read(mytmp,*) ! empty line
+
+! read lvect
+         read(mytmp,*) ! header
+         do i=1,3
+             read(mytmp,*) lvect(i,1:3)
+         enddo ! over i={1,3} loop
+         read(mytmp,*) ! empty line
+
+! read coord
+         read(mytmp,*) ! header
+         do i=1,natom
+             read(mytmp,*) coord(i,1:3)
+         enddo ! over i={1,natom} loop
+
+! close file handler
+         close(mytmp)
+
+     endif ! back if ( myid == master ) block
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
      return
   end subroutine dmft_input_bzone
 
