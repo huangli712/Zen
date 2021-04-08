@@ -633,8 +633,10 @@
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
 
-     use control, only : nsort, natom
+     use control, only : nkpt
      use control, only : myid, master
+
+     use context, only : kmesh, weight
 
      implicit none
 
