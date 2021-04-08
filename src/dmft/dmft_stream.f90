@@ -574,6 +574,12 @@
          read(mytmp,*) ! empty line
 
 ! read sorts
+         read(mytmp,*)
+         read(mytmp,*) sorts
+         read(mytmp,*) sortn
+         read(mytmp,*)
+         print *, sorts
+         print *, sortn
 
 ! read atoms
 ! read lvect
