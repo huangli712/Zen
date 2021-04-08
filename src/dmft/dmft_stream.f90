@@ -543,21 +543,21 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in windows of projectors if available
+! read in crystallography information if available
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
 ! inquire about file's existence
-         inquire (file = 'windows.ir', exist = exists)
+         inquire (file = 'lattice.ir', exist = exists)
 
-! file windows.ir must be present
+! file lattice.ir must be present
          if ( exists .eqv. .false. ) then
-             call s_print_error('dmft_input_window','file windows.ir is absent')
+             call s_print_error('dmft_input_lattice','file lattice.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file windows.ir for reading
-         open(mytmp, file='windows.ir', form='formatted', status='unknown')
+! open file lattice.ir for reading
+         open(mytmp, file='lattice.ir', form='formatted', status='unknown')
 
 ! skip header
          read(mytmp,*)
