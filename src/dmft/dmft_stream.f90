@@ -583,9 +583,16 @@
          read(mytmp,*) ! header
          read(mytmp,*) atoms
          read(mytmp,*) ! empty line
-         print *, atoms
 
 ! read lvect
+         read(mytmp,*) ! header
+         do i=1,3
+             read(mytmp,*) lvect(i,1:3)
+         enddo
+         read(mytmp,*) ! empty line
+         print *, lvect
+
+
 ! read coord
 
 ! close file handler
