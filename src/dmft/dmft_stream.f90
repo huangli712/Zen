@@ -520,7 +520,6 @@
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
 
-     use control, only : model
      use control, only : nsort, natom
      use control, only : myid, master
 
@@ -563,13 +562,6 @@
 ! skip header
          read(mytmp,*)
          read(mytmp,*)
-
-! read basic data
-         read(mytmp,*)
-         read(mytmp,*) chr1, chr2, bmin(i)
-         read(mytmp,*) chr1, chr2, bmax(i)
-         read(mytmp,*) chr1, chr2, nbnd(i)
-         read(mytmp,*) chr1, chr2, nbnd(i)
 
 ! close file handler
          close(mytmp)
