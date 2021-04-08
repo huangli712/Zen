@@ -455,17 +455,16 @@
          call s_assert2(itmp == nwnd, "nwnd is wrong")
 
 ! read data
-         do i=1,ngrp
+         do i=1,nwnd
              read(mytmp,*)
-             read(mytmp,*) chr1, chr2, site(i)
-             read(mytmp,*) chr1, chr2, l(i)
-             read(mytmp,*) chr1, chr2, corr(i)
-             read(mytmp,*) chr1, chr2, shell(i)
-             read(mytmp,*) chr1, chr2, ndim(i)
+             read(mytmp,*) chr1, chr2, bmin(i)
+             read(mytmp,*) chr1, chr2, bmax(i)
+             read(mytmp,*) chr1, chr2, nbnd(i)
+             read(mytmp,*) ! for kwin 
          enddo ! over i={1,ngrp} loop
 
-! evaluate max_ndim
-         max_ndim = maxval(ndim)
+! evaluate max_nbnd
+         max_ndim = maxval(nbnd)
 
 ! close file handler
          close(mytmp)
