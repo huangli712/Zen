@@ -677,31 +677,12 @@
 ! check nkpt and ndir
          read(mytmp,*) ! empty line
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nsort, "nsort is wrong")
+         call s_assert2(itmp == nkpt, "nkpt is wrong")
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == natom, "natom is wrong")
+         call s_assert2(itmp == 3, "ndir is wrong")
          read(mytmp,*) ! empty line
 
-! read sorts
-         read(mytmp,*) ! header
-         read(mytmp,*) sorts
-         read(mytmp,*) sortn
-         read(mytmp,*) ! empty line
-
-! read atoms
-         read(mytmp,*) ! header
-         read(mytmp,*) atoms
-         read(mytmp,*) ! empty line
-
-! read lvect
-         read(mytmp,*) ! header
-         do i=1,3
-             read(mytmp,*) lvect(i,1:3)
-         enddo ! over i={1,3} loop
-         read(mytmp,*) ! empty line
-
-! read coord
-         read(mytmp,*) ! header
+! read k-points and the corresponding weights
          do i=1,natom
              read(mytmp,*) coord(i,1:3)
          enddo ! over i={1,natom} loop
