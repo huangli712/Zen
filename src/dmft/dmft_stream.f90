@@ -397,8 +397,8 @@
 !!
 !! @sub dmft_input_window
 !!
-!! read in windows of projectors. the data are used to embed or downfold
-!! the self-energy functions
+!! read in windows of projectors (see module dmft_window). the data are
+!! used to embed or downfold the self-energy functions
 !!
   subroutine dmft_input_window()
      implicit none
