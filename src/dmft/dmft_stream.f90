@@ -574,14 +574,17 @@
          read(mytmp,*) ! empty line
 
 ! read sorts
-         read(mytmp,*)
+         read(mytmp,*) ! header
          read(mytmp,*) sorts
          read(mytmp,*) sortn
-         read(mytmp,*)
-         print *, sorts
-         print *, sortn
+         read(mytmp,*) ! empty line
 
 ! read atoms
+         read(mytmp,*) ! header
+         read(mytmp,*) atoms
+         read(mytmp,*) ! empty line
+         print *, atoms
+
 ! read lvect
 ! read coord
 
