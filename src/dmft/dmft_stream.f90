@@ -674,10 +674,8 @@
          read(mytmp,*)
          read(mytmp,*)
 
-! check nsort and natom
+! check nkpt and ndir
          read(mytmp,*) ! empty line
-         read(mytmp,*) ! skip _case
-         read(mytmp,*) ! skip scale
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nsort, "nsort is wrong")
          read(mytmp,*) chr1, chr2, itmp
