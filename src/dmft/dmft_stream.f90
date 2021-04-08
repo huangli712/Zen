@@ -563,6 +563,16 @@
          read(mytmp,*)
          read(mytmp,*)
 
+! check nsort and natom
+         read(mytmp,*) ! empty line
+         read(mytmp,*) ! for _case
+         read(mytmp,*) ! for scale
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nsort, "nsort is wrong")
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == natom, "natom is wrong")
+         read(mytmp,*) ! empty line
+
 ! close file handler
          close(mytmp)
 
