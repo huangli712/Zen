@@ -512,6 +512,8 @@
 !!
 !! @sub dmft_input_lattice
 !!
+!! read in key crystallography information (see module dmft_lattice)
+!!
   subroutine dmft_input_lattice()
      implicit none
 
