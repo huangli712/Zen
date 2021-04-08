@@ -708,8 +708,6 @@
 
 # endif  /* MPI */
 
-     print *, myid, nkpt, kmesh(100,:), weight(100)
-
      return
   end subroutine dmft_input_bzone
 
