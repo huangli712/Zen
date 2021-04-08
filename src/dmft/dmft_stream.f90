@@ -683,15 +683,16 @@
          read(mytmp,*) ! empty line
 
 ! read k-points and the corresponding weights
-         do i=1,natom
-             read(mytmp,*) coord(i,1:3)
-         enddo ! over i={1,natom} loop
+         do i=1,nkpt
+             read(mytmp,*) kmesh(i,:), weight(i)
+         enddo ! over i={1,nkpt} loop
 
 ! close file handler
          close(mytmp)
 
      endif ! back if ( myid == master ) block
 !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
      return
   end subroutine dmft_input_bzone
 
