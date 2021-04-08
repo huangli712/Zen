@@ -373,6 +373,9 @@
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
 
+! block until all processes have reached here
+     call mp_barrier()
+
 ! broadcast data
      call mp_bcast( max_ndim, master )
 
@@ -482,6 +485,9 @@
 
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
+
+! block until all processes have reached here
+     call mp_barrier()
 
 ! broadcast data
      call mp_bcast( max_nbnd, master )
