@@ -543,6 +543,79 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
+! read in windows of projectors if available
+!-------------------------------------------------------------------------
+     if ( myid == master ) then ! only master node can do it
+         exists = .false.
+
+! inquire about file's existence
+         inquire (file = 'windows.ir', exist = exists)
+
+! file windows.ir must be present
+         if ( exists .eqv. .false. ) then
+             call s_print_error('dmft_input_window','file windows.ir is absent')
+         endif ! back if ( exists .eqv. .false. ) block
+
+! open file windows.ir for reading
+         open(mytmp, file='windows.ir', form='formatted', status='unknown')
+
+! skip header
+         read(mytmp,*)
+         read(mytmp,*)
+
+! check nwnd
+         read(mytmp,*)
+         read(mytmp,*) chr1, chr2, itmp
+         read(mytmp,*)
+         call s_assert2(itmp == nwnd, "nwnd is wrong")
+
+! read data
+         do i=1,nwnd
+             read(mytmp,*)
+             read(mytmp,*) chr1, chr2, bmin(i)
+             read(mytmp,*) chr1, chr2, bmax(i)
+             read(mytmp,*) chr1, chr2, nbnd(i)
+             read(mytmp,*) ! for kwin
+             do s=1,nspin
+                 do k=1,nkpt
+                     read(mytmp,*) itmp, itmp, kwin(k,s,1,i), kwin(k,s,2,i)
+                 enddo ! over k={1,nkpt} loop
+             enddo ! over s={1,nspin} loop
+         enddo ! over i={1,ngrp} loop
+
+! evaluate max_nbnd
+         max_nbnd = maxval(nbnd)
+
+! close file handler
+         close(mytmp)
+
+     endif ! back if ( myid == master ) block
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+! broadcast data from master node to all children nodes
+# if defined (MPI)
+
+! block until all processes have reached here
+     call mp_barrier()
+
+! broadcast data
+     call mp_bcast( max_nbnd, master )
+
+! block until all processes have reached here
+     call mp_barrier()
+
+! broadcast data
+     call mp_bcast( bmin , master )
+     call mp_bcast( bmax , master )
+     call mp_bcast( nbnd , master )
+     call mp_bcast( kwin , master )
+
+! block until all processes have reached here
+     call mp_barrier()
+
+# endif  /* MPI */
+
+     print *, 'eeee'
      return
   end subroutine dmft_input_lattice
 
