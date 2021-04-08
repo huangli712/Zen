@@ -406,6 +406,7 @@
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
 
+     use control, only : nkpt, nspin
      use control, only : nwnd
      use control, only : myid, master
 
@@ -417,6 +418,8 @@
 ! local variables
 ! loop index
      integer :: i
+     integer :: s
+     integer :: k
 
 ! dummy integer variables
      integer :: itmp
@@ -460,7 +463,12 @@
              read(mytmp,*) chr1, chr2, bmin(i)
              read(mytmp,*) chr1, chr2, bmax(i)
              read(mytmp,*) chr1, chr2, nbnd(i)
-             read(mytmp,*) ! for kwin 
+             read(mytmp,*) ! for kwin
+             do s=1,nspin
+                 do k=1,nkpt
+                     read(mytmp,*) itmp, itmp, kwin(k,s,1,i), kwin(k,s,2,i)
+                 enddo ! over k={1,nkpt} loop
+             enddo ! over s={1,nspin} loop
          enddo ! over i={1,ngrp} loop
 
 ! evaluate max_nbnd
