@@ -515,6 +515,16 @@
 !! read in key crystallography information (see module dmft_lattice)
 !!
   subroutine dmft_input_lattice()
+     use constants, only : mytmp
+
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
+
+     use control, only : nsort, natom
+     use control, only : myid, master
+
+     use context, only : sorts, atoms, sortn, lvect, coord
+
      implicit none
 
      return
