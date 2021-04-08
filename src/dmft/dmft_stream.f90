@@ -530,8 +530,6 @@
 ! local variables
 ! loop index
      integer :: i
-     integer :: s
-     integer :: k
 
 ! dummy integer variables
      integer :: itmp
@@ -565,8 +563,8 @@
 
 ! check nsort and natom
          read(mytmp,*) ! empty line
-         read(mytmp,*) ! for _case
-         read(mytmp,*) ! for scale
+         read(mytmp,*) ! skip _case
+         read(mytmp,*) ! skip scale
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nsort, "nsort is wrong")
          read(mytmp,*) chr1, chr2, itmp
@@ -588,7 +586,7 @@
          read(mytmp,*) ! header
          do i=1,3
              read(mytmp,*) lvect(i,1:3)
-         enddo
+         enddo ! over i={1,3} loop
          read(mytmp,*) ! empty line
 
 ! read coord
@@ -596,7 +594,6 @@
          do i=1,natom
              read(mytmp,*) coord(i,1:3)
          enddo ! over i={1,natom} loop
-         print *, coord
 
 ! close file handler
          close(mytmp)
@@ -621,8 +618,6 @@
      call mp_barrier()
 
 # endif  /* MPI */
-
-     print *, 'eeee'
 
      return
   end subroutine dmft_input_lattice
