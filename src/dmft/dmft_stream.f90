@@ -693,6 +693,23 @@
      endif ! back if ( myid == master ) block
 !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+! broadcast data from master node to all children nodes
+# if defined (MPI)
+
+! block until all processes have reached here
+     call mp_barrier()
+
+! broadcast data
+     call mp_bcast( kmesh, master )
+     call mp_bcast(weight, master )
+
+! block until all processes have reached here
+     call mp_barrier()
+
+# endif  /* MPI */
+
+     print *, myid, nkpt, kmesh(100,:), weight(100)
+
      return
   end subroutine dmft_input_bzone
 
