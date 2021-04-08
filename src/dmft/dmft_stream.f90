@@ -625,7 +625,17 @@
 !!
 !! @sub dmft_input_bzone
 !!
+!! read in k-mesh and the related integration weights
+!!
   subroutine dmft_input_bzone()
+     use constants, only : mytmp
+
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
+
+     use control, only : nsort, natom
+     use control, only : myid, master
+
      implicit none
 
      return
