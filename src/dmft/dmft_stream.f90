@@ -654,21 +654,21 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in crystallography information if available
+! read in brillouin zone information if available
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
 ! inquire about file's existence
-         inquire (file = 'lattice.ir', exist = exists)
+         inquire (file = 'kmesh.ir', exist = exists)
 
 ! file lattice.ir must be present
          if ( exists .eqv. .false. ) then
-             call s_print_error('dmft_input_lattice','file lattice.ir is absent')
+             call s_print_error('dmft_input_bzone','file kmesh.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file lattice.ir for reading
-         open(mytmp, file='lattice.ir', form='formatted', status='unknown')
+! open file kmesh.ir for reading
+         open(mytmp, file='kmesh.ir', form='formatted', status='unknown')
 
 ! skip header
          read(mytmp,*)
