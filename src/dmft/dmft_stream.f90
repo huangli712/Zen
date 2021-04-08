@@ -562,29 +562,14 @@
 ! skip header
          read(mytmp,*)
          read(mytmp,*)
-
-! check nwnd
          read(mytmp,*)
-         read(mytmp,*) chr1, chr2, itmp
+
+! read basic data
          read(mytmp,*)
-         call s_assert2(itmp == nwnd, "nwnd is wrong")
-
-! read data
-         do i=1,nwnd
-             read(mytmp,*)
-             read(mytmp,*) chr1, chr2, bmin(i)
-             read(mytmp,*) chr1, chr2, bmax(i)
-             read(mytmp,*) chr1, chr2, nbnd(i)
-             read(mytmp,*) ! for kwin
-             do s=1,nspin
-                 do k=1,nkpt
-                     read(mytmp,*) itmp, itmp, kwin(k,s,1,i), kwin(k,s,2,i)
-                 enddo ! over k={1,nkpt} loop
-             enddo ! over s={1,nspin} loop
-         enddo ! over i={1,ngrp} loop
-
-! evaluate max_nbnd
-         max_nbnd = maxval(nbnd)
+         read(mytmp,*) chr1, chr2, bmin(i)
+         read(mytmp,*) chr1, chr2, bmax(i)
+         read(mytmp,*) chr1, chr2, nbnd(i)
+         read(mytmp,*) ! for kwin
 
 ! close file handler
          close(mytmp)
