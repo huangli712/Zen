@@ -1022,8 +1022,6 @@
 
 # endif  /* MPI */
 
-     print *, "hello"
-
      return
   end subroutine dmft_input_projs
 
