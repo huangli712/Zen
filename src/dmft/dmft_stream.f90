@@ -812,7 +812,7 @@
 !! read in band eigenvalues and band occupations
 !!
   subroutine dmft_input_eigen()
-     use constants, only : dp, mytmp
+     use constants, only : mytmp
 
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
@@ -906,7 +906,19 @@
 !!
 !! @sub dmft_input_projs
 !!
+!! read in overlap matrix between Kohn-Sham wavefunctions and local
+!! orbitals, i.e., the local orbital projectors
+!!
   subroutine dmft_input_projs()
+     use constants, only : dp, mytmp
+
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
+
+     use control, only : nband, nkpt, nspin
+     use control, only : myid, master
+
+     use context, only : enk, occupy
      implicit none
 
      return
