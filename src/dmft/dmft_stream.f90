@@ -1046,7 +1046,7 @@
 
 ! local variables
 ! loop index
-     integer  :: g
+     integer  :: s
 
 ! dummy integer variables
      integer  :: itmp
