@@ -910,7 +910,7 @@
 !! orbitals, i.e., the local orbital projectors
 !!
   subroutine dmft_input_projs()
-     use constants, only : mytmp
+     use constants, only : dp, mytmp
 
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
@@ -926,16 +926,20 @@
 
 ! local variables
 ! loop index
-     integer :: g
-     integer :: b
-     integer :: k
-     integer :: s
+     integer  :: g
+     integer  :: b
+     integer  :: k
+     integer  :: s
+     integer  :: d
 
 ! dummy integer variables
-     integer :: itmp
+     integer  :: itmp
 
 ! used to check whether the input file (projs.ir) exists
-     logical :: exists
+     logical  :: exists
+
+! dummy real variables
+     real(dp) :: re, im
 
 ! dummy character variables
      character(len = 5) :: chr1
@@ -982,6 +986,17 @@
              read(mytmp,*) chr1, chr2, itmp
              call s_assert2(itmp == nspin, "nspin is wrong")
              read(mytmp,*) ! empty line
+
+             do s=1,nspin
+                 do k=1,nkpt
+                     do b=1,nbnd(g)
+                         do d=1,ndim(g)
+                             read(mytmp,*) re, im
+                             psichi(d,b,k,s,g) = dcmplx(re,im) 
+                         enddo
+                     enddo
+                 enddo
+             enddo
 
          enddo ! over g={1,ngrp} loop
 
