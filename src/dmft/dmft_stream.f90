@@ -838,21 +838,21 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in tetrahedron information if available
+! read in Kohn-Sham band structure information if available
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
 ! inquire about file's existence
-         inquire (file = 'tetra.ir', exist = exists)
+         inquire (file = 'eigen.ir', exist = exists)
 
-! file tetra.ir must be present
+! file eigen.ir must be present
          if ( exists .eqv. .false. ) then
-             call s_print_error('dmft_input_tetra','file tetra.ir is absent')
+             call s_print_error('dmft_input_eigen','file eigen.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file tetra.ir for reading
-         open(mytmp, file='tetra.ir', form='formatted', status='unknown')
+! open file eigen.ir for reading
+         open(mytmp, file='eigen.ir', form='formatted', status='unknown')
 
 ! skip header
          read(mytmp,*)
