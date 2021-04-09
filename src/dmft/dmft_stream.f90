@@ -858,12 +858,14 @@
          read(mytmp,*)
          read(mytmp,*)
 
-! check ntet and volt
+! check nband, nkpt, and nspin
          read(mytmp,*) ! empty line
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == ntet, "ntet is wrong")
-         read(mytmp,*) chr1, chr2, rtmp
-         call s_assert2(rtmp == volt, "volt is wrong")
+         call s_assert2(itmp == nband, "nband is wrong")
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nkpt, "nkpt is wrong")
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nspin, "nspin is wrong")
          read(mytmp,*) ! empty line
 
 ! read tetrahedron data
