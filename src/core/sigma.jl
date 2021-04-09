@@ -34,7 +34,7 @@ function sigma_reset()
     nmesh = get_m("nmesh")
     beta = get_m("beta")
     nsite = get_i("nsite")
-    nspin = 2
+    nspin = ( get_d("lspins") ? 2 : 1 )
 
     # Create frequency mesh
     fmesh = zeros(F64, nmesh)
@@ -132,7 +132,7 @@ function sigma_dcount()
 
     # Extract some necessary parameters
     nsite = get_i("nsite")
-    nspin = 2
+    nspin = ( get_d("lspins") ? 2 : 1 )
 
     # Create double counting terms for self-energy functions
     #
