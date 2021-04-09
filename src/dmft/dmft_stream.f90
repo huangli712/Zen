@@ -926,6 +926,7 @@
 
 ! local variables
 ! loop index
+     integer :: g
      integer :: b
      integer :: k
      integer :: s
@@ -960,24 +961,29 @@
          read(mytmp,*)
          read(mytmp,*)
 
-! check nband, nkpt, and nspin
-         read(mytmp,*) ! empty line
-         read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nband, "nband is wrong")
-         read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nkpt, "nkpt is wrong")
-         read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nspin, "nspin is wrong")
-         read(mytmp,*) ! empty line
+         do g=1,ngrp
 
-! read band structure data
-         do s=1,nspin
-             do k=1,nkpt
-                 do b=1,nband
-                     read(mytmp,*) enk(b,k,s), occupy(b,k,s)
-                 enddo ! over b={1,nband} loop
-             enddo ! over k={1,nkpt} loop
-         enddo ! over s={1,nspin} loop
+! check group
+             read(mytmp,*) ! empty line
+             read(mytmp,*) chr1, chr2, itmp
+             call s_assert2(itmp == g, "group is wrong")
+
+! check nproj
+             read(mytmp,*) chr1, chr2, itmp
+             call s_assert2(itmp == ndim(g), "nproj is wrong")
+
+! check nband
+             read(mytmp,*) chr1, chr2, itmp
+             call s_assert2(itmp == nbnd(g), "nband is wrong")
+
+! check nkpt and nspin
+             read(mytmp,*) chr1, chr2, itmp
+             call s_assert2(itmp == nkpt, "nkpt is wrong")
+             read(mytmp,*) chr1, chr2, itmp
+             call s_assert2(itmp == nspin, "nspin is wrong")
+             read(mytmp,*) ! empty line
+
+         enddo ! over g={1,ngrp} loop
 
 ! close file handler
          close(mytmp)
