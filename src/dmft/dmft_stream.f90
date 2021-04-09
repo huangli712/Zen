@@ -817,10 +817,10 @@
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
 
-     use control, only : ntet, volt
+     use control, only : nband, nkpt, nspin
      use control, only : myid, master
 
-     use context, only : tetra
+     use context, only : enk, occupy
 
      implicit none
 
