@@ -924,6 +924,67 @@
 
      implicit none
 
+! local variables
+! loop index
+     integer :: b
+     integer :: k
+     integer :: s
+
+! dummy integer variables
+     integer :: itmp
+
+! used to check whether the input file (eigen.ir) exists
+     logical :: exists
+
+! dummy character variables
+     character(len = 5) :: chr1
+     character(len = 2) :: chr2
+
+! read in Kohn-Sham band structure information if available
+!-------------------------------------------------------------------------
+     if ( myid == master ) then ! only master node can do it
+         exists = .false.
+
+! inquire about file's existence
+         inquire (file = 'eigen.ir', exist = exists)
+
+! file eigen.ir must be present
+         if ( exists .eqv. .false. ) then
+             call s_print_error('dmft_input_eigen','file eigen.ir is absent')
+         endif ! back if ( exists .eqv. .false. ) block
+
+! open file eigen.ir for reading
+         open(mytmp, file='eigen.ir', form='formatted', status='unknown')
+
+! skip header
+         read(mytmp,*)
+         read(mytmp,*)
+
+! check nband, nkpt, and nspin
+         read(mytmp,*) ! empty line
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nband, "nband is wrong")
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nkpt, "nkpt is wrong")
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nspin, "nspin is wrong")
+         read(mytmp,*) ! empty line
+
+! read band structure data
+         do s=1,nspin
+             do k=1,nkpt
+                 do b=1,nband
+                     read(mytmp,*) enk(b,k,s), occupy(b,k,s)
+                 enddo ! over b={1,nband} loop
+             enddo ! over k={1,nkpt} loop
+         enddo ! over s={1,nspin} loop
+
+! close file handler
+         close(mytmp)
+
+     endif ! back if ( myid == master ) block
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
      return
   end subroutine dmft_input_projs
 
