@@ -1031,7 +1031,7 @@
 !! read in double counting terms for the self-energy functions 
 !!
   subroutine dmft_input_sigdc()
-     use constants, only : mytmp
+     use constants, only : dp, mytmp
 
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
@@ -1100,6 +1100,20 @@
 
      endif ! back if ( myid == master ) block
 !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+! broadcast data from master node to all children nodes
+# if defined (MPI)
+
+! block until all processes have reached here
+     call mp_barrier()
+
+! broadcast data
+     call mp_bcast( sigdc, master )
+
+! block until all processes have reached here
+     call mp_barrier()
+
+# endif  /* MPI */
 
      return
   end subroutine dmft_input_sigdc
