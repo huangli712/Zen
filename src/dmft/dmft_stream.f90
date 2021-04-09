@@ -284,7 +284,7 @@
      call dmft_input_kmesh()
      if (ltetra .eqv. .true.) then
          call dmft_input_tetra()
-     end
+     endif
      call dmft_input_eigen()
      call dmft_input_projs()
 
