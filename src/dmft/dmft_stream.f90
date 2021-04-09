@@ -787,6 +787,22 @@
      endif ! back if ( myid == master ) block
 !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+! broadcast data from master node to all children nodes
+# if defined (MPI)
+
+! block until all processes have reached here
+     call mp_barrier()
+
+! broadcast data
+     call mp_bcast( tetra, master )
+
+! block until all processes have reached here
+     call mp_barrier()
+
+# endif  /* MPI */
+
+     print *, "hehe"
+
      return
   end subroutine dmft_input_tetra
 
