@@ -271,6 +271,8 @@
 !! an entry for the other individual subroutines
 !!
   subroutine dmft_setup_system()
+     use control, only : ltetra
+
      implicit none
 
 ! get descriptions of correlated subspace
