@@ -1028,7 +1028,21 @@
 !!
 !! @sub dmft_input_sigdc
 !!
+!! read in double counting terms for the self-energy functions 
+!!
   subroutine dmft_input_sigdc()
+     use constants, only : dp, mytmp
+
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
+
+     use control, only : ngrp
+     use control, only : nkpt, nspin
+     use control, only : myid, master
+
+     use context, only : ndim, nbnd
+     use context, only : psichi
+
      implicit none
 
      return
