@@ -1040,7 +1040,6 @@
      use control, only : nspin
      use control, only : myid, master
 
-     use context, only : ndim, nbnd
      use context, only : sigdc
 
      implicit none

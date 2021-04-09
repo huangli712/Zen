@@ -326,7 +326,7 @@
 !!
 !! dobule counting term for self-energy functions
 !!
-     complex(dp), public, save, allocatable :: sigdc(:,:)
+     complex(dp), public, save, allocatable :: sigdc(:,:,:)
 
 !!
 !! @var sig_l
@@ -334,14 +334,14 @@
 !! local self-energy functions. they are usually taken from the output of
 !! various quantum impurity solver
 !!
-     complex(dp), public, save, allocatable :: sig_l(:,:,:)
+     complex(dp), public, save, allocatable :: sig_l(:,:,:,:)
 
 !!
 !! @var sig_k
 !!
 !! self-energy functions embedded in k-space
 !!
-     complex(dp), public, save, allocatable :: sig_k(:,:,:)
+     complex(dp), public, save, allocatable :: sig_k(:,:,:,:)
 
   end module dmft_sigma
 
@@ -710,9 +710,9 @@
      implicit none
 
 ! allocate memory
-     allocate(sigdc(max_ndim,nsite),       stat = istat)
-     allocate(sig_l(nmesh,max_ndim,nsite), stat = istat)
-     allocate(sig_k(nband,nkpt,nspin),     stat = istat)
+     allocate(sigdc(max_ndim,nspin,nsite),       stat = istat)
+     allocate(sig_l(nmesh,max_ndim,nspin,nsite), stat = istat)
+     allocate(sig_k(nmesh,nband,nkpt,nspin),     stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
