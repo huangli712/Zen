@@ -1054,6 +1054,9 @@
 ! used to check whether the input file (sigma.dc) exists
      logical  :: exists
 
+! dummy real variables
+     real(dp) :: rtmp
+
 ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
@@ -1087,6 +1090,10 @@
          read(mytmp,*) ! empty line
 
 ! parse the data
+         do s=1,nsite
+             read(mytmp,*) rtmp
+             sigdc(:,:,s) = rtmp
+         enddo ! over s={1,nsite} loop
 
 ! close file handler
          close(mytmp)
