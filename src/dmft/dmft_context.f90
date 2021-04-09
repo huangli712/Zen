@@ -3,7 +3,7 @@
 !!! program : dmft_group
 !!!           dmft_window
 !!!           dmft_lattice
-!!!           dmft_bzone
+!!!           dmft_kmesh
 !!!           dmft_tetra
 !!!           dmft_eigen
 !!!           dmft_projs
@@ -16,7 +16,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/03/2021 by li huang (last modified)
+!!!           04/09/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -180,7 +180,7 @@
   end module dmft_lattice
 
 !!========================================================================
-!!>>> module dmft_bzone                                                <<<
+!!>>> module dmft_kmesh                                                <<<
 !!========================================================================
 
 !!
@@ -443,7 +443,7 @@
      use dmft_group
      use dmft_window
      use dmft_lattice
-     use dmft_bzone
+     use dmft_kmesh
      use dmft_tetra
      use dmft_eigen
      use dmft_projs
