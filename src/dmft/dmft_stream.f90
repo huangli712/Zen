@@ -280,7 +280,9 @@
 ! get Kohn-Sham data
      call dmft_input_lattice()
      call dmft_input_kmesh()
-     call dmft_input_tetra()
+     if (ltetra .eqv. .true.) then
+         call dmft_input_tetra()
+     end
      call dmft_input_eigen()
      call dmft_input_projs()
 
@@ -717,7 +719,7 @@
 !! read in data for tetrahedron integration
 !!
   subroutine dmft_input_tetra()
-     use constants, only : mytmp
+     use constants, only : dp, mytmp
 
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
