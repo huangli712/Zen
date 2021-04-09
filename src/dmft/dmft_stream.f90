@@ -910,15 +910,18 @@
 !! orbitals, i.e., the local orbital projectors
 !!
   subroutine dmft_input_projs()
-     use constants, only : dp, mytmp
+     use constants, only : mytmp
 
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
 
-     use control, only : nband, nkpt, nspin
+     use control, only : ngrp
+     use control, only : nkpt, nspin
      use control, only : myid, master
 
-     use context, only : enk, occupy
+     use context, only : ndim, nbnd
+     use context, only : psichi
+
      implicit none
 
      return
