@@ -826,7 +826,9 @@
 
 ! local variables
 ! loop index
-     integer :: i
+     integer :: b
+     integer :: k
+     integer :: s
 
 ! dummy integer variables
      integer :: itmp
@@ -868,16 +870,21 @@
          call s_assert2(itmp == nspin, "nspin is wrong")
          read(mytmp,*) ! empty line
 
-! read tetrahedron data
-         do i=1,ntet
-             read(mytmp,*) tetra(i,5), tetra(i,1:4)
-         enddo ! over i={1,ntet} loop
+! read band structure data
+         do s=1,nspin
+             do k=1,nkpt
+                 do b=1,nband
+                     read(mytmp,*) enk(b,k,s), occupy(b,k,s)
+                 enddo ! over b={1,nband} loop
+             enddo ! over k={1,nkpt} loop
+         enddo ! over s={1,nspin} loop
 
 ! close file handler
          close(mytmp)
 
      endif ! back if ( myid == master ) block
 !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
      return
   end subroutine dmft_input_eigen
 
