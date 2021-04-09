@@ -933,28 +933,28 @@
 ! dummy integer variables
      integer :: itmp
 
-! used to check whether the input file (eigen.ir) exists
+! used to check whether the input file (projs.ir) exists
      logical :: exists
 
 ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in Kohn-Sham band structure information if available
+! read in local orbital projectors if available
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
 ! inquire about file's existence
-         inquire (file = 'eigen.ir', exist = exists)
+         inquire (file = 'projs.ir', exist = exists)
 
-! file eigen.ir must be present
+! file projs.ir must be present
          if ( exists .eqv. .false. ) then
-             call s_print_error('dmft_input_eigen','file eigen.ir is absent')
+             call s_print_error('dmft_input_projs','file projs.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file eigen.ir for reading
-         open(mytmp, file='eigen.ir', form='formatted', status='unknown')
+! open file projs.ir for reading
+         open(mytmp, file='projs.ir', form='formatted', status='unknown')
 
 ! skip header
          read(mytmp,*)
