@@ -1044,6 +1044,83 @@
 
      implicit none
 
+! local variables
+! loop index
+     integer  :: g
+
+! dummy integer variables
+     integer  :: itmp
+
+! used to check whether the input file (projs.ir) exists
+     logical  :: exists
+
+! dummy character variables
+     character(len = 5) :: chr1
+     character(len = 2) :: chr2
+
+! read in local orbital projectors if available
+!-------------------------------------------------------------------------
+     if ( myid == master ) then ! only master node can do it
+         exists = .false.
+
+! inquire about file's existence
+         inquire (file = 'projs.ir', exist = exists)
+
+! file projs.ir must be present
+         if ( exists .eqv. .false. ) then
+             call s_print_error('dmft_input_projs','file projs.ir is absent')
+         endif ! back if ( exists .eqv. .false. ) block
+
+! open file projs.ir for reading
+         open(mytmp, file='projs.ir', form='formatted', status='unknown')
+
+! skip header
+         read(mytmp,*)
+         read(mytmp,*)
+
+! go through each group of projectors and read in the data
+         do g=1,ngrp
+
+! check group
+             read(mytmp,*) ! empty line
+             read(mytmp,*) chr1, chr2, itmp
+             call s_assert2(itmp == g, "group is wrong")
+
+! check nproj
+             read(mytmp,*) chr1, chr2, itmp
+             call s_assert2(itmp == ndim(g), "nproj is wrong")
+
+! check nband
+             read(mytmp,*) chr1, chr2, itmp
+             call s_assert2(itmp == nbnd(g), "nband is wrong")
+
+! check nkpt and nspin
+             read(mytmp,*) chr1, chr2, itmp
+             call s_assert2(itmp == nkpt, "nkpt is wrong")
+             read(mytmp,*) chr1, chr2, itmp
+             call s_assert2(itmp == nspin, "nspin is wrong")
+             read(mytmp,*) ! empty line
+
+! parse the data
+             do s=1,nspin
+                 do k=1,nkpt
+                     do b=1,nbnd(g)
+                         do d=1,ndim(g)
+                             read(mytmp,*) re, im
+                             psichi(d,b,k,s,g) = dcmplx(re,im) 
+                         enddo ! over d={1,ndim(g)} loop
+                     enddo ! over b={1,nbnd(g)} loop
+                 enddo ! over k={1,nkpt} loop
+             enddo ! over s={1,nspin} loop
+
+         enddo ! over g={1,ngrp} loop
+
+! close file handler
+         close(mytmp)
+
+     endif ! back if ( myid == master ) block
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
      return
   end subroutine dmft_input_sigdc
 
