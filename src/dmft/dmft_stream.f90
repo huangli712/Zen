@@ -900,6 +900,8 @@
 
 # endif  /* MPI */
 
+     print *, "hehe"
+
      return
   end subroutine dmft_input_eigen
 
