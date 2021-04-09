@@ -1078,23 +1078,15 @@
          read(mytmp,*)
          read(mytmp,*)
 
-! check group
-             read(mytmp,*) ! empty line
-             read(mytmp,*) chr1, chr2, itmp
-             call s_assert2(itmp == g, "group is wrong")
-             read(mytmp,*) ! empty line
+! check nsite and nspin
+         read(mytmp,*) ! empty line
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nsite, "nsite is wrong")
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nspin, "nspin is wrong")
+         read(mytmp,*) ! empty line
 
 ! parse the data
-             do s=1,nspin
-                 do k=1,nkpt
-                     do b=1,nbnd(g)
-                         do d=1,ndim(g)
-                             read(mytmp,*) re, im
-                             psichi(d,b,k,s,g) = dcmplx(re,im) 
-                         enddo ! over d={1,ndim(g)} loop
-                     enddo ! over b={1,nbnd(g)} loop
-                 enddo ! over k={1,nkpt} loop
-             enddo ! over s={1,nspin} loop
 
 ! close file handler
          close(mytmp)
