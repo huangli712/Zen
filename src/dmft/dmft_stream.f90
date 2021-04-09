@@ -812,6 +812,16 @@
 !! read in band eigenvalues and band occupations
 !!
   subroutine dmft_input_eigen()
+     use constants, only : dp, mytmp
+
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
+
+     use control, only : ntet, volt
+     use control, only : myid, master
+
+     use context, only : tetra
+
      implicit none
 
      return
