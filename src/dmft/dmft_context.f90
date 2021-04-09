@@ -720,9 +720,12 @@
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
-     sigdc = czero
+     sigdc = 1.0!!czero
      sig_l = czero
      sig_k = czero
+     print *, sigdc
+     print *, "dfdf", 1.0
+     STOP
 
      return
   end subroutine cat_alloc_sigma

@@ -1092,8 +1092,10 @@
 ! parse the data
          do s=1,nsite
              read(mytmp,*) rtmp
-             sigdc(:,:,s) = rtmp
+             sigdc(:,:,s) = dcmplx(rtmp, 0.0_dp)
+             print *, rtmp
          enddo ! over s={1,nsite} loop
+         print *, "dfdf", sigdc
 
 ! close file handler
          close(mytmp)
