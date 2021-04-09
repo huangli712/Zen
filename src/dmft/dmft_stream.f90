@@ -803,13 +803,13 @@
 
 # endif  /* MPI */
 
-     print *, "hehe"
-
      return
   end subroutine dmft_input_tetra
 
 !!
 !! @sub dmft_input_eigen
+!!
+!! read in band eigenvalues and band occupations
 !!
   subroutine dmft_input_eigen()
      implicit none
