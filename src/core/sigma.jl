@@ -186,7 +186,7 @@ function sigma_dcount()
         # Write the body
         # Go through each impurity problem
         for i = 1:nsite
-            @printf(fout, "%16.12f", sigdc[i])
+            @printf(fout, "%16.12f\n", sigdc[i])
         end
     end
 
