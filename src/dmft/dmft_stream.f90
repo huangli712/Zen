@@ -722,7 +722,7 @@
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
 
-     use control, only : ntet
+     use control, only : ntet, volt
      use control, only : myid, master
 
      use context, only : tetra
@@ -731,50 +731,53 @@
 
 ! local variables
 ! loop index
-     integer :: i
+     integer  :: i
 
 ! dummy integer variables
-     integer :: itmp
+     integer  :: itmp
 
-! used to check whether the input file (kmesh.ir) exists
-     logical :: exists
+! used to check whether the input file (tetra.ir) exists
+     logical  :: exists
+
+! dummy real variables
+     real(dp) :: rtmp
 
 ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in brillouin zone information if available
+! read in tetrahedron information if available
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
 ! inquire about file's existence
-         inquire (file = 'kmesh.ir', exist = exists)
+         inquire (file = 'tetra.ir', exist = exists)
 
-! file lattice.ir must be present
+! file tetra.ir must be present
          if ( exists .eqv. .false. ) then
-             call s_print_error('dmft_input_kmesh','file kmesh.ir is absent')
+             call s_print_error('dmft_input_tetra','file tetra.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file kmesh.ir for reading
-         open(mytmp, file='kmesh.ir', form='formatted', status='unknown')
+! open file tetra.ir for reading
+         open(mytmp, file='tetra.ir', form='formatted', status='unknown')
 
 ! skip header
          read(mytmp,*)
          read(mytmp,*)
 
-! check nkpt and ndir
+! check ntet and volt
          read(mytmp,*) ! empty line
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nkpt, "nkpt is wrong")
-         read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == 3, "ndir is wrong")
+         call s_assert2(itmp == ntet, "ntet is wrong")
+         read(mytmp,*) chr1, chr2, rtmp
+         call s_assert2(rtmp == volt, "volt is wrong")
          read(mytmp,*) ! empty line
 
-! read k-points and the corresponding weights
-         do i=1,nkpt
-             read(mytmp,*) kmesh(i,:), weight(i)
-         enddo ! over i={1,nkpt} loop
+! read tetrahedron data
+         do i=1,ntet
+             read(mytmp,*) tetra(i,5), tetra(i,1:4)
+         enddo ! over i={1,ntet} loop
 
 ! close file handler
          close(mytmp)
