@@ -965,6 +965,7 @@
          read(mytmp,*)
          read(mytmp,*)
 
+! go through each group of projectors and read in the data
          do g=1,ngrp
 
 ! check group
@@ -987,16 +988,17 @@
              call s_assert2(itmp == nspin, "nspin is wrong")
              read(mytmp,*) ! empty line
 
+! parse the data
              do s=1,nspin
                  do k=1,nkpt
                      do b=1,nbnd(g)
                          do d=1,ndim(g)
                              read(mytmp,*) re, im
                              psichi(d,b,k,s,g) = dcmplx(re,im) 
-                         enddo
-                     enddo
-                 enddo
-             enddo
+                         enddo ! over d={1,ndim(g)} loop
+                     enddo ! over b={1,nbnd(g)} loop
+                 enddo ! over k={1,nkpt} loop
+             enddo ! over s={1,nspin} loop
 
          enddo ! over g={1,ngrp} loop
 
