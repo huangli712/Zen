@@ -1115,6 +1115,8 @@
 
 # endif  /* MPI */
 
+     print *, sigdc
+
      return
   end subroutine dmft_input_sigdc
 
