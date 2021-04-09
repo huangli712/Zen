@@ -9,7 +9,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/08/2021 by li huang (last modified)
+!!!           04/09/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -279,7 +279,7 @@
 
 ! get Kohn-Sham data
      call dmft_input_lattice()
-     call dmft_input_bzone()
+     call dmft_input_kmesh()
      call dmft_input_tetra()
      call dmft_input_eigen()
      call dmft_input_projs()
@@ -623,11 +623,11 @@
   end subroutine dmft_input_lattice
 
 !!
-!! @sub dmft_input_bzone
+!! @sub dmft_input_kmesh
 !!
 !! read in k-mesh and the related integration weights
 !!
-  subroutine dmft_input_bzone()
+  subroutine dmft_input_kmesh()
      use constants, only : mytmp
 
      use mmpi, only : mp_bcast
@@ -664,7 +664,7 @@
 
 ! file lattice.ir must be present
          if ( exists .eqv. .false. ) then
-             call s_print_error('dmft_input_bzone','file kmesh.ir is absent')
+             call s_print_error('dmft_input_kmesh','file kmesh.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
 ! open file kmesh.ir for reading
@@ -709,7 +709,7 @@
 # endif  /* MPI */
 
      return
-  end subroutine dmft_input_bzone
+  end subroutine dmft_input_kmesh
 
 !!
 !! @sub dmft_input_tetra
@@ -785,7 +785,7 @@
      call cat_alloc_window()
 
      call cat_alloc_lattice()
-     call cat_alloc_bzone()
+     call cat_alloc_kmesh()
      call cat_alloc_tetra()
      call cat_alloc_eigen()
      call cat_alloc_projs()
@@ -814,7 +814,7 @@
      call cat_free_window()
 
      call cat_free_lattice()
-     call cat_free_bzone()
+     call cat_free_kmesh()
      call cat_free_tetra()
      call cat_free_eigen()
      call cat_free_projs()
