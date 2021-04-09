@@ -714,7 +714,17 @@
 !!
 !! @sub dmft_input_tetra
 !!
+!! read in data for tetrahedron integration
+!!
   subroutine dmft_input_tetra()
+     use constants, only : mytmp
+
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
+
+     use control, only : ntet
+     use control, only : myid, master
+
      implicit none
 
      return
