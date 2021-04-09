@@ -1051,28 +1051,28 @@
 ! dummy integer variables
      integer  :: itmp
 
-! used to check whether the input file (projs.ir) exists
+! used to check whether the input file (sigma.dc) exists
      logical  :: exists
 
 ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in local orbital projectors if available
+! read in double counting terms if available
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
 ! inquire about file's existence
-         inquire (file = 'projs.ir', exist = exists)
+         inquire (file = 'sigma.dc', exist = exists)
 
-! file projs.ir must be present
+! file sigma.dc must be present
          if ( exists .eqv. .false. ) then
-             call s_print_error('dmft_input_projs','file projs.ir is absent')
+             call s_print_error('dmft_input_sigdc','file sigma.dc is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file projs.ir for reading
-         open(mytmp, file='projs.ir', form='formatted', status='unknown')
+! open file sigma.dc for reading
+         open(mytmp, file='sigma.dc', form='formatted', status='unknown')
 
 ! skip header
          read(mytmp,*)
