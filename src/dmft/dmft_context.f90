@@ -184,11 +184,11 @@
 !!========================================================================
 
 !!
-!! @mod dmft_bzone
+!! @mod dmft_kmesh
 !!
 !! contain the k-mesh and the corresponding integration weights  
 !!
-  module dmft_bzone
+  module dmft_kmesh
      use constants, only : dp
 
      implicit none
@@ -207,7 +207,7 @@
 !!
      real(dp), public, save, allocatable :: weight(:)
 
-  end module dmft_bzone
+  end module dmft_kmesh
 
 !!========================================================================
 !!>>> module dmft_tetra                                                <<<
@@ -469,7 +469,7 @@
      public :: cat_alloc_group
      public :: cat_alloc_window
      public :: cat_alloc_lattice
-     public :: cat_alloc_bzone
+     public :: cat_alloc_kmesh
      public :: cat_alloc_tetra
      public :: cat_alloc_eigen
      public :: cat_alloc_projs
@@ -482,7 +482,7 @@
      public :: cat_free_group
      public :: cat_free_window
      public :: cat_free_lattice
-     public :: cat_free_bzone
+     public :: cat_free_kmesh
      public :: cat_free_tetra
      public :: cat_free_eigen
      public :: cat_free_projs
@@ -588,11 +588,11 @@
   end subroutine cat_alloc_lattice
 
 !!
-!! @sub cat_alloc_bzone
+!! @sub cat_alloc_kmesh
 !!
-!! allocate memory for bzone-related variables
+!! allocate memory for kmesh-related variables
 !!
-  subroutine cat_alloc_bzone()
+  subroutine cat_alloc_kmesh()
      implicit none
 
 ! allocate memory
@@ -601,7 +601,7 @@
 
 ! check the status
      if ( istat /= 0 ) then
-         call s_print_error('cat_alloc_bzone','can not allocate enough memory')
+         call s_print_error('cat_alloc_kmesh','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
@@ -609,7 +609,7 @@
      weight = zero
 
      return
-  end subroutine cat_alloc_bzone
+  end subroutine cat_alloc_kmesh
 
 !!
 !! @sub cat_alloc_tetra
@@ -834,18 +834,18 @@
   end subroutine cat_free_lattice
 
 !!
-!! @sub cat_free_bzone
+!! @sub cat_free_kmesh
 !!
-!! deallocate memory for bzone-related variables
+!! deallocate memory for kmesh-related variables
 !!
-  subroutine cat_free_bzone()
+  subroutine cat_free_kmesh()
      implicit none
 
      if ( allocated(kmesh)  ) deallocate(kmesh )
      if ( allocated(weight) ) deallocate(weight)
 
      return
-  end subroutine cat_free_bzone
+  end subroutine cat_free_kmesh
 
 !!
 !! @sub cat_free_tetra
