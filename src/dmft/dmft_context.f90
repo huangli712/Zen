@@ -675,6 +675,9 @@
 
 ! initialize them
      psichi = czero
+     print *, psichi
+     print *, czero
+     STOP
 
      return
   end subroutine cat_alloc_projs
