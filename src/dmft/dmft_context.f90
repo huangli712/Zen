@@ -665,6 +665,8 @@
   subroutine cat_alloc_projs()
      implicit none
 
+     integer :: i
+
 ! allocate memory
      allocate(psichi(max_ndim,max_nbnd,nkpt,nspin,ngrp), stat = istat)
 
@@ -675,9 +677,11 @@
 
 ! initialize them
      psichi = czero
-     print *, czero !psichi
+
+     print *, max_ndim, max_nbnd, nkpt, nspin, ngrp 
+     print *, psichi(1,1,10,1,1)
      print *, czero
-     STOP "dfdfdfdf"
+     !STOP "dfdfdfdf"
 
      return
   end subroutine cat_alloc_projs
@@ -727,6 +731,7 @@
      sig_l = czero
      sig_k = czero
 
+     print *, max_ndim, nspin, nsite
      print *, sigdc
      print *, "dfdf", 1.0
      STOP
