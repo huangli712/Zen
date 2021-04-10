@@ -675,9 +675,9 @@
 
 ! initialize them
      psichi = czero
-     print *, psichi
+     print *, czero !psichi
      print *, czero
-     STOP
+     STOP "dfdfdfdf"
 
      return
   end subroutine cat_alloc_projs
@@ -723,9 +723,10 @@
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
-     sigdc = 1.0!!czero
+     sigdc = 1.0 !! czero
      sig_l = czero
      sig_k = czero
+
      print *, sigdc
      print *, "dfdf", 1.0
      STOP
