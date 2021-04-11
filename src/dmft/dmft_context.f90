@@ -528,7 +528,7 @@
 ! max_ndim should be initialized in dmft_setup_param() 
      if ( max_ndim < 0 )
          call s_print_error('cat_alloc_group','max_ndim is less than 0')
-     endif
+     endif ! back if ( max_ndim < 0 ) block
 
      return
   end subroutine cat_alloc_group
@@ -562,7 +562,7 @@
 ! max_nbnd should be initialized in dmft_setup_param() 
      if ( max_nbnd < 0 )
          call s_print_error('cat_alloc_window','max_nbnd is less than 0')
-     endif
+     endif ! back if ( max_nbnd < 0 ) block
 
      return
   end subroutine cat_alloc_window
