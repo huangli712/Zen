@@ -526,7 +526,7 @@
 
 ! special treatment for max_ndim
 ! max_ndim should be initialized in dmft_setup_param() 
-     if ( max_ndim < 0 )
+     if ( max_ndim < 0 ) then
          call s_print_error('cat_alloc_group','max_ndim is less than 0')
      endif ! back if ( max_ndim < 0 ) block
 
@@ -560,7 +560,7 @@
 
 ! special treatment for max_nbnd
 ! max_nbnd should be initialized in dmft_setup_param() 
-     if ( max_nbnd < 0 )
+     if ( max_nbnd < 0 ) then
          call s_print_error('cat_alloc_window','max_nbnd is less than 0')
      endif ! back if ( max_nbnd < 0 ) block
 
@@ -675,8 +675,6 @@
   subroutine cat_alloc_projs()
      implicit none
 
-     integer :: i
-
 ! allocate memory
      allocate(psichi(max_ndim,max_nbnd,nkpt,nspin,ngrp), stat = istat)
 
@@ -689,9 +687,8 @@
      psichi = czero
 
      print *, max_ndim, max_nbnd, nkpt, nspin, ngrp 
-     print *, psichi(1,1,10,1,1)
-     print *, czero
-     !STOP "dfdfdfdf"
+     print *, psichi
+     STOP "dfdfdfdf"
 
      return
   end subroutine cat_alloc_projs
