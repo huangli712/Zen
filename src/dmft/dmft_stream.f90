@@ -1101,9 +1101,7 @@
          do s=1,nsite
              read(mytmp,*) rtmp
              sigdc(:,:,s) = dcmplx(rtmp, 0.0_dp)
-             print *, rtmp
          enddo ! over s={1,nsite} loop
-         print *, "dfdf", sigdc
 
 ! close file handler
          close(mytmp)
@@ -1124,8 +1122,6 @@
      call mp_barrier()
 
 # endif  /* MPI */
-
-     print *, sigdc
 
      return
   end subroutine dmft_input_sigdc
