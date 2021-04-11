@@ -730,14 +730,9 @@
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
-     sigdc = 1.0 !! czero
+     sigdc = czero
      sig_l = czero
      sig_k = czero
-
-     print *, max_ndim, nspin, nsite
-     print *, sigdc
-     print *, "dfdf", 1.0
-     STOP
 
      return
   end subroutine cat_alloc_sigma
