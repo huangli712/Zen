@@ -149,9 +149,16 @@ function irio_params(f::String, D::Dict{Symbol,Any})
 
     # Extract `ngrp`
     ngrp, = size(D[:PG])
+    #
+    # Extract max_ndim
+    # `size(D[:PG][g].Tr,1)` is actually ndim
+    max_ndim = maximum( [ size(D[:PG][g].Tr,1) for g = 1:ngrp ] )
 
     # Extract `nwnd`
     nwnd, = size(D[:PW])
+    #
+    # Extract max_nbnd
+    max_nbnd = maximum( [ D[:PW][w].nbnd for w = 1:nwnd ] )
 
     # D[:PW] and D[:PG] should have the same size
     @assert ngrp === nwnd
