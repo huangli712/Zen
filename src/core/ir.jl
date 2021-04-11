@@ -199,10 +199,14 @@ function irio_params(f::String, D::Dict{Symbol,Any})
 
         println(fout, "# Group:")
         println(fout, "ngrp  -> $ngrp")
+        # mdim is a shortcut for max_ndim
+        println(fout, "mdim  -> $max_ndim")
         println(fout)
 
         println(fout, "# Window:")
         println(fout, "nwnd  -> $nwnd")
+        # mbnd is a shortcut for max_nbnd
+        println(fout, "mbnd  -> $max_nbnd")
         println(fout)
 
         println(fout, "# Sigma:")
