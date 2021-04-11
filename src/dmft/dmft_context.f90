@@ -686,10 +686,6 @@
 ! initialize them
      psichi = czero
 
-     print *, max_ndim, max_nbnd, nkpt, nspin, ngrp 
-     print *, psichi
-     STOP "dfdfdfdf"
-
      return
   end subroutine cat_alloc_projs
 
