@@ -9,7 +9,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/09/2021 by li huang (last modified)
+!!!           04/12/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -116,7 +116,7 @@
 !!
 !! setup dimensional parameters and some real constants for the dynamical
 !! mean-field theory engine. note that these parameters are extracted
-!! from the dmft.in file
+!! from the params.ir file
 !!
   subroutine dmft_setup_param()
      use constants, only : dp
@@ -133,6 +133,8 @@
      use control, only : nsite, nmesh
      use control, only : scale, fermi, volt
      use control, only : myid, master
+
+     use context, only : max_ndim, max_nbnd
 
      implicit none
 
@@ -156,7 +158,9 @@
      ntet   = 4374      ! number of tetrahedra
 !-------------------------------------------------------------------------
      ngrp   = 1         ! number of groups for projectors
+     max_ndim = 3       ! maximum number of projectors in groups
      nwnd   = 1         ! number of windows for projectors
+     max_nbnd = 5       ! maximum number of bands in windows
 !-------------------------------------------------------------------------
      nsite  = 1         ! number of impurity sites
      nmesh  = 8193      ! number of frequency points
@@ -203,10 +207,12 @@
 
              read(mytmp,*) ! for group block
              read(mytmp,*) chr1, chr2, ngrp
+             read(mytmp,*) chr1, chr2, max_ndim
              read(mytmp,*)
 
              read(mytmp,*) ! for window block
              read(mytmp,*) chr1, chr2, nwnd
+             read(mytmp,*) chr1, chr2, max_nbnd
              read(mytmp,*)
 
              read(mytmp,*) ! for sigma block
@@ -244,10 +250,12 @@
 
 ! for group block
      call mp_bcast( ngrp  , master )
+     call mp_bcast( max_ndim  , master )
      call mp_barrier()
 
 ! for window block
      call mp_bcast( nwnd  , master )
+     call mp_bcast( max_nbnd  , master )
      call mp_barrier()
 
 ! for sigma block
@@ -256,6 +264,8 @@
      call mp_barrier()
 
 # endif  /* MPI */
+
+     STOP
 
      return
   end subroutine dmft_setup_param
