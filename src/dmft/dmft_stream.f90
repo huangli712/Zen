@@ -265,8 +265,6 @@
 
 # endif  /* MPI */
 
-     STOP
-
      return
   end subroutine dmft_setup_param
 

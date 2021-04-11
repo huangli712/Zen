@@ -39,7 +39,7 @@
 !!
 !! maximum number of correlated orbitals in all groups
 !!
-     integer, public, save :: max_ndim
+     integer, public, save :: max_ndim = -1
 
 !!
 !! @var shell
@@ -95,7 +95,7 @@
 !!
 !! maximum number of bands for the band windows
 !!
-     integer, public, save :: max_nbnd
+     integer, public, save :: max_nbnd = -1
 
 !!
 !! @var bmin
@@ -523,7 +523,12 @@
      site  = 0
      l     = 0
      ndim  = 0
-     max_ndim = 0
+
+! special treatment for max_ndim
+! max_ndim should be initialized in dmft_setup_param() 
+     if ( max_ndim < 0 )
+         call s_print_error('cat_alloc_group','max_ndim is less than 0')
+     endif
 
      return
   end subroutine cat_alloc_group
@@ -552,7 +557,12 @@
      bmax = 0
      nbnd = 0
      kwin = 0
-     max_nbnd = 0
+
+! special treatment for max_nbnd
+! max_nbnd should be initialized in dmft_setup_param() 
+     if ( max_nbnd < 0 )
+         call s_print_error('cat_alloc_window','max_nbnd is less than 0')
+     endif
 
      return
   end subroutine cat_alloc_window
