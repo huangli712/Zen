@@ -1207,6 +1207,13 @@
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nspin, "nspin is wrong")
 
+! check ndim
+         do s=1,nsite
+             read(mytmp,*) chr1, chr2, itmp
+             call s_assert2(itmp == ndim(s), "ndim is wrong")
+         enddo ! over s={1,nsite} loop
+         read(mytmp,*) ! empty line
+
 ! parse the data
 
 ! close file handler
