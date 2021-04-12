@@ -117,7 +117,6 @@
      use constants, only : mystd
 
      use control ! ALL
-     use context, only : max_ndim, max_nbnd
 
      implicit none
 
@@ -147,11 +146,6 @@
      write(mystd,'(4X,a16,f10.5,2X,a8)') 'scale  / value :', scale , 'type : d'
      write(mystd,'(4X,a16,f10.5,2X,a8)') 'fermi  / value :', fermi , 'type : d'
      write(mystd,'(4X,a16,f10.5,2X,a8)') 'volt   / value :', volt  , 'type : d'
-
-     write(mystd,'(2X,a)') '[configuration parameters] -> local orbital projector'
-     write(mystd,'(2X,a)') '-----------------------------------------------------'
-     write(mystd,'(4X,a16,i10,  2X,a8)') 'm_ndim / value :', max_ndim  , 'type : i'
-     write(mystd,'(4X,a16,i10,  2X,a8)') 'm_nbnd / value :', max_nbnd  , 'type : i'
 
      write(mystd,'(2X,a)') '[configuration parameters] -> self-energy functions'
      write(mystd,'(2X,a)') '-----------------------------------------------------'
