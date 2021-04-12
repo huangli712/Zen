@@ -122,11 +122,18 @@
 
      write(mystd,'(2X,a)') '[configuration parameters] -> core control'
      write(mystd,'(2X,a)') '-----------------------------------------------------'
-     write(mystd,'(4X,a16,i10,  2X,a8)') 'model  / value :', model , 'type : i'
+     !write(mystd,'(4X,a16,i10,  2X,a8)') 'model  / value :', model , 'type : i'
 
      write(mystd,'(2X,a)') '[configuration parameters] -> size control'
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      write(mystd,'(4X,a16,i10,  2X,a8)') 'nsort  / value :', nsort , 'type : i'
+     write(mystd,'(4X,a16,i10,  2X,a8)') 'natom  / value :', natom , 'type : i'
+     write(mystd,'(4X,a16,i10,  2X,a8)') 'nband  / value :', nband , 'type : i'
+     write(mystd,'(4X,a16,i10,  2X,a8)') 'nkpt   / value :', nkpt  , 'type : i'
+     write(mystd,'(4X,a16,i10,  2X,a8)') 'nspin  / value :', nspin , 'type : i'
+     write(mystd,'(4X,a16,i10,  2X,a8)') 'ntet   / value :', ntet  , 'type : i'
+     write(mystd,'(4X,a16,i10,  2X,a8)') 'ngrp   / value :', ngrp  , 'type : i'
+     write(mystd,'(4X,a16,i10,  2X,a8)') 'nwnd   / value :', nwnd  , 'type : i'
      write(mystd,'(4X,a16,f10.5,2X,a8)') 'scale  / value :', scale , 'type : d'
 
      write(mystd,*)
