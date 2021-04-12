@@ -1232,6 +1232,8 @@
                          sig_l(m,d,s,i) = dcmplx(sarr(2*d-1), sarr(2*d))
                      enddo ! over d={1,ndim(i)} loop
                  enddo ! over m={1,nmesh} loop
+                 read(mytmp,*) ! empty line
+                 read(mytmp,*) ! empty line
              enddo ! over s={1,nspin} loop
              if ( allocated(sarr) ) then
                  deallocate(sarr)
