@@ -1208,10 +1208,6 @@
          call s_assert2(itmp == nspin, "nspin is wrong")
 
 ! parse the data
-         do s=1,nsite
-             read(mytmp,*) rtmp
-             sigdc(:,:,s) = dcmplx(rtmp, 0.0_dp)
-         enddo ! over s={1,nsite} loop
 
 ! close file handler
          close(mytmp)
