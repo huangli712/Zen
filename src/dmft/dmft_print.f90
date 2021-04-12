@@ -125,7 +125,10 @@
      write(mystd,'(4X,a16,a10,  2X,a8)') 'model  / value :', trim(model) , 'type : i'
      write(mystd,'(4X,a16,i10,  2X,a8)') 'task   / value :', task  , 'type : i'
      write(mystd,'(4X,a16,i10,  2X,a8)') 'axis   / value :', axis  , 'type : i'
-     write(mystd,'(4X,a16,i10,  2X,a8)') 'lfermi / value :', lfermi, 'type : i'
+     write(mystd,'(4X,a16,l10,  2X,a8)') 'lfermi / value :', lfermi, 'type : i'
+     write(mystd,'(4X,a16,l10,  2X,a8)') 'ltetra / value :', ltetra, 'type : i'
+     write(mystd,'(4X,a16,f10.5,2X,a8)') 'beta   / value :', beta  , 'type : d'
+     write(mystd,'(4X,a16,f10.5,2X,a8)') 'mc     / value :', mc    , 'type : d'
 
      write(mystd,'(2X,a)') '[configuration parameters] -> size control'
      write(mystd,'(2X,a)') '-----------------------------------------------------'
