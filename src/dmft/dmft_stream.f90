@@ -1164,21 +1164,21 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in double counting terms if available
+! read in local self-energy functions if available
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
 ! inquire about file's existence
-         inquire (file = 'sigma.dc', exist = exists)
+         inquire (file = 'sigma.bare', exist = exists)
 
-! file sigma.dc must be present
+! file sigma.bare must be present
          if ( exists .eqv. .false. ) then
-             call s_print_error('dmft_input_sigdc','file sigma.dc is absent')
+             call s_print_error('dmft_input_sig_l','file sigma.bare is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file sigma.dc for reading
-         open(mytmp, file='sigma.dc', form='formatted', status='unknown')
+! open file sigma.bare for reading
+         open(mytmp, file='sigma.bare', form='formatted', status='unknown')
 
 ! skip header
          read(mytmp,*)
@@ -1203,6 +1203,7 @@
 
      endif ! back if ( myid == master ) block
 !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
      return
   end subroutine dmft_input_sig_l
 
