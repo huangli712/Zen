@@ -1,9 +1,10 @@
 !!!=========+=========+=========+=========+=========+=========+=========+!
 !!! ZEN @ JACARANDA                                                      !
 !!!                                                                      !
-!!! A highly optimized dynamical mean field theory self-consistent calc- !
-!!! ulation engine, which will be used together with density functional  !
-!!! theory codes to study the realistic correlated electron materials.   !
+!!! A highly optimized dynamical mean field theory engine, which will be !
+!!! used together with various ab initio density functional theory codes !
+!!! and quantum impurity solvers, to study the novel physical properties !
+!!! of the realistic correlated electron materials.                      !
 !!!                                                                      !
 !!! author  : Li Huang (China Academy of Engineering Physics)            !
 !!! status  : (WARNING) IN TESTING STAGE, USE IT IN YOUR RISK            !
