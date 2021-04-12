@@ -122,7 +122,7 @@
 
      write(mystd,'(2X,a)') '[configuration parameters] -> core control'
      write(mystd,'(2X,a)') '-----------------------------------------------------'
-     !write(mystd,'(4X,a16,i10,  2X,a8)') 'model  / value :', model , 'type : i'
+     write(mystd,'(4X,a16,a10,  2X,a8)') 'model  / value :', trim(model) , 'type : i'
 
      write(mystd,'(2X,a)') '[configuration parameters] -> size control'
      write(mystd,'(2X,a)') '-----------------------------------------------------'
