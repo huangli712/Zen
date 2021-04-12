@@ -1133,6 +1133,7 @@
 !!
   subroutine dmft_input_sig_l()
      use constants, only : dp, mytmp
+     use constants, only : zero
 
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
@@ -1145,13 +1146,16 @@
      use control, only : myid, master
 
      use context, only : max_ndim, ndim
-     use context, only : sig_l
+     use context, only : fmesh, sig_l
 
      implicit none
 
 ! local variables
 ! loop index
+     integer  :: i
      integer  :: s
+     integer  :: m
+     integer  :: d
 
 ! dummy integer variables
      integer  :: itmp
@@ -1161,6 +1165,7 @@
 
 ! dummy real variables
      real(dp) :: rtmp
+     real(dp), allocatable :: sarr(:)
 
 ! dummy character variables
      character(len = 5) :: chr1
@@ -1208,13 +1213,27 @@
          call s_assert2(itmp == nspin, "nspin is wrong")
 
 ! check ndim
-         do s=1,nsite
+         do i=1,nsite
              read(mytmp,*) chr1, chr2, itmp
-             call s_assert2(itmp == ndim(s), "ndim is wrong")
-         enddo ! over s={1,nsite} loop
+             call s_assert2(itmp == ndim(i), "ndim is wrong")
+         enddo ! over i={1,nsite} loop
          read(mytmp,*) ! empty line
 
 ! parse the data
+         do i=1,nsite
+             allocate( sarr( 2*ndim(i) ) )
+             sarr = zero
+             do s=1,nspin
+                 read(mytmp,*) ! empty line
+                 do m=1,nmesh
+                     read(mytmp,*) fmesh(m), sarr
+                     do d=1,ndim(i)
+                         sig_l(m,d,s,i) = dcmplx(sarr(2*d-1), sarr(2*d))
+                     enddo ! over d={1,ndim(i)} loop
+                 enddo ! over m={1,nmesh} loop
+             enddo ! over s={1,nspin} loop
+             if allocated(sarr) deallocate(sarr)
+         enddo ! over i={1,nsite} loop
 
 ! close file handler
          close(mytmp)
