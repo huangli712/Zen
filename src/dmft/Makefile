@@ -21,7 +21,7 @@
 ## =======
 ##
 ## 02/23/2021 by li huang (created)
-## 02/23/2021 by li huang (last modified)
+## 04/12/2021 by li huang (last modified)
 ##
 ##
 
@@ -30,8 +30,8 @@
 include ../../build/make.sys
 
 modc = dmft_control.o dmft_context.o
-core = dmft_core.o dmft_task.o
-lev1 = dmft_stream.o dmft_util.o
+core = dmft_core.o
+lev1 = dmft_stream.o
 lev2 = dmft_dump.o dmft_print.o
 main = dmft_main.o
 mlib = libflink.a
