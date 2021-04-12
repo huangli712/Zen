@@ -3,6 +3,15 @@
 !!! program : dmft_setup_tasks
 !!!           dmft_setup_param
 !!!           dmft_setup_system
+!!!           dmft_input_group
+!!!           dmft_input_window
+!!!           dmft_input_lattice
+!!!           dmft_input_kmesh
+!!!           dmft_input_tetra
+!!!           dmft_input_eigen
+!!!           dmft_input_projs
+!!!           dmft_input_sigdc
+!!!           dmft_input_sig_l
 !!!           dmft_alloc_array
 !!!           dmft_final_array
 !!! source  : dmft_stream.f90
