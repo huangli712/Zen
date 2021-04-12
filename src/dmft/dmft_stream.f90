@@ -1129,7 +1129,22 @@
 !!
 !! @sub dmft_input_sig_l
 !!
+!! read in local self-energy functions from quantum impurity solvers
+!!
   subroutine dmft_input_sig_l()
+     use constants, only : dp, mytmp
+
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
+
+     use control, only : nsite
+     use control, only : nmesh
+     use control, only : nspin
+     use control, only : myid, master
+
+     use context, only : max_ndim
+     use context, only : sig_l
+
      implicit none
 
      return
