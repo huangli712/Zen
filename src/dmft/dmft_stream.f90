@@ -1164,6 +1164,45 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
+! read in double counting terms if available
+!-------------------------------------------------------------------------
+     if ( myid == master ) then ! only master node can do it
+         exists = .false.
+
+! inquire about file's existence
+         inquire (file = 'sigma.dc', exist = exists)
+
+! file sigma.dc must be present
+         if ( exists .eqv. .false. ) then
+             call s_print_error('dmft_input_sigdc','file sigma.dc is absent')
+         endif ! back if ( exists .eqv. .false. ) block
+
+! open file sigma.dc for reading
+         open(mytmp, file='sigma.dc', form='formatted', status='unknown')
+
+! skip header
+         read(mytmp,*)
+         read(mytmp,*)
+
+! check nsite and nspin
+         read(mytmp,*) ! empty line
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nsite, "nsite is wrong")
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nspin, "nspin is wrong")
+         read(mytmp,*) ! empty line
+
+! parse the data
+         do s=1,nsite
+             read(mytmp,*) rtmp
+             sigdc(:,:,s) = dcmplx(rtmp, 0.0_dp)
+         enddo ! over s={1,nsite} loop
+
+! close file handler
+         close(mytmp)
+
+     endif ! back if ( myid == master ) block
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
      return
   end subroutine dmft_input_sig_l
 
