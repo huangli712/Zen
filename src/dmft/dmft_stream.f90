@@ -1137,9 +1137,11 @@
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
 
+     use control, only : axis
      use control, only : nsite
      use control, only : nmesh
      use control, only : nspin
+     use control, only : beta
      use control, only : myid, master
 
      use context, only : max_ndim
@@ -1184,12 +1186,14 @@
          read(mytmp,*)
          read(mytmp,*)
 
-! check nsite and nspin
+! check axis
          read(mytmp,*) ! empty line
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nsite, "nsite is wrong")
-         read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nspin, "nspin is wrong")
+         call s_assert2(itmp == axis, "axis is wrong")
+
+! check beta
+         read(mytmp,*) chr1, chr2, rtmp
+         call s_assert2(rtmp == beta, "beta is wrong")
          read(mytmp,*) ! empty line
 
 ! parse the data
