@@ -1194,7 +1194,12 @@
 ! check beta
          read(mytmp,*) chr1, chr2, rtmp
          call s_assert2(rtmp == beta, "beta is wrong")
-         read(mytmp,*) ! empty line
+
+! check nsite
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nsite, "nsite is wrong")
+
+
 
 ! parse the data
          do s=1,nsite
