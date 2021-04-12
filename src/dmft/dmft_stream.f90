@@ -1144,7 +1144,7 @@
      use control, only : beta
      use control, only : myid, master
 
-     use context, only : max_ndim
+     use context, only : max_ndim, ndim
      use context, only : sig_l
 
      implicit none
