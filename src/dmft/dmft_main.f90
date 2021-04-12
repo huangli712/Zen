@@ -48,10 +48,10 @@
              call dmft_print_header()
          endif ! back if ( myid == master ) block
 
-! setup the parameters (control part)
+! setup the control parameters
          call dmft_setup_tasks()
 
-! setup the parameters (dimensional part)
+! setup the dimensional parameters
          call dmft_setup_param()
 
 ! allocate memory spaces
@@ -67,7 +67,9 @@
 
      END BLOCK DMFT_START
 
-     STOP
+!!========================================================================
+     CALL DMFT_DRIVER() ! main subroutine                              <<<
+!!========================================================================
 
      DMFT_SLEEP: BLOCK
 
