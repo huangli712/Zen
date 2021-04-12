@@ -135,6 +135,13 @@
      write(mystd,'(4X,a16,i10,  2X,a8)') 'ngrp   / value :', ngrp  , 'type : i'
      write(mystd,'(4X,a16,i10,  2X,a8)') 'nwnd   / value :', nwnd  , 'type : i'
      write(mystd,'(4X,a16,f10.5,2X,a8)') 'scale  / value :', scale , 'type : d'
+     write(mystd,'(4X,a16,f10.5,2X,a8)') 'fermi  / value :', fermi , 'type : d'
+     write(mystd,'(4X,a16,f10.5,2X,a8)') 'volt   / value :', volt  , 'type : d'
+
+     write(mystd,'(2X,a)') '[configuration parameters] -> sigma control'
+     write(mystd,'(2X,a)') '-----------------------------------------------------'
+     write(mystd,'(4X,a16,i10,  2X,a8)') 'nsite  / value :', nsite , 'type : i'
+     write(mystd,'(4X,a16,i10,  2X,a8)') 'nmesh  / value :', nmesh , 'type : i'
 
      write(mystd,*)
 
