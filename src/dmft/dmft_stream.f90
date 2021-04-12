@@ -1147,6 +1147,23 @@
 
      implicit none
 
+! local variables
+! loop index
+     integer  :: s
+
+! dummy integer variables
+     integer  :: itmp
+
+! used to check whether the input file (sigma.bare) exists
+     logical  :: exists
+
+! dummy real variables
+     real(dp) :: rtmp
+
+! dummy character variables
+     character(len = 5) :: chr1
+     character(len = 2) :: chr2
+
      return
   end subroutine dmft_input_sig_l
 
