@@ -120,5 +120,16 @@
 
      implicit none
 
+     write(mystd,'(2X,a)') '[configuration parameters] -> core control'
+     write(mystd,'(2X,a)') '-----------------------------------------------------'
+     write(mystd,'(4X,a16,i10,  2X,a8)') 'isscf  / value :', isscf , 'type : i'
+
+     write(mystd,'(2X,a)') '[configuration parameters] -> dmft engine'
+     write(mystd,'(2X,a)') '-----------------------------------------------------'
+     write(mystd,'(4X,a16,i10,  2X,a8)') 'niter  / value :', niter , 'type : i'
+     write(mystd,'(4X,a16,f10.5,2X,a8)') 'alpha  / value :', alpha , 'type : d'
+
+     write(mystd,*)
+
      return
   end subroutine dmft_print_summary
