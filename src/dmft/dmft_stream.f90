@@ -1199,7 +1199,13 @@
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nsite, "nsite is wrong")
 
+! check nmesh
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nmesh, "nmesh is wrong")
 
+! check nspin
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nspin, "nspin is wrong")
 
 ! parse the data
          do s=1,nsite
