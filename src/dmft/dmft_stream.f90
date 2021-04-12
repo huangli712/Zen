@@ -1216,6 +1216,7 @@
          do i=1,nsite
              read(mytmp,*) chr1, chr2, itmp
              call s_assert2(itmp == ndim(i), "ndim is wrong")
+             call s_assert2(itmp <= max_ndim, "ndim is wrong")
          enddo ! over i={1,nsite} loop
          read(mytmp,*) ! empty line
 
@@ -1232,7 +1233,9 @@
                      enddo ! over d={1,ndim(i)} loop
                  enddo ! over m={1,nmesh} loop
              enddo ! over s={1,nspin} loop
-             if allocated(sarr) deallocate(sarr)
+             if ( allocated(sarr) ) then
+                 deallocate(sarr)
+             endif
          enddo ! over i={1,nsite} loop
 
 ! close file handler
