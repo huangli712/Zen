@@ -16,6 +16,8 @@
 !!
 !! @sub dmft_print_header
 !!
+!! print the startup information for the dmft/jacaranda code
+!!
   subroutine dmft_print_header()
      use constants, only : mystd
 
@@ -74,6 +76,8 @@
 !!
 !! @sub: dmft_print_footer
 !!
+!! print the ending information for the dmft/jacaranda
+!!
   subroutine dmft_print_footer()
      use constants, only : dp
      use constants, only : mystd
@@ -104,5 +108,17 @@
      return
   end subroutine dmft_print_footer
 
+!!
+!! @sub dmft_print_summary
+!!
+!! print the running parameters, only for reference
+!!
   subroutine dmft_print_summary()
+     use constants, only : mystd
+
+     use control ! ALL
+
+     implicit none
+
+     return
   end subroutine dmft_print_summary
