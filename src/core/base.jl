@@ -504,7 +504,7 @@ function adaptor_run(it::IterInfo, lr::Logger)
     @cswitch projtype begin
         # For projected local orbital scheme (Now we disable debug)
         @case "plo"
-            plo_adaptor(DFTData, false)
+            plo_adaptor(DFTData, true)
             break
 
         # For maximally localized wannier function scheme
