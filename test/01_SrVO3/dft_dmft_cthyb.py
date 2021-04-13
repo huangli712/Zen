@@ -8,7 +8,7 @@ from triqs_dft_tools.converters.wien2k import *
 
 dft_filename='vasp'
 beta = 40
-loops = 15                       # Number of DMFT sc-loops
+loops = 1                        # Number of DMFT sc-loops
 sigma_mix = 1.0                  # Mixing factor of Sigma after solution of the AIM
 use_blocks = True                # use bloc structure from DFT input
 prec_mu = 0.0001
