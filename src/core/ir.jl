@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/11
+# Last modified: 2021/04/13
 #
 
 #
@@ -199,14 +199,12 @@ function irio_params(f::String, D::Dict{Symbol,Any})
 
         println(fout, "# Group:")
         println(fout, "ngrp  -> $ngrp")
-        # mdim is a shortcut for max_ndim
-        println(fout, "mdim  -> $max_ndim")
+        println(fout, "qdim  -> $max_ndim")
         println(fout)
 
         println(fout, "# Window:")
         println(fout, "nwnd  -> $nwnd")
-        # mbnd is a shortcut for max_nbnd
-        println(fout, "mbnd  -> $max_nbnd")
+        println(fout, "qbnd  -> $max_nbnd")
         println(fout)
 
         println(fout, "# Sigma:")
