@@ -7,7 +7,7 @@ from triqs_dft_tools.sumk_dft import *
 from triqs_dft_tools.converters.wien2k import *
 
 dft_filename='vasp'
-beta = 10
+beta = 40
 loops = 15                       # Number of DMFT sc-loops
 sigma_mix = 1.0                  # Mixing factor of Sigma after solution of the AIM
 use_blocks = True                # use bloc structure from DFT input
@@ -17,7 +17,7 @@ h_field = 0.0
 ## KANAMORI DENSITY-DENSITY (for full Kanamori use h_int_kanamori)
 # Define interaction paramters, DC and Hamiltonian
 U = 4.0
-J = 0.65
+J = 0.7
 dc_type = 1                      # DC type: 0 FLL, 1 Held, 2 AMF
 
 ## SLATER HAMILTONIAN
