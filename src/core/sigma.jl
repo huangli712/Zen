@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/09
+# Last modified: 2021/04/15
 #
 
 """
@@ -50,7 +50,9 @@ function sigma_reset()
     # Create self-energy functions
     #
     # Initialize an array for self-energy functions
-    SA = Array{C64,3}[]
+    SA = Array{C64,4}[]
+    #
+    # `D` is used to record the dimensional parameter of the self-energy
     D = I64[]
     #
     # Go through the impurity problems
@@ -58,12 +60,14 @@ function sigma_reset()
         # Retrieve specification for impurity problem
         str = get_i("shell")[i]
 
-        # Get the dimension of impurity problem (save it)
+        # Get the dimension of impurity problem
         ndim = get(sdim, str, 1)
+        #
+        # Save `ndim` in `D`
         push!(D, ndim)
 
         # Create a temporary array for self-energy function
-        S = zeros(C64, nmesh, ndim, nspin)
+        S = zeros(C64, nmesh, ndim, ndim, nspin)
 
         # Push S into SA to save it
         push!(SA, S)
