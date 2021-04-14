@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/01
+# Last modified: 2021/04/14
 #
 
 #
@@ -39,6 +39,11 @@ function go()
 
     # Choose suitable computational driver
     @cswitch mode begin
+        # DFT calculations only
+        @case 0
+            cycle0()
+            break
+
         # One-shot DFT + DMFT calculations
         @case 1
             cycle1()
@@ -66,13 +71,54 @@ function final()
 end
 
 """
+    cycle0()
+
+Perform DFT calculations only. If there are something wrong, then you
+have chance to adjust the DFT input files manually.
+
+See also: [`cycle1`](@ref), [`cycle2`](@ref), [`go`](@ref).
+"""
+function cycle0()
+    # C-1: Create IterInfo struct
+    it = IterInfo()
+
+    # C00: Create Logger struct
+    lr = Logger(query_case())
+
+#
+# Initialization (C01-C02)
+#
+    prompt("ZEN", "Initialization")
+
+    # C01: Perform DFT calculation (for the first time)
+    dft_run(it, lr)
+
+    # C02: Perform DFT calculation (for the second time)
+    if get_d("loptim")
+        dft_run(it, lr)
+    end
+
+    # C98: Close Logger.log
+    if isopen(lr.log)
+        flush(lr.log)
+        close(lr.log)
+    end
+
+    # C99: Close Logger.cycle
+    if isopen(lr.cycle)
+        flush(lr.cycle)
+        close(lr.cycle)
+    end
+end
+
+"""
     cycle1()
 
 Perform one-shot DFT + DMFT calculations. In other words, the charge
 density won't be fed back to the DFT engine. The self-consistency is
 only achieved at the DMFT level.
 
-See also: [`cycle2`](@ref), [`go`](@ref).
+See also: [`cycle0`](@ref), [`cycle2`](@ref), [`go`](@ref).
 """
 function cycle1()
     # C-1: Create IterInfo struct
@@ -194,7 +240,7 @@ end
 Perform fully self-consistent DFT + DMFT calculations. The self-consistency
 is achieved at both DFT and DMFT levels.
 
-See also: [`cycle1`](@ref), [`go`](@ref).
+See also: [`cycle0`](@ref), [`cycle1`](@ref), [`go`](@ref).
 """
 function cycle2()
     sorry()
