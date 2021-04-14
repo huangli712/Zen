@@ -97,9 +97,13 @@ function sigma_reset()
                 println(fout, "# site: $i spin: $s")
                 # There are 2 * ndim columns
                 for m = 1:nmesh
-                    @printf(fout, "%16.12f", fmesh[m])
-                    foreach(x -> @printf(fout, "%16.12f %16.12f", real(x), imag(x)), SA[i][m, :, s])
-                    println(fout)
+                    @printf(fout, "%4s %16.12f\n", "w:", fmesh[m])
+                    for a = 1:D[i]
+                        for b = 1:D[i]
+                            x = SA[i][m, b, a, s]
+                            @printf(fout, "%16.12f %16.12f\n", real(x), imag(x))
+                        end
+                    end
                 end
                 println(fout)
                 println(fout)
