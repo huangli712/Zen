@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/06
+# Last modified: 2021/04/14
 #
 
 """
@@ -296,6 +296,7 @@ export str_s
 # ready       -> Prepare runtime environment for DFT + DMFT calculations.
 # go          -> Dispatcher for DFT + DMFT calculations.
 # final       -> Finalize the DFT + DMFT calculations.
+# cycle0      -> Perform DFT calculations only (for test purpose).
 # cycle1      -> Perform DFT + DMFT calculations (one-shot mode).
 # cycle2      -> Perform DFT + DMFT calculations (fully self-consistent mode).
 # monitor     -> Monitor the DFT + DMFT calculations.
@@ -313,6 +314,7 @@ include("base.jl")
 export ready
 export go
 export final
+export cycle0
 export cycle1
 export cycle2
 export monitor
