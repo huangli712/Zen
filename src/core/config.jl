@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/31
+# Last modified: 2021/04/14
 #
 
 #
@@ -198,7 +198,7 @@ function chk_dict()
     @assert iseven( length( get_d("window") ) )
     #
     # Check dmft block
-    @assert get_m("mode") in (1, 2)
+    @assert get_m("mode") in (0, 1, 2)
     @assert get_m("axis") in (1, 2)
     @assert get_m("niter") > 0
     @assert get_m("nmesh") > 0
