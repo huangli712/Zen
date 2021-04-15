@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/14
+# Last modified: 2021/04/15
 #
 
 """
@@ -18,7 +18,7 @@ correlated materials. Now this framework is under heavy development.
 Zen supports the following DFT backends:
 * `VASP`
 
-Zen supports the following local orbitals:
+Zen supports the following schemes for defining local orbitals:
 * `PLO`
 * `WANNIER`
 
@@ -39,33 +39,30 @@ module Zen
 #
 
 #
-# Remarks:
+# Remarks 1:
+#
+# The TOML.jl package is included in the standard library since v1.6.
+# So please upgrade your julia environment if it is outdated. We need
+# this package to parse the configuration file (TOML format).
+#
+# Remarks 2:
 #
 # Here we import `libm` explicitly to provide a callable interface for
-# the erf function. See util.jl/erf() for more details.
+# the `erf` function. See util.jl/erf() for more details.
+#
+# Remarks 3:
+#
+# Actually, `Reexport` is not included in the standard library. It is
+# a third-party library.
 #
 
-using Reexport
+using TOML
 using LinearAlgebra
 using Distributed
 using Dates
 using Base.Math: libm
+using Reexport
 @reexport using Printf
-
-#
-# Using third-party libraries
-#
-
-#
-# Remarks:
-#
-# The TOML.jl package is included in the standard library since v1.6.
-# So, please upgrade your julia environment if it is outdated.
-#
-# We need this package to parse the configuration file (TOML format).
-#
-
-using TOML
 
 #
 # global.jl
