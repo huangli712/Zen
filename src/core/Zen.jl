@@ -102,14 +102,15 @@ export authors
 #
 # Summary:
 #
-# To provide some useful utility functions. They can be used to query
-# the environments and parse the strings, etc.
+# To provide some useful utility macros and functions. They can be used
+# to colorize the output strings, query the environments, and parse the
+# input strings, etc.
 #
 # Members:
 #
 # @cswitch      -> C-style switch.
 # @ps1          -> Wrapper for printstyled function.
-# @ps2          -> Wrapper for printstyled function.
+# @ps2          -> Another wrapper for printstyled function.
 # require       -> Check julia envirnoment.
 # setup_args    -> Setup ARGS manually.
 # query_args    -> Query program's arguments.
@@ -125,7 +126,7 @@ export authors
 # overview      -> Print overview of Zen.
 # goodbye       -> Say goodbye.
 # sorry         -> Say sorry.
-# prompt        -> Print some messages or logs to the device.
+# prompt        -> Print some messages or logs to the output devices.
 # line_to_array -> Convert a line to a string array.
 # line_to_cmplx -> Convert a line to a cmplx number.
 # erf           -> Gauss error function.
@@ -162,7 +163,7 @@ export subscript
 #
 # Summary:
 #
-# Tools for the analytical tetrahedron method.
+# Implementation of the analytical tetrahedron method.
 #
 # Members:
 #
