@@ -307,8 +307,8 @@ export str_s
 # dmft_run    -> Driver for DMFT engine.
 # solver_run  -> Driver for quantum impurity solvers.
 # adaptor_run -> Driver for Kohn-Sham adaptor.
-# sigma_core  -> Some functions for dealing with the self-energy functions.
-# mixer_core  -> Entry for mixer.
+# sigma_core  -> Driver for self-energy engine.
+# mixer_core  -> Driver for mixer engine.
 #
 include("base.jl")
 #
@@ -342,11 +342,11 @@ export mixer_core
 # vasp_init      -> Prepare vasp's input files.
 # vasp_exec      -> Execute vasp program.
 # vasp_save      -> Backup vasp's output files.
-# vasp_incar     -> Make essential input file (INCAR).
-# vasp_kpoints   -> Make essential input file (KPOINTS).
+# vasp_incar     -> Generate essential input file (INCAR).
+# vasp_kpoints   -> Generate essential input file (KPOINTS).
 # vasp_files     -> Check essential output files.
 # vaspio_nband   -> Determine number of bands.
-# vaspio_valence -> Read number of valence electrons per sorts.
+# vaspio_valence -> Read number of valence electrons for each sort.
 # vaspio_procar  -> Read PROCAR file.
 # vaspio_lattice -> Read lattice information.
 # vaspio_kmesh   -> Read kmesh.
@@ -386,9 +386,9 @@ export vaspio_charge
 # Members:
 #
 # plo_adaptor -> Adaptor support.
-# plo_fermi   -> Calibrate fermi level for Kohn-Sham eigenvalues.
+# plo_fermi   -> Calibrate Kohn-Sham eigenvalues with respect to fermi level.
 # plo_group   -> Setup groups of projectors.
-# plo_window  -> Setup band window of projectors.
+# plo_window  -> Setup band windows of projectors.
 # plo_rotate  -> Rotate the projectors.
 # plo_filter  -> Extract the projectors within a given energy window.
 # plo_orthog  -> Orthogonalize / normalize the projectors.
@@ -400,7 +400,7 @@ export vaspio_charge
 # try_diag    -> Orthogonalizes a projector defined by a rectangular matrix.
 # calc_ovlp   -> Calculate overlap matrix.
 # calc_dm     -> Calculate density matrix.
-# calc_hamk   -> Calculate local hamiltonian.
+# calc_hamk   -> Calculate local hamiltonian or full hamiltonian.
 # calc_dos    -> Calculate density of states.
 # view_ovlp   -> Show overlap matrix for debug.
 # view_dm     -> Show density matrix for debug.
@@ -492,7 +492,8 @@ export dmft_save
 #
 # Summary:
 #
-# Wrapper for various quantum impurity solvers.
+# Wrapper for various quantum impurity solvers. Now only the CT-HYB1,
+# CT-HYB2, HIA, and NORG quantum impurity solvers are supported.
 #
 # Members:
 #
@@ -557,8 +558,8 @@ export cal_dc_exact
 This function would be executed immediately after the module is loaded
 at runtime for the first time.
 
-Here, we will try to precompile the whole Zen package to speed up
-the later calculations.
+Here, we will try to precompile the whole Zen package to reduce latency
+and speed up the later calculations.
 """
 function __init__()
     prompt("ZEN", "Loading...")
@@ -574,7 +575,7 @@ function __init__()
         str = string(nl[i])
         fun = eval(nl[i])
 
-        # For methods only (macro must be excluded)
+        # For methods only (macros must be excluded)
         if fun isa Function && !startswith(str, "@")
             # Increase the counter
             cf = cf + 1
@@ -602,4 +603,4 @@ function __init__()
     println()
 end
 
-end
+end # END OF MODULE
