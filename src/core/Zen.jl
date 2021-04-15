@@ -306,8 +306,8 @@ export str_s
 # dft_run     -> Driver for DFT engine.
 # dmft_run    -> Driver for DMFT engine.
 # solver_run  -> Driver for quantum impurity solvers.
-# adaptor_run -> Driver for DFT_DMFT adaptor.
-# sigma_core  -> Entry for functions for self-energy functions.
+# adaptor_run -> Driver for Kohn-Sham adaptor.
+# sigma_core  -> Some functions for dealing with the self-energy functions.
 # mixer_core  -> Entry for mixer.
 #
 include("base.jl")
