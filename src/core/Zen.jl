@@ -195,8 +195,8 @@ export tetra_p_ek4
 #
 # Summary:
 #
-# Define some dicts and structs, which store the config parameters or
-# represent some essential data structures.
+# Define some dicts and structs, which are used to store the config
+# parameters or represent some essential data structures.
 #
 # Members:
 #
@@ -231,15 +231,16 @@ export PrWindow
 #
 # Summary:
 #
-# To extract the configurations from external files or dictionaries.
+# To extract, parse, verify, and print the configuration parameters.
+# They are stored in external files (*.toml) or dictionaries.
 #
 # Members:
 #
 # setup    -> Setup parameters.
 # exhibit  -> Display parameters for reference.
 # inp_toml -> Parse case.toml, return raw configuration information.
-# rev_dict -> Update dicts for configuration.
-# chk_dict -> Check dicts for configuration.
+# rev_dict -> Update dicts for configuration parameters.
+# chk_dict -> Check dicts for configuration parameters.
 # _v       -> Verify dict's values.
 # cat_c    -> Print dict (PCASE dict).
 # cat_d    -> Print dict (PDFT dict).
@@ -287,7 +288,9 @@ export str_s
 # Summary:
 #
 # To provide the core functions to control the DFT engine, DMFT engine,
-# and quantum impurity solvers.
+# quantum impurity solvers, Kohn-Sham adaptor, self-energy engine, and
+# mixer engine. The DFT + DMFT iteration (one-shot mode or charge fully
+# self-consistent mode) is also implemented in this file.
 #
 # Members:
 #
