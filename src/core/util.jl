@@ -234,7 +234,8 @@ end
     query_core()
 
 Query the src/core directory of Zen. Actually, the `ZEN_CORE` denotes
-the directory that contains the Zen.jl file.
+the directory that contains the Zen.jl file. Be careful, ZEN_CORE must
+be included in LOAD_PATH.
 
 See also: [`query_home`](@ref).
 """
@@ -318,6 +319,8 @@ function query_solver(engine::String)
                 solver_dir = joinpath(query_home(), "src/solver/norg")
                 break
 
+            # The `atomic` code is considered as a preprocessor of ct_hyb2,
+            # it is not a valid quantum impurity solver.
             @case "atomic"
                 solver_dir = joinpath(query_home(), "src/solver/atomic")
                 break
