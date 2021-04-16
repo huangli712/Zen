@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/01
+# Last modified: 2021/04/16
 #
 
 """
@@ -100,11 +100,11 @@ end
     require()
 
 Check the version of julia runtime environment. It should be higher
-than v1.5.x.
+than v1.6.x.
 """
 function require()
-    if VERSION < v"1.5-"
-        error("Please upgrade your julia to v1.5.0 or higher")
+    if VERSION < v"1.6-"
+        error("Please upgrade your julia to v1.6.0 or higher")
     end
 end
 
