@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/26
+# Last modified: 2021/04/17
 #
 
 #
@@ -32,9 +32,9 @@ Struct. Integration weights for analytical tetrahedron algorithm.
 
 ## Members
 
-.cw -> Blochl corrections for `dw`.\n
-.dw -> Density of states weights at the four corners of a given tetrahedron.\n
-.tw -> Integration weights at the four corners of a given tetrahedron.
+cw -> Blochl corrections for `dw`.\n
+dw -> Density of states weights at the four corners of a given tetrahedron.\n
+tw -> Integration weights at the four corners of a given tetrahedron.
 """
 struct TetraWeight
     cw :: F64
