@@ -277,7 +277,7 @@ function irio_windows(f::String, PW::Array{PrWindow,1})
             println(fout, "nbnd  -> $(PW[p].nbnd)")
             println(fout, "kwin  ->")
             nkpt, nspin, ndir = size(PW[p].kwin)
-            @assert ndir === 2
+            @assert ndir === 2 # For lower and upper boundaries
             for s = 1:nspin
                 for k = 1:nkpt
                     @printf(fout, "%8i %8i %8i %8i\n", k, s, PW[p].kwin[k, s, :]...)
