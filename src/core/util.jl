@@ -297,6 +297,14 @@ Query the home directory of the quantum impurity solver.
 See also: [`query_dft`](@ref), [`query_dmft`](@ref).
 """
 function query_solver(engine::String)
+
+#
+# Remarks:
+#
+# The `atomic` code is considered as a preprocessor of `ct_hyb2`, it is
+# not a valid quantum impurity solver.
+#
+
     # We have to setup the environment variable ZEN_SOLVER
     if haskey(ENV, "ZEN_SOLVER")
         ENV["ZEN_SOLVER"]
@@ -319,8 +327,6 @@ function query_solver(engine::String)
                 solver_dir = joinpath(query_home(), "src/solver/norg")
                 break
 
-            # The `atomic` code is considered as a preprocessor of ct_hyb2,
-            # it is not a valid quantum impurity solver.
             @case "atomic"
                 solver_dir = joinpath(query_home(), "src/solver/atomic")
                 break
