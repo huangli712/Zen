@@ -40,11 +40,13 @@ function dmft_init(it::IterInfo, task::I64)
     fdmft = ("dmft.in")
 
     # Next, we have to copy Kohn-Sham data from `dft` to `dmft1`.
-    for i in eachindex(fir)
-        file_src = joinpath("../dft", fir[i])
-        file_dst = fir[i]
-        cp(file_src, file_dst, force = true)
-    end
+    foreach( x -> 
+        begin
+            file_src = joinpath("../dft", x)
+            file_dst = x
+            cp(file_src, file_dst, force = true)
+        end,
+    union(fir1, fir2) )
 
     # Extract key parameters
     axis = get_m("axis")
