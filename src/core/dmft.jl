@@ -67,7 +67,7 @@ function dmft_init(it::IterInfo, task::I64)
     end
 
     # Check essential input files
-    flist = (fdmft, fsig..., fir...)
+    flist = (fdmft, fsig..., fir1..., fir2...)
     for i in eachindex(flist)
         filename = flist[i]
         if !isfile(filename)
