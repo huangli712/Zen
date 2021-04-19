@@ -273,7 +273,7 @@ function vasp_incar(fermi::F64)
     # For optimized projectors
     ewidth = 4.0 # A magic number
     loptim = get_d("loptim")
-    if !isa(ewidth, Missing) && !isa(loptim, Missing)
+    if !isa(loptim, Missing)
         if loptim
             write(ios, "LORBIT   = 14 \n")
             emin = fermi - ewidth
