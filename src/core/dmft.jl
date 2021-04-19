@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/06
+# Last modified: 2021/04/19
 #
 
 """
@@ -20,18 +20,23 @@ function dmft_init(it::IterInfo, task::I64)
     @assert task in (1, 2)
 
     # Well, determine which files are necessary. They are defined in
-    # `fsig`, `fir`, and `fdmft`.
+    # `fsig`, `fir1`, `fir2`, and `fdmft`.
     #
-    # Self-energy functions
+    # Self-energy functions and their double counting terms
     fsig = ["sigma.bare", "sigma.dc"]
     #
-    # Kohn-Sham data (including projectors) in IR format
-    fir  = ["params.ir", "groups.ir", "windows.ir", "lattice.ir", "kmesh.ir", "eigen.ir", "projs.ir"]
+    # Parameter sets within the IR format
+    fir1 = ["params.ir", "groups.ir", "windows.ir"]
+    #
+    # Kohn-Sham data within the IR format
+    fir2 = ["lattice.ir", "kmesh.ir", "eigen.ir", "projs.ir"]
+    #
+    # Tetrahedron data are available
     if get_d("smear") === "tetra"
-        push!(fir, "tetra.ir")
+        push!(fir2, "tetra.ir")
     end
     #
-    # Configuration file for DMFT engine
+    # Main control file for the DMFT engine
     fdmft = ("dmft.in")
 
     # Next, we have to copy Kohn-Sham data from `dft` to `dmft1`.
