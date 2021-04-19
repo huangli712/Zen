@@ -150,7 +150,7 @@ function vasp_save(it::IterInfo)
     # Store the data files
     #
     # Create list of files
-    fl = ["INCAR", "OUTCAR", "CHGCAR", "vasp.out", "vasprun.xml"]
+    fl = ["INCAR", "vasp.out", "vasprun.xml"]
     #
     # Go through the file list, backup the files one by one.
     for i in eachindex(fl)
