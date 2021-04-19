@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/13
+# Last modified: 2021/04/19
 #
 
 #
@@ -95,7 +95,11 @@ See also: [`ir_adaptor`](@ref).
 """
 function ir_save(it::IterInfo)
     # Create a list of files that need to be backup
-    file_list = ["params", "lattice", "kmesh", "eigen", "projs", "fermi"]
+    fir1 = ["params", "groups", "windows"]
+    fir2 = ["lattice", "kmesh", "eigen", "projs", "fermi"]
+    file_list = union(fir1, fir2)
+    #
+    # If tetrahedron data are available
     if get_d("smear") === "tetra"
         push!(file_list, "tetra")
     end

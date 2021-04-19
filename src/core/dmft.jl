@@ -40,7 +40,7 @@ function dmft_init(it::IterInfo, task::I64)
     fdmft = ("dmft.in")
 
     # Next, we have to copy Kohn-Sham data from `dft` to `dmft1`.
-    foreach( x -> 
+    foreach( x ->
         begin
             file_src = joinpath("../dft", x)
             file_dst = x
