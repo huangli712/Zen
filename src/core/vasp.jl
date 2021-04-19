@@ -131,8 +131,15 @@ function vasp_exec(it::IterInfo)
         vasp_cmd = split("$mpi_prefix $vasp_exe", " ")
     end
 
-    # Launch it, the terminal output is redirected to vasp.out
+    # Launch it, the terminal output is redirected to vasp.out.
+    # Note that the process runs synchronously. It will block the
+    # execution unitl is is finished.
     run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
+
+    # Extract how many iterations are executed
+    iters = readlines("vasp.out")
+    filter!(x -> contains(x, "DAV:"), iters)
+    println("  Converged after $(length(iters)) iterations")
 
     # Print the footer
     println()
