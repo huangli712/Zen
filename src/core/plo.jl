@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/03
+# Last modified: 2021/04/21
 #
 
 #
@@ -87,6 +87,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     end
 
     # P10: Print the footer for a better visualization
+    println("The Kohn-Sham dataset is preprocessed by the adaptor")
     println()
 end
 

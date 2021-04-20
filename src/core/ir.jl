@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/19
+# Last modified: 2021/04/21
 #
 
 #
@@ -83,6 +83,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     end
 
     # I11: Print the footer for a better visualization
+    println("The Kohn-Sham dataset is translated into IR format by the adaptor")
     println()
 end
 
