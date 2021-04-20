@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/20
+# Last modified: 2021/04/21
 #
 
 #
@@ -27,7 +27,7 @@ function vasp_adaptor(D::Dict{Symbol,Any})
     println("Adaptor : VASP")
 
     # V02: Read in lattice structure
-    println("  Get lattice")
+    println("  Parse lattice")
     D[:latt] = vaspio_lattice(pwd())
 
     # V03: Read in kmesh and the corresponding weights
@@ -55,6 +55,7 @@ function vasp_adaptor(D::Dict{Symbol,Any})
     end
 
     # V08: Print the footer for a better visualization
+    println("The Kohn-Sham dataset is extracted the adaptor")
     println()
 end
 
