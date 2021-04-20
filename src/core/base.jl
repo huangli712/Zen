@@ -492,7 +492,7 @@ end
 
 Simple driver for the adaptor. It performs three tasks: (1) Initialize
 the adaptor, to check whether the essential files exist. (2) Parse the
-Kohn-Sham data output by the DFT engine, try to postprocess them, and
+Kohn-Sham data output by the DFT engine, try to preprocess them, and
 then transform them into IR format. (3) Backup the files by adaptor.
 
 For the first task, only the VASP adaptor is supported. While for the

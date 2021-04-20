@@ -12,20 +12,20 @@
 #
 
 """
-    plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
+    plo_adaptor(D::Dict{Symbol,Any})
 
-Adaptor support. It will postprocess the raw projector matrix. The dict
+Adaptor support. It will preprocess the raw projector matrix. The dict
 `D` contains all of the necessary Kohn-Sham data, which will be modified
 in this function.
 
-If `debug` is true, this function will try to calculate some physical
-quantities, such as density matrix, overlap matrix, and hamiltonian,
-and partial density of states, which will be written to external files
-or terminal for reference.
+If `PROGRAM_FILE` is `zen/src/tools/test.jl`, this function will try to
+calculate some physical quantities, such as the density matrix, overlap
+matrix, and local hamiltonian, and partial density of states, which will
+be written to external files or terminal for reference.
 
 See also: [`vasp_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_exec`](@ref).
 """
-function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
+function plo_adaptor(D::Dict{Symbol,Any})
     # P01: Print the header
     println("Adaptor : PLO")
 
@@ -82,7 +82,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, debug::Bool = false)
     # density of states. Of course, it is time-comsuming to do
     # these things. So it is a good idea to turn off this feature
     # if everything is on the way.
-    if debug
+    if cmp(basename(splitext(PROGRAM_FILE)[1]), "test") === 0
         plo_monitor(D)
     end
 
