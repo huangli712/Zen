@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/14
+# Last modified: 2021/04/21
 #
 
 #
@@ -541,17 +541,21 @@ function adaptor_run(it::IterInfo, lr::Logger)
     # Well, now we have the Kohn-Sham data. But they can not be used
     # directly. We have to check and process them carefully. Please
     # pay attention to that the DFTData dict will be modified in
-    # the plo_adaptor() function. Here the parameter `debug` (= true)
-    # means that we are going to calculating some physical quantities
-    # additionally to check the correctness of the Kohn-Sham data.
+    # the plo_adaptor() function.
+    #
+    # The plo_adaptor() function also has the ability to calculate
+    # some selected physical quantities (such as overlap matrix and
+    # density of states) to check the correctness of the Kohn-Sham
+    # data. This feature will be activated automatically if you are
+    # using the src/tools/test.jl tool to examine the DFT data. 
     #
     projtype = get_d("projtype")
     prompt("Adaptor")
     prompt(lr.log, "adaptor::$projtype")
     @cswitch projtype begin
-        # For projected local orbital scheme (Now we disable debug)
+        # For projected local orbital scheme
         @case "plo"
-            plo_adaptor(DFTData, true)
+            plo_adaptor(DFTData)
             break
 
         # For maximally localized wannier function scheme
