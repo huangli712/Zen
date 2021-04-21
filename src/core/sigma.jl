@@ -221,10 +221,10 @@ function sigma_dcount()
         for i = 1:nsite
             for s = 1:nspin
                 println(fout, "# site: $i spin: $s")
-                # There are 1 column and ndim * ndim rows
+                # There are 2 columns and ndim * ndim rows
                 for a = 1:D[i]
                     for b = 1:D[i]
-                        @printf(fout, "%16.12f\n", DCA[i][b, a, s])
+                        @printf(fout, "%16.12f %16.12f\n", DCA[i][b, a, s], 0.0)
                     end
                 end
                 println(fout)
