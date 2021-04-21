@@ -379,6 +379,8 @@ Simple driver for DMFT engine. It performs three tasks: (1) Examine
 the runtime environment for the DMFT engine. (2) Launch the DMFT engine.
 (3) Backup the output files by DMFT engine for next iterations.
 
+The argument `task` is used to specify running mode of the DMFT code.
+
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`solver_run`](@ref).
 """
 function dmft_run(it::IterInfo, lr::Logger, task::I64)
