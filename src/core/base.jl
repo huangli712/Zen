@@ -496,7 +496,7 @@ then transform them into IR format. (3) Backup the files by adaptor.
 
 For the first task, only the VASP adaptor is supported. While for the
 second task, only the PLO adaptor is supported. If you want to support
-more adaptor, please adapt this function.
+more adaptors, please adapt this function.
 
 See also: [`dft_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
@@ -598,7 +598,8 @@ end
 Simple driver for functions for processing the self-energy functions
 and hybridization functions.
 
-Now it supports four tasks: `reset`, `dcount`, `split`, `gather`.
+Now it supports four tasks: `reset`, `dcount`, `split`, `gather`. It
+won't change the current directory.
 
 See also: [`mixer_core`](@ref).
 """
