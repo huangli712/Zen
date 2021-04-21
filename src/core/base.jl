@@ -185,16 +185,17 @@ function cycle1()
 #
 
 #
-# Iterations (C05-C09)
+# DFT + DMFT Iterations (C05-C10)
 #
     prompt("ZEN", "Iterations")
 
     for iter = 1:get_m("niter")
+        # Print the log
         prompt("ZEN", "Cycle $iter")
         prompt(lr.log, "")
         prompt(lr.log, "< dft_dmft_cycle >")
 
-        # Update IterInfo
+        # Update IterInfo struct
         it.dmft_cycle = 1
         it.dmft1_iter = it.dmft1_iter + 1
         it.full_cycle = it.full_cycle + 1
