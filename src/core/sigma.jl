@@ -119,8 +119,8 @@ end
 """
     sigma_dcount()
 
-Calculate double counting terms for self-energy functions and write
-them to `sigma.dc`.
+Calculate double counting terms for local self-energy functions and
+write them to `sigma.dc`.
 
 See also: [`sigma_reset`](@ref).
 """
@@ -146,7 +146,7 @@ function sigma_dcount()
     # Create double counting terms for self-energy functions
     #
     # Initialize an array for dc
-    sigdc = zeros(F64, nsite)
+    DCA = Array{F64,3}[]
     #
     # Go through the impurity problems and calculate dc
     for i = 1:nsite
@@ -156,6 +156,17 @@ function sigma_dcount()
 
         # Get occupation numbers
         N = get_i("occup")[i]
+
+        # Get number of orbitals
+        #
+        # Retrieve specification for impurity problem
+        str = get_i("shell")[i]
+        #
+        # Get the dimension of impurity problem
+        ndim = get(sdim, str, 1)
+
+        # Create a temporary array for the double counting terms
+        DC = zeros(F64, ndim, ndim, nspin)
 
         # Choose suitable double counting scheme
         @cswitch get_m("dcount") begin
