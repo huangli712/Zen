@@ -172,7 +172,8 @@ function sigma_dcount()
         @cswitch get_m("dcount") begin
             # Fully localized limit scheme with fixed occupation number
             @case "fll1"
-                sigdc[i] = cal_dc_fll(U, J, N)
+                sigdc = cal_dc_fll(U, J, N)
+                fill!(DC, sigdc)
                 break
 
             # Fully localized limit scheme with dynamic occupation number
@@ -190,6 +191,9 @@ function sigma_dcount()
                 sorry()
                 break
         end
+
+        # Push DC into DCA to save it
+        push!(DCA, DC)
     end
     println("  Create double counting terms")
 
