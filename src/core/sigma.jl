@@ -96,7 +96,7 @@ function sigma_reset()
             for s = 1:nspin
                 println(fout, "# site: $i spin: $s")
                 for m = 1:nmesh
-                    @printf(fout, "%4s %16.12f\n", "w:", fmesh[m])
+                    @printf(fout, "%4s %6i %16.12f\n", "w:", m, fmesh[m])
                     # There are 2 columns and ndim * ndim rows
                     for a = 1:D[i]
                         for b = 1:D[i]
