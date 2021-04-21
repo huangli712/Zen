@@ -95,9 +95,9 @@ function sigma_reset()
         for i = 1:nsite
             for s = 1:nspin
                 println(fout, "# site: $i spin: $s")
-                # There are 2 * ndim columns
                 for m = 1:nmesh
                     @printf(fout, "%4s %16.12f\n", "w:", fmesh[m])
+                    # There are 2 columns and ndim * ndim rows
                     for a = 1:D[i]
                         for b = 1:D[i]
                             x = SA[i][m, b, a, s]
@@ -219,11 +219,22 @@ function sigma_dcount()
         # Write the body
         # Go through each impurity problem
         for i = 1:nsite
-            @printf(fout, "%16.12f\n", sigdc[i])
+            for s = 1:nspin
+                println(fout, "# site: $i spin: $s")
+                # There are 1 column and ndim * ndim rows
+                for a = 1:D[i]
+                    for b = 1:D[i]
+                        @printf(fout, "%16.12f\n", DCA[i][b, a, s])
+                    end
+                end
+                println(fout)
+                println(fout)
+            end
         end
     end
 
     # Print blank line for better visualization
+    println("The double counting terms are written to sigma.dc")
     println()
 end
 
