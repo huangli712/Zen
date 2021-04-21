@@ -222,6 +222,8 @@ function sigma_dcount()
             for s = 1:nspin
                 println(fout, "# site: $i spin: $s")
                 # There are 2 columns and ndim * ndim rows
+                # The double counting terms are assumed to be complex
+                # numbers with zero imaginary parts.
                 for a = 1:D[i]
                     for b = 1:D[i]
                         @printf(fout, "%16.12f %16.12f\n", DCA[i][b, a, s], 0.0)
