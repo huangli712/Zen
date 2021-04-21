@@ -87,11 +87,6 @@ function cycle0()
     # C00: Create Logger struct
     lr = Logger(query_case())
 
-#
-# Initialization (C01-C02)
-#
-    prompt("ZEN", "Initialization")
-
     # C01: Perform DFT calculation (for the first time)
     dft_run(it, lr)
 
