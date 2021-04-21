@@ -148,6 +148,9 @@ function sigma_dcount()
     # Initialize an array for dc
     DCA = Array{F64,3}[]
     #
+    # `D` is used to record the dimensional parameter of the self-energy
+    D = I64[]
+    #
     # Go through the impurity problems and calculate dc
     for i = 1:nsite
         # Get interaction parameters
@@ -157,13 +160,16 @@ function sigma_dcount()
         # Get occupation numbers
         N = get_i("occup")[i]
 
-        # Get number of orbitals
+        # Get number of orbitals: `ndim`
         #
         # Retrieve specification for impurity problem
         str = get_i("shell")[i]
         #
         # Get the dimension of impurity problem
         ndim = get(sdim, str, 1)
+        #
+        # Save `ndim` in `D`
+        push!(D, ndim)
 
         # Create a temporary array for the double counting terms
         DC = zeros(F64, ndim, ndim, nspin)
@@ -205,6 +211,9 @@ function sigma_dcount()
         println(fout)
         println(fout, "nsite -> $nsite")
         println(fout, "nspin -> $nspin")
+        for i = 1:nsite
+            println(fout, "ndim$i -> $(D[i])")
+        end
         println(fout)
 
         # Write the body
