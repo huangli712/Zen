@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/15
+# Last modified: 2021/04/21
 #
 
 """
@@ -42,10 +42,10 @@ function sigma_reset()
         for i = 1:nmesh
             fmesh[i] = (2 * i - 1) * pi / beta
         end
+        println("  Create Matsubara frequency mesh")
     else # Real axis
         sorry()
     end
-    println("  Create frequency mesh")
 
     # Create self-energy functions
     #
@@ -72,7 +72,7 @@ function sigma_reset()
         # Push S into SA to save it
         push!(SA, S)
     end
-    println("  Create self-energy functions")
+    println("  Create local self-energy functions")
 
     # Write self-energy functions to sigma.bare
     open("dmft1/sigma.bare", "w") do fout
@@ -112,6 +112,7 @@ function sigma_reset()
     end
 
     # Print blank line for better visualization
+    println("The local self-energy functions are written to sigma.bare")
     println()
 end
 
