@@ -14,7 +14,8 @@
 """
     ready()
 
-Examine whether all the conditions for DFT + DMFT calculations are ready.
+Examine whether all the conditions, including input files and working
+directories, for DFT + DMFT calculations are ready.
 
 See also: [`go`](@ref).
 """
