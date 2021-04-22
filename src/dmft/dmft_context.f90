@@ -746,8 +746,8 @@
      implicit none
 
 ! allocate memory
-     allocate(grn_l(nmesh,max_ndim,nsite), stat = istat)
-     allocate(grn_k(nband,nkpt,nspin),     stat = istat)
+     allocate(grn_l(nmesh,max_ndim,max_ndim,nspin,nsite), stat = istat)
+     allocate(grn_k(nmesh,nband,nband,nkpt,nspin),        stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
