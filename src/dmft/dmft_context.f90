@@ -364,14 +364,14 @@
 !!
 !! local green's functions
 !!
-     complex(dp), public, save, allocatable :: grn_l(:,:,:)
+     complex(dp), public, save, allocatable :: grn_l(:,:,:,:,:)
 
 !!
 !! @var grn_k
 !!
 !! lattice green's functions
 !!
-     complex(dp), public, save, allocatable :: grn_k(:,:,:)
+     complex(dp), public, save, allocatable :: grn_k(:,:,:,:,:)
 
   end module dmft_green
 
