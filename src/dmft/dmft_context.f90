@@ -722,7 +722,7 @@
 ! allocate memory
      allocate(sigdc(max_ndim,max_ndim,nspin,nsite),       stat = istat)
      allocate(sig_l(nmesh,max_ndim,max_ndim,nspin,nsite), stat = istat)
-     allocate(sig_k(nmesh,nband,nband,nkpt,nspin),        stat = istat)
+     allocate(sig_k(nmesh,max_nbnd,max_nbnd,nkpt,nspin),  stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
