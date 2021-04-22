@@ -771,9 +771,9 @@
 
 ! allocate memory
      allocate(wss_l(nmesh,max_ndim,max_ndim,nspin,nsite), stat = istat)
-     allocate(wss_k(nmesh,nband,nband,nkpt,nspin),        stat = istat)
+     allocate(wss_k(nmesh,max_nbnd,max_nbnd,nkpt,nspin),  stat = istat)
      allocate(hyb_l(nmesh,max_ndim,max_ndim,nspin,nsite), stat = istat)
-     allocate(hyb_k(nmesh,nband,nband,nkpt,nspin),        stat = istat)
+     allocate(hyb_k(nmesh,max_nbnd,max_nbnd,nkpt,nspin),  stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then

@@ -60,10 +60,10 @@
 ! setup default parameters
 !-------------------------------------------------------------------------
      task   = 1         ! computational task
-     axis   = 1         ! frequency mesh
+     axis   = 1         ! type of frequency mesh
 !-------------------------------------------------------------------------
      lfermi = .true.    ! fermi level search
-     ltetra = .true.    ! tetrahedron algorithm
+     ltetra = .true.    ! analytical tetrahedron algorithm
 !-------------------------------------------------------------------------
      beta   = 8.00_dp   ! inverse temperature
      mc     = 0.0001_dp ! convergence criterion for fermi level search
@@ -493,7 +493,7 @@
                      read(mytmp,*) itmp, itmp, kwin(k,s,1,i), kwin(k,s,2,i)
                  enddo ! over k={1,nkpt} loop
              enddo ! over s={1,nspin} loop
-         enddo ! over i={1,ngrp} loop
+         enddo ! over i={1,nwnd} loop
 
 ! evaluate max_nbnd
          max_nbnd = maxval(nbnd)
@@ -995,6 +995,10 @@
              call s_assert2(itmp == ndim(g), "nproj is wrong")
 
 ! check nband
+! here, `nband` is not the number of bands in the dft calculations. it is
+! just the number of bands that contained in the band window for building
+! the local orbital projection. for different groups of projectors, the
+! corresponding `nband` might be different.
              read(mytmp,*) chr1, chr2, itmp
              call s_assert2(itmp == nbnd(g), "nband is wrong")
 
