@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/21
+# Last modified: 2021/04/22
 #
 
 #
@@ -132,17 +132,54 @@ function vasp_exec(it::IterInfo)
         vasp_cmd = split("$mpi_prefix $vasp_exe", " ")
     end
 
-    # Launch it, the terminal output is redirected to vasp.out.
-    # Note that the process runs synchronously. It will block the
-    # execution unitl is is finished.
+    # Create a task, but do not run it immediately
     t = @task begin
         run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
     end
+
+    # Launch it, the terminal output is redirected to vasp.out.
+    # Note that the task runs asynchronously. It will not block
+    # the execution.
     schedule(t)
-    println("running...")
-    for l in eachline("vasp.out")
-        println(l)
+
+    # Analyze the vasp.out file during the calculation 
+    #
+    # `c` is a time counter
+    c = 0
+    #
+    # Enter infinite loop
+    while true
+        # Sleep five seconds
+        sleep(5)
+
+        # Increase the counter
+        c = c + 1
+
+        # Parse vasp.out file
+        iters = readlines("vasp.out")
+        filter!(x -> contains(x, "DAV:"), iters)
+
+        # Figure out the number of iterations and deltaE
+        if length(iters) > 0
+            arr = line_to_array(iters[end])
+            ci = parse(I64, arr[2])
+            dE = arr[4]
+        else # The first iteration has not been finished
+            ci = 0
+            dE = "unknown"
+        end
+
+        # Print the log to screen
+        @printf("Elapsed %4i seconds, %4i iterations (dE = %s)\r", 5*c, ci, dE)
+
+        # Break the loop
+        istaskdone(t) && break
     end
+    #
+    # Keep the last output
+    println()
+
+    # Wait for the vasp task to finish
     wait(t)
 
     # Extract how many iterations are executed
