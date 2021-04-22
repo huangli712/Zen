@@ -159,18 +159,18 @@ function vasp_exec(it::IterInfo)
         iters = readlines("vasp.out")
         filter!(x -> contains(x, "DAV:"), iters)
 
-        # Figure out the number of iterations and deltaE
+        # Figure out the number of iterations (`ni`) and deltaE (`dE`)
         if length(iters) > 0
             arr = line_to_array(iters[end])
-            ci = parse(I64, arr[2])
+            ni = parse(I64, arr[2])
             dE = arr[4]
         else # The first iteration has not been finished
-            ci = 0
+            ni = 0
             dE = "unknown"
         end
 
         # Print the log to screen
-        @printf("Elapsed %4i seconds, %4i iterations (dE = %12s)\r", 5*c, ci, dE)
+        @printf("Elapsed %4i seconds, %4i iterations (dE = %12s)\r", 5*c, ni, dE)
 
         # Break the loop
         istaskdone(t) && break
