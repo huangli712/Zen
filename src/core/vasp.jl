@@ -135,7 +135,15 @@ function vasp_exec(it::IterInfo)
     # Launch it, the terminal output is redirected to vasp.out.
     # Note that the process runs synchronously. It will block the
     # execution unitl is is finished.
-    run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
+    t = @task begin
+        run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
+    end
+    schedule(t)
+    println("running...")
+    for l in eachline("vasp.out")
+        println(l)
+    end
+    wait(t)
 
     # Extract how many iterations are executed
     iters = readlines("vasp.out")

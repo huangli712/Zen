@@ -201,7 +201,7 @@ function sigma_dcount()
         # Push DC into DCA to save it
         push!(DCA, DC)
     end
-    println("  Create double counting terms")
+    println("  Create double counting terms: $(get_m("dcount"))")
 
     # Write double counting terms to sigma.dc
     open("dmft1/sigma.dc", "w") do fout
