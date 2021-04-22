@@ -394,28 +394,28 @@
 !!
 !! local bath weiss functions
 !!
-     complex(dp), public, save, allocatable :: wss_l(:,:,:)
+     complex(dp), public, save, allocatable :: wss_l(:,:,:,:,:)
 
 !!
 !! @var wss_k
 !!
 !! lattice bath weiss functions
 !!
-     complex(dp), public, save, allocatable :: wss_k(:,:,:)
+     complex(dp), public, save, allocatable :: wss_k(:,:,:,:,:)
 
 !!
 !! @var hyb_l
 !!
 !! local hybridization functions
 !!
-     complex(dp), public, save, allocatable :: hyb_l(:,:,:)
+     complex(dp), public, save, allocatable :: hyb_l(:,:,:,:,:)
 
 !!
 !! @var hyb_k
 !!
 !! lattice hybridization functions
 !!
-     complex(dp), public, save, allocatable :: hyb_k(:,:,:)
+     complex(dp), public, save, allocatable :: hyb_k(:,:,:,:,:)
 
   end module dmft_weiss
 
