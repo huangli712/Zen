@@ -170,7 +170,7 @@ function vasp_exec(it::IterInfo)
         end
 
         # Print the log to screen
-        @printf("Elapsed %4i seconds, %4i iterations (dE = %s)\r", 5*c, ci, dE)
+        @printf("Elapsed %4i seconds, %4i iterations (dE = %12s)\r", 5*c, ci, dE)
 
         # Break the loop
         istaskdone(t) && break
