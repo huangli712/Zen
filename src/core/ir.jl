@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/21
+# Last modified: 2021/04/23
 #
 
 #
@@ -21,7 +21,7 @@ See also: [`vasp_adaptor`](@ref), [`plo_adaptor`](@ref).
 """
 function ir_adaptor(D::Dict{Symbol,Any})
     # I01: Check the validity of the `D` dict
-    key_list = [:latt, :kmesh, :weight, :enk, :occupy, :Fchipsi, :fermi]
+    key_list = [:MAP, :PG, :PW, :latt, :kmesh, :weight, :enk, :occupy, :Fchipsi, :fermi]
     for k in key_list
         @assert haskey(D, k)
     end
@@ -32,6 +32,9 @@ function ir_adaptor(D::Dict{Symbol,Any})
     # I03: Write important parameters
     println("  Store params")
     irio_params(pwd(), D)
+    #
+    println("  Store maps")
+    irio_maps(pwd(), D[:MAP])
     #
     println("  Store groups")
     irio_groups(pwd(), D[:PG])
