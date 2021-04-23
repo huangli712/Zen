@@ -51,7 +51,7 @@ function plo_adaptor(D::Dict{Symbol,Any})
     #
     # D[:PG] will be updated
     println("  Complete groups")
-    plo_group(D[:PG])
+    plo_group(D[:MAP], D[:PG])
 
     # P06: Setup the band / energy window for projectors
     #
@@ -166,6 +166,7 @@ function plo_map(PG::Array{PrGroup,1})
     # For a given quantum impurity problem, we can always find out the
     # corresponding group of projectors.
     @assert any(Map.i_grp .> 0)
+    @assert any(Map.i_grp .<= ngrp)
 
     # Return the desired struct
     return Map
@@ -183,14 +184,14 @@ function plo_fermi(enk::Array{F64,3}, fermi::F64)
 end
 
 """
-    plo_group(PG::Array{PrGroup,1})
+    plo_group(MAP::Mapping, PG::Array{PrGroup,1})
 
 Use the information contained in the `PIMP` dict to further complete
 the `PrGroup` struct.
 
-See also: [`PIMP`](@ref), [`PrGroup`](@ref).
+See also: [`PIMP`](@ref), [`Mapping`](@ref), [`PrGroup`](@ref).
 """
-function plo_group(PG::Array{PrGroup,1})
+function plo_group(MAP::Mapping, PG::Array{PrGroup,1})
 
 #
 # Remarks:
@@ -202,24 +203,25 @@ function plo_group(PG::Array{PrGroup,1})
 #    in other words, the case.toml file.
 #
 
-
     # Scan the groups of projectors, setup them one by one.
     for g in eachindex(PG)
         # Examine PrGroup, check number of projectors
         @assert 2 * PG[g].l + 1 === length(PG[g].Pr)
 
-        # Loop over each site (quantum impurity problem)
-        for i in eachindex(site_l)
-            SL = site_l[i]
-            # Well, find out the required PrGroup
-            if (PG[g].site, PG[g].l) === (SL[1], SL[2])
-                # Setup corr property
-                PG[g].corr = true
+        # Extract the index of quantum impurity problem for the current
+        # group of projectors
+        s = MAP.g_imp[g]
 
-                # Setup shell property
-                # Later it will be used to generate `Tr`
-                PG[g].shell = SL[3]
-            end
+        # Yes, this group of projectors has a corresponding quantum
+        # impurity problem. We have to further modify it. If `s` is
+        # 0, it means that the group of projectors is non-correlated. 
+        if s != 0
+            # Setup corr property
+            PG[g].corr = true
+
+            # Setup shell property
+            # Later it will be used to generate `Tr`
+            PG[g].shell = get_i("shell")[s]
         end
 
         # Setup Tr array further
