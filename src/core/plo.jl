@@ -165,8 +165,7 @@ function plo_map(PG::Array{PrGroup,1})
     # Examine Map.i_grp
     # For a given quantum impurity problem, we can always find out the
     # corresponding group of projectors.
-    @assert any(Map.i_grp .> 0)
-    @assert any(Map.i_grp .<= ngrp)
+    @assert all(x -> (0 < x <= ngrp), Map.i_grp)
 
     # Return the desired struct
     return Map
