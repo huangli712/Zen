@@ -143,7 +143,18 @@ function plo_map(PG::Array{PrGroup,1})
     # Create the Mapping struct
     Map = Mapping(nsite, ngrp)    
 
+    # Determine Map.i_grp (imp -> grp) and Map.g_imp (grp -> imp)
+    for i = 1:nsite
+        SL = site_l[i]
+        for g = 1:ngrp
+            if (PG[g].site, PG[g].l) === (SL[1], SL[2])
+                Map.i_grp[i] = g
+                Map.g_imp[g] = i
+            end
+        end
+    end
 
+    return Map
 end
 
 """
