@@ -483,6 +483,19 @@ function Base.show(io::IO, latt::Lattice)
 end
 
 """
+    Base.show(io::IO, map::Mapping)
+
+Base.show() function for Mapping struct.
+
+See also: [`Mapping`](@ref).
+"""
+function Base.show(io::IO, map::Mapping)
+    println(io, "Mapping struct")
+    println(io, "i_grp : ", map.i_grp)
+    println(io, "g_imp : ", map.g_imp)
+end
+
+"""
     Base.show(io::IO, PT::PrTrait)
 
 Base.show() function for PrTrait struct.
