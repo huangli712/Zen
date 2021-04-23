@@ -95,7 +95,56 @@ end
 # Service Functions (Group A)
 #
 
-function plo_map()
+"""
+    plo_map(PG::Array{PrGroup,1})
+
+Create connections / mappings between projectors and quantum impurity
+problems. Return a Mapping struct.
+
+See also: [`PrGroup`](@ref), [`Mapping`](@ref).
+"""
+function plo_map(PG::Array{PrGroup,1})
+    # Extract key parameters
+    nsite = get_i("nsite")
+    ngrp = length(PG)
+
+    # Additional check for the parameters contained in PIMP dict
+    @assert nsite === length(get_i("atoms"))
+    @assert nsite === length(get_i("shell"))
+
+    # The lshell creates a mapping from shell (string) to l (integer).
+    # It is used to parse get_i("shell") to extract the `l` parameter.
+    lshell = Dict{String,I64}(
+                 "s"     => 0,
+                 "p"     => 1,
+                 "d"     => 2,
+                 "f"     => 3,
+                 "d_t2g" => 2, # Only a subset of d orbitals
+                 "d_eg"  => 2, # Only a subset of d orbitals
+             )
+
+    # Loop over each site (the quantum impurity problem) to gather some
+    # relevant information, such as `site` and `l`. We use a Array of
+    # Tuple (site_l) to record them.
+    site_l = Tuple[]
+    for i = 1:nsite
+        # Determine site
+        str = get_i("atoms")[i]
+        site = parse(I64, line_to_array(str)[3])
+
+        # Determine l and its specification
+        str = get_i("shell")[i]
+        l = get(lshell, str, nothing)
+
+        # Push the data into site_l
+        push!(site_l, (site, l, str))
+    end
+
+    # Create the Mapping struct
+    Map = Mapping(nsite, ngrp)    
+
+
+end
 
 """
     plo_fermi(enk::Array{F64,3}, fermi::F64)
@@ -128,37 +177,6 @@ function plo_group(PG::Array{PrGroup,1})
 #    in other words, the case.toml file.
 #
 
-    # Additional check for the parameters contained in PIMP dict
-    @assert get_i("nsite") === length(get_i("atoms"))
-    @assert get_i("nsite") === length(get_i("shell"))
-
-    # The lshell creates a mapping from shell (string) to l (integer).
-    # It is used to parse get_i("shell") to extract the `l` parameter.
-    lshell = Dict{String,I64}(
-                 "s"     => 0,
-                 "p"     => 1,
-                 "d"     => 2,
-                 "f"     => 3,
-                 "d_t2g" => 2, # Only a subset of d orbitals
-                 "d_eg"  => 2, # Only a subset of d orbitals
-             )
-
-    # Loop over each site (the quantum impurity problem) to gather some
-    # relevant information, such as `site` and `l`. We use a Array of
-    # Tuple (site_l) to record them.
-    site_l = Tuple[]
-    for i = 1:get_i("nsite")
-        # Determine site
-        str = get_i("atoms")[i]
-        site = parse(I64, line_to_array(str)[3])
-
-        # Determine l and its specification
-        str = get_i("shell")[i]
-        l = get(lshell, str, nothing)
-
-        # Push the data into site_l
-        push!(site_l, (site, l, str))
-    end
 
     # Scan the groups of projectors, setup them one by one.
     for g in eachindex(PG)
