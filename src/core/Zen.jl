@@ -208,6 +208,7 @@ export tetra_p_ek4
 # Logger   -> Struct for logger.
 # IterInfo -> Struct for DFT + DMFT iteration information.
 # Lattice  -> Struct for crystallography information.
+# Mapping  -> Struct for mapping between impurity problems and projectors.
 # PrTrait  -> Struct for projectors.
 # PrGroup  -> Struct for groups of projectors.
 # PrWindow -> Struct for band window.
@@ -222,6 +223,7 @@ export PSOLVER
 export Logger
 export IterInfo
 export Lattice
+export Mapping
 export PrTrait
 export PrGroup
 export PrWindow
