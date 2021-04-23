@@ -222,6 +222,14 @@ function irio_params(f::String, D::Dict{Symbol,Any})
     end
 end
 
+"""
+    irio_maps(f::String, MAP::Mapping)
+
+Write the information contained in Mapping. Here `f` means only the
+directory that we want to use.
+
+See also: [`Mapping`](@ref).
+"""
 function irio_maps(f::String, MAP::Mapping)
 end
 
