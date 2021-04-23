@@ -95,6 +95,8 @@ end
 # Service Functions (Group A)
 #
 
+function plo_map()
+
 """
     plo_fermi(enk::Array{F64,3}, fermi::F64)
 

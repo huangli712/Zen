@@ -388,6 +388,7 @@ export vaspio_charge
 # Members:
 #
 # plo_adaptor -> Adaptor support.
+# plo_map     -> Create connection between projectors and impurity problems.
 # plo_fermi   -> Calibrate Kohn-Sham eigenvalues with respect to fermi level.
 # plo_group   -> Setup groups of projectors.
 # plo_window  -> Setup band windows of projectors.
@@ -412,6 +413,7 @@ export vaspio_charge
 include("plo.jl")
 #
 export plo_adaptor
+export plo_map
 export plo_fermi
 export plo_group
 export plo_window
