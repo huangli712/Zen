@@ -447,6 +447,7 @@ export view_dos
 # ir_adaptor   -> Adaptor support.
 # ir_save      -> Save the output files by the adaptor.
 # irio_params  -> Write key parameters extracted from Kohn-Sham data.
+# irio_maps    -> Write Mapping.
 # irio_groups  -> Write PrGroup.
 # irio_windows -> Write PrWindow.
 # irio_lattice -> Write lattice information.
@@ -462,6 +463,7 @@ include("ir.jl")
 export ir_adaptor
 export ir_save
 export irio_params
+export irio_maps
 export irio_groups
 export irio_windows
 export irio_lattice
