@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/31
+# Last modified: 2021/04/23
 #
 
 #
@@ -190,6 +190,24 @@ mutable struct Lattice
     sorts :: Array{Union{String,I64},2}
     atoms :: Array{String,1}
     coord :: Array{F64,2}
+end
+
+"""
+    Mapping
+
+Mutable struct. Mapping between quantum impurity problems and groups
+of projectors.
+
+## Members
+
+imp_to_grp -> From impurity problems to groups of projectors.\n
+grp_to_imp -> From groups of projectors to impurity problems.
+
+See also: [`PrGroup`](@ref).
+"""
+mutable struct Mapping
+    imp_to_grp :: Array{I64,1}
+    grp_to_imp :: Array{I64,1}
 end
 
 """
