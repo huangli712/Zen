@@ -200,14 +200,14 @@ of projectors.
 
 ## Members
 
-imp_to_grp -> From impurity problems to groups of projectors.\n
-grp_to_imp -> From groups of projectors to impurity problems.
+imp_grp -> From impurity problems to groups of projectors.\n
+grp_imp -> From groups of projectors to impurity problems.
 
 See also: [`PrGroup`](@ref).
 """
 mutable struct Mapping
-    imp_to_grp :: Array{I64,1}
-    grp_to_imp :: Array{I64,1}
+    imp_grp :: Array{I64,1}
+    grp_imp :: Array{I64,1}
 end
 
 """
