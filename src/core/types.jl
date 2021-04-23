@@ -200,14 +200,14 @@ of projectors.
 
 ## Members
 
-imp_grp -> From impurity problems to groups of projectors.\n
-grp_imp -> From groups of projectors to impurity problems.
+i_grp -> Mapping from impurity problems to groups of projectors.\n
+g_imp -> Mapping from groups of projectors to impurity problems.
 
 See also: [`PrGroup`](@ref).
 """
 mutable struct Mapping
-    imp_grp :: Array{I64,1}
-    grp_imp :: Array{I64,1}
+    i_grp :: Array{I64,1}
+    g_imp :: Array{I64,1}
 end
 
 """
@@ -340,11 +340,11 @@ function Mapping(nsite::I64, ngrp::I64)
     @assert ngrp >= nsite
 
     # Initialize the arrays
-    imp_grp = zeros(I64, nsite)
-    grp_imp = zeros(I64, ngrp)
+    i_grp = zeros(I64, nsite)
+    g_imp = zeros(I64, ngrp)
 
     # Call the default constructor
-    Mapping(imp_grp, grp_imp)
+    Mapping(i_grp, g_imp)
 end
 
 """
