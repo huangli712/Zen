@@ -331,6 +331,23 @@ function Lattice(_case::String, scale::F64, nsort::I64, natom::I64)
 end
 
 """
+    Mapping(nsite::I64, ngrp::I64)
+
+Outer constructor for Mapping struct.
+"""
+function Mapping(nsite::I64, ngrp::I64)
+    # Sanity check
+    @assert ngrp >= nsite
+
+    # Initialize the arrays
+    imp_grp = zeros(I64, nsite)
+    grp_imp = zeros(I64, ngrp)
+
+    # Call the default constructor
+    Mapping(imp_grp, grp_imp)
+end
+
+"""
     PrTrait(site::I64, sort::String, desc::String)
 
 Outer constructor for PrTrait struct.
