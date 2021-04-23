@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/14
+# Last modified: 2021/04/23
 #
 
 #
@@ -208,6 +208,8 @@ function chk_dict()
     #
     # Check impurity block
     @assert get_i("nsite") >= 1 && get_i("nsite") <= 99
+    @assert all(x -> x in ("s", "p", "d", "f", "d_t2g", "d_eg"), get_i("shell"))
+    @assert all(x -> x in ("ising", "full"), get_i("ising"))
     #
     # Check solver block
     @assert get_s("engine") in ("ct_hyb1", "ct_hyb2", "hub1", "norg")
