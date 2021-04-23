@@ -99,7 +99,7 @@ See also: [`ir_adaptor`](@ref).
 """
 function ir_save(it::IterInfo)
     # Create a list of files that need to be backup
-    fir1 = ["params", "groups", "windows"]
+    fir1 = ["params", "maps", "groups", "windows"]
     fir2 = ["lattice", "kmesh", "eigen", "projs", "fermi"]
     file_list = union(fir1, fir2)
     #
@@ -220,6 +220,9 @@ function irio_params(f::String, D::Dict{Symbol,Any})
         println(fout, "nmesh -> $nmesh")
         println(fout)
     end
+end
+
+function irio_maps(f::String, MAP::Mapping)
 end
 
 """
