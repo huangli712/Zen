@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/21
+# Last modified: 2021/04/23
 #
 
 #
@@ -111,6 +111,8 @@ See also: [`PrGroup`](@ref), [`Mapping`](@ref).
 """
 function plo_map(PG::Array{PrGroup,1})
     # Extract key parameters
+    # Here, `nsite` is number of impurity problems and `ngrp` is number
+    # of groups for projectors.
     nsite = get_i("nsite")
     ngrp = length(PG)
 
@@ -160,6 +162,12 @@ function plo_map(PG::Array{PrGroup,1})
         end
     end
 
+    # Examine Map.i_grp
+    # For a given quantum impurity problem, we can always find out the
+    # corresponding group of projectors.
+    @assert any(Map.i_grp .> 0)
+
+    # Return the desired struct
     return Map
 end
 
