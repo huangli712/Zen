@@ -35,44 +35,50 @@ function plo_adaptor(D::Dict{Symbol,Any})
         @assert haskey(D, k)
     end
 
-    # P03: Adjust the band structure
+    # P03: Create connections between projectors and impurity problems
+    #
+    # D[:MAP] will be created
+    println("  Create impurities-projectors mapping")
+    D[:MAP] = plo_map(D[:PG])
+
+    # P04: Adjust the band structure
     #
     # D[:enk] will be updated
     println("  Calibrate eigenvalues")
     plo_fermi(D[:enk], D[:fermi])
 
-    # P04: Setup the PrGroup strcut further
+    # P05: Setup the PrGroup strcut further
     #
     # D[:PG] will be updated
     println("  Complete groups")
     plo_group(D[:PG])
 
-    # P05: Setup the band / energy window for projectors
+    # P06: Setup the band / energy window for projectors
     #
     # D[:PW] will be created
     println("  Generate window")
     D[:PW] = plo_window(D[:PG], D[:enk])
 
-    # P06: Transform the projectors
+    # P07: Transform the projectors
     #
     # D[:Rchipsi] will be created
     println("  Rotate projectors")
     D[:Rchipsi] = plo_rotate(D[:PG], D[:chipsi])
 
-    # P07: Filter the projectors
+    # P08: Filter the projectors
     #
     # D[:Fchipsi] will be created
     println("  Filter projectors")
     D[:Fchipsi] = plo_filter(D[:PW], D[:Rchipsi])
 
-    # P08: Orthogonalize and normalize the projectors
+    # P09: Orthogonalize and normalize the projectors
     #
     # D[:Fchipsi] will be updated. It contains the final data
     # for projector matrix.
     println("  Normalize projectors")
     plo_orthog(D[:PW], D[:Fchipsi])
 
-    # P09: Are the projectors correct?
+    # P10: Are the projectors correct?
     #
     # We will try to calculate some physical quantitites, which
     # will be written to external files or terminal for reference.
@@ -86,7 +92,7 @@ function plo_adaptor(D::Dict{Symbol,Any})
         plo_monitor(D)
     end
 
-    # P10: Print the footer for a better visualization
+    # P11: Print the footer for a better visualization
     println("The Kohn-Sham dataset is preprocessed by the adaptor")
     println()
 end
