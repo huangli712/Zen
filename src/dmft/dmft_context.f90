@@ -23,8 +23,36 @@
 !!! comment :
 !!!-----------------------------------------------------------------------
 
-module dmft_map
-end module dmft_map
+!!========================================================================
+!!>>> module dmft_map                                                  <<<
+!!========================================================================
+
+!!
+!! @mod dmft_map
+!!
+!! define connections /mappings between the quantum impurity problems and
+!! the groups of projectors
+!!
+  module dmft_map
+     implicit none
+
+!!
+!! @var i_grp
+!!
+!! from a given quantum impurity problem, return the corresponding group
+!! of projectors
+!!
+     integer, public, save, allocatable :: i_grp(:)
+
+!!
+!! @var g_imp
+!!
+!! from a given group of projectors, return the corresponding quantum
+!! impurity problem
+!!
+     integer, public, save, allocatable :: g_imp(:)
+
+  end module dmft_map
 
 !!========================================================================
 !!>>> module dmft_group                                                <<<
