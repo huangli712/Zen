@@ -251,7 +251,7 @@ Tr     -> Array. It contains the transformation matrix. This parameter
           could be useful to select certain subset of orbitals or perform
           a simple global rotation.
 
-See also: [`PrTrait`](@ref), [`PrWindow`](@ref).
+See also: [`PrTrait`](@ref), [`PrWindow`](@ref), [`Mapping`](@ref).
 """
 mutable struct PrGroup
     site  :: I64

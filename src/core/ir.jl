@@ -231,6 +231,20 @@ directory that we want to use.
 See also: [`Mapping`](@ref).
 """
 function irio_maps(f::String, MAP::Mapping)
+    # Extract key parameters
+    nsite = length(MAP.i_grp)
+    ngrp = length(MAP.g_imp)
+
+    # Output the data
+    open(joinpath(f, "maps.ir"), "w") do fout
+        # Write the header
+        println(fout, "# File: maps.ir")
+        println(fout, "# Data: some necessary data structures")
+        println(fout)
+        println(fout, "nsite -> $nsite")
+        println(fout, "ngrp  -> $ngrp")
+        println(fout)
+    end
 end
 
 """
