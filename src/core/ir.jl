@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/23
+# Last modified: 2021/04/24
 #
 
 #
@@ -244,6 +244,19 @@ function irio_maps(f::String, MAP::Mapping)
         println(fout, "nsite -> $nsite")
         println(fout, "ngrp  -> $ngrp")
         println(fout)
+
+        # Write the body
+        # For i_grp part
+        println(fout, "# i_grp")
+        foreach(x -> @printf(fout, "%8i", x), MAP.i_grp)
+        println(fout)
+        println(fout)
+
+        # For g_imp part
+        println(fout, "# g_imp")
+        foreach(x -> @printf(fout, "%8i", x), MAP.g_imp)
+        println(fout)
+        println(fout)
     end
 end
 
@@ -345,11 +358,11 @@ function irio_lattice(f::String, latt::Lattice)
         # For sorts part
         println(fout, "[sorts]")
         for i = 1:nsort # Symbols
-            @printf(fout, "%6s", latt.sorts[i, 1])
+            @printf(fout, "%8s", latt.sorts[i, 1])
         end
         println(fout)
         for i = 1:nsort # Numbers
-            @printf(fout, "%6i", latt.sorts[i, 2])
+            @printf(fout, "%8i", latt.sorts[i, 2])
         end
         println(fout)
         println(fout)
@@ -357,7 +370,7 @@ function irio_lattice(f::String, latt::Lattice)
         # For atoms part
         println(fout, "[atoms]")
         for i = 1:natom
-            @printf(fout, "%6s", latt.atoms[i])
+            @printf(fout, "%8s", latt.atoms[i])
         end
         println(fout)
         println(fout)
