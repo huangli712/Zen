@@ -532,6 +532,9 @@
 !!>>> allocate memory subroutines                                      <<<
 !!========================================================================
 
+  subroutine cat_alloc_map()
+  end subroutine cat_alloc_map
+
 !!
 !! @sub cat_alloc_group
 !!
@@ -827,6 +830,12 @@
 !!========================================================================
 !!>>> deallocate memory subroutines                                    <<<
 !!========================================================================
+
+  subroutine cat_free_map()
+     implicit none
+
+     return
+  end subroutine cat_free_map
 
 !!
 !! @sub cat_free_group
