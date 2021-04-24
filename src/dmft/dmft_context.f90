@@ -533,6 +533,9 @@
 !!========================================================================
 
   subroutine cat_alloc_map()
+     implicit none
+
+     return
   end subroutine cat_alloc_map
 
 !!
