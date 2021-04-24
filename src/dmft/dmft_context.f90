@@ -472,6 +472,7 @@
      use control, only : nsite
      use control, only : nmesh
 
+     use dmft_map
      use dmft_group
      use dmft_window
      use dmft_lattice
@@ -498,6 +499,7 @@
 !!========================================================================
 
 ! declaration of module procedures: allocate memory
+     public :: cat_alloc_map
      public :: cat_alloc_group
      public :: cat_alloc_window
      public :: cat_alloc_lattice
@@ -511,6 +513,7 @@
      public :: cat_alloc_weiss
 
 ! declaration of module procedures: deallocate memory
+     public :: cat_free_map
      public :: cat_free_group
      public :: cat_free_window
      public :: cat_free_lattice
