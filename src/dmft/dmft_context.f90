@@ -1,6 +1,7 @@
 !!!-----------------------------------------------------------------------
 !!! project : jacaranda
-!!! program : dmft_group
+!!! program : dmft_map
+!!!           dmft_group
 !!!           dmft_window
 !!!           dmft_lattice
 !!!           dmft_kmesh
@@ -16,11 +17,14 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/22/2021 by li huang (last modified)
+!!!           04/24/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
 !!!-----------------------------------------------------------------------
+
+module dmft_map
+end module dmft_map
 
 !!========================================================================
 !!>>> module dmft_group                                                <<<
