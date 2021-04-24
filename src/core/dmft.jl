@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/19
+# Last modified: 2021/04/24
 #
 
 """
@@ -26,7 +26,7 @@ function dmft_init(it::IterInfo, task::I64)
     fsig = ["sigma.bare", "sigma.dc"]
     #
     # Parameter sets within the IR format
-    fir1 = ["params.ir", "groups.ir", "windows.ir"]
+    fir1 = ["params.ir", "maps.ir", "groups.ir", "windows.ir"]
     #
     # Kohn-Sham data within the IR format
     fir2 = ["lattice.ir", "kmesh.ir", "eigen.ir", "projs.ir"]
