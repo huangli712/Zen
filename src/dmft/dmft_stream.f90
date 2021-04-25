@@ -144,7 +144,7 @@
      use control, only : scale, fermi, volt
      use control, only : myid, master
 
-     use context, only : qdim, max_nbnd
+     use context, only : qdim, qbnd
 
      implicit none
 
@@ -170,7 +170,7 @@
      ngrp   = 1         ! number of groups for projectors
      qdim   = 3         ! maximum number of projectors in groups
      nwnd   = 1         ! number of windows for projectors
-     max_nbnd = 5       ! maximum number of bands in windows
+     qbnd   = 5         ! maximum number of bands in windows
 !-------------------------------------------------------------------------
      nsite  = 1         ! number of impurity sites
      nmesh  = 8193      ! number of frequency points
@@ -222,7 +222,7 @@
 
              read(mytmp,*) ! for window block
              read(mytmp,*) chr1, chr2, nwnd
-             read(mytmp,*) chr1, chr2, max_nbnd
+             read(mytmp,*) chr1, chr2, qbnd
              read(mytmp,*)
 
              read(mytmp,*) ! for sigma block
@@ -265,7 +265,7 @@
 
 ! for window block
      call mp_bcast( nwnd  , master )
-     call mp_bcast( max_nbnd  , master )
+     call mp_bcast( qbnd  , master )
      call mp_barrier()
 
 ! for sigma block
@@ -532,7 +532,7 @@
      use control, only : nwnd
      use control, only : myid, master
 
-     use context, only : max_nbnd
+     use context, only : qbnd
      use context, only : bmin, bmax, nbnd, kwin
 
      implicit none
@@ -594,8 +594,8 @@
              read(mytmp,*)
          enddo ! over i={1,nwnd} loop
 
-! evaluate max_nbnd
-         max_nbnd = maxval(nbnd)
+! evaluate qbnd
+         qbnd = maxval(nbnd)
 
 ! close file handler
          close(mytmp)
@@ -610,7 +610,7 @@
      call mp_barrier()
 
 ! broadcast data
-     call mp_bcast( max_nbnd, master )
+     call mp_bcast( qbnd, master )
 
 ! block until all processes have reached here
      call mp_barrier()
