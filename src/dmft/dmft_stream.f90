@@ -336,6 +336,17 @@
 
      implicit none
 
+! local variables
+! dummy integer variables
+     integer :: itmp
+
+! used to check whether the input file (maps.ir) exists
+     logical :: exists
+
+! dummy character variables
+     character(len = 5) :: chr1
+     character(len = 2) :: chr2
+
      return
   end subroutine dmft_input_map
 
