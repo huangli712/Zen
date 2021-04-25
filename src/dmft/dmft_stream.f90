@@ -1358,7 +1358,7 @@
 ! check ndim
          do i=1,nsite
              read(mytmp,*) chr1, chr2, itmp
-             call s_assert2(itmp == ndim(i), "ndim is wrong")
+             call s_assert2(itmp == ndim(i_grp(i)), "ndim is wrong")
              call s_assert2(itmp <= max_ndim, "ndim is wrong")
          enddo ! over i={1,nsite} loop
          read(mytmp,*) ! empty line
