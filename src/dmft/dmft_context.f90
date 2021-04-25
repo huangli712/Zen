@@ -218,7 +218,7 @@
 !!
 !! @mod dmft_kmesh
 !!
-!! contain the k-mesh and the corresponding integration weights  
+!! contain the k-mesh and the corresponding integration weights
 !!
   module dmft_kmesh
      use constants, only : dp
@@ -584,7 +584,7 @@
      ndim  = 0
 
 ! special treatment for qdim
-! qdim should be initialized in dmft_setup_param() 
+! qdim should be initialized in dmft_setup_param()
      if ( qdim < 0 ) then
          call s_print_error('cat_alloc_group','qdim is less than 0')
      endif ! back if ( qdim < 0 ) block
@@ -618,7 +618,7 @@
      kwin = 0
 
 ! special treatment for qbnd
-! qbnd should be initialized in dmft_setup_param() 
+! qbnd should be initialized in dmft_setup_param()
      if ( qbnd < 0 ) then
          call s_print_error('cat_alloc_window','qbnd is less than 0')
      endif ! back if ( qbnd < 0 ) block

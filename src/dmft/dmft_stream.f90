@@ -480,8 +480,9 @@
              read(mytmp,*)
          enddo ! over i={1,ngrp} loop
 
-! evaluate qdim
-         qdim = maxval(ndim)
+! evaluate and check qdim
+         itmp = maxval(ndim)
+         call s_assert2(itmp == qdim, "ndim is wrong")
 
 ! close file handler
          close(mytmp)
@@ -491,12 +492,6 @@
 
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
-
-! block until all processes have reached here
-     call mp_barrier()
-
-! broadcast data
-     call mp_bcast( qdim , master )
 
 ! block until all processes have reached here
      call mp_barrier()
@@ -1118,7 +1113,7 @@
                      do b=1,nbnd(g)
                          do d=1,ndim(g)
                              read(mytmp,*) re, im
-                             psichi(d,b,k,s,g) = dcmplx(re,im) 
+                             psichi(d,b,k,s,g) = dcmplx(re,im)
                          enddo ! over d={1,ndim(g)} loop
                      enddo ! over b={1,nbnd(g)} loop
                  enddo ! over k={1,nkpt} loop
@@ -1224,7 +1219,7 @@
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nspin, "nspin is wrong")
 
-! check ndim 
+! check ndim
          do i=1,nsite
              read(mytmp,*) chr1, chr2, itmp
              call s_assert2(itmp == ndim(i_grp(i)), "ndim is wrong")
@@ -1271,7 +1266,7 @@
 !!
 !! @sub dmft_input_sig_l
 !!
-!! read in bare self-energy functions from quantum impurity solvers. 
+!! read in bare self-energy functions from quantum impurity solvers.
 !! (see module dmft_sigma)
 !!
   subroutine dmft_input_sig_l()
@@ -1371,7 +1366,7 @@
                  read(mytmp,*) ! empty line
 
                  do m=1,nmesh
-                     read(mytmp,*) chr2, itmp, fmesh(m) 
+                     read(mytmp,*) chr2, itmp, fmesh(m)
                      do j=1,ndim(i_grp(i))
                          do k=1,ndim(i_grp(i))
                              read(mytmp,*) re, im
@@ -1416,7 +1411,7 @@
 !! @sub dmft_alloc_array
 !!
 !! allocate memory for global variables and then initialize them
-!! 
+!!
   subroutine dmft_alloc_array()
      use context ! ALL
 
