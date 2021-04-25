@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/22
+# Last modified: 2021/04/25
 #
 
 #
@@ -142,7 +142,7 @@ function vasp_exec(it::IterInfo)
     # the execution.
     schedule(t)
 
-    # Analyze the vasp.out file during the calculation 
+    # Analyze the vasp.out file during the calculation
     #
     # `c` is a time counter
     c = 0
