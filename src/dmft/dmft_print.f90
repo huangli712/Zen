@@ -117,7 +117,7 @@
      use constants, only : mystd
 
      use control ! ALL
-     use context, only : qdim, max_nbnd
+     use context, only : qdim, qbnd
 
      implicit none
 
@@ -151,7 +151,7 @@
      write(mystd,'(2X,a)') '[configuration parameters] -> local orbital projector'
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      write(mystd,'(4X,a16,i10,  2X,a8)') 'qdim   / value :', qdim  , 'type : i'
-     write(mystd,'(4X,a16,i10,  2X,a8)') 'm_nbnd / value :', max_nbnd  , 'type : i'
+     write(mystd,'(4X,a16,i10,  2X,a8)') 'qbnd   / value :', qbnd  , 'type : i'
 
      write(mystd,'(2X,a)') '[configuration parameters] -> self-energy functions'
      write(mystd,'(2X,a)') '-----------------------------------------------------'
