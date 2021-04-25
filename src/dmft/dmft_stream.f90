@@ -347,6 +347,51 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
+! read in mappings or connections between quantum impurity problems and
+! groups of projectors if available
+!-------------------------------------------------------------------------
+     if ( myid == master ) then ! only master node can do it
+         exists = .false.
+
+! inquire about file's existence
+         inquire (file = 'maps.ir', exist = exists)
+
+! file maps.ir must be present
+         if ( exists .eqv. .false. ) then
+             call s_print_error('dmft_input_map','file maps.ir is absent')
+         endif ! back if ( exists .eqv. .false. ) block
+
+! open file maps.ir for reading
+         open(mytmp, file='maps.ir', form='formatted', status='unknown')
+
+! skip header
+         read(mytmp,*)
+         read(mytmp,*)
+
+! check ngrp
+         read(mytmp,*)
+         read(mytmp,*) chr1, chr2, itmp
+         read(mytmp,*)
+         call s_assert2(itmp == ngrp, "ngrp is wrong")
+
+! read data
+         do i=1,ngrp
+             read(mytmp,*)
+             read(mytmp,*) chr1, chr2, site(i)
+             read(mytmp,*) chr1, chr2, l(i)
+             read(mytmp,*) chr1, chr2, corr(i)
+             read(mytmp,*) chr1, chr2, shell(i)
+             read(mytmp,*) chr1, chr2, ndim(i)
+         enddo ! over i={1,ngrp} loop
+
+! evaluate max_ndim
+         max_ndim = maxval(ndim)
+
+! close file handler
+         close(mytmp)
+
+     endif ! back if ( myid == master ) block
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
      return
   end subroutine dmft_input_map
 
