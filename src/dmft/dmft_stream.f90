@@ -1239,8 +1239,9 @@
                      do n=1,ndim(i_grp(i))
                          read(mytmp,*) rtmp
                          sigdc(n,m,s,i) = dcmplx(rtmp, 0.0_dp)
-                     enddo
-                 enddo
+                     enddo ! over n={1,ndim(i_grp(i))} loop
+                 enddo ! over m={1,ndim(i_grp(i))} loop
+                 read(mytmp,*) ! empty line
              enddo ! over s={1,nspin} loop
          enddo ! over i={1,nsite} loop
 
@@ -1263,8 +1264,6 @@
      call mp_barrier()
 
 # endif  /* MPI */
-
-     STOP
 
      return
   end subroutine dmft_input_sigdc
