@@ -319,8 +319,8 @@
 !! @sub dmft_input_map
 !!
 !! read in connections / mappings between quantum impurity problems and
-!! groups of projectors. the data can be used to embed or project the
-!! self-energy functions
+!! groups of projectors (see module dmft_map). the data can be used to
+!! embed or project the self-energy functions
 !!
   subroutine dmft_input_map()
      use constants, only : mytmp
@@ -477,6 +477,7 @@
              read(mytmp,*) chr1, chr2, corr(i)
              read(mytmp,*) chr1, chr2, shell(i)
              read(mytmp,*) chr1, chr2, ndim(i)
+             read(mytmp,*)
          enddo ! over i={1,ngrp} loop
 
 ! evaluate max_ndim
@@ -519,7 +520,7 @@
 !! @sub dmft_input_window
 !!
 !! read in windows of projectors (see module dmft_window). the data are
-!! used to embed or downfold the self-energy functions
+!! used to embed or project the self-energy functions
 !!
   subroutine dmft_input_window()
      use constants, only : mytmp
@@ -590,6 +591,7 @@
                      read(mytmp,*) itmp, itmp, kwin(k,s,1,i), kwin(k,s,2,i)
                  enddo ! over k={1,nkpt} loop
              enddo ! over s={1,nspin} loop
+             read(mytmp,*)
          enddo ! over i={1,nwnd} loop
 
 ! evaluate max_nbnd
