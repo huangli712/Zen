@@ -158,9 +158,9 @@ function irio_params(f::String, D::Dict{Symbol,Any})
     # Extract `ngrp`
     ngrp, = size(D[:PG])
     #
-    # Extract max_ndim
+    # Extract `qdim`, maximum number of projectors in all groups.
     # `size(D[:PG][g].Tr,1)` is actually ndim
-    max_ndim = maximum( [ size(D[:PG][g].Tr,1) for g = 1:ngrp ] )
+    qdim = maximum( [ size(D[:PG][g].Tr,1) for g = 1:ngrp ] )
 
     # Extract `nwnd`
     nwnd, = size(D[:PW])
@@ -207,7 +207,7 @@ function irio_params(f::String, D::Dict{Symbol,Any})
 
         println(fout, "# Group:")
         println(fout, "ngrp  -> $ngrp")
-        println(fout, "qdim  -> $max_ndim")
+        println(fout, "qdim  -> $qdim")
         println(fout)
 
         println(fout, "# Window:")
