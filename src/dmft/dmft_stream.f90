@@ -405,6 +405,7 @@
      call mp_barrier()
 
 # endif  /* MPI */
+
      return
   end subroutine dmft_input_map
 
