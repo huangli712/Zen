@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/21
+# Last modified: 2021/04/25
 #
 
 """
@@ -229,7 +229,6 @@ function sigma_dcount()
                         @printf(fout, "%16.12f %16.12f\n", DCA[i][b, a, s], 0.0)
                     end
                 end
-                println(fout)
                 println(fout)
             end
         end
