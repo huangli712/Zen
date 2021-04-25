@@ -54,16 +54,18 @@
 ! setup the dimensional parameters
          call dmft_setup_param()
 
+! print the runtime parameters
+         if ( myid == master ) then ! only master node can do it
+             call dmft_print_summary()
+         endif ! back if ( myid == master ) block
+
 ! allocate memory spaces
          call dmft_alloc_array()
 
 ! setup the correlated systems
          call dmft_setup_system()
 
-! print the runtime parameters
-         if ( myid == master ) then ! only master node can do it
-             call dmft_print_summary()
-         endif ! back if ( myid == master ) block
+
 
      END BLOCK DMFT_START
 

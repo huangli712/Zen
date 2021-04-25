@@ -3,6 +3,7 @@
 !!! program : dmft_print_header
 !!!           dmft_print_footer
 !!!           dmft_print_summary
+!!!           dmft_print_system
 !!! source  : dmft_print.f90
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
@@ -162,3 +163,6 @@
 
      return
   end subroutine dmft_print_summary
+
+  subroutine dmft_print_system()
+  end subroutine dmft_print_system
