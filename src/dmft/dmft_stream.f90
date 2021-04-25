@@ -749,7 +749,7 @@
 !!
 !! @sub dmft_input_kmesh
 !!
-!! read in k-mesh and the related integration weights
+!! read in k-mesh and the integration weights (see module dmft_kmesh)
 !!
   subroutine dmft_input_kmesh()
      use constants, only : mytmp
@@ -786,7 +786,7 @@
 ! inquire about file's existence
          inquire (file = 'kmesh.ir', exist = exists)
 
-! file lattice.ir must be present
+! file kmesh.ir must be present
          if ( exists .eqv. .false. ) then
              call s_print_error('dmft_input_kmesh','file kmesh.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
