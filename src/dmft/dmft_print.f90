@@ -164,5 +164,13 @@
      return
   end subroutine dmft_print_summary
 
+!!
+!! @sub dmft_print_system
+!!
   subroutine dmft_print_system()
+     implicit none
+
+     STOP
+
+     return
   end subroutine dmft_print_system
