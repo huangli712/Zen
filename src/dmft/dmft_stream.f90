@@ -1271,7 +1271,8 @@
 !!
 !! @sub dmft_input_sig_l
 !!
-!! read in local self-energy functions from quantum impurity solvers
+!! read in bare self-energy functions from quantum impurity solvers. 
+!! (see module dmft_sigma)
 !!
   subroutine dmft_input_sig_l()
      use constants, only : dp, mytmp
