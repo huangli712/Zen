@@ -312,7 +312,7 @@
   end subroutine dmft_setup_system
 
 !!========================================================================
-!!>>> parse Kohn-Sham data for dynamical mean-field theory engine      <<<
+!!>>> setup correlated electron problem                                <<<
 !!========================================================================
 
   subroutine dmft_input_map()
@@ -535,6 +535,10 @@
 
      return
   end subroutine dmft_input_window
+
+!!========================================================================
+!!>>> setup Kohn-Sham dataset                                          <<<
+!!========================================================================
 
 !!
 !! @sub dmft_input_lattice
@@ -1051,6 +1055,10 @@
 
      return
   end subroutine dmft_input_projs
+
+!!========================================================================
+!!>>> setup self-energy functions and double counting terms            <<<
+!!========================================================================
 
 !!
 !! @sub dmft_input_sigdc
