@@ -106,7 +106,6 @@ function sigma_reset()
                     end
                 end
                 println(fout)
-                println(fout)
             end
         end
     end
