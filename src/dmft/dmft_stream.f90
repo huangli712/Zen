@@ -1296,9 +1296,10 @@
 ! local variables
 ! loop index
      integer  :: i
+     integer  :: j
+     integer  :: k
      integer  :: s
      integer  :: m
-     integer  :: d
 
 ! dummy integer variables
      integer  :: itmp
@@ -1307,7 +1308,8 @@
      logical  :: exists
 
 ! dummy real variables
-     real(dp) :: rtmp, re, im
+     real(dp) :: rtmp
+     real(dp) :: re, im
 
 ! dummy character variables
      character(len = 5) :: chr1
