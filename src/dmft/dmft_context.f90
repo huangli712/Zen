@@ -583,11 +583,11 @@
      l     = 0
      ndim  = 0
 
-! special treatment for max_ndim
-! max_ndim should be initialized in dmft_setup_param() 
-     if ( max_ndim < 0 ) then
-         call s_print_error('cat_alloc_group','max_ndim is less than 0')
-     endif ! back if ( max_ndim < 0 ) block
+! special treatment for qdim
+! qdim should be initialized in dmft_setup_param() 
+     if ( qdim < 0 ) then
+         call s_print_error('cat_alloc_group','qdim is less than 0')
+     endif ! back if ( qdim < 0 ) block
 
      return
   end subroutine cat_alloc_group
@@ -735,7 +735,7 @@
      implicit none
 
 ! allocate memory
-     allocate(psichi(max_ndim,max_nbnd,nkpt,nspin,ngrp), stat = istat)
+     allocate(psichi(qdim,max_nbnd,nkpt,nspin,ngrp), stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
