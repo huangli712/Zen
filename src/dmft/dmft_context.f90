@@ -17,7 +17,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/24/2021 by li huang (last modified)
+!!!           04/25/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -532,8 +532,26 @@
 !!>>> allocate memory subroutines                                      <<<
 !!========================================================================
 
+!!
+!! @sub cat_alloc_map
+!!
+!! allocate memory for map-related variables
+!!
   subroutine cat_alloc_map()
      implicit none
+
+! allocate memory
+     allocate(i_grp(nsite), stat = istat)
+     allocate(g_imp(ngrp),  stat = istat)
+
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_map','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
+     i_grp = 0
+     g_imp = 0
 
      return
   end subroutine cat_alloc_map
