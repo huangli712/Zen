@@ -323,6 +323,20 @@
 !! self-energy functions
 !!
   subroutine dmft_input_map()
+     use constants, only : mytmp
+
+     use mmpi, only : mp_bcast
+     use mmpi, only : mp_barrier
+
+     use control, only : ngrp
+     use control, only : nsite
+     use control, only : myid, master
+
+     use context, only : i_grp, g_imp
+
+     implicit none
+
+     return
   end subroutine dmft_input_map
 
 !!
