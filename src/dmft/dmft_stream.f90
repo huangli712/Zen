@@ -1156,7 +1156,8 @@
 !!
 !! @sub dmft_input_sigdc
 !!
-!! read in double counting terms for the self-energy functions 
+!! read in double counting terms for the local self-energy functions (see
+!! module dmft_sigma)
 !!
   subroutine dmft_input_sigdc()
      use constants, only : dp, mytmp
@@ -1209,12 +1210,20 @@
          read(mytmp,*)
          read(mytmp,*)
 
-! check nsite and nspin
+! check nsite
          read(mytmp,*) ! empty line
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nsite, "nsite is wrong")
+
+! check nspin
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nspin, "nspin is wrong")
+
+! check ndim 
+         do s=1,nsite
+             read(mytmp,*) chr1, chr2, itmp
+             call s_assert2(itmp == ndim(i_grp(s)), "ndim is wrong")
+         enddo
          read(mytmp,*) ! empty line
 
 ! parse the data
