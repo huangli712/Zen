@@ -7,7 +7,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/13/2021 by li huang (last modified)
+!!!           04/25/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -117,7 +117,7 @@
      use constants, only : mystd
 
      use control ! ALL
-     use context, only : max_ndim, max_nbnd
+     use context, only : qdim, max_nbnd
 
      implicit none
 
@@ -150,7 +150,7 @@
 
      write(mystd,'(2X,a)') '[configuration parameters] -> local orbital projector'
      write(mystd,'(2X,a)') '-----------------------------------------------------'
-     write(mystd,'(4X,a16,i10,  2X,a8)') 'm_ndim / value :', max_ndim  , 'type : i'
+     write(mystd,'(4X,a16,i10,  2X,a8)') 'qdim   / value :', qdim  , 'type : i'
      write(mystd,'(4X,a16,i10,  2X,a8)') 'm_nbnd / value :', max_nbnd  , 'type : i'
 
      write(mystd,'(2X,a)') '[configuration parameters] -> self-energy functions'
