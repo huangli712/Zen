@@ -1288,6 +1288,7 @@
      use control, only : beta
      use control, only : myid, master
 
+     use context, only : i_grp
      use context, only : max_ndim, ndim
      use context, only : fmesh, sig_l
 
