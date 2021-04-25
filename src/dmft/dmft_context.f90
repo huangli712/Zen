@@ -123,11 +123,11 @@
      implicit none
 
 !!
-!! @var max_nbnd
+!! @var qbnd
 !!
 !! maximum number of bands for the band windows
 !!
-     integer, public, save :: max_nbnd = -1
+     integer, public, save :: qbnd = -1
 
 !!
 !! @var bmin
