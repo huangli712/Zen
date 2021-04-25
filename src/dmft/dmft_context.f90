@@ -852,8 +852,16 @@
 !!>>> deallocate memory subroutines                                    <<<
 !!========================================================================
 
+!!
+!! @sub cat_free_map
+!!
+!! deallocate memory for map-related variables
+!!
   subroutine cat_free_map()
      implicit none
+
+     if ( allocated(i_grp) ) deallocate(i_grp)
+     if ( allocated(g_imp) ) deallocate(g_imp)
 
      return
   end subroutine cat_free_map
