@@ -838,7 +838,7 @@
 !!
 !! @sub dmft_input_tetra
 !!
-!! read in data for tetrahedron integration
+!! read in data for tetrahedron integration (see module dmft_tetra)
 !!
   subroutine dmft_input_tetra()
      use constants, only : dp, mytmp
@@ -929,7 +929,7 @@
 !!
 !! @sub dmft_input_eigen
 !!
-!! read in band eigenvalues and band occupations
+!! read in band eigenvalues and band occupations (see module dmft_eigen)
 !!
   subroutine dmft_input_eigen()
      use constants, only : mytmp
@@ -1027,7 +1027,7 @@
 !! @sub dmft_input_projs
 !!
 !! read in overlap matrix between Kohn-Sham wavefunctions and local
-!! orbitals, i.e., the local orbital projectors
+!! orbitals, i.e., the local orbital projectors (see module dmft_projs)
 !!
   subroutine dmft_input_projs()
      use constants, only : dp, mytmp
