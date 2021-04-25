@@ -3,6 +3,7 @@
 !!! program : dmft_setup_tasks
 !!!           dmft_setup_param
 !!!           dmft_setup_system
+!!!           dmft_input_map
 !!!           dmft_input_group
 !!!           dmft_input_window
 !!!           dmft_input_lattice
@@ -18,7 +19,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/12/2021 by li huang (last modified)
+!!!           04/25/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -1294,6 +1295,7 @@
      implicit none
 
 ! allocate memory for context module
+     call cat_alloc_map()
      call cat_alloc_group()
      call cat_alloc_window()
 
@@ -1323,6 +1325,7 @@
      implicit none
 
 ! deallocate memory for context module
+     call cat_free_map()
      call cat_free_group()
      call cat_free_window()
 
