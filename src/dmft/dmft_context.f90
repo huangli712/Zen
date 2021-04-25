@@ -617,11 +617,11 @@
      nbnd = 0
      kwin = 0
 
-! special treatment for max_nbnd
-! max_nbnd should be initialized in dmft_setup_param() 
-     if ( max_nbnd < 0 ) then
-         call s_print_error('cat_alloc_window','max_nbnd is less than 0')
-     endif ! back if ( max_nbnd < 0 ) block
+! special treatment for qbnd
+! qbnd should be initialized in dmft_setup_param() 
+     if ( qbnd < 0 ) then
+         call s_print_error('cat_alloc_window','qbnd is less than 0')
+     endif ! back if ( qbnd < 0 ) block
 
      return
   end subroutine cat_alloc_window
@@ -735,7 +735,7 @@
      implicit none
 
 ! allocate memory
-     allocate(psichi(qdim,max_nbnd,nkpt,nspin,ngrp), stat = istat)
+     allocate(psichi(qdim,qbnd,nkpt,nspin,ngrp), stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -781,7 +781,7 @@
 ! allocate memory
      allocate(sigdc(qdim,qdim,nspin,nsite),       stat = istat)
      allocate(sig_l(nmesh,qdim,qdim,nspin,nsite), stat = istat)
-     allocate(sig_k(nmesh,max_nbnd,max_nbnd,nkpt,nspin),  stat = istat)
+     allocate(sig_k(nmesh,qbnd,qbnd,nkpt,nspin),  stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
