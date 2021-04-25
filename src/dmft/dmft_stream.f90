@@ -589,8 +589,9 @@
              read(mytmp,*)
          enddo ! over i={1,nwnd} loop
 
-! evaluate qbnd
-         qbnd = maxval(nbnd)
+! evaluate and check qbnd
+         itmp = maxval(nbnd)
+         call s_assert2(itmp == qbnd, "nbnd is wrong")
 
 ! close file handler
          close(mytmp)
@@ -600,12 +601,6 @@
 
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
-
-! block until all processes have reached here
-     call mp_barrier()
-
-! broadcast data
-     call mp_bcast( qbnd, master )
 
 ! block until all processes have reached here
      call mp_barrier()
