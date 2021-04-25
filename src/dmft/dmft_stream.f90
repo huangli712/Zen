@@ -1169,13 +1169,18 @@
      use control, only : nspin
      use control, only : myid, master
 
+     use context, only : i_grp
+     use context, only : ndim
      use context, only : sigdc
 
      implicit none
 
 ! local variables
 ! loop index
+     integer  :: i
      integer  :: s
+     integer  :: m
+     integer  :: n
 
 ! dummy integer variables
      integer  :: itmp
@@ -1220,17 +1225,24 @@
          call s_assert2(itmp == nspin, "nspin is wrong")
 
 ! check ndim 
-         do s=1,nsite
+         do i=1,nsite
              read(mytmp,*) chr1, chr2, itmp
-             call s_assert2(itmp == ndim(i_grp(s)), "ndim is wrong")
-         enddo
+             call s_assert2(itmp == ndim(i_grp(i)), "ndim is wrong")
+         enddo ! over i={1,nsite} loop
          read(mytmp,*) ! empty line
 
 ! parse the data
-         do s=1,nsite
-             read(mytmp,*) rtmp
-             sigdc(:,:,s) = dcmplx(rtmp, 0.0_dp)
-         enddo ! over s={1,nsite} loop
+         do i=1,nsite
+             do s=1,nspin
+                 read(mytmp,*) ! empty line
+                 do m=1,ndim(i_grp(i))
+                     do n=1,ndim(i_grp(i))
+                         read(mytmp,*) rtmp
+                         sigdc(n,m,s,i) = dcmplx(rtmp, 0.0_dp)
+                     enddo
+                 enddo
+             enddo ! over s={1,nspin} loop
+         enddo ! over i={1,nsite} loop
 
 ! close file handler
          close(mytmp)
