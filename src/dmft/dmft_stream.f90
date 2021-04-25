@@ -63,11 +63,11 @@
      task   = 1         ! computational task
      axis   = 1         ! type of frequency mesh
 !-------------------------------------------------------------------------
-     lfermi = .true.    ! fermi level search
-     ltetra = .true.    ! analytical tetrahedron algorithm
-!-------------------------------------------------------------------------
      beta   = 8.00_dp   ! inverse temperature
      mc     = 0.0001_dp ! convergence criterion for fermi level search
+!-------------------------------------------------------------------------
+     lfermi = .true.    ! fermi level search
+     ltetra = .true.    ! analytical tetrahedron algorithm
 !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! read in input file if possible, only master node can do it
@@ -89,11 +89,11 @@
              call p_get('task'  , task  )
              call p_get('axis'  , axis  )
 
-             call p_get('lfermi', lfermi)
-             call p_get('ltetra', ltetra)
-
              call p_get('beta'  , beta  )
              call p_get('mc'    , mc    )
+
+             call p_get('lfermi', lfermi)
+             call p_get('ltetra', ltetra)
 
 ! destroy the parser
              call p_destroy()
@@ -108,12 +108,12 @@
      call mp_bcast( axis  , master )
      call mp_barrier()
 
-     call mp_bcast( lfermi, master )
-     call mp_bcast( ltetra, master )
-     call mp_barrier()
-
      call mp_bcast( beta  , master )
      call mp_bcast( mc    , master )
+     call mp_barrier()
+
+     call mp_bcast( lfermi, master )
+     call mp_bcast( ltetra, master )
      call mp_barrier()
 
 # endif  /* MPI */
