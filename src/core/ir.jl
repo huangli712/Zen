@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/24
+# Last modified: 2021/04/25
 #
 
 #
@@ -165,8 +165,8 @@ function irio_params(f::String, D::Dict{Symbol,Any})
     # Extract `nwnd`
     nwnd, = size(D[:PW])
     #
-    # Extract max_nbnd
-    max_nbnd = maximum( [ D[:PW][w].nbnd for w = 1:nwnd ] )
+    # Extract qbnd, maximum number of bands in all windows.
+    qbnd = maximum( [ D[:PW][w].nbnd for w = 1:nwnd ] )
 
     # D[:PW] and D[:PG] should have the same size
     @assert ngrp === nwnd
@@ -212,7 +212,7 @@ function irio_params(f::String, D::Dict{Symbol,Any})
 
         println(fout, "# Window:")
         println(fout, "nwnd  -> $nwnd")
-        println(fout, "qbnd  -> $max_nbnd")
+        println(fout, "qbnd  -> $qbnd")
         println(fout)
 
         println(fout, "# Sigma:")
