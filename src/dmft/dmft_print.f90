@@ -167,10 +167,18 @@
 !!
 !! @sub dmft_print_system
 !!
+!! print the system information, only for reference
+!!
   subroutine dmft_print_system()
+     use constants, only : mystd
+
+     use control ! ALL
+     use context ! ALL
+
      implicit none
 
-     STOP
+     write(mystd,*)
 
+     STOP
      return
   end subroutine dmft_print_system
