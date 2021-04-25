@@ -314,6 +314,9 @@
      return
   end subroutine dmft_setup_system
 
+  subroutine dmft_input_map()
+  end subroutine dmft_input_map
+
 !!
 !! @sub dmft_input_group
 !!
