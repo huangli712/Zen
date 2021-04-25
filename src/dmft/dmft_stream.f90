@@ -144,7 +144,7 @@
      use control, only : scale, fermi, volt
      use control, only : myid, master
 
-     use context, only : max_ndim, max_nbnd
+     use context, only : qdim, max_nbnd
 
      implicit none
 
@@ -168,7 +168,7 @@
      ntet   = 4374      ! number of tetrahedra
 !-------------------------------------------------------------------------
      ngrp   = 1         ! number of groups for projectors
-     max_ndim = 3       ! maximum number of projectors in groups
+     qdim   = 3         ! maximum number of projectors in groups
      nwnd   = 1         ! number of windows for projectors
      max_nbnd = 5       ! maximum number of bands in windows
 !-------------------------------------------------------------------------
@@ -217,7 +217,7 @@
 
              read(mytmp,*) ! for group block
              read(mytmp,*) chr1, chr2, ngrp
-             read(mytmp,*) chr1, chr2, max_ndim
+             read(mytmp,*) chr1, chr2, qdim
              read(mytmp,*)
 
              read(mytmp,*) ! for window block
