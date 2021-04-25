@@ -806,7 +806,7 @@
 
 ! allocate memory
      allocate(grn_l(nmesh,qdim,qdim,nspin,nsite), stat = istat)
-     allocate(grn_k(nmesh,max_nbnd,max_nbnd,nkpt,nspin),  stat = istat)
+     allocate(grn_k(nmesh,qbnd,qbnd,nkpt,nspin),  stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -830,9 +830,9 @@
 
 ! allocate memory
      allocate(wss_l(nmesh,qdim,qdim,nspin,nsite), stat = istat)
-     allocate(wss_k(nmesh,max_nbnd,max_nbnd,nkpt,nspin),  stat = istat)
+     allocate(wss_k(nmesh,qbnd,qbnd,nkpt,nspin),  stat = istat)
      allocate(hyb_l(nmesh,qdim,qdim,nspin,nsite), stat = istat)
-     allocate(hyb_k(nmesh,max_nbnd,max_nbnd,nkpt,nspin),  stat = istat)
+     allocate(hyb_k(nmesh,qbnd,qbnd,nkpt,nspin),  stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
