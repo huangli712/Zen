@@ -65,7 +65,10 @@
 ! setup the correlated systems
          call dmft_setup_system()
 
-
+! print the system information
+         if ( myid == master ) then ! only master node can do it
+             call dmft_print_system()
+         endif ! back if ( myid == master ) block
 
      END BLOCK DMFT_START
 
