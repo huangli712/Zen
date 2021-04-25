@@ -294,6 +294,7 @@
      implicit none
 
 ! get descriptions of correlated subspace
+     call dmft_input_map()
      call dmft_input_group()
      call dmft_input_window()
 
