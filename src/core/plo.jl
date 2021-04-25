@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/23
+# Last modified: 2021/04/25
 #
 
 #
@@ -149,7 +149,7 @@ function plo_map(PG::Array{PrGroup,1})
     end
 
     # Create the Mapping struct
-    Map = Mapping(nsite, ngrp)    
+    Map = Mapping(nsite, ngrp)
 
     # Determine Map.i_grp (imp -> grp) and Map.g_imp (grp -> imp)
     for i = 1:nsite
@@ -166,6 +166,11 @@ function plo_map(PG::Array{PrGroup,1})
     # For a given quantum impurity problem, we can always find out the
     # corresponding group of projectors.
     @assert all(x -> (0 < x <= ngrp), Map.i_grp)
+
+    # Examine Map.g_imp
+    # For a given group of projectors, if we fail to find out the
+    # corresponding quantum impurity problem, it must be non-correlated.
+    @assert all(x -> (0 <= x <= nsite), Map.g_imp)
 
     # Return the desired struct
     return Map
@@ -213,7 +218,7 @@ function plo_group(MAP::Mapping, PG::Array{PrGroup,1})
 
         # Yes, this group of projectors has a corresponding quantum
         # impurity problem. We have to further modify it. If `s` is
-        # 0, it means that the group of projectors is non-correlated. 
+        # 0, it means that the group of projectors is non-correlated.
         if s != 0
             # Setup corr property
             PG[g].corr = true
