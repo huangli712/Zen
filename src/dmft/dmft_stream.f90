@@ -260,7 +260,7 @@
 
 ! for group block
      call mp_bcast( ngrp  , master )
-     call mp_bcast( max_ndim  , master )
+     call mp_bcast( qdim  , master )
      call mp_barrier()
 
 ! for window block
@@ -424,7 +424,7 @@
      use control, only : ngrp
      use control, only : myid, master
 
-     use context, only : max_ndim
+     use context, only : qdim
      use context, only : shell, corr, site, l, ndim
 
      implicit none
@@ -480,8 +480,8 @@
              read(mytmp,*)
          enddo ! over i={1,ngrp} loop
 
-! evaluate max_ndim
-         max_ndim = maxval(ndim)
+! evaluate qdim
+         qdim = maxval(ndim)
 
 ! close file handler
          close(mytmp)
@@ -496,7 +496,7 @@
      call mp_barrier()
 
 ! broadcast data
-     call mp_bcast( max_ndim, master )
+     call mp_bcast( qdim , master )
 
 ! block until all processes have reached here
      call mp_barrier()
@@ -1289,7 +1289,7 @@
      use control, only : myid, master
 
      use context, only : i_grp
-     use context, only : max_ndim, ndim
+     use context, only : qdim, ndim
      use context, only : fmesh, sig_l
 
      implicit none
@@ -1361,7 +1361,7 @@
          do i=1,nsite
              read(mytmp,*) chr1, chr2, itmp
              call s_assert2(itmp == ndim(i_grp(i)), "ndim is wrong")
-             call s_assert2(itmp <= max_ndim, "ndim is wrong")
+             call s_assert2(itmp <= qdim, "ndim is wrong")
          enddo ! over i={1,nsite} loop
          read(mytmp,*) ! empty line
 
