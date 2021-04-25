@@ -368,24 +368,22 @@
          read(mytmp,*)
          read(mytmp,*)
 
-! check ngrp
+! check nsite and ngrp
          read(mytmp,*)
          read(mytmp,*) chr1, chr2, itmp
-         read(mytmp,*)
+         call s_assert2(itmp == nsite, "nsite is wrong")
+         read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == ngrp, "ngrp is wrong")
 
-! read data
-         do i=1,ngrp
-             read(mytmp,*)
-             read(mytmp,*) chr1, chr2, site(i)
-             read(mytmp,*) chr1, chr2, l(i)
-             read(mytmp,*) chr1, chr2, corr(i)
-             read(mytmp,*) chr1, chr2, shell(i)
-             read(mytmp,*) chr1, chr2, ndim(i)
-         enddo ! over i={1,ngrp} loop
+! read data: i_grp
+         read(mytmp,*)
+         read(mytmp,*)
+         read(mytmp,*) i_grp
 
-! evaluate max_ndim
-         max_ndim = maxval(ndim)
+! read data: g_imp
+         read(mytmp,*)
+         read(mytmp,*)
+         read(mytmp,*) g_imp
 
 ! close file handler
          close(mytmp)
