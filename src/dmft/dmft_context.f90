@@ -67,11 +67,11 @@
      implicit none
 
 !!
-!! @var max_ndim
+!! @var qdim
 !!
 !! maximum number of correlated orbitals in all groups
 !!
-     integer, public, save :: max_ndim = -1
+     integer, public, save :: qdim = -1
 
 !!
 !! @var shell
