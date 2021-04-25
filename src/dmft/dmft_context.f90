@@ -779,8 +779,8 @@
      implicit none
 
 ! allocate memory
-     allocate(sigdc(max_ndim,max_ndim,nspin,nsite),       stat = istat)
-     allocate(sig_l(nmesh,max_ndim,max_ndim,nspin,nsite), stat = istat)
+     allocate(sigdc(qdim,qdim,nspin,nsite),       stat = istat)
+     allocate(sig_l(nmesh,qdim,qdim,nspin,nsite), stat = istat)
      allocate(sig_k(nmesh,max_nbnd,max_nbnd,nkpt,nspin),  stat = istat)
 
 ! check the status
@@ -805,7 +805,7 @@
      implicit none
 
 ! allocate memory
-     allocate(grn_l(nmesh,max_ndim,max_ndim,nspin,nsite), stat = istat)
+     allocate(grn_l(nmesh,qdim,qdim,nspin,nsite), stat = istat)
      allocate(grn_k(nmesh,max_nbnd,max_nbnd,nkpt,nspin),  stat = istat)
 
 ! check the status
@@ -829,7 +829,7 @@
      implicit none
 
 ! allocate memory
-     allocate(wss_l(nmesh,max_ndim,max_ndim,nspin,nsite), stat = istat)
+     allocate(wss_l(nmesh,qdim,qdim,nspin,nsite), stat = istat)
      allocate(wss_k(nmesh,max_nbnd,max_nbnd,nkpt,nspin),  stat = istat)
      allocate(hyb_l(nmesh,max_ndim,max_ndim,nspin,nsite), stat = istat)
      allocate(hyb_k(nmesh,max_nbnd,max_nbnd,nkpt,nspin),  stat = istat)
