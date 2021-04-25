@@ -1307,8 +1307,7 @@
      logical  :: exists
 
 ! dummy real variables
-     real(dp) :: rtmp
-     real(dp), allocatable :: sarr(:)
+     real(dp) :: rtmp, re, im
 
 ! dummy character variables
      character(len = 5) :: chr1
@@ -1365,22 +1364,21 @@
 
 ! parse the data
          do i=1,nsite
-             allocate( sarr( 2*ndim(i) ) )
-             sarr = zero
              do s=1,nspin
                  read(mytmp,*) ! empty line
+
                  do m=1,nmesh
-                     read(mytmp,*) fmesh(m), sarr
-                     do d=1,ndim(i)
-                         sig_l(m,d,s,i) = dcmplx(sarr(2*d-1), sarr(2*d))
-                     enddo ! over d={1,ndim(i)} loop
+                     read(mytmp,*) chr2, itmp, fmesh(m) 
+                     do j=1,ndim(i_grp(i))
+                         do k=1,ndim(i_grp(i))
+                             read(mytmp,*) re, im
+                             sig_l(m,k,j,s,i) = dcmplx(re, im)
+                         enddo ! over k={1,ndim(i_grp(i))} loop
+                     enddo ! over j={1,ndim(i_grp(i))} loop
                  enddo ! over m={1,nmesh} loop
-                 read(mytmp,*) ! empty line
+
                  read(mytmp,*) ! empty line
              enddo ! over s={1,nspin} loop
-             if ( allocated(sarr) ) then
-                 deallocate(sarr)
-             endif
          enddo ! over i={1,nsite} loop
 
 ! close file handler
