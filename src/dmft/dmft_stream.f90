@@ -278,27 +278,24 @@
      return
   end subroutine dmft_setup_param
 
-!!========================================================================
-!!>>> parse Kohn-Sham data for dynamical mean-field theory engine      <<<
-!!========================================================================
-
 !!
 !! @sub dmft_setup_system
 !!
-!! parse Kohn-Sham data for dynamical mean-field theory engine. this is
-!! an entry for the other individual subroutines
+!! setup correlated electron problem, Kohn-Sham dataset, and self-energy
+!! functions for the dynamical mean-field theory engine. this is an entry
+!! for the other individual subroutines
 !!
   subroutine dmft_setup_system()
      use control, only : ltetra
 
      implicit none
 
-! get descriptions of correlated subspace
+! setup correlated electron problem
      call dmft_input_map()
      call dmft_input_group()
      call dmft_input_window()
 
-! get Kohn-Sham data
+! setup Kohn-Sham dataset
      call dmft_input_lattice()
      call dmft_input_kmesh()
      if (ltetra .eqv. .true.) then
@@ -307,12 +304,16 @@
      call dmft_input_eigen()
      call dmft_input_projs()
 
-! get impurity self-energy functions
+! setup impurity self-energy functions and related double counting terms
      call dmft_input_sigdc()
      call dmft_input_sig_l()
 
      return
   end subroutine dmft_setup_system
+
+!!========================================================================
+!!>>> parse Kohn-Sham data for dynamical mean-field theory engine      <<<
+!!========================================================================
 
   subroutine dmft_input_map()
   end subroutine dmft_input_map
