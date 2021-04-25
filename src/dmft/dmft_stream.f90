@@ -315,14 +315,21 @@
 !!>>> setup correlated electron problem                                <<<
 !!========================================================================
 
+!!
+!! @sub dmft_input_map
+!!
+!! read in connections / mappings between quantum impurity problems and
+!! groups of projectors. the data can be used to embed or project the
+!! self-energy functions
+!!
   subroutine dmft_input_map()
   end subroutine dmft_input_map
 
 !!
 !! @sub dmft_input_group
 !!
-!! read in groups of projectors (see module dmft_group). the data are
-!! used to embed or downfold the self-energy functions
+!! read in groups of projectors (see module dmft_group). the data can
+!! be used to embed or project the self-energy functions
 !!
   subroutine dmft_input_group()
      use constants, only : mytmp
