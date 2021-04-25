@@ -180,8 +180,24 @@
      write(mystd,'(2X,a)') "[system information] -> lattice" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
 
+     write(mystd,'(2X,a)') "[system information] -> impurities -> sig_l" 
+     write(mystd,'(2X,a)') '-----------------------------------------------------'
+
+     write(mystd,'(2X,a)') "[system information] -> impurities -> sigdc" 
+     write(mystd,'(2X,a)') '-----------------------------------------------------'
+
+     write(mystd,'(2X,a)') "[system information] -> impurities -> mappings" 
+     write(mystd,'(2X,a)') '-----------------------------------------------------'
+
      write(mystd,'(2X,a)') "[system information] -> projectors -> groups"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
+
+     write(mystd,'(2X,a)') "[system information] -> projectors -> windows"
+     write(mystd,'(2X,a)') '-----------------------------------------------------'
+
+     write(mystd,'(2X,a)') "[system information] -> projectors -> mappings"
+     write(mystd,'(2X,a)') '-----------------------------------------------------'
+
      write(mystd,*)
 
      STOP
