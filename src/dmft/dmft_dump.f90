@@ -11,6 +11,15 @@
 !!! comment :
 !!!-----------------------------------------------------------------------
 
+  subroutine dmft_dump_grn_l()
+  end subroutine dmft_dump_grn_l
+
+  subroutine dmft_dump_wss_l()
+  end subroutine dmft_dump_wss_l
+
+  subroutine dmft_dump_hyb_l()
+  end subroutine dmft_dump_hyb_l
+
   subroutine dmft_dump_sig_k()
   end subroutine dmft_dump_sig_k
 
