@@ -206,6 +206,9 @@
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> mappings" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
+     do s=1,nsite
+         write(mystd,'(4X,a6,i4,a12,i4)') "site :", s, "group  :", i_grp(s)
+     enddo ! over s={1,nsite} loop
 
      write(mystd,'(2X,a)') "[system information] -> projectors -> groups"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
@@ -215,6 +218,9 @@
 
      write(mystd,'(2X,a)') "[system information] -> projectors -> mappings"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
+     do s=1,ngrp
+         write(mystd,'(4X,a12,i4,a6,i4)') "group :", s, "site :", g_imp(s)
+     enddo ! over s={1,ngrp} loop
 
      write(mystd,*)
 
