@@ -191,27 +191,32 @@
      do s=1,natom
          write(mystd,'(4X,a6,i4,a12,a4,3f8.5)') "atom :", s, "symbol :", atoms(s), coord(s,:)
      enddo ! over s={1,natom} loop
+     write(mystd,*)
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> sig_l" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
-         write(mystd,'(4X,a6,i4)') "site :", s
+         write(mystd,'(4X,a6,i4)') "qimp :", s
      enddo ! over s={1,nsite} loop
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> sigdc" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
-         write(mystd,'(4X,a6,i4)') "site :", s
+         write(mystd,'(4X,a6,i4)') "qimp :", s
      enddo ! over s={1,nsite} loop
+     write(mystd,*)
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> mappings" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
-         write(mystd,'(4X,a6,i4,a12,i4)') "site :", s, "group  :", i_grp(s)
+         write(mystd,'(4X,a6,i4,a12,i4)') "qimp :", s, "group  :", i_grp(s)
      enddo ! over s={1,nsite} loop
 
      write(mystd,'(2X,a)') "[system information] -> projectors -> groups"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
+     do s=1,ngrp
+         write(mystd,'(4X,a6,i4,a12,i4,a6,i4)') "group:", s, "site   :", site(s), "l :", l(s)
+     enddo ! over s={1,ngrp} loop
 
      write(mystd,'(2X,a)') "[system information] -> projectors -> windows"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
@@ -219,7 +224,7 @@
      write(mystd,'(2X,a)') "[system information] -> projectors -> mappings"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,ngrp
-         write(mystd,'(4X,a12,i4,a6,i4)') "group :", s, "site :", g_imp(s)
+         write(mystd,'(4X,a6,i4,a12,i4)') "group:", s, "qimp   :", g_imp(s)
      enddo ! over s={1,ngrp} loop
 
      write(mystd,*)
