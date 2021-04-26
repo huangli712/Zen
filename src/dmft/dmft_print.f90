@@ -185,11 +185,13 @@
 
      implicit none
 
+! local variables
 ! loop index
      integer :: i
      integer :: s
      integer :: p
 
+! print lattice structure
      write(mystd,'(2X,a)') "[system information] -> lattice    -> sorts" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsort
@@ -203,6 +205,7 @@
      enddo ! over s={1,natom} loop
      write(mystd,*)
 
+! print quantum impurities
      write(mystd,'(2X,a)') "[system information] -> impurities -> sig_l" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
@@ -232,6 +235,7 @@
      enddo ! over s={1,nsite} loop
      write(mystd,*)
 
+! print local projectors
      write(mystd,'(2X,a)') "[system information] -> projectors -> groups"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,ngrp
