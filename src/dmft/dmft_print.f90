@@ -200,6 +200,9 @@
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> sigdc" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
+     do s=1,nsite
+         write(mystd,'(4X,a6,i4)') "site :", s
+     enddo ! over s={1,nsite} loop
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> mappings" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
