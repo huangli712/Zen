@@ -177,6 +177,9 @@
 
      implicit none
 
+! loop index
+     integer :: s
+
      write(mystd,'(2X,a)') "[system information] -> lattice" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsort
