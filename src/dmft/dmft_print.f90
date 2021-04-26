@@ -173,10 +173,15 @@
      use constants, only : mystd
 
      use control, only : nsort, natom 
+     use control, only : nspin
+     use control, only : ngrp, nwnd
+     use control, only : nsite, nmesh
 
-     use context, only : sorts, atoms
-     use context, only : sortn
-     use context, only : coord
+     use context, only : i_grp, g_imp
+     use context, only : shell, corr, site, l, ndim
+     use context, only : bmin, bmax, nbnd
+     use context, only : sorts, atoms, sortn, coord
+     use context, only : sigdc, sig_l
 
      implicit none
 
