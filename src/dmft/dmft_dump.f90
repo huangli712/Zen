@@ -1,6 +1,12 @@
 !!!-----------------------------------------------------------------------
 !!! project : jacaranda
-!!! program :
+!!! program : dmft_dump_grn_l
+!!!           dmft_dump_wss_l
+!!!           dmft_dump_hyb_l
+!!!           dmft_dump_sig_k
+!!!           dmft_dump_grn_k
+!!!           dmft_dump_wss_k
+!!!           dmft_dump_hyb_k
 !!! source  : dmft_dump.f90
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
