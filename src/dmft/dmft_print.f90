@@ -190,10 +190,13 @@
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,natom
          write(mystd,'(4X,a6,i4,a12,a4,3f8.5)') "atom :", s, "symbol :", atoms(s), coord(s,:)
-     enddo
+     enddo ! over s={1,natom} loop
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> sig_l" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
+     do s=1,nsite
+         write(mystd,'(4X,a6,i4)') "site :", s
+     enddo ! over s={1,nsite} loop
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> sigdc" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
