@@ -183,13 +183,13 @@
      write(mystd,'(2X,a)') "[system information] -> lattice    -> sorts" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsort
-         write(mystd,'(4X,a6,i4,a12,a4,i4)') "sort :", s, "symbol :", sorts(s), sortn(s)
+         write(mystd,'(4X,a6,i4,a12,a4,i2)') "sort :", s, "symbol :", sorts(s), sortn(s)
      enddo ! over s={1,nsort} loop
 
      write(mystd,'(2X,a)') "[system information] -> lattice    -> atoms" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,natom
-         write(mystd,*) "atom :", s, "symbol :", atoms(s) 
+         write(mystd,'(4X,a6,i4,a12,a4,3f8.5)') "atom :", s, "symbol :", atoms(s), coord(s,:)
      enddo
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> sig_l" 
