@@ -196,26 +196,26 @@
      write(mystd,'(2X,a)') "[system information] -> impurities -> sig_l" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
-         write(mystd,'(4X,a10,i4)') "impurity :", s
+         write(mystd,'(4X,a10,i3)') "impurity :", s
      enddo ! over s={1,nsite} loop
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> sigdc" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
-         write(mystd,'(4X,a10,i4)') "impurity :", s
+         write(mystd,'(4X,a10,i3)') "impurity :", s
      enddo ! over s={1,nsite} loop
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> mappings" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
-         write(mystd,'(4X,a10,i4,a12,i4)') "impurity :", s, "group :", i_grp(s)
+         write(mystd,'(4X,a10,i3,2X,a7,i3)') "impurity :", s, "group :", i_grp(s)
      enddo ! over s={1,nsite} loop
      write(mystd,*)
 
      write(mystd,'(2X,a)') "[system information] -> projectors -> groups"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,ngrp
-         write(mystd,'(4X,a6,i4,a12,i4,a6,i4)') "group:", s, "site   :", site(s), "l :", l(s)
+         write(mystd,'(4X,a7,i3,2X,a6,i3,2X,a3,i3)') "group :", s, "site :", site(s), "l :", l(s)
      enddo ! over s={1,ngrp} loop
 
      write(mystd,'(2X,a)') "[system information] -> projectors -> windows"
@@ -224,7 +224,7 @@
      write(mystd,'(2X,a)') "[system information] -> projectors -> mappings"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,ngrp
-         write(mystd,'(4X,a6,i4,a12,i4)') "group:", s, "impurity :", g_imp(s)
+         write(mystd,'(4X,a7,i3,2X,a10,i3)') "group :", s, "impurity :", g_imp(s)
      enddo ! over s={1,ngrp} loop
 
      write(mystd,*)
