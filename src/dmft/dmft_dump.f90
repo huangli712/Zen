@@ -17,23 +17,65 @@
 !!! comment :
 !!!-----------------------------------------------------------------------
 
+!!
+!! @sub dmft_dump_grn_l
+!!
   subroutine dmft_dump_grn_l()
+     implicit none
+
+     return
   end subroutine dmft_dump_grn_l
 
+!!
+!! @sub dmft_dump_wss_l
+!!
   subroutine dmft_dump_wss_l()
+     implicit none
+
+     return
   end subroutine dmft_dump_wss_l
 
+!!
+!! @sub dmft_dump_hyb_l
+!!
   subroutine dmft_dump_hyb_l()
+     implicit none
+
+     return
   end subroutine dmft_dump_hyb_l
 
+!!
+!! @sub dmft_dump_sig_k
+!!
   subroutine dmft_dump_sig_k()
+     implicit none
+
+     return
   end subroutine dmft_dump_sig_k
 
+!!
+!! @sub dmft_dump_grn_k
+!!
   subroutine dmft_dump_grn_k()
+     implicit none
+
+     return
   end subroutine dmft_dump_grn_k
 
+!!
+!! @sub dmft_dump_wss_k
+!!
   subroutine dmft_dump_wss_k()
+     implicit none
+
+     return
   end subroutine dmft_dump_wss_k
 
+!!
+!! @sub dmft_dump_hyb_k
+!!
   subroutine dmft_dump_hyb_k()
+     implicit none
+
+     return
   end subroutine dmft_dump_hyb_k
