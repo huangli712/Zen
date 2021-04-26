@@ -183,34 +183,34 @@
      write(mystd,'(2X,a)') "[system information] -> lattice    -> sorts" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsort
-         write(mystd,'(4X,a6,i4,a12,a4,i2)') "sort :", s, "symbol :", sorts(s), sortn(s)
+         write(mystd,'(4X,a6,i3,2X,a8,a3,i3)') "sort :", s, "symbol :", sorts(s), sortn(s)
      enddo ! over s={1,nsort} loop
 
      write(mystd,'(2X,a)') "[system information] -> lattice    -> atoms" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,natom
-         write(mystd,'(4X,a6,i4,a12,a4,3f8.5)') "atom :", s, "symbol :", atoms(s), coord(s,:)
+         write(mystd,'(4X,a6,i3,2X,a8,a3,1X,3f9.6)') "atom :", s, "symbol :", atoms(s), coord(s,:)
      enddo ! over s={1,natom} loop
      write(mystd,*)
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> sig_l" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
-         write(mystd,'(4X,a6,i4)') "qimp :", s
+         write(mystd,'(4X,a10,i4)') "impurity :", s
      enddo ! over s={1,nsite} loop
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> sigdc" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
-         write(mystd,'(4X,a6,i4)') "qimp :", s
+         write(mystd,'(4X,a10,i4)') "impurity :", s
      enddo ! over s={1,nsite} loop
-     write(mystd,*)
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> mappings" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
-         write(mystd,'(4X,a6,i4,a12,i4)') "qimp :", s, "group  :", i_grp(s)
+         write(mystd,'(4X,a10,i4,a12,i4)') "impurity :", s, "group :", i_grp(s)
      enddo ! over s={1,nsite} loop
+     write(mystd,*)
 
      write(mystd,'(2X,a)') "[system information] -> projectors -> groups"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
@@ -224,7 +224,7 @@
      write(mystd,'(2X,a)') "[system information] -> projectors -> mappings"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,ngrp
-         write(mystd,'(4X,a6,i4,a12,i4)') "group:", s, "qimp   :", g_imp(s)
+         write(mystd,'(4X,a6,i4,a12,i4)') "group:", s, "impurity :", g_imp(s)
      enddo ! over s={1,ngrp} loop
 
      write(mystd,*)
