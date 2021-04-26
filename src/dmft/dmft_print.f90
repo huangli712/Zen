@@ -180,11 +180,11 @@
 ! loop index
      integer :: s
 
-     write(mystd,'(2X,a)') "[system information] -> lattice" 
+     write(mystd,'(2X,a)') "[system information] -> lattice    -> sorts" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsort
-         write(mystd,'(4X,i4,2X,a8)') s, sorts(s) 
-     enddo
+         write(mystd,'(4X,a7,i4,a12,a4)') "index :", s, "symbol :", sorts(s)
+     enddo ! over s={1,nsort} loop
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> sig_l" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
