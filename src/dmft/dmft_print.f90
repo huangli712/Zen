@@ -8,7 +8,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/25/2021 by li huang (last modified)
+!!!           04/26/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -179,6 +179,9 @@
 
      write(mystd,'(2X,a)') "[system information] -> lattice" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
+     do s=1,nsort
+         write(mystd,'(4X,i4,2X,a8)') s, sorts(s) 
+     enddo
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> sig_l" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
