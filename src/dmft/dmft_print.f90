@@ -201,7 +201,7 @@
          do p=1,nspin
              write(mystd,'(4X,a10,i3,2X,a6,i3)') "impurity :", s, "spin :", p
              do i=1,ndim(i_grp(s))
-                 write(mystd,'(4X,i3,2f10.5)') i, real(sig_l(1,i,i,p,s)), real(sig_l(nmesh,i,i,p,s))
+                 write(mystd,'(4X,a1,i3,2f10.5)') ">", i, real(sig_l(1,i,i,p,s)), real(sig_l(nmesh,i,i,p,s))
              enddo ! over i={1,ndim(i_grp(s))} loop
          enddo ! over p={1,nspin} loop
      enddo ! over s={1,nsite} loop
@@ -212,7 +212,7 @@
          do p=1,nspin
              write(mystd,'(4X,a10,i3,2X,a6,i3)') "impurity :", s, "spin :", p
              do i=1,ndim(i_grp(s))
-                 write(mystd,'(4X,i3,f10.5)') i, real(sigdc(i,i,p,s))
+                 write(mystd,'(4X,a1,i3,f10.5)') ">", i, real(sigdc(i,i,p,s))
              enddo ! over i={1,ndim(i_grp(s))} loop
          enddo ! over p={1,nspin} loop
      enddo ! over s={1,nsite} loop
@@ -227,7 +227,13 @@
      write(mystd,'(2X,a)') "[system information] -> projectors -> groups"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,ngrp
-         write(mystd,'(4X,a7,i3,2X,a6,i3,2X,a3,i3)') "group :", s, "site :", site(s), "l :", l(s)
+         write(mystd,'(4X,a7,i3)') "group :", s
+         write(mystd,'(4X,a9,a6)') "> shell :", shell(s)
+         write(mystd,'(4X,a9,l3)') ">  corr :", corr(s)
+         write(mystd,'(4X,a9,i3)') ">  site :", site(s)
+         write(mystd,'(4X,a9,i3)') ">     l :", l(s)
+         write(mystd,'(4X,a9,i3)') ">  ndim :", ndim(s)
+         print *, shell(s)
      enddo ! over s={1,ngrp} loop
 
      write(mystd,'(2X,a)') "[system information] -> projectors -> windows"

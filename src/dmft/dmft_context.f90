@@ -78,7 +78,7 @@
 !!
 !! specification of orbital shell
 !!
-     character(len=4), public, save, allocatable :: shell(:)
+     character(len=5), public, save, allocatable :: shell(:)
 
 !!
 !! @var corr
