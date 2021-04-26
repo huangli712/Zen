@@ -8,7 +8,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/26/2021 by li huang (last modified)
+!!!           04/27/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -172,8 +172,11 @@
   subroutine dmft_print_system()
      use constants, only : mystd
 
-     use control ! ALL
-     use context ! ALL
+     use control, only : nsort, natom 
+
+     use context, only : sorts, atoms
+     use context, only : sortn
+     use context, only : coord
 
      implicit none
 
