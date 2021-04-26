@@ -178,7 +178,9 @@
      implicit none
 
 ! loop index
+     integer :: i
      integer :: s
+     integer :: p
 
      write(mystd,'(2X,a)') "[system information] -> lattice    -> sorts" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
@@ -196,13 +198,20 @@
      write(mystd,'(2X,a)') "[system information] -> impurities -> sig_l" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
-         write(mystd,'(4X,a10,i3)') "impurity :", s
+         do p=1,nspin
+             write(mystd,'(4X,a10,i3,2X,a6,i3,2X,a6,i3)') "impurity :", s, "spin :", p, "ndim :", ndim(i_grp(s))
+         enddo ! over p={1,nspin} loop
      enddo ! over s={1,nsite} loop
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> sigdc" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
-         write(mystd,'(4X,a10,i3)') "impurity :", s
+         do p=1,nspin
+             write(mystd,'(4X,a10,i3,2X,a6,i3,2X,a6,i3)') "impurity :", s, "spin :", p, "ndim :", ndim(i_grp(s))
+             do i=1,ndim(i_grp(s))
+                 write(mystd,'(8X,a,i3,f10.5)') 'diagonal element:', i, real(sigdc(i,i,p,s))
+             enddo ! over i={1,ndim(i_grp(s))} loop
+         enddo ! over p={1,nspin} loop
      enddo ! over s={1,nsite} loop
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> mappings" 
