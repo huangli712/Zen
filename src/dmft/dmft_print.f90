@@ -252,6 +252,5 @@
 
      write(mystd,*)
 
-     STOP
      return
   end subroutine dmft_print_system
