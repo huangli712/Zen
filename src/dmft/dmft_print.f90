@@ -228,16 +228,21 @@
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,ngrp
          write(mystd,'(4X,a7,i3)') "group :", s
-         write(mystd,'(4X,a9,a6)') "> shell :", shell(s)
+         write(mystd,'(4X,a9,2X,a)') "> shell :", shell(s)
          write(mystd,'(4X,a9,l3)') ">  corr :", corr(s)
          write(mystd,'(4X,a9,i3)') ">  site :", site(s)
          write(mystd,'(4X,a9,i3)') ">     l :", l(s)
          write(mystd,'(4X,a9,i3)') ">  ndim :", ndim(s)
-         print *, shell(s)
      enddo ! over s={1,ngrp} loop
 
      write(mystd,'(2X,a)') "[system information] -> projectors -> windows"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
+     do s=1,nwnd
+         write(mystd,'(4X,a8,i3)') "window :", s
+         write(mystd,'(4X,a9,i3)') ">  bmin :", bmin(s)
+         write(mystd,'(4X,a9,i3)') ">  bmax :", bmax(s)
+         write(mystd,'(4X,a9,i3)') ">  nbnd :", nbnd(s)
+     enddo ! over s={1,nwnd} loop
 
      write(mystd,'(2X,a)') "[system information] -> projectors -> mappings"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
