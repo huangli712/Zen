@@ -188,6 +188,9 @@
 
      write(mystd,'(2X,a)') "[system information] -> lattice    -> atoms" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
+     do s=1,natom
+         write(mystd,*) "atom :", s, "symbol :", atoms(s) 
+     enddo
 
      write(mystd,'(2X,a)') "[system information] -> impurities -> sig_l" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
