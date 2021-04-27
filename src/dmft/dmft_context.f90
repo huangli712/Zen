@@ -816,9 +816,7 @@
 
 ! allocate memory
      allocate(wss_l(nmesh,qdim,qdim,nspin,nsite), stat = istat)
-     allocate(wss_k(nmesh,qbnd,qbnd,nkpt,nspin),  stat = istat)
      allocate(hyb_l(nmesh,qdim,qdim,nspin,nsite), stat = istat)
-     allocate(hyb_k(nmesh,qbnd,qbnd,nkpt,nspin),  stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -827,9 +825,7 @@
 
 ! initialize them
      wss_l = czero
-     wss_k = czero
      hyb_l = czero
-     hyb_k = czero
 
      return
   end subroutine cat_alloc_weiss
@@ -1007,9 +1003,7 @@
      implicit none
 
      if ( allocated(wss_l) ) deallocate(wss_l)
-     if ( allocated(wss_k) ) deallocate(wss_k)
      if ( allocated(hyb_l) ) deallocate(hyb_l)
-     if ( allocated(hyb_k) ) deallocate(hyb_k)
 
      return
   end subroutine cat_free_weiss
