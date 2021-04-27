@@ -791,8 +791,8 @@
      implicit none
 
 ! allocate memory
-     allocate(grn_l(nmesh,qdim,qdim,nspin,nsite), stat = istat)
-     allocate(grn_k(nmesh,qbnd,qbnd,nkpt,nspin),  stat = istat)
+     allocate(grn_l(qdim,qdim,nmesh,nspin,nsite), stat = istat)
+     allocate(grn_k(qbnd,qbnd,nmesh,nkpt,nspin),  stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
