@@ -5,8 +5,6 @@
 !!!           dmft_dump_hyb_l
 !!!           dmft_dump_sig_k
 !!!           dmft_dump_grn_k
-!!!           dmft_dump_wss_k
-!!!           dmft_dump_hyb_k
 !!! source  : dmft_dump.f90
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
@@ -61,21 +59,3 @@
 
      return
   end subroutine dmft_dump_grn_k
-
-!!
-!! @sub dmft_dump_wss_k
-!!
-  subroutine dmft_dump_wss_k()
-     implicit none
-
-     return
-  end subroutine dmft_dump_wss_k
-
-!!
-!! @sub dmft_dump_hyb_k
-!!
-  subroutine dmft_dump_hyb_k()
-     implicit none
-
-     return
-  end subroutine dmft_dump_hyb_k
