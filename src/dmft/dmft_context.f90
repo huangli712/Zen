@@ -815,8 +815,8 @@
      implicit none
 
 ! allocate memory
-     allocate(wss_l(nmesh,qdim,qdim,nspin,nsite), stat = istat)
-     allocate(hyb_l(nmesh,qdim,qdim,nspin,nsite), stat = istat)
+     allocate(wss_l(qdim,qdim,nmesh,nspin,nsite), stat = istat)
+     allocate(hyb_l(qdim,qdim,nmesh,nspin,nsite), stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
