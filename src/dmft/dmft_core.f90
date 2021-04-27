@@ -7,17 +7,23 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/26/2021 by li huang (last modified)
+!!!           04/28/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
 !!!-----------------------------------------------------------------------
 
   subroutine dmft_driver()
+     use constants, only : dp
+
      implicit none
 
-     STOP "in dmft_driver"
-
+     integer :: s
+     integer :: k
+     integer :: p
+     integer :: q
+     integer :: f
+ 
      return
   end subroutine dmft_driver
 
