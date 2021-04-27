@@ -17,7 +17,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/27/2021 by li huang (last modified)
+!!!           04/28/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -766,8 +766,8 @@
 
 ! allocate memory
      allocate(sigdc(qdim,qdim,nspin,nsite),       stat = istat)
-     allocate(sig_l(nmesh,qdim,qdim,nspin,nsite), stat = istat)
-     allocate(sig_k(nmesh,qbnd,qbnd,nkpt,nspin),  stat = istat)
+     allocate(sig_l(qdim,qdim,nmesh,nspin,nsite), stat = istat)
+     allocate(sig_k(qbnd,qbnd,nmesh,nkpt,nspin),  stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then

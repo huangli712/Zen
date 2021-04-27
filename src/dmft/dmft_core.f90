@@ -15,6 +15,7 @@
 
   subroutine dmft_driver()
      use constants, only : dp
+     use control, only : nspin
 
      implicit none
 
@@ -23,6 +24,12 @@
      integer :: p
      integer :: q
      integer :: f
+
+     do s=1,nspin
+         do k=1,nkpt
+
+         enddo ! over k={1,nkpt} loop
+     enddo ! over s={1,nspin} loop
  
      return
   end subroutine dmft_driver
