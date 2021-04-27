@@ -19,7 +19,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/25/2021 by li huang (last modified)
+!!!           04/28/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -1365,7 +1365,7 @@
                      do j=1,ndim(i_grp(i))
                          do k=1,ndim(i_grp(i))
                              read(mytmp,*) re, im
-                             sig_l(m,k,j,s,i) = dcmplx(re, im)
+                             sig_l(k,j,m,s,i) = dcmplx(re, im)
                          enddo ! over k={1,ndim(i_grp(i))} loop
                      enddo ! over j={1,ndim(i_grp(i))} loop
                  enddo ! over m={1,nmesh} loop
