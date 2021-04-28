@@ -100,7 +100,7 @@
      use constants, only : dp
      use constants, only : czero
 
-     use control, only : nkpt, nspin
+     use control, only : nkpt, nspin, nmesh
 
      use context, only : kwin
      use context, only : grn_l, grn_k
