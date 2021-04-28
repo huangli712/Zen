@@ -25,15 +25,6 @@
      return
   end subroutine dmft_driver
 
-!!
-!! @sub cal_sig_k
-!!
-  subroutine cal_sig_k()
-     implicit none
-
-     return
-  end subroutine cal_sig_k
-
   subroutine cal_grn_l(t)
      use constants, only : dp
      use constants, only : czero, czi
@@ -58,13 +49,11 @@
      integer :: cbnd, cdim
      integer :: bs, be
 
-     !!complex(dp) :: G(qbnd,qbnd)
      complex(dp) :: P(qdim,qbnd)
      complex(dp) :: Q(qbnd,qdim)
      complex(dp) :: Tm(qbnd,qbnd)
      complex(dp) :: Hm(qbnd)
 
-     !!G = czero
      P = czero
      Q = czero
      grn_l(:,:,:,:,t) = czero
@@ -90,9 +79,6 @@
 
                  call s_inv_z(cbnd, Tm(1:cbnd,1:cbnd))
 
-                 !!grn_k(1:cbnd,1:cbnd,m,k,s) = Tm(1:cbnd,1:cbnd)
-
-                 !!G(1:cbnd,1:cbnd) = grn_k(1:cbnd,1:cbnd,m,k,s)
                  grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + &
                  matmul(matmul(P(1:cdim,1:cbnd), Tm(1:cbnd,1:cbnd)), Q(1:cbnd,1:cdim))
              enddo ! over m={1,nmesh} loop
