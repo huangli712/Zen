@@ -19,7 +19,7 @@
   subroutine dmft_driver()
      implicit none
 
-     call cal_grn_k(1)
+     !call cal_grn_k(1)
      call cal_grn_l(1)
 
      return
@@ -34,77 +34,16 @@
      return
   end subroutine cal_sig_k
 
-!!
-!! @sub cal_grn_k
-!!
-  subroutine cal_grn_k(w)
+  subroutine cal_grn_l(t)
      use constants, only : dp
      use constants, only : czero, czi
 
-     use control, only : nkpt, nspin
-     use control, only : nmesh
-     use control, only : fermi
-
-     use context, only : qbnd
-     use context, only : kwin
-     use context, only : enk
-     use context, only : fmesh
-     use context, only : grn_k
-
-     implicit none
-
-! external arguments
-     integer, intent(in) :: w
-
-! local variables
-! loop index
-     integer :: s
-     integer :: k
-     integer :: m
-
-     integer :: cbnd
-     integer :: bs, be
-
-! dummy arrays
-     complex(dp) :: T(qbnd,qbnd)
-     complex(dp) :: H(qbnd)
-
-     grn_k = czero
-
-     do s=1,nspin
-         do k=1,nkpt
-             bs = kwin(k,s,1,w)
-             be = kwin(k,s,2,w)
-             cbnd = be - bs + 1
-             do m=1,nmesh
-                 T = czero
-                 H = czero
-
-                 H(1:cbnd) = czi * fmesh(m) + fermi - enk(bs:be,k,s)
-                 call s_diag_z(cbnd, H(1:cbnd), T(1:cbnd,1:cbnd))
-
-! add self-energy function here
-
-                 call s_inv_z(cbnd, T(1:cbnd,1:cbnd))
-
-                 grn_k(1:cbnd,1:cbnd,m,k,s) = T(1:cbnd,1:cbnd)
-             enddo ! over m={1,nmesh} loop
-         enddo ! over k={1,nkpt} loop
-     enddo ! over s={1,nspin} loop
- 
-     return
-  end subroutine cal_grn_k
-
-  subroutine cal_grn_l(t)
-     use constants, only : dp
-     use constants, only : czero
-
-     use control, only : nkpt, nspin, nmesh
+     use control, only : nkpt, nspin, nmesh, fermi
 
      use context, only : kwin
-     use context, only : grn_l, grn_k
+     use context, only : grn_l!!, grn_k
      use context, only : qbnd, qdim, ndim
-     use context, only : psichi, chipsi
+     use context, only : psichi, chipsi, enk, fmesh
 
      implicit none
 
@@ -119,28 +58,43 @@
      integer :: cbnd, cdim
      integer :: bs, be
 
-     complex(dp) :: G(qbnd,qbnd)
+     !!complex(dp) :: G(qbnd,qbnd)
      complex(dp) :: P(qdim,qbnd)
      complex(dp) :: Q(qbnd,qdim)
+     complex(dp) :: Tm(qbnd,qbnd)
+     complex(dp) :: Hm(qbnd)
 
-     G = czero
+     !!G = czero
      P = czero
      Q = czero
      grn_l(:,:,:,:,t) = czero
 
      do s=1,nspin
          do k=1,nkpt
-             bs = kwin(k,s,1,1)
-             be = kwin(k,s,2,1)
+             bs = kwin(k,s,1,t)
+             be = kwin(k,s,2,t)
              cbnd = be - bs + 1
              cdim = ndim(t)
 
              P(1:cdim,1:cbnd) = psichi(1:cdim,1:cbnd,k,s,t)
              Q(1:cbnd,1:cdim) = chipsi(1:cbnd,1:cdim,k,s,t)
              do m=1,nmesh
-                 G(1:cbnd,1:cbnd) = grn_k(1:cbnd,1:cbnd,m,k,s)
+
+                 Tm = czero
+                 Hm = czero
+
+                 Hm(1:cbnd) = czi * fmesh(m) + fermi - enk(bs:be,k,s)
+                 call s_diag_z(cbnd, Hm(1:cbnd), Tm(1:cbnd,1:cbnd))
+
+! add self-energy function here
+
+                 call s_inv_z(cbnd, Tm(1:cbnd,1:cbnd))
+
+                 !!grn_k(1:cbnd,1:cbnd,m,k,s) = Tm(1:cbnd,1:cbnd)
+
+                 !!G(1:cbnd,1:cbnd) = grn_k(1:cbnd,1:cbnd,m,k,s)
                  grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + &
-                 matmul(matmul(P(1:cdim,1:cbnd), G(1:cbnd,1:cbnd)), Q(1:cbnd,1:cdim))
+                 matmul(matmul(P(1:cdim,1:cbnd), Tm(1:cbnd,1:cbnd)), Q(1:cbnd,1:cdim))
              enddo ! over m={1,nmesh} loop
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop

@@ -410,7 +410,7 @@
 !!
 !! lattice green's functions
 !!
-     complex(dp), public, save, allocatable :: grn_k(:,:,:,:,:)
+     !!complex(dp), public, save, allocatable :: grn_k(:,:,:,:,:)
 
   end module dmft_green
 
@@ -801,7 +801,7 @@
 
 ! allocate memory
      allocate(grn_l(qdim,qdim,nmesh,nspin,nsite), stat = istat)
-     allocate(grn_k(qbnd,qbnd,nmesh,nkpt,nspin),  stat = istat)
+     !!allocate(grn_k(qbnd,qbnd,nmesh,nkpt,nspin),  stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -810,7 +810,7 @@
 
 ! initialize them
      grn_l = czero
-     grn_k = czero
+     !!grn_k = czero
 
      return
   end subroutine cat_alloc_green
@@ -999,7 +999,7 @@
      implicit none
 
      if ( allocated(grn_l) ) deallocate(grn_l)
-     if ( allocated(grn_k) ) deallocate(grn_k)
+     !!if ( allocated(grn_k) ) deallocate(grn_k)
 
      return
   end subroutine cat_free_green
