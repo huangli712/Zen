@@ -76,7 +76,6 @@
              bs = kwin(k,s,1,w)
              be = kwin(k,s,2,w)
              cbnd = be - bs + 1
-             !print *, s, k
              do m=1,nmesh
                  T = czero
                  H = czero
@@ -89,13 +88,9 @@
                  call s_inv_z(cbnd, T(1:cbnd,1:cbnd))
 
                  grn_k(1:cbnd,1:cbnd,m,k,s) = T(1:cbnd,1:cbnd)
-                 !if ( m == 1 .and. k == 1 ) then
-                 !    print *, grn_k(1:cbnd,1:cbnd,m,k,s) / float(nkpt)
-                 !endif
              enddo ! over m={1,nmesh} loop
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
-     !!print *, "dfdfd"
  
      return
   end subroutine cal_grn_k
@@ -139,25 +134,16 @@
 
              P = czero
              P(1:cdim,1:cbnd) = psichi(1:cdim,1:cbnd,k,s,t)
-             !!print *, cdim, cbnd
-             !!print *, P(5,1:cbnd)
              do m=1,nmesh
                  G = czero
-                 G(1:cbnd,1:cbnd) = grn_k(1:cbnd,1:cbnd,m,k,s) / float(nkpt)
-                 !if ( m == 1) then
-                 !print *, G(1:cbnd,1:cbnd)
-                 !endif
+                 G(1:cbnd,1:cbnd) = grn_k(1:cbnd,1:cbnd,m,k,s)
                  grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + &
                  matmul(matmul(P(1:cdim,1:cbnd), G(1:cbnd,1:cbnd)), transpose(dconjg(P(1:cdim,1:cbnd))))
-                 !!if ( m == 1) then
-                 !!print *, matmul(matmul(P(1:cdim,1:cbnd), G(1:cbnd,1:cbnd)), transpose(dconjg(P(1:cdim,1:cbnd))))
-                 !!STOP
-                 !!endif
              enddo ! over m={1,nmesh} loop
-             !!STOP
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
 
+     grn_l = grn_l / float(nkpt)
      print *, grn_l(1:ndim(t),1:ndim(t), 1, 1, t) 
 
      return
