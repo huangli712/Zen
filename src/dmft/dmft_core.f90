@@ -20,6 +20,7 @@
      implicit none
 
      call cal_grn_k(1)
+     call cal_grn_l(1)
 
      return
   end subroutine dmft_driver
@@ -95,8 +96,54 @@
      return
   end subroutine cal_grn_k
 
-  subroutine cal_grn_l()
+  subroutine cal_grn_l(t)
+     use constants, only : dp
+     use constants, only : czero
+
+     use control, only : nkpt, nspin
+
+     use context, only : kwin
+     use context, only : grn_l, grn_k
+     use context, only : qbnd, qdim, ndim
+     use context, only : psichi
+
      implicit none
+
+! external arguments
+     integer, intent(in) :: t
+
+! loop index
+     integer :: s
+     integer :: k
+     integer :: m
+
+     integer :: cbnd, cdim
+     integer :: bs, be
+
+     complex(dp) :: G(qbnd,qbnd)
+     complex(dp) :: P(qdim,qbnd)
+
+     grn_l(:,:,:,:,t) = czero
+
+     do s=1,nspin
+         do k=1,nkpt
+             bs = kwin(k,s,1,1)
+             be = kwin(k,s,2,1)
+             cbnd = be - bs + 1
+             cdim = ndim(t)
+
+             P = czero
+             P(1:cdim,1:cbnd) = psichi(1:cdim,1:cbnd,k,s,t)
+             do m=1,nmesh
+                 G = czero
+                 G(1:cbnd,1:cbnd) = grn_k(1:cbnd,1:cbnd,m,k,s)
+
+                 grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + &
+           matmul(matmul(P(1:cdim,1:cbnd), G(1:cbnd,1:cbnd)), dconjg(P(1:cdim,1:cbnd)))
+             enddo ! over m={1,nmesh} loop
+
+         enddo ! over k={1,nkpt} loop
+     enddo ! over s={1,nspin} loop
 
      return
   end subroutine cal_grn_l
