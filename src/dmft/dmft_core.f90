@@ -69,7 +69,6 @@
 
                  grn_k(1:cbnd,1:cbnd,m,k,s) = T(1:cbnd,1:cbnd)
              enddo ! over m={1,nmesh} loop
-             STOP
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
  
