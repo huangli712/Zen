@@ -104,7 +104,7 @@
      use context, only : kwin
      use context, only : grn_l, grn_k
      use context, only : qbnd, qdim, ndim
-     use context, only : psichi
+     use context, only : psichi, chipsi
 
      implicit none
 
@@ -123,26 +123,24 @@
      complex(dp) :: P(qdim,qbnd)
      complex(dp) :: Q(qbnd,qdim)
 
+     G = czero
+     P = czero
+     Q = czero
      grn_l(:,:,:,:,t) = czero
 
      do s=1,nspin
          do k=1,nkpt
-             !!print *, s, k
              bs = kwin(k,s,1,1)
              be = kwin(k,s,2,1)
              cbnd = be - bs + 1
              cdim = ndim(t)
 
-             P = czero
-             Q = czero
              P(1:cdim,1:cbnd) = psichi(1:cdim,1:cbnd,k,s,t)
-             Q = transpose(dconjg(P))
+             Q(1:cbnd,1:cdim) = chipsi(1:cbnd,1:cdim,k,s,t)
              do m=1,nmesh
-                 G = czero
                  G(1:cbnd,1:cbnd) = grn_k(1:cbnd,1:cbnd,m,k,s)
                  grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + &
                  matmul(matmul(P(1:cdim,1:cbnd), G(1:cbnd,1:cbnd)), Q(1:cbnd,1:cdim))
-                 !!matmul(matmul(P(1:cdim,1:cbnd), G(1:cbnd,1:cbnd)), transpose(dconjg(P(1:cdim,1:cbnd))))
              enddo ! over m={1,nmesh} loop
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
