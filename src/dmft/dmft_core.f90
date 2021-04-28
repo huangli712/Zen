@@ -109,6 +109,24 @@
      return
   end subroutine cal_grn_k
 
+  subroutine cal_grn_l()
+     implicit none
+
+     return
+  end subroutine cal_grn_l
+
+  subroutine cal_hyb_l()
+     implicit none
+
+     return
+  end subroutine cal_hyb_l
+
+  subroutine cal_wss_l()
+     implicit none
+
+     return
+  end subroutine cal_wss_l
+
   subroutine map_chi_psi()
      implicit none
 
