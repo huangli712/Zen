@@ -314,6 +314,13 @@
 !!
      complex(dp), public, save, allocatable :: psichi(:,:,:,:,:)
 
+!!
+!! @var chipsi
+!!
+!! overlap matrix between the local orbitals and the Kohn-Sham basis
+!!
+     complex(dp), public, save, allocatable :: chipsi(:,:,:,:,:)
+
   end module dmft_projs
 
 !!========================================================================
@@ -722,6 +729,7 @@
 
 ! allocate memory
      allocate(psichi(qdim,qbnd,nkpt,nspin,ngrp), stat = istat)
+     allocate(chipsi(qbnd,qdim,nkpt,nspin,ngrp), stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -730,6 +738,7 @@
 
 ! initialize them
      psichi = czero
+     chipsi = czero
 
      return
   end subroutine cat_alloc_projs
@@ -948,6 +957,7 @@
      implicit none
 
      if ( allocated(psichi) ) deallocate(psichi)
+     if ( allocated(chipsi) ) deallocate(chipsi)
 
      return
   end subroutine cat_free_projs
