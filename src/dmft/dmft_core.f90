@@ -14,7 +14,16 @@
 !!!-----------------------------------------------------------------------
 
   subroutine dmft_driver()
-     use constants, only : dp, czero, czi
+     implicit none
+
+     call cal_grn_k()
+
+     return
+  end subroutine dmft_driver
+
+  subroutine cal_grn_k()
+     use constants, only : dp
+     use constants, only : czero, czi
 
      use control, only : nspin
      use control, only : nkpt, nband
@@ -69,11 +78,12 @@
 
                  grn_k(1:cbnd,1:cbnd,m,k,s) = T(1:cbnd,1:cbnd)
              enddo ! over m={1,nmesh} loop
+             STOP
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
  
      return
-  end subroutine dmft_driver
+  end subroutine cal_grn_k
 
   subroutine map_chi_psi()
      implicit none
