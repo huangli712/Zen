@@ -13,6 +13,9 @@
 !!! comment :
 !!!-----------------------------------------------------------------------
 
+!!
+!! @sub dmft_driver
+!!
   subroutine dmft_driver()
      implicit none
 
@@ -21,21 +24,38 @@
      return
   end subroutine dmft_driver
 
-  subroutine cal_grn_k()
+!!
+!! @sub cal_sig_k
+!!
+  subroutine cal_sig_k()
+     implicit none
+
+     return
+  end subroutine cal_sig_k
+
+!!
+!! @sub cal_grn_k
+!!
+  subroutine cal_grn_k(w)
      use constants, only : dp
      use constants, only : czero, czi
 
-     use control, only : nspin
-     use control, only : nkpt, nband
+     use control, only : nkpt, nspin
      use control, only : nmesh
      use control, only : fermi
 
-     use context, only : kwin, enk, qbnd
-     use context, only : grn_k
+     use context, only : qbnd
+     use context, only : kwin
+     use context, only : enk
      use context, only : fmesh
+     use context, only : grn_k
 
      implicit none
 
+! external arguments
+     integer, intent(in) :: w
+
+! local variables
 ! loop index
      integer :: s
      integer :: k
@@ -43,24 +63,28 @@
      integer :: p
      integer :: q
 
-     integer :: cbnd, bs, be
+     integer :: cbnd
+     integer :: bs, be
 
-! dummy array
+! dummy arrays
      complex(dp) :: T(qbnd,qbnd)
-     complex(dp) :: hopping(nband)
+     complex(dp) :: H(qbnd)
+
+     grn_k = czero
 
      do s=1,nspin
          do k=1,nkpt
-             bs = kwin(k,s,1,1)
-             be = kwin(k,s,2,1)
+             bs = kwin(k,s,1,w)
+             be = kwin(k,s,2,w)
              cbnd = be - bs + 1
              print *, k - 1, s, cbnd
+
              do m=1,nmesh
                  T = czero
-                 hopping = czero
+                 H = czero
 
-                 hopping(bs:be) = czi * fmesh(m) + fermi - enk(bs:be,k,s)
-                 call s_diag_z(cbnd, hopping(bs:be), T(1:cbnd,1:cbnd))
+                 H(1:cbnd) = czi * fmesh(m) + fermi - enk(bs:be,k,s)
+                 call s_diag_z(cbnd, H(1:cbnd), T(1:cbnd,1:cbnd))
 
                  if (m == 1025) then
                      print *, "before:" 
