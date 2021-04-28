@@ -130,6 +130,7 @@
 !!
   subroutine dmft_setup_param()
      use constants, only : dp
+     use constants, only : zero
      use constants, only : mytmp
 
      use mmpi, only : mp_bcast
@@ -274,6 +275,9 @@
      call mp_barrier()
 
 # endif  /* MPI */
+
+! reset fermi to zero
+     fermi = zero
 
      return
   end subroutine dmft_setup_param
