@@ -19,7 +19,7 @@
   subroutine dmft_driver()
      implicit none
 
-     call cal_grn_k()
+     call cal_grn_k(1)
 
      return
   end subroutine dmft_driver
@@ -60,8 +60,6 @@
      integer :: s
      integer :: k
      integer :: m
-     integer :: p
-     integer :: q
 
      integer :: cbnd
      integer :: bs, be
@@ -77,7 +75,6 @@
              bs = kwin(k,s,1,w)
              be = kwin(k,s,2,w)
              cbnd = be - bs + 1
-             print *, k - 1, s, cbnd
 
              do m=1,nmesh
                  T = czero
@@ -86,23 +83,12 @@
                  H(1:cbnd) = czi * fmesh(m) + fermi - enk(bs:be,k,s)
                  call s_diag_z(cbnd, H(1:cbnd), T(1:cbnd,1:cbnd))
 
-                 if (m == 1025) then
-                     print *, "before:" 
-                     do p=1,qbnd
-                         print *, p, T(p,p)
-                     enddo
-                 endif
+! add self-energy function here
+
                  call s_inv_z(cbnd, T(1:cbnd,1:cbnd))
-                 if (m == 1025) then
-                     print *, "after:"
-                     do p=1,qbnd
-                         print *, p, T(p,p)
-                     enddo
-                 endif
 
                  grn_k(1:cbnd,1:cbnd,m,k,s) = T(1:cbnd,1:cbnd)
              enddo ! over m={1,nmesh} loop
-             STOP
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
  
