@@ -76,7 +76,7 @@
              bs = kwin(k,s,1,w)
              be = kwin(k,s,2,w)
              cbnd = be - bs + 1
-
+             print *, s, k
              do m=1,nmesh
                  T = czero
                  H = czero
@@ -127,6 +127,7 @@
 
      do s=1,nspin
          do k=1,nkpt
+             print *, s, k
              bs = kwin(k,s,1,1)
              be = kwin(k,s,2,1)
              cbnd = be - bs + 1
@@ -134,13 +135,19 @@
 
              P = czero
              P(1:cdim,1:cbnd) = psichi(1:cdim,1:cbnd,k,s,t)
+             !!print *, cdim, cbnd
+             !!print *, P(5,1:cbnd)
              do m=1,nmesh
                  G = czero
                  G(1:cbnd,1:cbnd) = grn_k(1:cbnd,1:cbnd,m,k,s)
-
-                 grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + &
-           matmul(matmul(P(1:cdim,1:cbnd), G(1:cbnd,1:cbnd)), dconjg(P(1:cdim,1:cbnd)))
+                 if ( m == 1025) then
+                 print *, G(1:cbnd,1:cbnd)
+                 endif
+                 !!grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + &
+                 !print *, matmul(matmul(P(1:cdim,1:cbnd), G(1:cbnd,1:cbnd)), transpose(dconjg(P(1:cdim,1:cbnd))))
+                 !!STOP
              enddo ! over m={1,nmesh} loop
+             STOP
 
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
