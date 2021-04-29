@@ -107,48 +107,7 @@
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
 
-! evaluate band window for the current k-point and spin
-             bs = kwin(k,s,1,i_grp(t))
-             be = kwin(k,s,2,i_grp(t))
-             cbnd = be - bs + 1
 
-! provide some information
-             write(mystd,'(4X,a,i2)',advance='no') 'spin: ', s
-             write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
-             write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
-
-! allocate memory for Em, Hm, Tm, and Sm
-             allocate(Em(cbnd),      stat = istat)
-             allocate(Hm(cbnd),      stat = istat)
-             allocate(Tm(cbnd,cbnd), stat = istat)
-             allocate(Sm(cbnd,cbnd), stat = istat)
-
-! evaluate Em, which is frequency-independent
-             Em = fermi - enk(bs:be,k,s)
-
-             FREQ_LOOP: do m=1,nmesh
-
-! consider imaginary axis or real axis
-                 if ( axis == 1 ) then
-                     Hm = czi * fmesh(m) + Em
-                 else
-                     Hm = fmesh(m) + Em
-                 endif
-
-! convert Hm (vector) to Tm (diagonal matrix)
-                 call s_diag_z(cbnd, Hm, Tm)
-
-! here we use Gm to save sig_l - sigdc
-                 Gm = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
-
-! upfolding: Gm (local basis) -> Sm (Kohn-Sham basis)
-                 call map_chi_psi(cdim, cbnd, k, s, t, Gm, Sm)
-
-! substract self-energy function from the hamiltonian
-                 Tm = Tm - Sm
-
-! calculate lattice green's function
-                 call s_inv_z(cbnd, Tm)
 
 ! downfolding: Tm (Kohn-Sham basis) -> Gm (local basis)
                  call map_psi_chi(cbnd, cdim, k, s, t, Tm, Gm)
@@ -156,13 +115,6 @@
 ! save the results
                  grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + Gm
 
-             enddo FREQ_LOOP ! over m={1,nmesh} loop
-
-! deallocate memory
-             if ( allocated(Em) ) deallocate(Em)
-             if ( allocated(Hm) ) deallocate(Hm)
-             if ( allocated(Tm) ) deallocate(Tm)
-             if ( allocated(Sm) ) deallocate(Sm)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
@@ -191,6 +143,76 @@
 
      return
   end subroutine cal_wss_l
+
+  subroutine cal_grn_k(k, s, t)
+     implicit none
+
+! external arguments
+     integer, intent(in) :: k
+     integer, intent(in) :: s
+     integer, intent(in) :: t
+
+! local variables
+
+
+! evaluate band window for the current k-point and spin
+     bs = kwin(k,s,1,i_grp(t))
+     be = kwin(k,s,2,i_grp(t))
+     cbnd = be - bs + 1
+
+! provide some information
+     write(mystd,'(4X,a,i2)',advance='no') 'spin: ', s
+     write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
+     write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
+
+! allocate memory for Em, Hm, Tm, Sm, and Gm
+     allocate(Em(cbnd),      stat = istat)
+     allocate(Hm(cbnd),      stat = istat)
+     allocate(Tm(cbnd,cbnd), stat = istat)
+     allocate(Gm(cbnd,cbnd), stat = istat)
+     allocate(Sm(cdim,cdim), stat = istat)
+
+! evaluate Em, which is k-dependent, but frequency-independent
+     Em = fermi - enk(bs:be,k,s)
+
+     FREQ_LOOP: do m=1,nmesh
+
+! consider imaginary axis or real axis
+         if ( axis == 1 ) then
+             Hm = czi * fmesh(m) + Em
+         else
+             Hm = fmesh(m) + Em
+         endif
+
+! convert Hm (vector) to Gm (diagonal matrix)
+         call s_diag_z(cbnd, Hm, Gm)
+
+! substract self-energy function from the hamiltonian
+         Gm = Gm - Sm(:,:,t)
+
+! calculate lattice green's function
+         call s_inv_z(cbnd, Gm)
+
+         grn_k(1:cbnd,1:cbnd,m) = Gm
+
+     enddo FREQ_LOOP ! over m={1,nmesh} loop
+
+! deallocate memory
+     if ( allocated(Em) ) deallocate(Em)
+     if ( allocated(Hm) ) deallocate(Hm)
+     if ( allocated(Tm) ) deallocate(Tm)
+     if ( allocated(Sm) ) deallocate(Sm)
+
+     return
+  end subroutine cal_grn_k
+
+  subroutine cal_sig_k()
+! here we use Sm to save sig_l - sigdc
+         Sm = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
+
+! upfolding: Sm (local basis) -> Sm (Kohn-Sham basis)
+         call map_chi_psi(cdim, cbnd, k, s, t, Gm, Sm)
+  end subroutine cal_sig_k
 
 !!
 !! @sub map_chi_psi
