@@ -144,19 +144,6 @@
 ! here we use Gm to save sig_l - sigdc
                  Gm = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
 
-                 if ( m == 1 ) then
-                     Gm(1,1) = dcmplx(1.200, 5.0)
-                     Gm(2,2) = dcmplx(1.000, -0.14) 
-                     Gm(3,3) = dcmplx(2.200, 3.0)
-                     Gm(4,4) = dcmplx(0.800, -0.1)
-                     Gm(5,5) = dcmplx(1.255, 2.0_dp)
-
-                     Gm(2,4) = dcmplx(-1.0, 0.34)
-                     Gm(1,4) = dcmplx(-1.0, 0.34)
-                     Gm(3,1) = dcmplx(-1.0, 0.34)
-                     Gm(1,5) = dcmplx(-1.0, 0.34)
-                 endif
-
 ! upfolding: Gm (local basis) -> Sm (Kohn-Sham basis)
                  call map_chi_psi(cdim, cbnd, k, s, t, Gm, Sm)
 
@@ -190,6 +177,7 @@
          print *, s,grn_l(s,s, 1, 1, t)
      enddo
 
+! deallocate memory
      deallocate(Gm)
 
      return
