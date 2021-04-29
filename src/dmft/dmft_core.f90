@@ -7,7 +7,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/28/2021 by li huang (last modified)
+!!!           04/29/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -95,9 +95,6 @@
 ! reset grn_l
      grn_l(:,:,:,:,t) = czero
 
-! reset sigdc, only for debug
-     sigdc = czero
-
 ! allocate memory for Gm
      allocate(Gm(cdim,cdim), stat = istat)
      if ( istat /= 0 ) then
@@ -172,10 +169,6 @@
 
 ! renormalize local green's function
      grn_l = grn_l / float(nkpt)
-
-     do s=1,ndim(t)
-         print *, s,grn_l(s,s, 1, 1, t)
-     enddo
 
 ! deallocate memory
      deallocate(Gm)
