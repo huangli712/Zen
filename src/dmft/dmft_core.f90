@@ -34,6 +34,7 @@
      use constants, only : czero, czi
      use constants, only : mystd
 
+     use control, only : axis
      use control, only : nkpt, nspin
      use control, only : nmesh
      use control, only : fermi
@@ -75,7 +76,7 @@
      integer :: bs, be
 
 ! dummy array: for band dispersion (vector)
-     complex(dp), allocatable :: Hm(:)
+     complex(dp), allocatable :: Em(:), Hm(:)
 
 ! dummy array: for band dispersion (diagonal matrix)
      complex(dp), allocatable :: Tm(:,:)
@@ -105,6 +106,7 @@
 
      write(mystd,'(2X,a,i4)') 'calculate grn_l for site:', t
      write(mystd,'(2X,a)')  'add contributions from ...'
+
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
 
@@ -118,17 +120,30 @@
              write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
              write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
 
-             allocate(Hm(cbnd))
-             allocate(Tm(cbnd,cbnd))
-             allocate(Sm(cbnd,cbnd))
+! allocate memory for Em, Hm, Tm, and Sm
+             allocate(Em(cbnd),      stat = istat)
+             allocate(Hm(cbnd),      stat = istat)
+             allocate(Tm(cbnd,cbnd), stat = istat)
+             allocate(Sm(cbnd,cbnd), stat = istat)
+
+! evaluate Em, which is frequency-independent
+             Em = fermi - enk(bs:be,k,s)
 
              FREQ_LOOP: do m=1,nmesh
 
-                 Hm = czi * fmesh(m) + fermi - enk(bs:be,k,s)
+! consider imaginary axis or real axis
+                 if ( axis == 1 ) then
+                     Hm = czi * fmesh(m) + Em
+                 else
+                     Hm = fmesh(m) + Em
+                 endif
+
+! convert Hm (vector) to Tm (diagonal matrix)
                  call s_diag_z(cbnd, Hm, Tm)
 
-! add self-energy function here
+! here we use Gm to save sig_l - sigdc
                  Gm = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
+
                  if ( m == 1 ) then
                      Gm(1,1) = dcmplx(1.200, 5.0)
                      Gm(2,2) = dcmplx(1.000, -0.14) 
@@ -142,24 +157,35 @@
                      Gm(1,5) = dcmplx(-1.0, 0.34)
                  endif
 
+! upfolding: Gm (local basis) -> Sm (Kohn-Sham basis)
                  call map_chi_psi(cdim, cbnd, k, s, t, Gm, Sm)
 
+! substract self-energy function from the hamiltonian
                  Tm = Tm - Sm
 
+! calculate lattice green's function
                  call s_inv_z(cbnd, Tm)
 
+! downfolding: Tm (Kohn-Sham basis) -> Gm (local basis)
                  call map_psi_chi(cbnd, cdim, k, s, t, Tm, Gm)
 
+! save the results
                  grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + Gm
+
              enddo FREQ_LOOP ! over m={1,nmesh} loop
 
-             deallocate(Hm)
-             deallocate(Tm)
-             deallocate(Sm)
+! deallocate memory
+             if ( allocated(Em) ) deallocate(Em)
+             if ( allocated(Hm) ) deallocate(Hm)
+             if ( allocated(Tm) ) deallocate(Tm)
+             if ( allocated(Sm) ) deallocate(Sm)
+
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
+! renormalize local green's function
      grn_l = grn_l / float(nkpt)
+
      do s=1,ndim(t)
          print *, s,grn_l(s,s, 1, 1, t)
      enddo
