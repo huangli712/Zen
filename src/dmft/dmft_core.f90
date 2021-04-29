@@ -24,6 +24,9 @@
      return
   end subroutine dmft_driver
 
+!!
+!! @sub cal_grn_l
+!!
   subroutine cal_grn_l(t)
      use constants, only : dp
      use constants, only : czero, czi
@@ -34,7 +37,7 @@
      use context, only : grn_l
      use context, only : ndim
      use context, only : enk, fmesh
-     use context, only : sig_l, sigdc
+     use context, only : sig_l, sigdc, i_grp
 
      implicit none
 
@@ -64,8 +67,8 @@
 
      do s=1,nspin
          do k=1,nkpt
-             bs = kwin(k,s,1,t)
-             be = kwin(k,s,2,t)
+             bs = kwin(k,s,1,i_grp(t))
+             be = kwin(k,s,2,i_grp(t))
              cbnd = be - bs + 1
 
              allocate(Hm(cbnd))
@@ -79,6 +82,19 @@
 
 ! add self-energy function here
                  Gm = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
+                 if ( m == 1 ) then
+                     Gm(1,1) = dcmplx(1.200, 5.0)
+                     Gm(2,2) = dcmplx(1.000, -0.14) 
+                     Gm(3,3) = dcmplx(2.200, 3.0)
+                     Gm(4,4) = dcmplx(0.800, -0.1)
+                     Gm(5,5) = dcmplx(1.255, 2.0_dp)
+
+                     Gm(2,4) = dcmplx(-1.0, 0.34)
+                     Gm(1,4) = dcmplx(-1.0, 0.34)
+                     Gm(3,1) = dcmplx(-1.0, 0.34)
+                     Gm(1,5) = dcmplx(-1.0, 0.34)
+                 endif
+
                  call map_chi_psi(cdim, cbnd, k, s, t, Gm, Sm)
 
                  Tm = Tm - Sm
@@ -97,7 +113,9 @@
      enddo ! over s={1,nspin} loop
 
      grn_l = grn_l / float(nkpt)
-     print *, grn_l(1:ndim(t),1:ndim(t), 1, 1, t) 
+     do s=1,ndim(t)
+         print *, s,grn_l(s,s, 1, 1, t)
+     enddo
 
      deallocate(Gm)
 
@@ -122,6 +140,7 @@
   subroutine map_chi_psi(cdim, cbnd, k, s, t, Mc, Mp)
      use constants, only : dp
 
+     use context, only : i_grp
      use context, only : psichi
      use context, only : chipsi
 
@@ -137,8 +156,8 @@
      complex(dp), intent(in)  :: Mc(cdim,cdim)
      complex(dp), intent(out) :: Mp(cbnd,cbnd)
 
-     Mp = matmul( matmul(chipsi(1:cbnd,1:cdim,k,s,t), Mc), &
-                         psichi(1:cdim,1:cbnd,k,s,t) )
+     Mp = matmul( matmul(chipsi(1:cbnd,1:cdim,k,s,i_grp(t)), Mc), &
+                         psichi(1:cdim,1:cbnd,k,s,i_grp(t)) )
 
      return
   end subroutine map_chi_psi
@@ -149,6 +168,7 @@
   subroutine map_psi_chi(cbnd, cdim, k, s, t, Mp, Mc)
      use constants, only : dp
 
+     use context, only : i_grp
      use context, only : psichi
      use context, only : chipsi
 
@@ -164,8 +184,8 @@
      complex(dp), intent(in)  :: Mp(cbnd,cbnd)
      complex(dp), intent(out) :: Mc(cdim,cdim)
 
-     Mc = matmul( matmul(psichi(1:cdim,1:cbnd,k,s,t), Mp), &
-                         chipsi(1:cbnd,1:cdim,k,s,t) )
+     Mc = matmul( matmul(psichi(1:cdim,1:cbnd,k,s,i_grp(t)), Mp), &
+                         chipsi(1:cbnd,1:cdim,k,s,i_grp(t)) )
 
      return
   end subroutine map_psi_chi
