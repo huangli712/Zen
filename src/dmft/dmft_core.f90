@@ -109,8 +109,28 @@
      return
   end subroutine map_chi_psi
 
-  subroutine map_psi_chi()
+!!
+!! @sub map_psi_chi
+!!
+  subroutine map_psi_chi(cbnd, cdim, k, s, t, Mp, Mc)
+     use constants, only : dp
+
+     use context, only : psichi, chipsi
+
      implicit none
+
+! external arguments
+     integer, intent(in) :: cbnd
+     integer, intent(in) :: cdim
+     integer, intent(in) :: k
+     integer, intent(in) :: s
+     integer, intent(in) :: t
+
+     complex(dp), intent(in) :: Mp(cbnd,cbnd)
+     complex(dp), intent(out) :: Mc(cdim,cdim)
+
+     Mc = matmul( matmul(psichi(1:cdim,1:cbnd,k,s,t), Mp), 
+                  chipsi(1:cbnd,1:cdim,k,s,t) )
 
      return
   end subroutine map_psi_chi
