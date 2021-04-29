@@ -195,7 +195,7 @@
 !!
 !! @sub map_chi_psi
 !!
-  subroutine map_chi_psi(cdim, cbnd, k, s, t, Mc, Mp)
+  subroutine map_chi_psi(cdim, cbnd, cmsh, k, s, t, Mc, Mp)
      use constants, only : dp
 
      use context, only : i_grp
@@ -207,15 +207,26 @@
 ! external arguments
      integer, intent(in) :: cdim
      integer, intent(in) :: cbnd
+     integer, intent(in) :: cmsh
      integer, intent(in) :: k
      integer, intent(in) :: s
      integer, intent(in) :: t
 
-     complex(dp), intent(in)  :: Mc(cdim,cdim)
-     complex(dp), intent(out) :: Mp(cbnd,cbnd)
+     complex(dp), intent(in)  :: Mc(cdim,cdim,cmsh)
+     complex(dp), intent(out) :: Mp(cbnd,cbnd,cmsh)
 
-     Mp = matmul( matmul(chipsi(1:cbnd,1:cdim,k,s,i_grp(t)), Mc), &
-                         psichi(1:cdim,1:cbnd,k,s,i_grp(t)) )
+! local variables
+     integer :: f
+
+     complex(dp) :: Pc(cdim,cbnd)
+     complex(dp) :: Cp(cbnd,cdim)
+
+     Pc = psichi(1:cdim,1:cbnd,k,s,i_grp(t))
+     Cp = chipsi(1:cbnd,1:cdim,k,s,i_grp(t))
+
+     do f=1,cmsh
+         Mp(:,:,f) = matmul( matmul(Cp, Mc(:,:,f)), Pc )
+     enddo ! over f={1,cmsh} loop
 
      return
   end subroutine map_chi_psi
@@ -235,6 +246,7 @@
 ! external arguments
      integer, intent(in) :: cbnd
      integer, intent(in) :: cdim
+     integer, intent(in) :: cmsh
      integer, intent(in) :: k
      integer, intent(in) :: s
      integer, intent(in) :: t
