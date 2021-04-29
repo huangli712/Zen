@@ -69,11 +69,8 @@
 ! number of correlated orbitals for given impurity site
      integer :: cdim
 
-! number of dft bands for given k-point and spin
-     integer :: cbnd
 
-! band window: start index and end index for bands
-     integer :: bs, be
+
 
 ! dummy array: for band dispersion (vector)
      complex(dp), allocatable :: Em(:), Hm(:)
@@ -144,7 +141,12 @@
      return
   end subroutine cal_wss_l
 
+!!
+!! @sub cal_grn_k
+!!
   subroutine cal_grn_k(k, s, t)
+     use constants, only : dp
+
      implicit none
 
 ! external arguments
@@ -153,6 +155,11 @@
      integer, intent(in) :: t
 
 ! local variables
+! number of dft bands for given k-point and spin
+     integer :: cbnd
+
+! band window: start index and end index for bands
+     integer :: bs, be
 
 
 ! evaluate band window for the current k-point and spin
