@@ -104,12 +104,19 @@
      endif ! back if ( istat /= 0 ) block
 
      write(mystd,'(2X,a,i4)') 'calculate grn_l for site:', t
+     write(mystd,'(2X,a)')  'add contributions from ...'
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
+
+! evaluate band window for the current k-point and spin
              bs = kwin(k,s,1,i_grp(t))
              be = kwin(k,s,2,i_grp(t))
              cbnd = be - bs + 1
-             print *, s, k, t, cbnd, cdim
+
+! provide some information
+             write(mystd,'(4X,a,i2)',advance='no') 'spin: ', s
+             write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
+             write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
 
              allocate(Hm(cbnd))
              allocate(Tm(cbnd,cbnd))
