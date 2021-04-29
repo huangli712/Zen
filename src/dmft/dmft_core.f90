@@ -140,12 +140,13 @@
 !! @sub cal_grn_k
 !!
   subroutine cal_grn_k(k, s, t)
-     use constants, only : dp
+     use constants, only : dp, mystd
 
      use control, only : axis
      use control, only : nmesh
      use control, only : fermi
 
+     use context, only : i_grn
      use context, only : kwin
      use context, only : enk
 
@@ -162,7 +163,6 @@
 
 ! band window: start index and end index for bands
      integer :: bs, be
-
 
 ! evaluate band window for the current k-point and spin
      bs = kwin(k,s,1,i_grp(t))
