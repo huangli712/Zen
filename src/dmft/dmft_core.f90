@@ -70,6 +70,7 @@
              bs = kwin(k,s,1,i_grp(t))
              be = kwin(k,s,2,i_grp(t))
              cbnd = be - bs + 1
+             print *, s, k, t, cbnd, cdim
 
              allocate(Hm(cbnd))
              allocate(Tm(cbnd,cbnd))
