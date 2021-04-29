@@ -206,7 +206,7 @@
      return
   end subroutine cal_grn_k
 
-  subroutine cal_sig_k(k, s, t, sig_k)
+  subroutine cal_sig_k(k, s, t, cdim, cbnd, sig_k)
      use constants, only : dp, czero
 
      use control, only : nmesh
@@ -220,23 +220,26 @@
      integer, intent(in) :: k
      integer, intent(in) :: s
      integer, intent(in) :: t
+     integer, intent(in) :: cdim
+     integer, intent(in) :: cbnd
 
-     complex(dp), intent(out) :: sig_k(qbnd,qbnd,nmesh)
+     complex(dp), intent(out) :: sig_k(cbnd,cbnd,nmesh)
 
 ! local variables
      integer :: m
+     integer :: istat
 
-     complex(dp), allocatable :: Sm(:,:)
+     complex(dp), allocatable :: Sm(:,:,:)
 
-     FREQ_LOOP: m=1,nmesh
+     allocate(Sm(cdim,cdim,nmesh), stat = istat)
 
 ! here we use Sm to save sig_l - sigdc
-         Sm = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
+     do m=1,nmesh
+         Sm(:,:,m) = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
+     enddo
 
-! upfolding: Sm (local basis) -> Sm (Kohn-Sham basis)
-         call map_chi_psi(cdim, cbnd, k, s, t, Gm, Sm)
-
-     enddo FREQ_LOOP
+! upfolding: Sm (local basis) -> sig_k (Kohn-Sham basis)
+     call map_chi_psi(cdim, cbnd, nmesh, k, s, t, Sm, sig_k)
 
      deallocate(Sm)
 
