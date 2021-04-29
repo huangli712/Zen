@@ -206,7 +206,10 @@
      return
   end subroutine cal_grn_k
 
-  subroutine cal_sig_k(k, s, t, cdim, cbnd, sig_k)
+!!
+!! @sub cal_sig_k
+!!
+  subroutine cal_sig_k(k, s, t, cdim, cbnd, Sk)
      use constants, only : dp, czero
 
      use control, only : nmesh
@@ -223,25 +226,25 @@
      integer, intent(in) :: cdim
      integer, intent(in) :: cbnd
 
-     complex(dp), intent(out) :: sig_k(cbnd,cbnd,nmesh)
+     complex(dp), intent(out) :: Sk(cbnd,cbnd,nmesh)
 
 ! local variables
      integer :: m
      integer :: istat
 
-     complex(dp), allocatable :: Sm(:,:,:)
+     complex(dp), allocatable :: Sl(:,:,:)
 
-     allocate(Sm(cdim,cdim,nmesh), stat = istat)
+     allocate(Sl(cdim,cdim,nmesh), stat = istat)
 
-! here we use Sm to save sig_l - sigdc
+! here we use Sl to save sig_l - sigdc
      do m=1,nmesh
-         Sm(:,:,m) = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
+         Sl(:,:,m) = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
      enddo
 
-! upfolding: Sm (local basis) -> sig_k (Kohn-Sham basis)
-     call map_chi_psi(cdim, cbnd, nmesh, k, s, t, Sm, sig_k)
+! upfolding: Sl (local basis) -> Sk (Kohn-Sham basis)
+     call map_chi_psi(cdim, cbnd, nmesh, k, s, t, Sl, Sk)
 
-     deallocate(Sm)
+     deallocate(Sl)
 
      return
   end subroutine cal_sig_k
