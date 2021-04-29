@@ -114,6 +114,13 @@
 
      implicit none
 
+! external arguments
+     integer, intent(in) :: cdim
+     integer, intent(in) :: cbnd
+     integer, intent(in) :: k
+     integer, intent(in) :: s
+     integer, intent(in) :: t
+
      return
   end subroutine map_chi_psi
 
