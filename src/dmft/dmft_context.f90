@@ -17,7 +17,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/28/2021 by li huang (last modified)
+!!!           04/29/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -374,13 +374,6 @@
 !! various quantum impurity solver
 !!
      complex(dp), public, save, allocatable :: sig_l(:,:,:,:,:)
-
-!!
-!! @var sig_k
-!!
-!! self-energy functions embedded in k-space
-!!
-     complex(dp), public, save, allocatable :: sig_k(:,:,:,:,:)
 
   end module dmft_sigma
 
@@ -776,7 +769,6 @@
 ! allocate memory
      allocate(sigdc(qdim,qdim,nspin,nsite),       stat = istat)
      allocate(sig_l(qdim,qdim,nmesh,nspin,nsite), stat = istat)
-     allocate(sig_k(qbnd,qbnd,nmesh,nkpt,nspin),  stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -786,7 +778,6 @@
 ! initialize them
      sigdc = czero
      sig_l = czero
-     sig_k = czero
 
      return
   end subroutine cat_alloc_sigma
@@ -985,7 +976,6 @@
 
      if ( allocated(sigdc) ) deallocate(sigdc)
      if ( allocated(sig_l) ) deallocate(sig_l)
-     if ( allocated(sig_k) ) deallocate(sig_k)
 
      return
   end subroutine cat_free_sigma
