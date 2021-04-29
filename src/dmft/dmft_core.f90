@@ -33,7 +33,7 @@
 
      use context, only : kwin
      use context, only : grn_l
-     use context, only : qbnd, qdim, ndim
+     use context, only : ndim
      use context, only : enk, fmesh
 
      implicit none
@@ -48,14 +48,6 @@
 
      integer :: cbnd, cdim
      integer :: bs, be
-
-     !complex(dp) :: Gm(qdim,qdim)
-     !complex(dp) :: Tm(qbnd,qbnd)
-     !complex(dp) :: Hm(qbnd)
-
-     !Gm = czero
-     !Tm = czero
-     !Hm = czero
 
      complex(dp), allocatable :: Gm(:,:)
      complex(dp), allocatable :: Tm(:,:)
@@ -78,8 +70,6 @@
 
                  Hm = czi * fmesh(m) + fermi - enk(bs:be,k,s)
                  call s_diag_z(cbnd, Hm, Tm)
-                 !Hm(1:cbnd) = czi * fmesh(m) + fermi - enk(bs:be,k,s)
-                 !call s_diag_z(cbnd, Hm(1:cbnd), Tm(1:cbnd,1:cbnd))
 
 ! add self-energy function here
 
@@ -95,6 +85,7 @@
 
      grn_l = grn_l / float(nkpt)
      print *, grn_l(1:ndim(t),1:ndim(t), 1, 1, t) 
+
      deallocate(Gm)
 
      return
