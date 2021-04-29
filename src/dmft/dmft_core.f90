@@ -51,12 +51,18 @@
 ! index for impurity sites
      integer, intent(in) :: t
 
-! loop index
+! local variables
+! loop index for spin
      integer :: s
+
+! loop index for k-points
      integer :: k
+
+! loop index for frequency mesh
      integer :: m
 
-     integer :: cbnd, cdim
+     integer :: cdim
+     integer :: cbnd
      integer :: bs, be
 
      complex(dp), allocatable :: Gm(:,:)
