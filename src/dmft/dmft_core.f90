@@ -7,7 +7,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/29/2021 by li huang (last modified)
+!!!           04/30/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -170,6 +170,10 @@
 ! renormalize local green's function
      grn_l = grn_l / float(nkpt)
 
+     do s=1,cdim
+         print *, s, grn_l(s,s,1,1,1)
+     enddo
+
 ! deallocate memory
      deallocate(Gm)
 
@@ -219,7 +223,7 @@
 !!
 !! @sub map_psi_chi
 !!
-  subroutine map_psi_chi(cbnd, cdim, k, s, t, Mp, Mc)
+  subroutine map_psi_chi(cbnd, cdim, cmsh, k, s, t, Mp, Mc)
      use constants, only : dp
 
      use context, only : i_grp
@@ -235,11 +239,21 @@
      integer, intent(in) :: s
      integer, intent(in) :: t
 
-     complex(dp), intent(in)  :: Mp(cbnd,cbnd)
-     complex(dp), intent(out) :: Mc(cdim,cdim)
+     complex(dp), intent(in)  :: Mp(cbnd,cbnd,cmsh)
+     complex(dp), intent(out) :: Mc(cdim,cdim,cmsh)
 
-     Mc = matmul( matmul(psichi(1:cdim,1:cbnd,k,s,i_grp(t)), Mp), &
-                         chipsi(1:cbnd,1:cdim,k,s,i_grp(t)) )
+! local variables
+     integer :: f
+
+     complex(dp) :: Pc(cdim,cbnd)
+     complex(dp) :: Cp(cbnd,cdim)
+
+     Pc = psichi(1:cdim,1:cbnd,k,s,i_grp(t))
+     Cp = chipsi(1:cbnd,1:cdim,k,s,i_grp(t))
+
+     do f=1,cmsh
+         Mc(:,:,f) = matmul( matmul(Pc, Mp(:,:,f)), Cp )
+     enddo ! over f={1,cmsh} loop
 
      return
   end subroutine map_psi_chi

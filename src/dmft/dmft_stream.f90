@@ -1157,6 +1157,7 @@
 !!
   subroutine dmft_input_sigdc()
      use constants, only : dp, mytmp
+     use constants, only : czero
 
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
@@ -1260,6 +1261,9 @@
      call mp_barrier()
 
 # endif  /* MPI */
+
+! FOR DEBUG PURPOSE
+     sigdc = czero
 
      return
   end subroutine dmft_input_sigdc
