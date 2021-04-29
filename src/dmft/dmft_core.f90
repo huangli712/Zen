@@ -206,12 +206,24 @@
      return
   end subroutine cal_grn_k
 
-  subroutine cal_sig_k()
+  subroutine cal_sig_k(k, s, t)
+     implicit none
+
+! external arguments
+     integer, intent(in) :: k
+     integer, intent(in) :: s
+     integer, intent(in) :: t
+
+! local variables
+     integer :: m
+
 ! here we use Sm to save sig_l - sigdc
          Sm = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
 
 ! upfolding: Sm (local basis) -> Sm (Kohn-Sham basis)
          call map_chi_psi(cdim, cbnd, k, s, t, Gm, Sm)
+
+     return
   end subroutine cal_sig_k
 
 !!
