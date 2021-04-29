@@ -27,21 +27,28 @@
 !!
 !! @sub cal_grn_l
 !!
+!! try to calculate local green's function for given impurity site
+!!
   subroutine cal_grn_l(t)
      use constants, only : dp
      use constants, only : czero, czi
 
-     use control, only : nkpt, nspin, nmesh, fermi
+     use control, only : nkpt, nspin
+     use control, only : nmesh
+     use control, only : fermi
 
-     use context, only : kwin
-     use context, only : grn_l
+     use context, only : i_grp
      use context, only : ndim
-     use context, only : enk, fmesh
-     use context, only : sig_l, sigdc, i_grp
+     use context, only : kwin
+     use context, only : enk
+     use context, only : fmesh
+     use context, only : sig_l, sigdc
+     use context, only : grn_l
 
      implicit none
 
 ! external arguments
+! index for impurity sites
      integer, intent(in) :: t
 
 ! loop index
