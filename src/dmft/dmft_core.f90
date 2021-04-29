@@ -32,6 +32,7 @@
   subroutine cal_grn_l(t)
      use constants, only : dp
      use constants, only : czero, czi
+     use constants, only : mystd
 
      use control, only : nkpt, nspin
      use control, only : nmesh
@@ -102,6 +103,7 @@
          call s_print_error('cal_grn_l','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
+     write(mystd,'(2X,a,i4)') 'calculate grn_l for site:', t
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
              bs = kwin(k,s,1,i_grp(t))
