@@ -103,7 +103,15 @@
      return
   end subroutine cal_wss_l
 
-  subroutine map_chi_psi()
+!!
+!! @sub map_chi_psi
+!!
+  subroutine map_chi_psi(cdim, cbnd, k, s, t, Mc, Mp)
+     use constants, only : dp
+
+     use context, only : psichi
+     use context, only : chipsi
+
      implicit none
 
      return
