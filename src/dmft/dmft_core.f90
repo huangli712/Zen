@@ -61,25 +61,49 @@
 ! loop index for frequency mesh
      integer :: m
 
+! status flag
+     integer :: istat
+
+! number of correlated orbitals for given impurity site
      integer :: cdim
+
+! number of dft bands for given k-point and spin
      integer :: cbnd
+
+! band window: start index and end index for bands
      integer :: bs, be
 
-     complex(dp), allocatable :: Gm(:,:)
-     complex(dp), allocatable :: Tm(:,:)
+! dummy array: for band dispersion (vector)
      complex(dp), allocatable :: Hm(:)
+
+! dummy array: for band dispersion (diagonal matrix)
+     complex(dp), allocatable :: Tm(:,:)
+
+! dummy array: for self-energy function (projected to Kohn-Sham basis)
      complex(dp), allocatable :: Sm(:,:)
 
-     grn_l(:,:,:,:,t) = czero
+! dummy array: for local green's function 
+     complex(dp), allocatable :: Gm(:,:)
+
+! init cbnd and cdim
+! cbnd will be k-dependent. it will be updated later
      cbnd = 0
      cdim = ndim(t)
 
+! reset grn_l
+     grn_l(:,:,:,:,t) = czero
+
+! reset sigdc, only for debug
      sigdc = czero
 
-     allocate(Gm(cdim,cdim))
+! allocate memory for Gm
+     allocate(Gm(cdim,cdim), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_grn_l','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
 
-     do s=1,nspin
-         do k=1,nkpt
+     SPIN_LOOP: do s=1,nspin
+         KPNT_LOOP: do k=1,nkpt
              bs = kwin(k,s,1,i_grp(t))
              be = kwin(k,s,2,i_grp(t))
              cbnd = be - bs + 1
@@ -89,7 +113,7 @@
              allocate(Tm(cbnd,cbnd))
              allocate(Sm(cbnd,cbnd))
 
-             do m=1,nmesh
+             FREQ_LOOP: do m=1,nmesh
 
                  Hm = czi * fmesh(m) + fermi - enk(bs:be,k,s)
                  call s_diag_z(cbnd, Hm, Tm)
@@ -118,13 +142,13 @@
                  call map_psi_chi(cbnd, cdim, k, s, t, Tm, Gm)
 
                  grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + Gm
-             enddo ! over m={1,nmesh} loop
+             enddo FREQ_LOOP ! over m={1,nmesh} loop
 
              deallocate(Hm)
              deallocate(Tm)
              deallocate(Sm)
-         enddo ! over k={1,nkpt} loop
-     enddo ! over s={1,nspin} loop
+         enddo KPNT_LOOP ! over k={1,nkpt} loop
+     enddo SPIN_LOOP ! over s={1,nspin} loop
 
      grn_l = grn_l / float(nkpt)
      do s=1,ndim(t)
