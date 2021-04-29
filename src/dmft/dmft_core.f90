@@ -19,7 +19,6 @@
   subroutine dmft_driver()
      implicit none
 
-     !call cal_grn_k(1)
      call cal_grn_l(1)
 
      return
@@ -35,6 +34,7 @@
      use context, only : grn_l
      use context, only : ndim
      use context, only : enk, fmesh
+     use context, only : sig_l, sigdc
 
      implicit none
 
@@ -52,10 +52,14 @@
      complex(dp), allocatable :: Gm(:,:)
      complex(dp), allocatable :: Tm(:,:)
      complex(dp), allocatable :: Hm(:)
+     complex(dp), allocatable :: Sm(:,:)
 
      grn_l(:,:,:,:,t) = czero
      cbnd = 0
      cdim = ndim(t)
+
+     sigdc = czero
+
      allocate(Gm(cdim,cdim))
 
      do s=1,nspin
@@ -66,20 +70,29 @@
 
              allocate(Hm(cbnd))
              allocate(Tm(cbnd,cbnd))
+             allocate(Sm(cbnd,cbnd))
+
              do m=1,nmesh
 
                  Hm = czi * fmesh(m) + fermi - enk(bs:be,k,s)
                  call s_diag_z(cbnd, Hm, Tm)
 
 ! add self-energy function here
+                 Gm = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
+                 call map_chi_psi(cdim, cbnd, k, s, t, Gm, Sm)
+
+                 Tm = Tm - Sm
 
                  call s_inv_z(cbnd, Tm)
 
                  call map_psi_chi(cbnd, cdim, k, s, t, Tm, Gm)
+
                  grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + Gm
              enddo ! over m={1,nmesh} loop
+
              deallocate(Hm)
              deallocate(Tm)
+             deallocate(Sm)
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
 
@@ -120,6 +133,12 @@
      integer, intent(in) :: k
      integer, intent(in) :: s
      integer, intent(in) :: t
+
+     complex(dp), intent(in)  :: Mc(cdim,cdim)
+     complex(dp), intent(out) :: Mp(cbnd,cbnd)
+
+     Mp = matmul( matmul(chipsi(1:cbnd,1:cdim,k,s,t), Mc), &
+                         psichi(1:cdim,1:cbnd,k,s,t) )
 
      return
   end subroutine map_chi_psi
