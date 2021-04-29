@@ -32,9 +32,9 @@
      use control, only : nkpt, nspin, nmesh, fermi
 
      use context, only : kwin
-     use context, only : grn_l!!, grn_k
+     use context, only : grn_l
      use context, only : qbnd, qdim, ndim
-     use context, only : psichi, chipsi, enk, fmesh
+     use context, only : enk, fmesh
 
      implicit none
 
@@ -49,13 +49,11 @@
      integer :: cbnd, cdim
      integer :: bs, be
 
-     complex(dp) :: P(qdim,qbnd)
-     complex(dp) :: Q(qbnd,qdim)
+     complex(dp) :: Gm(qdim,qdim)
      complex(dp) :: Tm(qbnd,qbnd)
      complex(dp) :: Hm(qbnd)
 
-     P = czero
-     Q = czero
+     Gm = czero
      grn_l(:,:,:,:,t) = czero
 
      do s=1,nspin
@@ -65,8 +63,6 @@
              cbnd = be - bs + 1
              cdim = ndim(t)
 
-             P(1:cdim,1:cbnd) = psichi(1:cdim,1:cbnd,k,s,t)
-             Q(1:cbnd,1:cdim) = chipsi(1:cbnd,1:cdim,k,s,t)
              do m=1,nmesh
 
                  Tm = czero
@@ -79,8 +75,8 @@
 
                  call s_inv_z(cbnd, Tm(1:cbnd,1:cbnd))
 
-                 grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + &
-                 matmul(matmul(P(1:cdim,1:cbnd), Tm(1:cbnd,1:cbnd)), Q(1:cbnd,1:cdim))
+                 call map_psi_chi(cbnd, cdim, k, s, t, Tm(1:cbnd,1:cbnd), Gm(1:cdim,1:cdim))
+                 grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + Gm(1:cdim,1:cdim)
              enddo ! over m={1,nmesh} loop
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
@@ -129,8 +125,8 @@
      complex(dp), intent(in) :: Mp(cbnd,cbnd)
      complex(dp), intent(out) :: Mc(cdim,cdim)
 
-     Mc = matmul( matmul(psichi(1:cdim,1:cbnd,k,s,t), Mp), 
-                  chipsi(1:cbnd,1:cdim,k,s,t) )
+     Mc = matmul( matmul(psichi(1:cdim,1:cbnd,k,s,t), Mp), &
+                         chipsi(1:cbnd,1:cdim,k,s,t) )
 
      return
   end subroutine map_psi_chi
