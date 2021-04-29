@@ -54,19 +54,20 @@
      complex(dp) :: Hm(qbnd)
 
      Gm = czero
+     Tm = czero
+     Hm = czero
      grn_l(:,:,:,:,t) = czero
+
+     cbnd = 0
+     cdim = ndim(t)
 
      do s=1,nspin
          do k=1,nkpt
              bs = kwin(k,s,1,t)
              be = kwin(k,s,2,t)
              cbnd = be - bs + 1
-             cdim = ndim(t)
 
              do m=1,nmesh
-
-                 Tm = czero
-                 Hm = czero
 
                  Hm(1:cbnd) = czi * fmesh(m) + fermi - enk(bs:be,k,s)
                  call s_diag_z(cbnd, Hm(1:cbnd), Tm(1:cbnd,1:cbnd))
@@ -78,6 +79,7 @@
                  call map_psi_chi(cbnd, cdim, k, s, t, Tm(1:cbnd,1:cbnd), Gm(1:cdim,1:cdim))
                  grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + Gm(1:cdim,1:cdim)
              enddo ! over m={1,nmesh} loop
+
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
 
