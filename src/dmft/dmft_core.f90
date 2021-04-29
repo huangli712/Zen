@@ -55,17 +55,8 @@
 ! loop index for k-points
      integer :: k
 
-! loop index for frequency mesh
-     integer :: m
-
-! status flag
-     integer :: istat
-
 ! number of correlated orbitals for given impurity site
      integer :: cdim
-
-
-
 
 ! dummy array: for band dispersion (vector)
      complex(dp), allocatable :: Em(:), Hm(:)
@@ -158,11 +149,17 @@
      integer, intent(in) :: t
 
 ! local variables
+! loop index for frequency mesh
+     integer :: m
+
 ! number of dft bands for given k-point and spin
      integer :: cbnd
 
 ! band window: start index and end index for bands
      integer :: bs, be
+
+! status flag
+     integer :: istat
 
 ! evaluate band window for the current k-point and spin
      bs = kwin(k,s,1,i_grp(t))
