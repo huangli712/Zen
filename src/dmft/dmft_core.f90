@@ -159,8 +159,8 @@
      integer, intent(in) :: k
      integer, intent(in) :: s
 
-     complex(dp), intent(in)  :: Sk(cbnd, cbnd, nmesh)
-     complex(dp), intent(out) :: Gk(cbnd, cbnd, nmesh)
+     complex(dp), intent(in)  :: Sk(cbnd,cbnd,nmesh)
+     complex(dp), intent(out) :: Gk(cbnd,cbnd,nmesh)
 
 ! local variables
 ! loop index for frequency mesh
@@ -196,20 +196,17 @@
          call s_diag_z(cbnd, Hm, Gm)
 
 ! substract self-energy function from the hamiltonian
-         Gm = Gm - Sk(:,:,m)
+         Gk(:,:,m) = Gm - Sk(:,:,m)
 
 ! calculate lattice green's function
-         call s_inv_z(cbnd, Gm)
-
-         grn_k(1:cbnd,1:cbnd,m) = Gm
+         call s_inv_z(cbnd, Gk(:,:,m))
 
      enddo FREQ_LOOP ! over m={1,nmesh} loop
 
 ! deallocate memory
      if ( allocated(Em) ) deallocate(Em)
      if ( allocated(Hm) ) deallocate(Hm)
-     if ( allocated(Tm) ) deallocate(Tm)
-     if ( allocated(Sm) ) deallocate(Sm)
+     if ( allocated(Gm) ) deallocate(Gm)
 
      return
   end subroutine map_sk_gk
