@@ -1,23 +1,23 @@
 !!!-----------------------------------------------------------------------
 !!! project : jacaranda
-!!! program : dmft_map
-!!!           dmft_group
-!!!           dmft_window
-!!!           dmft_lattice
-!!!           dmft_kmesh
-!!!           dmft_tetra
-!!!           dmft_eigen
-!!!           dmft_projs
-!!!           dmft_fmesh
-!!!           dmft_sigma
-!!!           dmft_green
-!!!           dmft_weiss
-!!!           context    module
+!!! program : dmft_map      module
+!!!           dmft_group    module
+!!!           dmft_window   module
+!!!           dmft_lattice  module
+!!!           dmft_kmesh    module
+!!!           dmft_tetra    module
+!!!           dmft_eigen    module
+!!!           dmft_projs    module
+!!!           dmft_fmesh    module
+!!!           dmft_sigma    module
+!!!           dmft_green    module
+!!!           dmft_weiss    module
+!!!           context       module
 !!! source  : dmft_context.f90
-!!! type    : module
+!!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/29/2021 by li huang (last modified)
+!!!           04/30/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -30,8 +30,8 @@
 !!
 !! @mod dmft_map
 !!
-!! define connections /mappings between the quantum impurity problems and
-!! the groups of projectors
+!! define connections / mappings between the quantum impurity problems and
+!! the groups of projectors (or band windows)
 !!
   module dmft_map
      implicit none
@@ -40,15 +40,17 @@
 !! @var i_grp
 !!
 !! from a given quantum impurity problem, return the corresponding group
-!! of projectors
+!! of projectors, impurity -> group
 !!
      integer, public, save, allocatable :: i_grp(:)
+
+     integer, public, save, allocatable :: i_wnd(:)
 
 !!
 !! @var g_imp
 !!
 !! from a given group of projectors, return the corresponding quantum
-!! impurity problem
+!! impurity problem, group -> impurity
 !!
      integer, public, save, allocatable :: g_imp(:)
 
