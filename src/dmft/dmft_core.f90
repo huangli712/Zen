@@ -375,6 +375,9 @@
 !!
 !! @sub map_chi_psi
 !!
+!! service subroutine. map a function from local basis to Kohn-Sham
+!! basis. you can call this procedure `embedding`
+!!
   subroutine map_chi_psi(cdim, cbnd, cmsh, k, s, t, Mc, Mp)
      use constants, only : dp
 
