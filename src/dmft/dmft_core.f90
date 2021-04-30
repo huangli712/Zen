@@ -88,6 +88,16 @@
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
 
+! evaluate band window for the current k-point and spin
+     bs = kwin(k,s,1,i_grp(t))
+     be = kwin(k,s,2,i_grp(t))
+     cbnd = be - bs + 1
+
+! provide some information
+     write(mystd,'(4X,a,i2)',advance='no') 'spin: ', s
+     write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
+     write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
+
 ! downfolding: Tm (Kohn-Sham basis) -> Gm (local basis)
                  call map_psi_chi(cbnd, cdim, k, s, t, Tm, Gm)
 
@@ -126,7 +136,7 @@
 !!
 !! @sub cal_grn_k
 !!
-  subroutine cal_grn_k(k, s, t, Gk)
+  subroutine cal_grn_k(cbnd, bs, be, k, s, Gk)
      use constants, only : dp, mystd
 
      use control, only : axis
@@ -140,21 +150,20 @@
      implicit none
 
 ! external arguments
+! number of dft bands for given k-point and spin
+     integer, intent(in) :: cbnd
+
+! band window: start index and end index for bands
+     integer, intent(in) :: bs, be
+
      integer, intent(in) :: k
      integer, intent(in) :: s
-     integer, intent(in) :: t
 
      complex(dp), intent(out) :: Gk(cbnd, cbnd, nmesh)
 
 ! local variables
 ! loop index for frequency mesh
      integer :: m
-
-! number of dft bands for given k-point and spin
-     integer :: cbnd
-
-! band window: start index and end index for bands
-     integer :: bs, be
 
 ! status flag
      integer :: istat
@@ -164,16 +173,6 @@
 
 ! dummy array: for local green's function 
      complex(dp), allocatable :: Gm(:,:)
-
-! evaluate band window for the current k-point and spin
-     bs = kwin(k,s,1,i_grp(t))
-     be = kwin(k,s,2,i_grp(t))
-     cbnd = be - bs + 1
-
-! provide some information
-     write(mystd,'(4X,a,i2)',advance='no') 'spin: ', s
-     write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
-     write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
 
 ! allocate memory for Em, Hm, Tm, Sm, and Gm
      allocate(Em(cbnd),      stat = istat)
