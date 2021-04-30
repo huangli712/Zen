@@ -55,6 +55,8 @@
 ! loop index for k-points
      integer :: k
 
+     integer :: cbnd
+
 ! number of correlated orbitals for given impurity site
      integer :: cdim
 
@@ -95,6 +97,11 @@
              write(mystd,'(4X,a,i2)',advance='no') 'spin: ', s
              write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
              write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
+
+             call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
+
+
+
 
 ! downfolding: Tm (Kohn-Sham basis) -> Gm (local basis)
                  !!call map_psi_chi(cbnd, cdim, k, s, t, Tm, Gm)
