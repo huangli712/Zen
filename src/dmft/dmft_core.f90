@@ -61,18 +61,25 @@
 ! loop index for k-points
      integer :: k
 
+! number of dft bands for given k-point and spin
      integer :: cbnd
 
 ! number of correlated orbitals for given impurity site
      integer :: cdim
 
+! band window: start index and end index for bands
      integer :: bs, be
 
+! status flag
      integer :: istat
 
 ! dummy array: for self-energy function (projected to Kohn-Sham basis)
      complex(dp), allocatable :: Sk(:,:,:)
+
+! dummy array: for lattice green's function
      complex(dp), allocatable :: Gk(:,:,:)
+
+! dummy array: for local green's function
      complex(dp), allocatable :: Gl(:,:,:)
 
 ! init cbnd and cdim
@@ -80,14 +87,16 @@
      cbnd = 0
      cdim = ndim(t)
 
-! reset grn_l
-     grn_l(:,:,:,:,t) = czero
-
+! allocate memory for Gl
      allocate(Gl(cdim,cdim,nmesh), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_grn_l','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
+! reset grn_l
+     grn_l(:,:,:,:,t) = czero
+
+! print some useful information
      write(mystd,'(2X,a,i4)') 'calculate grn_l for site:', t
      write(mystd,'(2X,a)')  'add contributions from ...'
 
@@ -97,26 +106,34 @@
 ! evaluate band window for the current k-point and spin
              bs = kwin(k,s,1,i_grp(t))
              be = kwin(k,s,2,i_grp(t))
+
+! determine cbnd
              cbnd = be - bs + 1
 
-! provide some information
+! provide some useful information
              write(mystd,'(4X,a,i2)',advance='no') 'spin: ', s
              write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
              write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
 
+! allocate memories for Sk and Gk. their sizes are k-dependent
              allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
              allocate(Gk(cbnd,cbnd,nmesh), stat = istat)
 
+! build self-energy function, and then embed it into Kohn-Sham basis
              call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
 
+! calculate lattice green's function
              call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
 
+! project lattice green's function to obtain local green's function
              call cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl)
 
+! save the final results
              grn_l(1:cdim,1:cdim,:,s,t) = grn_l(1:cdim,1:cdim,:,s,t) + Gl
 
-             deallocate(Sk)
-             deallocate(Gk)
+! deallocate memories
+             if ( allocated(Sk) ) deallocate(Sk)
+             if ( allocated(Gk) ) deallocate(Gk)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
