@@ -584,7 +584,7 @@
      l     = 0
      ndim  = 0
 
-! special treatment for qdim
+! special treatment for `qdim`
 ! qdim should be initialized in dmft_setup_param()
      if ( qdim < 0 ) then
          call s_print_error('cat_alloc_group','qdim is less than 0')
@@ -618,7 +618,7 @@
      nbnd = 0
      kwin = 0
 
-! special treatment for qbnd
+! special treatment for `qbnd`
 ! qbnd should be initialized in dmft_setup_param()
      if ( qbnd < 0 ) then
          call s_print_error('cat_alloc_window','qbnd is less than 0')
@@ -856,7 +856,9 @@
      implicit none
 
      if ( allocated(i_grp) ) deallocate(i_grp)
+     if ( allocated(i_wnd) ) deallocate(i_wnd)
      if ( allocated(g_imp) ) deallocate(g_imp)
+     if ( allocated(w_imp) ) deallocate(w_imp)
 
      return
   end subroutine cat_free_map
