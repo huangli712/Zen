@@ -60,11 +60,9 @@
 ! number of correlated orbitals for given impurity site
      integer :: cdim
 
-! dummy array: for band dispersion (diagonal matrix)
-     !!complex(dp), allocatable :: Tm(:,:)
-
 ! dummy array: for self-energy function (projected to Kohn-Sham basis)
-     !!complex(dp), allocatable :: Sm(:,:)
+     complex(dp), allocatable :: Sk(:,:,:)
+     complex(dp), allocatable :: Gk(:,:,:)
 
 ! init cbnd and cdim
 ! cbnd will be k-dependent. it will be updated later
@@ -74,13 +72,9 @@
 ! reset grn_l
      grn_l(:,:,:,:,t) = czero
 
-! allocate memory for Gm
-     !!allocate(Gm(cdim,cdim), stat = istat)
-     !!if ( istat /= 0 ) then
-     !!    call s_print_error('cal_grn_l','can not allocate enough memory')
-     !!endif ! back if ( istat /= 0 ) block
-
-
+     !if ( istat /= 0 ) then
+     !    call s_print_error('cal_grn_l','can not allocate enough memory')
+     !endif ! back if ( istat /= 0 ) block
 
      write(mystd,'(2X,a,i4)') 'calculate grn_l for site:', t
      write(mystd,'(2X,a)')  'add contributions from ...'
@@ -98,17 +92,13 @@
              write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
              write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
 
+             allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
              call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
 
+             allocate(Gk(cbnd,cbnd,nmesh), stat = istat)
+             call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
 
-
-
-! downfolding: Tm (Kohn-Sham basis) -> Gm (local basis)
-                 !!call map_psi_chi(cbnd, cdim, k, s, t, Tm, Gm)
-
-! save the results
-                 !!grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + Gm
-
+             call cal_gk_gl()
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
@@ -258,6 +248,27 @@
 
      return
   end subroutine cal_sl_sk
+
+  subroutine cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl)
+     use constants, only : dp
+
+     use control, only : nmesh
+
+     implicit none
+
+     integer, intent(in) :: cbnd
+     integer, intent(in) :: cdim
+     integer, intent(in) :: k
+     integer, intent(in) :: s
+     integer, intent(in) :: t
+
+     complex(dp), intent(in) :: Gk(cbnd,cbnd,nmesh)
+     complex(dp), intent(out) :: Gl(cdim,cdim,nmesh)
+
+     call map_psi_chi(cbnd, cdim, nmesh, k, s, t, Gk, Gl)
+
+     return
+  end subroutine cal_gk_gl
 
 !!
 !! @sub map_chi_psi
