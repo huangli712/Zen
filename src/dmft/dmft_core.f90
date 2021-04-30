@@ -497,15 +497,25 @@
      complex(dp), allocatable :: Pc(:,:)
      complex(dp), allocatable :: Cp(:,:)
 
-     complex(dp) :: Pc(cdim,cbnd)
-     complex(dp) :: Cp(cbnd,cdim)
+! allocate memory
+     allocate(Pc(cdim,cbnd), stat = istat)
+     allocate(Cp(cbnd,cdim), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('map_psi_chi','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
 
+! copy data
      Pc = psichi(1:cdim,1:cbnd,k,s,i_grp(t))
      Cp = chipsi(1:cbnd,1:cdim,k,s,i_grp(t))
 
+! downfolding or projection
      do f=1,cmsh
          Mc(:,:,f) = matmul( matmul( Pc, Mp(:,:,f) ), Cp )
      enddo ! over f={1,cmsh} loop
+
+! deallocate memory
+     deallocate(Pc)
+     deallocate(Cp)
 
      return
   end subroutine map_psi_chi
