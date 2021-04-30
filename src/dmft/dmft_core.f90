@@ -449,6 +449,9 @@
 !!
 !! @sub map_psi_chi
 !!
+!! service subroutine. map a function from Kohn-Sham basis to local
+!! basis. you can call this procedure `projection`
+!!
   subroutine map_psi_chi(cbnd, cdim, cmsh, k, s, t, Mp, Mc)
      use constants, only : dp
 
@@ -459,18 +462,40 @@
      implicit none
 
 ! external arguments
+! number of dft bands for given k-point and spin
      integer, intent(in) :: cbnd
+
+! number of correlated orbitals for given impurity site
      integer, intent(in) :: cdim
+
+! number of frequency points
      integer, intent(in) :: cmsh
+
+! index for k-points
      integer, intent(in) :: k
+
+! index for spin
      integer, intent(in) :: s
+
+! index for impurity sites
      integer, intent(in) :: t
 
+! input array defined at {\psi} basis
      complex(dp), intent(in)  :: Mp(cbnd,cbnd,cmsh)
+
+! output array defined at {\chi} basis
      complex(dp), intent(out) :: Mc(cdim,cdim,cmsh)
 
 ! local variables
+! loop index for frequency mesh
      integer :: f
+
+! status flag
+     integer :: istat
+
+! the overlap matrix between local orbitals and Kohn-Sham wave-functions
+     complex(dp), allocatable :: Pc(:,:)
+     complex(dp), allocatable :: Cp(:,:)
 
      complex(dp) :: Pc(cdim,cbnd)
      complex(dp) :: Cp(cbnd,cdim)
