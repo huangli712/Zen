@@ -333,7 +333,8 @@
 !!
 !! @var chipsi
 !!
-!! overlap matrix between the local orbitals and the Kohn-Sham basis
+!! overlap matrix between the local orbitals and the Kohn-Sham basis.
+!! actually, chipsi can be obtained by psichi through conjugate transpose
 !!
      complex(dp), public, save, allocatable :: chipsi(:,:,:,:,:)
 
@@ -379,7 +380,8 @@
 !!
 !! @var sigdc
 !!
-!! dobule counting term for self-energy functions
+!! dobule counting term for self-energy functions, which are determined
+!! by the Zen framework
 !!
      complex(dp), public, save, allocatable :: sigdc(:,:,:,:)
 
