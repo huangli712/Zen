@@ -134,17 +134,60 @@
      return
   end subroutine cal_grn_l
 
+  subroutine cal_wss_l()
+     implicit none
+
+     return
+  end subroutine cal_wss_l
+
   subroutine cal_hyb_l()
      implicit none
 
      return
   end subroutine cal_hyb_l
 
-  subroutine cal_wss_l()
+!!
+!! @sub cal_sl_sk
+!!
+  subroutine cal_sl_sk(cdim, cbnd, k, s, t, Sk)
+     use constants, only : dp
+     use constants, only : czero
+
+     use control, only : nmesh
+
+     use context, only : sigdc, sig_l
+
      implicit none
 
+! external arguments
+     integer, intent(in) :: cdim
+     integer, intent(in) :: cbnd
+     integer, intent(in) :: k
+     integer, intent(in) :: s
+     integer, intent(in) :: t
+
+     complex(dp), intent(out) :: Sk(cbnd,cbnd,nmesh)
+
+! local variables
+     integer :: m
+     integer :: istat
+
+     complex(dp), allocatable :: Sl(:,:,:)
+
+     allocate(Sl(cdim,cdim,nmesh), stat = istat)
+
+! here we use Sl to save sig_l - sigdc
+     do m=1,nmesh
+         Sl(:,:,m) = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
+     enddo
+
+! upfolding: Sl (local basis) -> Sk (Kohn-Sham basis)
+     call map_chi_psi(cdim, cbnd, nmesh, k, s, t, Sl, Sk)
+
+     deallocate(Sl)
+
      return
-  end subroutine cal_wss_l
+  end subroutine cal_sl_sk
 
 !!
 !! @sub cal_sk_gk
@@ -223,49 +266,6 @@
 
      return
   end subroutine cal_sk_gk
-
-!!
-!! @sub cal_sl_sk
-!!
-  subroutine cal_sl_sk(cdim, cbnd, k, s, t, Sk)
-     use constants, only : dp
-     use constants, only : czero
-
-     use control, only : nmesh
-
-     use context, only : sigdc, sig_l
-
-     implicit none
-
-! external arguments
-     integer, intent(in) :: cdim
-     integer, intent(in) :: cbnd
-     integer, intent(in) :: k
-     integer, intent(in) :: s
-     integer, intent(in) :: t
-
-     complex(dp), intent(out) :: Sk(cbnd,cbnd,nmesh)
-
-! local variables
-     integer :: m
-     integer :: istat
-
-     complex(dp), allocatable :: Sl(:,:,:)
-
-     allocate(Sl(cdim,cdim,nmesh), stat = istat)
-
-! here we use Sl to save sig_l - sigdc
-     do m=1,nmesh
-         Sl(:,:,m) = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
-     enddo
-
-! upfolding: Sl (local basis) -> Sk (Kohn-Sham basis)
-     call map_chi_psi(cdim, cbnd, nmesh, k, s, t, Sl, Sk)
-
-     deallocate(Sl)
-
-     return
-  end subroutine cal_sl_sk
 
   subroutine cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl)
      use constants, only : dp
