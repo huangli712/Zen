@@ -44,6 +44,12 @@
 !!
      integer, public, save, allocatable :: i_grp(:)
 
+!!
+!! @var i_wnd
+!!
+!! from a given quantum impurity problem, return the corresponding dft
+!! band window, impurity -> window
+!!
      integer, public, save, allocatable :: i_wnd(:)
 
 !!
@@ -53,6 +59,14 @@
 !! impurity problem, group -> impurity
 !!
      integer, public, save, allocatable :: g_imp(:)
+
+!!
+!! @var w_imp
+!!
+!! from a given dft band window, return the corresponding quantum impurity
+!! problem, window -> impurity
+!!
+     integer, public, save, allocatable :: w_imp(:)
 
   end module dmft_map
 
