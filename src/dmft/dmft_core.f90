@@ -176,6 +176,9 @@
 !!
 !! @sub cal_sl_sk
 !!
+!! try to substract the double-counting term from the local self-energy
+!! function, and then map it from local basis to Kohn-Sham basis
+!!
   subroutine cal_sl_sk(cdim, cbnd, k, s, t, Sk)
      use constants, only : dp
      use constants, only : czero
@@ -187,30 +190,49 @@
      implicit none
 
 ! external arguments
+! number of correlated orbitals for given impurity site
      integer, intent(in) :: cdim
+
+! number of dft bands for given k-point and spin
      integer, intent(in) :: cbnd
+
+! index for k-points
      integer, intent(in) :: k
+
+! index for spin
      integer, intent(in) :: s
+
+! index for impurity sites
      integer, intent(in) :: t
 
+! self-energy function in Kohn-Sham basis
      complex(dp), intent(out) :: Sk(cbnd,cbnd,nmesh)
 
 ! local variables
+! loop index for frequency mesh
      integer :: m
+
+! status flag
      integer :: istat
 
+! dummy array: for local self-energy function
      complex(dp), allocatable :: Sl(:,:,:)
 
+! allocate memory
      allocate(Sl(cdim,cdim,nmesh), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_sl_sk','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
 
 ! here we use Sl to save sig_l - sigdc
      do m=1,nmesh
          Sl(:,:,m) = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
-     enddo
+     enddo ! over m={1,nmesh} loop
 
 ! upfolding: Sl (local basis) -> Sk (Kohn-Sham basis)
      call map_chi_psi(cdim, cbnd, nmesh, k, s, t, Sl, Sk)
 
+! deallocate memory
      deallocate(Sl)
 
      return
