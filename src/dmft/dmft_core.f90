@@ -151,12 +151,22 @@
      return
   end subroutine cal_grn_l
 
+!!
+!! @sub cal_wss_l
+!!
+!! try to calculate local weiss's function for given impurity site
+!!
   subroutine cal_wss_l()
      implicit none
 
      return
   end subroutine cal_wss_l
 
+!!
+!! @sub cal_hyb_l
+!!
+!! try to calculate local hybridization function for given impurity site
+!!
   subroutine cal_hyb_l()
      implicit none
 
