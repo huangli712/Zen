@@ -224,17 +224,16 @@
 
      use control, only : nmesh
 
-     use context, only : qbnd
      use context, only : sigdc, sig_l
 
      implicit none
 
 ! external arguments
+     integer, intent(in) :: cdim
+     integer, intent(in) :: cbnd
      integer, intent(in) :: k
      integer, intent(in) :: s
      integer, intent(in) :: t
-     integer, intent(in) :: cdim
-     integer, intent(in) :: cbnd
 
      complex(dp), intent(out) :: Sk(cbnd,cbnd,nmesh)
 
