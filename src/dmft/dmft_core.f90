@@ -134,9 +134,9 @@
   end subroutine cal_wss_l
 
 !!
-!! @sub map_sk_gk
+!! @sub cal_sk_gk
 !!
-  subroutine map_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
+  subroutine cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
      use constants, only : dp
      use constants, only : czi
 
@@ -209,12 +209,12 @@
      if ( allocated(Gm) ) deallocate(Gm)
 
      return
-  end subroutine map_sk_gk
+  end subroutine cal_sk_gk
 
 !!
-!! @sub map_sl_sk
+!! @sub cal_sl_sk
 !!
-  subroutine map_sl_sk(cdim, cbnd, k, s, t, Sk)
+  subroutine cal_sl_sk(cdim, cbnd, k, s, t, Sk)
      use constants, only : dp
      use constants, only : czero
 
@@ -252,7 +252,7 @@
      deallocate(Sl)
 
      return
-  end subroutine map_sl_sk
+  end subroutine cal_sl_sk
 
 !!
 !! @sub map_chi_psi
