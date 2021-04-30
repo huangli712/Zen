@@ -419,6 +419,7 @@
 ! status flag
      integer :: istat
 
+! the overlap matrix between local orbitals and Kohn-Sham wave-functions
      complex(dp), allocatable :: Pc(:,:)
      complex(dp), allocatable :: Cp(:,:)
 
