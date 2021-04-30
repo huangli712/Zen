@@ -216,10 +216,11 @@
   end subroutine cal_grn_k
 
 !!
-!! @sub cal_sk
+!! @sub map_sl_sk
 !!
-  subroutine cal_sk(cdim, cbnd, k, s, t, Sk)
-     use constants, only : dp, czero
+  subroutine map_sl_sk(cdim, cbnd, k, s, t, Sk)
+     use constants, only : dp
+     use constants, only : czero
 
      use control, only : nmesh
 
@@ -256,7 +257,7 @@
      deallocate(Sl)
 
      return
-  end subroutine cal_sk
+  end subroutine map_sl_sk
 
 !!
 !! @sub map_chi_psi
