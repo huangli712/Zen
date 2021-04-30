@@ -136,14 +136,16 @@
 !!
 !! @sub map_sk_gk
 !!
-  subroutine cal_grn_k(cbnd, bs, be, k, s, Sk, Gk)
+  subroutine map_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
      use constants, only : dp
+     use constants, only : czi
 
      use control, only : axis
      use control, only : nmesh
      use control, only : fermi
 
      use context, only : enk
+     use context, only : fmesh
 
      implicit none
 
@@ -194,7 +196,7 @@
          call s_diag_z(cbnd, Hm, Gm)
 
 ! substract self-energy function from the hamiltonian
-         Gm = Gm - Sm(:,:,t)
+         Gm = Gm - Sk(:,:,m)
 
 ! calculate lattice green's function
          call s_inv_z(cbnd, Gm)
