@@ -63,6 +63,7 @@
 ! dummy array: for self-energy function (projected to Kohn-Sham basis)
      complex(dp), allocatable :: Sk(:,:,:)
      complex(dp), allocatable :: Gk(:,:,:)
+     complex(dp), allocatable :: Gl(:,:,:)
 
 ! init cbnd and cdim
 ! cbnd will be k-dependent. it will be updated later
@@ -72,9 +73,10 @@
 ! reset grn_l
      grn_l(:,:,:,:,t) = czero
 
-     !if ( istat /= 0 ) then
-     !    call s_print_error('cal_grn_l','can not allocate enough memory')
-     !endif ! back if ( istat /= 0 ) block
+     allocate(Gl(cdim,cdim,nmesh), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_grn_l','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
 
      write(mystd,'(2X,a,i4)') 'calculate grn_l for site:', t
      write(mystd,'(2X,a)')  'add contributions from ...'
@@ -93,12 +95,18 @@
              write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
 
              allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
+             allocate(Gk(cbnd,cbnd,nmesh), stat = istat)
+
              call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
 
-             allocate(Gk(cbnd,cbnd,nmesh), stat = istat)
              call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
 
-             call cal_gk_gl()
+             call cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl)
+
+             grn_l(1:cdim,1:cdim,:,s,t) = grn_l(1:cdim,1:cdim,:,s,t) + Gl
+
+             deallocate(Sk)
+             deallocate(Gk)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
@@ -111,7 +119,7 @@
      !!enddo
 
 ! deallocate memory
-     !!deallocate(Gm)
+     deallocate(Gl)
 
      return
   end subroutine cal_grn_l
