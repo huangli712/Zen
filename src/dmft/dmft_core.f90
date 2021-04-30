@@ -333,6 +333,9 @@
      return
   end subroutine cal_sk_gk
 
+!!
+!! @sub cal_gk_gl
+!!
   subroutine cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl)
      use constants, only : dp
 
