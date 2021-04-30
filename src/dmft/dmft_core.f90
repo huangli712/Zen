@@ -1,6 +1,12 @@
 !!!-----------------------------------------------------------------------
 !!! project : jacaranda
 !!! program : dmft_driver
+!!!           cal_grn_l
+!!!           cal_wss_l
+!!!           cal_hyb_l
+!!!           cal_sl_sk
+!!!           cal_sk_gk
+!!!           cal_gk_gl
 !!!           map_chi_psi
 !!!           map_psi_chi
 !!! source  : dmft_core.f90
