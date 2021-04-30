@@ -35,11 +35,10 @@
      use constants, only : mystd
 
      use control, only : nkpt, nspin
+     use control, only : nmesh
 
      use context, only : i_grp
      use context, only : ndim
-     use context, only : fmesh
-     use context, only : sig_l, sigdc
      use context, only : grn_l
 
      implicit none
@@ -59,6 +58,10 @@
 
 ! number of correlated orbitals for given impurity site
      integer :: cdim
+
+     integer :: bs, be
+
+     integer :: istat
 
 ! dummy array: for self-energy function (projected to Kohn-Sham basis)
      complex(dp), allocatable :: Sk(:,:,:)
