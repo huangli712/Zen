@@ -550,7 +550,9 @@
 
 ! initialize them
      i_grp = 0
+     i_wnd = 0
      g_imp = 0
+     w_imp = 0
 
      return
   end subroutine cat_alloc_map
