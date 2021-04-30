@@ -39,6 +39,7 @@
 
      use context, only : i_grp
      use context, only : ndim
+     use context, only : kwin
      use context, only : grn_l
 
      implicit none
