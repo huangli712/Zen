@@ -134,17 +134,15 @@
   end subroutine cal_wss_l
 
 !!
-!! @sub cal_grn_k
+!! @sub map_sk_gk
 !!
-  subroutine cal_grn_k(cbnd, bs, be, k, s, Gk)
-     use constants, only : dp, mystd
+  subroutine cal_grn_k(cbnd, bs, be, k, s, Sk, Gk)
+     use constants, only : dp
 
      use control, only : axis
      use control, only : nmesh
      use control, only : fermi
 
-     use context, only : i_grp
-     use context, only : kwin
      use context, only : enk
 
      implicit none
@@ -159,6 +157,7 @@
      integer, intent(in) :: k
      integer, intent(in) :: s
 
+     complex(dp), intent(in)  :: Sk(cbnd, cbnd, nmesh)
      complex(dp), intent(out) :: Gk(cbnd, cbnd, nmesh)
 
 ! local variables
@@ -174,11 +173,10 @@
 ! dummy array: for local green's function 
      complex(dp), allocatable :: Gm(:,:)
 
-! allocate memory for Em, Hm, Tm, Sm, and Gm
+! allocate memory for Em, Hm, and Gm
      allocate(Em(cbnd),      stat = istat)
      allocate(Hm(cbnd),      stat = istat)
      allocate(Gm(cbnd,cbnd), stat = istat)
-     allocate(Sm(cdim,cdim), stat = istat)
 
 ! evaluate Em, which is k-dependent, but frequency-independent
      Em = fermi - enk(bs:be,k,s)
@@ -212,7 +210,7 @@
      if ( allocated(Sm) ) deallocate(Sm)
 
      return
-  end subroutine cal_grn_k
+  end subroutine map_sk_gk
 
 !!
 !! @sub map_sl_sk
