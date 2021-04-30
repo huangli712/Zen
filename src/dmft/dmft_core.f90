@@ -388,28 +388,59 @@
      implicit none
 
 ! external arguments
+! number of correlated orbitals for given impurity site
      integer, intent(in) :: cdim
+
+! number of dft bands for given k-point and spin
      integer, intent(in) :: cbnd
+
+! number of frequency points
      integer, intent(in) :: cmsh
+
+! index for k-points
      integer, intent(in) :: k
+
+! index for spin
      integer, intent(in) :: s
+
+! index for impurity sites
      integer, intent(in) :: t
 
+! input array defined at {\chi} basis
      complex(dp), intent(in)  :: Mc(cdim,cdim,cmsh)
+
+! output array defined at {\psi} basis
      complex(dp), intent(out) :: Mp(cbnd,cbnd,cmsh)
 
 ! local variables
+! loop index for frequency mesh
      integer :: f
 
-     complex(dp) :: Pc(cdim,cbnd)
-     complex(dp) :: Cp(cbnd,cdim)
+! status flag
+     integer :: istat
 
+     complex(dp), allocatable :: Pc(:,:)
+     complex(dp), allocatable :: Cp(:,:)
+
+! allocate memory
+     allocate(Pc(cdim,cbnd), stat = istat)
+     allocate(Cp(cbnd,cdim), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('map_chi_psi','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! copy data
      Pc = psichi(1:cdim,1:cbnd,k,s,i_grp(t))
      Cp = chipsi(1:cbnd,1:cdim,k,s,i_grp(t))
 
+! upfolding or embedding
      do f=1,cmsh
          Mp(:,:,f) = matmul( matmul( Cp, Mc(:,:,f) ), Pc )
      enddo ! over f={1,cmsh} loop
+
+! deallocate memory
+     deallocate(Pc)
+     deallocate(Cp)
 
      return
   end subroutine map_chi_psi
