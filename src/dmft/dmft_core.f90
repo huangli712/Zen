@@ -58,8 +58,7 @@
 ! number of correlated orbitals for given impurity site
      integer :: cdim
 
-! dummy array: for band dispersion (vector)
-     complex(dp), allocatable :: Em(:), Hm(:)
+
 
 ! dummy array: for band dispersion (diagonal matrix)
      complex(dp), allocatable :: Tm(:,:)
@@ -67,8 +66,7 @@
 ! dummy array: for self-energy function (projected to Kohn-Sham basis)
      complex(dp), allocatable :: Sm(:,:)
 
-! dummy array: for local green's function 
-     complex(dp), allocatable :: Gm(:,:)
+
 
 ! init cbnd and cdim
 ! cbnd will be k-dependent. it will be updated later
@@ -89,8 +87,6 @@
 
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
-
-
 
 ! downfolding: Tm (Kohn-Sham basis) -> Gm (local basis)
                  call map_psi_chi(cbnd, cdim, k, s, t, Tm, Gm)
@@ -130,14 +126,14 @@
 !!
 !! @sub cal_grn_k
 !!
-  subroutine cal_grn_k(k, s, t)
+  subroutine cal_grn_k(k, s, t, Gk)
      use constants, only : dp, mystd
 
      use control, only : axis
      use control, only : nmesh
      use control, only : fermi
 
-     use context, only : i_grn
+     use context, only : i_grp
      use context, only : kwin
      use context, only : enk
 
@@ -147,6 +143,8 @@
      integer, intent(in) :: k
      integer, intent(in) :: s
      integer, intent(in) :: t
+
+     complex(dp), intent(out) :: Gk(cbnd, cbnd, nmesh)
 
 ! local variables
 ! loop index for frequency mesh
@@ -161,6 +159,12 @@
 ! status flag
      integer :: istat
 
+! dummy array: for band dispersion (vector)
+     complex(dp), allocatable :: Em(:), Hm(:)
+
+! dummy array: for local green's function 
+     complex(dp), allocatable :: Gm(:,:)
+
 ! evaluate band window for the current k-point and spin
      bs = kwin(k,s,1,i_grp(t))
      be = kwin(k,s,2,i_grp(t))
@@ -174,7 +178,6 @@
 ! allocate memory for Em, Hm, Tm, Sm, and Gm
      allocate(Em(cbnd),      stat = istat)
      allocate(Hm(cbnd),      stat = istat)
-     allocate(Tm(cbnd,cbnd), stat = istat)
      allocate(Gm(cbnd,cbnd), stat = istat)
      allocate(Sm(cdim,cdim), stat = istat)
 
