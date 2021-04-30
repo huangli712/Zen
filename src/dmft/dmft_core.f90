@@ -216,9 +216,9 @@
   end subroutine cal_grn_k
 
 !!
-!! @sub cal_sig_k
+!! @sub cal_sk
 !!
-  subroutine cal_sig_k(k, s, t, cdim, cbnd, Sk)
+  subroutine cal_sk(cdim, cbnd, k, s, t, Sk)
      use constants, only : dp, czero
 
      use control, only : nmesh
@@ -256,7 +256,7 @@
      deallocate(Sl)
 
      return
-  end subroutine cal_sig_k
+  end subroutine cal_sk
 
 !!
 !! @sub map_chi_psi
@@ -291,7 +291,7 @@
      Cp = chipsi(1:cbnd,1:cdim,k,s,i_grp(t))
 
      do f=1,cmsh
-         Mp(:,:,f) = matmul( matmul(Cp, Mc(:,:,f)), Pc )
+         Mp(:,:,f) = matmul( matmul( Cp, Mc(:,:,f) ), Pc )
      enddo ! over f={1,cmsh} loop
 
      return
@@ -330,7 +330,7 @@
      Cp = chipsi(1:cbnd,1:cdim,k,s,i_grp(t))
 
      do f=1,cmsh
-         Mc(:,:,f) = matmul( matmul(Pc, Mp(:,:,f)), Cp )
+         Mc(:,:,f) = matmul( matmul( Pc, Mp(:,:,f) ), Cp )
      enddo ! over f={1,cmsh} loop
 
      return
