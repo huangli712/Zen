@@ -336,6 +336,8 @@
 !!
 !! @sub cal_gk_gl
 !!
+!! try to calculate local green's function by downfolding
+!!
   subroutine cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl)
      use constants, only : dp
 
@@ -343,13 +345,26 @@
 
      implicit none
 
+! external arguments
+! number of dft bands for given k-point and spin
      integer, intent(in) :: cbnd
+
+! number of correlated orbitals for given impurity site
      integer, intent(in) :: cdim
+
+! index for k-points
      integer, intent(in) :: k
+
+! index for spin
      integer, intent(in) :: s
+
+! index for impurity sites
      integer, intent(in) :: t
 
-     complex(dp), intent(in) :: Gk(cbnd,cbnd,nmesh)
+! lattice green's function at given k-point and spin
+     complex(dp), intent(in)  :: Gk(cbnd,cbnd,nmesh)
+
+! local green's function (contributions from the given k-point and spin)
      complex(dp), intent(out) :: Gl(cdim,cdim,nmesh)
 
      call map_psi_chi(cbnd, cdim, nmesh, k, s, t, Gk, Gl)
