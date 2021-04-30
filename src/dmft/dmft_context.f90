@@ -539,7 +539,9 @@
 
 ! allocate memory
      allocate(i_grp(nsite), stat = istat)
+     allocate(i_wnd(nsite), stat = istat)
      allocate(g_imp(ngrp),  stat = istat)
+     allocate(w_imp(nwnd),  stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
