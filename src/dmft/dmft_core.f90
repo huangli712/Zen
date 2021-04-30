@@ -58,15 +58,11 @@
 ! number of correlated orbitals for given impurity site
      integer :: cdim
 
-
-
 ! dummy array: for band dispersion (diagonal matrix)
-     complex(dp), allocatable :: Tm(:,:)
+     !!complex(dp), allocatable :: Tm(:,:)
 
 ! dummy array: for self-energy function (projected to Kohn-Sham basis)
-     complex(dp), allocatable :: Sm(:,:)
-
-
+     !!complex(dp), allocatable :: Sm(:,:)
 
 ! init cbnd and cdim
 ! cbnd will be k-dependent. it will be updated later
@@ -77,10 +73,12 @@
      grn_l(:,:,:,:,t) = czero
 
 ! allocate memory for Gm
-     allocate(Gm(cdim,cdim), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_grn_l','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
+     !!allocate(Gm(cdim,cdim), stat = istat)
+     !!if ( istat /= 0 ) then
+     !!    call s_print_error('cal_grn_l','can not allocate enough memory')
+     !!endif ! back if ( istat /= 0 ) block
+
+
 
      write(mystd,'(2X,a,i4)') 'calculate grn_l for site:', t
      write(mystd,'(2X,a)')  'add contributions from ...'
@@ -89,20 +87,20 @@
          KPNT_LOOP: do k=1,nkpt
 
 ! evaluate band window for the current k-point and spin
-     bs = kwin(k,s,1,i_grp(t))
-     be = kwin(k,s,2,i_grp(t))
-     cbnd = be - bs + 1
+             bs = kwin(k,s,1,i_grp(t))
+             be = kwin(k,s,2,i_grp(t))
+             cbnd = be - bs + 1
 
 ! provide some information
-     write(mystd,'(4X,a,i2)',advance='no') 'spin: ', s
-     write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
-     write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
+             write(mystd,'(4X,a,i2)',advance='no') 'spin: ', s
+             write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
+             write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
 
 ! downfolding: Tm (Kohn-Sham basis) -> Gm (local basis)
-                 call map_psi_chi(cbnd, cdim, k, s, t, Tm, Gm)
+                 !!call map_psi_chi(cbnd, cdim, k, s, t, Tm, Gm)
 
 ! save the results
-                 grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + Gm
+                 !!grn_l(1:cdim,1:cdim,m,s,t) = grn_l(1:cdim,1:cdim,m,s,t) + Gm
 
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
@@ -111,12 +109,12 @@
 ! renormalize local green's function
      grn_l = grn_l / float(nkpt)
 
-     do s=1,cdim
-         print *, s, grn_l(s,s,1,1,1)
-     enddo
+     !!do s=1,cdim
+     !!    print *, s, grn_l(s,s,1,1,1)
+     !!enddo
 
 ! deallocate memory
-     deallocate(Gm)
+     !!deallocate(Gm)
 
      return
   end subroutine cal_grn_l
