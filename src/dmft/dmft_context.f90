@@ -85,7 +85,7 @@
 !!
 !! @var qdim
 !!
-!! maximum number of correlated orbitals in all groups
+!! maximum number of correlated orbitals for all groups
 !!
      integer, public, save :: qdim = -1
 
@@ -141,7 +141,7 @@
 !!
 !! @var qbnd
 !!
-!! maximum number of bands for the band windows
+!! maximum number of bands for all the band windows
 !!
      integer, public, save :: qbnd = -1
 
@@ -207,7 +207,7 @@
 !!
 !! @var sortn
 !!
-!! number of atoms of sorts
+!! number of atoms for each sort
 !!
      integer,  public, save, allocatable :: sortn(:)
 
@@ -251,7 +251,7 @@
 !!
 !! @var weight
 !!
-!! integration weights for k-points
+!! integration weights for k-points. it has not been renormalized
 !!
      real(dp), public, save, allocatable :: weight(:)
 
