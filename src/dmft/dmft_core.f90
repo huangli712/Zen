@@ -46,7 +46,7 @@
      use control, only : nkpt, nspin
      use control, only : nmesh
 
-     use context, only : i_grp
+     use context, only : i_wnd
      use context, only : ndim
      use context, only : kwin
      use context, only : grn_l
@@ -107,8 +107,9 @@
          KPNT_LOOP: do k=1,nkpt
 
 ! evaluate band window for the current k-point and spin
-             bs = kwin(k,s,1,i_grp(t))
-             be = kwin(k,s,2,i_grp(t))
+! i_wnd(t) returns the corresponding band window for given impurity site t
+             bs = kwin(k,s,1,i_wnd(t))
+             be = kwin(k,s,2,i_wnd(t))
 
 ! determine cbnd
              cbnd = be - bs + 1
