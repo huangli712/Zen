@@ -332,11 +332,12 @@
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
 
-     use control, only : ngrp
+     use control, only : ngrp, nwnd
      use control, only : nsite
      use control, only : myid, master
 
-     use context, only : i_grp, g_imp
+     use context, only : i_grp, i_wnd
+     use context, only : g_imp, w_imp
 
      implicit none
 
@@ -372,22 +373,35 @@
          read(mytmp,*)
          read(mytmp,*)
 
-! check nsite and ngrp
+! check nsite, ngrp, and nwnd
          read(mytmp,*)
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nsite, "nsite is wrong")
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == ngrp, "ngrp is wrong")
+         read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nwnd, "nwnd is wrong")
+         call s_assert2(ngrp == nwnd, "ngrp is not equal to nwnd")
 
 ! read data: i_grp
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*) i_grp
 
+! read data: i_wnd
+         read(mytmp,*)
+         read(mytmp,*)
+         read(mytmp,*) i_wnd
+
 ! read data: g_imp
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*) g_imp
+
+! read data: w_imp
+         read(mytmp,*)
+         read(mytmp,*)
+         read(mytmp,*) w_imp
 
 ! close file handler
          close(mytmp)
