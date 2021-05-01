@@ -60,14 +60,23 @@
 !!
   subroutine dmft_try1()
      use control, only : nsite
+     use control, only : myid, master
+
      use context, only : grn_l
 
      implicit none
 
+! local variables
+! loop index for impurity sites
+     integer :: t
+
      do t=1,nsite
-         call cal_grn_l(1)
+         call cal_grn_l(t)
      enddo ! over t={1,nsite} loop
-     call dmft_dump_grn_l(grn_l)
+
+     if ( myid == master ) then
+         call dmft_dump_grn_l(grn_l)
+     endif
 
      return
   end subroutine dmft_try1
