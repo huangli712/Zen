@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/25
+# Last modified: 2021/05/01
 #
 
 #
@@ -172,6 +172,10 @@ function plo_map(PG::Array{PrGroup,1})
     # corresponding quantum impurity problem, it must be non-correlated.
     @assert all(x -> (0 <= x <= nsite), Map.g_imp)
 
+    # Setup Map.i_wnd and Map.w_imp
+    Map.i_wnd[:] = Map.i_grp[:]
+    Map.w_imp[:] = Map.g_imp[:]
+    
     # Return the desired struct
     return Map
 end
