@@ -17,7 +17,7 @@
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/30/2021 by li huang (last modified)
+!!!           05/01/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -324,19 +324,19 @@
      implicit none
 
 !!
+!! @var chipsi
+!!
+!! overlap matrix between the local orbitals and the Kohn-Sham basis
+!!
+     complex(dp), public, save, allocatable :: chipsi(:,:,:,:,:)
+
+!!
 !! @var psichi
 !!
 !! overlap matrix between the Kohn-Sham basis and the local orbitals
+!! actually, psichi can be obtained by chipsi through conjugate transpose
 !!
      complex(dp), public, save, allocatable :: psichi(:,:,:,:,:)
-
-!!
-!! @var chipsi
-!!
-!! overlap matrix between the local orbitals and the Kohn-Sham basis.
-!! actually, chipsi can be obtained by psichi through conjugate transpose
-!!
-     complex(dp), public, save, allocatable :: chipsi(:,:,:,:,:)
 
   end module dmft_projs
 
@@ -736,8 +736,8 @@
      implicit none
 
 ! allocate memory
-     allocate(psichi(qdim,qbnd,nkpt,nspin,ngrp), stat = istat)
-     allocate(chipsi(qbnd,qdim,nkpt,nspin,ngrp), stat = istat)
+     allocate(chipsi(qdim,qbnd,nkpt,nspin,ngrp), stat = istat)
+     allocate(psichi(qbnd,qdim,nkpt,nspin,ngrp), stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -745,8 +745,8 @@
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
-     psichi = czero
      chipsi = czero
+     psichi = czero
 
      return
   end subroutine cat_alloc_projs
@@ -962,8 +962,8 @@
   subroutine cat_free_projs()
      implicit none
 
-     if ( allocated(psichi) ) deallocate(psichi)
      if ( allocated(chipsi) ) deallocate(chipsi)
+     if ( allocated(psichi) ) deallocate(psichi)
 
      return
   end subroutine cat_free_projs
