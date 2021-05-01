@@ -27,9 +27,7 @@
 !!
   subroutine dmft_driver()
      use control, only : task
-     use control, only : nsite
 
-     use context, only : grn_l
 
      implicit none
 
@@ -38,10 +36,7 @@
          case (0)
 
          case (1)
-             do t=1,nsite
-                 call cal_grn_l(1)
-             enddo ! over t={1,nsite} loop
-             call dmft_dump_grn_l(grn_l)
+
 
          case (2)
 
@@ -63,7 +58,15 @@
 !! @sub dmft_try1
 !!
   subroutine dmft_try1()
+     use control, only : nsite
+     use context, only : grn_l
+
      implicit none
+
+     do t=1,nsite
+         call cal_grn_l(1)
+     enddo ! over t={1,nsite} loop
+     call dmft_dump_grn_l(grn_l)
 
      return
   end subroutine dmft_try1
