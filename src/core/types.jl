@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/23
+# Last modified: 2021/05/01
 #
 
 #
@@ -201,13 +201,17 @@ of projectors.
 ## Members
 
 i_grp -> Mapping from impurity problems to groups of projectors.\n
-g_imp -> Mapping from groups of projectors to impurity problems.
+i_wnd -> Mapping from impurity problems to windows of dft bands.\n
+g_imp -> Mapping from groups of projectors to impurity problems.\n
+w_imp -> Mapping from windows of dft bands to impurity problems.
 
 See also: [`PrGroup`](@ref).
 """
 mutable struct Mapping
     i_grp :: Array{I64,1}
+    i_wnd :: Array{I64,1}
     g_imp :: Array{I64,1}
+    w_imp :: Array{I64,1}
 end
 
 """

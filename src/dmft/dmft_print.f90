@@ -267,7 +267,6 @@
      enddo ! over s={1,nwnd} loop
 
      write(mystd,*)
-     STOP
 
      return
   end subroutine dmft_print_system
