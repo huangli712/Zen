@@ -28,17 +28,18 @@
   subroutine dmft_driver()
      use control, only : task
 
-
      implicit none
 
      select case ( task )
 
          case (0)
+             call dmft_try0()
 
          case (1)
-
+             call dmft_try1()
 
          case (2)
+             call dmft_try2()
 
      end select
 
