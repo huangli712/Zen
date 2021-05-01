@@ -231,8 +231,8 @@
      write(mystd,'(2X,a)') "[system information] -> impurities -> mappings" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
-         write(mystd,'(4X,a10,i3,2X,a7,i3)') "impurity :", s, "group  :", i_grp(s)
-         write(mystd,'(4X,a10,i3,2X,a7,i3)') "impurity :", s, "window :", i_wnd(s)
+         write(mystd,'(4X,a10,i3,2X,a8,i3)') "impurity :", s, "group  :", i_grp(s)
+         write(mystd,'(4X,a10,i3,2X,a8,i3)') "impurity :", s, "window :", i_wnd(s)
      enddo ! over s={1,nsite} loop
      write(mystd,*)
 
@@ -240,7 +240,7 @@
      write(mystd,'(2X,a)') "[system information] -> projectors -> groups"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,ngrp
-         write(mystd,'(4X,a7,i3)') "group :", s
+         write(mystd,'(4X,a8,i3)') "group  :", s
          write(mystd,'(4X,a9,2X,a)') "> shell :", shell(s)
          write(mystd,'(4X,a9,l3)') ">  corr :", corr(s)
          write(mystd,'(4X,a9,i3)') ">  site :", site(s)
@@ -260,8 +260,11 @@
      write(mystd,'(2X,a)') "[system information] -> projectors -> mappings"
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,ngrp
-         write(mystd,'(4X,a7,i3,2X,a10,i3)') "group :", s, "impurity :", g_imp(s)
+         write(mystd,'(4X,a8,i3,2X,a10,i3)') "group  :", s, "impurity :", g_imp(s)
      enddo ! over s={1,ngrp} loop
+     do s=1,nwnd
+         write(mystd,'(4X,a8,i3,2X,a10,i3)') "window :", s, "impurity :", w_imp(s)
+     enddo ! over s={1,nwnd} loop
 
      write(mystd,*)
      STOP
