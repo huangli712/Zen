@@ -8,7 +8,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/27/2021 by li huang (last modified)
+!!!           05/01/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -177,7 +177,7 @@
      use control, only : ngrp, nwnd
      use control, only : nsite, nmesh
 
-     use context, only : i_grp, g_imp
+     use context, only : i_grp, i_wnd, g_imp, w_imp
      use context, only : shell, corr, site, l, ndim
      use context, only : bmin, bmax, nbnd
      use context, only : sorts, atoms, sortn, coord
@@ -231,7 +231,8 @@
      write(mystd,'(2X,a)') "[system information] -> impurities -> mappings" 
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
-         write(mystd,'(4X,a10,i3,2X,a7,i3)') "impurity :", s, "group :", i_grp(s)
+         write(mystd,'(4X,a10,i3,2X,a7,i3)') "impurity :", s, "group  :", i_grp(s)
+         write(mystd,'(4X,a10,i3,2X,a7,i3)') "impurity :", s, "window :", i_wnd(s)
      enddo ! over s={1,nsite} loop
      write(mystd,*)
 
@@ -263,6 +264,7 @@
      enddo ! over s={1,ngrp} loop
 
      write(mystd,*)
+     STOP
 
      return
   end subroutine dmft_print_system
