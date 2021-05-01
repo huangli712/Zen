@@ -23,9 +23,12 @@
 !! @sub dmft_driver
 !!
   subroutine dmft_driver()
+     use context, only : grn_l
+
      implicit none
 
      call cal_grn_l(1)
+     call dmft_dump_grn_l(grn_l)
 
      return
   end subroutine dmft_driver
