@@ -42,12 +42,22 @@
 ! open data file: dmft_grn_l.dat
      open(mytmp, file='dmft_grn_l.dat', form='formatted', status='unknown')
 
+! write parameters
      write(mytmp,'(a9,i4)') '# nsite: ', nsite
      write(mytmp,'(a9,i4)') '# nspin: ', nspin
      write(mytmp,'(a9,i4)') '# nmesh: ', nmesh
      write(mytmp,'(a9,i4)') '# qdim : ', qdim
 
-     
+     write(mytmp,*)
+     write(mytmp,*)
+
+! write body
+     do t=1,nsite
+         do s=1,nspin
+             write(mytmp,'(a7,i4,2X,a5,i4)') "# site:", t, "spin:", s
+         enddo ! over s={1,nspin} loop
+     enddo ! over t={1,nsite} loop
+
 ! close data file
      close(mytmp)
 
