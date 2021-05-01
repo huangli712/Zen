@@ -50,18 +50,27 @@
      return
   end subroutine dmft_driver
 
+!!
+!! @sub dmft_try0
+!!
   subroutine dmft_try0()
      implicit none
 
      return
   end subroutine dmft_try0
 
+!!
+!! @sub dmft_try1
+!!
   subroutine dmft_try1()
      implicit none
 
      return
   end subroutine dmft_try1
 
+!!
+!! @sub dmft_try2
+!!
   subroutine dmft_try2()
      implicit none
 
