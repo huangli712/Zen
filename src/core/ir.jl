@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/25
+# Last modified: 2021/05/01
 #
 
 #
@@ -234,6 +234,7 @@ function irio_maps(f::String, MAP::Mapping)
     # Extract key parameters
     nsite = length(MAP.i_grp)
     ngrp = length(MAP.g_imp)
+    nwnd = length(MAP.w_imp)
 
     # Output the data
     open(joinpath(f, "maps.ir"), "w") do fout
@@ -243,6 +244,7 @@ function irio_maps(f::String, MAP::Mapping)
         println(fout)
         println(fout, "nsite -> $nsite")
         println(fout, "ngrp  -> $ngrp")
+        println(fout, "nwnd  -> $nwnd")
         println(fout)
 
         # Write the body
@@ -252,9 +254,21 @@ function irio_maps(f::String, MAP::Mapping)
         println(fout)
         println(fout)
 
+        # For i_wnd part
+        println(fout, "# i_wnd")
+        foreach(x -> @printf(fout, "%8i", x), MAP.i_wnd)
+        println(fout)
+        println(fout)
+
         # For g_imp part
         println(fout, "# g_imp")
         foreach(x -> @printf(fout, "%8i", x), MAP.g_imp)
+        println(fout)
+        println(fout)
+
+        # For w_imp part
+        println(fout, "# w_imp")
+        foreach(x -> @printf(fout, "%8i", x), MAP.w_imp)
         println(fout)
         println(fout)
     end
