@@ -39,9 +39,15 @@
      integer :: m
      integer :: p, q
 
-! open data file: solver.sgm.dat
-     open(mytmp, file='solver.sgm.dat', form='formatted', status='unknown')
+! open data file: dmft_grn_l.dat
+     open(mytmp, file='dmft_grn_l.dat', form='formatted', status='unknown')
 
+     write(mytmp,'(a9,i4)') '# nsite: ', nsite
+     write(mytmp,'(a9,i4)') '# nspin: ', nspin
+     write(mytmp,'(a9,i4)') '# nmesh: ', nmesh
+     write(mytmp,'(a9,i4)') '# qdim : ', qdim
+
+     
 ! close data file
      close(mytmp)
 
