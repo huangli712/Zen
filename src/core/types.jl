@@ -345,10 +345,12 @@ function Mapping(nsite::I64, ngrp::I64)
 
     # Initialize the arrays
     i_grp = zeros(I64, nsite)
+    i_wnd = zeros(I64, nsite)
     g_imp = zeros(I64, ngrp)
+    w_imp = zeros(I64, ngrp)
 
     # Call the default constructor
-    Mapping(i_grp, g_imp)
+    Mapping(i_grp, i_wnd, g_imp, w_imp)
 end
 
 """
