@@ -417,7 +417,9 @@
 
 ! broadcast data
      call mp_bcast( i_grp, master )
+     call mp_bcast( i_wnd, master )
      call mp_bcast( g_imp, master )
+     call mp_bcast( w_imp, master )
 
 ! block until all processes have reached here
      call mp_barrier()
