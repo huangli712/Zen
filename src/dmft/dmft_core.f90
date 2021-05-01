@@ -1,6 +1,9 @@
 !!!-----------------------------------------------------------------------
 !!! project : jacaranda
 !!! program : dmft_driver
+!!!           dmft_try0
+!!!           dmft_try1
+!!!           dmft_try2
 !!!           cal_grn_l
 !!!           cal_wss_l
 !!!           cal_hyb_l
@@ -23,15 +26,38 @@
 !! @sub dmft_driver
 !!
   subroutine dmft_driver()
+     use control, only : task
+     use control, only : nsite
+
      use context, only : grn_l
 
      implicit none
 
-     call cal_grn_l(1)
-     call dmft_dump_grn_l(grn_l)
+     select case ( task )
+
+         case (0)
+
+         case (1)
+             do t=1,nsite
+                 call cal_grn_l(1)
+             enddo ! over t={1,nsite} loop
+             call dmft_dump_grn_l(grn_l)
+
+         case (2)
+
+     end select
 
      return
   end subroutine dmft_driver
+
+  subroutine dmft_try0()
+  end subroutine dmft_try0
+
+  subroutine dmft_try1()
+  end subroutine dmft_try1
+
+  subroutine dmft_try2()
+  end subroutine dmft_try2
 
 !!
 !! @sub cal_grn_l
