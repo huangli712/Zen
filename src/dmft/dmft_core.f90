@@ -4,6 +4,8 @@
 !!!           dmft_try0
 !!!           dmft_try1
 !!!           dmft_try2
+!!!           cal_fermi
+!!!           cal_occupy
 !!!           cal_grn_l
 !!!           cal_wss_l
 !!!           cal_hyb_l
@@ -16,7 +18,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/01/2021 by li huang (last modified)
+!!!           05/02/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -89,6 +91,12 @@
 
      return
   end subroutine dmft_try2
+
+  subroutine cal_fermi()
+  end subroutine cal_fermi
+
+  subroutine cal_occupy()
+  end subroutine cal_occupy
 
 !!
 !! @sub cal_grn_l
