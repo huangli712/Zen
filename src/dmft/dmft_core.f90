@@ -439,12 +439,12 @@
 
 ! upfolding or embedding
      do f=1,cmsh
-         Mp(:,:,f) = matmul( matmul( Cp, Mc(:,:,f) ), Pc )
+         Mp(:,:,f) = matmul( matmul( Pc, Mc(:,:,f) ), Cp )
      enddo ! over f={1,cmsh} loop
 
 ! deallocate memory
-     deallocate(Pc)
      deallocate(Cp)
+     deallocate(Pc)
 
      return
   end subroutine map_chi_psi
