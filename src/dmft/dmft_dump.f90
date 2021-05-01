@@ -62,7 +62,7 @@
 ! write data for given spin and site
              write(mytmp,'(a7,i4,2X,a5,i4)') "# site:", t, "spin:", s
              do m=1,nmesh
-                 write(mytmp,'(a2,f16.8)') 'w:', fmesh(m)
+                 write(mytmp,'(a2,i6,f16.8)') 'w:', m, fmesh(m)
                  do q=1,ndim(t)
                      do p=1,ndim(t)
                          write(mytmp,'(2i4,2f16.8)') p, q, grn_l(p,q,m,s,t)
