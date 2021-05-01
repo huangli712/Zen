@@ -7,7 +7,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/29/2021 by li huang (last modified)
+!!!           05/01/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -16,7 +16,9 @@
 !!
 !! @sub dmft_dump_grn_l
 !!
-  subroutine dmft_dump_grn_l()
+  subroutine dmft_dump_grn_l(grn_l)
+     use constants, only : dp
+
      implicit none
 
      return
