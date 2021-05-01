@@ -13,7 +13,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/30/2021 by li huang (last modified)
+!!!           05/01/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -385,8 +385,8 @@
      use constants, only : dp
 
      use context, only : i_grp
-     use context, only : psichi
      use context, only : chipsi
+     use context, only : psichi
 
      implicit none
 
@@ -423,19 +423,19 @@
      integer :: istat
 
 ! the overlap matrix between local orbitals and Kohn-Sham wave-functions
-     complex(dp), allocatable :: Pc(:,:)
      complex(dp), allocatable :: Cp(:,:)
+     complex(dp), allocatable :: Pc(:,:)
 
 ! allocate memory
-     allocate(Pc(cdim,cbnd), stat = istat)
-     allocate(Cp(cbnd,cdim), stat = istat)
+     allocate(Cp(cdim,cbnd), stat = istat)
+     allocate(Pc(cbnd,cdim), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('map_chi_psi','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
 ! copy data
-     Pc = psichi(1:cdim,1:cbnd,k,s,i_grp(t))
-     Cp = chipsi(1:cbnd,1:cdim,k,s,i_grp(t))
+     Cp = chipsi(1:cdim,1:cbnd,k,s,i_grp(t))
+     Pc = psichi(1:cbnd,1:cdim,k,s,i_grp(t))
 
 ! upfolding or embedding
      do f=1,cmsh
@@ -459,8 +459,8 @@
      use constants, only : dp
 
      use context, only : i_grp
-     use context, only : psichi
      use context, only : chipsi
+     use context, only : psichi
 
      implicit none
 

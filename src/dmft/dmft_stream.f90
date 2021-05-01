@@ -1034,7 +1034,7 @@
      use control, only : myid, master
 
      use context, only : ndim, nbnd
-     use context, only : psichi, chipsi
+     use context, only : chipsi, psichi
 
      implicit none
 
@@ -1112,8 +1112,8 @@
                      do b=1,nbnd(g)
                          do d=1,ndim(g)
                              read(mytmp,*) re, im
-                             psichi(d,b,k,s,g) = dcmplx(re,+im)
-                             chipsi(b,d,k,s,g) = dcmplx(re,-im)
+                             chipsi(d,b,k,s,g) = dcmplx(re,+im)
+                             psichi(b,d,k,s,g) = dcmplx(re,-im)
                          enddo ! over d={1,ndim(g)} loop
                      enddo ! over b={1,nbnd(g)} loop
                  enddo ! over k={1,nkpt} loop
@@ -1134,8 +1134,8 @@
      call mp_barrier()
 
 ! broadcast data
-     call mp_bcast(psichi, master )
      call mp_bcast(chipsi, master )
+     call mp_bcast(psichi, master )
 
 ! block until all processes have reached here
      call mp_barrier()
