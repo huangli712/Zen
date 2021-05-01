@@ -498,7 +498,9 @@ See also: [`Mapping`](@ref).
 function Base.show(io::IO, map::Mapping)
     println(io, "Mapping struct")
     println(io, "i_grp : ", map.i_grp)
+    println(io, "i_wnd : ", map.i_wnd)
     println(io, "g_imp : ", map.g_imp)
+    println(io, "w_imp : ", map.w_imp)
 end
 
 """
