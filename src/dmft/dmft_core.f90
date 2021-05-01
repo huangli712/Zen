@@ -51,12 +51,21 @@
   end subroutine dmft_driver
 
   subroutine dmft_try0()
+     implicit none
+
+     return
   end subroutine dmft_try0
 
   subroutine dmft_try1()
+     implicit none
+
+     return
   end subroutine dmft_try1
 
   subroutine dmft_try2()
+     implicit none
+
+     return
   end subroutine dmft_try2
 
 !!
