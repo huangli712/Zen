@@ -93,9 +93,15 @@
   end subroutine dmft_try2
 
   subroutine cal_fermi()
+     implicit none
+
+     return
   end subroutine cal_fermi
 
   subroutine cal_occupy()
+     implicit none
+
+     return
   end subroutine cal_occupy
 
 !!
