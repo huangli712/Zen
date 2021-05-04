@@ -196,6 +196,7 @@
 
 ! build self-energy function, and then embed it into Kohn-Sham basis
              call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
+             STOP
 
 ! calculate lattice green's function
              call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
