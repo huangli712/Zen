@@ -196,13 +196,16 @@
 
 ! build self-energy function, and then embed it into Kohn-Sham basis
              call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
-             STOP
 
 ! calculate lattice green's function
              call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
+             print *, Gk(:,:,10)
 
 ! project lattice green's function to obtain local green's function
              call cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl)
+             print *, "hehe"
+             print *, Gl(:,:,10)
+             STOP
 
 ! save the final results
              grn_l(1:cdim,1:cdim,:,s,t) = grn_l(1:cdim,1:cdim,:,s,t) + Gl
@@ -581,8 +584,8 @@
      endif ! back if ( istat /= 0 ) block
 
 ! copy data
-     Cp = psichi(1:cdim,1:cbnd,k,s,i_grp(t))
-     Pc = chipsi(1:cbnd,1:cdim,k,s,i_grp(t))
+     Cp = chipsi(1:cdim,1:cbnd,k,s,i_grp(t))
+     Pc = psichi(1:cbnd,1:cdim,k,s,i_grp(t))
 
 ! downfolding or projection
      do f=1,cmsh
