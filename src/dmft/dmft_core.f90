@@ -199,13 +199,9 @@
 
 ! calculate lattice green's function
              call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
-             print *, Gk(:,:,10)
 
 ! project lattice green's function to obtain local green's function
              call cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl)
-             print *, "hehe"
-             print *, Gl(:,:,10)
-             STOP
 
 ! save the final results
              grn_l(1:cdim,1:cdim,:,s,t) = grn_l(1:cdim,1:cdim,:,s,t) + Gl
