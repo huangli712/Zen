@@ -6,6 +6,7 @@
 !!!           dmft_try2
 !!!           cal_fermi
 !!!           cal_occupy
+!!!           cal_eigsys
 !!!           cal_grn_l
 !!!           cal_wss_l
 !!!           cal_hyb_l
@@ -18,7 +19,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/02/2021 by li huang (last modified)
+!!!           05/04/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -53,6 +54,8 @@
 !!
   subroutine dmft_try0()
      implicit none
+
+     call cal_eigsys()
 
      return
   end subroutine dmft_try0
@@ -103,6 +106,28 @@
 
      return
   end subroutine cal_occupy
+
+!!
+!! @sub cal_eigsys
+!!
+  subroutine cal_eigsys()
+     use constants, only : dp
+
+     use control, only : nkpt, nspin
+     use control, only : nmesh
+
+     use context, only : qbnd
+
+     implicit none
+
+     complex(dp), allocatable :: eigs(:,:,:,:)
+
+     allocate(eigs(qbnd,nmesh,nkpt,nspin))
+
+     deallocate(eigs)
+
+     return
+  end subroutine cal_eigsys
 
 !!
 !! @sub cal_grn_l
