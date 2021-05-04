@@ -120,9 +120,20 @@
 
      implicit none
 
+! local variables
+     integer :: s
+     integer :: k
+
      complex(dp), allocatable :: eigs(:,:,:,:)
 
      allocate(eigs(qbnd,nmesh,nkpt,nspin))
+
+     SPIN_LOOP: do s=1,nspin
+         KPNT_LOOP: do k=1,nkpt
+
+         enddo KPNT_LOOP ! over k={1,nkpt} loop
+     enddo SPIN_LOOP ! over s={1,nspin} loop
+
 
      deallocate(eigs)
 
