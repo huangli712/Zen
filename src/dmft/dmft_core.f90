@@ -194,6 +194,7 @@
 
      complex(dp), allocatable :: Sk(:,:,:)
      complex(dp), allocatable :: Hk(:,:,:)
+     complex(dp), allocatable :: Ek(:,:)
      complex(dp), allocatable :: eigs(:,:,:,:)
 
      allocate(eigs(qbnd,nmesh,nkpt,nspin))
@@ -214,12 +215,15 @@
 
              allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
              allocate(Hk(cbnd,cbnd,nmesh), stat = istat)
+             allocate(Ek(cbnd,nmesh), stat = istat)
 
              call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
              call cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
+             call cal_hk_ek(cbnd, Hk, Ek)
 
              if ( allocated(Sk) ) deallocate(Sk)
              if ( allocated(Hk) ) deallocate(Hk)
+             if ( allocated(Ek) ) deallocate(Ek)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
