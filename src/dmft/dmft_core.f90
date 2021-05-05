@@ -568,13 +568,10 @@
 ! status flag
      integer :: istat
 
-! dummy array: for band dispersion (vector)
      complex(dp), allocatable :: Em(:)
-
-! dummy array: for lattice green's function 
      complex(dp), allocatable :: Hm(:,:)
 
-! allocate memory for Em, Hm, and Gm
+! allocate memory for Em and Hm
      allocate(Em(cbnd),      stat = istat)
      allocate(Hm(cbnd,cbnd), stat = istat)
      if ( istat /= 0 ) then
@@ -587,9 +584,7 @@
      call s_diag_z(cbnd, Em, Hm)
 
      FREQ_LOOP: do m=1,nmesh
-
          Hk(:,:,m) = Hm + Sk(:,:,m)
-
      enddo FREQ_LOOP ! over m={1,nmesh} loop
 
 ! deallocate memory
