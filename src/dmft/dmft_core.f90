@@ -536,12 +536,9 @@
      use constants, only : dp
      use constants, only : czi
 
-     use control, only : axis
      use control, only : nmesh
-     use control, only : fermi
 
      use context, only : enk
-     use context, only : fmesh
 
      implicit none
 
@@ -562,7 +559,7 @@
      complex(dp), intent(in)  :: Sk(cbnd,cbnd,nmesh)
 
 ! lattice green's function at given k-point and spin
-     complex(dp), intent(out) :: Gk(cbnd,cbnd,nmesh)
+     complex(dp), intent(out) :: Hk(cbnd,cbnd,nmesh)
 
 ! local variables
 ! loop index for frequency mesh
@@ -572,47 +569,32 @@
      integer :: istat
 
 ! dummy array: for band dispersion (vector)
-     complex(dp), allocatable :: Em(:), Hm(:)
+     complex(dp), allocatable :: Em(:)
 
 ! dummy array: for lattice green's function 
-     complex(dp), allocatable :: Gm(:,:)
+     complex(dp), allocatable :: Hm(:,:)
 
 ! allocate memory for Em, Hm, and Gm
      allocate(Em(cbnd),      stat = istat)
-     allocate(Hm(cbnd),      stat = istat)
-     allocate(Gm(cbnd,cbnd), stat = istat)
+     allocate(Hm(cbnd,cbnd), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_sk_gk','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
 ! evaluate Em, which is k-dependent, but frequency-independent
 ! if you want to consider magnetic field, you can add your codes here
-     Em = fermi - enk(bs:be,k,s)
+     Em = enk(bs:be,k,s)
+     call s_diag_z(cbnd, Em, Hm)
 
      FREQ_LOOP: do m=1,nmesh
 
-! consider imaginary axis or real axis
-         if ( axis == 1 ) then
-             Hm = czi * fmesh(m) + Em
-         else
-             Hm = fmesh(m) + Em
-         endif
-
-! convert Hm (vector) to Gm (diagonal matrix)
-         call s_diag_z(cbnd, Hm, Gm)
-
-! substract self-energy function from the Hamiltonian
-         Gk(:,:,m) = Gm - Sk(:,:,m)
-
-! calculate lattice green's function by direct inversion
-         call s_inv_z(cbnd, Gk(:,:,m))
+         Hk(:,:,m) = Hm + Sk(:,:,m)
 
      enddo FREQ_LOOP ! over m={1,nmesh} loop
 
 ! deallocate memory
      if ( allocated(Em) ) deallocate(Em)
      if ( allocated(Hm) ) deallocate(Hm)
-     if ( allocated(Gm) ) deallocate(Gm)
 
      return
   end subroutine cal_sk_hk
