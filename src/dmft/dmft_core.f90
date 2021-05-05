@@ -208,9 +208,13 @@
              cbnd = be - bs + 1
 
              allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
-             call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
+             allocate(Hk(cbnd,cbnd,nmesh), stat = istat)
 
-             deallocate(Sk)
+             call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
+             call cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
+
+             if ( allocated(Sk) ) deallocate(Sk)
+             if ( allocated(Gk) ) deallocate(Gk)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
