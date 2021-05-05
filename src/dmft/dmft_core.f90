@@ -601,12 +601,23 @@
 !!
 !! @sub cal_hk_ek
 !!
-  subroutine cal_hk_ek(cbnd, Hk)
+  subroutine cal_hk_ek(cbnd, Hk, Ek)
      use constants, only : dp
 
      use control, only : nmesh
 
      implicit none
+
+! external arguments
+     complex(dp), intent(in) :: Hk(cbnd,cbnd,nmesh)
+     complex(dp), intent(out) :: Ek(cbnd,nmesh)
+
+! local variables
+     integer :: m
+
+     do m=1,nmesh
+         call s_eigvals_zg(cbnd, cbnd, Hk, Ek)
+     enddo ! over m={1,nmesh} loop
 
      return
   end subroutine cal_hk_ek
