@@ -5,13 +5,14 @@
 !!!           dmft_try1
 !!!           dmft_try2
 !!!           cal_fermi
+!!!           cal_nelect
 !!!           cal_occupy
 !!!           cal_eigsys
 !!!           cal_grn_l
 !!!           cal_wss_l
 !!!           cal_hyb_l
 !!!           cal_sl_sk
-!!!           cal_sk_gk
+!!!           cal_sk_gki
 !!!           cal_gk_gl
 !!!           map_chi_psi
 !!!           map_psi_chi
@@ -19,7 +20,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/04/2021 by li huang (last modified)
+!!!           05/05/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -100,6 +101,12 @@
 
      return
   end subroutine cal_fermi
+
+  subroutine cal_nelect
+     implicit none
+
+     return
+  end subroutine cal_nelect
 
   subroutine cal_occupy()
      implicit none
