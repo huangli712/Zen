@@ -97,7 +97,6 @@
   end subroutine dmft_try2
 
   subroutine cal_fermi()
-     implicit none
      use constants, only : dp
      use constants, only : zero
 
@@ -109,8 +108,6 @@
      nelect = zero
      call cal_nelect(nelect)
      !!print *, "here", nelect
-
-     return
 
      return
   end subroutine cal_fermi
