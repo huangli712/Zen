@@ -54,17 +54,9 @@
 !! @sub dmft_try0
 !!
   subroutine dmft_try0()
-     use constants, only : dp
-     use constants, only : zero
-
      implicit none
 
-! local variables
-     real(dp) :: nelect
-
-     nelect = zero
-     call cal_nelect(nelect)
-     print *, "here", nelect
+     call cal_fermi()
 
      return
   end subroutine dmft_try0
@@ -106,6 +98,19 @@
 
   subroutine cal_fermi()
      implicit none
+     use constants, only : dp
+     use constants, only : zero
+
+     implicit none
+
+! local variables
+     real(dp) :: nelect
+
+     nelect = zero
+     call cal_nelect(nelect)
+     !!print *, "here", nelect
+
+     return
 
      return
   end subroutine cal_fermi
