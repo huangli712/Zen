@@ -191,8 +191,8 @@
 
 ! evaluate band window for the current k-point and spin
 ! i_wnd(t) returns the corresponding band window for given impurity site t
-             bs = kwin(k,s,1,i_wnd(t))
-             be = kwin(k,s,2,i_wnd(t))
+             bs = kwin(k,s,1,1)
+             be = kwin(k,s,2,1)
 
 ! determine cbnd
              cbnd = be - bs + 1
