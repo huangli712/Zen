@@ -189,6 +189,7 @@
      integer :: istat
 
      complex(dp), allocatable :: Sk(:,:,:)
+     complex(dp), allocatable :: Hk(:,:,:)
      complex(dp), allocatable :: eigs(:,:,:,:)
 
      allocate(eigs(qbnd,nmesh,nkpt,nspin))
@@ -214,7 +215,7 @@
              call cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
 
              if ( allocated(Sk) ) deallocate(Sk)
-             if ( allocated(Gk) ) deallocate(Gk)
+             if ( allocated(Hk) ) deallocate(Hk)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
