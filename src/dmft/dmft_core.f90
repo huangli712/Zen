@@ -532,8 +532,87 @@
 !!
 !! @sub cal_sk_hk
 !!
-  subroutine cal_sk_hk()
+  subroutine cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
+     use constants, only : dp
+     use constants, only : czi
+
+     use control, only : axis
+     use control, only : nmesh
+     use control, only : fermi
+
+     use context, only : enk
+     use context, only : fmesh
+
      implicit none
+
+! external arguments
+! number of dft bands for given k-point and spin
+     integer, intent(in) :: cbnd
+
+! band window: start index and end index for bands
+     integer, intent(in) :: bs, be
+
+! index for k-points
+     integer, intent(in) :: k
+
+! index for spin
+     integer, intent(in) :: s
+
+! self-energy function at Kohn-Sham basis
+     complex(dp), intent(in)  :: Sk(cbnd,cbnd,nmesh)
+
+! lattice green's function at given k-point and spin
+     complex(dp), intent(out) :: Gk(cbnd,cbnd,nmesh)
+
+! local variables
+! loop index for frequency mesh
+     integer :: m
+
+! status flag
+     integer :: istat
+
+! dummy array: for band dispersion (vector)
+     complex(dp), allocatable :: Em(:), Hm(:)
+
+! dummy array: for lattice green's function 
+     complex(dp), allocatable :: Gm(:,:)
+
+! allocate memory for Em, Hm, and Gm
+     allocate(Em(cbnd),      stat = istat)
+     allocate(Hm(cbnd),      stat = istat)
+     allocate(Gm(cbnd,cbnd), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_sk_gk','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! evaluate Em, which is k-dependent, but frequency-independent
+! if you want to consider magnetic field, you can add your codes here
+     Em = fermi - enk(bs:be,k,s)
+
+     FREQ_LOOP: do m=1,nmesh
+
+! consider imaginary axis or real axis
+         if ( axis == 1 ) then
+             Hm = czi * fmesh(m) + Em
+         else
+             Hm = fmesh(m) + Em
+         endif
+
+! convert Hm (vector) to Gm (diagonal matrix)
+         call s_diag_z(cbnd, Hm, Gm)
+
+! substract self-energy function from the Hamiltonian
+         Gk(:,:,m) = Gm - Sk(:,:,m)
+
+! calculate lattice green's function by direct inversion
+         call s_inv_z(cbnd, Gk(:,:,m))
+
+     enddo FREQ_LOOP ! over m={1,nmesh} loop
+
+! deallocate memory
+     if ( allocated(Em) ) deallocate(Em)
+     if ( allocated(Hm) ) deallocate(Hm)
+     if ( allocated(Gm) ) deallocate(Gm)
 
      return
   end subroutine cal_sk_hk
