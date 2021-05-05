@@ -613,6 +613,7 @@
      implicit none
 
 ! external arguments
+     integer, intent(in) :: cbnd
      complex(dp), intent(in) :: Hk(cbnd,cbnd,nmesh)
      complex(dp), intent(out) :: Ek(cbnd,nmesh)
 
