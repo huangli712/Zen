@@ -121,8 +121,8 @@
 
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
-             bs = kwin(k,s,1,i_wnd(t))
-             be = kwin(k,s,2,i_wnd(t))
+             bs = kwin(k,s,1,1)
+             be = kwin(k,s,2,1)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
