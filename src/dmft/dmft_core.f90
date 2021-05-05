@@ -150,10 +150,12 @@
          nelect = nelect * two
      endif
 
-
      return
   end subroutine cal_nelect
 
+!!
+!! @sub cal_occupy
+!!
   subroutine cal_occupy()
      implicit none
 
@@ -177,6 +179,9 @@
      integer :: s
      integer :: k
 
+     integer :: bs, be
+     integer :: cbnd
+
      complex(dp), allocatable :: eigs(:,:,:,:)
 
      allocate(eigs(qbnd,nmesh,nkpt,nspin))
@@ -184,9 +189,16 @@
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
 
+! evaluate band window for the current k-point and spin
+! i_wnd(t) returns the corresponding band window for given impurity site t
+             bs = kwin(k,s,1,i_wnd(t))
+             be = kwin(k,s,2,i_wnd(t))
+
+! determine cbnd
+             cbnd = be - bs + 1
+
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
-
 
      deallocate(eigs)
 
