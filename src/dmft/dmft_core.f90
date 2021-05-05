@@ -171,7 +171,9 @@
      use control, only : nkpt, nspin
      use control, only : nmesh
 
+     use context, only : ndim
      use context, only : qbnd
+     use context, only : kwin
 
      implicit none
 
@@ -179,12 +181,18 @@
      integer :: s
      integer :: k
 
+     integer :: t
      integer :: bs, be
+     integer :: cdim
      integer :: cbnd
 
+     complex(dp), allocatable :: Sk(:,:,:)
      complex(dp), allocatable :: eigs(:,:,:,:)
 
      allocate(eigs(qbnd,nmesh,nkpt,nspin))
+
+     t = 1
+     cdim = ndim(t)
 
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
@@ -196,6 +204,11 @@
 
 ! determine cbnd
              cbnd = be - bs + 1
+
+             allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
+             call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
+
+             deallocate(Sk)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
