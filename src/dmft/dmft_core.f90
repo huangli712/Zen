@@ -109,6 +109,10 @@
      use constants, only : dp
      use constants, only : zero
 
+     use control, only : nkpt, spin
+
+     use context, only : kwin
+
      implicit none
 
 ! local variables
