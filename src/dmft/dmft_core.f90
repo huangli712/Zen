@@ -107,11 +107,13 @@
 !!
   subroutine cal_nelect()
      use constants, only : dp
-     use constants, only : zero
+     use constants, only : zero, two
 
      use control, only : nkpt, nspin
 
      use context, only : kwin
+     use context, only : weight
+     use context, only : occupy
 
      implicit none
 
@@ -128,11 +130,16 @@
          KPNT_LOOP: do k=1,nkpt
              bs = kwin(k,s,1,1)
              be = kwin(k,s,2,1)
-
+             nelect = nelect + sum( occupy(bs:be,k,s) ) * weight(k)
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
-     print *, "here"
+     nelect = nelect / float(nkpt)
+     if ( nspin == 1 ) then
+         nelect = nelect * two
+     endif
+
+     print *, "here", nelect
 
      return
   end subroutine cal_nelect
