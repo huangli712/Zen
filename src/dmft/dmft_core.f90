@@ -12,15 +12,17 @@
 !!!           cal_wss_l
 !!!           cal_hyb_l
 !!!           cal_sl_sk
-!!!           cal_sk_gki
+!!!           cal_sk_gk
+!!!           cal_sk_hk
 !!!           cal_gk_gl
+!!!           cal_hk_ek
 !!!           map_chi_psi
 !!!           map_psi_chi
 !!! source  : dmft_core.f90
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/05/2021 by li huang (last modified)
+!!!           05/06/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -108,6 +110,8 @@
      nelect = zero
      call cal_nelect(nelect)
      !!print *, "here", nelect
+
+     call cal_eigsys()
 
      return
   end subroutine cal_fermi
@@ -593,6 +597,19 @@
 
      return
   end subroutine cal_sk_hk
+
+!!
+!! @sub cal_hk_ek
+!!
+  subroutine cal_hk_ek(cbnd, Hk)
+     use constants, only : dp
+
+     use control, only : nmesh
+
+     implicit none
+
+     return
+  end subroutine cal_hk_ek
 
 !!
 !! @sub cal_gk_gl
