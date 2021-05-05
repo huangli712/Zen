@@ -530,6 +530,15 @@
   end subroutine cal_sk_gk
 
 !!
+!! @sub cal_sk_hk
+!!
+  subroutine cal_sk_hk()
+     implicit none
+
+     return
+  end subroutine cal_sk_hk
+
+!!
 !! @sub cal_gk_gl
 !!
 !! try to calculate local green's function by downfolding
