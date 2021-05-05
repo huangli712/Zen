@@ -186,6 +186,8 @@
      integer :: cdim
      integer :: cbnd
 
+     integer :: istat
+
      complex(dp), allocatable :: Sk(:,:,:)
      complex(dp), allocatable :: eigs(:,:,:,:)
 
