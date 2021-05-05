@@ -139,7 +139,7 @@
          nelect = nelect * two
      endif
 
-     print *, "here", nelect
+     !!print *, "here", nelect
 
      return
   end subroutine cal_nelect
