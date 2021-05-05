@@ -54,9 +54,17 @@
 !! @sub dmft_try0
 !!
   subroutine dmft_try0()
+     use constants, only : dp
+     use constants, only : zero
+
      implicit none
 
-     call cal_nelect()
+! local variables
+     real(dp) :: nelect
+
+     nelect = zero
+     call cal_nelect(nelect)
+     print *, "here", nelect
 
      return
   end subroutine dmft_try0
@@ -105,7 +113,7 @@
 !!
 !! @sub cal_nelect
 !!
-  subroutine cal_nelect()
+  subroutine cal_nelect(nelect)
      use constants, only : dp
      use constants, only : zero, two
 
@@ -117,12 +125,13 @@
 
      implicit none
 
+! external arguments
+     real(dp), intent(out) :: nelect
+
 ! local variables
      integer :: s
      integer :: k
      integer :: bs, be
-
-     real(dp) :: nelect
 
      nelect = zero
 
@@ -139,7 +148,6 @@
          nelect = nelect * two
      endif
 
-     !!print *, "here", nelect
 
      return
   end subroutine cal_nelect
