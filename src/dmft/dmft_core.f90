@@ -56,7 +56,7 @@
   subroutine dmft_try0()
      implicit none
 
-     call cal_eigsys()
+     call cal_nelect()
 
      return
   end subroutine dmft_try0
@@ -102,8 +102,32 @@
      return
   end subroutine cal_fermi
 
-  subroutine cal_nelect
+!!
+!! @sub cal_nelect
+!!
+  subroutine cal_nelect()
+     use constants, only : dp
+     use constants, only : zero
+
      implicit none
+
+! local variables
+     integer :: s
+     integer :: k
+
+     real(dp) :: nelect
+
+     nelect = zero
+
+     SPIN_LOOP: do s=1,nspin
+         KPNT_LOOP: do k=1,nkpt
+             bs = kwin(k,s,1,i_wnd(t))
+             be = kwin(k,s,2,i_wnd(t))
+
+         enddo KPNT_LOOP ! over k={1,nkpt} loop
+     enddo SPIN_LOOP ! over s={1,nspin} loop
+
+     print *, "here"
 
      return
   end subroutine cal_nelect
