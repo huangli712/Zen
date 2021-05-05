@@ -17,7 +17,7 @@
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/01/2021 by li huang (last modified)
+!!!           05/06/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -385,6 +385,10 @@
 !!
      complex(dp), public, save, allocatable :: sigdc(:,:,:,:)
 
+!!
+!! @var sigoo
+!!
+     complex(dp). public, save, allocatable :: sigoo(:,:,:,:)
 !!
 !! @var sig_l
 !!
