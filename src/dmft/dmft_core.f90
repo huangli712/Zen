@@ -222,6 +222,7 @@
              call cal_hk_ek(cbnd, Hk, Ek)
              print *, Hk(:,:,10)
              print *, Ek(:,10)
+             STOP
 
              if ( allocated(Sk) ) deallocate(Sk)
              if ( allocated(Hk) ) deallocate(Hk)
@@ -623,7 +624,7 @@
      integer :: m
 
      do m=1,nmesh
-         call s_eigvals_zg(cbnd, cbnd, Hk, Ek)
+         call s_eigvals_zg(cbnd, cbnd, Hk(:,:,m), Ek(:,m))
      enddo ! over m={1,nmesh} loop
 
      return
