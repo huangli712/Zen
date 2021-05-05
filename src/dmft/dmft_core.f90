@@ -220,6 +220,8 @@
              call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
              call cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
              call cal_hk_ek(cbnd, Hk, Ek)
+             print *, Hk(:,:,10)
+             print *, Ek(:,10)
 
              if ( allocated(Sk) ) deallocate(Sk)
              if ( allocated(Hk) ) deallocate(Hk)
