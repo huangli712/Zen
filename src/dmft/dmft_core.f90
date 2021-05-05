@@ -109,7 +109,7 @@
      use constants, only : dp
      use constants, only : zero
 
-     use control, only : nkpt, spin
+     use control, only : nkpt, nspin
 
      use context, only : kwin
 
@@ -118,6 +118,7 @@
 ! local variables
      integer :: s
      integer :: k
+     integer :: bs, be
 
      real(dp) :: nelect
 
