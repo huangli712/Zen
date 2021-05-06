@@ -187,12 +187,12 @@
 !!
   subroutine cal_occupy(eigs, einf)
      use constants, only : dp
-     use constants, only : zero, one
+     use constants, only : zero, one, two
      use constants, only : czi
 
      use control, only : nkpt, nspin
      use control, only : nmesh
-     use control, only : fermi
+     use control, only : fermi, beta
 
      use context, only : qbnd
      use context, only : kwin
@@ -213,6 +213,8 @@
      integer :: cbnd
 
      real(dp) :: focc(qbnd,nmesh,nspin)
+     real(dp) :: zocc(qbnd,nspin)
+
      complex(dp) :: caux
 
      focc = zero
@@ -229,6 +231,12 @@
                      focc(b,m,s) = focc(b,m,s) - one / ( caux - einf(b,k,s) )
                  enddo
              enddo
+         enddo
+     enddo
+
+     do s=1,nspin
+         do b=1,qbnd
+             zocc(b,s) = sum( focc(b,:,s) ) / real(nkpt) * ( two / beta )
          enddo
      enddo
 
