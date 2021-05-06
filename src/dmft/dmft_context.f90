@@ -388,7 +388,7 @@
 !!
 !! @var sigoo
 !!
-     complex(dp). public, save, allocatable :: sigoo(:,:,:,:)
+     complex(dp), public, save, allocatable :: sigoo(:,:,:,:)
 !!
 !! @var sig_l
 !!
