@@ -470,7 +470,6 @@
 !!
   subroutine cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
      use constants, only : dp
-     use constants, only : czi
 
      use control, only : nmesh
 
@@ -582,11 +581,9 @@
 !!
 !! @sub cal_so_ho
 !!
-  subroutine cal_so_ho(cbnd, bs, be, k, s, Sk, Hk)
+  subroutine cal_so_ho(cbnd, bs, be, k, s, So, Ho)
      use constants, only : dp
      use constants, only : czi
-
-     use control, only : nmesh
 
      use context, only : enk
 
