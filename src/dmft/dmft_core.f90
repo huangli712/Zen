@@ -903,6 +903,7 @@
      use control, only : nkpt, nspin
      use control, only : nmesh
      use control, only : fermi
+     use control, only : mc
 
      use context, only : qbnd
 
@@ -917,12 +918,20 @@
      real(dp), parameter :: delta = 0.5_dp
 
      real(dp) :: mu1, occ1, mu2, occ2, sign
+     integer :: loop
 
      mu1 = fermi
      call cal_occupy(eigs, einf, mu1, occ1)
      sign = abs( occ1 - desired ) / ( occ1 - desired )
      mu2 = mu1
      occ2 = occ1
+
+     loop = 0
+     do while ( loop <= max_loops .and. ( occ2 - desired ) * sign > 0 .and. abs( occ2 - desired ) > mc )
+         loop = loop + 1
+         mu2 = mu2 - sign * delta
+         call cal_occupy(eigs, einf, mu2, occ2)
+     enddo
 
      return
   end subroutine dichotomy
