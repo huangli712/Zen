@@ -896,11 +896,12 @@
 !!
 !! @sub dichotomy
 !!
-  subroutine dichotomy(eigs, einf)
+  subroutine dichotomy(eigs, einf, desired)
      use constants, only : dp
 
      use control, only : nkpt, nspin
      use control, only : nmesh
+     use control, only : fermi
 
      use context, only : qbnd
 
@@ -909,12 +910,15 @@
 ! external arguments
      complex(dp), intent(in) :: eigs(qbnd,nmesh,nkpt,nspin)
      complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
+     real(dp), intent(in) :: desired
 
      integer, parameter :: max_loops = 1000
      real(dp), parameter :: delta = 0.5_dp
 
      real(dp) :: mu1, occ1, mu2, occ2
 
+     mu1 = fermi
+     call cal_occupy(eigs, einf, mu1, occ1)
 
      return
   end subroutine dichotomy
