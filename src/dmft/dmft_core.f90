@@ -12,11 +12,13 @@
 !!!           cal_wss_l
 !!!           cal_hyb_l
 !!!           cal_sl_sk
-!!!           cal_sk_so
-!!!           cal_sk_gk
 !!!           cal_sk_hk
-!!!           cal_gk_gl
 !!!           cal_hk_ek
+!!!           cal_sk_so
+!!!           cal_so_ho
+!!!           cal_ho_eo
+!!!           cal_sk_gk
+!!!           cal_gk_gl
 !!!           map_chi_psi
 !!!           map_psi_chi
 !!! source  : dmft_core.f90
@@ -232,9 +234,11 @@
              call cal_hk_ek(cbnd, Hk, Ek)
              print *, Hk(:,:,10)
              print *, Ek(:,10)
-             STOP
 
              call cal_sk_so(cbnd, Sk, So)
+             call cal_so_ho
+             call cal_ho_eo
+             STOP
 
              if ( allocated(So) ) deallocate(So)
              if ( allocated(Ho) ) deallocate(Ho)
@@ -462,6 +466,96 @@
   end subroutine cal_sl_sk
 
 !!
+!! @sub cal_sk_hk
+!!
+  subroutine cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
+     use constants, only : dp
+     use constants, only : czi
+
+     use control, only : nmesh
+
+     use context, only : enk
+
+     implicit none
+
+! external arguments
+! number of dft bands for given k-point and spin
+     integer, intent(in) :: cbnd
+
+! band window: start index and end index for bands
+     integer, intent(in) :: bs, be
+
+! index for k-points
+     integer, intent(in) :: k
+
+! index for spin
+     integer, intent(in) :: s
+
+! self-energy function at Kohn-Sham basis
+     complex(dp), intent(in)  :: Sk(cbnd,cbnd,nmesh)
+
+! lattice green's function at given k-point and spin
+     complex(dp), intent(out) :: Hk(cbnd,cbnd,nmesh)
+
+! local variables
+! loop index for frequency mesh
+     integer :: m
+
+! status flag
+     integer :: istat
+
+     complex(dp), allocatable :: Em(:)
+     complex(dp), allocatable :: Hm(:,:)
+
+! allocate memory for Em and Hm
+     allocate(Em(cbnd),      stat = istat)
+     allocate(Hm(cbnd,cbnd), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_sk_gk','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! evaluate Em, which is k-dependent, but frequency-independent
+! if you want to consider magnetic field, you can add your codes here
+     Em = enk(bs:be,k,s)
+     call s_diag_z(cbnd, Em, Hm)
+
+     FREQ_LOOP: do m=1,nmesh
+         Hk(:,:,m) = Hm + Sk(:,:,m)
+     enddo FREQ_LOOP ! over m={1,nmesh} loop
+
+! deallocate memory
+     if ( allocated(Em) ) deallocate(Em)
+     if ( allocated(Hm) ) deallocate(Hm)
+
+     return
+  end subroutine cal_sk_hk
+
+!!
+!! @sub cal_hk_ek
+!!
+  subroutine cal_hk_ek(cbnd, Hk, Ek)
+     use constants, only : dp
+
+     use control, only : nmesh
+
+     implicit none
+
+! external arguments
+     integer, intent(in) :: cbnd
+     complex(dp), intent(in) :: Hk(cbnd,cbnd,nmesh)
+     complex(dp), intent(out) :: Ek(cbnd,nmesh)
+
+! local variables
+     integer :: m
+
+     do m=1,nmesh
+         call s_eigvals_zg(cbnd, cbnd, Hk(:,:,m), Ek(:,m))
+     enddo ! over m={1,nmesh} loop
+
+     return
+  end subroutine cal_hk_ek
+
+!!
 !! @sub cal_sk_so
 !!
   subroutine cal_sk_so(cbnd, Sk, So)
@@ -484,6 +578,12 @@
 
      return
   end subroutine cal_sk_so
+
+  subroutine cal_so_ho()
+  end subroutine cal_so_ho
+
+  subroutine cal_ho_eo()
+  end subroutine cal_ho_eo
 
 !!
 !! @sub cal_sk_gk
@@ -581,71 +681,6 @@
   end subroutine cal_sk_gk
 
 !!
-!! @sub cal_sk_hk
-!!
-  subroutine cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
-     use constants, only : dp
-     use constants, only : czi
-
-     use control, only : nmesh
-
-     use context, only : enk
-
-     implicit none
-
-! external arguments
-! number of dft bands for given k-point and spin
-     integer, intent(in) :: cbnd
-
-! band window: start index and end index for bands
-     integer, intent(in) :: bs, be
-
-! index for k-points
-     integer, intent(in) :: k
-
-! index for spin
-     integer, intent(in) :: s
-
-! self-energy function at Kohn-Sham basis
-     complex(dp), intent(in)  :: Sk(cbnd,cbnd,nmesh)
-
-! lattice green's function at given k-point and spin
-     complex(dp), intent(out) :: Hk(cbnd,cbnd,nmesh)
-
-! local variables
-! loop index for frequency mesh
-     integer :: m
-
-! status flag
-     integer :: istat
-
-     complex(dp), allocatable :: Em(:)
-     complex(dp), allocatable :: Hm(:,:)
-
-! allocate memory for Em and Hm
-     allocate(Em(cbnd),      stat = istat)
-     allocate(Hm(cbnd,cbnd), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_sk_gk','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-
-! evaluate Em, which is k-dependent, but frequency-independent
-! if you want to consider magnetic field, you can add your codes here
-     Em = enk(bs:be,k,s)
-     call s_diag_z(cbnd, Em, Hm)
-
-     FREQ_LOOP: do m=1,nmesh
-         Hk(:,:,m) = Hm + Sk(:,:,m)
-     enddo FREQ_LOOP ! over m={1,nmesh} loop
-
-! deallocate memory
-     if ( allocated(Em) ) deallocate(Em)
-     if ( allocated(Hm) ) deallocate(Hm)
-
-     return
-  end subroutine cal_sk_hk
-
-!!
 !! @sub cal_gk_gl
 !!
 !! try to calculate local green's function by downfolding
@@ -683,31 +718,6 @@
 
      return
   end subroutine cal_gk_gl
-
-!!
-!! @sub cal_hk_ek
-!!
-  subroutine cal_hk_ek(cbnd, Hk, Ek)
-     use constants, only : dp
-
-     use control, only : nmesh
-
-     implicit none
-
-! external arguments
-     integer, intent(in) :: cbnd
-     complex(dp), intent(in) :: Hk(cbnd,cbnd,nmesh)
-     complex(dp), intent(out) :: Ek(cbnd,nmesh)
-
-! local variables
-     integer :: m
-
-     do m=1,nmesh
-         call s_eigvals_zg(cbnd, cbnd, Hk(:,:,m), Ek(:,m))
-     enddo ! over m={1,nmesh} loop
-
-     return
-  end subroutine cal_hk_ek
 
 !!
 !! @sub map_chi_psi
