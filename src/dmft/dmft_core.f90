@@ -224,6 +224,8 @@
 ! used to calculate fermi-dirac function
      real(dp), external :: wann_build_fermi
 
+     fermi = 0.318 !! DEBUG
+
      focc = zero
      do s=1,nspin
          do k=1,nkpt
