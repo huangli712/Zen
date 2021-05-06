@@ -106,6 +106,11 @@
      use constants, only : zero
      use constants, only : czero
 
+     use control, only : nkpt, nspin
+     use control, only : nmesh
+
+     use context, only : qbnd
+
      implicit none
 
 ! local variables
@@ -199,7 +204,8 @@
 
 ! external arguments
      complex(dp), intent(out) :: eigs(qbnd,nmesh,nkpt,nspin)
-     complex(dp), intent(out) :: einf(qbnd,nkpt,nspin()
+     complex(dp), intent(out) :: einf(qbnd,nkpt,nspin)
+
 ! local variables
      integer :: s
      integer :: k
