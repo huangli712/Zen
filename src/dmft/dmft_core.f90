@@ -126,9 +126,14 @@
 
      nelect = zero
      call cal_nelect(nelect)
-     !!print *, "here", nelect
+     !print *, nelect
 
-     call cal_eigsys()
+     call cal_eigsys(eigs, einf)
+     !print *, eigs(:,20,101,1)
+     !print *, einf(:,101,1)
+     !STOP
+
+     call cal_occupy()
 
      deallocate(eigs)
      deallocate(einf)
@@ -182,6 +187,8 @@
 !!
   subroutine cal_occupy()
      implicit none
+
+     print *, "here"
 
      return
   end subroutine cal_occupy
