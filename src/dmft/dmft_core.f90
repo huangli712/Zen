@@ -921,7 +921,7 @@
 !! @sub cal_eigsys
 !!
   subroutine cal_eigsys(eigs, einf)
-     use constants, only : dp
+     use constants, only : dp, mystd
      use constants, only : czero
 
      use control, only : nkpt, nspin
@@ -972,6 +972,10 @@
 
 ! determine cbnd
              cbnd = be - bs + 1
+
+             write(mystd,'(4X,a,i2)',advance='no') 'spin: ', s
+             write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
+             write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
 
              allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
              allocate(Hk(cbnd,cbnd,nmesh), stat = istat)
