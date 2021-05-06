@@ -196,6 +196,11 @@
      complex(dp), allocatable :: Sk(:,:,:)
      complex(dp), allocatable :: Hk(:,:,:)
      complex(dp), allocatable :: Ek(:,:)
+
+     complex(dp), allocatable :: So(:,:)
+     complex(dp), allocatable :: Ho(:,:)
+     complex(dp), allocatable :: Eo(:)
+
      complex(dp), allocatable :: eigs(:,:,:,:)
 
      allocate(eigs(qbnd,nmesh,nkpt,nspin))
@@ -216,7 +221,11 @@
 
              allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
              allocate(Hk(cbnd,cbnd,nmesh), stat = istat)
-             allocate(Ek(cbnd,nmesh), stat = istat)
+             allocate(Ek(cbnd,nmesh),      stat = istat)
+
+             allocate(So(cbnd,cbnd), stat = istat)
+             allocate(Ho(cbnd,cbnd), stat = istat)
+             allocate(Eo(cbnd),      stat = istat)
 
              call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
              call cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
@@ -224,6 +233,10 @@
              print *, Hk(:,:,10)
              print *, Ek(:,10)
              STOP
+
+             if ( allocated(So) ) deallocate(So)
+             if ( allocated(Ho) ) deallocate(Ho)
+             if ( allocated(Eo) ) deallocate(Eo)
 
              if ( allocated(Sk) ) deallocate(Sk)
              if ( allocated(Hk) ) deallocate(Hk)
