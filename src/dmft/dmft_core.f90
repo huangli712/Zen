@@ -467,6 +467,8 @@
   subroutine cal_sk_so(cbnd, Sk, So)
      use constants, only : dp
 
+     use control, only : nmesh
+
      implicit none
 
 ! external arguments
@@ -477,6 +479,8 @@
      complex(dp), intent(in)  :: Sk(cbnd,cbnd,nmesh)
 
      complex(dp), intent(out) :: So(cbnd,cbnd)
+
+     So = Sk(:,:,nmesh)
 
      return
   end subroutine cal_sk_so
