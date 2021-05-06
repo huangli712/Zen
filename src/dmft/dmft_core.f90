@@ -959,9 +959,15 @@
          loop = loop + 1
          mu3 = mu1 + ( mu2 - mu1 ) * ( desired - occ1 ) / ( occ2 - occ1 )
          call cal_occupy(eigs, einf, mu3, occ3)
-         if () then
+         if ( ( occ1 - desired ) * ( occ3 - desired ) > 0 ) then
+             mu1 = mu3
+             occ1 = occ3
          else
+             mu2 = mu3
+             occ2 = occ3
          endif
+         print *, "chemical potential:", mu1, mu2
+         print *, "density: ", occ1, occ2
      enddo
 
      return
