@@ -188,11 +188,14 @@
   subroutine cal_occupy(eigs, einf)
      use constants, only : dp
      use constants, only : zero
+     use constants, only : czi
 
      use control, only : nkpt, nspin
      use control, only : nmesh
+     use control, only : fermi
 
      use context, only : qbnd
+     use context, only : fmesh
 
      implicit none
 
@@ -200,7 +203,19 @@
      complex(dp), intent(in) :: eigs(qbnd,nmesh,nkpt,nspin)
      complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
 
-     print *, "here"
+! local variables
+     integer :: b
+     integer :: s
+     integer :: m
+     integer :: k
+
+     real(dp) :: focc(qbnd,nmesh,nspin)
+     complex(dp) :: caux
+
+     focc = zero
+     do m=1,nmesh
+         caux = czi * fmesh(m) + fermi
+     enddo
 
      return
   end subroutine cal_occupy
