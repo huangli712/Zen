@@ -973,7 +973,7 @@
 ! determine cbnd
              cbnd = be - bs + 1
 
-             write(mystd,'(4X,a,i2)',advance='no') 'spin: ', s
+             write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
              write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
              write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
 
