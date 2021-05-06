@@ -184,7 +184,7 @@
 !!
 !! @sub cal_eigsys
 !!
-  subroutine cal_eigsys()
+  subroutine cal_eigsys(eigs, einf)
      use constants, only : dp
      use constants, only : czero
 
@@ -197,6 +197,9 @@
 
      implicit none
 
+! external arguments
+     complex(dp), intent(out) :: eigs(qbnd,nmesh,nkpt,nspin)
+     complex(dp), intent(out) :: einf(qbnd,nkpt,nspin()
 ! local variables
      integer :: s
      integer :: k
