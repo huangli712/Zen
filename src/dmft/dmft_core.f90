@@ -195,6 +195,7 @@
      use control, only : fermi
 
      use context, only : qbnd
+     use context, only : kwin
      use context, only : fmesh
 
      implicit none
@@ -208,13 +209,21 @@
      integer :: s
      integer :: m
      integer :: k
+     integer :: bs, be
 
      real(dp) :: focc(qbnd,nmesh,nspin)
      complex(dp) :: caux
 
      focc = zero
-     do m=1,nmesh
-         caux = czi * fmesh(m) + fermi
+     do s=1,nspin
+         do k=1,nkpt
+             bs = kwin(k,s,1,1)
+             be = kwin(k,s,2,1)
+             
+             do m=1,nmesh
+                 caux = czi * fmesh(m) + fermi
+             enddo
+         enddo
      enddo
 
      return
