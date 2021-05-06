@@ -788,15 +788,17 @@
              mu2 = mu3
              occ2 = occ3
          endif
-         write(mystd,'(6X,a,i4)', advance = 'no') 'iter: ', loop
-         write(mystd,'(6X,a,2f16.8)', advance = 'no') 'boundary (fermi):   ', mu1, mu2
+         write(mystd,'(6X,a,i4)',advance = 'no') 'iter: ', loop
+         write(mystd,'(2X,a,f16.8)',advance = 'no') 'fermi: ', mu3
+         write(mystd,'(2X,a,f16.8)') 'density: ', occ3
+         write(mystd,'(6X,a,2f16.8)') 'boundary (fermi):   ', mu1, mu2
          write(mystd,'(6X,a,2f16.8)') 'boundary (density): ', occ1, occ2
      enddo
 
      if ( abs(occ3 - desired) < mc ) then
          write(mystd,'(6X,a,i4)') "iters:", loop
          write(mystd,'(6X,a,f16.8)') 'fermi:  ', mu3
-         write(mystd,'(6X,a,f16.8)') 'dnsity: ', occ3
+         write(mystd,'(6X,a,f16.8)') 'density: ', occ3
      else
          print *, "ERROR"
          STOP
