@@ -792,10 +792,11 @@
          write(mystd,'(6X,a,2f16.8)', advance = 'no') 'boundary (fermi):   ', mu1, mu2
          write(mystd,'(6X,a,2f16.8)') 'boundary (density): ', occ1, occ2
      enddo
+
      if ( abs(occ3 - desired) < mc ) then
-         print *, "loops:", loop
-         print *, "chemical potential: ", mu3
-         print *, "density: ", occ3
+         write(mystd,'(6X,a,i4)') "iters:", loop
+         write(mystd,'(6X,a,f16.8)') 'fermi:  ', mu3
+         write(mystd,'(6X,a,f16.8)') 'dnsity: ', occ3
      else
          print *, "ERROR"
          STOP
