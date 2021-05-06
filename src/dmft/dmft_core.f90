@@ -969,6 +969,14 @@
          print *, "chemical potential:", mu1, mu2
          print *, "density: ", occ1, occ2
      enddo
+     if ( abs(occ3 - desired) < mc ) then
+         print *, "loops:", loop
+         print *, "chemical potential: ", mu3
+         print *, "density: ", occ3
+     else
+         print *, "ERROR"
+         STOP
+     endif
 
      return
   end subroutine dichotomy
