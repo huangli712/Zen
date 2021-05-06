@@ -731,10 +731,10 @@
      real(dp) :: sign
      integer :: loop
 
-     write(mystd,'(6X,a)') 'settings'
-     write(mystd,'(8X,a,f12.8)') 'desired charge density: ', desired
-     write(mystd,'(8X,a,i6)') 'maximum number of iterations: ', max_loops
-     write(mystd,'(8X,a,f12.8)') 'precision: ', mc
+     !write(mystd,'(6X,a)') 'settings'
+     !write(mystd,'(8X,a,f12.8)') 'desired charge density: ', desired
+     !write(mystd,'(8X,a,i6)') 'maximum number of iterations: ', max_loops
+     !write(mystd,'(8X,a,f12.8)') 'precision: ', mc
 
      mu1 = fermi
      call cal_occupy(eigs, einf, mu1, occ1)
@@ -743,15 +743,15 @@
      occ2 = occ1
 
      loop = 1
-     write(mystd,'(6X,a)') 'determine boundary for the fermi level'
-     write(mystd,'(8X,a,i4)',advance = 'no') 'iter: ', loop
+     !write(mystd,'(6X,a)') 'determine boundary for the fermi level'
+     write(mystd,'(6X,a,i4)',advance = 'no') 'iter: ', loop
      write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu1
      write(mystd,'(2X,a,f12.8)') 'density: ', occ1
      do while ( loop <= max_loops .and. ( occ2 - desired ) * sign > 0 .and. abs( occ2 - desired ) > mc )
          loop = loop + 1
          mu2 = mu2 - sign * delta
          call cal_occupy(eigs, einf, mu2, occ2)
-         write(mystd,'(8X,a,i4)',advance = 'no') 'iter: ', loop
+         write(mystd,'(6X,a,i4)',advance = 'no') 'iter: ', loop
          write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu2
          write(mystd,'(2X,a,f12.8)') 'density: ', occ2
      enddo
@@ -766,10 +766,10 @@
          occ2 = occ3
      endif
 
-     write(mystd,'(8X,a,2f12.8)') 'boundary (fermi):   ', mu1, mu2
-     write(mystd,'(8X,a,2f12.8)') 'boundary (density): ', occ1, occ2
+     !write(mystd,'(8X,a,2f12.8)') 'boundary (fermi):   ', mu1, mu2
+     !write(mystd,'(8X,a,2f12.8)') 'boundary (density): ', occ1, occ2
 
-     write(mystd,'(6X,a)') 'refine the boundary to locate the fermi level'
+     !write(mystd,'(6X,a)') 'refine the boundary to locate the fermi level'
      if ( abs(occ1 - desired) < abs(occ2 - desired) ) then
          mu3 = mu1
          occ3 = occ1
@@ -789,11 +789,11 @@
              mu2 = mu3
              occ2 = occ3
          endif
-         write(mystd,'(8X,a,i4)',advance = 'no') 'iter: ', loop
+         write(mystd,'(6X,a,i4)',advance = 'no') 'iter: ', loop
          write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu3
          write(mystd,'(2X,a,f12.8)') 'density: ', occ3
-         write(mystd,'(8X,a,2f12.8)') 'boundary (fermi):   ', mu1, mu2
-         write(mystd,'(8X,a,2f12.8)') 'boundary (density): ', occ1, occ2
+         !write(mystd,'(8X,a,2f12.8)') 'boundary (fermi):   ', mu1, mu2
+         !write(mystd,'(8X,a,2f12.8)') 'boundary (density): ', occ1, occ2
      enddo
 
      if ( abs(occ3 - desired) < mc ) then
