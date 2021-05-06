@@ -917,8 +917,8 @@
          enddo
      enddo
 
-     print *, "zocc:", zocc
-     print *, "sum:", sum(zocc) * 2
+     !!print *, "zocc:", zocc
+     !!print *, "sum:", sum(zocc) * 2
      val = real( sum(zocc) ) * 2
 
      return
