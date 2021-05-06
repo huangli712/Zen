@@ -237,7 +237,7 @@
 
              call cal_sk_so(cbnd, Sk, So)
              call cal_so_ho(cbnd, bs, be, k, s, So, Ho)
-             call cal_ho_eo
+             call cal_ho_eo(cbnd, Ho, Eo)
              STOP
 
              if ( allocated(So) ) deallocate(So)
