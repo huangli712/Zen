@@ -1115,10 +1115,10 @@
 ! index for impurity sites
      integer, intent(in) :: t
 
-! input array defined at {\psi} basis
+! input array defined at Kohn-Sham (\psi) basis
      complex(dp), intent(in)  :: Mp(cbnd,cbnd,nfrq)
 
-! output array defined at {\chi} basis
+! output array defined at local orbital (\chi) basis
      complex(dp), intent(out) :: Mc(cdim,cdim,nfrq)
 
 ! local variables
@@ -1128,7 +1128,7 @@
 ! status flag
      integer :: istat
 
-! the overlap matrix between local orbitals and Kohn-Sham wave-functions
+! overlap matrix between local orbitals and Kohn-Sham wave-functions
      complex(dp), allocatable :: Cp(:,:)
      complex(dp), allocatable :: Pc(:,:)
 
@@ -1149,8 +1149,8 @@
      enddo ! over f={1,nfrq} loop
 
 ! deallocate memory
-     deallocate(Cp)
-     deallocate(Pc)
+     if ( allocated(Cp) ) deallocate(Cp)
+     if ( allocated(Pc) ) deallocate(Pc)
 
      return
   end subroutine map_psi_chi
