@@ -583,7 +583,6 @@
 !!
   subroutine cal_so_ho(cbnd, bs, be, k, s, So, Ho)
      use constants, only : dp
-     use constants, only : czi
 
      use context, only : enk
 
@@ -603,15 +602,12 @@
      integer, intent(in) :: s
 
 ! self-energy function at Kohn-Sham basis
-     complex(dp), intent(in)  :: Sk(cbnd,cbnd,nmesh)
+     complex(dp), intent(in)  :: So(cbnd,cbnd)
 
 ! lattice green's function at given k-point and spin
-     complex(dp), intent(out) :: Hk(cbnd,cbnd,nmesh)
+     complex(dp), intent(out) :: Ho(cbnd,cbnd)
 
 ! local variables
-! loop index for frequency mesh
-     integer :: m
-
 ! status flag
      integer :: istat
 
@@ -622,7 +618,7 @@
      allocate(Em(cbnd),      stat = istat)
      allocate(Hm(cbnd,cbnd), stat = istat)
      if ( istat /= 0 ) then
-         call s_print_error('cal_sk_gk','can not allocate enough memory')
+         call s_print_error('cal_so_ho','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
 ! evaluate Em, which is k-dependent, but frequency-independent
@@ -630,13 +626,12 @@
      Em = enk(bs:be,k,s)
      call s_diag_z(cbnd, Em, Hm)
 
-     FREQ_LOOP: do m=1,nmesh
-         Hk(:,:,m) = Hm + Sk(:,:,m)
-     enddo FREQ_LOOP ! over m={1,nmesh} loop
+     Ho = Hm + So
 
 ! deallocate memory
      if ( allocated(Em) ) deallocate(Em)
      if ( allocated(Hm) ) deallocate(Hm)
+
      return
   end subroutine cal_so_ho
 
