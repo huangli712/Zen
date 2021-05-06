@@ -247,6 +247,8 @@
          enddo
      enddo
 
+     print *, "zocc:", zocc
+
      do s=1,nspin
          do k=1,nkpt
              bs = kwin(k,s,1,1)
@@ -260,7 +262,7 @@
      enddo
 
      print *, "zocc:", zocc
-     print *, "sum:", sum(zocc)
+     print *, "sum:", sum(zocc) * 2
 
      return
   end subroutine cal_occupy
