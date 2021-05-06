@@ -61,7 +61,13 @@
 !! @sub dmft_try0
 !!
   subroutine dmft_try0()
+     use constants, only : mystd
+
+     use control, only : cname
+
      implicit none
+
+     write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
 
      call cal_fermi()
 
