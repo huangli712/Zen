@@ -236,7 +236,7 @@
              print *, Ek(:,10)
 
              call cal_sk_so(cbnd, Sk, So)
-             call cal_so_ho
+             call cal_so_ho(cbnd, bs, be, k, s, So, Ho)
              call cal_ho_eo
              STOP
 
