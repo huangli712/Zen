@@ -190,14 +190,14 @@
 !!
 !! @sub cal_occupy
 !!
-  subroutine cal_occupy(eigs, einf)
+  subroutine cal_occupy(eigs, einf, fermi, val)
      use constants, only : dp
      use constants, only : zero, one, two
      use constants, only : czi
 
      use control, only : nkpt, nspin
      use control, only : nmesh
-     use control, only : fermi, beta
+     use control, only : beta
 
      use context, only : qbnd
      use context, only : kwin
@@ -208,6 +208,8 @@
 ! external arguments
      complex(dp), intent(in) :: eigs(qbnd,nmesh,nkpt,nspin)
      complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
+     real(dp), intent(in)  :: fermi
+     real(dp), intent(out) :: val
 
 ! local variables
      integer :: b
@@ -226,7 +228,7 @@
 ! used to calculate fermi-dirac function
      real(dp), external :: fermi_dirac
 
-     fermi = 0.318 !! DEBUG
+     !!fermi = 0.318 !! DEBUG
 
      focc = zero
      do s=1,nspin
@@ -267,6 +269,7 @@
 
      print *, "zocc:", zocc
      print *, "sum:", sum(zocc) * 2
+     val = real( sum(zocc) ) * 2
 
      return
   end subroutine cal_occupy
@@ -898,11 +901,20 @@
 
      use control, only : nkpt, nspin
      use control, only : nmesh
+
+     use context, only : qbnd
+
      implicit none
 
 ! external arguments
      complex(dp), intent(in) :: eigs(qbnd,nmesh,nkpt,nspin)
      complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
+
+     integer, parameter :: max_loops = 1000
+     real(dp), parameter :: delta = 0.5_dp
+
+     real(dp) :: mu1, occ1, mu2, occ2
+
 
      return
   end subroutine dichotomy
