@@ -638,8 +638,17 @@
 !!
 !! @sub cal_ho_eo
 !!
-  subroutine cal_ho_eo()
+  subroutine cal_ho_eo(cbnd, Ho, Eo)
+     use constants, only : dp
+
      implicit none
+
+! external arguments
+     integer, intent(in) :: cbnd
+     complex(dp), intent(in) :: Ho(cbnd,cbnd)
+     complex(dp), intent(out) :: Eo(cbnd)
+
+     call s_eigvals_zg(cbnd, cbnd, Ho, Eo)
 
      return
   end subroutine cal_ho_eo
