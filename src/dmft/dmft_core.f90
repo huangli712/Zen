@@ -981,9 +981,19 @@
      return
   end subroutine dichotomy
 
-!>>> to calculate the Fermi - Dirac function
+!!========================================================================
+!!>>> service subroutines: fermi-dirac function                        <<<
+!!========================================================================
+
+!!
+!! @fun fermi_dirac
+!!
+!! to calculate the fermi-dirac function
+!!
   function fermi_dirac(omega) result(value)
-     use constants, only : dp, one, zero
+     use constants, only : dp
+     use constants, only : zero, one
+
      use control, only : beta
 
      implicit none
@@ -995,7 +1005,7 @@
 ! result value, return this
      real(dp) :: value
 
-! it is important to check the range of omega to avoid numerical instability
+! check the range of omega to avoid numerical instability
      if      ( beta * omega >=  600.0_dp ) then
          value = zero
      else if ( beta * omega <= -600.0_dp ) then
