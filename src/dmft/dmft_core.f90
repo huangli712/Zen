@@ -104,17 +104,29 @@
   subroutine cal_fermi()
      use constants, only : dp
      use constants, only : zero
+     use constants, only : czero
 
      implicit none
 
 ! local variables
+     integer :: istat
+
      real(dp) :: nelect
+
+     complex(dp), allocatable :: eigs(:,:,:,:)
+     complex(dp), allocatable :: einf(:,:,:)
+
+     allocate(eigs(qbnd,nmesh,nkpt,nspin), stat = istat)
+     allocate(einf(qbnd,nkpt,nspin), stat = istat)
 
      nelect = zero
      call cal_nelect(nelect)
      !!print *, "here", nelect
 
      call cal_eigsys()
+
+     deallocate(eigs)
+     deallocate(einf)
 
      return
   end subroutine cal_fermi
@@ -204,12 +216,6 @@
      complex(dp), allocatable :: Ho(:,:)
      complex(dp), allocatable :: Eo(:)
 
-     complex(dp), allocatable :: eigs(:,:,:,:)
-     complex(dp), allocatable :: einf(:,:,:)
-
-     allocate(eigs(qbnd,nmesh,nkpt,nspin), stat = istat)
-     allocate(einf(qbnd,nkpt,nspin), stat = istat)
-
      t = 1
      cdim = ndim(t)
 
@@ -240,18 +246,10 @@
              call cal_hk_ek(cbnd, Hk, Ek)
              eigs(1:cbnd,:,k,s) = Ek
 
-             !print *, Hk(:,:,10)
-             !print *, Ek(:,10)
-
              call cal_sk_so(cbnd, Sk, So)
              call cal_so_ho(cbnd, bs, be, k, s, So, Ho)
              call cal_ho_eo(cbnd, Ho, Eo)
              einf(1:cbnd,k,s) = Eo
-
-             !print *, Ho
-             !print *, Eo
-             !print *, "hehe"
-             !STOP
 
              if ( allocated(So) ) deallocate(So)
              if ( allocated(Ho) ) deallocate(Ho)
@@ -263,9 +261,6 @@
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
-
-     deallocate(eigs)
-     deallocate(einf)
 
      return
   end subroutine cal_eigsys
