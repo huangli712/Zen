@@ -732,6 +732,9 @@
      integer :: loop
 
      write(mystd,'(6X,a,f16.8)') 'desired charge density: ', desired
+     write(mystd,'(6X,a,i6)') 'maximum number of iterations: ', max_loops
+     write(mystd,'(6X,a,f16.8)') 'precision: ', mc
+
      mu1 = fermi
      call cal_occupy(eigs, einf, mu1, occ1)
      sign = abs( occ1 - desired ) / ( occ1 - desired )
