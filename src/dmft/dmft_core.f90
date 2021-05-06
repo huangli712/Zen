@@ -742,6 +742,7 @@
      occ2 = occ1
 
      loop = 1
+     write(mystd,'(6X,a)') 'determine boundary for the fermi level'
      write(mystd,'(6X,a,i4)',advance = 'no') 'iter: ', loop
      write(mystd,'(2X,a,f16.8)',advance = 'no') 'fermi: ', mu1
      write(mystd,'(2X,a,f16.8)') 'density: ', occ1
@@ -764,8 +765,8 @@
          occ2 = occ3
      endif
 
-     print *, "chemical potential:", mu1, mu2
-     print *, "density: ", occ1, occ2
+     write(mystd,'(6X,a,2f16.8)') 'boundary (fermi):   ', mu1, mu2
+     write(mystd,'(6X,a,2f16.8)') 'boundary (density): ', occ1, occ2
 
      if ( abs(occ1 - desired) < abs(occ2 - desired) ) then
          mu3 = mu1
