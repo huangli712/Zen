@@ -1013,7 +1013,7 @@
 !! service subroutine. map a function from local basis to Kohn-Sham
 !! basis. you can call this procedure `embedding`
 !!
-  subroutine map_chi_psi(cdim, cbnd, cmsh, k, s, t, Mc, Mp)
+  subroutine map_chi_psi(cdim, cbnd, nfrq, k, s, t, Mc, Mp)
      use constants, only : dp
 
      use context, only : i_grp
@@ -1030,7 +1030,7 @@
      integer, intent(in) :: cbnd
 
 ! number of frequency points
-     integer, intent(in) :: cmsh
+     integer, intent(in) :: nfrq
 
 ! index for k-points
      integer, intent(in) :: k
@@ -1042,10 +1042,10 @@
      integer, intent(in) :: t
 
 ! input array defined at {\chi} basis
-     complex(dp), intent(in)  :: Mc(cdim,cdim,cmsh)
+     complex(dp), intent(in)  :: Mc(cdim,cdim,nfrq)
 
 ! output array defined at {\psi} basis
-     complex(dp), intent(out) :: Mp(cbnd,cbnd,cmsh)
+     complex(dp), intent(out) :: Mp(cbnd,cbnd,nfrq)
 
 ! local variables
 ! loop index for frequency mesh
@@ -1070,9 +1070,9 @@
      Pc = psichi(1:cbnd,1:cdim,k,s,i_grp(t))
 
 ! upfolding or embedding
-     do f=1,cmsh
+     do f=1,nfrq
          Mp(:,:,f) = matmul( matmul( Pc, Mc(:,:,f) ), Cp )
-     enddo ! over f={1,cmsh} loop
+     enddo ! over f={1,nfrq} loop
 
 ! deallocate memory
      deallocate(Cp)
@@ -1087,7 +1087,7 @@
 !! service subroutine. map a function from Kohn-Sham basis to local
 !! basis. you can call this procedure `projection` or `downfold`
 !!
-  subroutine map_psi_chi(cbnd, cdim, cmsh, k, s, t, Mp, Mc)
+  subroutine map_psi_chi(cbnd, cdim, nfrq, k, s, t, Mp, Mc)
      use constants, only : dp
 
      use context, only : i_grp
@@ -1104,7 +1104,7 @@
      integer, intent(in) :: cdim
 
 ! number of frequency points
-     integer, intent(in) :: cmsh
+     integer, intent(in) :: nfrq
 
 ! index for k-points
      integer, intent(in) :: k
@@ -1116,10 +1116,10 @@
      integer, intent(in) :: t
 
 ! input array defined at {\psi} basis
-     complex(dp), intent(in)  :: Mp(cbnd,cbnd,cmsh)
+     complex(dp), intent(in)  :: Mp(cbnd,cbnd,nfrq)
 
 ! output array defined at {\chi} basis
-     complex(dp), intent(out) :: Mc(cdim,cdim,cmsh)
+     complex(dp), intent(out) :: Mc(cdim,cdim,nfrq)
 
 ! local variables
 ! loop index for frequency mesh
@@ -1144,9 +1144,9 @@
      Pc = psichi(1:cbnd,1:cdim,k,s,i_grp(t))
 
 ! downfolding or projection
-     do f=1,cmsh
+     do f=1,nfrq
          Mc(:,:,f) = matmul( matmul( Cp, Mp(:,:,f) ), Pc )
-     enddo ! over f={1,cmsh} loop
+     enddo ! over f={1,nfrq} loop
 
 ! deallocate memory
      deallocate(Cp)
