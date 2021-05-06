@@ -19,6 +19,7 @@
 !!!           cal_ho_eo
 !!!           cal_sk_gk
 !!!           cal_gk_gl
+!!!           dichotomy
 !!!           fermi_dirac
 !!!           map_chi_psi
 !!!           map_psi_chi
@@ -137,7 +138,7 @@
      !STOP
 
      print *, "calculate occupy"
-     call cal_occupy(eigs, einf)
+     !call cal_occupy(eigs, einf)
 
      deallocate(eigs)
      deallocate(einf)
@@ -888,6 +889,23 @@
 
      return
   end subroutine cal_gk_gl
+
+!!
+!! @sub dichotomy
+!!
+  subroutine dichotomy(eigs, einf)
+     use constants, only : dp
+
+     use control, only : nkpt, nspin
+     use control, only : nmesh
+     implicit none
+
+! external arguments
+     complex(dp), intent(in) :: eigs(qbnd,nmesh,nkpt,nspin)
+     complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
+
+     return
+  end subroutine dichotomy
 
 !>>> to calculate the Fermi - Dirac function
   function fermi_dirac(omega) result(value)
