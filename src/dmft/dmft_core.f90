@@ -139,7 +139,7 @@
      nelect = zero
      call cal_nelect(nelect)
 
-     print *, "calculate eigenvalues"
+     write(mystd,'(4X,a)') 'calculating eigenvalues'
      call cal_eigsys(eigs, einf)
 
      print *, "calculate occupy"
