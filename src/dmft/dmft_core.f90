@@ -706,7 +706,7 @@
 !! @sub dichotomy
 !!
   subroutine dichotomy(eigs, einf, desired)
-     use constants, only : dp
+     use constants, only : dp, mystd
 
      use control, only : nkpt, nspin
      use control, only : nmesh
@@ -725,9 +725,13 @@
      integer, parameter :: max_loops = 1000
      real(dp), parameter :: delta = 0.5_dp
 
-     real(dp) :: mu1, occ1, mu2, occ2, mu3, occ3, sign
+     real(dp) :: mu1, occ1
+     real(dp) :: mu2, occ2
+     real(dp) :: mu3, occ3
+     real(dp) :: sign
      integer :: loop
 
+     write(mystd,'(6X,a,f16.8)') 'desired charge density: ', desired
      mu1 = fermi
      call cal_occupy(eigs, einf, mu1, occ1)
      sign = abs( occ1 - desired ) / ( occ1 - desired )
