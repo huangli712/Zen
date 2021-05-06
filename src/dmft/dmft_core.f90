@@ -722,7 +722,7 @@
      complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
      real(dp), intent(in) :: desired
 
-     integer, parameter :: max_loops = 1000
+     integer, parameter :: max_loops = 100
      real(dp), parameter :: delta = 0.5_dp
 
      real(dp) :: mu1, occ1
@@ -744,14 +744,14 @@
 
      loop = 1
      !write(mystd,'(6X,a)') 'determine boundary for the fermi level'
-     write(mystd,'(6X,a,i4)',advance = 'no') 'iter: ', loop
+     write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
      write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu1
      write(mystd,'(2X,a,f12.8)') 'density: ', occ1
      do while ( loop <= max_loops .and. ( occ2 - desired ) * sign > 0 .and. abs( occ2 - desired ) > mc )
          loop = loop + 1
          mu2 = mu2 - sign * delta
          call cal_occupy(eigs, einf, mu2, occ2)
-         write(mystd,'(6X,a,i4)',advance = 'no') 'iter: ', loop
+         write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
          write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu2
          write(mystd,'(2X,a,f12.8)') 'density: ', occ2
      enddo
@@ -789,7 +789,7 @@
              mu2 = mu3
              occ2 = occ3
          endif
-         write(mystd,'(6X,a,i4)',advance = 'no') 'iter: ', loop
+         write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
          write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu3
          write(mystd,'(2X,a,f12.8)') 'density: ', occ3
          !write(mystd,'(8X,a,2f12.8)') 'boundary (fermi):   ', mu1, mu2
