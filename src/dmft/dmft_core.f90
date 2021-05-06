@@ -125,15 +125,18 @@
      allocate(einf(qbnd,nkpt,nspin), stat = istat)
 
      nelect = zero
+     print *, "calculate nelect"
      call cal_nelect(nelect)
      !print *, nelect
 
+     print *, "calculate eigenvalues"
      call cal_eigsys(eigs, einf)
      !print *, eigs(:,20,101,1)
      !print *, einf(:,101,1)
      !STOP
 
-     call cal_occupy()
+     print *, "calculate occupy"
+     call cal_occupy(eigs, einf)
 
      deallocate(eigs)
      deallocate(einf)
