@@ -741,12 +741,17 @@
      mu2 = mu1
      occ2 = occ1
 
-     loop = 0
+     loop = 1
+     write(mystd,'(6X,a,i4)',advance = 'no') 'iter: ', loop
+     write(mystd,'(2X,a,f16.8)',advance = 'no') 'fermi: ', mu1
+     write(mystd,'(2X,a,f16.8)') 'density: ', occ1
      do while ( loop <= max_loops .and. ( occ2 - desired ) * sign > 0 .and. abs( occ2 - desired ) > mc )
          loop = loop + 1
          mu2 = mu2 - sign * delta
          call cal_occupy(eigs, einf, mu2, occ2)
-         print *, "chemical potential: ", mu2, " density: ", occ2
+         write(mystd,'(6X,a,i4)',advance = 'no') 'iter: ', loop
+         write(mystd,'(2X,a,f16.8)',advance = 'no') 'fermi: ', mu2
+         write(mystd,'(2X,a,f16.8)') 'density: ', occ2
      enddo
 
      if ( mu1 > mu2 ) then
