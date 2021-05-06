@@ -234,6 +234,8 @@
              print *, Ek(:,10)
              STOP
 
+             call cal_sk_so(cbnd, Sk, So)
+
              if ( allocated(So) ) deallocate(So)
              if ( allocated(Ho) ) deallocate(Ho)
              if ( allocated(Eo) ) deallocate(Eo)
