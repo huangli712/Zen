@@ -251,7 +251,7 @@
              cbnd = be - bs + 1
 
              do b=1,cbnd
-                 zocc(b,s) = zocc(b,s) + wann_build_fermi( einf(b,k,s) = fermi ) / real(nkpt)
+                 zocc(b,s) = zocc(b,s) + wann_build_fermi( einf(b,k,s) - fermi ) / real(nkpt)
              enddo
          enddo
      enddo
