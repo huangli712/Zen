@@ -185,8 +185,20 @@
 !!
 !! @sub cal_occupy
 !!
-  subroutine cal_occupy()
+  subroutine cal_occupy(eigs, einf)
+     use constants, only : dp
+     use constants, only : zero
+
+     use control, only : nkpt, nspin
+     use control, only : nmesh
+
+     use context, only : qbnd
+
      implicit none
+
+! external arguments
+     complex(dp), intent(in) :: eigs(qbnd,nmesh,nkpt,nspin)
+     complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
 
      print *, "here"
 
