@@ -142,7 +142,7 @@
      write(mystd,'(4X,a)') 'calculating eigenvalues'
      call cal_eigsys(eigs, einf)
 
-     print *, "calculate occupy"
+     write(mystd,'(4X,a)') 'searching fermi level'
      call dichotomy(eigs, einf, nelect)
 
      deallocate(eigs)
