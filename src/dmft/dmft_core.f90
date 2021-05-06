@@ -921,6 +921,8 @@
      mu1 = fermi
      call cal_occupy(eigs, einf, mu1, occ1)
      sign = abs( occ1 - desired ) / ( occ1 - desired )
+     mu2 = mu1
+     occ2 = occ1
 
      return
   end subroutine dichotomy
