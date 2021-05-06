@@ -579,10 +579,22 @@
      return
   end subroutine cal_sk_so
 
+!!
+!! @sub cal_so_ho
+!!
   subroutine cal_so_ho()
+     implicit none
+
+     return
   end subroutine cal_so_ho
 
+!!
+!! @sub cal_ho_eo
+!!
   subroutine cal_ho_eo()
+     implicit none
+
+     return
   end subroutine cal_ho_eo
 
 !!
