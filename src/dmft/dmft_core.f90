@@ -254,7 +254,7 @@
          enddo
      enddo
 
-     print *, "zocc:", zocc
+     !!print *, "zocc:", zocc
 
      do s=1,nspin
          do k=1,nkpt
@@ -917,7 +917,7 @@
      integer, parameter :: max_loops = 1000
      real(dp), parameter :: delta = 0.5_dp
 
-     real(dp) :: mu1, occ1, mu2, occ2, sign
+     real(dp) :: mu1, occ1, mu2, occ2, mu3, occ3, sign
      integer :: loop
 
      mu1 = fermi
@@ -931,6 +931,37 @@
          loop = loop + 1
          mu2 = mu2 - sign * delta
          call cal_occupy(eigs, einf, mu2, occ2)
+         print *, "chemical potential: ", mu2, " density: ", occ2
+     enddo
+
+     if ( mu1 > mu2 ) then
+         mu3 = mu1
+         mu1 = mu2
+         mu2 = mu3
+
+         occ3 = occ1
+         occ1 = occ2
+         occ2 = occ3
+     endif
+
+     print *, "chemical potential:", mu1, mu2
+     print *, "density: ", occ1, occ2
+
+     if ( abs(occ1 - desired) < abs(occ2 - desired) ) then
+         mu3 = mu1
+         occ3 = occ1
+     else
+         mu3 = mu2
+         occ3 = occ2
+     endif
+
+     do while ( loop <= max_loops .and. abs( occ3 - desired ) > mc )
+         loop = loop + 1
+         mu3 = mu1 + ( mu2 - mu1 ) * ( desired - occ1 ) / ( occ2 - occ1 )
+         call cal_occupy(eigs, einf, mu3, occ3)
+         if () then
+         else
+         endif
      enddo
 
      return
