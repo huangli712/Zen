@@ -12,6 +12,7 @@
 !!!           cal_wss_l
 !!!           cal_hyb_l
 !!!           cal_sl_sk
+!!!           cal_sk_so
 !!!           cal_sk_gk
 !!!           cal_sk_hk
 !!!           cal_gk_gl
@@ -446,6 +447,12 @@
   end subroutine cal_sl_sk
 
 !!
+!! @sub cal_sk_so
+!!
+  subroutine cal_sk_so()
+  end subroutine cal_sk_so
+
+!!
 !! @sub cal_sk_gk
 !!
 !! try to calculate lattice green's function at given k-point and spin.
@@ -606,31 +613,6 @@
   end subroutine cal_sk_hk
 
 !!
-!! @sub cal_hk_ek
-!!
-  subroutine cal_hk_ek(cbnd, Hk, Ek)
-     use constants, only : dp
-
-     use control, only : nmesh
-
-     implicit none
-
-! external arguments
-     integer, intent(in) :: cbnd
-     complex(dp), intent(in) :: Hk(cbnd,cbnd,nmesh)
-     complex(dp), intent(out) :: Ek(cbnd,nmesh)
-
-! local variables
-     integer :: m
-
-     do m=1,nmesh
-         call s_eigvals_zg(cbnd, cbnd, Hk(:,:,m), Ek(:,m))
-     enddo ! over m={1,nmesh} loop
-
-     return
-  end subroutine cal_hk_ek
-
-!!
 !! @sub cal_gk_gl
 !!
 !! try to calculate local green's function by downfolding
@@ -668,6 +650,31 @@
 
      return
   end subroutine cal_gk_gl
+
+!!
+!! @sub cal_hk_ek
+!!
+  subroutine cal_hk_ek(cbnd, Hk, Ek)
+     use constants, only : dp
+
+     use control, only : nmesh
+
+     implicit none
+
+! external arguments
+     integer, intent(in) :: cbnd
+     complex(dp), intent(in) :: Hk(cbnd,cbnd,nmesh)
+     complex(dp), intent(out) :: Ek(cbnd,nmesh)
+
+! local variables
+     integer :: m
+
+     do m=1,nmesh
+         call s_eigvals_zg(cbnd, cbnd, Hk(:,:,m), Ek(:,m))
+     enddo ! over m={1,nmesh} loop
+
+     return
+  end subroutine cal_hk_ek
 
 !!
 !! @sub map_chi_psi
