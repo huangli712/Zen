@@ -217,6 +217,10 @@
 
      complex(dp) :: caux
 
+! external functions
+! used to calculate fermi-dirac function
+     real(dp), external :: wann_build_fermi
+
      focc = zero
      do s=1,nspin
          do k=1,nkpt
@@ -239,6 +243,21 @@
              zocc(b,s) = sum( focc(b,:,s) ) / real(nkpt) * ( two / beta )
          enddo
      enddo
+
+     do s=1,nspin
+         do k=1,nkpt
+             bs = kwin(k,s,1,1)
+             be = kwin(k,s,2,1)
+             cbnd = be - bs + 1
+
+             do b=1,cbnd
+                 zocc(b,s) = zocc(b,s) + wann_build_fermi( einf(b,k,s) = fermi ) / real(nkpt)
+             enddo
+         enddo
+     enddo
+
+     print *, "zocc:", zocc
+     print *, "sum:", sum(zocc)
 
      return
   end subroutine cal_occupy
@@ -1009,3 +1028,29 @@
 
      return
   end subroutine map_psi_chi
+
+!>>> to calculate the Fermi - Dirac function
+  function wann_build_fermi(omega) result(value)
+     use constants, only : dp, one, zero
+     use control, only : beta
+
+     implicit none
+
+! external arguments
+! frequency point, \omega
+     real(dp), intent(in) :: omega
+
+! result value, return this
+     real(dp) :: value
+
+! it is important to check the range of omega to avoid numerical instability
+     if      ( beta * omega >=  600.0_dp ) then
+         value = zero
+     else if ( beta * omega <= -600.0_dp ) then
+         value = one
+     else
+         value = one / ( one + exp( beta * omega ) )
+     endif ! back if ( beta * omega >=  600.0_dp ) block
+
+     return
+  end function wann_build_fermi
