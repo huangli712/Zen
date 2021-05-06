@@ -19,6 +19,7 @@
 !!!           cal_ho_eo
 !!!           cal_sk_gk
 !!!           cal_gk_gl
+!!!           fermi_dirac
 !!!           map_chi_psi
 !!!           map_psi_chi
 !!! source  : dmft_core.f90
@@ -222,7 +223,7 @@
 
 ! external functions
 ! used to calculate fermi-dirac function
-     real(dp), external :: wann_build_fermi
+     real(dp), external :: fermi_dirac
 
      fermi = 0.318 !! DEBUG
 
@@ -258,7 +259,7 @@
              cbnd = be - bs + 1
 
              do b=1,cbnd
-                 zocc(b,s) = zocc(b,s) + wann_build_fermi( einf(b,k,s) - fermi ) / real(nkpt)
+                 zocc(b,s) = zocc(b,s) + fermi_dirac( einf(b,k,s) - fermi ) / real(nkpt)
              enddo
          enddo
      enddo
@@ -888,6 +889,32 @@
      return
   end subroutine cal_gk_gl
 
+!>>> to calculate the Fermi - Dirac function
+  function fermi_dirac(omega) result(value)
+     use constants, only : dp, one, zero
+     use control, only : beta
+
+     implicit none
+
+! external arguments
+! frequency point, \omega
+     real(dp), intent(in) :: omega
+
+! result value, return this
+     real(dp) :: value
+
+! it is important to check the range of omega to avoid numerical instability
+     if      ( beta * omega >=  600.0_dp ) then
+         value = zero
+     else if ( beta * omega <= -600.0_dp ) then
+         value = one
+     else
+         value = one / ( one + exp( beta * omega ) )
+     endif ! back if ( beta * omega >=  600.0_dp ) block
+
+     return
+  end function fermi_dirac
+
 !!
 !! @sub map_chi_psi
 !!
@@ -1035,29 +1062,3 @@
 
      return
   end subroutine map_psi_chi
-
-!>>> to calculate the Fermi - Dirac function
-  function wann_build_fermi(omega) result(value)
-     use constants, only : dp, one, zero
-     use control, only : beta
-
-     implicit none
-
-! external arguments
-! frequency point, \omega
-     real(dp), intent(in) :: omega
-
-! result value, return this
-     real(dp) :: value
-
-! it is important to check the range of omega to avoid numerical instability
-     if      ( beta * omega >=  600.0_dp ) then
-         value = zero
-     else if ( beta * omega <= -600.0_dp ) then
-         value = one
-     else
-         value = one / ( one + exp( beta * omega ) )
-     endif ! back if ( beta * omega >=  600.0_dp ) block
-
-     return
-  end function wann_build_fermi
