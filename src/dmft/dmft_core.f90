@@ -731,7 +731,7 @@
      real(dp) :: sign
      integer :: loop
 
-     write(mystd,'(6X,a)') 'settings:'
+     write(mystd,'(6X,a)') 'settings'
      write(mystd,'(8X,a,f12.8)') 'desired charge density: ', desired
      write(mystd,'(8X,a,i6)') 'maximum number of iterations: ', max_loops
      write(mystd,'(8X,a,f12.8)') 'precision: ', mc
@@ -790,16 +790,17 @@
              occ2 = occ3
          endif
          write(mystd,'(8X,a,i4)',advance = 'no') 'iter: ', loop
-         write(mystd,'(2X,a,f16.8)',advance = 'no') 'fermi: ', mu3
-         write(mystd,'(2X,a,f16.8)') 'density: ', occ3
-         write(mystd,'(8X,a,2f16.8)') 'boundary (fermi):   ', mu1, mu2
-         write(mystd,'(8X,a,2f16.8)') 'boundary (density): ', occ1, occ2
+         write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu3
+         write(mystd,'(2X,a,f12.8)') 'density: ', occ3
+         write(mystd,'(8X,a,2f12.8)') 'boundary (fermi):   ', mu1, mu2
+         write(mystd,'(8X,a,2f12.8)') 'boundary (density): ', occ1, occ2
      enddo
 
      if ( abs(occ3 - desired) < mc ) then
-         write(mystd,'(6X,a,i4)') "iters:", loop
-         write(mystd,'(6X,a,f16.8)') 'fermi:  ', mu3
-         write(mystd,'(6X,a,f16.8)') 'density: ', occ3
+         write(mystd,'(6X,a)') 'results'
+         write(mystd,'(8X,a,i4)') "iters:", loop
+         write(mystd,'(8X,a,f12.8)') 'fermi:  ', mu3
+         write(mystd,'(8X,a,f12.8)') 'density: ', occ3
      else
          print *, "ERROR"
          STOP
