@@ -1011,7 +1011,7 @@
 !! @sub map_chi_psi
 !!
 !! service subroutine. map a function from local basis to Kohn-Sham
-!! basis. you can call this procedure `embedding`
+!! basis. you can call this procedure `embedding` or `upfold`
 !!
   subroutine map_chi_psi(cdim, cbnd, nfrq, k, s, t, Mc, Mp)
      use constants, only : dp
@@ -1041,10 +1041,10 @@
 ! index for impurity sites
      integer, intent(in) :: t
 
-! input array defined at {\chi} basis
+! input array defined at local orbital (\chi) basis
      complex(dp), intent(in)  :: Mc(cdim,cdim,nfrq)
 
-! output array defined at {\psi} basis
+! output array defined at Kohn-Sham (\psi) basis
      complex(dp), intent(out) :: Mp(cbnd,cbnd,nfrq)
 
 ! local variables
@@ -1054,7 +1054,7 @@
 ! status flag
      integer :: istat
 
-! the overlap matrix between local orbitals and Kohn-Sham wave-functions
+! overlap matrix between local orbitals and Kohn-Sham wave-functions
      complex(dp), allocatable :: Cp(:,:)
      complex(dp), allocatable :: Pc(:,:)
 
@@ -1075,8 +1075,8 @@
      enddo ! over f={1,nfrq} loop
 
 ! deallocate memory
-     deallocate(Cp)
-     deallocate(Pc)
+     if ( allocated(Cp) ) deallocate(Cp)
+     if ( allocated(Pc) ) deallocate(Pc)
 
      return
   end subroutine map_chi_psi
