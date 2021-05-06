@@ -139,6 +139,7 @@
 
      print *, "calculate occupy"
      !call cal_occupy(eigs, einf)
+     call dichotomy(eigs, einf, nelect)
 
      deallocate(eigs)
      deallocate(einf)
@@ -915,10 +916,11 @@
      integer, parameter :: max_loops = 1000
      real(dp), parameter :: delta = 0.5_dp
 
-     real(dp) :: mu1, occ1, mu2, occ2
+     real(dp) :: mu1, occ1, mu2, occ2, sign
 
      mu1 = fermi
      call cal_occupy(eigs, einf, mu1, occ1)
+     sign = abs( occ1 - desired ) / ( occ1 - desired )
 
      return
   end subroutine dichotomy
