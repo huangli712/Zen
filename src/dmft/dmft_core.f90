@@ -109,8 +109,11 @@
      return
   end subroutine dmft_try2
 
+!!
+!! @sub cal_fermi
+!!
   subroutine cal_fermi()
-     use constants, only : dp
+     use constants, only : dp, mystd
      use constants, only : zero
      use constants, only : czero
 
@@ -132,19 +135,14 @@
      allocate(eigs(qbnd,nmesh,nkpt,nspin), stat = istat)
      allocate(einf(qbnd,nkpt,nspin), stat = istat)
 
+     write(mystd,'(4X,a)') 'calculating desired charge density'
      nelect = zero
-     print *, "calculate nelect"
      call cal_nelect(nelect)
-     !print *, nelect
 
      print *, "calculate eigenvalues"
      call cal_eigsys(eigs, einf)
-     !print *, eigs(:,20,101,1)
-     !print *, einf(:,101,1)
-     !STOP
 
      print *, "calculate occupy"
-     !call cal_occupy(eigs, einf)
      call dichotomy(eigs, einf, nelect)
 
      deallocate(eigs)
