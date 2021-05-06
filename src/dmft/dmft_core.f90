@@ -797,7 +797,7 @@
      enddo
 
      if ( abs(occ3 - desired) < mc ) then
-         write(mystd,'(6X,a)') 'final results ->'
+         write(mystd,'(6X,a)',advance = 'no') 'final results ->'
          write(mystd,'(2X,a,f12.8)') 'fermi: ', mu3
          write(mystd,'(2X,a,f12.8)') 'density: ', occ3
      else
