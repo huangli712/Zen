@@ -174,6 +174,7 @@
 !!
   subroutine cal_eigsys()
      use constants, only : dp
+     use constants, only : czero
 
      use control, only : nkpt, nspin
      use control, only : nmesh
@@ -212,6 +213,9 @@
      t = 1
      cdim = ndim(t)
 
+     eigs = czero
+     einf = czero
+
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
 
@@ -234,12 +238,16 @@
              call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
              call cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
              call cal_hk_ek(cbnd, Hk, Ek)
+             eigs(1:cbnd,:,k,s) = Ek
+
              !print *, Hk(:,:,10)
              !print *, Ek(:,10)
 
              call cal_sk_so(cbnd, Sk, So)
              call cal_so_ho(cbnd, bs, be, k, s, So, Ho)
              call cal_ho_eo(cbnd, Ho, Eo)
+             einf(1:cbnd,k,s) = Eo
+
              !print *, Ho
              !print *, Eo
              !print *, "hehe"
