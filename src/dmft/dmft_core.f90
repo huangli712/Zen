@@ -449,7 +449,21 @@
 !!
 !! @sub cal_sk_so
 !!
-  subroutine cal_sk_so()
+  subroutine cal_sk_so(cbnd, Sk, So)
+     use constants, only : dp
+
+     implicit none
+
+! external arguments
+! number of dft bands for given k-point and spin
+     integer, intent(in) :: cbnd
+
+! self-energy function at Kohn-Sham basis
+     complex(dp), intent(in)  :: Sk(cbnd,cbnd,nmesh)
+
+     complex(dp), intent(out) :: So(cbnd,cbnd)
+
+     return
   end subroutine cal_sk_so
 
 !!
