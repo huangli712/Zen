@@ -1085,7 +1085,7 @@
 !! @sub map_psi_chi
 !!
 !! service subroutine. map a function from Kohn-Sham basis to local
-!! basis. you can call this procedure `projection`
+!! basis. you can call this procedure `projection` or `downfold`
 !!
   subroutine map_psi_chi(cbnd, cdim, cmsh, k, s, t, Mp, Mc)
      use constants, only : dp
