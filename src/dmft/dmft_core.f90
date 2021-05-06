@@ -797,10 +797,9 @@
      enddo
 
      if ( abs(occ3 - desired) < mc ) then
-         write(mystd,'(6X,a)') 'results'
-         write(mystd,'(8X,a,i4)') "iters:", loop
-         write(mystd,'(8X,a,f12.8)') 'fermi:  ', mu3
-         write(mystd,'(8X,a,f12.8)') 'density: ', occ3
+         write(mystd,'(6X,a)') 'final results ->'
+         write(mystd,'(2X,a,f12.8)') 'fermi: ', mu3
+         write(mystd,'(2X,a,f12.8)') 'density: ', occ3
      else
          print *, "ERROR"
          STOP
