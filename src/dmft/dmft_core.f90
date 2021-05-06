@@ -187,7 +187,7 @@
 !!
   subroutine cal_occupy(eigs, einf)
      use constants, only : dp
-     use constants, only : zero
+     use constants, only : zero, one
      use constants, only : czi
 
      use control, only : nkpt, nspin
@@ -210,6 +210,7 @@
      integer :: m
      integer :: k
      integer :: bs, be
+     integer :: cbnd
 
      real(dp) :: focc(qbnd,nmesh,nspin)
      complex(dp) :: caux
@@ -219,9 +220,14 @@
          do k=1,nkpt
              bs = kwin(k,s,1,1)
              be = kwin(k,s,2,1)
+             cbnd = be - bs + 1
              
              do m=1,nmesh
                  caux = czi * fmesh(m) + fermi
+                 do b=1,cbnd
+                     focc(b,m,s) = focc(b,m,s) + one / ( caux - eigs(b,m,k,s) )
+                     focc(b,m,s) = focc(b,m,s) - one / ( caux - einf(b,k,s) )
+                 enddo
              enddo
          enddo
      enddo
