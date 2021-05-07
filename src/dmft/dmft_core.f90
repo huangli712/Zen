@@ -517,12 +517,12 @@
 ! allocate memory
      allocate(Em(cbnd),      stat = istat)
      if ( istat /= 0 ) then
-         call s_print_error('cal_sk_gk','can not allocate enough memory')
+         call s_print_error('cal_sk_hk','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
      !
      allocate(Hm(cbnd,cbnd), stat = istat)
      if ( istat /= 0 ) then
-         call s_print_error('cal_sk_gk','can not allocate enough memory')
+         call s_print_error('cal_sk_hk','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
 ! evaluate Em, which is just some dft eigenvalues 
@@ -764,7 +764,8 @@
 !!
 !! @sub cal_sk_so
 !!
-!! try to evaluate \Sigma(i\omega_n \to \infty)
+!! try to evaluate \Sigma(i\omega_n \to \infty). it's function is similar
+!! to `cal_sl_so()`
 !!
   subroutine cal_sk_so(cbnd, Sk, So)
      use constants, only : dp
@@ -806,7 +807,7 @@
   end subroutine cal_sk_so
 
 !!========================================================================
-!!>>> service subroutines: fermi-dirac function                        <<<
+!!>>> service subroutines: set 3                                       <<<
 !!========================================================================
 
 !!
@@ -859,15 +860,18 @@
      integer :: istat
 
 ! dummy array: for band dispersion (vector)
-     complex(dp), allocatable :: Em(:), Hm(:)
+     complex(dp), allocatable :: Em(:)
 
-! dummy array: for lattice green's function 
-     complex(dp), allocatable :: Gm(:,:)
+! dummy array: for effective hamiltonian (diagonal matrix)
+     complex(dp), allocatable :: Hm(:,:)
 
-! allocate memory for Em, Hm, and Gm
+! allocate memory
      allocate(Em(cbnd),      stat = istat)
-     allocate(Hm(cbnd),      stat = istat)
-     allocate(Gm(cbnd,cbnd), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_sk_gk','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(Hm(cbnd,cbnd), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_sk_gk','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
@@ -880,16 +884,16 @@
 
 ! consider imaginary axis or real axis
          if ( axis == 1 ) then
-             Hm = czi * fmesh(m) + Em
+             Em = czi * fmesh(m) + Em
          else
-             Hm = fmesh(m) + Em
-         endif
+             Em = fmesh(m) + Em
+         endif ! back if ( axis == 1 ) block
 
-! convert Hm (vector) to Gm (diagonal matrix)
-         call s_diag_z(cbnd, Hm, Gm)
+! convert Em (vector) to Hm (diagonal matrix)
+         call s_diag_z(cbnd, Em, Hm)
 
-! substract self-energy function from the Hamiltonian
-         Gk(:,:,m) = Gm - Sk(:,:,m)
+! substract self-energy function from the hamiltonian
+         Gk(:,:,m) = Hm - Sk(:,:,m)
 
 ! calculate lattice green's function by direct inversion
          call s_inv_z(cbnd, Gk(:,:,m))
@@ -899,7 +903,6 @@
 ! deallocate memory
      if ( allocated(Em) ) deallocate(Em)
      if ( allocated(Hm) ) deallocate(Hm)
-     if ( allocated(Gm) ) deallocate(Gm)
 
      return
   end subroutine cal_sk_gk
