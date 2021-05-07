@@ -987,22 +987,16 @@
 
 ! local variables
 ! loop index for the bisection algorithm 
-     integer :: loop
+     integer  :: loop
 
-! left boundary for the fermi level and the correspoinding charge density
-     real(dp) :: mu1, occ1
+! left boundary, right boundary, and the final result for the fermi level
+     real(dp) :: mu1, mu2, mu3
 
-! right boundary for the fermi level and the correspoinding charge density
-     real(dp) :: mu2, occ2
+! the corresponding charge density
+     real(dp) :: occ1, occ2, occ3
 
-! the obtained fermi level and the corresponding charge density
-     real(dp) :: mu3, occ3
+! sign
      real(dp) :: sign
-
-     !write(mystd,'(6X,a)') 'settings'
-     !write(mystd,'(8X,a,f12.8)') 'desired charge density: ', desired
-     !write(mystd,'(8X,a,i6)') 'maximum number of iterations: ', max_loops
-     !write(mystd,'(8X,a,f12.8)') 'precision: ', mc
 
      mu1 = fermi
      call cal_occupy(eigs, einf, mu1, occ1)
