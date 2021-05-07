@@ -910,7 +910,8 @@
 !!
 !! @sub cal_gk_gl
 !!
-!! try to calculate local green's function by downfolding
+!! try to calculate local green's function from lattice green's function
+!! via downfolding method
 !!
   subroutine cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl)
      use constants, only : dp
