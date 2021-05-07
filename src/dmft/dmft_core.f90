@@ -614,7 +614,7 @@
      integer, intent(in) :: t
 
 ! self-energy function at \omega = \infty in Kohn-Sham basis
-     complex(dp), intent(out) :: Sk(cbnd,cbnd)
+     complex(dp), intent(out) :: So(cbnd,cbnd)
 
 ! local parameters
 ! how many frequency points are included to calculate the asymptotic
@@ -631,16 +631,30 @@
 ! dummy array: for local self-energy function
      complex(dp), allocatable :: Sl(:,:,:)
 
+! dummy array: for lattice self-energy function
+     complex(dp), allocatable :: Sk(:,:,:)
+
 ! allocate memory
-     allocate(Sl(cdim,cdim,nmesh), stat = istat)
+     allocate(Sl(cdim,cdim,mcut+1), stat = istat)
      if ( istat /= 0 ) then
-         call s_print_error('cal_sl_sk','can not allocate enough memory')
+         call s_print_error('cal_sl_so','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(Sk(cbnd,cbnd,mcut+1), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_sl_so','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
 ! here we use Sl to save sig_l - sigdc
-     do m=1,nmesh
-         Sl(:,:,m) = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
-     enddo ! over m={1,nmesh} loop
+     do m=1,mcut
+         Sl(:,:,m) = sig_l(1:cdim,1:cdim,nmesh+1-m,s,t) - sigdc(1:cdim,1:cdim,s,t)
+     enddo ! over m={1,mcut} loop
+
+! then the averaged values are stored at Sl(:,:,mcut+1)
+     Sl(:,:,mcut+1) = czero
+     do m=1,mcut
+         Sl(:,:,mcut+1) = Sl(:,:,mcut+1) + Sl(:,:,m) / real(mcut)
+     enddo ! over m={1,mcut} loop
 
 ! upfolding: Sl (local basis) -> Sk (Kohn-Sham basis)
      call map_chi_psi(cdim, cbnd, nmesh, k, s, t, Sl, Sk)
