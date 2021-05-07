@@ -693,14 +693,21 @@
 !!
 !! @sub cal_ho_eo
 !!
+!! try to diagonalize H(k) + \Sigma(\infty), get all the eigenvalues
+!!
   subroutine cal_ho_eo(cbnd, Ho, Eo)
      use constants, only : dp
 
      implicit none
 
 ! external arguments
+! number of dft bands for given k-point and spin
      integer, intent(in) :: cbnd
-     complex(dp), intent(in) :: Ho(cbnd,cbnd)
+
+! effective hamiltonian: H(k) + \Sigma(\infty)
+     complex(dp), intent(in)  :: Ho(cbnd,cbnd)
+
+! resulting eigenvalues
      complex(dp), intent(out) :: Eo(cbnd)
 
      call s_eigvals_zg(cbnd, cbnd, Ho, Eo)
