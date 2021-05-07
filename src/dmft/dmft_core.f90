@@ -963,6 +963,7 @@
      use control, only : nmesh
      use control, only : fermi
      use control, only : mc
+     use control, only : myid, master
 
      use context, only : qbnd
 
@@ -998,35 +999,43 @@
 ! sign
      real(dp) :: sign
 
+! initialization, determine mu1, mu2, occ1, occ2, and sign
+! if sign < 0, it means occ1 < desired, we should push mu2 to higher
+! energy. if sign > 0, it means occ1 > desired. then mu1 will be
+! the right boundary, and we should push mu2 to lower energy
      mu1 = fermi
      call cal_occupy(eigs, einf, mu1, occ1)
-     sign = abs( occ1 - desired ) / ( occ1 - desired )
+     !
      mu2 = mu1
      occ2 = occ1
+     !
+     sign = abs( occ1 - desired ) / ( occ1 - desired )
 
+! first, determin the left and right boundaries
      loop = 1
-     !write(mystd,'(6X,a)') 'determine boundary for the fermi level'
-     write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
-     write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu1
-     write(mystd,'(2X,a,f12.8)') 'density: ', occ1
+     !
+     if ( myid == master ) then
+         write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
+         write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu1
+         write(mystd,'(2X,a,f12.8)') 'density: ', occ1
+     endif ! back if ( myid == master ) block
+     !
      do while ( loop <= max_loops .and. ( occ2 - desired ) * sign > 0 .and. abs( occ2 - desired ) > mc )
          loop = loop + 1
          mu2 = mu2 - sign * delta
          call cal_occupy(eigs, einf, mu2, occ2)
-         write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
-         write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu2
-         write(mystd,'(2X,a,f12.8)') 'density: ', occ2
-     enddo
+         if ( myid == master ) then
+             write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
+             write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu2
+             write(mystd,'(2X,a,f12.8)') 'density: ', occ2
+         endif ! back if ( myid == master ) block
+     enddo ! over do while loop
 
+! exchange the left and right boundaries
      if ( mu1 > mu2 ) then
-         mu3 = mu1
-         mu1 = mu2
-         mu2 = mu3
-
-         occ3 = occ1
-         occ1 = occ2
-         occ2 = occ3
-     endif
+         mu3 = mu1; mu1 = mu2; mu2 = mu3
+         occ3 = occ1; occ1 = occ2; occ2 = occ3
+     endif ! back if ( mu1 > mu2 ) block
 
      !write(mystd,'(8X,a,2f12.8)') 'boundary (fermi):   ', mu1, mu2
      !write(mystd,'(8X,a,2f12.8)') 'boundary (density): ', occ1, occ2
