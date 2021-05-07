@@ -68,16 +68,23 @@
 !!
 !! @sub dmft_try0
 !!
+!! to determine the fermi level
+!!
   subroutine dmft_try0()
      use constants, only : mystd
 
      use control, only : cname
+     use control, only : lfermi
 
      implicit none
 
-     write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
+! check lfermi
+     call s_assert2(lfermi .eqv. .true., 'lfermi must be true')
 
+! call the computational subroutine to do this job  
+     write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
      call cal_fermi()
+     write(mystd,*)
 
      return
   end subroutine dmft_try0
