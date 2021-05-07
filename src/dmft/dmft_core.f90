@@ -222,8 +222,8 @@
      call dichotomy(eigs, einf, nelect)
 
 ! deallocate memory
-     deallocate(eigs)
-     deallocate(einf)
+     if ( allocated(eigs) ) deallocate(eigs)
+     if ( allocated(einf) ) deallocate(einf)
 
      return
   end subroutine cal_fermi
