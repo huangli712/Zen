@@ -90,10 +90,16 @@
 ! check lfermi
      call s_assert2(lfermi .eqv. .true., 'lfermi must be true')
 
-! call the computational subroutine to do this job  
-     write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
+! call the computational subroutine to do this job
+     if ( myid == master ) then
+         write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
+     endif ! back if ( myid == master ) block
+     !
      call cal_fermi()
-     write(mystd,*)
+     !
+     if ( myid == master ) then
+         write(mystd,*)
+     endif ! back if ( myid == master ) block
 
      return
   end subroutine dmft_try0
