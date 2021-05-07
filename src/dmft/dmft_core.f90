@@ -107,6 +107,8 @@
   subroutine dmft_try1()
      use constants, only : mystd
 
+     use control, only : cname
+     use control, only : lfermi
      use control, only : nsite
      use control, only : myid, master
 
