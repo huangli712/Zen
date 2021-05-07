@@ -134,8 +134,6 @@
      !
      if ( lfermi .eqv. .true. ) then
          call cal_fermi()
-     else
-         write(mystd,'(4X,a)') 'the fermi level will not be updated'
      endif ! back if ( lfermi .eqv. .true. ) block
      !
      if ( myid == master ) then
@@ -143,11 +141,17 @@
      endif ! back if ( myid == master ) block
 
 ! call the computational subroutine to compute the local green's function
-     write(mystd,'(2X,a)') cname // ' >>> Task : Green'
+     if ( myid == master ) then
+         write(mystd,'(2X,a)') cname // ' >>> Task : Green'
+     endif ! back if ( myid == master ) block
+     !
      do t=1,nsite
          call cal_grn_l(t)
      enddo ! over t={1,nsite} loop
-     write(mystd,*)
+     !
+     if ( myid == master ) then
+         write(mystd,*)
+     endif ! back if ( myid == master ) block
 
 ! write the calculated results, only the master node can do it
      write(mystd,'(2X,a)') cname // ' >>> Task : Write'
