@@ -34,7 +34,7 @@
 !!!-----------------------------------------------------------------------
 
 !!========================================================================
-!!>>> driver subroutines: level 1                                      <<<
+!!>>> driver subroutines: layer 1                                      <<<
 !!========================================================================
 
 !!
@@ -70,7 +70,7 @@
   end subroutine dmft_driver
 
 !!========================================================================
-!!>>> driver subroutines: level 2                                      <<<
+!!>>> driver subroutines: layer 2                                      <<<
 !!========================================================================
 
 !!
@@ -176,34 +176,43 @@
      return
   end subroutine dmft_try2
 
+!!========================================================================
+!!>>> driver subroutines: layer 3                                      <<<
+!!========================================================================
+
 !!
 !! @sub cal_fermi
 !!
+!! try to determine the fermi level
+!!
   subroutine cal_fermi()
      use constants, only : dp, mystd
-     use constants, only : zero
      use constants, only : czero
 
      use control, only : nkpt, nspin
      use control, only : nmesh
+     use control, only : myid, master
 
      use context, only : qbnd
 
      implicit none
 
 ! local variables
-     integer :: istat
+! status flag
+     integer  :: istat
 
-     real(dp) :: nelect
+! desired charge density
+     real(dp) :: ndens
 
+! dummy arrays, used to save the eigenvalues of H + \Sigma
      complex(dp), allocatable :: eigs(:,:,:,:)
      complex(dp), allocatable :: einf(:,:,:)
 
+! allocate memory
      allocate(eigs(qbnd,nmesh,nkpt,nspin), stat = istat)
      allocate(einf(qbnd,nkpt,nspin), stat = istat)
 
      write(mystd,'(4X,a)') 'calculating desired charge density'
-     nelect = zero
      call cal_nelect(nelect)
 
      write(mystd,'(4X,a)') 'calculating eigenvalues'
@@ -212,6 +221,7 @@
      write(mystd,'(4X,a)') 'searching fermi level'
      call dichotomy(eigs, einf, nelect)
 
+! deallocate memory
      deallocate(eigs)
      deallocate(einf)
 
