@@ -555,8 +555,13 @@
      implicit none
 
 ! external arguments
+! number of dft bands for given k-point and spin
      integer, intent(in) :: cbnd
-     complex(dp), intent(in) :: Hk(cbnd,cbnd,nmesh)
+
+! effective hamiltonian: H(k) + \Sigma(i\omega_n)
+     complex(dp), intent(in)  :: Hk(cbnd,cbnd,nmesh)
+
+! resulting eigenvalues
      complex(dp), intent(out) :: Ek(cbnd,nmesh)
 
 ! local variables
