@@ -224,7 +224,7 @@
          write(mystd,'(4X,a)') 'calculating desired charge density'
      endif ! back if ( myid == master ) block
      !
-     call cal_nelect(nelect)
+     call cal_nelect(ndens)
 
 ! construct H + \Sigma, diagonalize it to obtain the dft + dmft eigenvalues
      if ( myid == master ) then
@@ -234,11 +234,12 @@
      call cal_eigsys(eigs, einf)
 
 ! search the fermi level using bisection algorithm
+! the global variable `fermi` will be updated within `dichotomy()`
      if ( myid == master ) then
          write(mystd,'(4X,a)') 'searching fermi level'
      endif ! back if ( myid == master ) block
      !
-     call dichotomy(eigs, einf, nelect)
+     call dichotomy(eigs, einf, ndens)
 
 ! deallocate memory
      if ( allocated(eigs) ) deallocate(eigs)
