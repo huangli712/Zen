@@ -83,6 +83,7 @@
 
      use control, only : cname
      use control, only : lfermi
+     use control, only : myid, master
 
      implicit none
 
@@ -136,9 +137,12 @@
      enddo ! over t={1,nsite} loop
      write(mystd,*)
 
+! write the calculated results, only the master node can do it
+     write(mystd,'(2X,a)') cname // ' >>> Task : Write'
      if ( myid == master ) then
          call dmft_dump_grn_l(grn_l)
      endif
+     write(mystd,*)
 
      return
   end subroutine dmft_try1
