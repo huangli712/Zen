@@ -36,23 +36,31 @@
 !!
 !! @sub dmft_driver
 !!
+!! core subroutine, dispatch the computational task
+!!
   subroutine dmft_driver()
      use control, only : task
 
      implicit none
 
-     select case ( task )
+     DISPATCHER: select case ( task )
 
+! task = 0, search the fermi level
          case (0)
              call dmft_try0()
 
+! task = 1, calculate the local green's function
          case (1)
              call dmft_try1()
 
+! task = 2, calculate density correction
          case (2)
              call dmft_try2()
 
-     end select
+         case default
+             call s_print_error('dmft_driver','this feature is not supported')
+
+     end select DISPATCHER
 
      return
   end subroutine dmft_driver
