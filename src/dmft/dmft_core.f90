@@ -635,6 +635,7 @@
      complex(dp), allocatable :: Sk(:,:,:)
 
 ! allocate memory
+! the last elements of Sl and Sk are used to store the averaged values
      allocate(Sl(cdim,cdim,mcut+1), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_sl_so','can not allocate enough memory')
