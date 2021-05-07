@@ -986,11 +986,18 @@
      real(dp), parameter :: delta = 0.5_dp
 
 ! local variables
+! loop index for the bisection algorithm 
+     integer :: loop
+
+! left boundary for the fermi level and the correspoinding charge density
      real(dp) :: mu1, occ1
+
+! right boundary for the fermi level and the correspoinding charge density
      real(dp) :: mu2, occ2
+
+! the obtained fermi level and the corresponding charge density
      real(dp) :: mu3, occ3
      real(dp) :: sign
-     integer :: loop
 
      !write(mystd,'(6X,a)') 'settings'
      !write(mystd,'(8X,a,f12.8)') 'desired charge density: ', desired
