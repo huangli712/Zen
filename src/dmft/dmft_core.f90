@@ -233,7 +233,11 @@
      !
      call cal_eigsys(eigs, einf)
 
-     write(mystd,'(4X,a)') 'searching fermi level'
+! search the fermi level using bisection algorithm
+     if ( myid == master ) then
+         write(mystd,'(4X,a)') 'searching fermi level'
+     endif ! back if ( myid == master ) block
+     !
      call dichotomy(eigs, einf, nelect)
 
 ! deallocate memory
