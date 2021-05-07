@@ -120,16 +120,21 @@
 ! loop index for impurity sites
      integer :: t
 
-! check lfermi
-     call s_assert2(lfermi .eqv. .true., 'lfermi must be true')
-
-! call the computational subroutine to do this job  
+! call the computational subroutine to search the fermi level
      write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
-     call cal_fermi()
+     if ( lfermi .eqv. .true. ) then
+         call cal_fermi()
+     else
+         write(mystd,'(4X,a)') 'the fermi level will not be updated'
+     endif ! back if ( lfermi .eqv. .true. ) block
      write(mystd,*)
+
+! call the computational subroutine to compute the local green's function
+     write(mystd,'(2X,a)') cname // ' >>> Task : Green'
      do t=1,nsite
          call cal_grn_l(t)
      enddo ! over t={1,nsite} loop
+     write(mystd,*)
 
      if ( myid == master ) then
          call dmft_dump_grn_l(grn_l)
