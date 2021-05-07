@@ -128,13 +128,19 @@
      integer :: t
 
 ! call the computational subroutine to search the fermi level
-     write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
+     if ( myid == master ) then
+         write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
+     endif ! back if ( myid == master ) block
+     !
      if ( lfermi .eqv. .true. ) then
          call cal_fermi()
      else
          write(mystd,'(4X,a)') 'the fermi level will not be updated'
      endif ! back if ( lfermi .eqv. .true. ) block
-     write(mystd,*)
+     !
+     if ( myid == master ) then
+         write(mystd,*)
+     endif ! back if ( myid == master ) block
 
 ! call the computational subroutine to compute the local green's function
      write(mystd,'(2X,a)') cname // ' >>> Task : Green'
