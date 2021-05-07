@@ -545,6 +545,8 @@
 !!
 !! @sub cal_hk_ek
 !!
+!! try to diagonalize H(k) + \Sigma(i\omega_n), get all the eigenvalues
+!!
   subroutine cal_hk_ek(cbnd, Hk, Ek)
      use constants, only : dp
 
@@ -558,11 +560,12 @@
      complex(dp), intent(out) :: Ek(cbnd,nmesh)
 
 ! local variables
+! loop index for frequency mesh
      integer :: m
 
-     do m=1,nmesh
+     FREQ_LOOP: do m=1,nmesh
          call s_eigvals_zg(cbnd, cbnd, Hk(:,:,m), Ek(:,m))
-     enddo ! over m={1,nmesh} loop
+     enddo FREQ_LOOP ! over m={1,nmesh} loop
 
      return
   end subroutine cal_hk_ek
