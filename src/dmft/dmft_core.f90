@@ -27,11 +27,15 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/06/2021 by li huang (last modified)
+!!!           05/07/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
 !!!-----------------------------------------------------------------------
+
+!!========================================================================
+!!>>> driver subroutines: level 1                                      <<<
+!!========================================================================
 
 !!
 !! @sub dmft_driver
@@ -64,6 +68,10 @@
 
      return
   end subroutine dmft_driver
+
+!!========================================================================
+!!>>> driver subroutines: level 2                                      <<<
+!!========================================================================
 
 !!
 !! @sub dmft_try0
