@@ -219,10 +219,18 @@
          call s_print_error('cal_fermi','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-     write(mystd,'(4X,a)') 'calculating desired charge density'
+! calculate the nominal charge density according to the dft eigenvalues
+     if ( myid == master ) then
+         write(mystd,'(4X,a)') 'calculating desired charge density'
+     endif ! back if ( myid == master ) block
+     !
      call cal_nelect(nelect)
 
-     write(mystd,'(4X,a)') 'calculating eigenvalues'
+! construct H + \Sigma, diagonalize it to obtain the dft + dmft eigenvalues
+     if ( myid == master ) then
+         write(mystd,'(4X,a)') 'calculating dft + dmft eigenvalues'
+     endif ! back if ( myid == master ) block
+     !
      call cal_eigsys(eigs, einf)
 
      write(mystd,'(4X,a)') 'searching fermi level'
