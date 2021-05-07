@@ -510,7 +510,7 @@
 ! status flag
      integer :: istat
 
-! dummy arrays, used to build hamiltonian
+! dummy arrays, used to build effective hamiltonian
      complex(dp), allocatable :: Em(:)
      complex(dp), allocatable :: Hm(:,:)
 
@@ -531,7 +531,7 @@
 ! convert `Em` to diagonal matrix `Hm`
      call s_diag_z(cbnd, Em, Hm)
 
-! combine `Hm` and `Sk` to build the final hamiltonian 
+! combine `Hm` and `Sk` to build the effective hamiltonian 
      FREQ_LOOP: do m=1,nmesh
          Hk(:,:,m) = Hm + Sk(:,:,m)
      enddo FREQ_LOOP ! over m={1,nmesh} loop
@@ -627,6 +627,8 @@
 !!
 !! @sub cal_so_ho
 !!
+!! try to build H(k) + \Sigma(\infty)
+!!
   subroutine cal_so_ho(cbnd, bs, be, k, s, So, Ho)
      use constants, only : dp
 
@@ -647,7 +649,7 @@
 ! index for spin
      integer, intent(in) :: s
 
-! self-energy function at Kohn-Sham basis
+! self-energy function at Kohn-Sham basis, \omega = \infty
      complex(dp), intent(in)  :: So(cbnd,cbnd)
 
 ! lattice green's function at given k-point and spin
@@ -657,21 +659,28 @@
 ! status flag
      integer :: istat
 
+! dummy arrays, used to build effective hamiltonian
      complex(dp), allocatable :: Em(:)
      complex(dp), allocatable :: Hm(:,:)
 
-! allocate memory for Em and Hm
+! allocate memory
      allocate(Em(cbnd),      stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_so_ho','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
      allocate(Hm(cbnd,cbnd), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_so_ho','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! evaluate Em, which is k-dependent, but frequency-independent
-! if you want to consider magnetic field, you can add your codes here
+! evaluate Em, which is just some dft eigenvalues 
      Em = enk(bs:be,k,s)
+
+! convert `Em` to diagonal matrix `Hm`
      call s_diag_z(cbnd, Em, Hm)
 
+! combine `Hm` and `So` to build the effective hamiltonian 
      Ho = Hm + So
 
 ! deallocate memory
