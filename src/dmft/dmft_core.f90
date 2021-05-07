@@ -1037,10 +1037,8 @@
          occ3 = occ1; occ1 = occ2; occ2 = occ3
      endif ! back if ( mu1 > mu2 ) block
 
-     !write(mystd,'(8X,a,2f12.8)') 'boundary (fermi):   ', mu1, mu2
-     !write(mystd,'(8X,a,2f12.8)') 'boundary (density): ', occ1, occ2
-
-     !write(mystd,'(6X,a)') 'refine the boundary to locate the fermi level'
+! now the fermi level should lie in the regine [mu1, mu2]
+! refine the boundary to locate the fermi level
      if ( abs(occ1 - desired) < abs(occ2 - desired) ) then
          mu3 = mu1
          occ3 = occ1
@@ -1048,7 +1046,7 @@
          mu3 = mu2
          occ3 = occ2
      endif
-
+     !
      do while ( loop <= max_loops .and. abs( occ3 - desired ) > mc )
          loop = loop + 1
          mu3 = mu1 + ( mu2 - mu1 ) * ( desired - occ1 ) / ( occ2 - occ1 )
@@ -1059,13 +1057,11 @@
          else
              mu2 = mu3
              occ2 = occ3
-         endif
+         endif ! back if block
          write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
          write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu3
          write(mystd,'(2X,a,f12.8)') 'density: ', occ3
-         !write(mystd,'(8X,a,2f12.8)') 'boundary (fermi):   ', mu1, mu2
-         !write(mystd,'(8X,a,2f12.8)') 'boundary (density): ', occ1, occ2
-     enddo
+     enddo ! over do while loop
 
      if ( abs(occ3 - desired) < mc ) then
          write(mystd,'(6X,a)',advance = 'no') 'final results ->'
