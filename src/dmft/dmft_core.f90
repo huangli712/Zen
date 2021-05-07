@@ -1072,6 +1072,9 @@
          call s_print_error('dichotomy', 'fail to locate the fermi level')
      endif ! back if ( abs(occ3 - desired) < mc ) block
 
+! well, finally, we have to update the global variable `fermi`
+     fermi = mu3
+
      return
   end subroutine dichotomy
 
