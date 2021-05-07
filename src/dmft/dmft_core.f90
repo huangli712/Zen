@@ -979,9 +979,13 @@
      complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
 
 ! local parameters
-     integer, parameter :: max_loops = 100
+! maximum number of loops for the bisection algorithm
+     integer, parameter  :: max_loops = 100
+
+! step for locating the energy boundary
      real(dp), parameter :: delta = 0.5_dp
 
+! local variables
      real(dp) :: mu1, occ1
      real(dp) :: mu2, occ2
      real(dp) :: mu3, occ3
