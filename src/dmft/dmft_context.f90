@@ -386,10 +386,6 @@
      complex(dp), public, save, allocatable :: sigdc(:,:,:,:)
 
 !!
-!! @var sigoo
-!!
-     complex(dp), public, save, allocatable :: sigoo(:,:,:,:)
-!!
 !! @var sig_l
 !!
 !! local self-energy functions. they are usually taken from the output of
@@ -787,7 +783,6 @@
 
 ! allocate memory
      allocate(sigdc(qdim,qdim,nspin,nsite),       stat = istat)
-     allocate(sigoo(qdim,qdim,nspin,nsite),       stat = istat)
      allocate(sig_l(qdim,qdim,nmesh,nspin,nsite), stat = istat)
 
 ! check the status
@@ -797,7 +792,6 @@
 
 ! initialize them
      sigdc = czero
-     sigoo = czero
      sig_l = czero
 
      return
@@ -996,7 +990,6 @@
      implicit none
 
      if ( allocated(sigdc) ) deallocate(sigdc)
-     if ( allocated(sigoo) ) deallocate(sigoo)
      if ( allocated(sig_l) ) deallocate(sig_l)
 
      return
