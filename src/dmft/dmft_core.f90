@@ -76,7 +76,8 @@
 !!
 !! @sub dmft_try0
 !!
-!! to determine the fermi level
+!! to determine the fermi level, the global variable `fermi` may be
+!! updated in this subroutine
 !!
   subroutine dmft_try0()
      use constants, only : mystd
