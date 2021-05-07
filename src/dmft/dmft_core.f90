@@ -240,7 +240,7 @@
          write(mystd,'(4X,a)') 'searching fermi level'
      endif ! back if ( myid == master ) block
      !
-     call dichotomy(eigs, einf, ndens)
+     call dichotomy(ndens, eigs, einf)
 
 ! deallocate memory
      if ( allocated(eigs) ) deallocate(eigs)
@@ -948,13 +948,15 @@
   end subroutine cal_gk_gl
 
 !!========================================================================
-!!>>> service subroutines: fermi level search                          <<<
+!!>>> service subroutines: set 4, fermi level search                   <<<
 !!========================================================================
 
 !!
 !! @sub dichotomy
 !!
-  subroutine dichotomy(eigs, einf, desired)
+!! try to locate the fermi level with the bisection method
+!!
+  subroutine dichotomy(desired, eigs, einf)
      use constants, only : dp, mystd
 
      use control, only : nkpt, nspin
@@ -967,10 +969,16 @@
      implicit none
 
 ! external arguments
-     complex(dp), intent(in) :: eigs(qbnd,nmesh,nkpt,nspin)
-     complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
-     real(dp), intent(in) :: desired
+! desired charge density
+     real(dp), intent(in)    :: desired
 
+! eigenvalues for H(k) + \Sigma(i\omega_n)
+     complex(dp), intent(in) :: eigs(qbnd,nmesh,nkpt,nspin)
+
+! eigenvalues for H(k) + \Sigma(\infty)
+     complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
+
+! local parameters
      integer, parameter :: max_loops = 100
      real(dp), parameter :: delta = 0.5_dp
 
