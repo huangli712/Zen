@@ -1058,19 +1058,19 @@
              mu2 = mu3
              occ2 = occ3
          endif ! back if block
-         write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
-         write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu3
-         write(mystd,'(2X,a,f12.8)') 'density: ', occ3
+         if ( myid == master ) then
+             write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
+             write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu3
+             write(mystd,'(2X,a,f12.8)') 'density: ', occ3
+         endif ! back if ( myid == master ) block
      enddo ! over do while loop
-
+     !
      if ( abs(occ3 - desired) < mc ) then
          write(mystd,'(6X,a)',advance = 'no') 'final results ->'
-         write(mystd,'(2X,a,f12.8)') 'fermi: ', mu3
-         write(mystd,'(2X,a,f12.8)') 'density: ', occ3
+         write(mystd,'(2(2X,a,f12.8))') 'fermi: ', mu3, 'density: ', occ3
      else
-         print *, "ERROR"
-         STOP
-     endif
+         call s_print_error('dichotomy', 'fail to locate the fermi level')
+     endif ! back if ( abs(occ3 - desired) < mc ) block
 
      return
   end subroutine dichotomy
