@@ -248,26 +248,23 @@
      return
   end subroutine cal_fermi
 
-!!========================================================================
-!!>>> service subroutines: fermi-dirac function                        <<<
-!!========================================================================
-
 !!
 !! @sub cal_grn_l
 !!
 !! try to calculate local green's function for given impurity site
 !!
   subroutine cal_grn_l(t)
-     use constants, only : dp
+     use constants, only : dp, mystd
      use constants, only : czero, czi
-     use constants, only : mystd
 
      use control, only : nkpt, nspin
      use control, only : nmesh
+     use control, only : myid, master
 
      use context, only : i_wnd
      use context, only : ndim
      use context, only : kwin
+     use context, only : weight
      use context, only : grn_l
 
      implicit none
@@ -319,8 +316,10 @@
      grn_l(:,:,:,:,t) = czero
 
 ! print some useful information
-     write(mystd,'(2X,a,i4)') 'calculate grn_l for site:', t
-     write(mystd,'(2X,a)')  'add contributions from ...'
+     if ( myid == master ) then
+         write(mystd,'(4X,a,i4)') 'calculate grn_l for site:', t
+         write(mystd,'(4X,a)')  'add contributions from ...'
+     endif ! back if ( myid == master ) block
 
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
@@ -334,13 +333,18 @@
              cbnd = be - bs + 1
 
 ! provide some useful information
-             write(mystd,'(4X,a,i2)',advance='no') 'spin: ', s
-             write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
-             write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
+             if ( myid == master ) then
+                 write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
+                 write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
+                 write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
+             endif ! back if ( myid == master ) block
 
 ! allocate memories for Sk and Gk. their sizes are k-dependent
              allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
              allocate(Gk(cbnd,cbnd,nmesh), stat = istat)
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_grn_l','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
 
 ! build self-energy function, and then embed it into Kohn-Sham basis
              call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
@@ -352,7 +356,7 @@
              call cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl)
 
 ! save the final results
-             grn_l(1:cdim,1:cdim,:,s,t) = grn_l(1:cdim,1:cdim,:,s,t) + Gl
+             grn_l(1:cdim,1:cdim,:,s,t) = grn_l(1:cdim,1:cdim,:,s,t) + Gl * weight(k)
 
 ! deallocate memories
              if ( allocated(Sk) ) deallocate(Sk)
@@ -362,14 +366,14 @@
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
 ! renormalize local green's function
-     grn_l = grn_l / float(nkpt)
+     grn_l(:,:,:,:,t) = grn_l(:,:,:,:,t) / float(nkpt)
 
      do s=1,cdim
          print *, s, grn_l(s,s,1,1,1)
      enddo
 
 ! deallocate memory
-     deallocate(Gl)
+     if ( allocated(Gl) ) deallocate(Gl)
 
      return
   end subroutine cal_grn_l
