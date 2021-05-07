@@ -401,7 +401,7 @@
   end subroutine cal_hyb_l
 
 !!========================================================================
-!!>>> service subroutines: fermi-dirac function                        <<<
+!!>>> service subroutines: set 1                                       <<<
 !!========================================================================
 
 !!
@@ -464,13 +464,15 @@
      call map_chi_psi(cdim, cbnd, nmesh, k, s, t, Sl, Sk)
 
 ! deallocate memory
-     deallocate(Sl)
+     if ( allocated(Sl) ) deallocate(Sl)
 
      return
   end subroutine cal_sl_sk
 
 !!
 !! @sub cal_sk_hk
+!!
+!! try to build H(k) + \Sigma(i\omega_n)
 !!
   subroutine cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
      use constants, only : dp
@@ -507,21 +509,28 @@
 ! status flag
      integer :: istat
 
+! dummy arrays, used to build hamiltonian
      complex(dp), allocatable :: Em(:)
      complex(dp), allocatable :: Hm(:,:)
 
-! allocate memory for Em and Hm
+! allocate memory
      allocate(Em(cbnd),      stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_sk_gk','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
      allocate(Hm(cbnd,cbnd), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_sk_gk','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! evaluate Em, which is k-dependent, but frequency-independent
-! if you want to consider magnetic field, you can add your codes here
+! evaluate Em, which is just some dft eigenvalues 
      Em = enk(bs:be,k,s)
+
+! convert `Em` to diagonal matrix `Hm`
      call s_diag_z(cbnd, Em, Hm)
 
+! combine `Hm` and `Sk` to build the final hamiltonian 
      FREQ_LOOP: do m=1,nmesh
          Hk(:,:,m) = Hm + Sk(:,:,m)
      enddo FREQ_LOOP ! over m={1,nmesh} loop
