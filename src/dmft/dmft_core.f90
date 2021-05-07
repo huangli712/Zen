@@ -657,10 +657,14 @@
      enddo ! over m={1,mcut} loop
 
 ! upfolding: Sl (local basis) -> Sk (Kohn-Sham basis)
-     call map_chi_psi(cdim, cbnd, nmesh, k, s, t, Sl, Sk)
+     call map_chi_psi(cdim, cbnd, mcut + 1, k, s, t, Sl, Sk)
+
+! Sk(:,:,mcut + 1) is what we want, copy it to `So`
+     So = Sk(:,:,mcut+1)
 
 ! deallocate memory
      if ( allocated(Sl) ) deallocate(Sl)
+     if ( allocated(Sk) ) deallocate(Sk)
 
      return
   end subroutine cal_sl_so
