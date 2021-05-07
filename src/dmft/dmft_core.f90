@@ -154,11 +154,14 @@
      endif ! back if ( myid == master ) block
 
 ! write the calculated results, only the master node can do it
-     write(mystd,'(2X,a)') cname // ' >>> Task : Write'
      if ( myid == master ) then
+         write(mystd,'(2X,a)') cname // ' >>> Task : Write'
+         !
+         write(mystd,'(4X,a)') 'save grn_l...'
          call dmft_dump_grn_l(grn_l)
-     endif
-     write(mystd,*)
+         !
+         write(mystd,*)
+     endif ! back if ( myid == master ) block
 
      return
   end subroutine dmft_try1
