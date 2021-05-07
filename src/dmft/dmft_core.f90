@@ -584,9 +584,10 @@
 !! @sub cal_sl_so
 !!
 !! try to substract the double-counting term from the local self-energy
-!! function, and then map it from local basis to Kohn-Sham basis
+!! function. and then evaluate its asymptotic values at \omega = \infty.
+!! finally, map it from local basis to Kohn-Sham basis
 !!
-  subroutine cal_sl_so(cdim, cbnd, k, s, t, Sk)
+  subroutine cal_sl_so(cdim, cbnd, k, s, t, So)
      use constants, only : dp
      use constants, only : czero
 
@@ -612,8 +613,13 @@
 ! index for impurity sites
      integer, intent(in) :: t
 
-! self-energy function in Kohn-Sham basis
-     complex(dp), intent(out) :: Sk(cbnd,cbnd,nmesh)
+! self-energy function at \omega = \infty in Kohn-Sham basis
+     complex(dp), intent(out) :: Sk(cbnd,cbnd)
+
+! local parameters
+! how many frequency points are included to calculate the asymptotic
+! values of self-energy function
+     integer, parameter :: mcut = 16
 
 ! local variables
 ! loop index for frequency mesh
