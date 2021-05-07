@@ -5,7 +5,7 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           04/03/2021 by li huang (last modified)
+!!!           05/07/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -180,6 +180,21 @@
 !!
      integer, public, save :: nwnd   = 1
 
+!!
+!! @var nsite
+!!
+!! number of correlated electron problems, i.e, number of impurity sites
+!! in which the correlated effect is considered
+!!
+     integer, public, save :: nsite  = 1
+
+!!
+!! @var nmesh
+!!
+!! number of frequency points
+!!
+     integer, public, save :: nmesh  = 8193
+
 !!========================================================================
 !!>>> real variables: from params.ir                                   <<<
 !!========================================================================
@@ -205,25 +220,6 @@
 !! by using the analytical tetrahedron algorithm
 !!
      real(dp), public, save :: volt  = 1.00_dp
-
-!!========================================================================
-!!>>> integer variables: from sigma.bare and sigma.dc                  <<<
-!!========================================================================
-
-!!
-!! @var nsite
-!!
-!! number of correlated electron problems, i.e, number of impurity sites
-!! in which the correlated effect is considered
-!!
-     integer, public, save :: nsite  = 1
-
-!!
-!! @var nmesh
-!!
-!! number of frequency points
-!!
-     integer, public, save :: nmesh  = 8193
 
 !!========================================================================
 !!>>> MPI related common variables                                     <<<

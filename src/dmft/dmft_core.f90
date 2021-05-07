@@ -100,7 +100,13 @@
 !!
 !! @sub dmft_try1
 !!
+!! to calculate the local green's function, generate key inputs for the
+!! quantum impurity solvers. the fermi level may be updated, depending
+!! on the configuration parameter  
+!!
   subroutine dmft_try1()
+     use constants, only : mystd
+
      use control, only : nsite
      use control, only : myid, master
 
@@ -112,6 +118,13 @@
 ! loop index for impurity sites
      integer :: t
 
+! check lfermi
+     call s_assert2(lfermi .eqv. .true., 'lfermi must be true')
+
+! call the computational subroutine to do this job  
+     write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
+     call cal_fermi()
+     write(mystd,*)
      do t=1,nsite
          call cal_grn_l(t)
      enddo ! over t={1,nsite} loop
