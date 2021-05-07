@@ -210,7 +210,14 @@
 
 ! allocate memory
      allocate(eigs(qbnd,nmesh,nkpt,nspin), stat = istat)
-     allocate(einf(qbnd,nkpt,nspin), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_fermi','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(einf(qbnd,nkpt,nspin),       stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_fermi','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
 
      write(mystd,'(4X,a)') 'calculating desired charge density'
      call cal_nelect(nelect)
