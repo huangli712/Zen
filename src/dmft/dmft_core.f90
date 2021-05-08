@@ -1146,8 +1146,8 @@
 !!
   subroutine cal_occupy(fermi, val, eigs, einf)
      use constants, only : dp
-     use constants, only : zero, one, two
-     use constants, only : czi
+     use constants, only : one, two
+     use constants, only : czi, czero
 
      use control, only : nkpt, nspin
      use control, only : nmesh
@@ -1220,7 +1220,7 @@
 
 ! calculate local green's function
 ! here, the asymptotic part is substracted
-     gloc = zero
+     gloc = czero
      do s=1,nspin
          do k=1,nkpt
              bs = kwin(k,s,1,1)
@@ -1255,7 +1255,13 @@
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
 
-     val = real( sum(zocc) ) * 2
+! sum up the density matrix
+     val = real( sum(zocc) ) 
+
+! consider the spins
+     if ( nspin == 1 ) then
+         val = val * two
+     endif ! back if ( nspin == 1 ) block
 
 ! deallocate memory
      if ( allocated(zocc) ) deallocate(zocc)
