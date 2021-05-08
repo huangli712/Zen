@@ -1004,7 +1004,7 @@
 ! energy. if sign > 0, it means occ1 > desired. then mu1 will be
 ! the right boundary, and we should push mu2 to lower energy
      mu1 = fermi
-     call cal_occupy(eigs, einf, mu1, occ1)
+     call cal_occupy(mu1, occ1, eigs, einf)
      !
      mu2 = mu1
      occ2 = occ1
@@ -1023,7 +1023,7 @@
      do while ( loop <= max_loops .and. ( occ2 - desired ) * sign > 0 .and. abs( occ2 - desired ) > mc )
          loop = loop + 1
          mu2 = mu2 - sign * delta
-         call cal_occupy(eigs, einf, mu2, occ2)
+         call cal_occupy(mu2, occ2, eigs, einf)
          if ( myid == master ) then
              write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
              write(mystd,'(2X,a,f12.8)',advance = 'no') 'EF: ', mu2
@@ -1052,7 +1052,7 @@
      do while ( loop <= max_loops .and. abs( occ3 - desired ) > mc )
          loop = loop + 1
          mu3 = mu1 + ( mu2 - mu1 ) * ( desired - occ1 ) / ( occ2 - occ1 )
-         call cal_occupy(eigs, einf, mu3, occ3)
+         call cal_occupy(mu3, occ3, eigs, einf)
          if ( ( occ1 - desired ) * ( occ3 - desired ) > 0 ) then
              mu1 = mu3
              occ1 = occ3
@@ -1140,7 +1140,9 @@
 !!
 !! @sub cal_occupy
 !!
-  subroutine cal_occupy(eigs, einf, fermi, val)
+!! for given fermi level, try to calculate the corresponding occupations
+!!
+  subroutine cal_occupy(fermi, val, eigs, einf)
      use constants, only : dp
      use constants, only : zero, one, two
      use constants, only : czi
