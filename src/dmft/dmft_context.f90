@@ -9,6 +9,7 @@
 !!!           dmft_eigen    module
 !!!           dmft_projs    module
 !!!           dmft_fmesh    module
+!!!           dmft_eimps    module
 !!!           dmft_sigma    module
 !!!           dmft_green    module
 !!!           dmft_weiss    module
@@ -17,7 +18,7 @@
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/06/2021 by li huang (last modified)
+!!!           05/08/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -362,6 +363,20 @@
      real(dp), public, save, allocatable :: fmesh(:)
 
   end module dmft_fmesh
+
+  module dmft_eimps
+     use constants, only : dp
+
+     implicit none
+
+!!
+!! @var eimps
+!!
+!! impurity levels
+!!
+     complex(dp), public, save, allocatable :: eimps(:,:,:)
+
+  end module dmft_eimps
 
 !!========================================================================
 !!>>> module dmft_sigma                                                <<<
