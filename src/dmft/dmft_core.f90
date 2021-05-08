@@ -1700,7 +1700,7 @@
 !! service subroutine. map a matrix from Kohn-Sham basis to local
 !! basis. you can call this procedure `projection` or `downfold`
 !!
-  subroutine one_psi_chi(cbnd, cdim, nfrq, k, s, t, Mp, Mc)
+  subroutine one_psi_chi(cbnd, cdim, k, s, t, Mp, Mc)
      use constants, only : dp
 
      use context, only : i_grp
@@ -1716,9 +1716,6 @@
 ! number of correlated orbitals for given impurity site
      integer, intent(in) :: cdim
 
-! number of frequency points
-     integer, intent(in) :: nfrq
-
 ! index for k-points
      integer, intent(in) :: k
 
@@ -1728,11 +1725,11 @@
 ! index for impurity sites
      integer, intent(in) :: t
 
-! input array defined at Kohn-Sham (\psi) basis
-     complex(dp), intent(in)  :: Mp(cbnd,cbnd,nfrq)
+! input matrix defined at Kohn-Sham (\psi) basis
+     complex(dp), intent(in)  :: Mp(cbnd,cbnd)
 
-! output array defined at local orbital (\chi) basis
-     complex(dp), intent(out) :: Mc(cdim,cdim,nfrq)
+! output matrix defined at local orbital (\chi) basis
+     complex(dp), intent(out) :: Mc(cdim,cdim)
 
 ! local variables
 ! loop index for frequency mesh
@@ -1749,7 +1746,7 @@
      allocate(Cp(cdim,cbnd), stat = istat)
      allocate(Pc(cbnd,cdim), stat = istat)
      if ( istat /= 0 ) then
-         call s_print_error('map_psi_chi','can not allocate enough memory')
+         call s_print_error('one_psi_chi','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
 ! copy data
@@ -1757,9 +1754,7 @@
      Pc = psichi(1:cbnd,1:cdim,k,s,i_grp(t))
 
 ! downfolding or projection
-     do f=1,nfrq
-         Mc(:,:,f) = matmul( matmul( Cp, Mp(:,:,f) ), Pc )
-     enddo ! over f={1,nfrq} loop
+     Mc = matmul( matmul( Cp, Mp ), Pc )
 
 ! deallocate memory
      if ( allocated(Cp) ) deallocate(Cp)
