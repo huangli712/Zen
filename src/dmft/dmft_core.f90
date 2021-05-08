@@ -1735,9 +1735,6 @@
      complex(dp), intent(out) :: Mc(cdim,cdim)
 
 ! local variables
-! loop index for frequency mesh
-     integer :: f
-
 ! status flag
      integer :: istat
 
