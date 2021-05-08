@@ -1071,7 +1071,7 @@
      !
      if ( abs(occ3 - desired) < mc ) then
          write(mystd,'(6X,a)',advance = 'no') 'final results ->'
-         write(mystd,'(2(2X,a,f12.8))') 'fermi: ', mu3, 'density: ', occ3
+         write(mystd,'(2(2X,a,f12.8))') 'EF: ', mu3, 'density: ', occ3
      else
          call s_print_error('dichotomy', 'fail to locate the fermi level')
      endif ! back if ( abs(occ3 - desired) < mc ) block
