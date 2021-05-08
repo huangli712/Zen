@@ -1292,8 +1292,10 @@
      implicit none
 
 ! external arguments
-! eigenvalues for  
+! eigenvalues for H(k) + \Sigma(i\omega_n)
      complex(dp), intent(out) :: eigs(qbnd,nmesh,nkpt,nspin)
+
+! eigenvalues for H(k) + \Sigma(\infty)
      complex(dp), intent(out) :: einf(qbnd,nkpt,nspin)
 
 ! local variables
