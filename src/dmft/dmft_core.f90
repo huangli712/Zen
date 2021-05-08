@@ -145,6 +145,19 @@
          write(mystd,*)
      endif ! back if ( myid == master ) block
 
+! call the computational subroutine to compute the local impurity levels
+     if ( myid == master ) then
+         write(mystd,'(2X,a)') cname // ' >>> Task : Level'
+     endif ! back if ( myid == master ) block
+     !
+     do t=1,nsite
+         call cal_eimps(t)
+     enddo ! over t={1,nsite} loop
+     !
+     if ( myid == master ) then
+         write(mystd,*)
+     endif ! back if ( myid == master ) block
+
 ! call the computational subroutine to compute the local green's function
      if ( myid == master ) then
          write(mystd,'(2X,a)') cname // ' >>> Task : Green'
@@ -277,6 +290,7 @@
 ! index for impurity sites
      integer, intent(in) :: t
 
+     STOP
      return
   end subroutine cal_eimps
 
