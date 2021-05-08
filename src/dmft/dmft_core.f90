@@ -1341,6 +1341,7 @@
 
 ! well, here the number of impurity sites is restricted to be one 
 ! later we will remove this bug
+     call s_assert2(nsite == 1, 'nsite should be 1')
      t = 1
      cdim = ndim(t)
 
@@ -1399,6 +1400,7 @@
              !
              einf(1:cbnd,k,s) = Eo
 
+! deallocate memory
              if ( allocated(So) ) deallocate(So)
              if ( allocated(Ho) ) deallocate(Ho)
              if ( allocated(Eo) ) deallocate(Eo)
