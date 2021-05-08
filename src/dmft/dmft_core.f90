@@ -1299,14 +1299,25 @@
      complex(dp), intent(out) :: einf(qbnd,nkpt,nspin)
 
 ! local variables
-     integer :: s
+! loop index for k-points
      integer :: k
 
+! loop index for spins
+     integer :: s
+
+! loop index for impurity sites
      integer :: t
-     integer :: bs, be
-     integer :: cdim
+
+! number of dft bands for given k-point and spin
      integer :: cbnd
 
+! number of correlated orbitals for given impurity site
+     integer :: cdim
+
+! band window: start index and end index for bands
+     integer :: bs, be
+
+! status flag
      integer :: istat
 
      complex(dp), allocatable :: Sk(:,:,:)
