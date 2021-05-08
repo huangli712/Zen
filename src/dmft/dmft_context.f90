@@ -808,6 +808,17 @@
   subroutine cat_alloc_eimps()
      implicit none
 
+! allocate memory
+     allocate(eimps(qdim,qdim,nspin,nsite),       stat = istat)
+
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_eimps','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
+     eimps = czero
+
      return
   end subroutine cat_alloc_eimps
 
