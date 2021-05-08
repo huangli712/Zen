@@ -1158,10 +1158,17 @@
      implicit none
 
 ! external arguments
-     complex(dp), intent(in) :: eigs(qbnd,nmesh,nkpt,nspin)
-     complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
+! assumed fermi level
      real(dp), intent(in)  :: fermi
+
+! occupation number
      real(dp), intent(out) :: val
+
+! eigenvalues for H(k) + \Sigma(i\omega_n)
+     complex(dp), intent(in) :: eigs(qbnd,nmesh,nkpt,nspin)
+
+! eigenvalues for H(k) + \Sigma(\infty)
+     complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
 
 ! local variables
      integer :: b
