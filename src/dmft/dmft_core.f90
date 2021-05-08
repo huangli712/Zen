@@ -1016,8 +1016,10 @@
      !
      if ( myid == master ) then
          write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
-         write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu1
-         write(mystd,'(2X,a,f12.8)') 'density: ', occ1
+         write(mystd,'(2X,a,f12.8)',advance = 'no') 'EF: ', mu1
+         write(mystd,'(2X,a,f12.8)',advance = 'no') 'density: ', occ1
+         write(mystd,'(2X,a,f12.8)',advance = 'no') 'desired: ', desired
+         write(mystd,'(2X,a,f12.8)') 'diff: ', abs(occ1 - desired)
      endif ! back if ( myid == master ) block
      !
      do while ( loop <= max_loops .and. ( occ2 - desired ) * sign > 0 .and. abs( occ2 - desired ) > mc )
@@ -1189,16 +1191,20 @@
 ! number of dft bands for given k-point and spin
      integer  :: cbnd
 
-     real(dp) :: focc(qbnd,nmesh,nspin)
-     real(dp) :: zocc(qbnd,nspin)
+! status flag
+     integer  :: istat
 
      complex(dp) :: caux
+
+! density matrix
+     complex(dp) :: zocc(qbnd,nspin)
+
+! 
+     complex(dp) :: focc(qbnd,nmesh,nspin)
 
 ! external functions
 ! used to calculate fermi-dirac function
      real(dp), external :: fermi_dirac
-
-     !!fermi = 0.318 !! DEBUG
 
      focc = zero
      do s=1,nspin
