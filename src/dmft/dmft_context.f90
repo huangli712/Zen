@@ -383,7 +383,7 @@
 !!
 !! impurity levels
 !!
-     complex(dp), public, save, allocatable :: eimps(:,:,:)
+     complex(dp), public, save, allocatable :: eimps(:,:,:,:)
 
   end module dmft_eimps
 
@@ -799,6 +799,17 @@
 
      return
   end subroutine cat_alloc_fmesh
+
+!!
+!! @sub cat_alloc_eimps
+!!
+!! allocate memory for eimps-related variables
+!!
+  subroutine cat_alloc_eimps()
+     implicit none
+
+     return
+  end subroutine cat_alloc_eimps
 
 !!
 !! @sub cat_alloc_sigma
