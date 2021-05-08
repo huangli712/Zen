@@ -1677,7 +1677,7 @@
      allocate(Cp(cdim,cbnd), stat = istat)
      allocate(Pc(cbnd,cdim), stat = istat)
      if ( istat /= 0 ) then
-         call s_print_error('map_chi_psi','can not allocate enough memory')
+         call s_print_error('one_chi_psi','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
 ! copy data
@@ -1685,9 +1685,7 @@
      Pc = psichi(1:cbnd,1:cdim,k,s,i_grp(t))
 
 ! upfolding or embedding
-     do f=1,nfrq
-         Mp(:,:,f) = matmul( matmul( Pc, Mc(:,:,f) ), Cp )
-     enddo ! over f={1,nfrq} loop
+     Mp = matmul( matmul( Pc, Mc ), Cp )
 
 ! deallocate memory
      if ( allocated(Cp) ) deallocate(Cp)
