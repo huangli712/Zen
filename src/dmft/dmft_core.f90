@@ -1027,7 +1027,9 @@
          if ( myid == master ) then
              write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
              write(mystd,'(2X,a,f12.8)',advance = 'no') 'EF: ', mu2
-             write(mystd,'(2X,a,f12.8)') 'density: ', occ2
+             write(mystd,'(2X,a,f12.8)',advance = 'no') 'density: ', occ2
+             write(mystd,'(2X,a,f12.8)',advance = 'no') 'desired: ', desired
+             write(mystd,'(2X,a,f12.8)') 'diff: ', abs(occ2 - desired)
          endif ! back if ( myid == master ) block
      enddo ! over do while loop
 
@@ -1063,6 +1065,7 @@
              write(mystd,'(2X,a,f12.8)',advance = 'no') 'EF: ', mu3
              write(mystd,'(2X,a,f12.8)',advance = 'no') 'density: ', occ3
              write(mystd,'(2X,a,f12.8)',advance = 'no') 'desired: ', desired
+             write(mystd,'(2X,a,f12.8)') 'diff: ', abs(occ3 - desired)
          endif ! back if ( myid == master ) block
      enddo ! over do while loop
      !
