@@ -369,12 +369,14 @@
 ! renormalize local green's function
      grn_l(:,:,:,:,t) = grn_l(:,:,:,:,t) / float(nkpt)
 
-     do s=1,cdim
-         print *, s, grn_l(s,s,1,1,1)
-     enddo
-
 ! deallocate memory
      if ( allocated(Gl) ) deallocate(Gl)
+
+!! DEBUG CODE
+!<     do s=1,cdim
+!<         print *, s, grn_l(s,s,1,1,1)
+!<     enddo ! over s={1,cdim} loop
+!! DEBUG CODE
 
      return
   end subroutine cal_grn_l
