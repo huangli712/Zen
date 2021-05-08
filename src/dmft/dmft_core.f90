@@ -1194,19 +1194,31 @@
 ! status flag
      integer  :: istat
 
+! complex(dp) dummy variable
      complex(dp) :: caux
 
 ! density matrix
-     complex(dp) :: zocc(qbnd,nspin)
+     complex(dp), allocatable :: zocc(:,:)
 
-! 
-     complex(dp) :: focc(qbnd,nmesh,nspin)
+! local green's function
+     complex(dp), allocatable :: gloc(:,:,:)
 
 ! external functions
 ! used to calculate fermi-dirac function
      real(dp), external :: fermi_dirac
 
-     focc = zero
+! allocate memory
+     allocate(zocc(qbnd,nspin),       stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_occupy','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(gloc(qbnd,nmesh,nspin), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_occupy','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+     gloc = zero
      do s=1,nspin
          do k=1,nkpt
              bs = kwin(k,s,1,1)
@@ -1216,20 +1228,18 @@
              do m=1,nmesh
                  caux = czi * fmesh(m) + fermi
                  do b=1,cbnd
-                     focc(b,m,s) = focc(b,m,s) + one / ( caux - eigs(b,m,k,s) )
-                     focc(b,m,s) = focc(b,m,s) - one / ( caux - einf(b,k,s) )
-                 enddo
-             enddo
-         enddo
-     enddo
+                     gloc(b,m,s) = gloc(b,m,s) + one / ( caux - eigs(b,m,k,s) )
+                     gloc(b,m,s) = gloc(b,m,s) - one / ( caux - einf(b,k,s) )
+                 enddo ! over b={1,cbnd} loop
+             enddo ! over m={1,nmesh} loop
+         enddo ! over k={1,nkpt} loop
+     enddo ! over s={1,nspin} loop
 
      do s=1,nspin
          do b=1,qbnd
-             zocc(b,s) = sum( focc(b,:,s) ) / real(nkpt) * ( two / beta )
+             zocc(b,s) = sum( gloc(b,:,s) ) / real(nkpt) * ( two / beta )
          enddo
      enddo
-
-     !!print *, "zocc:", zocc
 
      do s=1,nspin
          do k=1,nkpt
@@ -1243,9 +1253,11 @@
          enddo
      enddo
 
-     !!print *, "zocc:", zocc
-     !!print *, "sum:", sum(zocc) * 2
      val = real( sum(zocc) ) * 2
+
+! deallocate memory
+     if ( allocated(zocc) ) deallocate(zocc)
+     if ( allocated(gloc) ) deallocate(gloc)
 
      return
   end subroutine cal_occupy
