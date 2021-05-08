@@ -1218,13 +1218,14 @@
          call s_print_error('cal_occupy','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
+! calculate local green's function
+! here, the asymptotic part is substracted
      gloc = zero
      do s=1,nspin
          do k=1,nkpt
              bs = kwin(k,s,1,1)
              be = kwin(k,s,2,1)
              cbnd = be - bs + 1
-             
              do m=1,nmesh
                  caux = czi * fmesh(m) + fermi
                  do b=1,cbnd
@@ -1235,18 +1236,19 @@
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
 
+! calculate summation of the local green's function
      do s=1,nspin
          do b=1,qbnd
              zocc(b,s) = sum( gloc(b,:,s) ) / real(nkpt) * ( two / beta )
          enddo
      enddo
 
+! consider the contribution from asymptotic part 
      do s=1,nspin
          do k=1,nkpt
              bs = kwin(k,s,1,1)
              be = kwin(k,s,2,1)
              cbnd = be - bs + 1
-
              do b=1,cbnd
                  zocc(b,s) = zocc(b,s) + fermi_dirac( einf(b,k,s) - fermi ) / real(nkpt)
              enddo
