@@ -1274,11 +1274,15 @@
 !!
 !! @sub cal_eigsys
 !!
+!! try to diagonalize H(k) + \Sigma(i\omega_n) and H(k) + \Sigma(\infty)
+!! to obtain the corresponding eigenvalues 
+!!
   subroutine cal_eigsys(eigs, einf)
      use constants, only : dp, mystd
      use constants, only : czero
 
      use control, only : nkpt, nspin
+     use control, only : nsite
      use control, only : nmesh
 
      use context, only : ndim
@@ -1288,6 +1292,7 @@
      implicit none
 
 ! external arguments
+! eigenvalues for  
      complex(dp), intent(out) :: eigs(qbnd,nmesh,nkpt,nspin)
      complex(dp), intent(out) :: einf(qbnd,nkpt,nspin)
 
