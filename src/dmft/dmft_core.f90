@@ -265,6 +265,9 @@
      return
   end subroutine cal_fermi
 
+  subroutine cal_eimps()
+  end subroutine cal_eimps
+
 !!
 !! @sub cal_grn_l
 !!
