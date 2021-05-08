@@ -265,7 +265,19 @@
      return
   end subroutine cal_fermi
 
-  subroutine cal_eimps()
+!!
+!! @sub cal_eimps
+!!
+  subroutine cal_eimps(t)
+     use constants, only : dp
+
+     implicit none
+
+! external arguments
+! index for impurity sites
+     integer, intent(in) :: t
+
+     return
   end subroutine cal_eimps
 
 !!
