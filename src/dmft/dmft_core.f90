@@ -1085,6 +1085,9 @@
 !!
 !! @sub cal_nelect
 !!
+!! try to calculate the number of valence electrons by dft occupations.
+!! actually, what we obtain is the occupation numbers in the selected
+!! band window
 !!
   subroutine cal_nelect(nelect)
      use constants, only : dp
@@ -1099,15 +1102,22 @@
      implicit none
 
 ! external arguments
+! number of relevant electrons
      real(dp), intent(out) :: nelect
 
 ! local variables
-     integer :: s
+! index for k-points
      integer :: k
+
+! index for spin
+     integer :: s
+
+! band window: start index and end index for bands
      integer :: bs, be
 
+! basically, now we only support single band window. so the last index
+! for kwin is always 1
      nelect = zero
-
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
              bs = kwin(k,s,1,1)
@@ -1116,10 +1126,13 @@
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
+! normalize `nelect`
      nelect = nelect / float(nkpt)
+
+! consider the spins
      if ( nspin == 1 ) then
          nelect = nelect * two
-     endif
+     endif ! back if ( nspin == 1 ) block
 
      return
   end subroutine cal_nelect
