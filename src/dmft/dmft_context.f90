@@ -364,6 +364,15 @@
 
   end module dmft_fmesh
 
+!!========================================================================
+!!>>> module dmft_eimps                                                <<<
+!!========================================================================
+
+!!
+!! @mod dmft_eimps
+!!
+!! contain the impurity levels
+!!
   module dmft_eimps
      use constants, only : dp
 
