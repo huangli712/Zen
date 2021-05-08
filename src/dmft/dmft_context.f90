@@ -1030,7 +1030,17 @@
      return
   end subroutine cat_free_fmesh
 
+!!
+!! @sub cat_free_eimps
+!!
+!! deallocate memory for eimps-related variables
+!!
   subroutine cat_free_eimps()
+     implicit none
+
+     if ( allocated(eimps) ) deallocate(eimps)
+
+     return
   end subroutine cat_free_eimps
 
 !!
