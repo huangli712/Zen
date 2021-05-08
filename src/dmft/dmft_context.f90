@@ -809,7 +809,7 @@
      implicit none
 
 ! allocate memory
-     allocate(eimps(qdim,qdim,nspin,nsite),       stat = istat)
+     allocate(eimps(qdim,qdim,nspin,nsite), stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -1029,6 +1029,9 @@
 
      return
   end subroutine cat_free_fmesh
+
+  subroutine cat_free_eimps()
+  end subroutine cat_free_eimps
 
 !!
 !! @sub cat_free_sigma
