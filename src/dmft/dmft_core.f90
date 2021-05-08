@@ -1250,7 +1250,8 @@
              be = kwin(k,s,2,1)
              cbnd = be - bs + 1
              do b=1,cbnd
-                 zocc(b,s) = zocc(b,s) + fermi_dirac( einf(b,k,s) - fermi ) / real(nkpt)
+                 caux = einf(b,k,s) - fermi
+                 zocc(b,s) = zocc(b,s) + fermi_dirac(real(caux)) / real(nkpt)
              enddo ! over b={1,cbnd} loop
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
