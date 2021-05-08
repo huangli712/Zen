@@ -1392,7 +1392,8 @@
              eigs(1:cbnd,:,k,s) = Ek
 
 ! construct H(k) + \Sigma(\infty) and diagonalize it
-             call cal_sk_so(cbnd, Sk, So)
+!<             call cal_sk_so(cbnd, Sk, So)
+             call cal_sl_so(cdim, cbnd, k, s, t, So)
              !
              call cal_so_ho(cbnd, bs, be, k, s, So, Ho)
              !
