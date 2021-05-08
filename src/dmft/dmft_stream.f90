@@ -19,7 +19,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/01/2021 by li huang (last modified)
+!!!           05/08/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -1450,7 +1450,7 @@
      call cat_alloc_projs()
 
      call cat_alloc_fmesh()
-
+     call cat_alloc_eimps()
      call cat_alloc_sigma()
      call cat_alloc_green()
      call cat_alloc_weiss()
@@ -1480,7 +1480,7 @@
      call cat_free_projs()
 
      call cat_free_fmesh()
-
+     call cat_free_eimps()
      call cat_free_sigma()
      call cat_free_green()
      call cat_free_weiss()
