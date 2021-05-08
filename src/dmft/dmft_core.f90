@@ -1416,13 +1416,13 @@
   end subroutine cal_eigsys
 
 !!========================================================================
-!!>>> service subroutines: fermi-dirac function                        <<<
+!!>>> service subroutines: set 5, fermi-dirac function                 <<<
 !!========================================================================
 
 !!
 !! @fun fermi_dirac
 !!
-!! to calculate the fermi-dirac function
+!! try to calculate the fermi-dirac function
 !!
   function fermi_dirac(omega) result(value)
      use constants, only : dp
@@ -1452,7 +1452,7 @@
   end function fermi_dirac
 
 !!========================================================================
-!!>>> service subroutines: upfolding and downfolding                   <<<
+!!>>> service subroutines: set 6, upfolding and downfolding            <<<
 !!========================================================================
 
 !!
