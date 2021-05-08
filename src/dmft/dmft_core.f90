@@ -155,6 +155,19 @@
          write(mystd,*)
      endif ! back if ( myid == master ) block
 
+! call the computational subroutine to compute the local hybridization function
+     if ( myid == master ) then
+         write(mystd,'(2X,a)') cname // ' >>> Task : Hybri'
+     endif ! back if ( myid == master ) block
+     !
+     do t=1,nsite
+         call cal_hyb_l(t)
+     enddo ! over t={1,nsite} loop
+     !
+     if ( myid == master ) then
+         write(mystd,*)
+     endif ! back if ( myid == master ) block
+
 ! write the calculated results, only the master node can do it
      if ( myid == master ) then
          write(mystd,'(2X,a)') cname // ' >>> Task : Write'
@@ -397,8 +410,14 @@
 !!
 !! try to calculate local hybridization function for given impurity site
 !!
-  subroutine cal_hyb_l()
+  subroutine cal_hyb_l(t)
+     use constants, only : dp
+
      implicit none
+
+! external arguments
+! index for impurity sites
+     integer, intent(in) :: t
 
      return
   end subroutine cal_hyb_l
