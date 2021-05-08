@@ -1634,7 +1634,7 @@
 !! service subroutine. map a matrix from local basis to Kohn-Sham
 !! basis. you can call this procedure `embedding` or `upfold`
 !!
-  subroutine one_chi_psi(cdim, cbnd, nfrq, k, s, t, Mc, Mp)
+  subroutine one_chi_psi(cdim, cbnd, k, s, t, Mc, Mp)
      use constants, only : dp
 
      use context, only : i_grp
@@ -1650,9 +1650,6 @@
 ! number of dft bands for given k-point and spin
      integer, intent(in) :: cbnd
 
-! number of frequency points
-     integer, intent(in) :: nfrq
-
 ! index for k-points
      integer, intent(in) :: k
 
@@ -1662,16 +1659,13 @@
 ! index for impurity sites
      integer, intent(in) :: t
 
-! input array defined at local orbital (\chi) basis
-     complex(dp), intent(in)  :: Mc(cdim,cdim,nfrq)
+! input matrix defined at local orbital (\chi) basis
+     complex(dp), intent(in)  :: Mc(cdim,cdim)
 
-! output array defined at Kohn-Sham (\psi) basis
-     complex(dp), intent(out) :: Mp(cbnd,cbnd,nfrq)
+! output matrix defined at Kohn-Sham (\psi) basis
+     complex(dp), intent(out) :: Mp(cbnd,cbnd)
 
 ! local variables
-! loop index for frequency mesh
-     integer :: f
-
 ! status flag
      integer :: istat
 
