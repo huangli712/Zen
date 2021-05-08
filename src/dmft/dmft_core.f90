@@ -1240,8 +1240,8 @@
      do s=1,nspin
          do b=1,qbnd
              zocc(b,s) = sum( gloc(b,:,s) ) / real(nkpt) * ( two / beta )
-         enddo
-     enddo
+         enddo ! over b={1,cbnd} loop
+     enddo ! over s={1,nspin} loop
 
 ! consider the contribution from asymptotic part 
      do s=1,nspin
@@ -1251,9 +1251,9 @@
              cbnd = be - bs + 1
              do b=1,cbnd
                  zocc(b,s) = zocc(b,s) + fermi_dirac( einf(b,k,s) - fermi ) / real(nkpt)
-             enddo
-         enddo
-     enddo
+             enddo ! over b={1,cbnd} loop
+         enddo ! over k={1,nkpt} loop
+     enddo ! over s={1,nspin} loop
 
      val = real( sum(zocc) ) * 2
 
