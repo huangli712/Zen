@@ -1171,12 +1171,23 @@
      complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
 
 ! local variables
-     integer :: b
-     integer :: s
-     integer :: m
-     integer :: k
-     integer :: bs, be
-     integer :: cbnd
+! loop index for bands
+     integer  :: b
+
+! loop index for k-points
+     integer  :: k
+
+! loop index for spins
+     integer  :: s
+
+! loop index for frequency mesh
+     integer  :: m
+
+! band window: start index and end index for bands
+     integer  :: bs, be
+
+! number of dft bands for given k-point and spin
+     integer  :: cbnd
 
      real(dp) :: focc(qbnd,nmesh,nspin)
      real(dp) :: zocc(qbnd,nspin)
