@@ -1285,6 +1285,7 @@
      use control, only : nsite
      use control, only : nmesh
 
+     use context, only : i_wnd
      use context, only : ndim
      use context, only : qbnd
      use context, only : kwin
@@ -1320,17 +1321,30 @@
 ! status flag
      integer :: istat
 
+! self-energy functions, \Sigma(i\omega_n)
      complex(dp), allocatable :: Sk(:,:,:)
+
+! H(k) + \Sigma(i\omega_n) 
      complex(dp), allocatable :: Hk(:,:,:)
+
+! eigenvalues for H(k) + \Sigma(i\omega_n)
      complex(dp), allocatable :: Ek(:,:)
 
+! self-energy functions, \Sigma(\infty)
      complex(dp), allocatable :: So(:,:)
+
+! H(k) + \Sigma(\infty) 
      complex(dp), allocatable :: Ho(:,:)
+
+! eigenvalues for H(k) + \Sigma(\infty)
      complex(dp), allocatable :: Eo(:)
 
+! well, here the number of impurity sites is restricted to be one 
+! later we will remove this bug
      t = 1
      cdim = ndim(t)
 
+! initialization
      eigs = czero
      einf = czero
 
@@ -1339,32 +1353,50 @@
 
 ! evaluate band window for the current k-point and spin
 ! i_wnd(t) returns the corresponding band window for given impurity site t
-             bs = kwin(k,s,1,1)
-             be = kwin(k,s,2,1)
+             bs = kwin(k,s,1,i_wnd(t))
+             be = kwin(k,s,2,i_wnd(t))
 
 ! determine cbnd
              cbnd = be - bs + 1
 
+! provide some useful information
              write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
              write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
              write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
 
+! allocate memory
              allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
              allocate(Hk(cbnd,cbnd,nmesh), stat = istat)
              allocate(Ek(cbnd,nmesh),      stat = istat)
+             !
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_eigsys','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
+             !
+             allocate(So(cbnd,cbnd),       stat = istat)
+             allocate(Ho(cbnd,cbnd),       stat = istat)
+             allocate(Eo(cbnd),            stat = istat)
+             !
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_occupy','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
 
-             allocate(So(cbnd,cbnd), stat = istat)
-             allocate(Ho(cbnd,cbnd), stat = istat)
-             allocate(Eo(cbnd),      stat = istat)
-
+! construct H(k) + \Sigma(i\omega_n) and diagonalize it
              call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
+             !
              call cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
+             !
              call cal_hk_ek(cbnd, Hk, Ek)
+             !
              eigs(1:cbnd,:,k,s) = Ek
 
+! construct H(k) + \Sigma(\infty) and diagonalize it
              call cal_sk_so(cbnd, Sk, So)
+             !
              call cal_so_ho(cbnd, bs, be, k, s, So, Ho)
+             !
              call cal_ho_eo(cbnd, Ho, Eo)
+             !
              einf(1:cbnd,k,s) = Eo
 
              if ( allocated(So) ) deallocate(So)
