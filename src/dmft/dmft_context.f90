@@ -502,6 +502,7 @@
      use dmft_eigen
      use dmft_projs
      use dmft_fmesh
+     use dmft_eimps
      use dmft_sigma
      use dmft_green
      use dmft_weiss
@@ -529,6 +530,7 @@
      public :: cat_alloc_eigen
      public :: cat_alloc_projs
      public :: cat_alloc_fmesh
+     public :: cat_alloc_eimps
      public :: cat_alloc_sigma
      public :: cat_alloc_green
      public :: cat_alloc_weiss
@@ -543,6 +545,7 @@
      public :: cat_free_eigen
      public :: cat_free_projs
      public :: cat_free_fmesh
+     public :: cat_free_eimps
      public :: cat_free_sigma
      public :: cat_free_green
      public :: cat_free_weiss
