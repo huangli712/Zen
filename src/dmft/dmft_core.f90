@@ -1026,7 +1026,7 @@
          call cal_occupy(eigs, einf, mu2, occ2)
          if ( myid == master ) then
              write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
-             write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu2
+             write(mystd,'(2X,a,f12.8)',advance = 'no') 'EF: ', mu2
              write(mystd,'(2X,a,f12.8)') 'density: ', occ2
          endif ! back if ( myid == master ) block
      enddo ! over do while loop
@@ -1060,8 +1060,9 @@
          endif ! back if block
          if ( myid == master ) then
              write(mystd,'(6X,a,i2)',advance = 'no') 'iter: ', loop
-             write(mystd,'(2X,a,f12.8)',advance = 'no') 'fermi: ', mu3
-             write(mystd,'(2X,a,f12.8)') 'density: ', occ3
+             write(mystd,'(2X,a,f12.8)',advance = 'no') 'EF: ', mu3
+             write(mystd,'(2X,a,f12.8)',advance = 'no') 'density: ', occ3
+             write(mystd,'(2X,a,f12.8)',advance = 'no') 'desired: ', desired
          endif ! back if ( myid == master ) block
      enddo ! over do while loop
      !
@@ -1080,6 +1081,7 @@
 
 !!
 !! @sub cal_nelect
+!!
 !!
   subroutine cal_nelect(nelect)
      use constants, only : dp
