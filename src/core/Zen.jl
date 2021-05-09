@@ -48,7 +48,7 @@ module Zen
 # Remarks 2:
 #
 # Here we import `libm` explicitly to provide a callable interface for
-# the `erf` function. See util.jl/erf() for more details.
+# the `erf` function. See `util.jl/erf()` for more details.
 #
 # Remarks 3:
 #
