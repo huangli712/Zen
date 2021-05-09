@@ -287,6 +287,7 @@
      use control, only : nkpt, nspin
 
      use context, only : i_wnd
+     use context, only : ndim
      use context, only : kwin
      use context, only : enk
      use context, only : eimps
