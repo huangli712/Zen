@@ -579,18 +579,27 @@
 
 ! number of correlated orbitals for given impurity site
      integer :: cdim
+     integer :: istat
 
      complex(dp) :: caux
+     complex(dp), allocatable :: Tm(:,:)
 
      cdim = ndim(t)
+     allocate(Tm(cdim,cdim), stat = istat)
 
      hyb_l(:,:,:,:,t) = czero
 
      SPIN_LOOP: do s=1,nspin
          MESH_LOOP: do m=1,nmesh
              caux = czi * fmesh(m) + fermi
+             Tm = grn_l(1:cdim,1:cdim,m,s,t)
+             call s_inv_z(cdim, Tm)
+             Tm = caux - eimps(1:cdim,1:cdim,s,t) - sig_l(1:cdim,1:cdim,m,s,t) - Tm
+             hyb_l(1:cdim,1:cdim,m,s,t) = Tm
          enddo MESH_LOOP ! over m={1,nmesh} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
+
+     deallocate(Tm)
 
      return
   end subroutine cal_hyb_l
