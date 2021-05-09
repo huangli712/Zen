@@ -17,13 +17,13 @@
 
   subroutine dmft_dump_fermi()
      implicit none
-
+     STOP
      return
   end subroutine dmft_dump_fermi
 
   subroutine dmft_dump_eimps()
      implicit none
-
+     STOP
      return
   end subroutine dmft_dump_eimps
 
