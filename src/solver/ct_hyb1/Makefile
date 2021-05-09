@@ -3,7 +3,7 @@
 ## Introduction
 ## ============
 ##
-## Makefile for iqist/src/ct_hyb1 directory.
+## Makefile for zen/src/solver/ct_hyb1 directory.
 ##
 ## Usage
 ## =====
@@ -27,7 +27,7 @@
 
 .SUFFIXES: .f90
 
-include ../../build/make.sys
+include ../../../build/make.sys
 
 modc = ctqmc_control.o ctqmc_context.o
 dmft = ctqmc_dmft.o
