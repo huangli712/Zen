@@ -282,7 +282,7 @@
 !! @sub cal_eimps
 !!
   subroutine cal_eimps(t)
-     use constants, only : dp
+     use constants, only : dp, mystd
      use constants, only : czero
 
      use control, only : nkpt, nspin
