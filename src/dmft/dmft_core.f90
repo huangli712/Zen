@@ -398,6 +398,8 @@
 ! deallocate memory
      if ( allocated(Eimp) ) deallocate(Eimp)
 
+     print *, eimps(:,:,:,t)
+     STOP
      return
   end subroutine cal_eimps
 
