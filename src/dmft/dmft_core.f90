@@ -576,9 +576,16 @@
 ! loop index for frequency mesh
      integer :: m
 
+! number of correlated orbitals for given impurity site
+     integer :: cdim
+
+     cdim = ndim(t)
+
      hyb_l(:,:,:,:,t) = czero
 
      SPIN_LOOP: do s=1,nspin
+         MESH_LOOP: do m=1,nmesh
+         enddo MESH_LOOP ! over m={1,nmesh} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
      return
