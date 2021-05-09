@@ -284,6 +284,10 @@
   subroutine cal_eimps(t)
      use constants, only : dp
 
+     use context, only : i_wnd
+     use context, only : kwin
+     use context, only : eimps
+
      implicit none
 
 ! external arguments
