@@ -552,9 +552,12 @@
   subroutine cal_hyb_l(t)
      use constants, only : dp, mystd
 
+     use control, only : nspin
+     use control, only : nmesh
      use control, only : fermi
      use control, only : myid, master
 
+     use context, only : ndim
      use context, only : sigdc, sig_l
      use context, only : grn_l
      use context, only : hyb_l
@@ -565,7 +568,13 @@
 ! index for impurity sites
      integer, intent(in) :: t
 
-     STOP
+! local variables
+! loop index for spin
+     integer :: s
+
+! loop index for frequency mesh
+     integer :: m
+
      return
   end subroutine cal_hyb_l
 
