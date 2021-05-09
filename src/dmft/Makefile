@@ -21,7 +21,7 @@
 ## =======
 ##
 ## 02/23/2021 by li huang (created)
-## 04/12/2021 by li huang (last modified)
+## 05/09/2021 by li huang (last modified)
 ##
 ##
 
@@ -54,7 +54,6 @@ flink_mod:
 	cp $(FLINK)/stack.mod .
 	cp $(FLINK)/parser.mod .
 	cp $(FLINK)/linkedlist.mod .
-	cp $(FLINK)/version.mod .
 
 exe: flink $(objects)
 	$(LINKER) $(objects) -o dmft $(LFLAGS) $(LIBS)
