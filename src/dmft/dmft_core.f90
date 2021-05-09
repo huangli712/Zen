@@ -283,8 +283,10 @@
 !!
   subroutine cal_eimps(t)
      use constants, only : dp
+     use constants, only : czero
 
      use control, only : nkpt, nspin
+     use control, only : myid, master
 
      use context, only : i_wnd
      use context, only : ndim
@@ -334,6 +336,15 @@
      if ( istat /= 0 ) then
          call s_print_error('cal_eimps','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
+
+! reset eimps
+     eimps(:,:,:,t) = czero
+
+! print some useful information
+     if ( myid == master ) then
+         write(mystd,'(4X,a,i4)') 'calculate grn_l for site:', t
+         write(mystd,'(4X,a)')  'add contributions from ...'
+     endif ! back if ( myid == master ) block
 
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
