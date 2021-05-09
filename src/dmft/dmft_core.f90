@@ -191,6 +191,12 @@
          write(mystd,'(4X,a)') 'save grn_l...'
          call dmft_dump_grn_l(grn_l)
          !
+         write(mystd,'(4X,a)') 'save wss_l...'
+         call dmft_dump_wss_l(wss_l)
+         !
+         write(mystd,'(4X,a)') 'save hyb_l...'
+         call dmft_dump_hyb_l(hyb_l)
+         !
          write(mystd,*)
      endif ! back if ( myid == master ) block
 
