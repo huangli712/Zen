@@ -289,6 +289,7 @@
      use context, only : i_wnd
      use context, only : ndim
      use context, only : kwin
+     use context, only : weight
      use context, only : enk
      use context, only : eimps
 
@@ -355,7 +356,11 @@
 ! convert `Em` to diagonal matrix `Hm`
              call s_diag_z(cbnd, Em, Hm)
 
+! project hamiltonian to local basis
              call one_psi_chi(cbnd, cdim, k, s, t, Hm, Eimp)
+
+! save the final results
+             eimps(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) + Eimp * weight(k)
 
 ! deallocate memory
              if ( allocated(Em) ) deallocate(Em)
@@ -363,6 +368,9 @@
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
+
+! renormalize impurity levels
+     eimps(:,:,:,t) = eimps(:,:,:,t) / float(nkpt)
 
 ! deallocate memory
      if ( allocated(Eimp) ) deallocate(Eimp)
