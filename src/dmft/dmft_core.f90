@@ -281,6 +281,8 @@
 !!
 !! @sub cal_eimps
 !!
+!! try to calculate local energy levels for given impurity site
+!!
   subroutine cal_eimps(t)
      use constants, only : dp, mystd
      use constants, only : czero
