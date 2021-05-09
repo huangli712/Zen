@@ -588,11 +588,18 @@
      complex(dp), allocatable :: Sm(:,:)
 
      cdim = ndim(t)
+
+! allocate memory
      allocate(Tm(cdim,cdim), stat = istat)
      allocate(Em(cdim,cdim), stat = istat)
      allocate(Sm(cdim,cdim), stat = istat)
 
      hyb_l(:,:,:,:,t) = czero
+
+! print some useful information
+     if ( myid == master ) then
+         write(mystd,'(4X,a,i4)') 'calculate hyb_l for site:', t
+     endif ! back if ( myid == master ) block
 
      SPIN_LOOP: do s=1,nspin
          MESH_LOOP: do m=1,nmesh
@@ -609,6 +616,7 @@
          enddo MESH_LOOP ! over m={1,nmesh} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
+! deallocate memory
      deallocate(Tm)
      deallocate(Em)
      deallocate(Sm)
