@@ -1,17 +1,31 @@
 !!!-----------------------------------------------------------------------
 !!! project : jacaranda
-!!! program : dmft_dump_grn_l
+!!! program : dmft_dump_fermi
+!!!           dmft_dump_eimps
+!!!           dmft_dump_grn_l
 !!!           dmft_dump_wss_l
 !!!           dmft_dump_hyb_l
 !!! source  : dmft_dump.f90
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/01/2021 by li huang (last modified)
+!!!           05/09/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
 !!!-----------------------------------------------------------------------
+
+  subroutine dmft_dump_fermi()
+     implicit none
+
+     return
+  end subroutine dmft_dump_fermi
+
+  subroutine dmft_dump_eimps()
+     implicit none
+
+     return
+  end subroutine dmft_dump_eimps
 
 !!
 !! @sub dmft_dump_grn_l
