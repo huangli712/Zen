@@ -284,6 +284,8 @@
   subroutine cal_eimps(t)
      use constants, only : dp
 
+     use control, only : nkpt, nspin
+
      use context, only : i_wnd
      use context, only : kwin
      use context, only : eimps
@@ -310,6 +312,13 @@
 ! band window: start index and end index for bands
      integer :: bs, be
 
+! status flag
+     integer :: istat
+
+! dummy arrays, used to build effective hamiltonian
+     complex(dp), allocatable :: Em(:)
+     complex(dp), allocatable :: Hm(:,:)
+
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
 
@@ -320,6 +329,12 @@
 
 ! determine cbnd
              cbnd = be - bs + 1
+
+! evaluate Em, which is just some dft eigenvalues 
+             Em = enk(bs:be,k,s)
+
+! convert `Em` to diagonal matrix `Hm`
+             call s_diag_z(cbnd, Em, Hm)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
