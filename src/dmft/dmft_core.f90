@@ -344,7 +344,7 @@
 
 ! print some useful information
      if ( myid == master ) then
-         write(mystd,'(4X,a,i4)') 'calculate grn_l for site:', t
+         write(mystd,'(4X,a,i4)') 'calculate eimps for site:', t
          write(mystd,'(4X,a)')  'add contributions from ...'
      endif ! back if ( myid == master ) block
 
@@ -398,8 +398,6 @@
 ! deallocate memory
      if ( allocated(Eimp) ) deallocate(Eimp)
 
-     print *, eimps(:,:,:,t)
-     STOP
      return
   end subroutine cal_eimps
 
