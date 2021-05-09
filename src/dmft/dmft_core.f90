@@ -320,6 +320,19 @@
      complex(dp), allocatable :: Em(:)
      complex(dp), allocatable :: Hm(:,:)
 
+     complex(dp), allocatable :: Eimp(:,:)
+
+! init cbnd and cdim
+! cbnd will be k-dependent. it will be updated later
+     cbnd = 0
+     cdim = ndim(t)
+
+! allocate memory
+     allocate(Eimp(cdim,cdim), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eimps','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
 
@@ -341,12 +354,17 @@
 ! convert `Em` to diagonal matrix `Hm`
              call s_diag_z(cbnd, Em, Hm)
 
+             call one_psi_chi(cbnd, cdim, k, s, t, Hm, Eimp)
+
 ! deallocate memory
              if ( allocated(Em) ) deallocate(Em)
              if ( allocated(Hm) ) deallocate(Hm)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
+
+! deallocate memory
+     if ( allocated(Eimp) ) deallocate(Eimp)
 
      return
   end subroutine cal_eimps
