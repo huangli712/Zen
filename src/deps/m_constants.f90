@@ -1,5 +1,5 @@
 !!!-----------------------------------------------------------------------
-!!! project : flink @ sakura 
+!!! project : flink @ sakura
 !!! program : constants
 !!! source  : m_constants.f90
 !!! type    : module

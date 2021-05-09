@@ -632,7 +632,7 @@
      integer :: i
 
      do i=1,n
-         dx(i) = dx(i) + alpha * dy(i,i) 
+         dx(i) = dx(i) + alpha * dy(i,i)
      enddo ! over i={1,n} loop
 
      return
@@ -666,7 +666,7 @@
      integer :: i
 
      do i=1,n
-         zx(i) = zx(i) + alpha * zy(i,i) 
+         zx(i) = zx(i) + alpha * zy(i,i)
      enddo ! over i={1,n} loop
 
      return

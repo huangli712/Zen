@@ -1,5 +1,5 @@
 !!!-----------------------------------------------------------------------
-!!! project : flink @ sakura 
+!!! project : flink @ sakura
 !!! program : mmpi
 !!! source  : m_mpi.f90
 !!! type    : module

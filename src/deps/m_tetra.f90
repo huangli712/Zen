@@ -31,7 +31,7 @@
 !!     (4) Fermi-Dirac smearing algorithm,
 !!     (5) Marzari-Vanderbilt cold smearing algorithm.
 !!
-!! This module depends on s_util.f90/s_qsorter() subroutine. 
+!! This module depends on s_util.f90/s_qsorter() subroutine.
 !!
 !! Usage
 !! =====
