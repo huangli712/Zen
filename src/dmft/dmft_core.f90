@@ -125,6 +125,7 @@
      use control, only : myid, master
 
      use context, only : grn_l
+     use context, only : wss_l, hyb_l
 
      implicit none
 
