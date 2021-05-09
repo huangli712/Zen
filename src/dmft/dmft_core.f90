@@ -290,7 +290,22 @@
 ! index for impurity sites
      integer, intent(in) :: t
 
-     STOP
+! local variables
+! loop index for spin
+     integer :: s
+
+! loop index for k-points
+     integer :: k
+
+! number of dft bands for given k-point and spin
+     integer :: cbnd
+
+! number of correlated orbitals for given impurity site
+     integer :: cdim
+
+! band window: start index and end index for bands
+     integer :: bs, be
+
      return
   end subroutine cal_eimps
 
