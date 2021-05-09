@@ -551,7 +551,7 @@
 !!
   subroutine cal_hyb_l(t)
      use constants, only : dp, mystd
-     use constants, only : czero
+     use constants, only : czi, czero
 
      use control, only : nspin
      use control, only : nmesh
@@ -559,6 +559,7 @@
      use control, only : myid, master
 
      use context, only : ndim
+     use context, only : fmesh
      use context, only : sigdc, sig_l
      use context, only : grn_l
      use context, only : hyb_l
@@ -579,12 +580,15 @@
 ! number of correlated orbitals for given impurity site
      integer :: cdim
 
+     complex(dp) :: caux
+
      cdim = ndim(t)
 
      hyb_l(:,:,:,:,t) = czero
 
      SPIN_LOOP: do s=1,nspin
          MESH_LOOP: do m=1,nmesh
+             caux = czi * fmesh(m) + fermi
          enddo MESH_LOOP ! over m={1,nmesh} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
