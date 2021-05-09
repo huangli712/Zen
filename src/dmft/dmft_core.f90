@@ -551,6 +551,7 @@
 !!
   subroutine cal_hyb_l(t)
      use constants, only : dp, mystd
+     use constants, only : czero
 
      use control, only : nspin
      use control, only : nmesh
@@ -574,6 +575,11 @@
 
 ! loop index for frequency mesh
      integer :: m
+
+     hyb_l(:,:,:,:,t) = czero
+
+     SPIN_LOOP: do s=1,nspin
+     enddo SPIN_LOOP ! over s={1,nspin} loop
 
      return
   end subroutine cal_hyb_l
