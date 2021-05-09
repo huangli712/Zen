@@ -550,14 +550,21 @@
 !! try to calculate local hybridization function for given impurity site
 !!
   subroutine cal_hyb_l(t)
-     use constants, only : dp
+     use constants, only : dp, mystd
 
+     use control, only : fermi
+     use control, only : myid, master
+
+     use context, only : sigdc, sig_l
+     use context, only : grn_l
+ 
      implicit none
 
 ! external arguments
 ! index for impurity sites
      integer, intent(in) :: t
 
+     STOP
      return
   end subroutine cal_hyb_l
 
