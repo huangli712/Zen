@@ -306,6 +306,20 @@
 ! band window: start index and end index for bands
      integer :: bs, be
 
+     SPIN_LOOP: do s=1,nspin
+         KPNT_LOOP: do k=1,nkpt
+
+! evaluate band window for the current k-point and spin
+! i_wnd(t) returns the corresponding band window for given impurity site t
+             bs = kwin(k,s,1,i_wnd(t))
+             be = kwin(k,s,2,i_wnd(t))
+
+! determine cbnd
+             cbnd = be - bs + 1
+
+         enddo KPNT_LOOP ! over k={1,nkpt} loop
+     enddo SPIN_LOOP ! over s={1,nspin} loop
+
      return
   end subroutine cal_eimps
 
