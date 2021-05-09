@@ -346,9 +346,19 @@
 ! determine cbnd
              cbnd = be - bs + 1
 
+! provide some useful information
+             if ( myid == master ) then
+                 write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
+                 write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
+                 write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
+             endif ! back if ( myid == master ) block
+
 ! allocate memory
              allocate(Em(cbnd),      stat = istat)
              allocate(Hm(cbnd,cbnd), stat = istat)
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_eimps','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
 
 ! evaluate Em, which is just some dft eigenvalues 
              Em = enk(bs:be,k,s)
