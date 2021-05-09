@@ -288,6 +288,7 @@
 
      use context, only : i_wnd
      use context, only : kwin
+     use context, only : enk
      use context, only : eimps
 
      implicit none
@@ -330,11 +331,19 @@
 ! determine cbnd
              cbnd = be - bs + 1
 
+! allocate memory
+             allocate(Em(cbnd),      stat = istat)
+             allocate(Hm(cbnd,cbnd), stat = istat)
+
 ! evaluate Em, which is just some dft eigenvalues 
              Em = enk(bs:be,k,s)
 
 ! convert `Em` to diagonal matrix `Hm`
              call s_diag_z(cbnd, Em, Hm)
+
+! deallocate memory
+             if ( allocated(Em) ) deallocate(Em)
+             if ( allocated(Hm) ) deallocate(Hm)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
