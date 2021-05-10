@@ -1,13 +1,13 @@
 # Zen
 
-Zen is a modern DFT + DMFT computation framework. This package is currently under developement. **IT DOESN'T WORK NOW!**
-
-The Zen framework is composed of some components, including:
+Zen is a modern DFT + DMFT (namely, density functional theory plus dynamical mean-field theory) computation framework. It is composed of a few components, including:
 * ZenCore
 * ZenTools
 * Dyson
 * iQIST
 * Flink
+
+Now this package is currently under developement. **IT DOESN'T WORK NOW!**
 
 ## Version
 
