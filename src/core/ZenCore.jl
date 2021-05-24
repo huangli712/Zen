@@ -29,13 +29,14 @@ Zen supports the following quantum impurity solvers:
 
 ZenCore implements the core library of the Zen computation framework. It
 connects various components of Zen, and drive them to work together. It
-provides an easy-to-use user and flexible user interface.
+provides an easy-to-use user and flexible user interface, and numerous
+applications and tools.
 
 For more details about how to install and use the Zen framework and the
 ZenCore library, please visit the following website:
 * `http://doc.zen`
 """
-module Zen
+module ZenCore
 
 #
 # Using standard libraries
@@ -574,7 +575,7 @@ function __init__()
     prompt("ZEN", "Loading...")
 
     # Get an array of the names exported by the `Zen` module
-    nl = names(Zen)
+    nl = names(ZenCore)
 
     # Go through each name
     cf = 0 # Counter
