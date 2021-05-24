@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/21
+# Last modified: 2021/05/24
 #
 
 #
@@ -175,7 +175,7 @@ function cycle1()
     adaptor_run(it, lr)
 
     # C04: Prepare default self-energy functions
-    sigma_core(lr, "reset")
+    sigma_core(it, lr, "reset")
 
 #
 # Remarks 4:
@@ -201,19 +201,19 @@ function cycle1()
         it.full_cycle = it.full_cycle + 1
 
         # C05: Tackle with the double counting term
-        sigma_core(lr, "dcount")
+        sigma_core(it, lr, "dcount")
 
         # C06: Perform DMFT calculation with `task` = 1
         dmft_run(it, lr, 1)
 
         # C07: Split and distribute the data (hybridization functions)
-        sigma_core(lr, "split")
+        sigma_core(it, lr, "split")
 
         # C08: Solve the quantum impurity problems
         solver_run(it, lr)
 
         # C09: Gather and combine the data (impurity self-functions)
-        sigma_core(lr, "gather")
+        sigma_core(it, lr, "gather")
 
         # C10: Mixer for self-energy functions or hybridization functions
         mixer_core(lr)
@@ -593,7 +593,7 @@ function adaptor_run(it::IterInfo, lr::Logger)
 end
 
 """
-    sigma_core(lr::Logger, task::String = "reset")
+    sigma_core(it::IterInfo, lr::Logger, task::String = "reset")
 
 Simple driver for functions for processing the self-energy functions
 and hybridization functions.
@@ -603,7 +603,7 @@ won't change the current directory.
 
 See also: [`mixer_core`](@ref).
 """
-function sigma_core(lr::Logger, task::String = "reset")
+function sigma_core(it::IterInfo, lr::Logger, task::String = "reset")
     # Check the given task
     @assert task in ("reset", "dcount", "split", "gather")
 
@@ -620,7 +620,7 @@ function sigma_core(lr::Logger, task::String = "reset")
 
         # Calculate the double counting term and store it
         @case "dcount"
-            sigma_dcount()
+            sigma_dcount(it)
             break
 
         # Split the hybridization functions and store them

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/25
+# Last modified: 2021/05/24
 #
 
 """
@@ -116,14 +116,14 @@ function sigma_reset()
 end
 
 """
-    sigma_dcount()
+    sigma_dcount(it::IterInfo)
 
 Calculate double counting terms for local self-energy functions and
 write them to `sigma.dc`.
 
 See also: [`sigma_reset`](@ref).
 """
-function sigma_dcount()
+function sigma_dcount(it::IterInfo)
     # Print the log
     println("Sigma : Dcount")
 
@@ -225,7 +225,11 @@ function sigma_dcount()
                 # numbers with zero imaginary parts.
                 for a = 1:D[i]
                     for b = 1:D[i]
-                        @printf(fout, "%16.12f %16.12f\n", DCA[i][b, a, s], 0.0)
+                        if a == b
+                            @printf(fout, "%16.12f %16.12f\n", DCA[i][b, a, s], 0.0)
+                        else
+                            @printf(fout, "%16.12f %16.12f\n", 0.0, 0.0)
+                        end
                     end
                 end
                 println(fout)
