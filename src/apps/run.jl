@@ -1,19 +1,19 @@
 #!/usr/bin/env julia
 
 #
-# Project : Begonia
+# Project : Daisy
 # Source  : run.jl
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/02/28
+# Last modified: 2021/05/24
 #
 
 # Update LOAD_PATH
 push!(LOAD_PATH, ENV["ZEN_CORE"])
 
 # Use the ZEN Framework
-using Zen
+using ZenCore
 
 # R-1: Check the version of julia runtime environment
 require()
