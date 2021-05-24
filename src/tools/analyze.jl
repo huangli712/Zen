@@ -6,7 +6,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/03/04
+# Last modified: 2021/05/24
 #
 
 #
@@ -22,7 +22,7 @@
 push!(LOAD_PATH, ENV["ZEN_CORE"])
 
 # Use the ZEN Framework
-using Zen
+using ZenCore
 
 # Define orbital labels
 orb_labels = ["1:s",

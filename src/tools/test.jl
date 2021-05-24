@@ -6,14 +6,14 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/06
+# Last modified: 2021/05/24
 #
 
 # Update LOAD_PATH
 push!(LOAD_PATH, ENV["ZEN_CORE"])
 
 # Use the ZEN Framework
-using Zen
+using ZenCore
 
 # Put your codes here
 setup()
