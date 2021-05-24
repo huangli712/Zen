@@ -197,6 +197,12 @@ function sigma_dcount(it::IterInfo)
                 break
         end
 
+        # Special treatment for the first iteration
+        @show it
+        if it.dmft_cycle <= 1 && it.dmft1_iter <= 1
+            fill!(DC, 0.0)
+        end
+
         # Push DC into DCA to save it
         push!(DCA, DC)
     end
