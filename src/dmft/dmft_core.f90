@@ -909,6 +909,8 @@
 
 ! calculate lattice green's function
              call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
+             print *, Gk(:,:,3)
+             STOP
 
 ! downfold the lattice green's function to obtain local green's function,
 ! then we have to save the final results
@@ -1168,6 +1170,10 @@
          if ( allocated(Sm) ) deallocate(Sm)
 
      enddo SITE_LOOP ! over t={1,nsite} loop
+
+     do m=1,nmesh
+         write(100,'(i5, 5f16.8)') m, fmesh(m), grn_l(1,1,m,1,1), hyb_l(1,1,m,1,1)
+     enddo
 
      return
   end subroutine cal_hyb_l
@@ -1564,12 +1570,18 @@
      integer :: istat
 
 ! dummy array: for band dispersion (vector)
+     complex(dp), allocatable :: Fm(:)
      complex(dp), allocatable :: Em(:)
 
 ! dummy array: for effective hamiltonian (diagonal matrix)
      complex(dp), allocatable :: Hm(:,:)
 
 ! allocate memory
+     allocate(Fm(cbnd),      stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_sk_gk','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
      allocate(Em(cbnd),      stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_sk_gk','can not allocate enough memory')
@@ -1580,21 +1592,25 @@
          call s_print_error('cal_sk_gk','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! evaluate Em, which is k-dependent, but frequency-independent
+! evaluate Fm, which is k-dependent, but frequency-independent
 ! if you want to consider magnetic field, you can add your codes here
-     Em = fermi - enk(bs:be,k,s)
+     Fm = fermi - enk(bs:be,k,s)
 
      FREQ_LOOP: do m=1,nmesh
 
 ! consider imaginary axis or real axis
          if ( axis == 1 ) then
-             Em = czi * fmesh(m) + Em
+             Em = czi * fmesh(m) + Fm
          else
-             Em = fmesh(m) + Em
+             Em = fmesh(m) + Fm
          endif ! back if ( axis == 1 ) block
 
 ! convert Em (vector) to Hm (diagonal matrix)
          call s_diag_z(cbnd, Em, Hm)
+         if ( m == 3) then
+             print *, Hm
+             STOP
+         endif
 
 ! substract self-energy function from the hamiltonian
          Gk(:,:,m) = Hm - Sk(:,:,m)
@@ -1605,6 +1621,7 @@
      enddo FREQ_LOOP ! over m={1,nmesh} loop
 
 ! deallocate memory
+     if ( allocated(Fm) ) deallocate(Fm)
      if ( allocated(Em) ) deallocate(Em)
      if ( allocated(Hm) ) deallocate(Hm)
 
