@@ -21,7 +21,7 @@
 ## =======
 ##
 ## 02/23/2021 by li huang (created)
-## 05/09/2021 by li huang (last modified)
+## 05/10/2021 by li huang (last modified)
 ##
 ##
 
@@ -50,8 +50,6 @@ flink_lib:
 flink_mod:
 	cp $(FLINK)/constants.mod .
 	cp $(FLINK)/mmpi.mod .
-	cp $(FLINK)/spring.mod .
-	cp $(FLINK)/stack.mod .
 	cp $(FLINK)/parser.mod .
 	cp $(FLINK)/linkedlist.mod .
 

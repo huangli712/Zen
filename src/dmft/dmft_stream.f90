@@ -19,7 +19,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/08/2021 by li huang (last modified)
+!!!           05/20/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -33,7 +33,8 @@
 !! @sub dmft_setup_tasks
 !!
 !! setup control parameters for the dynamical mean-field theory engine.
-!! note that these parameters are extracted from the dmft.in file
+!! note that these parameters are extracted from the `dmft.in` file.
+!! this code can run even without `dmft.in` file
 !!
   subroutine dmft_setup_tasks()
      use constants, only : dp
@@ -126,7 +127,8 @@
 !!
 !! setup dimensional parameters and some real constants for the dynamical
 !! mean-field theory engine. note that these parameters are extracted
-!! from the params.ir file
+!! from the `params.ir` file. but this code can run even without this
+!! configuration file.
 !!
   subroutine dmft_setup_param()
      use constants, only : dp
@@ -185,7 +187,7 @@
      if ( myid == master ) then
          exists = .false.
 
-! inquire file status: params.in
+! inquire file status: params.ir
          inquire (file = 'params.ir', exist = exists)
 
 ! read in parameters, default setting should be overrided
@@ -276,7 +278,8 @@
 
 # endif  /* MPI */
 
-! reset fermi to zero, because it is calibrated by the adaptor
+! reset fermi to zero, because it was calibrated by the adaptor.
+! see ZenCore -> plo.jl -> plo_fermi() function for more details.
      fermi = zero
 
      return
@@ -286,8 +289,8 @@
 !! @sub dmft_setup_system
 !!
 !! setup correlated electron problem, Kohn-Sham dataset, and self-energy
-!! functions for the dynamical mean-field theory engine. this is an entry
-!! for the other individual subroutines
+!! functions for the dynamical mean-field theory engine. this subroutine
+!! is only a dispatcher for the other individual subroutines
 !!
   subroutine dmft_setup_system()
      use control, only : ltetra
@@ -302,11 +305,11 @@
 ! setup Kohn-Sham dataset
      call dmft_input_lattice()
      call dmft_input_kmesh()
-     if (ltetra .eqv. .true.) then
-         call dmft_input_tetra()
-     endif
      call dmft_input_eigen()
      call dmft_input_projs()
+     if ( ltetra .eqv. .true. ) then
+         call dmft_input_tetra()
+     endif ! back if ( ltetra .eqv. .true. ) block
 
 ! setup impurity self-energy functions and related double counting terms
      call dmft_input_sigdc()
@@ -324,7 +327,7 @@
 !!
 !! read in connections / mappings between quantum impurity problems and
 !! groups of projectors (see module dmft_map). the data can be used to
-!! embed or project the self-energy functions
+!! upfold or downfold the self-energy functions or green's functions.
 !!
   subroutine dmft_input_map()
      use constants, only : mytmp
@@ -342,6 +345,9 @@
      implicit none
 
 ! local variables
+! loop index
+     integer :: i
+
 ! dummy integer variables
      integer :: itmp
 
@@ -353,7 +359,7 @@
      character(len = 2) :: chr2
 
 ! read in mappings or connections between quantum impurity problems and
-! groups of projectors if available
+! groups of projectors. this code can not run without the file `maps.ir`
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
@@ -372,16 +378,17 @@
 ! skip header
          read(mytmp,*)
          read(mytmp,*)
+         read(mytmp,*)
 
 ! check nsite, ngrp, and nwnd
-         read(mytmp,*)
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nsite, "nsite is wrong")
+         call s_assert2(itmp == nsite, 'nsite is wrong')
+         !
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == ngrp, "ngrp is wrong")
+         call s_assert2(itmp == ngrp, 'ngrp is wrong')
+         !
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nwnd, "nwnd is wrong")
-         call s_assert2(ngrp == nwnd, "ngrp is not equal to nwnd")
+         call s_assert2(itmp == nwnd, 'nwnd is wrong')
 
 ! read data: i_grp
          read(mytmp,*)
@@ -426,6 +433,18 @@
 
 # endif  /* MPI */
 
+! additional check for the data
+! note: all of the impurity problems should share the same band window!
+     call s_assert2(nsite <= ngrp, 'nsite must be smaller or equal to ngrp')
+     !
+     call s_assert2(nwnd <= ngrp, 'nwnd must be smaller or equal to ngrp')
+     !
+     do i=1,nsite
+         if ( i_wnd(i) /= i_wnd(1) ) then
+             call s_print_error('dmft_input_map', 'please check i_wnd')
+         endif ! back if ( i_wnd(i) /= i_wnd(1) ) block
+     enddo ! over i={1,nsite} loop
+
      return
   end subroutine dmft_input_map
 
@@ -433,7 +452,8 @@
 !! @sub dmft_input_group
 !!
 !! read in groups of projectors (see module dmft_group). the data can
-!! be used to embed or project the self-energy functions
+!! be used to upfold or downfold the self-energy functions and green's
+!! functions.
 !!
   subroutine dmft_input_group()
      use constants, only : mytmp
@@ -463,7 +483,8 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in groups of projectors if available
+! read in groups of projectors. apparently, this code can not run without
+! the file `groups.ir`.
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
@@ -482,12 +503,12 @@
 ! skip header
          read(mytmp,*)
          read(mytmp,*)
+         read(mytmp,*)
 
 ! check ngrp
-         read(mytmp,*)
          read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == ngrp, 'ngrp is wrong')
          read(mytmp,*)
-         call s_assert2(itmp == ngrp, "ngrp is wrong")
 
 ! read data
          do i=1,ngrp
@@ -502,7 +523,7 @@
 
 ! evaluate and check qdim
          itmp = maxval(ndim)
-         call s_assert2(itmp == qdim, "ndim is wrong")
+         call s_assert2(itmp == qdim, 'ndim or qdim is wrong')
 
 ! close file handler
          close(mytmp)
@@ -534,8 +555,9 @@
 !!
 !! @sub dmft_input_window
 !!
-!! read in windows of projectors (see module dmft_window). the data are
-!! used to embed or project the self-energy functions
+!! read in band windows of projectors (see module dmft_window). the data
+!! are used to upfold or downfold the self-energy functions and green's
+!! functions.
 !!
   subroutine dmft_input_window()
      use constants, only : mytmp
@@ -568,7 +590,8 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in windows of projectors if available
+! read in band windows of projectors. apparently, this code can not run
+! without the file `windows.ir`.
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
@@ -587,12 +610,12 @@
 ! skip header
          read(mytmp,*)
          read(mytmp,*)
+         read(mytmp,*)
 
 ! check nwnd
-         read(mytmp,*)
          read(mytmp,*) chr1, chr2, itmp
+         call s_assert2(itmp == nwnd, 'nwnd is wrong')
          read(mytmp,*)
-         call s_assert2(itmp == nwnd, "nwnd is wrong")
 
 ! read data
          do i=1,nwnd
@@ -611,7 +634,7 @@
 
 ! evaluate and check qbnd
          itmp = maxval(nbnd)
-         call s_assert2(itmp == qbnd, "nbnd is wrong")
+         call s_assert2(itmp == qbnd, 'nbnd or qbnd is wrong')
 
 ! close file handler
          close(mytmp)
@@ -675,7 +698,8 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in crystallography information if available
+! read in crystallography information. this code can not run without
+! the file `lattice.ir`.
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
@@ -699,10 +723,13 @@
          read(mytmp,*) ! empty line
          read(mytmp,*) ! skip _case
          read(mytmp,*) ! skip scale
+         !
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nsort, "nsort is wrong")
+         call s_assert2(itmp == nsort, 'nsort is wrong')
+         !
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == natom, "natom is wrong")
+         call s_assert2(itmp == natom, 'natom is wrong')
+         !
          read(mytmp,*) ! empty line
 
 ! read sorts
@@ -788,7 +815,8 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in brillouin zone information if available
+! read in brillouin zone information. the code can not run without
+! the file `kmesh.ir`.
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
@@ -807,19 +835,25 @@
 ! skip header
          read(mytmp,*)
          read(mytmp,*)
+         read(mytmp,*) ! empty line
 
 ! check nkpt and ndir
-         read(mytmp,*) ! empty line
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nkpt, "nkpt is wrong")
+         call s_assert2(itmp == nkpt, 'nkpt is wrong')
+         !
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == 3, "ndir is wrong")
+         call s_assert2(itmp == 3, 'ndir is wrong')
+         !
          read(mytmp,*) ! empty line
 
 ! read k-points and the corresponding weights
          do i=1,nkpt
              read(mytmp,*) kmesh(i,:), weight(i)
          enddo ! over i={1,nkpt} loop
+
+! until now, `weight' has not been renormalized. their summations should
+! be equal to nkpt.
+         call s_assert2(sum(weight) == float(nkpt), 'weight is wrong')
 
 ! close file handler
          close(mytmp)
@@ -848,7 +882,8 @@
 !!
 !! @sub dmft_input_tetra
 !!
-!! read in data for tetrahedron integration (see module dmft_tetra)
+!! read in data for tetrahedron integration (see module dmft_tetra).
+!! note that this subroutine is only called when `ltetra` is true.
 !!
   subroutine dmft_input_tetra()
      use constants, only : dp, mytmp
@@ -899,13 +934,15 @@
 ! skip header
          read(mytmp,*)
          read(mytmp,*)
+         read(mytmp,*) ! empty line
 
 ! check ntet and volt
-         read(mytmp,*) ! empty line
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == ntet, "ntet is wrong")
+         call s_assert2(itmp == ntet, 'ntet is wrong')
+         !
          read(mytmp,*) chr1, chr2, rtmp
-         call s_assert2(rtmp == volt, "volt is wrong")
+         call s_assert2(rtmp == volt, 'volt is wrong')
+         !
          read(mytmp,*) ! empty line
 
 ! read tetrahedron data
@@ -970,7 +1007,8 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in Kohn-Sham band structure information if available
+! read in Kohn-Sham band structure information. this code can not run
+! without the file `eigen.ir`.
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
@@ -989,18 +1027,21 @@
 ! skip header
          read(mytmp,*)
          read(mytmp,*)
+         read(mytmp,*) ! empty line
 
 ! check nband, nkpt, and nspin
-         read(mytmp,*) ! empty line
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nband, "nband is wrong")
+         call s_assert2(itmp == nband, 'nband is wrong')
+         !
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nkpt, "nkpt is wrong")
+         call s_assert2(itmp == nkpt, 'nkpt is wrong')
+         !
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nspin, "nspin is wrong")
+         call s_assert2(itmp == nspin, 'nspin is wrong')
+         !
          read(mytmp,*) ! empty line
 
-! read band structure data
+! read eigenvalues and occupations data
          do s=1,nspin
              do k=1,nkpt
                  do b=1,nband
@@ -1075,7 +1116,8 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in local orbital projectors if available
+! read in local orbital projectors. this code can not run without the
+! file `projs.ir`.
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
@@ -1101,11 +1143,11 @@
 ! check group
              read(mytmp,*) ! empty line
              read(mytmp,*) chr1, chr2, itmp
-             call s_assert2(itmp == g, "group is wrong")
+             call s_assert2(itmp == g, 'group is wrong')
 
 ! check nproj
              read(mytmp,*) chr1, chr2, itmp
-             call s_assert2(itmp == ndim(g), "nproj is wrong")
+             call s_assert2(itmp == ndim(g), 'nproj is wrong')
 
 ! check nband
 ! here, `nband` is not the number of bands in the dft calculations. it is
@@ -1113,13 +1155,15 @@
 ! the local orbital projection. for different groups of projectors, the
 ! corresponding `nband` might be different.
              read(mytmp,*) chr1, chr2, itmp
-             call s_assert2(itmp == nbnd(g), "nband is wrong")
+             call s_assert2(itmp == nbnd(g), 'nband is wrong')
 
-! check nkpt and nspin
+! check nkpt
              read(mytmp,*) chr1, chr2, itmp
-             call s_assert2(itmp == nkpt, "nkpt is wrong")
+             call s_assert2(itmp == nkpt, 'nkpt is wrong')
+
+! check nspin
              read(mytmp,*) chr1, chr2, itmp
-             call s_assert2(itmp == nspin, "nspin is wrong")
+             call s_assert2(itmp == nspin, 'nspin is wrong')
              read(mytmp,*) ! empty line
 
 ! parse the data
@@ -1183,7 +1227,7 @@
      use control, only : myid, master
 
      use context, only : i_grp
-     use context, only : ndim
+     use context, only : qdim, ndim
      use context, only : sigdc
 
      implicit none
@@ -1202,13 +1246,14 @@
      logical  :: exists
 
 ! dummy real variables
-     real(dp) :: rtmp
+     real(dp) :: re, im
 
 ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in double counting terms if available
+! read in double counting terms. the code can not run without the
+! file `sigma.dc`.
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
@@ -1227,20 +1272,21 @@
 ! skip header
          read(mytmp,*)
          read(mytmp,*)
+         read(mytmp,*) ! empty line
 
 ! check nsite
-         read(mytmp,*) ! empty line
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nsite, "nsite is wrong")
+         call s_assert2(itmp == nsite, 'nsite is wrong')
 
 ! check nspin
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nspin, "nspin is wrong")
+         call s_assert2(itmp == nspin, 'nspin is wrong')
 
 ! check ndim
          do i=1,nsite
              read(mytmp,*) chr1, chr2, itmp
-             call s_assert2(itmp == ndim(i_grp(i)), "ndim is wrong")
+             call s_assert2(itmp == ndim(i_grp(i)), 'ndim is wrong')
+             call s_assert2(itmp <= qdim, 'ndim is wrong')
          enddo ! over i={1,nsite} loop
          read(mytmp,*) ! empty line
 
@@ -1250,8 +1296,8 @@
                  read(mytmp,*) ! empty line
                  do m=1,ndim(i_grp(i))
                      do n=1,ndim(i_grp(i))
-                         read(mytmp,*) rtmp
-                         sigdc(n,m,s,i) = dcmplx(rtmp, 0.0_dp)
+                         read(mytmp,*) re, im
+                         sigdc(n,m,s,i) = dcmplx(re, im)
                      enddo ! over n={1,ndim(i_grp(i))} loop
                  enddo ! over m={1,ndim(i_grp(i))} loop
                  read(mytmp,*) ! empty line
@@ -1278,16 +1324,13 @@
 
 # endif  /* MPI */
 
-! FOR DEBUG PURPOSE
-     sigdc = czero
-
      return
   end subroutine dmft_input_sigdc
 
 !!
 !! @sub dmft_input_sig_l
 !!
-!! read in bare self-energy functions from quantum impurity solvers.
+!! read in bare self-energy functions from various quantum impurity solvers.
 !! (see module dmft_sigma)
 !!
   subroutine dmft_input_sig_l()
@@ -1332,7 +1375,8 @@
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in local self-energy functions if available
+! read in local self-energy functions. this code can not run without
+! the file `sigma.bare`.
 !-------------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
@@ -1351,33 +1395,33 @@
 ! skip header
          read(mytmp,*)
          read(mytmp,*)
+         read(mytmp,*) ! empty line
 
 ! check axis
-         read(mytmp,*) ! empty line
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == axis, "axis is wrong")
+         call s_assert2(itmp == axis, 'axis is wrong')
 
 ! check beta
          read(mytmp,*) chr1, chr2, rtmp
-         call s_assert2(rtmp == beta, "beta is wrong")
+         call s_assert2(rtmp == beta, 'beta is wrong')
 
 ! check nsite
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nsite, "nsite is wrong")
+         call s_assert2(itmp == nsite, 'nsite is wrong')
 
 ! check nmesh
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nmesh, "nmesh is wrong")
+         call s_assert2(itmp == nmesh, 'nmesh is wrong')
 
 ! check nspin
          read(mytmp,*) chr1, chr2, itmp
-         call s_assert2(itmp == nspin, "nspin is wrong")
+         call s_assert2(itmp == nspin, 'nspin is wrong')
 
 ! check ndim
          do i=1,nsite
              read(mytmp,*) chr1, chr2, itmp
-             call s_assert2(itmp == ndim(i_grp(i)), "ndim is wrong")
-             call s_assert2(itmp <= qdim, "ndim is wrong")
+             call s_assert2(itmp == ndim(i_grp(i)), 'ndim is wrong')
+             call s_assert2(itmp <= qdim, 'ndim is wrong')
          enddo ! over i={1,nsite} loop
          read(mytmp,*) ! empty line
 

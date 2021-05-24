@@ -1,11 +1,17 @@
 !!!-----------------------------------------------------------------------
 !!! project : jacaranda
 !!! program : dmft_driver
-!!!           dmft_try0
 !!!           dmft_try1
 !!!           dmft_try2
+!!!           dmft_try3
+!!!           dmft_try4
+!!!           dmft_try5
+!!!           dmft_try999
+!!!           cal_sigoo
+!!!           cal_sig_l
 !!!           cal_fermi
 !!!           cal_eimps
+!!!           cal_eimpx
 !!!           cal_grn_l
 !!!           cal_wss_l
 !!!           cal_hyb_l
@@ -15,7 +21,6 @@
 !!!           cal_sl_so
 !!!           cal_so_ho
 !!!           cal_ho_eo
-!!!           cal_sk_so
 !!!           cal_sk_gk
 !!!           cal_gk_gl
 !!!           dichotomy
@@ -31,7 +36,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/08/2021 by li huang (last modified)
+!!!           05/23/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -44,26 +49,45 @@
 !!
 !! @sub dmft_driver
 !!
-!! core subroutine, dispatch the computational task
+!! core subroutine, dispatch all the computational tasks
 !!
   subroutine dmft_driver()
      use control, only : task
 
      implicit none
 
+! we have to preprocess the self-energy functions at first
+! calculate sig_l -> sigoo -> sigoo - sigdc
+     call cal_sigoo()
+
+! calculate sig_l -> sig_l - sigdc (sig_l is updated)
+     call cal_sig_l()
+
      DISPATCHER: select case ( task )
 
-! task = 0, search the fermi level
-         case (0)
-             call dmft_try0()
-
-! task = 1, calculate the local green's function
+! task = 1, calculate the hybridization function, for one-shot calculation
          case (1)
              call dmft_try1()
 
-! task = 2, calculate density correction
+! task = 2, calculate density correction, for self-consistent calculation
          case (2)
              call dmft_try2()
+
+! task = 3, search the fermi level
+         case (3)
+             call dmft_try3()
+
+! task = 4, calculate the impurity levels
+         case (4)
+             call dmft_try4()
+
+! task = 5, calculate complex dft + dmft eigenvalues
+         case (5)
+             call dmft_try5()
+
+! task = 999, only for test
+         case (999)
+             call dmft_try999()
 
          case default
              call s_print_error('dmft_driver','this feature is not supported')
@@ -78,108 +102,85 @@
 !!========================================================================
 
 !!
-!! @sub dmft_try0
-!!
-!! to determine the fermi level, the global variable `fermi` may be
-!! updated in this subroutine
-!!
-  subroutine dmft_try0()
-     use constants, only : mystd
-
-     use control, only : cname
-     use control, only : lfermi
-     use control, only : myid, master
-
-     implicit none
-
-! check lfermi
-     call s_assert2(lfermi .eqv. .true., 'lfermi must be true')
-
-! call the computational subroutine to do this job
-     if ( myid == master ) then
-         write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
-     endif ! back if ( myid == master ) block
-     !
-     call cal_fermi()
-     !
-     if ( myid == master ) then
-         write(mystd,*)
-     endif ! back if ( myid == master ) block
-
-     return
-  end subroutine dmft_try0
-
-!!
 !! @sub dmft_try1
 !!
 !! to calculate the local green's function, generate key inputs for the
 !! quantum impurity solvers. the fermi level may be updated, depending
-!! on the configuration parameter  
+!! on the configuration parameter. this subroutine is suitable for the
+!! one-shot dft + dmft calculations.
 !!
   subroutine dmft_try1()
      use constants, only : mystd
 
      use control, only : cname
      use control, only : lfermi
-     use control, only : nsite
+     use control, only : fermi
      use control, only : myid, master
 
+     use context, only : eimps, eimpx
      use context, only : grn_l
      use context, only : wss_l, hyb_l
 
      implicit none
 
-! local variables
-! loop index for impurity sites
-     integer :: t
-
-! call the computational subroutine to search the fermi level
+! try to search the fermi level
      if ( myid == master ) then
          write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
      endif ! back if ( myid == master ) block
      !
      if ( lfermi .eqv. .true. ) then
          call cal_fermi()
+     else
+         if ( myid == master ) then
+             write(mystd,'(4X,a)') 'SKIP'
+         endif ! back if ( myid == master ) block
      endif ! back if ( lfermi .eqv. .true. ) block
      !
      if ( myid == master ) then
          write(mystd,*)
      endif ! back if ( myid == master ) block
 
-! call the computational subroutine to compute the local impurity levels
+! try to compute the local impurity levels
      if ( myid == master ) then
          write(mystd,'(2X,a)') cname // ' >>> Task : Level'
      endif ! back if ( myid == master ) block
      !
-     do t=1,nsite
-         call cal_eimps(t)
-     enddo ! over t={1,nsite} loop
+     call cal_eimps()
+     !
+     call cal_eimpx()
      !
      if ( myid == master ) then
          write(mystd,*)
      endif ! back if ( myid == master ) block
 
-! call the computational subroutine to compute the local green's function
+! try to compute the local green's function
      if ( myid == master ) then
          write(mystd,'(2X,a)') cname // ' >>> Task : Green'
      endif ! back if ( myid == master ) block
      !
-     do t=1,nsite
-         call cal_grn_l(t)
-     enddo ! over t={1,nsite} loop
+     call cal_grn_l()
      !
      if ( myid == master ) then
          write(mystd,*)
      endif ! back if ( myid == master ) block
 
-! call the computational subroutine to compute the local hybridization function
+! try to compute the hybridization function
      if ( myid == master ) then
          write(mystd,'(2X,a)') cname // ' >>> Task : Hybri'
      endif ! back if ( myid == master ) block
      !
-     do t=1,nsite
-         call cal_hyb_l(t)
-     enddo ! over t={1,nsite} loop
+     call cal_hyb_l()
+     !
+     if ( myid == master ) then
+         write(mystd,*)
+     endif ! back if ( myid == master ) block
+
+! try to compute the local weiss's function
+     if ( myid == master ) then
+         write(mystd,'(2X,a)') cname // ' >>> Task : Weiss'
+     endif ! back if ( myid == master ) block
+     !
+     call cal_wss_l()
      !
      if ( myid == master ) then
          write(mystd,*)
@@ -189,14 +190,23 @@
      if ( myid == master ) then
          write(mystd,'(2X,a)') cname // ' >>> Task : Write'
          !
+         write(mystd,'(4X,a)') 'save fermi...'
+         call dmft_dump_fermi(fermi)
+         !
+         write(mystd,'(4X,a)') 'save eimps...'
+         call dmft_dump_eimps(eimps)
+         !
+         write(mystd,'(4X,a)') 'save eimpx...'
+         call dmft_dump_eimpx(eimpx)
+         !
          write(mystd,'(4X,a)') 'save grn_l...'
          call dmft_dump_grn_l(grn_l)
          !
-         write(mystd,'(4X,a)') 'save wss_l...'
-         call dmft_dump_wss_l(wss_l)
-         !
          write(mystd,'(4X,a)') 'save hyb_l...'
          call dmft_dump_hyb_l(hyb_l)
+         !
+         write(mystd,'(4X,a)') 'save wss_l...'
+         call dmft_dump_wss_l(wss_l)
          !
          write(mystd,*)
      endif ! back if ( myid == master ) block
@@ -213,19 +223,104 @@
      return
   end subroutine dmft_try2
 
-!!========================================================================
-!!>>> driver subroutines: layer 3                                      <<<
-!!========================================================================
+!!
+!! @sub dmft_try3
+!!
+!! try to search the fermi level, the global variable `fermi` may be
+!! updated in this subroutine. it is just for testing purpose.
+!!
+  subroutine dmft_try3()
+     use constants, only : mystd
+
+     use control, only : cname
+     use control, only : lfermi
+     use control, only : fermi
+     use control, only : myid, master
+
+     implicit none
+
+! check lfermi at first
+     call s_assert2(lfermi .eqv. .true., 'lfermi must be true')
+
+! try to search the fermi level
+     if ( myid == master ) then
+         write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
+     endif ! back if ( myid == master ) block
+     !
+     call cal_fermi()
+     !
+     if ( myid == master ) then
+         write(mystd,*)
+     endif ! back if ( myid == master ) block
+
+! write the calculated results, only the master node can do it
+     if ( myid == master ) then
+         write(mystd,'(2X,a)') cname // ' >>> Task : Write'
+         !
+         write(mystd,'(4X,a)') 'save fermi...'
+         call dmft_dump_fermi(fermi)
+         !
+         write(mystd,*)
+     endif ! back if ( myid == master ) block
+
+     return
+  end subroutine dmft_try3
 
 !!
-!! @sub cal_fermi
+!! @sub dmft_try4
 !!
-!! try to determine the fermi level
+!! try to determine the local impurity levels. this subroutine is just
+!! for testing purpose.
 !!
-  subroutine cal_fermi()
+  subroutine dmft_try4()
+     use constants, only : mystd
+
+     use control, only : cname
+     use control, only : myid, master
+
+     use context, only : eimps, eimpx
+
+     implicit none
+
+! try to calculate the local impurity levels
+     if ( myid == master ) then
+         write(mystd,'(2X,a)') cname // ' >>> Task : Level'
+     endif ! back if ( myid == master ) block
+     !
+     call cal_eimps()
+     !
+     call cal_eimpx()
+     !
+     if ( myid == master ) then
+         write(mystd,*)
+     endif ! back if ( myid == master ) block
+
+! write the calculated results, only the master node can do it
+     if ( myid == master ) then
+         write(mystd,'(2X,a)') cname // ' >>> Task : Write'
+         !
+         write(mystd,'(4X,a)') 'save eimps...'
+         call dmft_dump_eimps(eimps)
+         !
+         write(mystd,'(4X,a)') 'save eimpx...'
+         call dmft_dump_eimpx(eimpx)
+         !
+         write(mystd,*)
+     endif ! back if ( myid == master ) block
+
+     return
+  end subroutine dmft_try4
+
+!!
+!! @sub dmft_try5
+!!
+!! try to calculate all the complex dft + dmft eigenvalues. the subroutine
+!! can be used in the postprocessing procedure.
+!!
+  subroutine dmft_try5()
      use constants, only : dp, mystd
-     use constants, only : czero
 
+     use control, only : cname
      use control, only : nkpt, nspin
      use control, only : nmesh
      use control, only : myid, master
@@ -238,11 +333,213 @@
 ! status flag
      integer  :: istat
 
+! dummy array, used to save the eigenvalues of H + \Sigma(i\omega_n)
+     complex(dp), allocatable :: eigs(:,:,:,:)
+
+! dummy array, used to save the eigenvalues of H + \Sigma(ioo)
+     complex(dp), allocatable :: einf(:,:,:)
+
+! allocate memory
+     allocate(eigs(qbnd,nmesh,nkpt,nspin), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('dmft_try5','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(einf(qbnd,nkpt,nspin),       stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('dmft_try5','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! try to diagonalize the effective hamiltonian
+     if ( myid == master ) then
+         write(mystd,'(2X,a)') cname // ' >>> Task : Eigen'
+     endif ! back if ( myid == master ) block
+     !
+     call cal_eigsys(eigs, einf)
+     !
+     if ( myid == master ) then
+         write(mystd,*)
+     endif ! back if ( myid == master ) block
+
+! write the calculated results, only the master node can do it
+     if ( myid == master ) then
+         write(mystd,'(2X,a)') cname // ' >>> Task : Write'
+         !
+         write(mystd,'(4X,a)') 'save eigen...'
+         call dmft_dump_eigen(eigs)
+         !
+         write(mystd,*)
+     endif ! back if ( myid == master ) block
+
+! deallocate memory
+     if ( allocated(eigs) ) deallocate(eigs)
+     if ( allocated(einf) ) deallocate(einf)
+
+     return
+  end subroutine dmft_try5
+
+!!
+!! @sub dmft_try999
+!!
+  subroutine dmft_try999()
+     implicit none
+
+     return
+  end subroutine dmft_try999
+
+!!========================================================================
+!!>>> driver subroutines: layer 3                                      <<<
+!!========================================================================
+
+!!
+!! @sub cal_sigoo
+!!
+!! try to calculate the asymptotic values for self-energy functions. the
+!! double-counting terms will be removed as well. this function works for
+!! Matsubara self-energy functions (bare) only.
+!!
+  subroutine cal_sigoo()
+     use constants, only : dp
+     use constants, only : czero
+
+     use control, only : axis
+     use control, only : nspin
+     use control, only : nsite
+     use control, only : nmesh
+
+     use context, only : qdim
+     use context, only : sigdc, sigoo, sig_l
+
+     implicit none
+
+! local parameters
+! how many frequency points are included to calculate the asymptotic
+! values of Matsubara self-energy function
+     integer, parameter :: mcut = 16
+
+! local variables
+! loop index for frequency mesh
+     integer :: m
+
+! loop index for spins
+     integer :: s
+
+! loop index for impurity sites
+     integer :: t
+
+! status flag
+     integer :: istat
+
+! dummy array for the Matsubara self-energy functions
+     complex(dp), allocatable :: Sm(:,:)
+
+! check working axis
+     call s_assert2(axis == 1, 'axis is wrong')
+
+! allocate memory
+     allocate(Sm(qdim,qdim), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_sigoo','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! reset sigoo
+     sigoo = czero
+
+! loop over nsite and nspin
+!
+! we count the last `mcut` frequency points, then we try to calculate
+! the averaged values. up to now, the double counting terms have not
+! been substracted from sig_l. in other words, sig_l is still bare.
+     do t=1,nsite
+         do s=1,nspin
+             Sm = czero
+             !
+             do m=1,mcut
+                 Sm = Sm + sig_l(:,:,nmesh + 1 - m,s,t)
+             enddo ! over m={1,mcut} loop
+             !
+             sigoo(:,:,s,t) = Sm / float(mcut)
+         enddo ! over s={1,nspin} loop
+     enddo ! over t={1,nsite} loop
+
+! we substract the double counting terms from sigoo
+     sigoo = sigoo - sigdc
+
+! deallocate memory
+     if ( allocated(Sm) ) deallocate(Sm)
+
+     return
+  end subroutine cal_sigoo
+
+!!
+!! @sub cal_sig_l
+!!
+!! try to substract the double counting terms from the bare Matsubara
+!! self-energy functions. this function works for Matsubara self-energy
+!! functions (bare) only.
+!!
+  subroutine cal_sig_l()
+     use control, only : axis
+     use control, only : nspin
+     use control, only : nsite
+     use control, only : nmesh
+
+     use context, only : sigdc, sig_l
+
+     implicit none
+
+! local variables
+! loop index for frequency mesh
+     integer :: m
+
+! loop index for spins
+     integer :: s
+
+! loop index for impurity sites
+     integer :: t
+
+! check working axis
+     call s_assert2(axis == 1, 'axis is wrong')
+
+! substract the double counting terms
+     do t=1,nsite
+         do s=1,nspin
+             do m=1,nmesh
+                 sig_l(:,:,m,s,t) = sig_l(:,:,m,s,t) - sigdc(:,:,s,t)
+             enddo ! over m={1,nmesh} loop
+         enddo ! over s={1,nspin} loop
+     enddo ! over t={1,nsite} loop
+
+     return
+  end subroutine cal_sig_l
+
+!!
+!! @sub cal_fermi
+!!
+!! try to determine the fermi level
+!!
+  subroutine cal_fermi()
+     use constants, only : dp, mystd
+     use constants, only : czero
+
+     use control, only : nkpt, nspin
+     use control, only : nmesh
+
+     use context, only : qbnd
+
+     implicit none
+
+! local variables
+! status flag
+     integer  :: istat
+
 ! desired charge density
      real(dp) :: ndens
 
-! dummy arrays, used to save the eigenvalues of H + \Sigma
+! dummy array, used to save the eigenvalues of H + \Sigma(i\omega_n)
      complex(dp), allocatable :: eigs(:,:,:,:)
+
+! dummy array, used to save the eigenvalues of H + \Sigma(oo)
      complex(dp), allocatable :: einf(:,:,:)
 
 ! allocate memory
@@ -257,25 +554,13 @@
      endif ! back if ( istat /= 0 ) block
 
 ! calculate the nominal charge density according to the dft eigenvalues
-     if ( myid == master ) then
-         write(mystd,'(4X,a)') 'calculating desired charge density'
-     endif ! back if ( myid == master ) block
-     !
      call cal_nelect(ndens)
 
 ! construct H + \Sigma, diagonalize it to obtain the dft + dmft eigenvalues
-     if ( myid == master ) then
-         write(mystd,'(4X,a)') 'calculating dft + dmft eigenvalues'
-     endif ! back if ( myid == master ) block
-     !
      call cal_eigsys(eigs, einf)
 
 ! search the fermi level using bisection algorithm
 ! the global variable `fermi` will be updated within `dichotomy()`
-     if ( myid == master ) then
-         write(mystd,'(4X,a)') 'searching fermi level'
-     endif ! back if ( myid == master ) block
-     !
      call dichotomy(ndens, eigs, einf)
 
 ! deallocate memory
@@ -288,16 +573,23 @@
 !!
 !! @sub cal_eimps
 !!
-!! try to calculate local energy levels for given impurity site
+!! try to calculate local energy levels for all impurity sites. here,
+!! eimps is defined as \sum_k \epsilon_{n,k} - \mu.
 !!
-  subroutine cal_eimps(t)
+  subroutine cal_eimps()
      use constants, only : dp, mystd
      use constants, only : czero
 
+     use mmpi, only : mp_barrier
+     use mmpi, only : mp_allreduce
+
      use control, only : nkpt, nspin
-     use control, only : myid, master
+     use control, only : nsite
+     use control, only : fermi
+     use control, only : myid, master, nprocs
 
      use context, only : i_wnd
+     use context, only : qdim
      use context, only : ndim
      use context, only : kwin
      use context, only : weight
@@ -306,16 +598,15 @@
 
      implicit none
 
-! external arguments
-! index for impurity sites
-     integer, intent(in) :: t
-
 ! local variables
-! loop index for spin
+! loop index for spins
      integer :: s
 
 ! loop index for k-points
      integer :: k
+
+! index for impurity sites
+     integer :: t
 
 ! number of dft bands for given k-point and spin
      integer :: cbnd
@@ -333,33 +624,53 @@
      complex(dp), allocatable :: Em(:)
      complex(dp), allocatable :: Hm(:,:)
 
-     complex(dp), allocatable :: Eimp(:,:)
+! dummy array, used to build site-dependent impurity level
+     complex(dp), allocatable :: Xe(:,:)
 
-! init cbnd and cdim
-! cbnd will be k-dependent. it will be updated later
-     cbnd = 0
-     cdim = ndim(t)
+! dummy array, used to perform mpi reduce operation for eimps
+     complex(dp), allocatable :: eimps_mpi(:,:,:,:)
 
 ! allocate memory
-     allocate(Eimp(cdim,cdim), stat = istat)
+     allocate(Xe(qdim,qdim), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eimps','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(eimps_mpi(qdim,qdim,nspin,nsite), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_eimps','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
+! init cbnd and cdim
+! cbnd will be k-dependent and cdim will be impurity-dependent. they will
+! be updated later
+     cbnd = 0
+     cdim = 0
+
 ! reset eimps
-     eimps(:,:,:,t) = czero
+     eimps = czero
+     eimps_mpi = czero
 
 ! print some useful information
      if ( myid == master ) then
-         write(mystd,'(4X,a,i4)') 'calculate eimps for site:', t
-         write(mystd,'(4X,a)')  'add contributions from ...'
+         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate eimps for', nsite, 'sites'
+         write(mystd,'(4X,a,2X,i4,2X,a)') 'add contributions from', nkpt, 'kpoints'
      endif ! back if ( myid == master ) block
 
+! mpi barrier. waiting all processes reach here.
+# if defined (MPI)
+     !
+     call mp_barrier()
+     !
+# endif /* MPI */
+
      SPIN_LOOP: do s=1,nspin
-         KPNT_LOOP: do k=1,nkpt
+         KPNT_LOOP: do k=myid+1,nkpt,nprocs
 
 ! evaluate band window for the current k-point and spin
 ! i_wnd(t) returns the corresponding band window for given impurity site t
+! see remarks in cal_nelect()
+             t = 1 ! t is fixed to 1
              bs = kwin(k,s,1,i_wnd(t))
              be = kwin(k,s,2,i_wnd(t))
 
@@ -367,30 +678,32 @@
              cbnd = be - bs + 1
 
 ! provide some useful information
-             if ( myid == master ) then
-                 write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
-                 write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
-                 write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
-             endif ! back if ( myid == master ) block
+             write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
+             write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
+             write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
+             write(mystd,'(2X,a,i2)') 'proc: ', myid
 
 ! allocate memory
              allocate(Em(cbnd),      stat = istat)
              allocate(Hm(cbnd,cbnd), stat = istat)
+             !
              if ( istat /= 0 ) then
                  call s_print_error('cal_eimps','can not allocate enough memory')
              endif ! back if ( istat /= 0 ) block
 
-! evaluate Em, which is just some dft eigenvalues 
-             Em = enk(bs:be,k,s)
+! evaluate Em, which is just some dft eigenvalues
+             Em = enk(bs:be,k,s) - fermi
 
 ! convert `Em` to diagonal matrix `Hm`
              call s_diag_z(cbnd, Em, Hm)
 
-! project hamiltonian to local basis
-             call one_psi_chi(cbnd, cdim, k, s, t, Hm, Eimp)
-
-! save the final results
-             eimps(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) + Eimp * weight(k)
+! project effective hamiltonian to local basis
+             do t=1,nsite
+                 Xe = czero
+                 cdim = ndim(t)
+                 call one_psi_chi(cbnd, cdim, k, s, t, Hm, Xe(1:cdim,1:cdim))
+                 eimps(:,:,s,t) = eimps(:,:,s,t) + Xe * weight(k)
+             enddo ! over t={1,nsite} loop
 
 ! deallocate memory
              if ( allocated(Em) ) deallocate(Em)
@@ -399,29 +712,87 @@
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
-! renormalize impurity levels
-     eimps(:,:,:,t) = eimps(:,:,:,t) / float(nkpt)
+! collect data from all mpi processes
+# if defined (MPI)
+     !
+     call mp_barrier()
+     !
+     call mp_allreduce(eimps, eimps_mpi)
+     !
+     call mp_barrier()
+     !
+# else  /* MPI */
+
+     eimps_mpi = eimps
+
+# endif /* MPI */
+
+! renormalize the impurity levels
+     eimps = eimps_mpi / float(nkpt)
 
 ! deallocate memory
-     if ( allocated(Eimp) ) deallocate(Eimp)
+     if ( allocated(Xe) ) deallocate(Xe)
+     if ( allocated(eimps_mpi) ) deallocate(eimps_mpi)
 
      return
   end subroutine cal_eimps
 
 !!
+!! @sub cal_eimpx
+!!
+!! try to calculate local energy levels for all impurity sites. here,
+!! eimpx is equal to eimps - sigdc.
+!!
+  subroutine cal_eimpx()
+     use control, only : nspin
+     use control, only : nsite
+
+     use context, only : ndim
+     use context, only : eimps, eimpx
+     use context, only : sigdc
+
+     implicit none
+
+! local variables
+! loop index for spins
+     integer :: s
+
+! index for impurity sites
+     integer :: t
+
+! number of correlated orbitals for given impurity site
+     integer :: cdim
+
+! substract the double counting terms from eimps to build eimpx
+     do t=1,nsite
+         do s=1,nspin
+             cdim = ndim(t)
+             eimpx(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) - sigdc(1:cdim,1:cdim,s,t)
+         enddo ! over s={1,nspin} loop
+     enddo ! over t={1,nsite} loop
+
+     return
+  end subroutine cal_eimpx
+
+!!
 !! @sub cal_grn_l
 !!
-!! try to calculate local green's function for given impurity site
+!! try to calculate local green's function for all the impurity sites
 !!
-  subroutine cal_grn_l(t)
+  subroutine cal_grn_l()
      use constants, only : dp, mystd
      use constants, only : czero, czi
 
+     use mmpi, only : mp_barrier
+     use mmpi, only : mp_allreduce
+
      use control, only : nkpt, nspin
+     use control, only : nsite
      use control, only : nmesh
-     use control, only : myid, master
+     use control, only : myid, master, nprocs
 
      use context, only : i_wnd
+     use context, only : qdim
      use context, only : ndim
      use context, only : kwin
      use context, only : weight
@@ -429,16 +800,15 @@
 
      implicit none
 
-! external arguments
-! index for impurity sites
-     integer, intent(in) :: t
-
 ! local variables
 ! loop index for spin
      integer :: s
 
 ! loop index for k-points
      integer :: k
+
+! loop index for impurity sites
+     integer :: t
 
 ! number of dft bands for given k-point and spin
      integer :: cbnd
@@ -452,8 +822,9 @@
 ! status flag
      integer :: istat
 
-! dummy array: for self-energy function (projected to Kohn-Sham basis)
+! dummy array: for self-energy function (upfolded to Kohn-Sham basis)
      complex(dp), allocatable :: Sk(:,:,:)
+     complex(dp), allocatable :: Xk(:,:,:)
 
 ! dummy array: for lattice green's function
      complex(dp), allocatable :: Gk(:,:,:)
@@ -461,31 +832,50 @@
 ! dummy array: for local green's function
      complex(dp), allocatable :: Gl(:,:,:)
 
-! init cbnd and cdim
-! cbnd will be k-dependent. it will be updated later
-     cbnd = 0
-     cdim = ndim(t)
+! dummy array: used to perform mpi reduce operation for grn_l
+     complex(dp), allocatable :: grn_l_mpi(:,:,:,:,:)
 
 ! allocate memory for Gl
-     allocate(Gl(cdim,cdim,nmesh), stat = istat)
+     allocate(Gl(qdim,qdim,nmesh), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_grn_l','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(grn_l_mpi(qdim,qdim,nmesh,nspin,nsite), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_grn_l','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
+! init cbnd and cdim
+! cbnd will be k-dependent and cdim will be impurity-dependent. we will
+! update them later.
+     cbnd = 0
+     cdim = 0
+
 ! reset grn_l
-     grn_l(:,:,:,:,t) = czero
+     grn_l = czero
+     grn_l_mpi = czero
 
 ! print some useful information
      if ( myid == master ) then
-         write(mystd,'(4X,a,i4)') 'calculate grn_l for site:', t
-         write(mystd,'(4X,a)')  'add contributions from ...'
+         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate grn_l for', nsite, 'sites'
+         write(mystd,'(4X,a,2X,i4,2X,a)') 'add contributions from', nkpt, 'kpoints'
      endif ! back if ( myid == master ) block
 
+! mpi barrier. waiting all processes reach here.
+# if defined (MPI)
+     !
+     call mp_barrier()
+     !
+# endif /* MPI */
+
      SPIN_LOOP: do s=1,nspin
-         KPNT_LOOP: do k=1,nkpt
+         KPNT_LOOP: do k=myid+1,nkpt,nprocs
 
 ! evaluate band window for the current k-point and spin
 ! i_wnd(t) returns the corresponding band window for given impurity site t
+! see remarks in cal_nelect() for more details
+             t = 1 ! t is fixed to 1
              bs = kwin(k,s,1,i_wnd(t))
              be = kwin(k,s,2,i_wnd(t))
 
@@ -493,48 +883,76 @@
              cbnd = be - bs + 1
 
 ! provide some useful information
-             if ( myid == master ) then
-                 write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
-                 write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
-                 write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
-             endif ! back if ( myid == master ) block
+             write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
+             write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
+             write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
+             write(mystd,'(2X,a,i2)') 'proc: ', myid
 
-! allocate memories for Sk and Gk. their sizes are k-dependent
+! allocate memories Sk, Xk, and Gk. their sizes are k-dependent
              allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
+             allocate(Xk(cbnd,cbnd,nmesh), stat = istat)
              allocate(Gk(cbnd,cbnd,nmesh), stat = istat)
+             !
              if ( istat /= 0 ) then
                  call s_print_error('cal_grn_l','can not allocate enough memory')
              endif ! back if ( istat /= 0 ) block
 
-! build self-energy function, and then embed it into Kohn-Sham basis
-             call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
+! build self-energy function, and then upfold it into Kohn-Sham basis
+! Sk should contain contributions from all impurity sites
+             Sk = czero
+             do t=1,nsite
+                 Xk = czero
+                 cdim = ndim(t)
+                 call cal_sl_sk(cdim, cbnd, k, s, t, Xk)
+                 Sk = Sk + Xk
+             enddo ! over t={1,nsite} loop
 
 ! calculate lattice green's function
              call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
 
-! project lattice green's function to obtain local green's function
-             call cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl)
-
-! save the final results
-             grn_l(1:cdim,1:cdim,:,s,t) = grn_l(1:cdim,1:cdim,:,s,t) + Gl * weight(k)
+! downfold the lattice green's function to obtain local green's function,
+! then we have to save the final results
+             do t=1,nsite
+                 Gl = czero
+                 cdim = ndim(t)
+                 call cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl(1:cdim,1:cdim,:))
+                 grn_l(:,:,:,s,t) = grn_l(:,:,:,s,t) + Gl * weight(k)
+             enddo ! over t={1,nsite} loop
 
 ! deallocate memories
              if ( allocated(Sk) ) deallocate(Sk)
+             if ( allocated(Xk) ) deallocate(Xk)
              if ( allocated(Gk) ) deallocate(Gk)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
+! collect data from all mpi processes
+# if defined (MPI)
+     !
+     call mp_barrier()
+     !
+     call mp_allreduce(grn_l, grn_l_mpi)
+     !
+     call mp_barrier()
+     !
+# else  /* MPI */
+
+     grn_l_mpi = grn_l
+
+# endif /* MPI */
+
 ! renormalize local green's function
-     grn_l(:,:,:,:,t) = grn_l(:,:,:,:,t) / float(nkpt)
+     grn_l = grn_l_mpi / float(nkpt)
 
 ! deallocate memory
      if ( allocated(Gl) ) deallocate(Gl)
+     if ( allocated(grn_l_mpi) ) deallocate(grn_l_mpi)
 
 !! DEBUG CODE
-!<     do s=1,cdim
-!<         print *, s, grn_l(s,s,1,1,1)
-!<     enddo ! over s={1,cdim} loop
+     do s=1,qdim
+         print *, s, grn_l(s,s,1,1,1)
+     enddo ! over s={1,qdim} loop
 !! DEBUG CODE
 
      return
@@ -543,10 +961,95 @@
 !!
 !! @sub cal_wss_l
 !!
-!! try to calculate local weiss's function for given impurity site
+!! try to calculate local weiss's function for all impurity sites
 !!
   subroutine cal_wss_l()
+     use constants, only : dp, mystd
+     use constants, only : czero
+
+     use control, only : nspin
+     use control, only : nsite, nmesh
+     use control, only : myid, master
+
+     use context, only : ndim
+     use context, only : sig_l
+     use context, only : grn_l
+     use context, only : wss_l
+
      implicit none
+
+! local variables
+! loop index for frequency mesh
+     integer :: m
+
+! loop index for spins
+     integer :: s
+
+! loop index for impurity sites
+     integer :: t
+
+! number of correlated orbitals for given impurity site
+     integer :: cdim
+
+! status flag
+     integer :: istat
+
+! dummy array: for local green's function
+     complex(dp), allocatable :: Gl(:,:)
+
+! reset wss_l
+     wss_l = czero
+
+! print some useful information
+     if ( myid == master ) then
+         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate wss_l for', nsite, 'sites'
+     endif ! back if ( myid == master ) block
+
+!
+! try to calculate bath weiss's function using the following equation:
+!     G^{-1}_{0} = G^{-1} + \Sigma
+! please be aware that the double counting terms have been substracted
+! from the self-energy function. see subroutine cal_sig_l().
+!
+     SITE_LOOP: do t=1,nsite
+! get size of orbital space
+         cdim = ndim(t)
+
+! allocate memory
+         allocate(Gl(cdim,cdim), stat = istat)
+         !
+         if ( istat /= 0 ) then
+             call s_print_error('cal_wss_l','can not allocate enough memory')
+         endif ! back if ( istat /= 0 ) block
+         !
+         Gl = czero
+
+! loop over spins and frequency mesh
+         SPIN_LOOP: do s=1,nspin
+             MESH_LOOP: do m=1,nmesh
+
+! back local green's function to Gl
+                 Gl = grn_l(1:cdim,1:cdim,m,s,t)
+
+! inverse local green's function. now Gl is G^{-1}
+                 call s_inv_z(cdim, Gl)
+
+! plus the self-energy function. now Gl is G^{-1} + \Sigma
+                 Gl = Gl + sig_l(1:cdim,1:cdim,m,s,t)
+
+! inverse it again to obtain bath weiss's function. now Gl is G_0
+                 call s_inv_z(cdim, Gl)
+
+! save the final resuls to wss_l
+                 wss_l(1:cdim,1:cdim,m,s,t) = Gl
+
+             enddo MESH_LOOP ! over m={1,nmesh} loop
+         enddo SPIN_LOOP ! over s={1,nspin} loop
+
+! deallocate memory
+         if ( allocated(Gl) ) deallocate(Gl)
+
+     enddo SITE_LOOP ! over t={1,nsite} loop
 
      return
   end subroutine cal_wss_l
@@ -554,79 +1057,111 @@
 !!
 !! @sub cal_hyb_l
 !!
-!! try to calculate local hybridization function for given impurity site
+!! try to calculate hybridization function for all impurity sites
 !!
-  subroutine cal_hyb_l(t)
+  subroutine cal_hyb_l()
      use constants, only : dp, mystd
      use constants, only : czi, czero
 
+     use control, only : axis
      use control, only : nspin
+     use control, only : nsite
      use control, only : nmesh
-     use control, only : fermi
      use control, only : myid, master
 
      use context, only : ndim
      use context, only : fmesh
      use context, only : eimps
-     use context, only : sigdc, sig_l
+     use context, only : sig_l
      use context, only : grn_l
      use context, only : hyb_l
- 
-     implicit none
 
-! external arguments
-! index for impurity sites
-     integer, intent(in) :: t
+     implicit none
 
 ! local variables
 ! loop index for spin
      integer :: s
+
+! index for impurity sites
+     integer :: t
 
 ! loop index for frequency mesh
      integer :: m
 
 ! number of correlated orbitals for given impurity site
      integer :: cdim
+
+! status flag
      integer :: istat
 
+! dummy variables
      complex(dp) :: caux
+
+! dummy arrays
      complex(dp), allocatable :: Tm(:,:)
      complex(dp), allocatable :: Em(:,:)
      complex(dp), allocatable :: Sm(:,:)
 
-     cdim = ndim(t)
-
-! allocate memory
-     allocate(Tm(cdim,cdim), stat = istat)
-     allocate(Em(cdim,cdim), stat = istat)
-     allocate(Sm(cdim,cdim), stat = istat)
-
-     hyb_l(:,:,:,:,t) = czero
+! reset hyb_l
+     hyb_l = czero
 
 ! print some useful information
      if ( myid == master ) then
-         write(mystd,'(4X,a,i4)') 'calculate hyb_l for site:', t
+         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate hyb_l for', nsite, 'sites'
      endif ! back if ( myid == master ) block
 
-     SPIN_LOOP: do s=1,nspin
-         MESH_LOOP: do m=1,nmesh
-             caux = czi * fmesh(m) + fermi
+     SITE_LOOP: do t=1,nsite
 
-             Tm = grn_l(1:cdim,1:cdim,m,s,t)
-             call s_inv_z(cdim, Tm)
+! determine dimensional parameter
+         cdim = ndim(t)
 
-             Em = eimps(1:cdim,1:cdim,s,t)
+! allocate memory
+         allocate(Tm(cdim,cdim), stat = istat)
+         allocate(Em(cdim,cdim), stat = istat)
+         allocate(Sm(cdim,cdim), stat = istat)
+         !
+         if ( istat /= 0 ) then
+             call s_print_error('cal_hyb_l','can not allocate enough memory')
+         endif ! back if ( istat /= 0 ) block
 
-             Sm = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
+         SPIN_LOOP: do s=1,nspin
+             MESH_LOOP: do m=1,nmesh
 
-             hyb_l(1:cdim,1:cdim,m,s,t) = caux - Em - Sm - Tm
-         enddo MESH_LOOP ! over m={1,nmesh} loop
-     enddo SPIN_LOOP ! over s={1,nspin} loop
+! get frequency point. note that the fermi level (chemical potential) is
+! already included in the impurity levels `eimps`. so here we just ignore
+! the fermi level.
+                 if ( axis == 1 ) then
+                     caux = czi * fmesh(m)
+                 else
+                     caux = fmesh(m)
+                 endif ! back if ( axis == 1 ) block
+
+! calculate G^{-1}
+                 Tm = grn_l(1:cdim,1:cdim,m,s,t)
+                 call s_inv_z(cdim, Tm)
+
+! get self-energy function
+! be aware that the double counting terms have been removed from the
+! self-energy functions. see cal_sig_l() subroutine for more details.
+                 Sm = sig_l(1:cdim,1:cdim,m,s,t)
+
+! get local impurity levels. the local impurity levels are actually equal
+! to \sum e_{nk} - \mu. see cal_eimps() subroutine for more details.
+                 Em = eimps(1:cdim,1:cdim,s,t)
+
+! assemble the hybridization function. actually, Sm + Tm is G^{-1}_0.
+! please see cal_wss_l() subroutine for more details.
+                 hyb_l(1:cdim,1:cdim,m,s,t) = caux - Em - Sm - Tm
+
+             enddo MESH_LOOP ! over m={1,nmesh} loop
+         enddo SPIN_LOOP ! over s={1,nspin} loop
 
 ! deallocate memory
-     deallocate(Tm)
-     deallocate(Em)
-     deallocate(Sm)
+         if ( allocated(Tm) ) deallocate(Tm)
+         if ( allocated(Em) ) deallocate(Em)
+         if ( allocated(Sm) ) deallocate(Sm)
+
+     enddo SITE_LOOP ! over t={1,nsite} loop
 
      return
   end subroutine cal_hyb_l
@@ -638,8 +1173,9 @@
 !!
 !! @sub cal_sl_sk
 !!
-!! try to substract the double-counting term from the local self-energy
-!! function, and then map it from local basis to Kohn-Sham basis
+!! try to upfold the self-energy function from local basis to Kohn-Sham
+!! basis. here, we don't care whether the double counting terms have been
+!! substracted from the self-energy functions.
 !!
   subroutine cal_sl_sk(cdim, cbnd, k, s, t, Sk)
      use constants, only : dp
@@ -647,7 +1183,7 @@
 
      use control, only : nmesh
 
-     use context, only : sigdc, sig_l
+     use context, only : sig_l
 
      implicit none
 
@@ -686,9 +1222,10 @@
          call s_print_error('cal_sl_sk','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! here we use Sl to save sig_l - sigdc
+! we use Sl to store parts of sig_l. note that actually sigdc has been
+! substracted from sig_l beforehand, see cal_sig_l() for more details.
      do m=1,nmesh
-         Sl(:,:,m) = sig_l(1:cdim,1:cdim,m,s,t) - sigdc(1:cdim,1:cdim,s,t)
+         Sl(:,:,m) = sig_l(1:cdim,1:cdim,m,s,t)
      enddo ! over m={1,nmesh} loop
 
 ! upfolding: Sl (local basis) -> Sk (Kohn-Sham basis)
@@ -703,7 +1240,9 @@
 !!
 !! @sub cal_sk_hk
 !!
-!! try to build H(k) + \Sigma(i\omega_n)
+!! try to build H(k) + \Sigma(i\omega_n). here, \Sigma should contain
+!! contributions from all impurity sites. so, only when nsite = 1, we
+!! can use the output of cal_sl_sk() as the input of this subroutine.
 !!
   subroutine cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
      use constants, only : dp
@@ -730,7 +1269,7 @@
 ! self-energy function at Kohn-Sham basis
      complex(dp), intent(in)  :: Sk(cbnd,cbnd,nmesh)
 
-! lattice green's function at given k-point and spin
+! frequency-dependent effective hamiltonian at given k-point and spin
      complex(dp), intent(out) :: Hk(cbnd,cbnd,nmesh)
 
 ! local variables
@@ -755,13 +1294,13 @@
          call s_print_error('cal_sk_hk','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! evaluate Em, which is just some dft eigenvalues 
+! evaluate Em, which is just some dft eigenvalues
      Em = enk(bs:be,k,s)
 
 ! convert `Em` to diagonal matrix `Hm`
      call s_diag_z(cbnd, Em, Hm)
 
-! combine `Hm` and `Sk` to build the effective hamiltonian 
+! combine `Hm` and `Sk` to build the effective hamiltonian
      FREQ_LOOP: do m=1,nmesh
          Hk(:,:,m) = Hm + Sk(:,:,m)
      enddo FREQ_LOOP ! over m={1,nmesh} loop
@@ -776,7 +1315,9 @@
 !!
 !! @sub cal_hk_ek
 !!
-!! try to diagonalize H(k) + \Sigma(i\omega_n), get all the eigenvalues
+!! try to diagonalize the effective hamiltonian: H(k) + \Sigma(i\omega_n),
+!! get all the complex eigenvalues. here, we just assumed the effective
+!! hamiltonian is a general complex matrix.
 !!
   subroutine cal_hk_ek(cbnd, Hk, Ek)
      use constants, only : dp
@@ -813,17 +1354,16 @@
 !!
 !! @sub cal_sl_so
 !!
-!! try to substract the double-counting term from the local self-energy
-!! function. and then evaluate its asymptotic values at \omega = \infty.
-!! finally, map it from local basis to Kohn-Sham basis
+!! try to upfold the asymptotic values of self-energy functions at high
+!! frequency (i.e `sigoo`) from local basis to Kohn-Sham basis. note that
+!! the double-counting terms have been substracted from sigoo beforehand.
+!! please see cal_sigoo() for more details.
 !!
   subroutine cal_sl_so(cdim, cbnd, k, s, t, So)
      use constants, only : dp
      use constants, only : czero
 
-     use control, only : nmesh
-
-     use context, only : sigdc, sig_l
+     use context, only : sigoo
 
      implicit none
 
@@ -846,56 +1386,27 @@
 ! self-energy function at \omega = \infty in Kohn-Sham basis
      complex(dp), intent(out) :: So(cbnd,cbnd)
 
-! local parameters
-! how many frequency points are included to calculate the asymptotic
-! values of self-energy function
-     integer, parameter :: mcut = 16
-
 ! local variables
-! loop index for frequency mesh
-     integer :: m
-
 ! status flag
      integer :: istat
 
-! dummy array: for local self-energy function
-     complex(dp), allocatable :: Sl(:,:,:)
-
-! dummy array: for lattice self-energy function
-     complex(dp), allocatable :: Sk(:,:,:)
+! dummy array: for asymptotic self-energy function
+     complex(dp), allocatable :: Sl(:,:)
 
 ! allocate memory
-! the last elements of Sl and Sk are used to store the averaged values
-     allocate(Sl(cdim,cdim,mcut+1), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_sl_so','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-     allocate(Sk(cbnd,cbnd,mcut+1), stat = istat)
+     allocate(Sl(cdim,cdim), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_sl_so','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! here we use Sl to save sig_l - sigdc
-     do m=1,mcut
-         Sl(:,:,m) = sig_l(1:cdim,1:cdim,nmesh+1-m,s,t) - sigdc(1:cdim,1:cdim,s,t)
-     enddo ! over m={1,mcut} loop
-
-! then the averaged values are stored at Sl(:,:,mcut+1)
-     Sl(:,:,mcut+1) = czero
-     do m=1,mcut
-         Sl(:,:,mcut+1) = Sl(:,:,mcut+1) + Sl(:,:,m) / real(mcut)
-     enddo ! over m={1,mcut} loop
+! here we use Sl to save parts of sigoo
+     Sl = sigoo(1:cdim,1:cdim,s,t)
 
 ! upfolding: Sl (local basis) -> Sk (Kohn-Sham basis)
-     call map_chi_psi(cdim, cbnd, mcut + 1, k, s, t, Sl, Sk)
-
-! Sk(:,:,mcut + 1) is what we want, copy it to `So`
-     So = Sk(:,:,mcut+1)
+     call one_chi_psi(cdim, cbnd, k, s, t, Sl, So)
 
 ! deallocate memory
      if ( allocated(Sl) ) deallocate(Sl)
-     if ( allocated(Sk) ) deallocate(Sk)
 
      return
   end subroutine cal_sl_so
@@ -903,7 +1414,9 @@
 !!
 !! @sub cal_so_ho
 !!
-!! try to build H(k) + \Sigma(\infty)
+!! try to build H(k) + \Sigma(\infty). here, \Sigma should contain full
+!! contributions from all impurity sites. so, only when nsite = 1, we
+!! can use the output of cal_sl_so() as the input of this subroutine.
 !!
   subroutine cal_so_ho(cbnd, bs, be, k, s, So, Ho)
      use constants, only : dp
@@ -950,13 +1463,13 @@
          call s_print_error('cal_so_ho','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! evaluate Em, which is just some dft eigenvalues 
+! evaluate Em, which is just some dft eigenvalues
      Em = enk(bs:be,k,s)
 
 ! convert `Em` to diagonal matrix `Hm`
      call s_diag_z(cbnd, Em, Hm)
 
-! combine `Hm` and `So` to build the effective hamiltonian 
+! combine `Hm` and `So` to build the effective hamiltonian
      Ho = Hm + So
 
 ! deallocate memory
@@ -969,7 +1482,9 @@
 !!
 !! @sub cal_ho_eo
 !!
-!! try to diagonalize H(k) + \Sigma(\infty), get all the eigenvalues
+!! try to diagonalize the effective hamiltonian: H(k) + \Sigma(\infty),
+!! get all the complex eigenvalues. here, we just assumed the effective
+!! hamiltonian is a general complex matrix.
 !!
   subroutine cal_ho_eo(cbnd, Ho, Eo)
      use constants, only : dp
@@ -991,51 +1506,6 @@
      return
   end subroutine cal_ho_eo
 
-!!
-!! @sub cal_sk_so
-!!
-!! try to evaluate \Sigma(i\omega_n \to \infty). it's function is similar
-!! to `cal_sl_so()`
-!!
-  subroutine cal_sk_so(cbnd, Sk, So)
-     use constants, only : dp
-     use constants, only : czero
-
-     use control, only : nmesh
-
-     implicit none
-
-! external arguments
-! number of dft bands for given k-point and spin
-     integer, intent(in) :: cbnd
-
-! self-energy function at Kohn-Sham basis
-     complex(dp), intent(in)  :: Sk(cbnd,cbnd,nmesh)
-
-! asymptotic values of self-energy function at Kohn-Sham basis 
-     complex(dp), intent(out) :: So(cbnd,cbnd)
-
-! local parameters
-! how many frequency points are included to calculate the asymptotic
-! values of self-energy function
-     integer, parameter :: mcut = 16
-
-! local variables
-! loop index for frequency mesh
-     integer :: m
-
-! count the final `mcut` frequency points, and calculate the averaged value
-     So = czero
-     !
-     do m=1,mcut
-         So = So + Sk(:,:,nmesh + 1 - m)
-     enddo ! over m={1,mcut} loop
-     !
-     So = So / real(mcut)
-
-     return
-  end subroutine cal_sk_so
-
 !!========================================================================
 !!>>> service subroutines: set 3                                       <<<
 !!========================================================================
@@ -1044,11 +1514,9 @@
 !! @sub cal_sk_gk
 !!
 !! try to calculate lattice green's function at given k-point and spin.
-!! note that this lattice green's function is not the nominal one. it is
-!! connected with the impurity site. in other words, it is the lattice
-!! green's function for the given impurity site. this subroutine needs
-!! the self-energy function at Kohn-Sham basis (Sk), that is the reason
-!! why it is called `cal_sk_gk`
+!! this subroutine needs the self-energy function at Kohn-Sham basis (i.e
+!! `Sk`), that is the reason why it is called `cal_sk_gk`. note that Sk
+!! have to contain the full contributions from all impurity sites.
 !!
   subroutine cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
      use constants, only : dp
@@ -1141,7 +1609,7 @@
 !! @sub cal_gk_gl
 !!
 !! try to calculate local green's function from lattice green's function
-!! via downfolding method
+!! via downfolding procedure.
 !!
   subroutine cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl)
      use constants, only : dp
@@ -1217,7 +1685,7 @@
      real(dp), parameter :: delta = 0.5_dp
 
 ! local variables
-! loop index for the bisection algorithm 
+! loop index for the bisection algorithm
      integer  :: loop
 
 ! left boundary, right boundary, and the final result for the fermi level
@@ -1229,10 +1697,15 @@
 ! sign
      real(dp) :: sign
 
+     if ( myid == master ) then
+         write(mystd,'(4X,a)') 'searching fermi level'
+     endif ! back if ( myid == master ) block
+
 ! initialization, determine mu1, mu2, occ1, occ2, and sign
-! if sign < 0, it means occ1 < desired, we should push mu2 to higher
-! energy. if sign > 0, it means occ1 > desired. then mu1 will be
-! the right boundary, and we should push mu2 to lower energy
+!
+! (1) if sign < 0, it means occ1 < desired, we should push mu2 to higher
+! energy. (2) if sign > 0, it means occ1 > desired. then mu1 will be the
+! right boundary, and we should push mu2 to lower energy
      mu1 = fermi
      call cal_occupy(mu1, occ1, eigs, einf)
      !
@@ -1279,7 +1752,7 @@
      else
          mu3 = mu2
          occ3 = occ2
-     endif
+     endif ! back if block
      !
      do while ( loop <= max_loops .and. abs( occ3 - desired ) > mc )
          loop = loop + 1
@@ -1302,8 +1775,10 @@
      enddo ! over do while loop
      !
      if ( abs(occ3 - desired) < mc ) then
-         write(mystd,'(6X,a)',advance = 'no') 'final results ->'
-         write(mystd,'(2(2X,a,f12.8))') 'EF: ', mu3, 'density: ', occ3
+         if ( myid == master ) then
+             write(mystd,'(6X,a)',advance = 'no') 'final results ->'
+             write(mystd,'(2(2X,a,f12.8))') 'EF: ', mu3, 'density: ', occ3
+         endif ! back if ( myid == master ) block
      else
          call s_print_error('dichotomy', 'fail to locate the fermi level')
      endif ! back if ( abs(occ3 - desired) < mc ) block
@@ -1317,16 +1792,18 @@
 !!
 !! @sub cal_nelect
 !!
-!! try to calculate the number of valence electrons by dft occupations.
-!! actually, what we obtain is the occupation numbers in the selected
-!! band window
+!! try to calculate the number of valence electrons by dft occupations
+!! and weights. actually, what we obtain is the occupation numbers in
+!! the selected band window.
 !!
   subroutine cal_nelect(nelect)
-     use constants, only : dp
+     use constants, only : dp, mystd
      use constants, only : zero, two
 
      use control, only : nkpt, nspin
+     use control, only : myid, master
 
+     use context, only : i_wnd
      use context, only : kwin
      use context, only : weight
      use context, only : occupy
@@ -1347,18 +1824,38 @@
 ! band window: start index and end index for bands
      integer :: bs, be
 
-! basically, now we only support single band window. so the last index
-! for kwin is always 1
+     if ( myid == master ) then
+         write(mystd,'(4X,a)') 'calculating desired charge density'
+     endif ! back if ( myid == master ) block
+
+!
+! important remarks:
+!
+! there is an important question. which band window shall we used?
+! multiple band windows are always possible since we don't have enough
+! reason to restrict `nwnd` to be 1.
+!
+! the answer is the band window that is connected to the quantum
+! impurity problems. basically, now we require that all the quantum
+! impurity problems share the same band window. so in this subroutine,
+! we only need to consider ONE band window, which is defined by
+! i_wnd(1) or i_wnd(2). whatever, they should point to the same band
+! window according to our assumption.
+!
+
+! reset nelect
      nelect = zero
+
+! perform summation
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
-             bs = kwin(k,s,1,1)
-             be = kwin(k,s,2,1)
+             bs = kwin(k,s,1,i_wnd(1))
+             be = kwin(k,s,2,i_wnd(1))
              nelect = nelect + sum( occupy(bs:be,k,s) ) * weight(k)
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
-! normalize `nelect`
+! don't forget to normalize `nelect`
      nelect = nelect / float(nkpt)
 
 ! consider the spins
@@ -1372,17 +1869,20 @@
 !!
 !! @sub cal_occupy
 !!
-!! for given fermi level, try to calculate the corresponding occupations
+!! for given fermi level, try to calculate the corresponding occupations.
+!! note that this subroutine only works in imaginary axis.
 !!
   subroutine cal_occupy(fermi, val, eigs, einf)
      use constants, only : dp
      use constants, only : one, two
      use constants, only : czi, czero
 
+     use control, only : axis
      use control, only : nkpt, nspin
      use control, only : nmesh
      use control, only : beta
 
+     use context, only : i_wnd
      use context, only : qbnd
      use context, only : kwin
      use context, only : fmesh
@@ -1448,14 +1948,21 @@
          call s_print_error('cal_occupy','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
+! check axis
+     call s_assert2(axis == 1, 'axis is wrong')
+
 ! calculate local green's function
-! here, the asymptotic part is substracted
      gloc = czero
-     do s=1,nspin
-         do k=1,nkpt
-             bs = kwin(k,s,1,1)
-             be = kwin(k,s,2,1)
+     SPIN_LOOP: do s=1,nspin
+         KPNT_LOOP: do k=1,nkpt
+
+! determine the band window
+! see remarks in cal_nelect()
+             bs = kwin(k,s,1,i_wnd(1))
+             be = kwin(k,s,2,i_wnd(1))
              cbnd = be - bs + 1
+
+! here, the asymptotic part is substracted
              do m=1,nmesh
                  caux = czi * fmesh(m) + fermi
                  do b=1,cbnd
@@ -1463,8 +1970,9 @@
                      gloc(b,m,s) = gloc(b,m,s) - one / ( caux - einf(b,k,s) )
                  enddo ! over b={1,cbnd} loop
              enddo ! over m={1,nmesh} loop
-         enddo ! over k={1,nkpt} loop
-     enddo ! over s={1,nspin} loop
+
+         enddo KPNT_LOOP ! over k={1,nkpt} loop
+     enddo SPIN_LOOP ! over s={1,nspin} loop
 
 ! calculate summation of the local green's function
      do s=1,nspin
@@ -1473,21 +1981,27 @@
          enddo ! over b={1,cbnd} loop
      enddo ! over s={1,nspin} loop
 
-! consider the contribution from asymptotic part 
+! consider the contribution from asymptotic part
      do s=1,nspin
          do k=1,nkpt
-             bs = kwin(k,s,1,1)
-             be = kwin(k,s,2,1)
+! see remarks in cal_nelect()
+             bs = kwin(k,s,1,i_wnd(1))
+             be = kwin(k,s,2,i_wnd(1))
              cbnd = be - bs + 1
              do b=1,cbnd
                  caux = einf(b,k,s) - fermi
-                 zocc(b,s) = zocc(b,s) + fermi_dirac(real(caux)) / real(nkpt)
+                 zocc(b,s) = zocc(b,s) + fermi_dirac( real(caux) ) / real(nkpt)
              enddo ! over b={1,cbnd} loop
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
 
+! actually, we should consider the correction due to finite frequency
+! point here. later we will implement it.
+!
+! TO_BE_DONE
+
 ! sum up the density matrix
-     val = real( sum(zocc) ) 
+     val = real( sum(zocc) )
 
 ! consider the spins
      if ( nspin == 1 ) then
@@ -1505,15 +2019,19 @@
 !! @sub cal_eigsys
 !!
 !! try to diagonalize H(k) + \Sigma(i\omega_n) and H(k) + \Sigma(\infty)
-!! to obtain the corresponding eigenvalues 
+!! to obtain the corresponding eigenvalues.
 !!
   subroutine cal_eigsys(eigs, einf)
      use constants, only : dp, mystd
      use constants, only : czero
 
+     use mmpi, only : mp_barrier
+     use mmpi, only : mp_allreduce
+
      use control, only : nkpt, nspin
      use control, only : nsite
      use control, only : nmesh
+     use control, only : myid, master, nprocs
 
      use context, only : i_wnd
      use context, only : ndim
@@ -1553,8 +2071,9 @@
 
 ! self-energy functions, \Sigma(i\omega_n)
      complex(dp), allocatable :: Sk(:,:,:)
+     complex(dp), allocatable :: Xk(:,:,:)
 
-! H(k) + \Sigma(i\omega_n) 
+! H(k) + \Sigma(i\omega_n)
      complex(dp), allocatable :: Hk(:,:,:)
 
 ! eigenvalues for H(k) + \Sigma(i\omega_n)
@@ -1562,28 +2081,57 @@
 
 ! self-energy functions, \Sigma(\infty)
      complex(dp), allocatable :: So(:,:)
+     complex(dp), allocatable :: Xo(:,:)
 
-! H(k) + \Sigma(\infty) 
+! H(k) + \Sigma(\infty)
      complex(dp), allocatable :: Ho(:,:)
 
 ! eigenvalues for H(k) + \Sigma(\infty)
      complex(dp), allocatable :: Eo(:)
 
-! well, here the number of impurity sites is restricted to be one 
-! later we will remove this bug
-     call s_assert2(nsite == 1, 'nsite should be 1')
-     t = 1
-     cdim = ndim(t)
+! dummy array, used to perform mpi reduce operation for eigs
+     complex(dp), allocatable :: eigs_mpi(:,:,:,:)
+
+! dummy array, used to perform mpi reduce operation for einf
+     complex(dp), allocatable :: einf_mpi(:,:,:)
+
+     if ( myid == master ) then
+         write(mystd,'(4X,a)') 'calculating dft + dmft eigenvalues'
+     endif ! back if ( myid == master ) block
+
+! allocate memory
+     allocate(eigs_mpi(qbnd,nmesh,nkpt,nspin), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eigsys','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(einf_mpi(qbnd,nkpt,nspin), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eigsys','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
 
 ! initialization
      eigs = czero
      einf = czero
 
+     eigs_mpi = czero
+     einf_mpi = czero
+
+! mpi barrier. waiting all processes reach here.
+# if defined (MPI)
+     !
+     call mp_barrier()
+     !
+# endif /* MPI */
+
      SPIN_LOOP: do s=1,nspin
-         KPNT_LOOP: do k=1,nkpt
+         KPNT_LOOP: do k=myid+1,nkpt,nprocs
 
 ! evaluate band window for the current k-point and spin
 ! i_wnd(t) returns the corresponding band window for given impurity site t
+!
+! see remarks in cal_nelect() subroutine
+             t = 1 ! t is fixed to 1
              bs = kwin(k,s,1,i_wnd(t))
              be = kwin(k,s,2,i_wnd(t))
 
@@ -1593,10 +2141,12 @@
 ! provide some useful information
              write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
              write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
-             write(mystd,'(2X,a,3i3)') 'window: ', bs, be, cbnd
+             write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
+             write(mystd,'(2X,a,i2)') 'proc: ', myid
 
 ! allocate memory
              allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
+             allocate(Xk(cbnd,cbnd,nmesh), stat = istat)
              allocate(Hk(cbnd,cbnd,nmesh), stat = istat)
              allocate(Ek(cbnd,nmesh),      stat = istat)
              !
@@ -1605,15 +2155,23 @@
              endif ! back if ( istat /= 0 ) block
              !
              allocate(So(cbnd,cbnd),       stat = istat)
+             allocate(Xo(cbnd,cbnd),       stat = istat)
              allocate(Ho(cbnd,cbnd),       stat = istat)
              allocate(Eo(cbnd),            stat = istat)
              !
              if ( istat /= 0 ) then
-                 call s_print_error('cal_occupy','can not allocate enough memory')
+                 call s_print_error('cal_eigsys','can not allocate enough memory')
              endif ! back if ( istat /= 0 ) block
 
 ! construct H(k) + \Sigma(i\omega_n) and diagonalize it
-             call cal_sl_sk(cdim, cbnd, k, s, t, Sk)
+             Sk = czero
+             !
+             do t=1,nsite ! add contributions from all impurity sites
+                 Xk = czero
+                 cdim = ndim(t)
+                 call cal_sl_sk(cdim, cbnd, k, s, t, Xk)
+                 Sk = Sk + Xk
+             enddo ! over t={1,nsite} loop
              !
              call cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
              !
@@ -1622,8 +2180,14 @@
              eigs(1:cbnd,:,k,s) = Ek
 
 ! construct H(k) + \Sigma(\infty) and diagonalize it
-!<             call cal_sk_so(cbnd, Sk, So)
-             call cal_sl_so(cdim, cbnd, k, s, t, So)
+             So = czero
+             !
+             do t=1,nsite ! add contributions from all impurity sites
+                 Xo = czero
+                 cdim = ndim(t)
+                 call cal_sl_so(cdim, cbnd, k, s, t, Xo)
+                 So = So + Xo
+             enddo ! over t={1,nsite} loop
              !
              call cal_so_ho(cbnd, bs, be, k, s, So, Ho)
              !
@@ -1633,15 +2197,42 @@
 
 ! deallocate memory
              if ( allocated(So) ) deallocate(So)
+             if ( allocated(Xo) ) deallocate(Xo)
              if ( allocated(Ho) ) deallocate(Ho)
              if ( allocated(Eo) ) deallocate(Eo)
-
+             !
              if ( allocated(Sk) ) deallocate(Sk)
+             if ( allocated(Xk) ) deallocate(Xk)
              if ( allocated(Hk) ) deallocate(Hk)
              if ( allocated(Ek) ) deallocate(Ek)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
+
+! collect data from all mpi processes
+# if defined (MPI)
+     !
+     call mp_barrier()
+     !
+     call mp_allreduce(eigs, eigs_mpi)
+     call mp_allreduce(einf, einf_mpi)
+     !
+     call mp_barrier()
+     !
+# else  /* MPI */
+
+     eigs_mpi = eigs
+     einf_mpi = einf
+
+# endif /* MPI */
+
+! save the final results
+     eigs = eigs_mpi
+     einf = einf_mpi
+
+! deallocate memory
+     deallocate(eigs_mpi)
+     deallocate(einf_mpi)
 
      return
   end subroutine cal_eigsys
@@ -1690,7 +2281,7 @@
 !! @sub map_chi_psi
 !!
 !! service subroutine. map a function from local basis to Kohn-Sham
-!! basis. you can call this procedure `embedding` or `upfold`
+!! basis. you can call this procedure `embedding` or `upfolding`.
 !!
   subroutine map_chi_psi(cdim, cbnd, nfrq, k, s, t, Mc, Mp)
      use constants, only : dp
@@ -1739,6 +2330,10 @@
 
 ! allocate memory
      allocate(Cp(cdim,cbnd), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('map_chi_psi','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
      allocate(Pc(cbnd,cdim), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('map_chi_psi','can not allocate enough memory')
@@ -1813,6 +2408,10 @@
 
 ! allocate memory
      allocate(Cp(cdim,cbnd), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('map_psi_chi','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
      allocate(Pc(cbnd,cdim), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('map_psi_chi','can not allocate enough memory')
@@ -1881,6 +2480,10 @@
 
 ! allocate memory
      allocate(Cp(cdim,cbnd), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('one_chi_psi','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
      allocate(Pc(cbnd,cdim), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('one_chi_psi','can not allocate enough memory')
@@ -1947,6 +2550,10 @@
 
 ! allocate memory
      allocate(Cp(cdim,cbnd), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('one_psi_chi','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
      allocate(Pc(cbnd,cdim), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('one_psi_chi','can not allocate enough memory')

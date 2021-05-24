@@ -3,15 +3,24 @@
 !!! program : control    module
 !!!           version    module
 !!! source  : dmft_control.f90
-!!! type    : module
+!!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/09/2021 by li huang (last modified)
+!!!           05/23/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
 !!!-----------------------------------------------------------------------
 
+!!========================================================================
+!!>>> module control                                                   <<<
+!!========================================================================
+
+!!
+!! @mod control
+!!
+!! define the control parameters and dimensional parameters
+!!
   module control
      use constants, only : dp
 
@@ -44,22 +53,36 @@
 !!
 !! control flag, determine the running mode of the code
 !!
-!! if task == 0:
-!!     search the fermi level only
-!!
 !! if task == 1:
-!!     calculate the local hybridization function. of course, the fermi
-!!     level might be updated as well (depends on lfermi)
+!!     the code will do the following jobs:
+!!     (1) search the fermi level (depends on `lfermi`),
+!!     (2) calculate the impurity level,
+!!     (3) calculate the local green's function,
+!!     (4) calculate the hybridization function,
+!!     (5) calculate the local weiss's function,
+!!     (6) write the above calculated results.
 !!
 !! if task == 2:
-!!     calculate charge correction due to the electronic correlation
+!!     the code will do the following jobs:
+!!     (1) calculate charge correction due to the electronic correlation,
+!!     (2) calculate total energy.
+!!
+!! if task == 3:
+!!     search the fermi level only (depends on `lfermi`)
+!!
+!! if task == 4:
+!!     calculate the impurity level only
+!!
+!! if task == 5:
+!!     calculate all complex frequency dependent eigenvalues only
 !!
      integer, public, save :: task   = 1
 
 !!
 !! @var axis
 !!
-!! control flag, determine the axis for brillouin zone integration
+!! control flag, determine the working axis for brillouin zone integration
+!! and fermi level search
 !!
 !! if axis == 1:
 !!     imaginary axis
@@ -79,7 +102,7 @@
 !! control flag, determine whether the fermi level should be updated
 !!
 !! if lfermi == .true.
-!!     search the fermi level
+!!     search the fermi level by using the bisection algorithm
 !!
 !! if lfermi == .false.
 !!     fix the fermi level. in other words, the dft fermi level is used
@@ -90,7 +113,8 @@
 !! @var ltetra
 !!
 !! control flag, determine whether the analytical tetrahedron method is
-!! used to perform the brillouin zone integration
+!! used to perform the brillouin zone integration. this feature has not
+!! been implemented.
 !!
 !! if ltetra == .true.
 !!     use the analytical tetrahedron algorithm
@@ -153,7 +177,9 @@
 !!
 !! @var nspin
 !!
-!! number of spin orientations
+!! number of spin orientations. for non-magnetic or paramagnetic systems
+!! nspin = 1, while for magnetic systems, nspin = 2. here, spin-orbit
+!! coupling has not been supported
 !!
      integer, public, save :: nspin  = 1
 
@@ -169,7 +195,9 @@
 !! @var ngrp
 !!
 !! number of groups of projectors, which are used to create the Hilbert
-!! subspace for correlated orbitals
+!! subspace for correlated or non-correlated orbitals. note that `ngrp`
+!! is always larger or equal to `nsite`. in other words, multiple groups
+!! of projectors are permitted. but some of them might be non-correlated.
 !!
      integer, public, save :: ngrp   = 1
 
@@ -177,7 +205,11 @@
 !! @var nwnd
 !!
 !! number of energy windows or band windows, which are used to restrict
-!! the correlated subspace
+!! how many energy states are included in the calculations. note that in
+!! the current implementation, `nwnd` can be larger than 1. but for the
+!! correlated projectors or orbitals, they have to share the same energy
+!! window or band window. in order words, the array `i_wnd` has only one
+!! unique element. see comments in dmft_context.f90 and dmft_stream.f90.
 !!
      integer, public, save :: nwnd   = 1
 
@@ -185,7 +217,8 @@
 !! @var nsite
 !!
 !! number of correlated electron problems, i.e, number of impurity sites
-!! in which the correlated effect is considered
+!! in which the correlated effect is considered. `nsite` should be smaller
+!! or equal to `ngrp`.
 !!
      integer, public, save :: nsite  = 1
 
@@ -210,7 +243,8 @@
 !!
 !! @var fermi
 !!
-!! default fermi level, which is usually taken from the dft calculations
+!! default fermi level, which is usually taken from the dft calculations.
+!! when task = 1 or 3, `fermi` might be updated.
 !!
      real(dp), public, save :: fermi = 0.00_dp
 
@@ -270,8 +304,15 @@
 
   end module control
 
+!!========================================================================
+!!>>> module version                                                   <<<
+!!========================================================================
 
-
+!!
+!! @mod version
+!!
+!! define the version string
+!!
   module version
      implicit none
 
@@ -280,21 +321,21 @@
 !!
 !! version string, version number + date info. + status info.
 !!
-     character(len=20), public, parameter :: V_FULL = 'v0.1.2 @ 2021.05.09D'
+     character(len=20), public, parameter :: V_FULL = 'v0.4.1 @ 2021.05.23D'
 
 !!
 !! @var V_CURR
 !!
 !! version string, only version number
 !!
-     character(len=06), public, parameter :: V_CURR = 'v0.1.2'
+     character(len=06), public, parameter :: V_CURR = 'v0.4.1'
 
 !!
 !! @var V_DATE
 !!
 !! version string, only date info.
 !!
-     character(len=11), public, parameter :: V_DATE = '2021.05.09'
+     character(len=11), public, parameter :: V_DATE = '2021.05.23'
 
 !!
 !! @var V_STAT

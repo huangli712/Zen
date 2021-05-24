@@ -18,7 +18,7 @@
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/08/2021 by li huang (last modified)
+!!!           05/21/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -32,7 +32,7 @@
 !! @mod dmft_map
 !!
 !! define connections / mappings between the quantum impurity problems and
-!! the groups of projectors (or band windows)
+!! the groups of projectors (and band windows)
 !!
   module dmft_map
      implicit none
@@ -57,7 +57,8 @@
 !! @var g_imp
 !!
 !! from a given group of projectors, return the corresponding quantum
-!! impurity problem, group -> impurity
+!! impurity problem, group -> impurity. 0 value means that this group
+!! of projectors is for non-correlated orbitals.
 !!
      integer, public, save, allocatable :: g_imp(:)
 
@@ -65,7 +66,8 @@
 !! @var w_imp
 !!
 !! from a given dft band window, return the corresponding quantum impurity
-!! problem, window -> impurity
+!! problem, window -> impurity. 0 value means that this dft band window
+!! is for non-correlated orbitals.
 !!
      integer, public, save, allocatable :: w_imp(:)
 
@@ -86,7 +88,8 @@
 !!
 !! @var qdim
 !!
-!! maximum number of correlated orbitals for all groups
+!! maximum number of correlated orbitals for all groups. actually, it
+!! should be equal to maxval(ndim).
 !!
      integer, public, save :: qdim = -1
 
@@ -100,28 +103,28 @@
 !!
 !! @var corr
 !!
-!! test which group is correlated
+!! tell us this group is correlated or not
 !!
      logical, public, save, allocatable :: corr(:)
 
 !!
 !! @var site
 !!
-!! the corresponding atomic site of group
+!! the corresponding atomic site of this group
 !!
      integer, public, save, allocatable :: site(:)
 
 !!
 !! @var l
 !!
-!! the corresponding angular momentum quantum number of group
+!! the corresponding angular momentum quantum number of this group
 !!
      integer, public, save, allocatable :: l(:)
 
 !!
 !! @var ndim
 !!
-!! number of projectors (orbitals) of group
+!! number of projectors (orbitals) included in this group
 !!
      integer, public, save, allocatable :: ndim(:)
 
@@ -134,7 +137,7 @@
 !!
 !! @mod dmft_window
 !!
-!! specify the band windows of groups of projectors
+!! specify the dft band windows for projectors
 !!
   module dmft_window
      implicit none
@@ -142,7 +145,8 @@
 !!
 !! @var qbnd
 !!
-!! maximum number of bands for all the band windows
+!! maximum number of dft bands for all the band windows. actually, it
+!! should be equal to maxval(nbnd).
 !!
      integer, public, save :: qbnd = -1
 
@@ -194,14 +198,14 @@
 !!
 !! @var sorts
 !!
-!! sorts of atoms
+!! sorts of atoms (chemical symbol)
 !!
      character(len=2), public, save, allocatable :: sorts(:)
 
 !!
 !! @var atoms
 !!
-!! list of atoms
+!! list of atoms (chemical symbol)
 !!
      character(len=2), public, save, allocatable :: atoms(:)
 
@@ -252,7 +256,8 @@
 !!
 !! @var weight
 !!
-!! integration weights for k-points. it has not been renormalized
+!! integration weights for k-points. please pay attention to that they
+!! have not been renormalized. we have to ensure sum(weight) = nkpt.
 !!
      real(dp), public, save, allocatable :: weight(:)
 
@@ -266,7 +271,7 @@
 !! @mod dmft_tetra
 !!
 !! contain the tetrahedron information, which is used to carry out the
-!! brillouin zone integration
+!! brillouin zone integration. this feature has not been implemented.
 !!
   module dmft_tetra
      implicit none
@@ -274,7 +279,9 @@
 !!
 !! @var tetra
 !!
-!! contain tetrahedron information
+!! contain tetrahedron information. tetra(itet,1:4) point to the four
+!! vertices for given tetrahedron, while tetra(itet,5) denotes the
+!! corresponding weight for this tetrahedron.
 !!
      integer, public, save, allocatable :: tetra(:,:)
 
@@ -287,7 +294,7 @@
 !!
 !! @mod dmft_eigen
 !!
-!! contain the Kohn-Sham eigenvalues and occupations
+!! contain the Kohn-Sham eigenvalues and related occupations
 !!
   module dmft_eigen
      use constants, only : dp
@@ -317,7 +324,7 @@
 !!
 !! @mod dmft_projs
 !!
-!! contain the local orbital projections
+!! contain the local orbital projectors
 !!
   module dmft_projs
      use constants, only : dp
@@ -327,15 +334,21 @@
 !!
 !! @var chipsi
 !!
-!! overlap matrix between the local orbitals and the Kohn-Sham basis
+!! overlap matrix between the local orbitals and the Kohn-Sham basis. its
+!! definition is \langle \chi^{I}_{\alpha} | \psi_{b,k,s} \rangle, where
+!! `I` means the index for correlated sites, \alpha means the index for
+!! correlated orbitals. `b`, `k`, `s` are indices for dft bands, k-points,
+!! and spins, respectively. of course, `b` is restricted by band windows,
+!! and depends on k-points as well. so, chipsi is a rank-5 array.
 !!
      complex(dp), public, save, allocatable :: chipsi(:,:,:,:,:)
 
 !!
 !! @var psichi
 !!
-!! overlap matrix between the Kohn-Sham basis and the local orbitals
-!! actually, psichi can be obtained by chipsi through conjugate transpose
+!! overlap matrix between the Kohn-Sham basis and the local orbitals. its
+!! definition is \langle \psi_{b,k,s} | \chi^{I}_{\alpha} \rangle.
+!! actually, psichi can be obtained by chipsi through conjugate transpose.
 !!
      complex(dp), public, save, allocatable :: psichi(:,:,:,:,:)
 
@@ -348,7 +361,7 @@
 !!
 !! @mod dmft_fmesh
 !!
-!! contain the frequency mesh
+!! contain the linear frequency mesh
 !!
   module dmft_fmesh
      use constants, only : dp
@@ -358,7 +371,7 @@
 !!
 !! @var fmesh
 !!
-!! frequency mesh. it can be defined on imaginary axis or real axis
+!! linear frequency mesh. it can be defined on imaginary axis or real axis.
 !!
      real(dp), public, save, allocatable :: fmesh(:)
 
@@ -371,7 +384,7 @@
 !!
 !! @mod dmft_eimps
 !!
-!! contain the impurity levels
+!! contain the local impurity levels
 !!
   module dmft_eimps
      use constants, only : dp
@@ -381,9 +394,17 @@
 !!
 !! @var eimps
 !!
-!! impurity levels
+!! local impurity levels. eimps = \sum enk - mu
 !!
      complex(dp), public, save, allocatable :: eimps(:,:,:,:)
+
+!!
+!! @var eimpx
+!!
+!! local impurity levels shifted by double counting terms. in other words,
+!! eimpx = eimps - sigdc
+!!
+     complex(dp), public, save, allocatable :: eimpx(:,:,:,:)
 
   end module dmft_eimps
 
@@ -394,7 +415,7 @@
 !!
 !! @mod dmft_sigma
 !!
-!! contain the self-energy functions
+!! contain the impurity self-energy functions
 !!
   module dmft_sigma
      use constants, only : dp
@@ -405,15 +426,26 @@
 !! @var sigdc
 !!
 !! dobule counting term for self-energy functions, which are determined
-!! by the Zen framework
+!! by the Zen framework. this code will read it from file sigma.dc.
 !!
      complex(dp), public, save, allocatable :: sigdc(:,:,:,:)
 
 !!
+!! @var sigoo
+!!
+!! asymptotic values for bare self-energy functions (when \omega goes
+!! to \infty). note that the double counting terms should be subtracted
+!! from them.
+!!
+     complex(dp), public, save, allocatable :: sigoo(:,:,:,:)
+
+!!
 !! @var sig_l
 !!
-!! local self-energy functions. they are usually taken from the output of
-!! various quantum impurity solver
+!! impurity self-energy functions. they are usually taken from the output
+!! of various quantum impurity solver. this code will read them from file
+!! sigma.bare. note that the double counting terms should be subtracted
+!! from them.
 !!
      complex(dp), public, save, allocatable :: sig_l(:,:,:,:,:)
 
@@ -426,7 +458,7 @@
 !!
 !! @mod dmft_green
 !!
-!! contain the green's functions
+!! contain the local green's functions
 !!
   module dmft_green
      use constants, only : dp
@@ -436,7 +468,9 @@
 !!
 !! @var grn_l
 !!
-!! local green's functions
+!! local green's functions. note that within the dynamical mean-field
+!! theory, local green's functions should be equal to impurity green's
+!! functions.
 !!
      complex(dp), public, save, allocatable :: grn_l(:,:,:,:,:)
 
@@ -449,7 +483,7 @@
 !!
 !! @mod dmft_weiss
 !!
-!! contain bath weiss functions and hybridization functions
+!! contain local weiss functions and hybridization functions
 !!
   module dmft_weiss
      use constants, only : dp
@@ -459,7 +493,7 @@
 !!
 !! @var wss_l
 !!
-!! local bath weiss functions
+!! local weiss functions
 !!
      complex(dp), public, save, allocatable :: wss_l(:,:,:,:,:)
 
@@ -810,6 +844,7 @@
 
 ! allocate memory
      allocate(eimps(qdim,qdim,nspin,nsite), stat = istat)
+     allocate(eimpx(qdim,qdim,nspin,nsite), stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -818,6 +853,7 @@
 
 ! initialize them
      eimps = czero
+     eimpx = czero
 
      return
   end subroutine cat_alloc_eimps
@@ -832,6 +868,7 @@
 
 ! allocate memory
      allocate(sigdc(qdim,qdim,nspin,nsite),       stat = istat)
+     allocate(sigoo(qdim,qdim,nspin,nsite),       stat = istat)
      allocate(sig_l(qdim,qdim,nmesh,nspin,nsite), stat = istat)
 
 ! check the status
@@ -841,6 +878,7 @@
 
 ! initialize them
      sigdc = czero
+     sigoo = czero
      sig_l = czero
 
      return
@@ -1039,6 +1077,7 @@
      implicit none
 
      if ( allocated(eimps) ) deallocate(eimps)
+     if ( allocated(eimpx) ) deallocate(eimpx)
 
      return
   end subroutine cat_free_eimps
@@ -1052,6 +1091,7 @@
      implicit none
 
      if ( allocated(sigdc) ) deallocate(sigdc)
+     if ( allocated(sigoo) ) deallocate(sigoo)
      if ( allocated(sig_l) ) deallocate(sig_l)
 
      return
