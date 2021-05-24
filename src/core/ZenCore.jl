@@ -1,14 +1,14 @@
 #
 # Project : Pansy
-# Source  : Zen.jl
+# Source  : ZenCore.jl
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/23
+# Last modified: 2021/05/24
 #
 
 """
-    Zen
+    Zen and ZenCore
 
 Zen is a modern DFT + DMFT computation framework. It can be used to
 study the correlated electronic structures of a wide range of strongly
@@ -29,8 +29,11 @@ Zen supports the following quantum impurity solvers:
 
 For more details about how to install and use the Zen framework, please
 visit the following website:
+* `http://doc.zen`
 
-`http://doc.zen`
+ZenCore implements the core library of the Zen computation framework. It
+connects various components of Zen, and drive them to work together. It
+provides an easy-to-use user and flexible user interface. 
 """
 module Zen
 
