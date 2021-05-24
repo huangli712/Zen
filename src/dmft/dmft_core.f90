@@ -1607,10 +1607,6 @@
 
 ! convert Em (vector) to Hm (diagonal matrix)
          call s_diag_z(cbnd, Em, Hm)
-         if ( m == 3) then
-             print *, Hm
-             STOP
-         endif
 
 ! substract self-energy function from the hamiltonian
          Gk(:,:,m) = Hm - Sk(:,:,m)
