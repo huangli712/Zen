@@ -122,7 +122,7 @@ export authors
 # query_inps    -> Query input files.
 # query_stop    -> Query case.stop file.
 # query_home    -> Query home directory of Zen.
-# query_core    -> Query core directory of Zen (where is Zen.jl).
+# query_core    -> Query home directory of ZenCore (where is ZenCore.jl).
 # query_dft     -> Query home directory of DFT engine.
 # query_dmft    -> Query home directory of DMFT engine.
 # query_solver  -> Query home directory of quantum impurity solvers.
