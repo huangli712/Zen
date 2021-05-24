@@ -36,7 +36,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/23/2021 by li huang (last modified)
+!!!           05/24/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -1098,6 +1098,7 @@
      complex(dp) :: caux
 
 ! dummy arrays
+     complex(dp), allocatable :: Im(:,:)
      complex(dp), allocatable :: Tm(:,:)
      complex(dp), allocatable :: Em(:,:)
      complex(dp), allocatable :: Sm(:,:)
@@ -1116,6 +1117,7 @@
          cdim = ndim(t)
 
 ! allocate memory
+         allocate(Im(cdim,cdim), stat = istat)
          allocate(Tm(cdim,cdim), stat = istat)
          allocate(Em(cdim,cdim), stat = istat)
          allocate(Sm(cdim,cdim), stat = istat)
@@ -1126,6 +1128,9 @@
 
          SPIN_LOOP: do s=1,nspin
              MESH_LOOP: do m=1,nmesh
+
+! build identify
+                 call s_identity_z(cdim, Im)
 
 ! get frequency point. note that the fermi level (chemical potential) is
 ! already included in the impurity levels `eimps`. so here we just ignore
@@ -1151,12 +1156,13 @@
 
 ! assemble the hybridization function. actually, Sm + Tm is G^{-1}_0.
 ! please see cal_wss_l() subroutine for more details.
-                 hyb_l(1:cdim,1:cdim,m,s,t) = caux - Em - Sm - Tm
+                 hyb_l(1:cdim,1:cdim,m,s,t) = caux * Im - Em - Sm - Tm
 
              enddo MESH_LOOP ! over m={1,nmesh} loop
          enddo SPIN_LOOP ! over s={1,nspin} loop
 
 ! deallocate memory
+         if ( allocated(Im) ) deallocate(Im)
          if ( allocated(Tm) ) deallocate(Tm)
          if ( allocated(Em) ) deallocate(Em)
          if ( allocated(Sm) ) deallocate(Sm)
