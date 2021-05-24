@@ -909,8 +909,6 @@
 
 ! calculate lattice green's function
              call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
-             print *, Gk(:,:,3)
-             STOP
 
 ! downfold the lattice green's function to obtain local green's function,
 ! then we have to save the final results
