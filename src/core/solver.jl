@@ -275,6 +275,31 @@ function ctqmc_hyb_l()
     _, nband, nmesh, nspin = size(Delta)
 
     open("solver.hyb.in", "w") do fout
+        for s = 1:nspin
+            for p = 1:cdim
+                orb = (s - 1) * cdim + p
+                for m = 1:nmesh
+                    z = Delta[p,p,m,s]
+                    @printf(fout, "%6i%16.8f%16.8f%16.8f%16.8f%16.8f\n", orb, fmesh[m], real(z), imag(z), 0.0, 0.0)
+                end
+                println(fout)
+                println(fout)
+            end
+        end
+
+        if nspin == 1
+        for s = 1:nspin
+            for p = 1:cdim
+                orb = (2 - 1) * cdim + p
+                for m = 1:nmesh
+                    z = Delta[p,p,m,s]
+                    @printf(fout, "%6i%16.8f%16.8f%16.8f%16.8f%16.8f\n", orb, fmesh[m], real(z), imag(z), 0.0, 0.0)
+                end
+                println(fout)
+                println(fout)
+            end
+        end
+        end
     end
 end
 
