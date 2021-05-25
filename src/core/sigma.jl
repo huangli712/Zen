@@ -329,7 +329,9 @@ function sigma_split()
     for t = 1:nsite
 
         fhyb = "impurity.$t/dmft.hyb_l"
-        println(fhyb)
+
+        open(fhyb, "w") do fout
+        end
     end
 
     # Print blank line for better visualization
