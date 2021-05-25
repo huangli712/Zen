@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/05/24
+# Last modified: 2021/05/25
 #
 
 """
@@ -259,6 +259,23 @@ See also: [`sigma_gather`](@ref).
 function sigma_split()
     # Print the log
     println("Sigma : Split")
+
+    # Filename for hybridization functions
+    fhyb = "dmft1/dmft.hyb_l"
+
+    # Make sure the existence of hybridization functions
+    @assert isfile(fhyb)
+
+    # Parse `fhyb`, extract the hybridization functions 
+    open(fhyb, "r") do fin
+
+        # Get the dimensional parameters
+        nsite = parse(I64, line_to_array(fin)[3])
+        nspin = parse(I64, line_to_array(fin)[3])
+        nmesh = parse(I64, line_to_array(fin)[3])
+        qdim = parse(I64, line_to_array(fin)[4])
+        
+    end
 
     # Print blank line for better visualization
     println()
