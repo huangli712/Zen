@@ -304,6 +304,9 @@ function ctqmc_hyb_l()
     end
 end
 
+function ctqmc_sig_l()
+end
+
 function ctqmc_eimpx()
     Eimpx = []
     cdim  = 0
@@ -351,7 +354,7 @@ function ctqmc_eimpx()
         for s = 1:nspin
             for p = 1:cdim
                 orb = (s - 1) * cdim + p
-                z = Eimpx(p, p, s)
+                z = Eimpx[p, p, s]
                 @printf(fout, "%4i%16.8f%4i\n", orb, real(z), orb)
             end
         end
@@ -360,11 +363,10 @@ function ctqmc_eimpx()
         for s = 1:nspin
             for p = 1:cdim
                 orb = (2 - 1) * cdim + p
-                z = Eimpx(p, p, s)
+                z = Eimpx[p, p, s]
                 @printf(fout, "%4i%16.8f%4i\n", orb, real(z), orb)
             end
         end
         end
     end
-
 end
