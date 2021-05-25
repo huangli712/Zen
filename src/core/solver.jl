@@ -304,4 +304,32 @@ function ctqmc_hyb_l()
 end
 
 function ctqmc_eimpx()
+    Eimpx = []
+    cdim  = 0
+
+    open("dmft.eimpx", "r") do fin
+    
+        # Get the dimensional parameters
+        nsite = parse(I64, line_to_array(fin)[3])
+        nspin = parse(I64, line_to_array(fin)[3])
+        qdim = parse(I64, line_to_array(fin)[4])
+
+        # Skip two lines
+        readline(fin)
+        readline(fin)
+
+        # Create an array for local impurity levels
+        Eimpx = zeros(C64, qdim, qdim, nspin)
+
+        for s = 1:nspin
+            strs = readline(fin)
+            _t = parse(I64, line_to_array(strs)[3])
+            _s = parse(I64, line_to_array(strs)[5])
+            cdim = parse(I64, line_to_array(strs)[7])
+            @assert _t == 1 && _s == s
+
+
+        end
+
+    end
 end
