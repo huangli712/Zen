@@ -331,22 +331,22 @@ function sigma_split()
         fhyb = "impurity.$t/dmft.hyb_l"
 
         open(fhyb, "w") do fout
-            @printf(fout, "%9s %4i\n", "# nsite: ", nsite)
-            @printf(fout, "%9s %4i\n", "# nspin: ", nspin)
-            @printf(fout, "%9s %4i\n", "# nmesh: ", nmesh)
-            @printf(fout, "%9s %4i\n", "# qdim : ", qdim)
+            @printf(fout, "# nsite: %4i\n", nsite)
+            @printf(fout, "# nspin: %4i\n", nspin)
+            @printf(fout, "# nmesh: %4i\n", nmesh)
+            @printf(fout, "# qdim : %4i\n", qdim)
 
             println(fout)
             println(fout)
 
             for s = 1:nspin
-                @printf(fout, "# site:%4i  spins:%4i  dims:%4i\n", t, s, ndim[t])
+                @printf(fout, "# site:%4i  spin:%4i  dims:%4i\n", t, s, ndim[t])
                 for m = 1:nmesh
-                    @printf(fout, "w:%6i %16.8f\n", m, fmesh[m])
+                    @printf(fout, "w:%6i%16.8f\n", m, fmesh[m])
                     for q = 1:ndim[t]
                         for p = 1:ndim[t]
                             z = Delta[p,q,m,s,t]
-                            @printf(fout, "%4i %4i %16.8f %16.8f\n", p, q, real(z), imag(z))
+                            @printf(fout, "%4i%4i%16.8f%16.8f\n", p, q, real(z), imag(z))
                         end
                     end
                 end
