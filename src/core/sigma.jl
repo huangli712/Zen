@@ -366,6 +366,16 @@ function sigma_split()
 
     end
 
+    # Filename for local impurity levels
+    flev = "dmft1/dmft.eimpx"
+
+    # Make sure the existence of local impurity levels
+    @assert isfile(flev)
+
+    # Parse `flev`, extract the local impurity levels
+    open(flev, "r") do fin
+    end
+
     # Print blank line for better visualization
     println()
 end
