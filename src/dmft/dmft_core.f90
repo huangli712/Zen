@@ -36,7 +36,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/24/2021 by li huang (last modified)
+!!!           05/25/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -949,12 +949,6 @@
      if ( allocated(Gl) ) deallocate(Gl)
      if ( allocated(grn_l_mpi) ) deallocate(grn_l_mpi)
 
-!! DEBUG CODE
-     do s=1,qdim
-         print *, s, grn_l(s,s,1,1,1)
-     enddo ! over s={1,qdim} loop
-!! DEBUG CODE
-
      return
   end subroutine cal_grn_l
 
@@ -1168,10 +1162,6 @@
          if ( allocated(Sm) ) deallocate(Sm)
 
      enddo SITE_LOOP ! over t={1,nsite} loop
-
-     do m=1,nmesh
-         write(100,'(i5, 5f16.8)') m, fmesh(m), grn_l(1,1,m,1,1), hyb_l(1,1,m,1,1)
-     enddo
 
      return
   end subroutine cal_hyb_l
