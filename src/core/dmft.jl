@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/24
+# Last modified: 2021/05/25
 #
 
 """
@@ -123,5 +123,12 @@ end
 See also: [`dmft_init`](@ref), [`dmft_exec`](@ref).
 """
 function dmft_save(it::IterInfo, task::I64)
-    # sorry()
+    # Check the task
+    @assert task in (1, 2)
+
+
+    fdmf1 = ["dmft.out"]
+    fdmf2 = ["dmft.eimps", "dmft.eimpx", "dmft.fermi"]
+    fdmf3 = ["dmft.grn_l", "dmft.hyb_l", "dmft.wss_l"]
+
 end
