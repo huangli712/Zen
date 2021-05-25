@@ -231,6 +231,7 @@ end
 function ctqmc_hyb_l()
     fmesh = []
     Delta = []
+    cdim  = 0
 
     open("dmft.hyb_l", "r") do fin
 
@@ -250,7 +251,14 @@ function ctqmc_hyb_l()
         # Create an array for hybridization functions
         Delta = zeros(C64, qdim, qdim, nmesh, nspin)
 
-        
+        for s = 1:nspin
+            strs = readline(fin)
+            _t = parse(I64, line_to_array(strs)[3])
+            _s = parse(I64, line_to_array(strs)[5])
+            cdim = parse(I64, line_to_array(strs)[7])
+            @assert _t == 1 && _s == s
+
+        end
     end
 end
 
