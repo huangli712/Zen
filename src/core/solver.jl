@@ -342,4 +342,11 @@ function ctqmc_eimpx()
         end
 
     end
+
+    _, nband, nspin = size(Eimpx)
+
+    open("solver.eimp.in", "w") do fout
+
+    end
+
 end
