@@ -37,6 +37,30 @@ function s_qmc1_exec(it::IterInfo)
     # Print the header
     println("Engine : CT-HYB$(subscript(1))")
 
+    # Get the home directory of quantum impurity solver
+    solver_home = query_solver("ct_hyb1")
+
+    # Determine mpi prefix (whether the solver is executed sequentially)
+    mpi_prefix = inp_toml("../MPI.toml", "solver", false)
+    numproc = parse(I64, line_to_array(mpi_prefix)[3])
+    println("  Para : Using $numproc processors")
+
+    # Select suitable solver program
+    solver_exe = "$solver_home/ctqmc"
+    println(solver_exe)
+    @assert isfile(solver_exe)
+    println("  Exec : $solver_exe")
+
+    # Assemble command
+    if isnothing(mpi_prefix)
+        solver_cmd = solver_exe
+    else
+        solver_cmd = split("$mpi_prefix $solver_exe", " ")
+    end
+
+    # Launch it, the terminal output is redirected to solver.out
+    run(pipeline(`$solver_cmd`, stdout = "solver.out"))
+
     # Print the footer for a better visualization
     println()
 end
