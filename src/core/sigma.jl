@@ -263,6 +263,7 @@ function sigma_split()
     # Declare the frequency mesh and hybridization function
     fmesh = []
     Delta = []
+    Eimpx = []
     ndim  = []
 
     # Filename for hybridization functions
@@ -387,7 +388,38 @@ function sigma_split()
         # Create an array for local impurity levels
         Eimpx = zeros(C64, qdim, qdim, nspin, nsite)
         ndim = zeros(I64, nsite)
+
+        # Read the data
+        for t = 1:nsite
+            for s = 1:nspin
+                # Parse indices and dimensional parameter
+                strs = readline(fin)
+                _t = parse(I64, line_to_array(strs)[3])
+                _s = parse(I64, line_to_array(strs)[5])
+                cdim = parse(I64, line_to_array(strs)[7])
+                ndim[t] = cdim
+                @assert _t == t && _s == s
+
+                # Parse local impurity levels
+                for q = 1:cdim
+                    for p = 1:cdim
+                        _re, _im = parse.(F64, line_to_array(fin)[3:4])
+                        Eimpx[p,q,s,t] = _re + _im * im
+                    end
+                end
+
+                # Skip two lines
+                readline(fin)
+                readline(fin)
+            end
+        end
     end
+
+    # Next, we are going to split the local impurity levels according
+    # to the quantum impurity problems
+
+    # Extract the dimensional parameters
+    _, qdim, nspin, nsite = size(Eimpx)
 
     # Print blank line for better visualization
     println()
