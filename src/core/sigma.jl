@@ -374,6 +374,19 @@ function sigma_split()
 
     # Parse `flev`, extract the local impurity levels
     open(flev, "r") do fin
+
+        # Get the dimensional parameters
+        nsite = parse(I64, line_to_array(fin)[3])
+        nspin = parse(I64, line_to_array(fin)[3])
+        qdim = parse(I64, line_to_array(fin)[4])
+
+        # Skip two lines
+        readline(fin)
+        readline(fin)
+
+        # Create an array for local impurity levels
+        Eimpx = zeros(C64, qdim, qdim, nspin, nsite)
+        ndim = zeros(I64, nsite)
     end
 
     # Print blank line for better visualization
