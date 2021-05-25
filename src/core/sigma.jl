@@ -424,11 +424,11 @@ function sigma_split()
     # Go through each quantum impurity problems
     for t = 1:nsite
 
-        # Determine filename for hybridization functions
-        fhyb = "impurity.$t/dmft.hyb_l"
+        # Determine filename for local impurity levels
+        flev = "impurity.$t/dmft.eimpx"
 
         # Write the data
-        open(fhyb, "w") do fout
+        open(flev, "w") do fout
             # Write dimensional parameters
             @printf(fout, "# nsite: %4i\n", nsite)
             @printf(fout, "# nspin: %4i\n", nspin)
