@@ -67,7 +67,7 @@ function sigma_reset()
         push!(D, ndim)
 
         # Create a temporary array for self-energy function
-        S = zeros(C64, nmesh, ndim, ndim, nspin)
+        S = zeros(C64, ndim, ndim, nmesh, nspin)
 
         # Push S into SA to save it
         push!(SA, S)
@@ -100,7 +100,7 @@ function sigma_reset()
                     # There are 2 columns and ndim * ndim rows
                     for a = 1:D[i]
                         for b = 1:D[i]
-                            x = SA[i][m, b, a, s]
+                            x = SA[i][b, a, m, s]
                             @printf(fout, "%16.12f %16.12f\n", real(x), imag(x))
                         end
                     end
@@ -274,7 +274,38 @@ function sigma_split()
         nspin = parse(I64, line_to_array(fin)[3])
         nmesh = parse(I64, line_to_array(fin)[3])
         qdim = parse(I64, line_to_array(fin)[4])
-        
+
+        # Skip two lines
+        readline(fin)
+        readline(fin)
+
+        # Create an array for frequency mesh
+        fmesh = zeros(F64, nmesh)
+
+        # Create an array for hybridization functions
+        Delta = zeros(C64, qdim, qdim, nmesh, nspin, nsite)
+
+        # Read the data
+        for t = 1:nsite
+            for s = 1:nspin
+                strs = readline(fin)
+                _t = parse(I64, line_to_array(strs)[3])
+                _s = parse(I64, line_to_array(strs)[5])
+                cdim = parse(I64, line_to_array(strs)[7])
+                @assert _t == t && _s == s
+                for m = 1:nmesh
+                    fmesh[m] = parse(F64, line_to_array(fin)[3])
+                    for q = 1:cdim
+                        for p = 1:cdim
+                            _re, _im = parse.(F64, line_to_array(fin)[3:4])
+                            Delta[p,q,m,s,t] = _re + _im * im
+                        end
+                    end
+                end
+                readline(fin)
+                readline(fin)
+            end
+        end
     end
 
     # Print blank line for better visualization
