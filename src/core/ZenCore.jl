@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/05/24
+# Last modified: 2021/05/26
 #
 
 """
@@ -534,6 +534,9 @@ export s_hub1_save
 export s_norg_init
 export s_norg_exec
 export s_norg_save
+export ctqmc_setup
+export ctqmc_hyb_l
+export ctqmc_eimpx
 
 #
 # sigma.jl

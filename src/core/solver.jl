@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/01
+# Last modified: 2021/05/26
 #
 
 #
@@ -22,6 +22,10 @@ This quantum impurity solver is from the `iQIST` software package.
 See also: [`s_qmc1_exec`](@ref), [`s_qmc1_save`](@ref).
 """
 function s_qmc1_init(it::IterInfo)
+    println("here")
+    ctqmc_setup()
+    ctqmc_hyb_l()
+    ctqmc_eimpx()
 end
 
 """
@@ -47,7 +51,6 @@ function s_qmc1_exec(it::IterInfo)
 
     # Select suitable solver program
     solver_exe = "$solver_home/ctqmc"
-    println(solver_exe)
     @assert isfile(solver_exe)
     println("  Exec : $solver_exe")
 
@@ -207,4 +210,49 @@ See also: [`s_norg_init`](@ref), [`s_norg_exec`](@ref).
 """
 function s_norg_save(it::IterInfo)
     sorry()
+end
+
+function ctqmc_setup()
+    open("solver.ctqmc.in", "w") do fout
+        println(fout, "isscf = 1")
+        println(fout, "isspn = 1")
+        println(fout, "isort = 2")
+        println(fout, "nband = 5")
+        println(fout, "norbs = 10")
+        println(fout, "ncfgs = 1024")
+
+        println(fout, "Uc    = 4.0")
+        println(fout, "Jz    = 0.7")
+        println(fout, "mune  = 0.0")
+        println(fout, "beta  = 40.0")
+    end
+end
+
+function ctqmc_hyb_l()
+    fmesh = []
+    Delta = []
+
+    open("dmft.hyb_l", "r") do fin
+
+        # Get the dimensional parameters
+        nsite = parse(I64, line_to_array(fin)[3])
+        nspin = parse(I64, line_to_array(fin)[3])
+        nmesh = parse(I64, line_to_array(fin)[3])
+        qdim = parse(I64, line_to_array(fin)[4])
+
+        # Skip two lines
+        readline(fin)
+        readline(fin)
+
+        # Create an array for frequency mesh
+        fmesh = zeros(F64, nmesh)
+
+        # Create an array for hybridization functions
+        Delta = zeros(C64, qdim, qdim, nmesh, nspin)
+
+        
+    end
+end
+
+function ctqmc_eimpx()
 end
