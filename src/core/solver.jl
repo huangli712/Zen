@@ -273,6 +273,7 @@ function ctqmc_hyb_l()
     end
 
     _, nband, nmesh, nspin = size(Delta)
+    @assert nband >= cdim
 
     open("solver.hyb.in", "w") do fout
         for s = 1:nspin
@@ -344,9 +345,26 @@ function ctqmc_eimpx()
     end
 
     _, nband, nspin = size(Eimpx)
+    @assert nband >= cdim
 
     open("solver.eimp.in", "w") do fout
+        for s = 1:nspin
+            for p = 1:cdim
+                orb = (s - 1) * cdim + p
+                z = Eimpx(p, p, s)
+                @printf(fout, "%4i%16.8f%4i\n", orb, real(z), orb)
+            end
+        end
 
+        if nspin == 1
+        for s = 1:nspin
+            for p = 1:cdim
+                orb = (2 - 1) * cdim + p
+                z = Eimpx(p, p, s)
+                @printf(fout, "%4i%16.8f%4i\n", orb, real(z), orb)
+            end
+        end
+        end
     end
 
 end
