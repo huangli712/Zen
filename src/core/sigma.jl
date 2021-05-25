@@ -260,6 +260,11 @@ function sigma_split()
     # Print the log
     println("Sigma : Split")
 
+    # Declare the frequency mesh and hybridization function
+    fmesh = []
+    Delta = []
+    ndim  = []
+
     # Filename for hybridization functions
     fhyb = "dmft1/dmft.hyb_l"
 
@@ -284,17 +289,22 @@ function sigma_split()
 
         # Create an array for hybridization functions
         Delta = zeros(C64, qdim, qdim, nmesh, nspin, nsite)
+        ndim = zeros(I64, nsite)
 
         # Read the data
         for t = 1:nsite
             for s = 1:nspin
+                # Parse indices and dimensional parameter
                 strs = readline(fin)
                 _t = parse(I64, line_to_array(strs)[3])
                 _s = parse(I64, line_to_array(strs)[5])
                 cdim = parse(I64, line_to_array(strs)[7])
+                ndim[t] = cdim
                 @assert _t == t && _s == s
                 for m = 1:nmesh
+                    # Parse frequency mesh
                     fmesh[m] = parse(F64, line_to_array(fin)[3])
+                    # Parse hybridization functions
                     for q = 1:cdim
                         for p = 1:cdim
                             _re, _im = parse.(F64, line_to_array(fin)[3:4])
@@ -302,10 +312,24 @@ function sigma_split()
                         end
                     end
                 end
+                # Skip two lines
                 readline(fin)
                 readline(fin)
             end
         end
+    end
+
+    # Next, we are going to split the hybridization functions according
+    # to the quantum impurity problems
+
+    # Extract the dimensional parameters
+    _, qdim, nmesh, nspin, nsite = size(Delta)
+
+    # Go through each quantum impurity problems
+    for t = 1:nsite
+
+        fhyb = "impurity.$t/dmft.hyb_l"
+        println(fhyb)
     end
 
     # Print blank line for better visualization
