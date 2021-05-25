@@ -432,7 +432,6 @@ function sigma_split()
             # Write dimensional parameters
             @printf(fout, "# nsite: %4i\n", nsite)
             @printf(fout, "# nspin: %4i\n", nspin)
-            @printf(fout, "# nmesh: %4i\n", nmesh)
             @printf(fout, "# qdim : %4i\n", qdim)
 
             # Write separators
@@ -441,18 +440,17 @@ function sigma_split()
 
             # Go through each spin
             for s = 1:nspin
+                # Write dimensional parameters
                 @printf(fout, "# site:%4i  spin:%4i  dims:%4i\n", t, s, ndim[t])
-                # Go through each frequency point
-                for m = 1:nmesh
-                    @printf(fout, "w:%6i%16.8f\n", m, fmesh[m])
-                    # Go through the orbital space
-                    for q = 1:ndim[t]
-                        for p = 1:ndim[t]
-                            z = Delta[p,q,m,s,t]
-                            @printf(fout, "%4i%4i%16.8f%16.8f\n", p, q, real(z), imag(z))
-                        end
+
+                # Go through the orbital space
+                for q = 1:ndim[t]
+                    for p = 1:ndim[t]
+                        z = Eimpx[p,q,s,t]
+                        @printf(fout, "%4i%4i%16.8f%16.8f\n", p, q, real(z), imag(z))
                     end
                 end
+
                 # Write separators
                 println(fout)
                 println(fout)
