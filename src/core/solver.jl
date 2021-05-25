@@ -328,7 +328,17 @@ function ctqmc_eimpx()
             cdim = parse(I64, line_to_array(strs)[7])
             @assert _t == 1 && _s == s
 
+            # Parse local impurity levels
+            for q = 1:cdim
+                for p = 1:cdim
+                    _re, _im = parse.(F64, line_to_array(fin)[3:4])
+                    Eimpx[p,q,s] = _re + _im * im
+                end
+            end
 
+            # Skip two lines
+            readline(fin)
+            readline(fin)
         end
 
     end
