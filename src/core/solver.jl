@@ -22,7 +22,6 @@ This quantum impurity solver is from the `iQIST` software package.
 See also: [`s_qmc1_exec`](@ref), [`s_qmc1_save`](@ref).
 """
 function s_qmc1_init(it::IterInfo)
-    println("here")
     ctqmc_setup()
     ctqmc_hyb_l()
     ctqmc_eimpx()
@@ -257,8 +256,25 @@ function ctqmc_hyb_l()
             _s = parse(I64, line_to_array(strs)[5])
             cdim = parse(I64, line_to_array(strs)[7])
             @assert _t == 1 && _s == s
-
+            for m = 1:nmesh
+                fmesh[m] = parse(F64, line_to_array(fin)[3])
+                # Parse hybridization functions
+                for q = 1:cdim
+                    for p = 1:cdim
+                        _re, _im = parse.(F64, line_to_array(fin)[3:4])
+                        Delta[p,q,m,s] = _re + _im * im
+                    end
+                end
+            end
+            # Skip two lines
+            readline(fin)
+            readline(fin)
         end
+    end
+
+    _, nband, nmesh, nspin = size(Delta)
+
+    open("solver.hyb.in", "w") do fout
     end
 end
 
