@@ -120,15 +120,29 @@ end
 """
     dmft_save(it::IterInfo, task::I64)
 
+Backup the files outputed by the dynamical mean-field theory engine.
+
 See also: [`dmft_init`](@ref), [`dmft_exec`](@ref).
 """
 function dmft_save(it::IterInfo, task::I64)
     # Check the task
     @assert task in (1, 2)
 
-
+    # Create a list of files that need to be backup
     fdmf1 = ["dmft.out"]
     fdmf2 = ["dmft.eimps", "dmft.eimpx", "dmft.fermi"]
     fdmf3 = ["dmft.grn_l", "dmft.hyb_l", "dmft.wss_l"]
 
+    # Be careful, the final file list depends on the task
+    if task == 1
+        file_list = union(fdmf1, fdmf2, fdmf3)
+    else
+        file_list = fdmf1
+    end
+
+    # Store the data files
+    for i in eachindex(file_list)
+        f = file_list[i]
+        cp(f, "$f.$(it.dmft_cycle).$(it.dmft1_iter)", force = true)
+    end
 end
