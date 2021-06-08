@@ -4,12 +4,19 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/05/01
+# Last modified: 2021/06/07
 #
 
 #
 # Driver Functions
 #
+
+#=
+*Remarks*:
+
+In the `ir_adaptor()` funtion, some writting steps are optional because
+the tetrahedron information might be absent.
+=#
 
 """
     ir_adaptor(D::Dict{Symbol,Any})
@@ -64,13 +71,6 @@ function ir_adaptor(D::Dict{Symbol,Any})
     println("  Store fermi level")
     irio_fermi(pwd(), D[:fermi])
 
-#
-# Remarks:
-#
-# The following steps are optional, because the tetrahedron information
-# might be absent.
-#
-
     # I09: Check the validity of the `D` dict further (optional)
     if get_d("smear") === "tetra"
         key_list = [:volt, :itet]
@@ -111,7 +111,7 @@ function ir_save(it::IterInfo)
     # Store the data files
     for i in eachindex(file_list)
         file_src = file_list[i] * ".ir"
-        file_dst = file_list[i] * ".ir.$(it.dmft_cycle)"
+        file_dst = file_list[i] * ".ir.$(it.I₃)"
         cp(file_src, file_dst, force = true)
     end
 end
@@ -219,7 +219,7 @@ function irio_params(f::String, D::Dict{Symbol,Any})
         println(fout, "nsite -> $nsite")
         println(fout, "nmesh -> $nmesh")
         println(fout)
-    end
+    end # END OF IOSTREAM
 end
 
 """
@@ -271,7 +271,7 @@ function irio_maps(f::String, MAP::Mapping)
         foreach(x -> @printf(fout, "%8i", x), MAP.w_imp)
         println(fout)
         println(fout)
-    end
+    end # END OF IOSTREAM
 end
 
 """
@@ -303,7 +303,7 @@ function irio_groups(f::String, PG::Array{PrGroup,1})
             println(fout, "ndim  -> $(size(PG[p].Tr,1))")
             println(fout)
         end
-    end
+    end # END OF IOSTREAM
 end
 
 """
@@ -340,8 +340,8 @@ function irio_windows(f::String, PW::Array{PrWindow,1})
                 end
             end
             println(fout)
-        end
-    end
+        end # END OF P LOOP
+    end # END OF IOSTREAM
 end
 
 """
@@ -401,7 +401,7 @@ function irio_lattice(f::String, latt::Lattice)
         for i = 1:natom
             @printf(fout, "%16.12f %16.12f %16.12f\n", latt.coord[i, 1:3]...)
         end
-    end
+    end # END OF IOSTREAM
 end
 
 """
@@ -437,7 +437,7 @@ function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
             @printf(fout, "%16.12f %16.12f %16.12f", kmesh[k, 1:3]...)
             @printf(fout, "%8.2f\n", weight[k])
         end
-    end
+    end # END OF IOSTREAM
 end
 
 """
@@ -469,7 +469,7 @@ function irio_tetra(f::String, volt::F64, itet::Array{I64,2})
         for t = 1:ntet
             @printf(fout, "%8i %8i %8i %8i %8i\n", itet[t, :]...)
         end
-    end
+    end # END OF IOSTREAM
 end
 
 """
@@ -506,10 +506,10 @@ function irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
             for k = 1:nkpt
                 for b = 1:nband
                     @printf(fout, "%16.12f %16.12f\n", enk[b, k, s], occupy[b, k, s])
-                end
-            end
-        end
-    end
+                end # END OF B LOOP
+            end # END OF K LOOP
+        end # END OF S LOOP
+    end # END OF IOSTREAM
 end
 
 """
@@ -545,11 +545,11 @@ function irio_projs(f::String, chipsi::Array{C64,4})
                     for p = 1:nproj
                         z = chipsi[p, b, k, s]
                         @printf(fout, "%16.12f %16.12f\n", real(z), imag(z))
-                    end
-                end
-            end
-        end
-    end
+                    end # END OF P LOOP
+                end # END OF B LOOP
+            end # END OF K LOOP
+        end # END OF S LOOP
+    end # END OF IOSTREAM
 end
 
 """
@@ -591,13 +591,13 @@ function irio_projs(f::String, chipsi::Array{Array{C64,4},1})
                         for d = 1:ndim
                             z = chipsi[p][d, b, k, s]
                             @printf(fout, "%16.12f %16.12f\n", real(z), imag(z))
-                        end
-                    end
-                end
-            end
+                        end # END OF D LOOP
+                    end # END OF B LOOP
+                end # END OF K LOOP
+            end # END OF S LOOP
             println(fout)
-        end
-    end
+        end # END OF P LOOP
+    end # END OF IOSTREAM
 end
 
 """
@@ -620,7 +620,7 @@ function irio_fermi(f::String, fermi::F64)
 
         # Write the body
         # N/A
-    end
+    end # END OF IOSTREAM
 end
 
 """

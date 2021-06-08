@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/05/01
+# Last modified: 2021/06/06
 #
 
 #
@@ -12,7 +12,7 @@
 #
 
 """
-    plo_adaptor(D::Dict{Symbol,Any})
+    plo_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
 
 Adaptor support. It will preprocess the raw projector matrix. The dict
 `D` contains all of the necessary Kohn-Sham data, which will be modified
@@ -23,9 +23,9 @@ calculate some physical quantities, such as the density matrix, overlap
 matrix, and local hamiltonian, and partial density of states, which will
 be written to external files or terminal for reference.
 
-See also: [`vasp_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_exec`](@ref).
+See also: [`vasp_adaptor`](@ref), [`ir_adaptor`](@ref).
 """
-function plo_adaptor(D::Dict{Symbol,Any})
+function plo_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     # P01: Print the header
     println("Adaptor : PLO")
 
@@ -35,11 +35,12 @@ function plo_adaptor(D::Dict{Symbol,Any})
         @assert haskey(D, k)
     end
 
-    # P03: Create connections between projectors and impurity problems
+    # P03: Create connections/mappings between projectors (or band
+    # windows) and quantum impurity problems
     #
     # D[:MAP] will be created
-    println("  Create impurities-projectors mapping")
-    D[:MAP] = plo_map(D[:PG])
+    println("  Establish mapping")
+    D[:MAP] = plo_map(D[:PG], ai)
 
     # P04: Adjust the band structure
     #
@@ -102,26 +103,30 @@ end
 #
 
 """
-    plo_map(PG::Array{PrGroup,1})
+    plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
 
-Create connections / mappings between projectors and quantum impurity
-problems. Return a Mapping struct.
+Create connections / mappings between projectors (or band windows) and
+quantum impurity problems. Return a Mapping struct.
 
-See also: [`PrGroup`](@ref), [`Mapping`](@ref).
+See also: [`PrGroup`](@ref), [`PrWindow`](@ref), [`Mapping`](@ref).
 """
-function plo_map(PG::Array{PrGroup,1})
+function plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
     # Extract key parameters
-    # Here, `nsite` is number of impurity problems and `ngrp` is number
-    # of groups for projectors.
+    #
+    # Here, `nsite` is the number of quantum impurity problems, `ngrp` is
+    # the number of groups for projectors, and `nwnd` is the number of
+    # band windows.
+    #
+    # In this code, we have to ensure `nwnd` is always equal to `ngrp`.
     nsite = get_i("nsite")
     ngrp = length(PG)
+    nwnd = ngrp
 
-    # Additional check for the parameters contained in PIMP dict
-    @assert nsite === length(get_i("atoms"))
-    @assert nsite === length(get_i("shell"))
+    # Additional check for nsite
+    @assert nsite === length(ai)
 
     # The lshell creates a mapping from shell (string) to l (integer).
-    # It is used to parse get_i("shell") to extract the `l` parameter.
+    # It is used to parse Impurity.shell to extract the `l` parameter.
     lshell = Dict{String,I64}(
                  "s"     => 0,
                  "p"     => 1,
@@ -132,24 +137,23 @@ function plo_map(PG::Array{PrGroup,1})
              )
 
     # Loop over each site (the quantum impurity problem) to gather some
-    # relevant information, such as `site` and `l`. We use a Array of
+    # relevant information, such as `site` and `l`. We use an array of
     # Tuple (site_l) to record them.
     site_l = Tuple[]
     for i = 1:nsite
         # Determine site
-        str = get_i("atoms")[i]
-        site = parse(I64, line_to_array(str)[3])
+        sites = ai[i].sites
 
         # Determine l and its specification
-        str = get_i("shell")[i]
-        l = get(lshell, str, nothing)
+        shell = ai[i].shell
+        l = get(lshell, shell, nothing)
 
         # Push the data into site_l
-        push!(site_l, (site, l, str))
+        push!(site_l, (sites, l, shell))
     end
 
     # Create the Mapping struct
-    Map = Mapping(nsite, ngrp)
+    Map = Mapping(nsite, ngrp, nwnd)
 
     # Determine Map.i_grp (imp -> grp) and Map.g_imp (grp -> imp)
     for i = 1:nsite
@@ -163,19 +167,23 @@ function plo_map(PG::Array{PrGroup,1})
     end
 
     # Examine Map.i_grp
+    #
     # For a given quantum impurity problem, we can always find out the
     # corresponding group of projectors.
     @assert all(x -> (0 < x <= ngrp), Map.i_grp)
 
     # Examine Map.g_imp
+    #
     # For a given group of projectors, if we fail to find out the
     # corresponding quantum impurity problem, it must be non-correlated.
     @assert all(x -> (0 <= x <= nsite), Map.g_imp)
 
     # Setup Map.i_wnd and Map.w_imp
+    #
+    # They are actually copies of i_grp and g_imp
     Map.i_wnd[:] = Map.i_grp[:]
     Map.w_imp[:] = Map.g_imp[:]
-    
+
     # Return the desired struct
     return Map
 end
@@ -191,30 +199,29 @@ function plo_fermi(enk::Array{F64,3}, fermi::F64)
     @. enk = enk - fermi
 end
 
+#=
+*Remarks*:
+
+Until now, the `PG` array was only created in `vasp.jl/vaspio_projs()`.
+
+In this function, `corr`, `shell`,  and `Tr` which are members of
+`PrGroup` struct will be modified according to users' configuration,
+in other words, the `case.toml` file.
+=#
+
 """
     plo_group(MAP::Mapping, PG::Array{PrGroup,1})
 
-Use the information contained in the `PIMP` dict to further complete
+Use the information contained in the `Mapping` struct to further complete
 the `PrGroup` struct.
 
 See also: [`PIMP`](@ref), [`Mapping`](@ref), [`PrGroup`](@ref).
 """
 function plo_group(MAP::Mapping, PG::Array{PrGroup,1})
-
-#
-# Remarks:
-#
-# 1. Until now, the PG array was only created in vasp.jl/vaspio_projs().
-#
-# 2. In this function, `corr`, `shell`,  and `Tr` which are members of
-#    PrGroup struct will be modified according to users' configuration,
-#    in other words, the case.toml file.
-#
-
     # Scan the groups of projectors, setup them one by one.
     for g in eachindex(PG)
         # Examine PrGroup, check number of projectors
-        @assert 2 * PG[g].l + 1 === length(PG[g].Pr)
+        @assert 2 * PG[g].l + 1 == length(PG[g].Pr)
 
         # Extract the index of quantum impurity problem for the current
         # group of projectors
@@ -270,6 +277,16 @@ function plo_group(MAP::Mapping, PG::Array{PrGroup,1})
     end
 end
 
+#=
+*Remarks*:
+
+Here, `window` means energy window or band window. When nwin is 1, it
+means that all `PrGroup` share the same window. When nwin is equal to
+length(PG), it means that each `PrGroup` should have its own window.
+
+If nwin is neither `1` nor `length(PG)`, there must be something wrong.
+=#
+
 """
     plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
 
@@ -278,17 +295,6 @@ Calibrate the band window to filter the Kohn-Sham eigenvalues.
 See also: [`PrWindow`](@ref), [`get_win1`](@ref), [`get_win2`](@ref).
 """
 function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
-
-#
-# Remarks:
-#
-# Here, `window` means energy window or band window. When nwin is 1, it
-# means that all `PrGroup` share the same window. When nwin is equal to
-# length(PG), it means that each `PrGroup` should have its own window.
-#
-# If nwin is neither 1 nor length(PG), there must be something wrong.
-#
-
     # Preprocess the input. Get how many windows there are.
     window = get_d("window")
     nwin = convert(I64, length(window) / 2)
@@ -299,6 +305,10 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
     # Initialize an array of PrWindow struct
     PW = PrWindow[]
 
+    # Initialize an array of Tuple to record the window for correlated
+    # groups of projectors
+    CW = Tuple[]
+
     # Scan the groups of projectors, setup PrWindow for them.
     for p in eachindex(PG)
         # Determine bwin. Don't forget it is a Tuple. bwin = (emin, emax).
@@ -308,6 +318,13 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
         else
             # Each `PrGroup` has it own window
             bwin = (window[2*p-1], window[2*p])
+        end
+
+        # Record the current window if the corresponding group of
+        # projectors is correlated. Later it will be used to analyze
+        # the correctness of band window.
+        if PG[p].corr
+            push!(CW, bwin)
         end
 
         # Examine `bwin` further. Its elements should obey the order. This
@@ -329,9 +346,35 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
         push!(PW, PrWindow(kwin, bwin))
     end
 
-    # Return the desired arrays
+    # Well, now CW contains all the windows for correlated groups of
+    # projectors. In Zen, we assume that all of the correlated groups of
+    # projectors must share the same energy / band windows. In other
+    # words, the real windows of them must be the same (the indices for
+    # these windows can be different). For example, please consider the
+    # following case. We have three PrGroups and (of course) PrWindows:
+    #
+    # PrGroup 1 <-> PrWindow 1
+    # PrGroup 2 <-> PrWindow 2
+    # PrGroup 3 <-> PrWindow 3
+    #
+    # where PrGroup 1 and PrGroup 2 are correlated. Then, PrWindow 1
+    # and PrWindow 2 must be the same (though their indices are not the
+    # same). In other words, their `kwin` must be the same.
+    #
+    # In order to achieve this goal, the unique elements in CW must be
+    # 1. This is the underlying idea for the following codes.
+    unique!(CW)
+    @assert length(CW) == 1
+
+    # Return the desired array
     return PW
 end
+
+#=
+*Remarks*:
+
+PG[i].Tr must be a matrix. Its size must be (ndim, p2 - p1 + 1).
+=#
 
 """
     plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
@@ -345,16 +388,11 @@ See also: [`PrGroup`](@ref), [`plo_filter`](@ref), [`plo_orthog`](@ref).
 function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
     # Extract some key parameters from raw projector matrix
     nproj, nband, nkpt, nspin = size(chipsi)
+    @assert nproj ≥ 1
 
     # Initialize new array. It stores the rotated projectors.
     # Now it is empty, but we will allocate memory for it later.
     Rchipsi = Array{C64,4}[]
-
-#
-# Remarks:
-#
-# PG[i].Tr must be a matrix. Its size must be (ndim, p2 - p1 + 1).
-#
 
     # Go through each PrGroup and perform the rotation
     for i in eachindex(PG)
@@ -383,9 +421,25 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
         push!(Rchipsi, R)
     end
 
-    # Return the desired arrays
+    # Return the desired array
     return Rchipsi
 end
+
+#=
+*Theory*:
+
+The projector matrix (`chipsi`) is defined as follows:
+```math
+P^{\mathbf{R}}_{m\nu}(\mathbf{k})
+    =
+    \langle \chi^{\mathbf{R}}_{\mathbf{k}m} | \Psi_{\mathbf{k}\nu} \rangle.
+```
+Here, ``\mathbf{R}`` denotes the correlated atom within the primitive
+unit cell, around which the local orbital ``|\chi^{\mathbf{R}}_{m}\rangle``
+is centered, and ``m = 1, \cdots, M`` is an orbital index within the
+correlated subset. ``|\Psi_{\mathcal{k}\nu}\rangle`` denotes the Bloch
+wave functions, and ``\nu`` is an band index.
+=#
 
 """
     plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}}
@@ -406,7 +460,7 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
         # Create a temporary array F
         F = zeros(C64, ndim, PW[p].nbnd, nkpt, nspin)
-        @assert PW[p].nbnd >= ndim
+        @assert nband ≥ PW[p].nbnd ≥ ndim
 
         # Go through each spin and k-point
         for s = 1:nspin
@@ -425,14 +479,14 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
                 # We just copy data from chipsi[p] to F
                 F[:, 1:ib3, k, s] = chipsi[p][:, ib1:ib2, k, s]
-            end
-        end
+            end # END OF K LOOP
+        end # END OF S LOOP
 
         # Push F into Fchipsi to save it
         push!(Fchipsi, F)
-    end
+    end # END OF P LOOP
 
-    # Return the desired arrays
+    # Return the desired array
     return Fchipsi
 end
 
@@ -574,12 +628,19 @@ function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
             # upper boundaries, respectively.
             kwin[k, s, 1] = ib1
             kwin[k, s, 2] = ib2
-        end
-    end
+        end # END OF K LOOP
+    end # END OF S LOOP
 
     # Return the desired array
     return kwin
 end
+
+#=
+*Remarks*:
+
+We assume that the energy / band windows for all of the projectors are
+the same. In other words, `PW` only has an unique PrWindow object.
+=#
 
 """
     try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
@@ -589,14 +650,6 @@ Try to orthogonalize and normalize the projectors as a whole.
 See also: [`PrWindow`](@ref), [`try_blk2`](@ref), [`plo_orthog`](@ref).
 """
 function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
-
-#
-# Remarks:
-#
-# We assume that the energy / band windows for all of the projectors are
-# the same. In other words, `PW` only has an unique PrWindow object.
-#
-
     # Extract some key parameters
     nkpt = size(chipsi[1], 3)
     nspin = size(chipsi[1], 4)
@@ -645,8 +698,8 @@ function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
             for p in eachindex(PW)
                 chipsi[p][:, 1:ib3, k, s] = M[block[p][1]:block[p][2], 1:ib3]
             end
-        end
-    end
+        end # END OF K LOOP
+    end # END OF S LOOP
 end
 
 """
@@ -682,10 +735,35 @@ function try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
                 # Orthogonalize it (chipsi[p] is update at the same time)
                 try_diag(M)
-            end
-        end
-    end
+            end # END OF K LOOP
+        end # END OF S LOOP
+    end # END OF P LOOP
 end
+
+#=
+*Theory*:
+
+First, we try to calcuate the overlap matrix:
+```math
+\mathcal{O}_{mm'}(\mathbf{k})
+    = 
+    \langle \chi_{\mathbf{k}m} | \chi_{\mathbf{k}m'} \rangle 
+    = 
+    \sum_{\nu \in \mathcal{W}} P_{m\nu}(\mathbf{k}) P^{*}_{\nu m'}(\mathbf{k}),
+```
+and its inverse square root:
+```math
+\mathcal{S}_{mm'}(\mathbf{k})
+    =  
+    \left\{ \mathcal{O}(\mathbf{k})^{-\frac{1}{2}} \right\}_{mm'}.
+```
+Then the renormalized projector reads:
+```math
+\bar{P}_{m\nu}(\mathbf{k}) 
+    =
+    \sum_{m'} \mathcal{S}_{mm'} (\mathbf{k}) P_{m'\nu}(\mathbf{k}).
+```
+=#
 
 """
     try_diag(M::AbstractArray{C64,2})
@@ -725,6 +803,7 @@ See also: [`view_ovlp`](@ref).
 function calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
+    @assert nband ≥ nproj
 
     # Create overlap array
     ovlp = zeros(F64, nproj, nproj, nspin)
@@ -736,7 +815,7 @@ function calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
             A = view(chipsi, :, :, k, s)
             ovlp[:, :, s] = ovlp[:, :, s] + real(A * A') * wght
         end
-    end
+    end # END OF S LOOP
 
     # Return the desired array
     return ovlp
@@ -769,11 +848,11 @@ function calc_ovlp(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight:
                 A = view(chipsi[p], :, :, k, s)
                 V[:, :, s] = V[:, :, s] + real(A * A') * wght
             end
-        end
+        end # END OF S LOOP
 
         # Push V into ovlp to save it
         push!(ovlp, V)
-    end
+    end # END OF P LOOP
 
     # Return the desired array
     return ovlp
@@ -789,6 +868,7 @@ See also: [`view_dm`](@ref).
 function calc_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
+    @assert nband ≥ nproj
 
     # Evaluate spin factor
     sf = (nspin === 1 ? 2 : 1)
@@ -804,7 +884,7 @@ function calc_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3
             A = view(chipsi, :, :, k, s)
             dm[:, :, s] = dm[:, :, s] + real(A * Diagonal(occs) * A') * wght
         end
-    end
+    end # END OF S LOOP
 
     # Return the desired array
     return dm
@@ -841,11 +921,11 @@ function calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::A
                 A = view(chipsi[p], :, :, k, s)
                 M[:, :, s] = M[:, :, s] + real(A * Diagonal(occs) * A') * wght
             end
-        end
+        end # END OF S LOOP
 
         # Push M into dm to save it
         push!(dm, M)
-    end
+    end # END OF P LOOP
 
     # Return the desired array
     return dm
@@ -879,15 +959,22 @@ function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight:
                 A = view(chipsi[p], :, :, k, s)
                 H[:, :, s] = H[:, :, s] + (A * Diagonal(eigs) * A') * wght
             end
-        end
+        end # END OF S LOOP
 
         # Push H into hamk to save it
         push!(hamk, H)
-    end
+    end # END OF P LOOP
 
     # Return the desired array
     return hamk
 end
+
+#=
+*Remarks*:
+
+We assume that the energy / band windows for all of the projectors are
+the same. In other words, `PW` only has an unique PrWindow object.
+=#
 
 """
     calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Array{F64,3})
@@ -897,14 +984,6 @@ Try to build the full hamiltonian. For normalized projectors only.
 See also: [`view_hamk`](@ref), [`PrWindow`](@ref).
 """
 function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Array{F64,3})
-
-#
-# Remarks:
-#
-# We assume that the energy / band windows for all of the projectors are
-# the same. In other words, `PW` only has an unique PrWindow object.
-#
-
     # Extract some key parameters
     nkpt = size(chipsi[1], 3)
     nspin = size(chipsi[1], 4)
@@ -952,8 +1031,8 @@ function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Ar
             eigs = enk[ib1:ib2, k, s]
             A = view(M, :, 1:ib3)
             H[:, :, k, s] = H[:, :, k, s] + (A * Diagonal(eigs) * A')
-        end
-    end
+        end # END OF K LOOP
+    end # END OF S LOOP
 
     # Return the desired array
     return H
@@ -1020,7 +1099,7 @@ function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Ar
 
         # Push D into DA to save it
         push!(DA, D)
-    end
+    end # END OF P LOOP
 
     # Return the desired array
     return MA, DA
@@ -1051,7 +1130,7 @@ function view_ovlp(ovlp::Array{F64,3})
             foreach(x -> @printf("%12.7f", x), ovlp[p, :, s])
             println()
         end
-    end
+    end # END OF S LOOP
 end
 
 """
@@ -1079,8 +1158,8 @@ function view_ovlp(PG::Array{PrGroup,1}, ovlp::Array{Array{F64,3},1})
                 foreach(x -> @printf("%12.7f", x), ovlp[p][q, 1:ndim, s])
                 println()
             end
-        end
-    end
+        end # END OF S LOOP
+    end # END OF P LOOP
 end
 
 """
@@ -1104,7 +1183,7 @@ function view_dm(dm::Array{F64,3})
             foreach(x -> @printf("%12.7f", x), dm[p, :, s])
             println()
         end
-    end
+    end # END OF S LOOP
 end
 
 """
@@ -1132,8 +1211,8 @@ function view_dm(PG::Array{PrGroup,1}, dm::Array{Array{F64,3},1})
                 foreach(x -> @printf("%12.7f", x), dm[p][q, 1:ndim, s])
                 println()
             end
-        end
-    end
+        end # END OF S LOOP
+    end # END OF P LOOP
 end
 
 """
@@ -1171,9 +1250,17 @@ function view_hamk(PG::Array{PrGroup,1}, hamk::Array{Array{C64,3},1})
                 foreach(x -> @printf("%12.7f", x), imag(hamk[p][q, 1:ndim, s]))
                 println()
             end
-        end
-    end
+        end # END OF S LOOP
+    end # END OF P LOOP
 end
+
+#=
+*Remarks*:
+
+The data file `hamk.chk` is used to debug. It should not be read by the
+DMFT engine. That is the reason why we name this function as `view_hamk`
+and put it in plo.jl.
+=#
 
 """
     view_hamk(hamk::Array{C64,4})
@@ -1183,15 +1270,6 @@ Output the full hamiltonian to `hamk.chk`. For normalized projectors only.
 See also: [`calc_hamk`](@ref).
 """
 function view_hamk(hamk::Array{C64,4})
-
-#
-# Remarks:
-#
-# The data file `hamk.chk` is used to debug. It should not be read by the
-# DMFT engine. That is the reason why we name this function as `view_hamk`
-# and put it in plo.jl.
-#
-
     # Extract some key parameters
     nproj, _, nkpt, nspin = size(hamk)
 
@@ -1215,9 +1293,9 @@ function view_hamk(hamk::Array{C64,4})
                         @printf(fout, "%16.12f %16.12f\n", real(z), imag(z))
                     end
                 end
-            end
-        end
-    end
+            end # END OF K LOOP
+        end # END OF S LOOP
+    end # END OF IOSTREAM
 end
 
 """
@@ -1253,6 +1331,6 @@ function view_dos(mesh::Array{Array{F64,1},1}, dos::Array{Array{F64,3},1})
                 end
                 println(fout)
             end
-        end
-    end
+        end # END OF IOSTREAM
+    end # END OF P LOOP
 end

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/23
+# Last modified: 2021/06/06
 #
 
 #
@@ -101,6 +101,7 @@ See also: [`setup`](@ref).
 function inp_toml(f::String, necessary::Bool)
     if isfile(f)
         dict = TOML.parsefile(f)
+        return dict
     else
         if necessary
             error("Please make sure that the file $f really exists")
@@ -165,6 +166,13 @@ function rev_dict(cfg::Dict{String,Any})
     end
 end
 
+#=
+*Remarks*:
+
+This function is far away from completeness. We should add more
+constraints here, both physically and numerically.
+=#
+
 """
     chk_dict()
 
@@ -173,14 +181,6 @@ Validate the correctness and consistency of configurations.
 See also: [`rev_dict`](@ref), [`_v`](@ref).
 """
 function chk_dict()
-
-#
-# Remarks:
-#
-# This function is far away from completeness. We should add more
-# constraints here, both physically and numerically.
-#
-
     # C1. Check types and existences
     #
     # Check all blocks one by one
@@ -198,11 +198,11 @@ function chk_dict()
     @assert iseven( length( get_d("window") ) )
     #
     # Check dmft block
-    @assert get_m("mode") in (0, 1, 2)
+    @assert get_m("mode") in (1, 2)
     @assert get_m("axis") in (1, 2)
     @assert get_m("niter") > 0
     @assert get_m("nmesh") > 0
-    @assert get_m("dcount") in ("fll1", "fll2", "amf", "exact")
+    @assert get_m("dcount") in ("fll1", "fll2", "amf", "held", "exact")
     @assert get_m("beta") >= 0.0
     @assert get_m("mixer") >= 0.0 && get_m("mixer") <= 1.0
     #
@@ -277,6 +277,20 @@ function cat_c()
     println()
 end
 
+#=
+*Remarks*:
+
+The `get_d("sproj")` is actually an `Array{String,1}`. It would be quite
+low efficiency if we print it directly. So we have to convert it into a
+string by using the `join()` function at first.
+
+The `get_d("window")` is actually an `Array{F64,1}`. It would be quite
+low efficiency if we print it directly. So we have to convert it into a
+string by using the `join()` function at first.
+
+See `config.jl/str_d()` function for more details.
+=#
+
 """
     cat_d()
 
@@ -285,21 +299,6 @@ Print the configuration parameters to stdout: for PDFT dict.
 See also: [`get_d`](@ref), [`str_d`](@ref).
 """
 function cat_d()
-
-#
-# Remarks:
-#
-# The get_d("sproj") is actually an Array{String,1}. It would be quite
-# low efficiency if we print it directly. So we have to convert it into
-# a string by using the join() function at first.
-#
-# The get_d("window") is actually an Array{F64,1}. It would be quite
-# low efficiency if we print it directly. So we have to convert it into
-# a string by using the join() function at first.
-#
-# See config.jl/str_d() function for more details.
-#
-
     println("  dft      | engine   -> ", str_d("engine"))
     println("  dft      | projtype -> ", str_d("projtype"))
     println("  dft      | smear    -> ", str_d("smear"))

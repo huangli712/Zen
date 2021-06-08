@@ -4,22 +4,23 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/17
+# Last modified: 2021/06/05
 #
 
-#
-# Remarks:
-#
-# This file provides some functions to do the brillouin zone integration.
-# They are very useful for calculating the density of states. So far the
-# following algorithms are supported:
-#     (1) Gaussian broadening method.
-#     (2) Fermi-Dirac broadening method.
-#     (3) Analytical tetrahedron algorithm with Blochl corrections.
-# Note that you have to modify the line 86-88 to choose suitable driver.
-# Perhaps you also need to modify the `gamm` parameter (line 132 or 167)
-# to obtain more reasonable results. Now the default algorithm is (3).
-#
+#=
+*Remarks*:
+
+This file provides some functions to do the brillouin zone integration.
+They are very useful for calculating the density of states. So far the
+following algorithms are supported:
+* Gaussian broadening method.
+* Fermi-Dirac broadening method.
+* Analytical tetrahedron algorithm with Blochl corrections.
+
+Note that you have to modify the `line 87-89` to choose suitable driver.
+Perhaps you also need to modify the `gamm` parameter (`line 133 or 168`)
+to obtain more reasonable results. Now the default algorithm is (3).
+=#
 
 #
 # Customized Structs
@@ -32,9 +33,9 @@ Struct. Integration weights for analytical tetrahedron algorithm.
 
 ## Members
 
-cw -> Blochl corrections for `dw`.\n
-dw -> Density of states weights at the four corners of a given tetrahedron.\n
-tw -> Integration weights at the four corners of a given tetrahedron.
+* cw -> Blochl corrections for `dw`.
+* dw -> Density of states weights at the four corners of a given tetrahedron.
+* tw -> Integration weights at the four corners of a given tetrahedron.
 """
 struct TetraWeight
     cw :: F64

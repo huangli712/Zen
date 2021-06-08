@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/25
+# Last modified: 2021/06/06
 #
 
 #
@@ -20,7 +20,7 @@ code and then fulfill the `DFTData` dict (i.e `D`).
 The following vasp's files are needed: `POSCAR`, `IBZKPT`, `EIGENVAL`,
 `LOCPROJ`, and `DOSCAR`.
 
-See also: [`plo_adaptor`](@ref), [`ir_adaptor`](@ref), [`adaptor_exec`](@ref).
+See also: [`plo_adaptor`](@ref), [`ir_adaptor`](@ref).
 """
 function vasp_adaptor(D::Dict{Symbol,Any})
     # V01: Print the header
@@ -55,7 +55,7 @@ function vasp_adaptor(D::Dict{Symbol,Any})
     end
 
     # V08: Print the footer for a better visualization
-    println("The Kohn-Sham dataset is extracted the adaptor")
+    println("The Kohn-Sham dataset is extracted by the adaptor")
     println()
 end
 
@@ -74,12 +74,12 @@ function vasp_init(it::IterInfo)
     cp("../POSCAR", joinpath(pwd(), "POSCAR"), force = true)
     #
     # How about INCAR
-    if it.dmft_cycle == 0
+    if it.I₃ == 0
         # Generate INCAR automatically
-        vasp_incar(it.dft_fermi)
+        vasp_incar(it.μ₀)
     else
         # Maybe we need to update INCAR file here
-        vasp_incar(it.dmft_fermi)
+        vasp_incar(it.μ₁)
     end
     #
     # Well, perhaps we need to generate the KPOINTS file by ourselves.
@@ -195,7 +195,7 @@ end
     vasp_save(it::IterInfo)
 
 Backup the output files of vasp if necessary. Furthermore, the fermi level
-in `IterInfo` struct is also updated (`IterInfo.dft_fermi`).
+in `IterInfo` struct is also updated (`IterInfo.μ₀`).
 
 See also: [`vasp_init`](@ref), [`vasp_exec`](@ref).
 """
@@ -208,17 +208,29 @@ function vasp_save(it::IterInfo)
     # Go through the file list, backup the files one by one.
     for i in eachindex(fl)
         f = fl[i]
-        cp(f, "$f.$(it.dmft_cycle).$(it.dmft2_iter)", force = true)
+        cp(f, "$f.$(it.I₃).$(it.I₂)", force = true)
     end
 
     # Anyway, the fermi level is extracted from DOSCAR, and its value
-    # will be saved at IterInfo.dft_fermi.
-    it.dft_fermi = vaspio_fermi(pwd())
+    # will be saved at IterInfo.μ₀.
+    it.μ₀ = vaspio_fermi(pwd())
 end
 
 #
 # Service Functions (Group A)
 #
+
+#=
+*Remarks*:
+
+The parameter `NBANDS` is quite important. Sometimes its default value
+is too small. The adaptor will fail to generate reasonable projectors.
+At this case, you will see an error thrown by the try_diag() function.
+The solution is simple, i.e., increasing `NBANDS` a bit.
+
+The current algorithm is suitable for paramagnetic systems. It has not
+been tested for `magnetically ordered materials`.
+=#
 
 """
     vasp_incar(fermi::F64)
@@ -348,17 +360,6 @@ function vasp_incar(fermi::F64)
         end
     end
 
-#
-# Remarks:
-#
-# The parameter `NBANDS` is quite important. Sometimes its default value
-# is too small. The adaptor will fail to generate reasonable projectors.
-# At this case, you will see an error thrown by the try_diag() function.
-# The solution is simple, i.e., increasing `NBANDS` a bit.
-#
-# The current algorithm is suitable for paramagnetic systems. It has not
-# been tested for magnetically ordered materials.
-#
     # For number of bands
     nbands = vaspio_nband(pwd())
     write(ios, "NBANDS   = $nbands \n")
@@ -425,6 +426,20 @@ vasp_files() = vasp_files(pwd())
 # Service Functions (Group B)
 #
 
+#=
+Remarks:
+
+In vasp, the `NBANDS` parameter is determined automatically. According
+to the wiki of vasp, it is equal to `nelect / 2 + latt.natom / 2` for
+paramagnetic case by default. However, it may be insufficient for
+generating projectors. For example, for SrVO``_3``, the default `NBANDS`
+parameter is only 20. It is too small to determine the five V``_{3d}``
+projectors. It would be better to increase it to 30.
+
+Here, we increase `NBANDS` to `1.6 * NBANDS`. The `1.6` is a magic
+number, you can adjust it by yourself.
+=#
+
 """
     vaspio_nband(f::String)
 
@@ -447,20 +462,6 @@ function vaspio_nband(f::String)
 
     # Evaluate number of valence electrons in total
     nelect = sum(@. latt.sorts[:, 2] * zval)
-
-#
-# Remarks:
-#
-# In vasp, the `NBANDS` parameter is determined automatically. According
-# to the wiki of vasp, it is equal to nelect / 2 + latt.natom / 2 for
-# paramagnetic case by default. However, it may be insufficient for
-# generating projectors. For example, for SrVO3, the default `NBANDS`
-# parameter is only 20. It is too small to determine the five V-3d
-# projectors. It would be better to increase it to 30.
-#
-# Here, we increase `NBANDS` to `1.6 * NBANDS`. The `1.6` is a magic
-# number, you can adjust it by yourself.
-#
 
     # Evaluate number of bands
     if get_d("lspins")
@@ -926,7 +927,7 @@ function vaspio_kmesh(f::String)
     # Open the iostream
     fin = open(joinpath(f, "IBZKPT"), "r")
 
-    # Extract number of k-points
+    # Extract number of 𝑘-points
     readline(fin)
     nkpt = parse(I64, readline(fin))
     readline(fin)
@@ -935,7 +936,7 @@ function vaspio_kmesh(f::String)
     kmesh = zeros(F64, nkpt, 3)
     weight = zeros(F64, nkpt)
 
-    # Read in the k-points and their weights
+    # Read in the 𝑘-points and their weights
     for i = 1:nkpt
         arr = parse.(F64, line_to_array(fin))
         kmesh[i, 1:3] = arr[1:3]
@@ -970,12 +971,12 @@ function vaspio_tetra(f::String)
     # Open the iostream
     fin = open(joinpath(f, "IBZKPT"), "r")
 
-    # Extract number of k-points
+    # Extract number of 𝑘-points
     readline(fin)
     nkpt = parse(I64, readline(fin))
     readline(fin)
 
-    # Read in the k-points and their weights
+    # Read in the 𝑘-points and their weights
     #
     # Skip nkpt lines
     for i = 1:nkpt
@@ -1016,6 +1017,30 @@ See also: [`vaspio_kmesh`](@ref), [`irio_tetra`](@ref).
 """
 vaspio_tetra() = vaspio_tetra(pwd())
 
+#=
+*Remarks*:
+
+Here we provide two implementations to read the eigenvalues. The first
+implementation is somewhat tedious, so we don't use it. It seems that
+the second implementation looks quite graceful.
+
+*Previous Implementation*:
+
+```julia
+if nspin === 1 # for spin unpolarized case
+    enk[j, i, 1] = parse(F64, arr[2])
+    occupy[j, i, 1] = parse(F64, arr[3])
+end
+
+if nspin === 2 # for spin polarized case
+    enk[j, i, 1] = parse(F64, arr[2])
+    enk[j, i, 2] = parse(F64, arr[3])
+    occupy[j, i, 1] = parse(F64, arr[4])
+    occupy[j, i, 2] = parse(F64, arr[5])
+end
+```
+=#
+
 """
     vaspio_eigen(f::String)
 
@@ -1038,7 +1063,7 @@ function vaspio_eigen(f::String)
     end
 
     # Read in some key parameters: nelect, nkpt, nbands
-    nelect, nkpt, nband = parse.(I64, line_to_array(fin))
+    _, nkpt, nband = parse.(I64, line_to_array(fin))
 
     # Create arrays
     enk = zeros(F64, nband, nkpt, nspin)
@@ -1050,39 +1075,12 @@ function vaspio_eigen(f::String)
         readline(fin)
         for j = 1:nband
             arr = line_to_array(fin)
-
-#
-# Remarks:
-#
-# Here we provide two implementations to read the eigenvalues. The first
-# implementation is somewhat tedious, so we don't use it. It seems that
-# the second implementation looks quite graceful.
-#
-
-#
-# Implementation 1
-#
-            #if nspin === 1 # for spin unpolarized case
-            #    enk[j, i, 1] = parse(F64, arr[2])
-            #    occupy[j, i, 1] = parse(F64, arr[3])
-            #end
-            #
-            #if nspin === 2 # for spin polarized case
-            #    enk[j, i, 1] = parse(F64, arr[2])
-            #    enk[j, i, 2] = parse(F64, arr[3])
-            #    occupy[j, i, 1] = parse(F64, arr[4])
-            #    occupy[j, i, 2] = parse(F64, arr[5])
-            #end
-
-#
-# Implementation 2
-#
             for s = 1:nspin
                 enk[j, i, s] = parse(F64, arr[s+1])
                 occupy[j, i, s] = parse(F64, arr[s+1+nspin])
-            end
-        end
-    end
+            end # END OF S LOOP
+        end # END OF J LOOP
+    end # END OF I LOOP
 
     # close the iostream
     close(fin)
@@ -1181,9 +1179,9 @@ function vaspio_projs(f::String)
                 for p = 1:nproj
                     chipsi[p, b, k, s] = line_to_cmplx(fin)
                 end
-            end
-        end
-    end
+            end # END OF B LOOP
+        end # END OF K LOOP
+    end # END OF S LOOP
 
     # Close the iostream
     close(fin)

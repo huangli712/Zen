@@ -4,24 +4,26 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/05/01
+# Last modified: 2021/06/06
 #
 
 #
 # Customized Dictionaries
 #
 
-#
-# Remarks:
-#
-# The values in the following dictionaries are actually arrays, which
-# usually contain four elements:
-#     Element[1] -> Actually value.
-#     Element[2] -> If it is 1, this key-value pair is mandatory.
-#                   If it is 0, this key-value pair is optional.
-#     Element[3] -> Numerical type (A julia Symbol).
-#     Element[4] -> Brief explanations.
-#
+#=
+*Remarks*:
+
+The values in the following dictionaries are actually arrays, which
+usually contain four elements:
+* Element[1] -> Actually value.
+* Element[2] -> If it is 1, this key-value pair is mandatory.
+                If it is 0, this key-value pair is optional.
+* Element[3] -> Numerical type (A julia Symbol).
+* Element[4] -> Brief explanations.
+
+The following dictionaries are used as global variables.
+=#
 
 """
     PCASE
@@ -109,7 +111,7 @@ See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref).
 """
 const PSOLVER= Dict{String,Array{Any,1}}(
           "engine"   => [missing, 1, :String, "Name of quantum impurity solver"],
-          "params"   => [missing, 1, :Array , "Parameter sets of quantum impurity solver"],
+          "params"   => [missing, 1, :Array , "Additional parameter sets of quantum impurity solver"],
       )
 
 #
@@ -123,8 +125,8 @@ Mutable struct. Store the IOStreams for case.log and case.cycle files.
 
 ## Members
 
-log   -> IOStream for case.log file.\n
-cycle -> IOStream for case.cycle file.
+* log   -> IOStream for case.log file.
+* cycle -> IOStream for case.cycle file.
 
 See also: [`IterInfo`](@ref).
 """
@@ -140,44 +142,50 @@ Mutable struct. Record the DFT + DMFT iteration information.
 
 ## Members
 
-dmft1_iter -> Number of iterations between dmft1 and quantum impurity solver.\n
-dmft2_iter -> Number of iterations between dmft2 and DFT engine.\n
-dmft_cycle -> Number of DFT + DMFT iterations.\n
-full_cycle -> Counter for each iteration.\n
-dft_fermi  -> Fermi level obtained by DFT engine.\n
-dmft_fermi -> Fermi level obtained by DMFT engine (dmft1).
+* I₁ -> Number of iterations between `dmft1` and quantum impurity solver.
+* I₂ -> Number of iterations between `dmft2` and DFT engine.
+* I₃ -> Number of DFT + DMFT iterations.
+* I₄ -> Counter for each iteration.
+* μ₀ -> Fermi level obtained by DFT engine.
+* μ₁ -> Fermi level obtained by DMFT engine (`dmft1` or `dmft2`).
+* dc -> Double counting terms.
+* nf -> Number of impurity occupancy.
+* et -> Total DFT + DMFT energy.
 
 See also: [`Logger`](@ref).
 """
 mutable struct IterInfo
-    dmft1_iter :: I64
-    dmft2_iter :: I64
-    dmft_cycle :: I64
-    full_cycle :: I64
-     dft_fermi :: F64
-    dmft_fermi :: F64
+    I₁ :: I64
+    I₂ :: I64
+    I₃ :: I64
+    I₄ :: I64
+    μ₀ :: F64
+    μ₁ :: F64
+    dc :: Vector{F64}
+    nf :: Vector{F64}
+    et :: F64
 end
 
 """
     Lattice
 
 Mutable struct. Contain the crystallography information. This struct is
-designed for the `POSCAR` file used by the vasp code.
+designed for the `POSCAR` file used by the `vasp` code.
 
 ## Members
 
-_case -> The name of system.\n
-scale -> Universal scaling factor (lattice constant), which is used to
-         scale all lattice vectors and all atomic coordinates.\n
-lvect -> Three lattice vectors defining the unit cell of the system. Its
-         shape must be (3, 3).\n
-nsort -> Number of sorts of atoms.\n
-natom -> Number of atoms.\n
-sorts -> Sorts of atoms. Its shape must be (nsort, 2).\n
-atoms -> Lists of atoms. Its shape must be (natom).\n
-coord -> Atomic positions are provided in cartesian coordinates or in
-         direct coordinates (respectively fractional coordinates). Its
-         shape must be (natom, 3).
+* _case -> The name of system.
+* scale -> Universal scaling factor (lattice constant), which is used to
+           scale all lattice vectors and all atomic coordinates.
+* lvect -> Three lattice vectors defining the unit cell of the system. Its
+           shape must be (3, 3).
+* nsort -> Number of sorts of atoms.
+* natom -> Number of atoms.
+* sorts -> Sorts of atoms. Its shape must be (nsort, 2).
+* atoms -> Lists of atoms. Its shape must be (natom).
+* coord -> Atomic positions are provided in cartesian coordinates or in
+           direct coordinates (respectively fractional coordinates). Its
+           shape must be (natom, 3).
 
 See also: [`vaspio_lattice`](@ref).
 """
@@ -196,16 +204,16 @@ end
     Mapping
 
 Mutable struct. Mapping between quantum impurity problems and groups
-of projectors.
+of projectors (or band windows).
 
 ## Members
 
-i_grp -> Mapping from impurity problems to groups of projectors.\n
-i_wnd -> Mapping from impurity problems to windows of dft bands.\n
-g_imp -> Mapping from groups of projectors to impurity problems.\n
-w_imp -> Mapping from windows of dft bands to impurity problems.
+* i_grp -> Mapping from quntum impurity problems to groups of projectors.
+* i_wnd -> Mapping from quantum impurity problems to windows of dft bands.
+* g_imp -> Mapping from groups of projectors to quantum impurity problems.
+* w_imp -> Mapping from windows of dft bands to quantum impurity problems.
 
-See also: [`PrGroup`](@ref).
+See also: [`Impurity`](@ref), [`PrGroup`](@ref), [`PrWindow`](@ref).
 """
 mutable struct Mapping
     i_grp :: Array{I64,1}
@@ -215,16 +223,51 @@ mutable struct Mapping
 end
 
 """
+    Impurity
+
+Mutable struct. Essential information of quantum impurity problem.
+
+## Members
+
+* index -> Index of the quantum impurity problem.
+* atoms -> Chemical symbol of impurity atom.
+* sites -> Index of impurity atom.
+* shell -> Angular momentum of correlated orbitals.
+* ising -> Interaction type of correlated orbitals.
+* occup -> Impurity occupancy.
+* upara -> Coulomb interaction parameter.
+* jpara -> Hund's coupling parameter.
+* lpara -> Spin-orbit coupling parameter.
+* beta  -> Inverse temperature.
+* nband -> Number of correlated orbitals (spin is not included).
+
+See also: [`Mapping`](@ref), [`PrGroup`](@ref), [`PrWindow`](@ref).
+"""
+mutable struct Impurity
+    index :: I64
+    atoms :: String
+    sites :: I64
+    shell :: String
+    ising :: String
+    occup :: F64
+    upara :: F64
+    jpara :: F64
+    lpara :: F64
+    beta  :: F64
+    nband :: I64
+end
+
+"""
     PrTrait
 
 Mutable struct. Essential information of a given projector.
 
 ## Members
 
-site -> Site in which the projector is defined.\n
-l    -> Quantum number l.\n
-m    -> Quantum number m.\n
-desc -> Projector's specification.
+* site -> Site in which the projector is defined.
+* l    -> Quantum number l.
+* m    -> Quantum number m.
+* desc -> Projector's specification.
 
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
 """
@@ -242,20 +285,20 @@ Mutable struct. Essential information of group of projectors.
 
 ## Members
 
-site   -> Site in which the projectors are defined. In principle, the
-          projectors included in the same group should be defined at
-          the same site (or equivalently atom).\n
-l      -> Quantum number l. In principle, the projectors included in
-          the same group should have the same quantum number l (but
-          with different m).\n
-corr   -> Test if the projectors in this group are correlated.\n
-shell  -> Type of correlated orbitals. It is infered from quantum number l.\n
-Pr     -> Array. It contains the indices of projectors.\n
-Tr     -> Array. It contains the transformation matrix. This parameter
-          could be useful to select certain subset of orbitals or perform
-          a simple global rotation.
+* site   -> Site in which the projectors are defined. In principle, the
+            projectors included in the same group should be defined at
+            the same site (or equivalently atom).
+* l      -> Quantum number l. In principle, the projectors included in
+            the same group should have the same quantum number l (but
+            with different m).
+* corr   -> Test if the projectors in this group are correlated.
+* shell  -> Type of correlated orbitals. It is infered from quantum number l.
+* Pr     -> Array. It contains the indices of projectors.
+* Tr     -> Array. It contains the transformation matrix. This parameter
+            could be useful to select certain subset of orbitals or perform
+            a simple global rotation.
 
-See also: [`PrTrait`](@ref), [`PrWindow`](@ref), [`Mapping`](@ref).
+See also: [`PrTrait`](@ref), [`PrWindow`](@ref), [`Mapping`](@ref), [`Impurity`](@ref).
 """
 mutable struct PrGroup
     site  :: I64
@@ -273,15 +316,15 @@ Mutable struct. Define the band window for group of projectors.
 
 ## Members
 
-bmin -> Minimum band index.\n
-bmax -> Maximum band index.\n
-nbnd -> Maximum number of bands in the current window (= bmax-bmin+1).\n
-kwin -> Momentum-dependent and spin-dependent band window.\n
-bwin -> Tuple. It is the band window or energy window, which is used
-        to filter the Kohn-Sham band structure. The mesh for calculating
-        density of states is also deduced from `bwin`.
+* bmin -> Minimum band index.
+* bmax -> Maximum band index.
+* nbnd -> Maximum number of bands in the current window (≡ `bmax-bmin+1`).
+* kwin -> Momentum-dependent and spin-dependent band window.
+* bwin -> Tuple. It is the band window or energy window, which is used
+          to filter the Kohn-Sham band structure. The mesh for calculating
+          density of states is also deduced from `bwin`.
 
-See also: [`PrTrait`](@ref), [`PrGroup`](@ref).
+See also: [`PrTrait`](@ref), [`PrGroup`](@ref), [`Mapping`](@ref), [`Impurity`](@ref).
 """
 mutable struct PrWindow
     bmin  :: I64
@@ -310,12 +353,24 @@ function Logger(case::String = "case")
 end
 
 """
-    IterInfo(iter::I64 = 0, fermi::F64 = 0.0)
+    IterInfo()
 
 Outer constructor for IterInfo struct.
 """
-function IterInfo(iter::I64 = 0, fermi::F64 = 0.0)
-    IterInfo(iter, iter, iter, iter, fermi, fermi)
+function IterInfo()
+    # Extract the parameter `nsite`
+    nsite = get_i("nsite")
+    @assert nsite ≥ 1
+
+    # Initialize key fields
+    I = 0
+    μ = 0.0
+    dc = fill(0.0, nsite)
+    nf = fill(0.0, nsite)
+    et = 0.0
+
+    # Call the default constructor
+    IterInfo(I, I, I, I, μ, μ, dc, nf, et)
 end
 
 """
@@ -335,23 +390,59 @@ function Lattice(_case::String, scale::F64, nsort::I64, natom::I64)
 end
 
 """
-    Mapping(nsite::I64, ngrp::I64)
+    Mapping(nsite::I64, ngrp::I64, nwnd::I64)
 
 Outer constructor for Mapping struct.
 """
-function Mapping(nsite::I64, ngrp::I64)
+function Mapping(nsite::I64, ngrp::I64, nwnd::I64)
     # Sanity check
     @assert ngrp >= nsite
+    @assert nwnd == ngrp
 
     # Initialize the arrays
     i_grp = zeros(I64, nsite)
     i_wnd = zeros(I64, nsite)
     g_imp = zeros(I64, ngrp)
-    w_imp = zeros(I64, ngrp)
+    w_imp = zeros(I64, nwnd)
 
     # Call the default constructor
     Mapping(i_grp, i_wnd, g_imp, w_imp)
 end
+
+"""
+    Impurity(index::I64, ...)
+
+Outer constructor for Impurity struct.
+"""
+function Impurity(index::I64,
+                  atoms::String, sites::I64, shell::String, ising::String,
+                  occup::F64, upara::F64, jpara::F64, lpara::F64, beta::F64)
+    # Define the mapping between `shell` and number of orbitals
+    shell_to_dim = Dict{String,I64}(
+                 "s"     => 1,
+                 "p"     => 3,
+                 "d"     => 5,
+                 "f"     => 7,
+                 "d_t2g" => 3, # Only a subset of d orbitals
+                 "d_eg"  => 2, # Only a subset of d orbitals
+             )
+
+    # Determine number of orbitals of the quantum impurity problem
+    nband = shell_to_dim[shell]
+
+    # Call the default constructor
+    Impurity(index, atoms, sites, shell, ising, occup, upara, jpara, lpara, beta, nband)
+end
+
+#=
+*Remarks*:
+
+Please go to the following webpage for more details about the original
+specifications of projectors in the `vasp` code:
+* https://www.vasp.at/wiki/index.php/LOCPROJ
+
+May need to be fixed for the other DFT codes.
+=#
 
 """
     PrTrait(site::I64, sort::String, desc::String)
@@ -359,15 +450,6 @@ end
 Outer constructor for PrTrait struct.
 """
 function PrTrait(site::I64, desc::String)
-
-#
-# Remarks:
-#
-# Please go to the following webpage for more details about the original
-# specifications of projectors in the vasp code:
-#     https://www.vasp.at/wiki/index.php/LOCPROJ
-#
-
     # Angular character of the local functions on the specified sites
     orb_labels = ("s",
                   "py", "pz", "px",
@@ -461,12 +543,15 @@ See also: [`IterInfo`](@ref).
 """
 function Base.show(io::IO, it::IterInfo)
     println(io, "IterInfo struct")
-    println(io, "dmft1_iter : ", it.dmft1_iter)
-    println(io, "dmft2_iter : ", it.dmft2_iter)
-    println(io, "dmft_cycle : ", it.dmft_cycle)
-    println(io, "full_cycle : ", it.full_cycle)
-    println(io, "dft_fermi  : ", it.dft_fermi)
-    println(io, "dmft_fermi : ", it.dmft_fermi)
+    println(io, "I₁ : ", it.I₁)
+    println(io, "I₂ : ", it.I₂)
+    println(io, "I₃ : ", it.I₃)
+    println(io, "I₄ : ", it.I₄)
+    println(io, "μ₀ : ", it.μ₀)
+    println(io, "μ₁ : ", it.μ₁)
+    println(io, "dc : ", it.dc)
+    println(io, "nf : ", it.nf)
+    println(io, "et : ", it.et)
 end
 
 """
@@ -501,6 +586,28 @@ function Base.show(io::IO, map::Mapping)
     println(io, "i_wnd : ", map.i_wnd)
     println(io, "g_imp : ", map.g_imp)
     println(io, "w_imp : ", map.w_imp)
+end
+
+"""
+    Base.show(io::IO, imp::Impurity)
+
+Base.show() function for Impurity struct.
+
+See also: [`Impurity`](@ref).
+"""
+function Base.show(io::IO, imp::Impurity)
+    println(io, "Impurity struct")
+    println(io, "index : ", imp.index)
+    println(io, "atoms : ", imp.atoms)
+    println(io, "sites : ", imp.sites)
+    println(io, "shell : ", imp.shell)
+    println(io, "ising : ", imp.ising)
+    println(io, "occup : ", imp.occup)
+    println(io, "upara : ", imp.upara)
+    println(io, "jpara : ", imp.jpara)
+    println(io, "lpara : ", imp.lpara)
+    println(io, "beta  : ", imp.beta)
+    println(io, "nband : ", imp.nband)
 end
 
 """

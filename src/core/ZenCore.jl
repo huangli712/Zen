@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/05/26
+# Last modified: 2021/06/05
 #
 
 """
@@ -29,12 +29,14 @@ Zen supports the following quantum impurity solvers:
 
 ZenCore implements the core library of the Zen computation framework. It
 connects various components of Zen, and drive them to work together. It
-provides an easy-to-use user and flexible user interface, and numerous
+provides an easy-to-use and flexible user interface, including numerous
 applications and tools.
 
-For more details about how to install and use the Zen framework and the
-ZenCore library, please visit the following website:
+For more details about how to obtain, install and use the Zen framework
+and the ZenCore library, please visit the following website:
 * `http://doc.zen`
+
+Any suggestions, comments, and feedbacks are welcome. Enjoy it!
 """
 module ZenCore
 
@@ -42,38 +44,32 @@ module ZenCore
 # Using standard libraries
 #
 
-#
-# Remarks 1:
-#
-# The TOML.jl package is included in the standard library since v1.6.
-# So please upgrade your julia environment if it is outdated. We need
-# this package to parse the configuration file (TOML format).
-#
-# Remarks 2:
-#
-# Here we import `libm` explicitly to provide a callable interface for
-# the `erf` function. See `util.jl/erf()` for more details.
-#
-# Remarks 3:
-#
-# Actually, `Reexport` is not included in the standard library. It is
-# a third-party library.
-#
+#=
+*Remarks 1*:
+
+The TOML.jl package is included in the standard library since v1.6.
+So please upgrade your julia environment if it is outdated. We need
+this package to parse the configuration file (TOML format).
+
+*Remarks 2*:
+
+Here we import `libm` explicitly to provide a callable interface for
+the `erf()` function. See `util.jl/erf()` for more details.
+=#
 
 using TOML
 using LinearAlgebra
 using Distributed
 using Dates
+using Printf
 using Base.Math: libm
-using Reexport
-@reexport using Printf
 
 #
 # global.jl
 #
 # Summary:
 #
-# Define type aliases and some string constants for the Zen framework.
+# Define type aliases and some string constants for the ZenCore package.
 #
 # Members:
 #
@@ -86,7 +82,7 @@ using Reexport
 # __VERSION__ -> Version of this package.
 # __RELEASE__ -> Released date of this package.
 # __AUTHORS__ -> Authors of this package.
-# authors     -> Print the authors of Zen to screen.
+# authors     -> Print the authors of ZenCore to screen.
 #
 include("global.jl")
 #
@@ -121,13 +117,13 @@ export authors
 # query_case    -> Query case (job's name).
 # query_inps    -> Query input files.
 # query_stop    -> Query case.stop file.
-# query_home    -> Query home directory of Zen.
+# query_home    -> Query home directory of Zen framework.
 # query_core    -> Query home directory of ZenCore (where is ZenCore.jl).
 # query_dft     -> Query home directory of DFT engine.
 # query_dmft    -> Query home directory of DMFT engine.
 # query_solver  -> Query home directory of quantum impurity solvers.
 # welcome       -> Print welcome message.
-# overview      -> Print overview of Zen.
+# overview      -> Print runtime information of ZenCore.
 # goodbye       -> Say goodbye.
 # sorry         -> Say sorry.
 # prompt        -> Print some messages or logs to the output devices.
@@ -213,6 +209,7 @@ export tetra_p_ek4
 # IterInfo -> Struct for DFT + DMFT iteration information.
 # Lattice  -> Struct for crystallography information.
 # Mapping  -> Struct for mapping between impurity problems and projectors.
+# Impurity -> Struct for quantum impurity problems.
 # PrTrait  -> Struct for projectors.
 # PrGroup  -> Struct for groups of projectors.
 # PrWindow -> Struct for band window.
@@ -228,6 +225,7 @@ export Logger
 export IterInfo
 export Lattice
 export Mapping
+export Impurity
 export PrTrait
 export PrGroup
 export PrWindow
@@ -303,10 +301,17 @@ export str_s
 # ready       -> Prepare runtime environment for DFT + DMFT calculations.
 # go          -> Dispatcher for DFT + DMFT calculations.
 # final       -> Finalize the DFT + DMFT calculations.
-# cycle0      -> Perform DFT calculations only (for test purpose).
 # cycle1      -> Perform DFT + DMFT calculations (one-shot mode).
 # cycle2      -> Perform DFT + DMFT calculations (fully self-consistent mode).
+# cycle3      -> Execute DFT engine only (for testing purpose).
+# cycle4      -> Execute DMFT engine only (for testing purpose).
+# cycle5      -> Execute quantum impurity solvers only (for testing purpose).
+# cycle6      -> Execute Kohn-Sham adaptor only (for testing purpose).
+# cycle7      -> Execute self-energy engine only (for testing purpose).
+# cycle8      -> Execute mixer engine only (for testing purpose).
 # monitor     -> Monitor the DFT + DMFT calculations.
+# incr_it     -> Increase the counters in the IterInfo struct.
+# save_it     -> Record the iteration information.
 # make_trees  -> Make working directories.
 # rm_trees    -> Remove working directories.
 # dft_run     -> Driver for DFT engine.
@@ -321,10 +326,17 @@ include("base.jl")
 export ready
 export go
 export final
-export cycle0
 export cycle1
 export cycle2
+export cycle3
+export cycle4
+export cycle5
+export cycle6
+export cycle7
+export cycle8
 export monitor
+export incr_it
+export save_it
 export make_trees
 export rm_trees
 export dft_run
@@ -483,42 +495,64 @@ export irio_charge
 #
 # Summary:
 #
-# Wrapper for dynamical mean-field theory engine.
+# Wrapper for dynamical mean-field theory engine. It also provides some
+# essential tools to deal with the hybridization functions Δ and local
+# impurity levels εᵢ.
 #
 # Members:
 #
-# dmft_init -> Prepare input files for the DMFT engine.
-# dmft_exec -> Execute the DMFT engine.
-# dmft_save -> Backup output files for the DMFT engine.
+# dmft_init   -> Prepare input files for the DMFT engine.
+# dmft_exec   -> Execute the DMFT engine.
+# dmft_save   -> Backup output files for the DMFT engine.
+# read_fermi  -> Read dmft1/dmft.fermi.
+# read_delta  -> Read dmft1/dmft.hyb_l or impurity.i/dmft.hyb_l.
+# read_eimpx  -> Read dmft1/dmft.eimpx or impurity.i/dmft.eimpx.
+# write_delta -> Write dmft1/dmft.hyb_l or impurity.i/dmft.hyb_l.
+# write_eimpx -> Write dmft1/dmft.eimpx or impurity.i/dmft.eimpx.
 #
 include("dmft.jl")
 #
 export dmft_init
 export dmft_exec
 export dmft_save
+export read_fermi
+export read_delta
+export read_eimpx
+export write_delta
+export write_eimpx
 
 #
 # solver.jl
 #
 # Summary:
 #
-# Wrapper for various quantum impurity solvers. Now only the CT-HYB1,
-# CT-HYB2, HIA, and NORG quantum impurity solvers are supported.
+# Wrapper for various quantum impurity solvers. Now only the CT-HYB₁,
+# CT-HYB₂, HIA, and NORG quantum impurity solvers are supported.
 #
 # Members:
 #
-# s_qmc1_init -> Prepare input files for the CT-HYB1 impurity solver.
-# s_qmc1_exec -> Execute the CT-HYB1 impurity solver.
-# s_qmc1_save -> Backup output files for the CT-HYB1 impurity solver.
-# s_qmc2_init -> Prepare input files for the CT-HYB2 impurity solver.
-# s_qmc2_exec -> Execute the CT-HYB2 impurity solver.
-# s_qmc2_save -> Backup output files for the CT-HYB2 impurity solver.
+# s_qmc1_init -> Prepare input files for the CT-HYB₁ impurity solver.
+# s_qmc1_exec -> Execute the CT-HYB₁ impurity solver.
+# s_qmc1_save -> Backup output files for the CT-HYB₁ impurity solver.
+# s_qmc2_init -> Prepare input files for the CT-HYB₂ impurity solver.
+# s_qmc2_exec -> Execute the CT-HYB₂ impurity solver.
+# s_qmc2_save -> Backup output files for the CT-HYB₂ impurity solver.
 # s_hub1_init -> Prepare input files for the HIA impurity solver.
 # s_hub1_exec -> Execute the HIA impurity solver.
 # s_hub1_save -> Backup output files for the HIA impurity solver.
 # s_norg_init -> Prepare input files for the NORG impurity solver.
 # s_norg_exec -> Execute the NORG impurity solver.
 # s_norg_save -> Backup output files for the NORG impurity solver.
+# ctqmc_setup -> Prepare configuration parameters for CT-QMC impurity solver.
+# ctqmc_atomx -> Prepare configuration parameters for atomic problem solver.
+# ctqmc_delta -> Prepare hybridization function for CT-QMC impurity solver.
+# ctqmc_eimpx -> Prepare local impurity levels for CT-QMC impurity solver.
+# ctqmc_sigma -> Return self-energy function by CT-QMC impurity solver.
+# ctqmc_nimpx -> Return impurity occupancy by CT-QMC impurity solver.
+# GetSigma    -> Parse the self-energy functions.
+# GetNimpx    -> Parse the impurity occupancy.
+# GetSymmetry -> Analyze orbital degeneracy via local impurity levels.
+# GetImpurity -> Build Impurity struct according to configuration file.
 #
 include("solver.jl")
 #
@@ -535,26 +569,38 @@ export s_norg_init
 export s_norg_exec
 export s_norg_save
 export ctqmc_setup
-export ctqmc_hyb_l
-export ctqmc_sig_l
+export ctqmc_atomx
+export ctqmc_delta
 export ctqmc_eimpx
+export ctqmc_sigma
+export ctqmc_nimpx
+export GetSigma
+export GetNimpx
+export GetSymmetry
+export GetImpurity
 
 #
 # sigma.jl
 #
 # Summary:
 #
-# Tools for tackling with the self-energy functions.
+# Tools for treating the self-energy functions Σ, double counting terms
+# Σ', hybridization functions Δ, and local impurity levels εᵢ.
 #
 # Members:
 #
 # sigma_reset  -> Create initial self-energy functions.
-# sigma_dcount -> Calculate double counting term.
-# sigma_split  -> Split the self-energy functions or hybridization functions.
+# sigma_dcount -> Calculate double counting terms.
+# sigma_split  -> Split the hybridization functions and local impurity levels.
 # sigma_gather -> Gather and combine the self-energy functions.
 # cal_dc_fll   -> Fully localized limit scheme for double counting term.
 # cal_dc_amf   -> Around mean-field scheme for double counting term.
+# cal_dc_held  -> K. Held's scheme for double counting term.
 # cal_dc_exact -> Exact double counting scheme.
+# read_sigma   -> Read dmft1/sigma.bare file.
+# read_sigdc   -> Read dmft1/sigma.dc file.
+# write_sigma  -> Write dmft1/sigma.bare file.
+# write_sigdc  -> Write dmft1/sigma.dc file.
 #
 include("sigma.jl")
 #
@@ -564,7 +610,34 @@ export sigma_split
 export sigma_gather
 export cal_dc_fll
 export cal_dc_amf
+export cal_dc_held
 export cal_dc_exact
+export read_sigma
+export read_sigdc
+export write_sigma
+export write_sigdc
+
+#
+# mixer.jl
+#
+# Summary:
+#
+# Tools for mixing the self-energy functions Σ, hybridization functions Δ,
+# local impurity levels εᵢ, and correction for charge density Γ.
+#
+# Members:
+#
+# mixer_sigma -> Mix self-energy functions.
+# mixer_delta -> Mix hybridization functions.
+# mixer_eimpx -> Mix local impurity levels.
+# mixer_gamma -> Mix correction of charge density.
+#
+include("mixer.jl")
+#
+export mixer_sigma
+export mixer_delta
+export mixer_eimpx
+export mixer_gamma
 
 """
     __init__()
@@ -572,20 +645,20 @@ export cal_dc_exact
 This function would be executed immediately after the module is loaded
 at runtime for the first time.
 
-Here, we will try to precompile the whole Zen package to reduce latency
-and speed up the later calculations.
+Here, we will try to precompile the whole ZenCore package to reduce the
+runtime latency and speed up the successive calculations.
 """
 function __init__()
     prompt("ZEN", "Loading...")
 
-    # Get an array of the names exported by the `Zen` module
+    # Get an array of the names exported by the `ZenCore` module
     nl = names(ZenCore)
 
     # Go through each name
     cf = 0 # Counter
     for i in eachindex(nl)
-        # Please pay attention to that nl[i] is a Symbol, we need to convert it
-        # into string and function, respectively.
+        # Please pay attention to that nl[i] is a Symbol, we need to
+        # convert it into string and function, respectively.
         str = string(nl[i])
         fun = eval(nl[i])
 
@@ -612,7 +685,7 @@ function __init__()
         end
     end
 
-    prompt("ZEN", "Well, Zen is compiled and loaded ($cf functions).")
+    prompt("ZEN", "Well, ZenCore is compiled and loaded ($cf functions).")
     prompt("ZEN", "We are ready to go!")
     println()
 end

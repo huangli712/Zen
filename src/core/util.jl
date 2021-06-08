@@ -4,17 +4,17 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/04/19
+# Last modified: 2021/06/05
 #
 
 """
     @cswitch(constexpr, body)
 
-Provides C-like switch statement with the ``falling through'' behavior. This
-implementation was borrowed from the following github repo.:
-    https://github.com/Gnimuc/CSyntax.jl
+Provides a C-like switch statement with the *falling through* behavior.
+This implementation was borrowed from the following github repository:
+* https://github.com/Gnimuc/CSyntax.jl
 
-# Examples
+## Examples
 ```julia
 engine = get_d("engine")
 @cswitch engine begin
@@ -66,10 +66,10 @@ end
 """
     @ps1(str, c)
 
-Wrapper for printstyled function. Here `str` is a string, and `c`
+Wrapper for `printstyled` function. Here `str` is a string, and `c`
 denotes color.
 
-# Examples
+## Examples
 ```julia
 @ps1 "Hello world!" :green
 ```
@@ -83,7 +83,7 @@ end
 """
     @ps2(str1, c1, str2, c2)
 
-Wrapper for printstyled function. Here `str1` and `str2` are strings,
+Wrapper for `printstyled` function. Here `str1` and `str2` are strings,
 and `c1` and `c2` denote colors.
 
 See also: [`@ps1`](@ref).
@@ -100,7 +100,11 @@ end
     require()
 
 Check the version of julia runtime environment. It should be higher
-than v1.6.x.
+than v1.6.x. One of the most important philosophies of the ZenCore
+package is minimizing the dependence on the third-party libraries as
+far as possible. Note that the ZenCore package relys on the `TOML`
+package to parse the *.toml file. Only in v1.6.0 and higher versions,
+julia includes `TOML` in its standard library.
 """
 function require()
     if VERSION < v"1.6-"
@@ -115,7 +119,7 @@ Setup `ARGS` manually. This function is used only in REPL environment.
 We can use this function to update `ARGS`, so that the `query_args()`
 and the other related functions can work correctly.
 
-# Examples
+## Examples
 ```julia-repl
 julia > setup_args("SrVO3.toml")
 1-element Array{String,1}:
@@ -146,7 +150,7 @@ end
 """
     query_args()
 
-Check whether the configuration file (case.toml) is provided.
+Check whether the configuration file (`case.toml`) is provided.
 
 See also: [`setup_args`](@ref).
 """
@@ -162,7 +166,7 @@ end
 """
     query_case()
 
-Return case, in other words, the job's name.
+Return `case`, in other words, the job's name.
 
 See also: [`query_stop`](@ref).
 """
@@ -170,25 +174,25 @@ function query_case()
     basename( splitext(query_args())[1] )
 end
 
+#=
+*Remarks*:
+
+For `VASP`, the essential input files include:
+* POSCAR
+* POTCAR
+
+As for the `INCAR` and `KPOINTS`, they will be generated automatically.
+=#
+
 """
     query_inps(engine::String)
 
 Check whether the essential input files exist. This function is designed
-for DFT engine only.
+for the DFT engine only.
 
 See also: [`query_inps`](@ref).
 """
 function query_inps(engine::String)
-
-#
-# Remarks:
-#
-# For vasp, the essential input files include:
-#    1. POSCAR
-#    2. POTCAR
-# As for the INCAR and KPOINTS, they will be generated automatically.
-#
-
     @cswitch engine begin
         @case "vasp"
             if !isfile("POSCAR") || !isfile("POTCAR")
@@ -205,7 +209,7 @@ end
 """
     query_stop()
 
-Query whether the case.stop file exists.
+Query whether the `case.stop` file exists.
 
 See also: [`query_case`](@ref).
 """
@@ -234,8 +238,8 @@ end
     query_core()
 
 Query the src/core directory of Zen. Actually, the `ZEN_CORE` denotes
-the directory that contains the Zen.jl file. Be careful, ZEN_CORE must
-be included in LOAD_PATH.
+the directory that contains the ZenCore.jl file. Be careful, ZEN_CORE
+must be included in `LOAD_PATH`.
 
 See also: [`query_home`](@ref).
 """
@@ -289,6 +293,13 @@ function query_dmft()
     end
 end
 
+#=
+*Remarks*:
+
+The `atomic` code is considered as a preprocessor of `ct_hyb2`, it is
+not a valid quantum impurity solver.
+=#
+
 """
     query_solver(engine::String)
 
@@ -297,14 +308,6 @@ Query the home directory of the quantum impurity solver.
 See also: [`query_dft`](@ref), [`query_dmft`](@ref).
 """
 function query_solver(engine::String)
-
-#
-# Remarks:
-#
-# The `atomic` code is considered as a preprocessor of `ct_hyb2`, it is
-# not a valid quantum impurity solver.
-#
-
     # We have to setup the environment variable ZEN_SOLVER
     if haskey(ENV, "ZEN_SOLVER")
         ENV["ZEN_SOLVER"]
@@ -349,7 +352,7 @@ function welcome()
     @ps2 "ZZZZZZZZZZZZ EEEEEEEEEEEE NNNNNNNNNNNN  | "  :green "A Modern DFT + DMFT Computation Framework\n" :magenta
     @ps1 "          Z               N          N  |\n" :green
     @ps1 "         Z                N          N  |\n" :green
-    @ps1 "   ZZZZZZ    EEEEEEEEEEEE N          N  |\n" :green
+    @ps2 "   ZZZZZZ    EEEEEEEEEEEE N          N  | "  :green "Package: $__LIBNAME__\n" :magenta
     @ps2 "  Z                       N          N  | "  :green "Version: $__VERSION__\n" :magenta
     @ps2 " Z                        N          N  | "  :green "Release: $__RELEASE__\n" :magenta
     @ps2 "ZZZZZZZZZZZZ EEEEEEEEEEEE N          N  | "  :green "Powered by the julia programming language\n" :magenta
@@ -428,7 +431,7 @@ end
 """
     line_to_array(io::IOStream)
 
-Convert a line (reading from an iostream) to a string array.
+Convert a line (reading from an IOStream) to a string array.
 """
 @inline function line_to_array(io::IOStream)
     split(readline(io), " ", keepempty = false)
@@ -446,7 +449,7 @@ end
 """
     line_to_cmplx(io::IOStream)
 
-Convert a line (reading from an iostream) to a cmplx number. It is used
+Convert a line (reading from an IOStream) to a cmplx number. It is used
 to parse the `LOCPROJ` file only.
 
 See also: [`vaspio_projs`](@ref).
@@ -458,13 +461,39 @@ See also: [`vaspio_projs`](@ref).
     return parse(F64, _re) + parse(F64, _im) * im
 end
 
+#=
+*Remarks 1*:
+
+The definition of Gauss error function is as follows:
+
+```math
+erf(x) = \frac{2}{\sqrt{\pi}}\int^{x}_{0} e^{-\eta^2} d\eta.
+```
+
+*Remarks 2*:
+
+We call the `erf()` function defined in the mathematical library `libm`
+or `openlibm` directly, instead of implementing it again by ourselves.
+For more details about `libm` and `openlibm`, please visit the following
+websites:
+* https://openlibm.org
+* https://github.com/JuliaMath/openlibm
+* https://sourceware.org/newlib/libm.html
+
+*Remarks 3*:
+
+This below implementation is taken from the `SpecialFunctions.jl`. See:
+* https://github.com/JuliaMath/SpecialFunctions.jl
+
+*Remarks 4*:
+
+`Base.Math.libm` is actually a string. It denotes `libopenlibm`.
+=#
+
 """
     erf(x::F64)
 
 Calculate the Gauss error function.
-
-This implementation is taken from the SpecialFunctions.jl. See:
-    https://github.com/JuliaMath/SpecialFunctions.jl
 
 See also: [`gauss_weight`](@ref).
 """
