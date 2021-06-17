@@ -15,5 +15,6 @@ fort.*
 test/*/dft
 test/*/dmft*
 test/*/impurity.*
+test/_*
 ctqmc
 dmft
