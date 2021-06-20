@@ -12,14 +12,14 @@
 !!!           dmft_input_eigen
 !!!           dmft_input_projs
 !!!           dmft_input_sigdc
-!!!           dmft_input_sig_l
+!!!           dmft_input_sigma
 !!!           dmft_alloc_array
 !!!           dmft_final_array
 !!! source  : dmft_stream.f90
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/20/2021 by li huang (last modified)
+!!!           06/10/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -307,13 +307,14 @@
      call dmft_input_kmesh()
      call dmft_input_eigen()
      call dmft_input_projs()
+     !
      if ( ltetra .eqv. .true. ) then
          call dmft_input_tetra()
      endif ! back if ( ltetra .eqv. .true. ) block
 
 ! setup impurity self-energy functions and related double counting terms
      call dmft_input_sigdc()
-     call dmft_input_sig_l()
+     call dmft_input_sigma()
 
      return
   end subroutine dmft_setup_system
@@ -1328,12 +1329,12 @@
   end subroutine dmft_input_sigdc
 
 !!
-!! @sub dmft_input_sig_l
+!! @sub dmft_input_sigma
 !!
 !! read in bare self-energy functions from various quantum impurity solvers.
 !! (see module dmft_sigma)
 !!
-  subroutine dmft_input_sig_l()
+  subroutine dmft_input_sigma()
      use constants, only : dp, mytmp
      use constants, only : zero
 
@@ -1349,7 +1350,7 @@
 
      use context, only : i_grp
      use context, only : qdim, ndim
-     use context, only : fmesh, sig_l
+     use context, only : fmesh, sigma
 
      implicit none
 
@@ -1386,7 +1387,7 @@
 
 ! file sigma.bare must be present
          if ( exists .eqv. .false. ) then
-             call s_print_error('dmft_input_sig_l','file sigma.bare is absent')
+             call s_print_error('dmft_input_sigma','file sigma.bare is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
 ! open file sigma.bare for reading
@@ -1435,7 +1436,7 @@
                      do j=1,ndim(i_grp(i))
                          do k=1,ndim(i_grp(i))
                              read(mytmp,*) re, im
-                             sig_l(k,j,m,s,i) = dcmplx(re, im)
+                             sigma(k,j,m,s,i) = dcmplx(re, im)
                          enddo ! over k={1,ndim(i_grp(i))} loop
                      enddo ! over j={1,ndim(i_grp(i))} loop
                  enddo ! over m={1,nmesh} loop
@@ -1458,7 +1459,7 @@
 
 ! broadcast data
      call mp_bcast( fmesh, master )
-     call mp_bcast( sig_l, master )
+     call mp_bcast( sigma, master )
 
 ! block until all processes have reached here
      call mp_barrier()
@@ -1466,7 +1467,7 @@
 # endif  /* MPI */
 
      return
-  end subroutine dmft_input_sig_l
+  end subroutine dmft_input_sigma
 
 !!========================================================================
 !!>>> manage memory for dynamical mean-field theory engine             <<<
@@ -1498,6 +1499,9 @@
      call cat_alloc_sigma()
      call cat_alloc_green()
      call cat_alloc_weiss()
+     call cat_alloc_delta()
+
+     call cat_alloc_gamma()
 
      return
   end subroutine dmft_alloc_array
@@ -1528,6 +1532,9 @@
      call cat_free_sigma()
      call cat_free_green()
      call cat_free_weiss()
+     call cat_free_delta()
+
+     call cat_free_gamma()
 
      return
   end subroutine dmft_final_array

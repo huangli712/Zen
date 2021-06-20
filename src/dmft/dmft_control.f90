@@ -6,7 +6,7 @@
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/23/2021 by li huang (last modified)
+!!!           06/15/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -64,8 +64,9 @@
 !!
 !! if task == 2:
 !!     the code will do the following jobs:
-!!     (1) calculate charge correction due to the electronic correlation,
-!!     (2) calculate total energy.
+!!     (1) search the fermi level (depends on `lfermi`),
+!!     (2) calculate correction for density matrix,
+!!     (3) write the above calculated results.
 !!
 !! if task == 3:
 !!     search the fermi level only (depends on `lfermi`)
@@ -75,6 +76,9 @@
 !!
 !! if task == 5:
 !!     calculate all complex frequency dependent eigenvalues only
+!!
+!! if task == 6:
+!!     calculate lattice green's functions
 !!
      integer, public, save :: task   = 1
 
@@ -244,7 +248,7 @@
 !! @var fermi
 !!
 !! default fermi level, which is usually taken from the dft calculations.
-!! when task = 1 or 3, `fermi` might be updated.
+!! when task = 1, 2, or 3, `fermi` might be updated.
 !!
      real(dp), public, save :: fermi = 0.00_dp
 
@@ -321,21 +325,21 @@
 !!
 !! version string, version number + date info. + status info.
 !!
-     character(len=20), public, parameter :: V_FULL = 'v0.4.1 @ 2021.05.23D'
+     character(len=20), public, parameter :: V_FULL = 'v0.5.3 @ 2021.06.15D'
 
 !!
 !! @var V_CURR
 !!
 !! version string, only version number
 !!
-     character(len=06), public, parameter :: V_CURR = 'v0.4.1'
+     character(len=06), public, parameter :: V_CURR = 'v0.5.3'
 
 !!
 !! @var V_DATE
 !!
 !! version string, only date info.
 !!
-     character(len=11), public, parameter :: V_DATE = '2021.05.23'
+     character(len=11), public, parameter :: V_DATE = '2021.06.15'
 
 !!
 !! @var V_STAT

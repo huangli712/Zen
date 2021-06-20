@@ -13,12 +13,14 @@
 !!!           dmft_sigma    module
 !!!           dmft_green    module
 !!!           dmft_weiss    module
+!!!           dmft_delta    module
+!!!           dmft_gamma    module
 !!!           context       module
 !!! source  : dmft_context.f90
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/21/2021 by li huang (last modified)
+!!!           06/11/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -335,7 +337,7 @@
 !! @var chipsi
 !!
 !! overlap matrix between the local orbitals and the Kohn-Sham basis. its
-!! definition is \langle \chi^{I}_{\alpha} | \psi_{b,k,s} \rangle, where
+!! definition is \langle \chi^{I}_{\alpha,k} | \psi_{b,k} \rangle, where
 !! `I` means the index for correlated sites, \alpha means the index for
 !! correlated orbitals. `b`, `k`, `s` are indices for dft bands, k-points,
 !! and spins, respectively. of course, `b` is restricted by band windows,
@@ -347,7 +349,7 @@
 !! @var psichi
 !!
 !! overlap matrix between the Kohn-Sham basis and the local orbitals. its
-!! definition is \langle \psi_{b,k,s} | \chi^{I}_{\alpha} \rangle.
+!! definition is \langle \psi_{b,k} | \chi^{I}_{\alpha,k} \rangle.
 !! actually, psichi can be obtained by chipsi through conjugate transpose.
 !!
      complex(dp), public, save, allocatable :: psichi(:,:,:,:,:)
@@ -394,15 +396,15 @@
 !!
 !! @var eimps
 !!
-!! local impurity levels. eimps = \sum enk - mu
+!! local impurity levels. eimps = \sum_k enk - mu
 !!
      complex(dp), public, save, allocatable :: eimps(:,:,:,:)
 
 !!
 !! @var eimpx
 !!
-!! local impurity levels shifted by double counting terms. in other words,
-!! eimpx = eimps - sigdc
+!! local impurity levels shifted by double counting terms.
+!! in other words, eimpx = eimps - sigdc
 !!
      complex(dp), public, save, allocatable :: eimpx(:,:,:,:)
 
@@ -440,14 +442,15 @@
      complex(dp), public, save, allocatable :: sigoo(:,:,:,:)
 
 !!
-!! @var sig_l
+!! @var sigma
 !!
 !! impurity self-energy functions. they are usually taken from the output
 !! of various quantum impurity solver. this code will read them from file
 !! sigma.bare. note that the double counting terms should be subtracted
-!! from them.
+!! from them. note that sigma is frequency-dependent, but sigoo and sigdc
+!! are not.
 !!
-     complex(dp), public, save, allocatable :: sig_l(:,:,:,:,:)
+     complex(dp), public, save, allocatable :: sigma(:,:,:,:,:)
 
   end module dmft_sigma
 
@@ -466,13 +469,13 @@
      implicit none
 
 !!
-!! @var grn_l
+!! @var green
 !!
 !! local green's functions. note that within the dynamical mean-field
 !! theory, local green's functions should be equal to impurity green's
-!! functions.
+!! functions within self-consistent iterations.
 !!
-     complex(dp), public, save, allocatable :: grn_l(:,:,:,:,:)
+     complex(dp), public, save, allocatable :: green(:,:,:,:,:)
 
   end module dmft_green
 
@@ -483,7 +486,7 @@
 !!
 !! @mod dmft_weiss
 !!
-!! contain local weiss functions and hybridization functions
+!! contain local weiss's functions
 !!
   module dmft_weiss
      use constants, only : dp
@@ -491,20 +494,61 @@
      implicit none
 
 !!
-!! @var wss_l
+!! @var weiss
 !!
-!! local weiss functions
+!! local weiss's functions
 !!
-     complex(dp), public, save, allocatable :: wss_l(:,:,:,:,:)
-
-!!
-!! @var hyb_l
-!!
-!! local hybridization functions
-!!
-     complex(dp), public, save, allocatable :: hyb_l(:,:,:,:,:)
+     complex(dp), public, save, allocatable :: weiss(:,:,:,:,:)
 
   end module dmft_weiss
+
+!!========================================================================
+!!>>> module dmft_delta                                                <<<
+!!========================================================================
+
+!!
+!! @mod dmft_weiss
+!!
+!! contain local hybridization functions
+!!
+  module dmft_delta
+     use constants, only : dp
+
+     implicit none
+
+!!
+!! @var delta
+!!
+!! local hybridization functions. the ct-qmc quantum impurity solver will
+!! need them as input.
+!!
+     complex(dp), public, save, allocatable :: delta(:,:,:,:,:)
+
+  end module dmft_delta
+
+!!========================================================================
+!!>>> module dmft_gamma                                                <<<
+!!========================================================================
+
+!!
+!! @mod dmft_gamma
+!!
+!! contain dft + dmft correction for density matrix
+!!
+  module dmft_gamma
+     use constants, only : dp
+
+     implicit none
+
+!!
+!! @var gamma
+!!
+!! dft + dmft correction for density matrix, which is used to perform
+!! charge fully-consistent dft + dmft calculations.
+!!
+     complex(dp), public, save, allocatable :: gamma(:,:,:,:)
+
+  end module dmft_gamma
 
 !!========================================================================
 !!>>> module context                                                   <<<
@@ -540,6 +584,8 @@
      use dmft_sigma
      use dmft_green
      use dmft_weiss
+     use dmft_delta
+     use dmft_gamma
 
      implicit none
 
@@ -568,6 +614,8 @@
      public :: cat_alloc_sigma
      public :: cat_alloc_green
      public :: cat_alloc_weiss
+     public :: cat_alloc_delta
+     public :: cat_alloc_gamma
 
 ! declaration of module procedures: deallocate memory
      public :: cat_free_map
@@ -583,6 +631,8 @@
      public :: cat_free_sigma
      public :: cat_free_green
      public :: cat_free_weiss
+     public :: cat_free_delta
+     public :: cat_free_gamma
 
   contains ! encapsulated functionality
 
@@ -869,7 +919,7 @@
 ! allocate memory
      allocate(sigdc(qdim,qdim,nspin,nsite),       stat = istat)
      allocate(sigoo(qdim,qdim,nspin,nsite),       stat = istat)
-     allocate(sig_l(qdim,qdim,nmesh,nspin,nsite), stat = istat)
+     allocate(sigma(qdim,qdim,nmesh,nspin,nsite), stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -879,7 +929,7 @@
 ! initialize them
      sigdc = czero
      sigoo = czero
-     sig_l = czero
+     sigma = czero
 
      return
   end subroutine cat_alloc_sigma
@@ -893,7 +943,7 @@
      implicit none
 
 ! allocate memory
-     allocate(grn_l(qdim,qdim,nmesh,nspin,nsite), stat = istat)
+     allocate(green(qdim,qdim,nmesh,nspin,nsite), stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -901,7 +951,7 @@
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
-     grn_l = czero
+     green = czero
 
      return
   end subroutine cat_alloc_green
@@ -915,8 +965,7 @@
      implicit none
 
 ! allocate memory
-     allocate(wss_l(qdim,qdim,nmesh,nspin,nsite), stat = istat)
-     allocate(hyb_l(qdim,qdim,nmesh,nspin,nsite), stat = istat)
+     allocate(weiss(qdim,qdim,nmesh,nspin,nsite), stat = istat)
 
 ! check the status
      if ( istat /= 0 ) then
@@ -924,11 +973,54 @@
      endif ! back if ( istat /= 0 ) block
 
 ! initialize them
-     wss_l = czero
-     hyb_l = czero
+     weiss = czero
 
      return
   end subroutine cat_alloc_weiss
+
+!!
+!! @sub cat_alloc_delta
+!!
+!! allocate memory for delta-related variables
+!!
+  subroutine cat_alloc_delta()
+     implicit none
+
+! allocate memory
+     allocate(delta(qdim,qdim,nmesh,nspin,nsite), stat = istat)
+
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_delta','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
+     delta = czero
+
+     return
+  end subroutine cat_alloc_delta
+
+!!
+!! @sub cat_alloc_gamma
+!!
+!! allocate memory for gamma-related variables
+!!
+  subroutine cat_alloc_gamma()
+     implicit none
+
+! allocate memory
+     allocate(gamma(qbnd,qbnd,nkpt,nspin), stat = istat)
+
+! check the status
+     if ( istat /= 0 ) then
+         call s_print_error('cat_alloc_gamma','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+! initialize them
+     gamma = czero
+
+     return
+  end subroutine cat_alloc_gamma
 
 !!========================================================================
 !!>>> deallocate memory subroutines                                    <<<
@@ -1092,7 +1184,7 @@
 
      if ( allocated(sigdc) ) deallocate(sigdc)
      if ( allocated(sigoo) ) deallocate(sigoo)
-     if ( allocated(sig_l) ) deallocate(sig_l)
+     if ( allocated(sigma) ) deallocate(sigma)
 
      return
   end subroutine cat_free_sigma
@@ -1105,7 +1197,7 @@
   subroutine cat_free_green()
      implicit none
 
-     if ( allocated(grn_l) ) deallocate(grn_l)
+     if ( allocated(green) ) deallocate(green)
 
      return
   end subroutine cat_free_green
@@ -1118,10 +1210,35 @@
   subroutine cat_free_weiss()
      implicit none
 
-     if ( allocated(wss_l) ) deallocate(wss_l)
-     if ( allocated(hyb_l) ) deallocate(hyb_l)
+     if ( allocated(weiss) ) deallocate(weiss)
 
      return
   end subroutine cat_free_weiss
+
+!!
+!! @sub cat_free_delta
+!!
+!! deallocate memory for delta-related variables
+!!
+  subroutine cat_free_delta()
+     implicit none
+
+     if ( allocated(delta) ) deallocate(delta)
+
+     return
+  end subroutine cat_free_delta
+
+!!
+!! @sub cat_free_gamma
+!!
+!! deallocate memory for gamma-related variables
+!!
+  subroutine cat_free_gamma()
+     implicit none
+
+     if ( allocated(gamma) ) deallocate(gamma)
+
+     return
+  end subroutine cat_free_gamma
 
   end module context

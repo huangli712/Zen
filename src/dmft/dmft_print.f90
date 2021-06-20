@@ -8,7 +8,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           05/20/2021 by li huang (last modified)
+!!!           06/10/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -184,7 +184,7 @@
      use context, only : shell, corr, site, l, ndim
      use context, only : bmin, bmax, nbnd
      use context, only : sorts, atoms, sortn, coord
-     use context, only : sigdc, sig_l
+     use context, only : sigdc, sigma
 
      implicit none
 
@@ -212,14 +212,14 @@
 
 ! print quantum impurities
      write(mystd,'(2X,a)') '>>> system information from sigma.bare'
-     write(mystd,'(2X,a)') '[system information] -> impurities -> sig_l'
+     write(mystd,'(2X,a)') '[system information] -> impurities -> sigma'
      write(mystd,'(2X,a)') '-----------------------------------------------------'
      do s=1,nsite
          do p=1,nspin
              write(mystd,'(4X,a10,i3,2X,a6,i3)') 'impurity :', s, 'spin :', p
              do i=1,ndim(i_grp(s))
                  write(mystd,'(4X,a1,i3)', advance='no') '>', i
-                 write(mystd,'(2f10.5)', advance='no') real(sig_l(i,i,1,p,s)), real(sig_l(i,i,nmesh,p,s))
+                 write(mystd,'(2f10.5)', advance='no') real(sigma(i,i,1,p,s)), real(sigma(i,i,nmesh,p,s))
                  write(mystd,'(2X,a)') '(re: w -> 0 and w -> oo)'
              enddo ! over i={1,ndim(i_grp(s))} loop
          enddo ! over p={1,nspin} loop
