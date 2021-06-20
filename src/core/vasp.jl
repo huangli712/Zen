@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/06
+# Last modified: 2021/06/19
 #
 
 #
@@ -25,37 +25,30 @@ See also: [`plo_adaptor`](@ref), [`ir_adaptor`](@ref).
 function vasp_adaptor(D::Dict{Symbol,Any})
     # V01: Print the header
     println("Adaptor : VASP")
+    println("Try to extract the Kohn-Sham dataset")
+    println("Current directory: ", pwd())
 
     # V02: Read in lattice structure
-    println("  Parse lattice")
-    D[:latt] = vaspio_lattice(pwd())
+    D[:latt] = vaspio_lattice(pwd(), false)
 
     # V03: Read in kmesh and the corresponding weights
-    println("  Parse kmesh")
-    println("  Parse weight")
     D[:kmesh], D[:weight] = vaspio_kmesh(pwd())
 
     # V04: Read in band structure and the corresponding occupancies
-    println("  Parse enk")
-    println("  Parse occupy")
     D[:enk], D[:occupy] = vaspio_eigen(pwd())
 
     # V05: Read in raw projectors, traits, and groups
-    println("  Parse projector")
     D[:PT], D[:PG], D[:chipsi] = vaspio_projs(pwd())
 
     # V06: Read in fermi level
-    println("  Parse fermi level")
-    D[:fermi] = vaspio_fermi(pwd())
+    D[:fermi] = vaspio_fermi(pwd(), false)
 
     # V07: Read in tetrahedron data if they are available
     if get_d("smear") === "tetra"
-        println("  Parse tetrahedron")
         D[:volt], D[:itet] = vaspio_tetra(pwd())
     end
 
     # V08: Print the footer for a better visualization
-    println("The Kohn-Sham dataset is extracted by the adaptor")
     println()
 end
 
@@ -67,25 +60,36 @@ Check the runtime environment of vasp, prepare necessary input files.
 See also: [`vasp_exec`](@ref), [`vasp_save`](@ref).
 """
 function vasp_init(it::IterInfo)
+    # Print the header
+    println("Engine : VASP")
+    println("Try to perform ab initio calculation")
+    println("Current directory: ", pwd())
+    println("Prepare necessary input files for vasp")
+
     # Prepare essential input files
     #
     # Copy POTCAR and POSCAR
     cp("../POTCAR", joinpath(pwd(), "POTCAR"), force = true)
     cp("../POSCAR", joinpath(pwd(), "POSCAR"), force = true)
+    println("  > POTCAR is ready")
+    println("  > POSCAR is ready")
     #
     # How about INCAR
     if it.I₃ == 0
         # Generate INCAR automatically
-        vasp_incar(it.μ₀)
+        vasp_incar(it.μ₀, it.sc)
     else
         # Maybe we need to update INCAR file here
-        vasp_incar(it.μ₁)
+        @show it.I₃, it.μ₁, it.sc
+        vasp_incar(it.μ₁, it.sc)
     end
+    println("  > INCAR is ready")
     #
     # Well, perhaps we need to generate the KPOINTS file by ourselves.
     if get_d("kmesh") === "file"
         vasp_kpoints()
     end
+    println("  > KPOINTS is ready")
 
     # Check essential input files
     flist = ("INCAR", "POSCAR", "POTCAR")
@@ -106,15 +110,16 @@ See also: [`vasp_init`](@ref), [`vasp_save`](@ref).
 """
 function vasp_exec(it::IterInfo)
     # Print the header
-    println("Engine : VASP")
-
-    # Get the home directory of vasp
-    dft_home = query_dft("vasp")
+    println("Detect the runtime environment for vasp")
 
     # Determine mpi prefix (whether the vasp is executed sequentially)
     mpi_prefix = inp_toml("../MPI.toml", "dft", false)
     numproc = parse(I64, line_to_array(mpi_prefix)[3])
-    println("  Para : Using $numproc processors")
+    println("  > Using $numproc processors (MPI)")
+
+    # Get the home directory of vasp
+    dft_home = query_dft("vasp")
+    println("  > Home directory for vasp: ", dft_home)
 
     # Select suitable vasp program
     if get_d("lspinorb")
@@ -123,7 +128,6 @@ function vasp_exec(it::IterInfo)
         vasp_exe = "$dft_home/vasp_std"
     end
     @assert isfile(vasp_exe)
-    println("  Exec : $vasp_exe")
 
     # Assemble command
     if isnothing(mpi_prefix)
@@ -131,16 +135,28 @@ function vasp_exec(it::IterInfo)
     else
         vasp_cmd = split("$mpi_prefix $vasp_exe", " ")
     end
+    println("  > Assemble command: $(prod(x -> x * ' ', vasp_cmd))")
+
+    # Print the header
+    println("Launch the computational engine vasp")
 
     # Create a task, but do not run it immediately
     t = @task begin
         run(pipeline(`$vasp_cmd`, stdout = "vasp.out"))
     end
+    println("  > Create a task")
 
     # Launch it, the terminal output is redirected to vasp.out.
     # Note that the task runs asynchronously. It will not block
     # the execution.
     schedule(t)
+    println("  > Add the task to the scheduler's queue")
+    println("  > Waiting ...")
+
+    if it.sc == 2
+        println("Escape from vasp_exec()")
+        return
+    end
 
     # Analyze the vasp.out file during the calculation
     #
@@ -170,7 +186,7 @@ function vasp_exec(it::IterInfo)
         end
 
         # Print the log to screen
-        @printf("Elapsed %4i seconds, %4i iterations (dE = %12s)\r", 5*c, ni, dE)
+        @printf("  > Elapsed %4i seconds, %4i iterations (dE = %12s)\r", 5*c, ni, dE)
 
         # Break the loop
         istaskdone(t) && break
@@ -185,10 +201,7 @@ function vasp_exec(it::IterInfo)
     # Extract how many iterations are executed
     iters = readlines("vasp.out")
     filter!(x -> contains(x, "DAV:"), iters)
-    println("Converged after $(length(iters)) iterations")
-
-    # Print the footer
-    println()
+    println("  > Converged after $(length(iters)) iterations")
 end
 
 """
@@ -200,6 +213,14 @@ in `IterInfo` struct is also updated (`IterInfo.μ₀`).
 See also: [`vasp_init`](@ref), [`vasp_exec`](@ref).
 """
 function vasp_save(it::IterInfo)
+    if it.sc == 2
+        println("Escape from vasp_save()")
+        return
+    end
+
+    # Print the header
+    println("Finalize the computational task")
+       
     # Store the data files
     #
     # Create list of files
@@ -208,12 +229,17 @@ function vasp_save(it::IterInfo)
     # Go through the file list, backup the files one by one.
     for i in eachindex(fl)
         f = fl[i]
-        cp(f, "$f.$(it.I₃).$(it.I₂)", force = true)
+        cp(f, "$f.$(it.I₃)", force = true)
     end
+    println("  > Save the key output files")
 
     # Anyway, the fermi level is extracted from DOSCAR, and its value
     # will be saved at IterInfo.μ₀.
     it.μ₀ = vaspio_fermi(pwd())
+    println("  > Extract the fermi level from DOSCAR: $(it.μ₀) eV")
+
+    # Print the footer
+    println()
 end
 
 #
@@ -233,14 +259,14 @@ been tested for `magnetically ordered materials`.
 =#
 
 """
-    vasp_incar(fermi::F64)
+    vasp_incar(fermi::F64, sc_mode::I64)
 
 Generate an `INCAR` file. It will be used only when the DFT engine
 is vasp.
 
 See also: [`vasp_kpoints`](@ref).
 """
-function vasp_incar(fermi::F64)
+function vasp_incar(fermi::F64, sc_mode::I64)
     # Open the iostream
     ios = open("INCAR", "w")
 
@@ -364,6 +390,18 @@ function vasp_incar(fermi::F64)
     nbands = vaspio_nband(pwd())
     write(ios, "NBANDS   = $nbands \n")
 
+    # Special treatment for sc_mode == 2
+    #
+    # We would like to activate ICHARG = 5 to perform charge fully
+    # self-consistent DFT + DMFT calculations.
+    if sc_mode == 2
+        write(ios, "\n")
+        write(ios, "ICHARG   = 5 \n")
+        write(ios, "NELM     = 1000 \n")
+        write(ios, "NELMIN   = 1000 \n")
+        write(ios, "IMIX     = 0 \n")
+    end
+
     # Close the iostream
     close(ios)
 end
@@ -396,6 +434,52 @@ function vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
         # Close the iostream
         close(ios)
     end
+end
+
+"""
+    vasp_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
+"""
+function vasp_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
+    # Extract the dimensional parameters
+    _, qbnd, nkpt, nspin = size(gamma)
+    @assert nspin == 1 # Current limitation
+
+    # Determine filename for correction for density matrix
+    fgamma = "GAMMA"
+
+    # Write the data
+    open(fgamma, "w") do fout
+        @printf(fout, " %i  -1  ! Number of k-points, default number of bands\n", nkpt)
+        for k = 1:nkpt
+            bs = kwin[k,1,1]
+            be = kwin[k,1,2]
+            cbnd = be - bs + 1
+            @printf(fout, " %i  %i  %i\n", k, bs, be)
+            for p = 1:cbnd
+                for q = 1:cbnd
+                    z = gamma[p,q,k,1]
+                    @printf(fout, " %.14f  %.14f", real(z), imag(z))
+                end
+                println(fout)
+            end
+            #println(fout)
+        end # END OF K LOOP
+    end # END OF IOSTREAM
+
+    # Print message to the screen
+    println("  Write gamma matrix into: dft/$fgamma")
+end
+
+"""
+    vasp_lock()
+"""
+function vasp_lock()
+    return isfile("dft/vasp.lock")
+end
+
+function vasp_lock(action::String)
+    @assert startswith(action, "c") || startswith(action, "C")
+    touch("vasp.lock")
 end
 
 """
@@ -836,14 +920,18 @@ See also: [`tools/analyze.jl`](@ref).
 vaspio_procar() = vaspio_procar(pwd())
 
 """
-    vaspio_lattice(f::String)
+    vaspio_lattice(f::String, silent::Bool = true)
 
 Reading vasp's `POSCAR` file, return crystallography information. Here `f`
 means only the directory that contains `POSCAR`.
 
 See also: [`Lattice`](@ref), [`irio_lattice`](@ref).
 """
-function vaspio_lattice(f::String)
+function vaspio_lattice(f::String, silent::Bool = true)
+    # Print the header
+    !silent && println("Parse lattice")
+    !silent && println("  > Open and read POSCAR")
+
     # Open the iostream
     fin = open(joinpath(f, "POSCAR"), "r")
 
@@ -902,6 +990,10 @@ function vaspio_lattice(f::String)
     # Close the iostream
     close(fin)
 
+    # Print some useful information to check
+    !silent && println("  > System: ", latt._case)
+    !silent && println("  > Atoms: ", latt.atoms)
+
     # Return the desired struct
     return latt
 end
@@ -924,6 +1016,10 @@ only the directory that contains `IBZKPT`.
 See also: [`vaspio_tetra`](@ref), [`irio_kmesh`](@ref).
 """
 function vaspio_kmesh(f::String)
+    # Print the header
+    println("Parse kmesh and weight")
+    println("  > Open and read IBZKPT")
+
     # Open the iostream
     fin = open(joinpath(f, "IBZKPT"), "r")
 
@@ -946,6 +1042,10 @@ function vaspio_kmesh(f::String)
     # Close the iostream
     close(fin)
 
+    # Print some useful information to check
+    println("  > Number of k-points: ", nkpt)
+    println("  > Total sum of weights: ", sum(weight))
+    
     # Return the desired arrays
     return kmesh, weight
 end
@@ -968,6 +1068,10 @@ means only the directory that contains `IBZKPT`.
 See also: [`vaspio_kmesh`](@ref), [`irio_tetra`](@ref).
 """
 function vaspio_tetra(f::String)
+    # Print the header
+    println("Parse tetrahedron")
+    println("  > Open and read IBZKPT")
+
     # Open the iostream
     fin = open(joinpath(f, "IBZKPT"), "r")
 
@@ -1003,6 +1107,11 @@ function vaspio_tetra(f::String)
 
     # Close the iostream
     close(fin)
+
+    # Print some useful information to check
+    println("  > Number of tetrahedra: ", ntet)
+    println("  > Volume of one tetrahedron: ", volt)
+    println("  > Shape of Array itet: ", size(itet))
 
     # Return the desired arrays
     return volt, itet
@@ -1047,46 +1156,117 @@ end
 Reading vasp's `EIGENVAL` file, return energy band information. Here `f`
 means only the directory that contains `EIGENVAL`.
 
+Sometimes the `EIGENVAL` file does not contain any useful data, then we
+turn to the `LOCPROJ` file to obtain the energy band information. 
+
 See also: [`irio_eigen`](@ref).
 """
 function vaspio_eigen(f::String)
-    # Open the iostream
-    fin = open(joinpath(f, "EIGENVAL"), "r")
+    # Print the header
+    println("Parse enk and occupy")
 
-    # Determine number of spins
-    nspin = parse(I64, line_to_array(fin)[end])
-    @assert nspin === 1 || nspin === 2
+    # Check whether the `EIGENVAL` file contains valid data
+    lines = readlines(joinpath(f, "EIGENVAL"))
 
-    # Skip for lines
-    for i = 1:4
-        readline(fin)
+    if length(lines) ≥ 10
+        println("  > Open and read EIGENVAL")
+
+        # Open the iostream
+        fin = open(joinpath(f, "EIGENVAL"), "r")
+
+        # Determine number of spins
+        nspin = parse(I64, line_to_array(fin)[end])
+        @assert nspin === 1 || nspin === 2
+
+        # Skip for lines
+        for i = 1:4
+            readline(fin)
+        end
+
+        # Read in some key parameters: nelect, nkpt, nbands
+        _, nkpt, nband = parse.(I64, line_to_array(fin))
+
+        # Create arrays
+        enk = zeros(F64, nband, nkpt, nspin)
+        occupy = zeros(F64, nband, nkpt, nspin)
+
+        # Read in the energy bands and the corresponding occupations
+        for i = 1:nkpt
+            readline(fin)
+            readline(fin)
+            for j = 1:nband
+                arr = line_to_array(fin)
+                for s = 1:nspin
+                    enk[j, i, s] = parse(F64, arr[s+1])
+                    occupy[j, i, s] = parse(F64, arr[s+1+nspin])
+                end # END OF S LOOP
+            end # END OF J LOOP
+        end # END OF I LOOP
+
+        # close the iostream
+        close(fin)
+
+        # Print some useful information to check
+        println("  > Number of DFT bands: ", nband)
+        println("  > Number of k-points: ", nkpt)
+        println("  > Number of spins: ", nspin)
+        println("  > Shape of Array enk: ", size(enk))
+        println("  > Shape of Array occupy: ", size(occupy))
+
+        # return the desired arrays
+        return enk, occupy
+    else
+        println("  > Open and read LOCPROJ")
+
+        # Open the iostream
+        fin = open(joinpath(f, "LOCPROJ"), "r")
+
+        # Extract number of spins (nspin), number of k-points (nkpt),
+        # number of bands (nband), and number of projectors (nproj).
+        nspin, nkpt, nband, nproj = parse.(I64, line_to_array(fin)[1:4])
+        @assert nspin === 1 || nspin === 2
+
+        #@show nspin, nkpt, nband, nproj
+        for i = 1:nproj
+            readline(fin)
+        end
+
+        # Create arrays
+        enk = zeros(F64, nband, nkpt, nspin)
+        occupy = zeros(F64, nband, nkpt, nspin)
+
+        for s = 1:nspin
+            for k = 1:nkpt
+                for b = 1:nband
+                    readline(fin)
+                    arr = line_to_array(fin)
+                    _s, _k, _b = parse.(I64, arr[2:4])
+                    @assert _s == s
+                    @assert _k == k
+                    @assert _b == b
+
+                    enk[b,k,s] = parse(F64, arr[5])
+                    occupy[b,k,s] = parse(F64,arr[6])
+                    for p = 1:nproj
+                        readline(fin)
+                    end
+                end # END OF B LOOP
+            end # END OF K LOOP
+        end # END OF S LOOP
+
+        # Close the iostream
+        close(fin)
+
+        # Print some useful information to check
+        println("  > Number of DFT bands: ", nband)
+        println("  > Number of k-points: ", nkpt)
+        println("  > Number of spins: ", nspin)
+        println("  > Shape of Array enk: ", size(enk))
+        println("  > Shape of Array occupy: ", size(occupy))
+
+        # return the desired arrays
+        return enk, occupy
     end
-
-    # Read in some key parameters: nelect, nkpt, nbands
-    _, nkpt, nband = parse.(I64, line_to_array(fin))
-
-    # Create arrays
-    enk = zeros(F64, nband, nkpt, nspin)
-    occupy = zeros(F64, nband, nkpt, nspin)
-
-    # Read in the energy bands and the corresponding occupations
-    for i = 1:nkpt
-        readline(fin)
-        readline(fin)
-        for j = 1:nband
-            arr = line_to_array(fin)
-            for s = 1:nspin
-                enk[j, i, s] = parse(F64, arr[s+1])
-                occupy[j, i, s] = parse(F64, arr[s+1+nspin])
-            end # END OF S LOOP
-        end # END OF J LOOP
-    end # END OF I LOOP
-
-    # close the iostream
-    close(fin)
-
-    # return the desired arrays
-    return enk, occupy
 end
 
 """
@@ -1107,6 +1287,10 @@ only the directory that contains `LOCPROJ`.
 See also: [`irio_projs`](@ref).
 """
 function vaspio_projs(f::String)
+    # Print the header
+    println("Parse projector")
+    println("  > Open and read LOCPROJ")
+
     # Open the iostream
     fin = open(joinpath(f, "LOCPROJ"), "r")
 
@@ -1186,6 +1370,22 @@ function vaspio_projs(f::String)
     # Close the iostream
     close(fin)
 
+    # Print some useful information to check
+    println("  > Number of DFT bands: ", nband)
+    println("  > Number of k-points: ", nkpt)
+    println("  > Number of spins: ", nspin)
+    println("  > Number of projectors: ", nproj)
+    println("  > Number of groups: ", length(PG))
+    for i in eachindex(PG)
+        print("  > Group $i:")
+        print(" site -> ", PG[i].site, ";")
+        print(" l -> ", PG[i].l, ";")
+        print(" corr -> ", PG[i].corr, ";")
+        print(" shell -> ", PG[i].shell)
+        println()
+    end
+    println("  > Shape of Array chipsi: ", size(chipsi))
+    
     # Return the desired arrays
     # Note: PG should be further setup at plo_group() function.
     return PT, PG, chipsi
@@ -1201,30 +1401,58 @@ See also: [`irio_projs`](@ref).
 vaspio_projs() = vaspio_projs(pwd())
 
 """
-    vaspio_fermi(f::String)
+    vaspio_fermi(f::String, silent::Bool = true)
 
 Reading vasp's `DOSCAR` file, return the fermi level. Here `f` means
 only the directory that contains `DOSCAR`.
 
 See also: [`irio_fermi`](@ref).
 """
-function vaspio_fermi(f::String)
-    # Open the iostream
-    fin = open(joinpath(f, "DOSCAR"), "r")
+function vaspio_fermi(f::String, silent::Bool = true)
+    # Print the header
+    !silent && println("Parse fermi level")
 
-    # Skip five empty lines
-    for i = 1:5
-        readline(fin)
+    lines = readlines(joinpath(f, "DOSCAR"))
+
+    if length(lines) ≥ 6
+        !silent && println("  > Open and read DOSCAR")
+    
+        # Open the iostream
+        fin = open(joinpath(f, "DOSCAR"), "r")
+
+        # Skip five empty lines
+        for i = 1:5
+            readline(fin)
+        end
+
+        # Extract the fermi level
+        fermi = parse(F64, line_to_array(fin)[4])
+
+        # Close the iostream
+        close(fin)
+
+        # Print some useful information to check
+        !silent && println("  > Fermi level: $fermi eV")
+
+        # Return the desired data
+        return fermi
+    else
+        !silent && println("  > Open and read LOCPROJ")
+
+        # Open the iostream
+        fin = open(joinpath(f, "LOCPROJ"), "r")
+
+        fermi = parse(F64, line_to_array(fin)[5])
+
+        # Close the iostream
+        close(fin)
+
+        # Print some useful information to check
+        !silent && println("  > Fermi level: $fermi eV")
+    
+        # Return the desired data
+        return fermi
     end
-
-    # Extract the fermi level
-    fermi = parse(F64, line_to_array(fin)[4])
-
-    # Close the iostream
-    close(fin)
-
-    # Return the desired data
-    return fermi
 end
 
 """

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/06
+# Last modified: 2021/06/20
 #
 
 #
@@ -200,7 +200,7 @@ function chk_dict()
     # Check dmft block
     @assert get_m("mode") in (1, 2)
     @assert get_m("axis") in (1, 2)
-    @assert get_m("niter") > 0
+    @assert all(x -> x ≥ 1, get_m("niter"))
     @assert get_m("nmesh") > 0
     @assert get_m("dcount") in ("fll1", "fll2", "amf", "held", "exact")
     @assert get_m("beta") >= 0.0
@@ -273,8 +273,8 @@ See also: [`get_c`](@ref), [`str_c`](@ref).
 """
 function cat_c()
     # See comments in cat_d()
-    println("  case     | case     -> ", str_c("case"))
-    println()
+    println("  case     -> ", str_c("case"))
+    # println()
 end
 
 #=
@@ -299,19 +299,19 @@ Print the configuration parameters to stdout: for PDFT dict.
 See also: [`get_d`](@ref), [`str_d`](@ref).
 """
 function cat_d()
-    println("  dft      | engine   -> ", str_d("engine"))
-    println("  dft      | projtype -> ", str_d("projtype"))
-    println("  dft      | smear    -> ", str_d("smear"))
-    println("  dft      | kmesh    -> ", str_d("kmesh"))
-    println("  dft      | magmom   -> ", str_d("magmom"))
-    println("  dft      | lsymm    -> ", str_d("lsymm"))
-    println("  dft      | lspins   -> ", str_d("lspins"))
-    println("  dft      | lspinorb -> ", str_d("lspinorb"))
-    println("  dft      | loptim   -> ", str_d("loptim"))
-    println("  dft      | lproj    -> ", str_d("lproj"))
-    println("  dft      | sproj    -> ", str_d("sproj"))
-    println("  dft      | window   -> ", str_d("window"))
-    println()
+    println("  engine   -> ", str_d("engine"))
+    println("  projtype -> ", str_d("projtype"))
+    println("  smear    -> ", str_d("smear"))
+    println("  kmesh    -> ", str_d("kmesh"))
+    println("  magmom   -> ", str_d("magmom"))
+    println("  lsymm    -> ", str_d("lsymm"))
+    println("  lspins   -> ", str_d("lspins"))
+    println("  lspinorb -> ", str_d("lspinorb"))
+    println("  loptim   -> ", str_d("loptim"))
+    println("  lproj    -> ", str_d("lproj"))
+    println("  sproj    -> ", str_d("sproj"))
+    println("  window   -> ", str_d("window"))
+    # println()
 end
 
 """
@@ -323,22 +323,22 @@ See also: [`get_m`](@ref), [`str_m`](@ref).
 """
 function cat_m()
     # See comments in cat_d()
-    println("  dmft     | mode     -> ", str_m("mode"))
-    println("  dmft     | axis     -> ", str_m("axis"))
-    println("  dmft     | niter    -> ", str_m("niter"))
-    println("  dmft     | nmesh    -> ", str_m("nmesh"))
-    println("  dmft     | dcount   -> ", str_m("dcount"))
-    println("  dmft     | beta     -> ", str_m("beta"))
-    println("  dmft     | mixer    -> ", str_m("mixer"))
-    println("  dmft     | mc       -> ", str_m("mc"))
-    println("  dmft     | cc       -> ", str_m("cc"))
-    println("  dmft     | ec       -> ", str_m("ec"))
-    println("  dmft     | fc       -> ", str_m("fc"))
-    println("  dmft     | lfermi   -> ", str_m("lfermi"))
-    println("  dmft     | lcharge  -> ", str_m("lcharge"))
-    println("  dmft     | lenergy  -> ", str_m("lenergy"))
-    println("  dmft     | lforce   -> ", str_m("lforce"))
-    println()
+    println("  mode     -> ", str_m("mode"))
+    println("  axis     -> ", str_m("axis"))
+    println("  niter    -> ", str_m("niter"))
+    println("  nmesh    -> ", str_m("nmesh"))
+    println("  dcount   -> ", str_m("dcount"))
+    println("  beta     -> ", str_m("beta"))
+    println("  mixer    -> ", str_m("mixer"))
+    println("  mc       -> ", str_m("mc"))
+    println("  cc       -> ", str_m("cc"))
+    println("  ec       -> ", str_m("ec"))
+    println("  fc       -> ", str_m("fc"))
+    println("  lfermi   -> ", str_m("lfermi"))
+    println("  lcharge  -> ", str_m("lcharge"))
+    println("  lenergy  -> ", str_m("lenergy"))
+    println("  lforce   -> ", str_m("lforce"))
+    # println()
 end
 
 """
@@ -350,16 +350,16 @@ See also: [`get_i`](@ref), [`str_i`](@ref).
 """
 function cat_i()
     # See comments in cat_d()
-    println("  impurity | nsite    -> ", str_i("nsite"))
-    println("  impurity | atoms    -> ", str_i("atoms"))
-    println("  impurity | equiv    -> ", str_i("equiv"))
-    println("  impurity | shell    -> ", str_i("shell"))
-    println("  impurity | ising    -> ", str_i("ising"))
-    println("  impurity | occup    -> ", str_i("occup"))
-    println("  impurity | upara    -> ", str_i("upara"))
-    println("  impurity | jpara    -> ", str_i("jpara"))
-    println("  impurity | lpara    -> ", str_i("lpara"))
-    println()
+    println("  nsite    -> ", str_i("nsite"))
+    println("  atoms    -> ", str_i("atoms"))
+    println("  equiv    -> ", str_i("equiv"))
+    println("  shell    -> ", str_i("shell"))
+    println("  ising    -> ", str_i("ising"))
+    println("  occup    -> ", str_i("occup"))
+    println("  upara    -> ", str_i("upara"))
+    println("  jpara    -> ", str_i("jpara"))
+    println("  lpara    -> ", str_i("lpara"))
+    # println()
 end
 
 """
@@ -371,8 +371,8 @@ See also: [`get_s`](@ref), [`str_s`](@ref).
 """
 function cat_s()
     # See comments in cat_d()
-    println("  solver   | engine   -> ", str_s("engine"))
-    println("  solver   | params   -> ", str_s("params"))
+    println("  engine   -> ", str_s("engine"))
+    println("  params   -> ", str_s("params"))
     println()
 end
 

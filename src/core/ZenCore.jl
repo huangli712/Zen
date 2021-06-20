@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/05
+# Last modified: 2021/06/17
 #
 
 """
@@ -310,16 +310,19 @@ export str_s
 # cycle7      -> Execute self-energy engine only (for testing purpose).
 # cycle8      -> Execute mixer engine only (for testing purpose).
 # monitor     -> Monitor the DFT + DMFT calculations.
-# incr_it     -> Increase the counters in the IterInfo struct.
-# save_it     -> Record the iteration information.
-# make_trees  -> Make working directories.
-# rm_trees    -> Remove working directories.
+# suspend     -> Suspend the DFT engine.
 # dft_run     -> Driver for DFT engine.
 # dmft_run    -> Driver for DMFT engine.
 # solver_run  -> Driver for quantum impurity solvers.
 # adaptor_run -> Driver for Kohn-Sham adaptor.
 # sigma_core  -> Driver for self-energy engine.
 # mixer_core  -> Driver for mixer engine.
+# build_trees -> Make working directories.
+# clear_trees -> Remove working directories.
+# incr_it     -> Increase the counters in the IterInfo struct.
+# zero_it     -> Reset the counters in the IterInfo struct.
+# prev_it     -> Return the previous iteration information.
+# show_it     -> Print the iteration information.
 #
 include("base.jl")
 #
@@ -335,16 +338,19 @@ export cycle6
 export cycle7
 export cycle8
 export monitor
-export incr_it
-export save_it
-export make_trees
-export rm_trees
+export suspend
 export dft_run
 export dmft_run
 export solver_run
 export adaptor_run
 export sigma_core
 export mixer_core
+export build_trees
+export clear_trees
+export incr_it
+export zero_it
+export prev_it
+export show_it
 
 #
 # vasp.jl
@@ -362,6 +368,8 @@ export mixer_core
 # vasp_save      -> Backup vasp's output files.
 # vasp_incar     -> Generate essential input file (INCAR).
 # vasp_kpoints   -> Generate essential input file (KPOINTS).
+# vasp_gamma     -> Generate essential input file (GAMMA).
+# vasp_lock      -> Manipulate the vasp.lock file.
 # vasp_files     -> Check essential output files.
 # vaspio_nband   -> Determine number of bands.
 # vaspio_valence -> Read number of valence electrons for each sort.
@@ -382,6 +390,8 @@ export vasp_exec
 export vasp_save
 export vasp_incar
 export vasp_kpoints
+export vasp_gamma
+export vasp_lock
 export vasp_files
 export vaspio_nband
 export vaspio_valence
@@ -504,11 +514,13 @@ export irio_charge
 # dmft_init   -> Prepare input files for the DMFT engine.
 # dmft_exec   -> Execute the DMFT engine.
 # dmft_save   -> Backup output files for the DMFT engine.
-# read_fermi  -> Read dmft1/dmft.fermi.
-# read_delta  -> Read dmft1/dmft.hyb_l or impurity.i/dmft.hyb_l.
+# read_fermi  -> Read dmft1/dmft.fermi or dmft2/dmft.fermi.
+# read_delta  -> Read dmft1/dmft.delta or impurity.i/dmft.delta.
 # read_eimpx  -> Read dmft1/dmft.eimpx or impurity.i/dmft.eimpx.
-# write_delta -> Write dmft1/dmft.hyb_l or impurity.i/dmft.hyb_l.
+# read_gamma  -> Read dmft2/dmft.gamma.
+# write_delta -> Write dmft1/dmft.delta or impurity.i/dmft.delta.
 # write_eimpx -> Write dmft1/dmft.eimpx or impurity.i/dmft.eimpx.
+# write_gamma -> Write dmft2/dmft.gamma.
 #
 include("dmft.jl")
 #
@@ -518,8 +530,10 @@ export dmft_save
 export read_fermi
 export read_delta
 export read_eimpx
+export read_gamma
 export write_delta
 export write_eimpx
+export write_gamma
 
 #
 # solver.jl
@@ -630,7 +644,7 @@ export write_sigdc
 # mixer_sigma -> Mix self-energy functions.
 # mixer_delta -> Mix hybridization functions.
 # mixer_eimpx -> Mix local impurity levels.
-# mixer_gamma -> Mix correction of charge density.
+# mixer_gamma -> Mix correction of density matrix Γ.
 #
 include("mixer.jl")
 #

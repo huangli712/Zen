@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/07
+# Last modified: 2021/06/18
 #
 
 #
@@ -35,40 +35,31 @@ function ir_adaptor(D::Dict{Symbol,Any})
 
     # I02: Print the header
     println("Adaptor : IR")
+    println("Try to write the processed Kohn-Sham dataset with IR format")
+    println("Current directory: ", pwd())
 
     # I03: Write important parameters
-    println("  Store params")
     irio_params(pwd(), D)
     #
-    println("  Store maps")
     irio_maps(pwd(), D[:MAP])
     #
-    println("  Store groups")
     irio_groups(pwd(), D[:PG])
     #
-    println("  Store windows")
     irio_windows(pwd(), D[:PW])
 
     # I04: Write lattice structure
-    println("  Store lattice")
     irio_lattice(pwd(), D[:latt])
 
     # I05: Write kmesh and the corresponding weights
-    println("  Store kmesh")
-    println("  Store weight")
     irio_kmesh(pwd(), D[:kmesh], D[:weight])
 
     # I06: Write band structure and the corresponding occupancies
-    println("  Store enk")
-    println("  Store occupy")
     irio_eigen(pwd(), D[:enk], D[:occupy])
 
     # I07: Write normalized projectors
-    println("  Store projector")
     irio_projs(pwd(), D[:Fchipsi])
 
     # I08: Write fermi level
-    println("  Store fermi level")
     irio_fermi(pwd(), D[:fermi])
 
     # I09: Check the validity of the `D` dict further (optional)
@@ -81,12 +72,10 @@ function ir_adaptor(D::Dict{Symbol,Any})
 
     # I10: Write tetrahedron data if they are available
     if get_d("smear") === "tetra"
-        println("  Store tetrahedron")
         irio_tetra(pwd(), D[:volt], D[:itet])
     end
 
     # I11: Print the footer for a better visualization
-    println("The Kohn-Sham dataset is translated into IR format by the adaptor")
     println()
 end
 
@@ -129,6 +118,9 @@ means only the directory that we want to use.
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
 """
 function irio_params(f::String, D::Dict{Symbol,Any})
+    # Print the header
+    println("Store essential parameters")
+
     # Extract crystallography information
     _case = D[:latt]._case
     scale = D[:latt].scale
@@ -220,6 +212,8 @@ function irio_params(f::String, D::Dict{Symbol,Any})
         println(fout, "nmesh -> $nmesh")
         println(fout)
     end # END OF IOSTREAM
+
+    println("  > Open and write the file params.ir")
 end
 
 """
@@ -272,6 +266,8 @@ function irio_maps(f::String, MAP::Mapping)
         println(fout)
         println(fout)
     end # END OF IOSTREAM
+
+    println("  > Open and write the file maps.ir")
 end
 
 """
@@ -304,6 +300,8 @@ function irio_groups(f::String, PG::Array{PrGroup,1})
             println(fout)
         end
     end # END OF IOSTREAM
+
+    println("  > Open and write the file groups.ir")
 end
 
 """
@@ -342,6 +340,8 @@ function irio_windows(f::String, PW::Array{PrWindow,1})
             println(fout)
         end # END OF P LOOP
     end # END OF IOSTREAM
+
+    println("  > Open and write the file windows.ir")
 end
 
 """
@@ -353,6 +353,9 @@ means only the directory that we want to use.
 See also: [`vaspio_lattice`](@ref).
 """
 function irio_lattice(f::String, latt::Lattice)
+    # Print the header
+    println("Store essential Kohn-Sham dataset")
+
     # Extract some key parameters
     _case, scale, nsort, natom = latt._case, latt.scale, latt.nsort, latt.natom
 
@@ -402,6 +405,8 @@ function irio_lattice(f::String, latt::Lattice)
             @printf(fout, "%16.12f %16.12f %16.12f\n", latt.coord[i, 1:3]...)
         end
     end # END OF IOSTREAM
+
+    println("  > Open and write the file lattice.ir (lattice)")
 end
 
 """
@@ -438,6 +443,8 @@ function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
             @printf(fout, "%8.2f\n", weight[k])
         end
     end # END OF IOSTREAM
+
+    println("  > Open and write the file kmesh.ir (kmesh and weight)")
 end
 
 """
@@ -470,6 +477,8 @@ function irio_tetra(f::String, volt::F64, itet::Array{I64,2})
             @printf(fout, "%8i %8i %8i %8i %8i\n", itet[t, :]...)
         end
     end # END OF IOSTREAM
+
+    println("  > Open and write the file tetra.ir (itet and volt)")
 end
 
 """
@@ -510,6 +519,8 @@ function irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
             end # END OF K LOOP
         end # END OF S LOOP
     end # END OF IOSTREAM
+
+    println("  > Open and write the file eigen.ir (enk and occupy)")
 end
 
 """
@@ -550,6 +561,8 @@ function irio_projs(f::String, chipsi::Array{C64,4})
             end # END OF K LOOP
         end # END OF S LOOP
     end # END OF IOSTREAM
+
+    println("  > Open and write the file projs.ir (chipsi)")
 end
 
 """
@@ -598,6 +611,8 @@ function irio_projs(f::String, chipsi::Array{Array{C64,4},1})
             println(fout)
         end # END OF P LOOP
     end # END OF IOSTREAM
+
+    println("  > Open and write the file projs.ir (chipsi)")
 end
 
 """
@@ -621,6 +636,8 @@ function irio_fermi(f::String, fermi::F64)
         # Write the body
         # N/A
     end # END OF IOSTREAM
+
+    println("  > Open and write the file fermi.ir (fermi)")
 end
 
 """

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/06
+# Last modified: 2021/06/18
 #
 
 #
@@ -68,7 +68,7 @@ See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 const PDMFT = Dict{String,Array{Any,1}}(
           "mode"     => [missing, 1, :I64   , "Scheme of dynamical mean-field theory calculations"],
           "axis"     => [missing, 1, :I64   , "Imaginary-time axis or real-frequency axis"],
-          "niter"    => [missing, 1, :I64   , "Maximum number of all iterations"],
+          "niter"    => [missing, 1, :Array , "Maximum number of all iterations"],
           "nmesh"    => [missing, 1, :I64   , "Number of frequency points"],
           "dcount"   => [missing, 1, :String, "Scheme of double counting term"],
           "beta"     => [missing, 1, :F64   , "Inverse system temperature"],
@@ -146,8 +146,13 @@ Mutable struct. Record the DFT + DMFT iteration information.
 * I₂ -> Number of iterations between `dmft2` and DFT engine.
 * I₃ -> Number of DFT + DMFT iterations.
 * I₄ -> Counter for each iteration.
+* M₁ -> Maximum allowed number of iterations (between `dmft1` and solver).
+* M₂ -> Maximum allowed number of iterations (between `dmft2` and DFT).
+* M₃ -> Maximum allowed number of DFT + DMFT iterations.
+* sc -> Self-consistent mode.
 * μ₀ -> Fermi level obtained by DFT engine.
-* μ₁ -> Fermi level obtained by DMFT engine (`dmft1` or `dmft2`).
+* μ₁ -> Fermi level obtained by DMFT engine (`dmft1`).
+* μ₂ -> Fermi level obtained by DMFT engine (`dmft2`).
 * dc -> Double counting terms.
 * nf -> Number of impurity occupancy.
 * et -> Total DFT + DMFT energy.
@@ -159,8 +164,13 @@ mutable struct IterInfo
     I₂ :: I64
     I₃ :: I64
     I₄ :: I64
+    M₁ :: I64
+    M₂ :: I64
+    M₃ :: I64
+    sc :: I64
     μ₀ :: F64
     μ₁ :: F64
+    μ₂ :: F64
     dc :: Vector{F64}
     nf :: Vector{F64}
     et :: F64
@@ -358,19 +368,25 @@ end
 Outer constructor for IterInfo struct.
 """
 function IterInfo()
-    # Extract the parameter `nsite`
+    # Extract the parameter `nsite` and `niter`
     nsite = get_i("nsite")
+    _M₃, _M₁, _M₂ = get_m("niter")
     @assert nsite ≥ 1
+    @assert _M₃ ≥ 1 && _M₁ ≥ 1 && _M₂ ≥ 1
 
     # Initialize key fields
-    I = 0
-    μ = 0.0
+    I  = 0
+    M₁ = _M₁
+    M₂ = _M₂
+    M₃ = _M₃
+    sc = 1
+    μ  = 0.0
     dc = fill(0.0, nsite)
     nf = fill(0.0, nsite)
     et = 0.0
 
     # Call the default constructor
-    IterInfo(I, I, I, I, μ, μ, dc, nf, et)
+    IterInfo(I, I, I, I, M₁, M₂, M₃, sc, μ, μ, μ, dc, nf, et)
 end
 
 """
@@ -547,8 +563,13 @@ function Base.show(io::IO, it::IterInfo)
     println(io, "I₂ : ", it.I₂)
     println(io, "I₃ : ", it.I₃)
     println(io, "I₄ : ", it.I₄)
+    println(io, "M₁ : ", it.M₁)
+    println(io, "M₂ : ", it.M₂)
+    println(io, "M₃ : ", it.M₃)
+    println(io, "sc : ", it.sc)
     println(io, "μ₀ : ", it.μ₀)
     println(io, "μ₁ : ", it.μ₁)
+    println(io, "μ₂ : ", it.μ₂)
     println(io, "dc : ", it.dc)
     println(io, "nf : ", it.nf)
     println(io, "et : ", it.et)

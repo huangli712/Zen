@@ -4,8 +4,12 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/05
+# Last modified: 2021/06/18
 #
+
+#=
+### *Basic Macros*
+=#
 
 """
     @cswitch(constexpr, body)
@@ -14,12 +18,12 @@ Provides a C-like switch statement with the *falling through* behavior.
 This implementation was borrowed from the following github repository:
 * https://github.com/Gnimuc/CSyntax.jl
 
-## Examples
+### Examples
 ```julia
 engine = get_d("engine")
 @cswitch engine begin
     @case "vasp"
-        vasp_init(it)
+        just_do_it()
         break
 
     @default
@@ -69,7 +73,7 @@ end
 Wrapper for `printstyled` function. Here `str` is a string, and `c`
 denotes color.
 
-## Examples
+### Examples
 ```julia
 @ps1 "Hello world!" :green
 ```
@@ -100,11 +104,11 @@ end
     require()
 
 Check the version of julia runtime environment. It should be higher
-than v1.6.x. One of the most important philosophies of the ZenCore
+than v1.6.x. One of the most important philosophies of the `ZenCore`
 package is minimizing the dependence on the third-party libraries as
-far as possible. Note that the ZenCore package relys on the `TOML`
+far as possible. Note that the `ZenCore` package relys on the `TOML`
 package to parse the *.toml file. Only in v1.6.0 and higher versions,
-julia includes `TOML` in its standard library.
+julia includes the `TOML` package in its standard library.
 """
 function require()
     if VERSION < v"1.6-"
@@ -115,11 +119,11 @@ end
 """
     setup_args(x::Vararg{String})
 
-Setup `ARGS` manually. This function is used only in REPL environment.
+Setup `ARGS` manually. This function is used only in `REPL` environment.
 We can use this function to update `ARGS`, so that the `query_args()`
 and the other related functions can work correctly.
 
-## Examples
+### Examples
 ```julia-repl
 julia > setup_args("SrVO3.toml")
 1-element Array{String,1}:
@@ -188,9 +192,11 @@ As for the `INCAR` and `KPOINTS`, they will be generated automatically.
     query_inps(engine::String)
 
 Check whether the essential input files exist. This function is designed
-for the DFT engine only.
+for the DFT engine only. The input files for the DMFT engine, quantum
+impurity solver, and Kohn-Sham adaptor will be generated automatically.
+The `ZenCore` package will take care of them. Do not worry.
 
-See also: [`query_inps`](@ref).
+See also: [`query_case`](@ref).
 """
 function query_inps(engine::String)
     @cswitch engine begin
@@ -220,8 +226,8 @@ end
 """
     query_home()
 
-Query the home directory of Zen. Actually, the `ZEN_HOME` means the
-directory that the Zen Framework is installed.
+Query the home directory of `Zen`. Actually, the `ZEN_HOME` means the
+directory that the `Zen` Framework is installed.
 
 See also: [`query_core`](@ref).
 """
@@ -237,8 +243,8 @@ end
 """
     query_core()
 
-Query the src/core directory of Zen. Actually, the `ZEN_CORE` denotes
-the directory that contains the ZenCore.jl file. Be careful, ZEN_CORE
+Query the src/core directory of `Zen`. Actually, the `ZEN_CORE` denotes
+the directory that contains the ZenCore.jl file. Be careful, `ZEN_CORE`
 must be included in `LOAD_PATH`.
 
 See also: [`query_home`](@ref).
@@ -420,7 +426,8 @@ end
 """
     prompt(io::IOStream, msg::String)
 
-Print a format Zen message to the given IOStream.
+Print a format Zen message to the given IOStream. This function is used
+to log the events during DFT + DMFT iterations.
 """
 function prompt(io::IOStream, msg::String)
     date = Dates.format(now(), "yyyy-mm-dd / HH:MM:SS")

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/07
+# Last modified: 2021/06/20
 #
 
 #
@@ -22,20 +22,31 @@ This quantum impurity solver is from the `iQIST` software package.
 See also: [`s_qmc1_exec`](@ref), [`s_qmc1_save`](@ref).
 """
 function s_qmc1_init(it::IterInfo, imp::Impurity)
+    # Print the header
+    println("Engine : CT-HYB₁")
+    println("Try to solve the quantum impurity problem: ", imp.index)
+    println("Current directory: ", pwd())
+    println("Prepare necessary input files for solver")
+
     # Generate configuration file for quantum impurity solver
     ctqmc_setup(imp)
+    println("  > solver.ctqmc.in is ready")
 
-    # Extract frequency mesh and hybridization function from `dmft.hyb_l`
+    # Extract frequency mesh and hybridization function from `dmft.delta`
     fmesh, Delta = read_delta(imp)
+    println("  > Open and read hybridization functions from dmft.delta")
 
     # Write frequency mesh and hybridization function to `solver.hyb.in`
     ctqmc_delta(fmesh, Delta)
+    println("  > solver.hyb.in is ready")
 
     # Extract local impurity levels from `dmft.eimpx`
     Eimpx = read_eimpx(imp)
+    println("  > Open and read local impurity levels from dmft.eimpx")
 
     # Write local impurity levels to `solver.eimp.in`
     ctqmc_eimpx(Eimpx)
+    println("  > solver.eimp.in is ready")
 end
 
 """
@@ -49,20 +60,20 @@ See also: [`s_qmc1_init`](@ref), [`s_qmc1_save`](@ref).
 """
 function s_qmc1_exec(it::IterInfo)
     # Print the header
-    println("Engine : CT-HYB₁")
-
-    # Get the home directory of quantum impurity solver
-    solver_home = query_solver("ct_hyb1")
+    println("Detect the runtime environment for solver")
 
     # Determine mpi prefix (whether the solver is executed sequentially)
     mpi_prefix = inp_toml("../MPI.toml", "solver", false)
     numproc = parse(I64, line_to_array(mpi_prefix)[3])
-    println("  Para : Using $numproc processors")
+    println("  > Using $numproc processors (MPI)")
+
+    # Get the home directory of quantum impurity solver
+    solver_home = query_solver("ct_hyb1")
+    println("  > Home directory for solver: ", solver_home)
 
     # Select suitable solver program
     solver_exe = "$solver_home/ctqmc"
     @assert isfile(solver_exe)
-    println("  Exec : $solver_exe")
 
     # Assemble command
     if isnothing(mpi_prefix)
@@ -70,12 +81,69 @@ function s_qmc1_exec(it::IterInfo)
     else
         solver_cmd = split("$mpi_prefix $solver_exe", " ")
     end
+    println("  > Assemble command: $(prod(x -> x * ' ', solver_cmd))")
 
-    # Launch it, the terminal output is redirected to solver.out
-    run(pipeline(`$solver_cmd`, stdout = "solver.out"))
+    # Print the header
+    println("Launch the computational engine (quantum impurity solver)")
 
-    # Print the footer for a better visualization
+    # Create a task, but do not run it immediately
+    t = @task begin
+        run(pipeline(`$solver_cmd`, stdout = "solver.out"))
+    end
+    println("  > Create a task")
+
+    # Launch it, the terminal output is redirected to solver.out.
+    # Note that the task runs asynchronously. It will not block
+    # the execution.
+    schedule(t)
+    println("  > Add the task to the scheduler's queue")
+    println("  > Waiting ...")
+
+    # Analyze the solver.out file during the calculation
+    #
+    # `c` is a time counter
+    c = 0
+    #
+    # Enter infinite loop
+    while true
+        # Sleep five seconds
+        sleep(5)
+
+        # Increase the counter
+        c = c + 1
+
+        # Parse solver.out file
+        lines = readlines("solver.out")
+        filter!(x -> contains(x, "iter:"), lines)
+
+        # Figure out the task that is doing
+        if length(lines) > 0
+            arr = line_to_array(lines[end])
+            c_sweep = parse(I64, arr[5])
+            t_sweep = parse(I64, arr[7])
+            R = c_sweep / t_sweep
+        else # Nothing
+            c_sweep = 0
+            R = 0.0
+        end
+
+        # Print the log to screen
+        @printf("  > Elapsed %4i seconds, current sweeps: %i (%4.2f)\r", 5*c, c_sweep, R)
+
+        # Break the loop
+        istaskdone(t) && break
+    end
+    #
+    # Keep the last output
     println()
+
+    # Wait for the dmft task to finish
+    wait(t)
+
+    # Extract how many monte carlo sampling blocks are executed
+    lines = readlines("solver.out")
+    filter!(x -> contains(x, "iter:"), lines)
+    println("  > Finished after $(length(lines)) Monte Carlo sampling blocks")
 end
 
 """
@@ -88,6 +156,9 @@ This quantum impurity solver is from the `iQIST` software package.
 See also: [`s_qmc1_init`](@ref), [`s_qmc1_exec`](@ref).
 """
 function s_qmc1_save(it::IterInfo, imp::Impurity)
+    # Print the header
+    println("Finalize the computational task")
+
     # Determine which files are important
     #
     # Major output
@@ -113,12 +184,17 @@ function s_qmc1_save(it::IterInfo, imp::Impurity)
             cp(file_src, file_dst, force = true)
         end,
     union(fout, fgrn, fhyb, fsgm, faux) )
+    println("  > Save the key output files")
 
     # Update the `occup` field in `imp` (Impurity struct)
     ctqmc_nimpx(imp)
+    println("  > Extract the impurity occupancy from solver.nmat.dat: $(imp.occup)")
 
     # Update the `it` (IterInfo) struct
     it.nf[imp.index] = imp.occup
+
+    # Print the footer for a better visualization
+    println()
 end
 
 #

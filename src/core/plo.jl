@@ -4,12 +4,12 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/06
+# Last modified: 2021/06/19
 #
 
-#
-# Driver Functions
-#
+#=
+### *Driver Functions*
+=#
 
 """
     plo_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
@@ -28,6 +28,8 @@ See also: [`vasp_adaptor`](@ref), [`ir_adaptor`](@ref).
 function plo_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     # P01: Print the header
     println("Adaptor : PLO")
+    println("Try to process the Kohn-Sham dataset")
+    println("Current directory: ", pwd())
 
     # P02: Check the validity of the original dict
     key_list = [:enk, :fermi, :chipsi, :PG]
@@ -39,44 +41,37 @@ function plo_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     # windows) and quantum impurity problems
     #
     # D[:MAP] will be created
-    println("  Establish mapping")
     D[:MAP] = plo_map(D[:PG], ai)
 
     # P04: Adjust the band structure
     #
     # D[:enk] will be updated
-    println("  Calibrate eigenvalues")
     plo_fermi(D[:enk], D[:fermi])
 
     # P05: Setup the PrGroup strcut further
     #
     # D[:PG] will be updated
-    println("  Complete groups")
     plo_group(D[:MAP], D[:PG])
 
     # P06: Setup the band / energy window for projectors
     #
     # D[:PW] will be created
-    println("  Generate window")
     D[:PW] = plo_window(D[:PG], D[:enk])
 
     # P07: Transform the projectors
     #
     # D[:Rchipsi] will be created
-    println("  Rotate projectors")
     D[:Rchipsi] = plo_rotate(D[:PG], D[:chipsi])
 
     # P08: Filter the projectors
     #
     # D[:Fchipsi] will be created
-    println("  Filter projectors")
     D[:Fchipsi] = plo_filter(D[:PW], D[:Rchipsi])
 
     # P09: Orthogonalize and normalize the projectors
     #
     # D[:Fchipsi] will be updated. It contains the final data
     # for projector matrix.
-    println("  Normalize projectors")
     plo_orthog(D[:PW], D[:Fchipsi])
 
     # P10: Are the projectors correct?
@@ -94,13 +89,12 @@ function plo_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     end
 
     # P11: Print the footer for a better visualization
-    println("The Kohn-Sham dataset is preprocessed by the adaptor")
     println()
 end
 
-#
-# Service Functions (Group A)
-#
+#=
+### *Service Functions* : *Group A*
+=#
 
 """
     plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
@@ -111,6 +105,9 @@ quantum impurity problems. Return a Mapping struct.
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref), [`Mapping`](@ref).
 """
 function plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
+    # Print the header
+    println("Establish mapping")
+
     # Extract key parameters
     #
     # Here, `nsite` is the number of quantum impurity problems, `ngrp` is
@@ -151,6 +148,7 @@ function plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
         # Push the data into site_l
         push!(site_l, (sites, l, shell))
     end
+    println("  > Figure out the traits of quantum impurity problems")
 
     # Create the Mapping struct
     Map = Mapping(nsite, ngrp, nwnd)
@@ -171,18 +169,23 @@ function plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
     # For a given quantum impurity problem, we can always find out the
     # corresponding group of projectors.
     @assert all(x -> (0 < x <= ngrp), Map.i_grp)
+    println("  > Create quantum impurity problems -> groups (i_grp)")
 
     # Examine Map.g_imp
     #
     # For a given group of projectors, if we fail to find out the
     # corresponding quantum impurity problem, it must be non-correlated.
     @assert all(x -> (0 <= x <= nsite), Map.g_imp)
+    println("  > Create groups -> quantum impurity problems (g_imp)")
 
     # Setup Map.i_wnd and Map.w_imp
     #
     # They are actually copies of i_grp and g_imp
     Map.i_wnd[:] = Map.i_grp[:]
+    println("  > Create quantum impurity problems -> windows (i_grp)")
+    #
     Map.w_imp[:] = Map.g_imp[:]
+    println("  > Create windows -> quantum impurity problems (g_imp)")
 
     # Return the desired struct
     return Map
@@ -196,7 +199,9 @@ Calibrate the band structure to enforce the fermi level to be zero.
 See also: [`vaspio_fermi`](@ref), [`irio_fermi`](@ref).
 """
 function plo_fermi(enk::Array{F64,3}, fermi::F64)
+    println("Calibrate eigenvalues")
     @. enk = enk - fermi
+    println("  > Reset fermi level to zero")
 end
 
 #=
@@ -218,6 +223,9 @@ the `PrGroup` struct.
 See also: [`PIMP`](@ref), [`Mapping`](@ref), [`PrGroup`](@ref).
 """
 function plo_group(MAP::Mapping, PG::Array{PrGroup,1})
+    # Print the header
+    println("Complete groups")
+
     # Scan the groups of projectors, setup them one by one.
     for g in eachindex(PG)
         # Examine PrGroup, check number of projectors
@@ -233,10 +241,12 @@ function plo_group(MAP::Mapping, PG::Array{PrGroup,1})
         if s != 0
             # Setup corr property
             PG[g].corr = true
+            println("  > Turn group $g (site: $(PG[g].site)) into correlated")
 
             # Setup shell property
             # Later it will be used to generate `Tr`
             PG[g].shell = get_i("shell")[s]
+            println("  > Treat group $g (site: $(PG[g].site)) as $(PG[g].shell) orbitals")
         end
 
         # Setup Tr array further
@@ -274,6 +284,7 @@ function plo_group(MAP::Mapping, PG::Array{PrGroup,1})
                 sorry()
                 break
         end
+        println("  > Build transformation matrix for group $g (site: $(PG[g].site))")
     end
 end
 
@@ -295,9 +306,13 @@ Calibrate the band window to filter the Kohn-Sham eigenvalues.
 See also: [`PrWindow`](@ref), [`get_win1`](@ref), [`get_win2`](@ref).
 """
 function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
+    # Print the header
+    println("Generate windows")
+
     # Preprocess the input. Get how many windows there are.
     window = get_d("window")
     nwin = convert(I64, length(window) / 2)
+    println("  > Number of recognized windows: $nwin")
 
     # Sanity check
     @assert nwin === 1 || nwin === length(PG)
@@ -344,6 +359,8 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
 
         # Create the `PrWindow` struct, and push it into the PW array.
         push!(PW, PrWindow(kwin, bwin))
+
+        println("  > Create window $p: $bwin <--> ($(PW[p].bmin), $(PW[p].bmax))")
     end
 
     # Well, now CW contains all the windows for correlated groups of
@@ -386,6 +403,9 @@ groups, and then they will be rotated group by group.
 See also: [`PrGroup`](@ref), [`plo_filter`](@ref), [`plo_orthog`](@ref).
 """
 function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
+    # Print the header
+    println("Rotate projectors")
+
     # Extract some key parameters from raw projector matrix
     nproj, nband, nkpt, nspin = size(chipsi)
     @assert nproj ≥ 1
@@ -413,13 +433,15 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
             for k = 1:nkpt
                 for b = 1:nband
                     R[:, b, k, s] = PG[i].Tr * chipsi[p1:p2, b, k, s]
-                end
-            end
-        end
+                end # END OF B LOOP
+            end # END OF K LOOP
+        end # END OF S LOOP
 
         # Push R into Rchipsi to save it
         push!(Rchipsi, R)
-    end
+
+        println("  > Rotate group $i (site: $(PG[i].site)): number of local orbitals -> $ndim")
+    end # END OF I LOOP
 
     # Return the desired array
     return Rchipsi
@@ -449,6 +471,9 @@ Filter the projector matrix according to band window.
 See also: [`PrWindow`](@ref), [`plo_rotate`](@ref), [`plo_orthog`](@ref).
 """
 function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+    # Print the header
+    println("Filter projectors")
+
     # Initialize new array. It stores the filtered projectors.
     # Now it is empty, but we will allocate memory for it later.
     Fchipsi = Array{C64,4}[]
@@ -484,6 +509,8 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
         # Push F into Fchipsi to save it
         push!(Fchipsi, F)
+
+        println("  > Apply window $p: maximum number of bands -> $(PW[p].nbnd)")
     end # END OF P LOOP
 
     # Return the desired array
@@ -498,6 +525,9 @@ Orthogonalize and normalize the projectors.
 See also: [`PrWindow`](@ref), [`plo_rotate`](@ref), [`plo_filter`](@ref).
 """
 function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
+    # Print the header
+    println("Normalize projectors")
+
     # Preprocess the input. Get how many windows there are.
     window = get_d("window")
     nwin = convert(I64, length(window) / 2)
@@ -509,11 +539,21 @@ function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     if nwin === 1
         # All the PrGroups share the same energy / band window, we should
         # orthogonalize and normalize the projectors as a whole.
+        #
+        println("  > Try to orthogonalize the projectors as a whole")
+        #
         try_blk1(PW, chipsi)
     else
         # Each PrGroup has its own energy / band window, we have to
         # orthogonalize and normalize the projectors group by group.
+        #
+        println("  > Try to orthogonalize the projectors group by group")
+        #
         try_blk2(PW, chipsi)
+    end
+
+    for p in eachindex(chipsi)
+        println("  > Final shape of Array chipsi (group $p): $(size(chipsi[p]))")
     end
 end
 
@@ -684,6 +724,7 @@ function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
             # Sanity check
             @assert max_band >= ib3
+            #@show s, k, ib3, max_proj
             @assert ib3 >= max_proj
 
             # Try to combine all of the groups of projectors
@@ -746,20 +787,20 @@ end
 First, we try to calcuate the overlap matrix:
 ```math
 \mathcal{O}_{mm'}(\mathbf{k})
-    = 
-    \langle \chi_{\mathbf{k}m} | \chi_{\mathbf{k}m'} \rangle 
-    = 
+    =
+    \langle \chi_{\mathbf{k}m} | \chi_{\mathbf{k}m'} \rangle
+    =
     \sum_{\nu \in \mathcal{W}} P_{m\nu}(\mathbf{k}) P^{*}_{\nu m'}(\mathbf{k}),
 ```
 and its inverse square root:
 ```math
 \mathcal{S}_{mm'}(\mathbf{k})
-    =  
+    =
     \left\{ \mathcal{O}(\mathbf{k})^{-\frac{1}{2}} \right\}_{mm'}.
 ```
 Then the renormalized projector reads:
 ```math
-\bar{P}_{m\nu}(\mathbf{k}) 
+\bar{P}_{m\nu}(\mathbf{k})
     =
     \sum_{m'} \mathcal{S}_{mm'} (\mathbf{k}) P_{m'\nu}(\mathbf{k}).
 ```

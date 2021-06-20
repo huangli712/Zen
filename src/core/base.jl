@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/08
+# Last modified: 2021/06/17
 #
 
 #
@@ -24,7 +24,7 @@ function ready()
     query_inps(get_d("engine"))
 
     # R2: Prepare the working directories
-    make_trees()
+    build_trees()
 end
 
 """
@@ -123,6 +123,7 @@ See also: [`cycle2`](@ref), [`go`](@ref).
 function cycle1()
     # C-2: Create IterInfo struct
     it = IterInfo()
+    it.sc = 1 # One-shot mode
 
     # C-1: Create Logger struct
     lr = Logger(query_case())
@@ -153,9 +154,9 @@ function cycle1()
 # DFT + DMFT Iterations (C05-C12)
 #
     prompt("ZEN", "Iterations")
-    save_it(it, lr)
+    show_it(it, lr)
 
-    for iter = 1:get_m("niter")
+    for iter = 1:it.M₃
         # Print the log
         prompt("ZEN", "Cycle $iter")
         prompt(lr.log, "")
@@ -189,7 +190,7 @@ function cycle1()
         mixer_core(it, lr, ai, "sigma")
 
         # Print the cycle info
-        save_it(it, lr)
+        show_it(it, lr)
     end
 
     # C98: Close Logger.log
@@ -216,6 +217,7 @@ See also: [`cycle1`](@ref), [`go`](@ref).
 function cycle2()
     # C-2: Create IterInfo struct
     it = IterInfo()
+    it.sc = 1 # Still one-shot mode
 
     # C-1: Create Logger struct
     lr = Logger(query_case())
@@ -229,19 +231,80 @@ function cycle2()
     prompt("ZEN", "Initialization")
 
     # C01: Perform DFT calculation (for the first time)
-    dft_run(it, lr)
+    #dft_run(it, lr)
 
-    # C02: Perform DFT calculation (for the second time)
-    if get_d("loptim")
-        dft_run(it, lr)
-    end
-
-    # C03: To bridge the gap between DFT engine and DMFT engine by adaptor
-    adaptor_run(it, lr, ai)
-
-    # C04: Prepare default self-energy functions
+    # C02: Prepare default self-energy functions
     sigma_core(it, lr, ai, "reset")
 
+    # C03: Change calculation mode
+    it.sc = 2 # Fully self-consistent mode
+
+#
+# DFT + DMFT Iterations (C05-C12)
+#
+    prompt("ZEN", "Iterations")
+    show_it(it, lr)
+
+    dft_run(it, lr)
+
+    for iter = 1:it.M₃
+    
+        suspend(2)
+
+        # Print the log
+        prompt("ZEN", "Cycle $iter")
+        prompt(lr.log, "")
+        prompt(lr.log, "< dft_dmft_cycle >")
+    
+        incr_it(it, 3, iter)
+
+        adaptor_run(it, lr, ai)
+
+        for iter1 = 1:it.M₁
+            incr_it(it, 1, iter1)
+
+            # C05: Tackle with the double counting term
+            sigma_core(it, lr, ai, "dcount")
+
+            # C06: Perform DMFT calculation with `task` = 1
+            dmft_run(it, lr, 1)
+
+            # C07: Mix the hybridization functions
+            mixer_core(it, lr, ai, "delta")
+
+            # C08: Mix the local impurity levels
+            mixer_core(it, lr, ai, "eimpx")
+
+            # C09: Split and distribute the hybridization functions
+            sigma_core(it, lr, ai, "split")
+
+            # C10: Solve the quantum impurity problems
+            solver_run(it, lr, ai)
+
+            # C11: Gather and combine the impurity self-functions
+            sigma_core(it, lr, ai, "gather")
+
+            # C12: Mix the impurity self-energy functions
+            mixer_core(it, lr, ai, "sigma")
+
+            show_it(it, lr)
+        end
+        zero_it(it)
+
+        for iter2 = 1:it.M₂
+            incr_it(it, 2, iter2)
+
+            dmft_run(it, lr, 2)
+
+            dft_run(lr)
+
+            suspend(2)
+
+            show_it(it, lr)
+        end
+        zero_it(it)
+
+    end
 end
 
 """
@@ -484,132 +547,17 @@ function monitor(force_exit::Bool = false)
 end
 
 """
-    incr_it(it::IterInfo)
-
-Modify the internal counters in IterInfo struct.
-
-See also: [`IterInfo`](@ref), [`Logger`](@ref).
+    suspend(second::I64)
 """
-function incr_it(it::IterInfo)
-    # Get calculation mode
-    mode = get_m("mode")
+function suspend(second::I64)
+    @assert second > 0
 
-    # For one-shot DFT + DMFT mode
-    if mode == 1
-        it.I₃ = 1
-        it.I₁ = it.I₁ + 1
-        it.I₄ = it.I₄ + 1
-    # For fully charge self-consistent DFT + DMFT mode
-    else
-        sorry()
-    end
-end
+    sleep(second)
 
-"""
-    save_it(it::IterInfo, lr::Logger)
-
-Try to record the iteration information in the `case.cycle` file.
-
-See also: [`IterInfo`](@ref), [`Logger`](@ref).
-"""
-function save_it(it::IterInfo, lr::Logger)
-    # Extract parameter `nsite`
-    nsite = get_i("nsite")
-    @assert nsite == length(it.nf)
-
-    # Write the header
-    if it.I₄ == 0
-        print(lr.cycle, "#   #   #   #   μ₀        μ₁        ")
-        for t = 1:nsite
-            print(lr.cycle, "dc$(subscript(t))       ")
-        end
-        for t = 1:nsite
-            print(lr.cycle, "nf$(subscript(t))       ")
-        end
-        println(lr.cycle, "et")
-        # Write separator
-        println(lr.cycle, repeat('-', 46 + 20*nsite))
-    # Write iteration information
-    else
-        @printf(lr.cycle, "%-4i", it.I₄)
-        @printf(lr.cycle, "%-4i", it.I₃)
-        @printf(lr.cycle, "%-4i", it.I₁)
-        @printf(lr.cycle, "%-4i", it.I₂)
-        if it.μ₀ < 0.0
-            @printf(lr.cycle, "%-10.5f", it.μ₀)
-        else
-            @printf(lr.cycle, "+%-9.5f", it.μ₀)
-        end
-        if it.μ₁ < 0.0
-            @printf(lr.cycle, "%-10.5f", it.μ₁)
-        else
-            @printf(lr.cycle, "+%-9.5f", it.μ₁)
-        end
-        for t = 1:nsite
-            @printf(lr.cycle, "%-10.5f", it.dc[t])
-        end
-        for t = 1:nsite
-            @printf(lr.cycle, "%-10.5f", it.nf[t])
-        end
-        @printf(lr.cycle, "%-10.5f", it.et)
-        println(lr.cycle)
-    end
-
-    # Flush the IOStream
-    flush(lr.cycle)
-end
-
-#=
-*Remarks*:
-
-The working directories include `dft`, `dmft1`, `dmft2`, and `impurity.i`.
-If they exist already, it would be better to remove them at first.
-=#
-
-"""
-    make_trees()
-
-Prepare the working directories at advance.
-
-See also: [`rm_trees`](@ref).
-"""
-function make_trees()
-    # Build an array for folders
-    dir_list = ["dft", "dmft1", "dmft2"]
-    for i = 1:get_i("nsite")
-        push!(dir_list, "impurity.$i")
-    end
-
-    # Go through these folders, create them one by one.
-    for i in eachindex(dir_list)
-        dir = dir_list[i]
-        if isdir(dir)
-            rm(dir, force = true, recursive = true)
-        end
-        mkdir(dir)
-    end
-end
-
-"""
-    rm_trees()
-
-Remove the working directories finally.
-
-See also: [`make_trees`](@ref).
-"""
-function rm_trees()
-    # Build an array for folders
-    dir_list = ["dft", "dmft1", "dmft2"]
-    for i = 1:get_i("nsite")
-        push!(dir_list, "impurity.$i")
-    end
-
-    # Go through these folders, remove them one by one.
-    for i in eachindex(dir_list)
-        dir = dir_list[i]
-        if isdir(dir)
-            rm(dir, force = true, recursive = true)
-        end
+    while true
+        sleep(second)
+        println("Pending for DFT engine")
+        !vasp_lock() && break
     end
 end
 
@@ -655,6 +603,39 @@ function dft_run(it::IterInfo, lr::Logger)
 
     # Monitor the status
     monitor(true)
+end
+
+"""
+    dft_run()
+"""
+function dft_run(lr::Logger)
+    # Determine the chosen engine
+    engine = get_d("engine")
+
+    # Print the log
+    prompt("DFT")
+    prompt(lr.log, engine)
+
+    _, kwin, gamma = read_gamma()
+
+    # Enter dft directory
+    cd("dft")
+
+    # Activate the chosen DFT engine
+    @cswitch engine begin
+        # For VASP
+        @case "vasp"
+            vasp_gamma(kwin, gamma)
+            vasp_lock("create")
+            break
+
+        @default
+            sorry()
+            break
+    end
+
+    # Enter the parent directory
+    cd("..")
 end
 
 """
@@ -945,10 +926,21 @@ function mixer_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::Strin
     # Check the given task
     @assert task in ("sigma", "delta", "eimpx", "gamma")
 
-    # Check iteration number
-    if it.I₃ == 1
-        if it.I₁ < 2
+    # Check iteration number to see whether we have enough data to be mixed
+    if it.sc == 1
+        if it.I₁ ≤ 1
             return
+        end
+    else
+        if task in ("sigma", "delta", "eimpx")
+            if it.I₃ == 1 && it.I₁ == 1
+                return
+            end
+        else
+            @assert task == "gamma"
+            if it.I₃ == 1 && it.I₂ == 1
+                return
+            end
         end
     end
 
@@ -973,7 +965,7 @@ function mixer_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::Strin
             mixer_eimpx(it, ai)
             break
 
-        # Try to mix the charge density
+        # Try to mix the density matrix
         @case "gamma"
             mixer_gamma(it)
             break
@@ -985,4 +977,197 @@ function mixer_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::Strin
 
     # Monitor the status
     monitor(true)
+end
+
+#=
+*Remarks*:
+
+The working directories include `dft`, `dmft1`, `dmft2`, and `impurity.i`.
+If they exist already, it would be better to remove them at first.
+=#
+
+"""
+    build_trees()
+
+Prepare the working directories at advance.
+
+See also: [`clear_trees`](@ref).
+"""
+function build_trees()
+    # Build an array for folders
+    dir_list = ["dft", "dmft1", "dmft2"]
+    for i = 1:get_i("nsite")
+        push!(dir_list, "impurity.$i")
+    end
+
+    # Go through these folders, create them one by one.
+    for i in eachindex(dir_list)
+        dir = dir_list[i]
+        if isdir(dir)
+            rm(dir, force = true, recursive = true)
+        end
+        mkdir(dir)
+    end
+end
+
+"""
+    clear_trees()
+
+Remove the working directories finally.
+
+See also: [`build_trees`](@ref).
+"""
+function clear_trees()
+    # Build an array for folders
+    dir_list = ["dft", "dmft1", "dmft2"]
+    for i = 1:get_i("nsite")
+        push!(dir_list, "impurity.$i")
+    end
+
+    # Go through these folders, remove them one by one.
+    for i in eachindex(dir_list)
+        dir = dir_list[i]
+        if isdir(dir)
+            rm(dir, force = true, recursive = true)
+        end
+    end
+end
+
+"""
+    incr_it(it::IterInfo)
+
+Modify the internal counters in IterInfo struct. This function is used
+in the one-shot DFT + DMFT calculations only.
+
+See also: [`IterInfo`](@ref), [`zero_it`](@ref).
+"""
+function incr_it(it::IterInfo)
+    @assert it.sc == 1
+    it.I₃ = 1
+    it.I₁ = it.I₁ + 1
+    it.I₄ = it.I₄ + 1
+    @assert it.I₁ ≤ it.M₃
+end
+
+"""
+    incr_it(it::IterInfo, c::I64, v::I64)
+
+Modify the internal counters in IterInfo struct. This function is used
+in the fully charge self-consistent DFT + DMFT calculations only.
+
+See also: [`IterInfo`](@ref), [`zero_it`](@ref).
+"""
+function incr_it(it::IterInfo, c::I64, v::I64)
+    @assert it.sc == 2
+    @assert c in (1, 2, 3)
+    @assert v ≥ 1
+
+    if c == 1
+        @assert v ≤ it.M₁
+        it.I₁ = v
+        it.I₄ = it.I₄ + 1
+    elseif c == 2
+        @assert v ≤ it.M₂
+        it.I₂ = v
+        it.I₄ = it.I₄ + 1
+    elseif c == 3
+        @assert v ≤ it.M₃
+        it.I₃ = v
+    end
+end
+
+"""
+    zero_it(it::IterInfo)
+
+Reset the counters in the IterInfo struct.
+
+See also: [`IterInfo`](@ref), [`incr_it`](@ref).
+"""
+function zero_it(it::IterInfo)
+    it.I₁ = 0
+    it.I₂ = 0
+end
+
+function prev_it(it::IterInfo)
+    @assert it.sc == 1
+    @assert it.I₁ ≥ 2
+    return it.I₃, it.I₁ - 1
+end
+
+function prev_it(it::IterInfo, c::I64)
+    @assert it.sc == 2
+    @assert c in (1, 2)
+
+    if c == 1
+        list = [(i3,i1) for i1 = 1:it.M₁, i3 = 1:it.M₃]
+        newlist = reshape(list, it.M₁ * it.M₃)
+        ind = findfirst(x -> x == (it.I₃, it.I₁), newlist)
+        @assert ind ≥ 2
+        return newlist[ind - 1]
+    else
+        list = [(i3,i2) for i2 = 1:it.M₂, i3 = 1:it.M₃]
+        newlist = reshape(list, it.M₂ * it.M₃)
+        ind = findfirst(x -> x == (it.I₃, it.I₂), newlist)
+        @assert ind ≥ 2
+        return newlist[ind - 1]
+    end
+end
+
+"""
+    show_it(it::IterInfo, lr::Logger)
+
+Try to record the iteration information in the `case.cycle` file.
+
+See also: [`IterInfo`](@ref), [`Logger`](@ref).
+"""
+function show_it(it::IterInfo, lr::Logger)
+    # Extract parameter `nsite`
+    nsite = get_i("nsite")
+    @assert nsite == length(it.nf)
+
+    # Write the header
+    if it.I₄ == 0
+        print(lr.cycle, "#    #    #    #    μ0          μ1          μ2          ")
+        for t = 1:nsite
+            print(lr.cycle, "Vdc$t        ")
+        end
+        for t = 1:nsite
+            print(lr.cycle, "Nim$t        ")
+        end
+        println(lr.cycle, "Etot")
+        # Write separator
+        println(lr.cycle, repeat('-', 4*5 + 4*12 + 24*nsite))
+    # Write iteration information
+    else
+        @printf(lr.cycle, "%-5i", it.I₄)
+        @printf(lr.cycle, "%-5i", it.I₃)
+        @printf(lr.cycle, "%-5i", it.I₁)
+        @printf(lr.cycle, "%-5i", it.I₂)
+        if it.μ₀ < 0.0
+            @printf(lr.cycle, "%-12.7f", it.μ₀)
+        else
+            @printf(lr.cycle, "+%-11.7f", it.μ₀)
+        end
+        if it.μ₁ < 0.0
+            @printf(lr.cycle, "%-12.7f", it.μ₁)
+        else
+            @printf(lr.cycle, "+%-11.7f", it.μ₁)
+        end
+        if it.μ₂ < 0.0
+            @printf(lr.cycle, "%-12.7f", it.μ₂)
+        else
+            @printf(lr.cycle, "+%-11.7f", it.μ₂)
+        end
+        for t = 1:nsite
+            @printf(lr.cycle, "%-12.7f", it.dc[t])
+        end
+        for t = 1:nsite
+            @printf(lr.cycle, "%-12.7f", it.nf[t])
+        end
+        @printf(lr.cycle, "%-12.7f", it.et)
+        println(lr.cycle)
+    end
+
+    # Flush the IOStream
+    flush(lr.cycle)
 end
