@@ -2,7 +2,7 @@
 
 Zen is a modern DFT + DMFT (namely, density functional theory plus dynamical mean-field theory) computation framework. It is composed of a few components, including:
 
-* **ZenApps** (v0.1.3-devel.210524)
+* **ZenApps** (v0.9.1-devel.210622)
 * **ZenTools** (v0.1.3-devel.210524)
 * **ZenCore** (v0.4.7-devel.210621)
 * **Dyson** (v0.5.3-devel.210615)
