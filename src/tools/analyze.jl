@@ -4,24 +4,27 @@
 # Project : Begonia
 # Source  : analyze.jl
 # Author  : Li Huang (lihuang.dmft@gmail.com)
-# Status  : Unstable
+# Status  : Testing
 #
-# Last modified: 2021/05/24
+# Last modified: 2021/06/22
 #
 
-#
-# Remarks:
-#
-# This script is used to parse the PROCAR file. The users can use it to
-# figure out which bands are the most relevant and the corresponding
-# energy window for these bands. These information is quite useful. Then
-# we can determine the `window` entry in the `case.toml` file.  
-#
+#=
+*Remarks*:
+
+This script is used to parse the `PROCAR` file. The users can use it to
+figure out which bands are the most relevant and the corresponding
+energy window for these bands. These information is quite useful. Then
+we can determine the `window` entry in the `case.toml` file.  
+=#
 
 # Update LOAD_PATH
 push!(LOAD_PATH, ENV["ZEN_CORE"])
 
-# Use the ZEN Framework
+# Using standard library
+using Printf
+
+# Using the ZenCore library
 using ZenCore
 
 # Define orbital labels
@@ -95,9 +98,7 @@ while true
     q = readline(stdin)
 
     # Quit the loop
-    if q === "q"
-        break
-    end
+    q == "q" && break
 end
 
 println()
@@ -137,7 +138,5 @@ while true
     q = readline(stdin)
 
     # Quit the loop
-    if q === "q"
-        break
-    end
+    q == "q" && break
 end
