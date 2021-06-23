@@ -24,11 +24,11 @@ mixer = 0.5
 mc = 1.0E-4
 cc = 1.0E-4
 ec = 1.0E-4
-fc = 1.0E-4
+sc = 1.0E-4
 lfermi = true
 lcharge = true
 lenergy = true
-lforce = false
+lsigma = false
 
 [impurity]
 nsite = 1
