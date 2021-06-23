@@ -8,7 +8,7 @@ from triqs_dft_tools.converters.wien2k import *
 
 dft_filename='vasp'
 beta = 40
-loops = 1                        # Number of DMFT sc-loops
+loops = 20                       # Number of DMFT sc-loops
 sigma_mix = 1.0                  # Mixing factor of Sigma after solution of the AIM
 use_blocks = True                # use bloc structure from DFT input
 prec_mu = 0.0001
@@ -43,7 +43,7 @@ p["perform_tail_fit"] = True
 p["fit_max_moment"] = 4
 p["fit_min_n"] = 30
 p["fit_max_n"] = 60
-p["imag_threshold"] = 1e-11
+p["imag_threshold"] = 1e-10
 
 # If conversion step was not done, we could do it here. Uncomment the lines it you want to do this.
 #from triqs_dft_tools.converters.wien2k import *
