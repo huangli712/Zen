@@ -26,9 +26,6 @@ cc = 1.0E-4
 ec = 1.0E-4
 sc = 1.0E-4
 lfermi = true
-lcharge = true
-lenergy = true
-lsigma = false
 
 [impurity]
 nsite = 1
