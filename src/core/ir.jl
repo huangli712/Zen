@@ -4,12 +4,12 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/18
+# Last modified: 2021/06/25
 #
 
-#
-# Driver Functions
-#
+#=
+### *Driver Functions*
+=#
 
 #=
 *Remarks*:
@@ -21,8 +21,8 @@ the tetrahedron information might be absent.
 """
     ir_adaptor(D::Dict{Symbol,Any})
 
-Write the Kohn-Sham data to specified files using the IR format. Note
-that the Kohn-Sham data are encapsulated in the `D` dict.
+Write the Kohn-Sham dataset to specified files using the IR format. Note
+that the Kohn-Sham dataset are encapsulated in the `D` dict.
 
 See also: [`vasp_adaptor`](@ref), [`plo_adaptor`](@ref).
 """
@@ -74,9 +74,6 @@ function ir_adaptor(D::Dict{Symbol,Any})
     if get_d("smear") === "tetra"
         irio_tetra(pwd(), D[:volt], D[:itet])
     end
-
-    # I11: Print the footer for a better visualization
-    println()
 end
 
 """
@@ -105,14 +102,14 @@ function ir_save(it::IterInfo)
     end
 end
 
-#
-# Service Functions
-#
+#=
+### *Service Functions* : *Files I/O*
+=#
 
 """
     irio_params(f::String, D::Dict{Symbol,Any})
 
-Write the key parameters extracted from the Kohn-Sham data. Here `f`
+Write the key parameters extracted from the Kohn-Sham dataset. Here `f`
 means only the directory that we want to use.
 
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
@@ -213,13 +210,14 @@ function irio_params(f::String, D::Dict{Symbol,Any})
         println(fout)
     end # END OF IOSTREAM
 
+    # Print some useful information
     println("  > Open and write the file params.ir")
 end
 
 """
     irio_maps(f::String, MAP::Mapping)
 
-Write the information contained in Mapping. Here `f` means only the
+Write the information contained in `Mapping`. Here `f` means only the
 directory that we want to use.
 
 See also: [`Mapping`](@ref).
@@ -267,13 +265,14 @@ function irio_maps(f::String, MAP::Mapping)
         println(fout)
     end # END OF IOSTREAM
 
+    # Print some useful information
     println("  > Open and write the file maps.ir")
 end
 
 """
     irio_groups(f::String, PG::Array{PrGroup,1})
 
-Write the information contained in PrGroup. Here `f` means only the
+Write the information contained in `PrGroup`. Here `f` means only the
 directory that we want to use.
 
 See also: [`PrGroup`](@ref).
@@ -301,13 +300,14 @@ function irio_groups(f::String, PG::Array{PrGroup,1})
         end
     end # END OF IOSTREAM
 
+    # Print some useful information
     println("  > Open and write the file groups.ir")
 end
 
 """
     irio_windows(f::String, PW::Array{PrWindow,1})
 
-Write the information contained in PrWindow. Here `f` means only the
+Write the information contained in `PrWindow`. Here `f` means only the
 directory that we want to use.
 
 See also: [`PrWindow`](@ref).
@@ -341,6 +341,7 @@ function irio_windows(f::String, PW::Array{PrWindow,1})
         end # END OF P LOOP
     end # END OF IOSTREAM
 
+    # Print some useful information
     println("  > Open and write the file windows.ir")
 end
 
@@ -406,14 +407,15 @@ function irio_lattice(f::String, latt::Lattice)
         end
     end # END OF IOSTREAM
 
+    # Print some useful information
     println("  > Open and write the file lattice.ir (lattice)")
 end
 
 """
     irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
 
-Write the kmesh and weight information to kmesh.ir using the IR format. Here
-`f` means only the directory that we want to use.
+Write the kmesh and weight information to kmesh.ir using the IR format.
+Here `f` means only the directory that we want to use.
 
 See also: [`vaspio_kmesh`](@ref).
 """
@@ -444,6 +446,7 @@ function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
         end
     end # END OF IOSTREAM
 
+    # Print some useful information
     println("  > Open and write the file kmesh.ir (kmesh and weight)")
 end
 
@@ -478,6 +481,7 @@ function irio_tetra(f::String, volt::F64, itet::Array{I64,2})
         end
     end # END OF IOSTREAM
 
+    # Print some useful information
     println("  > Open and write the file tetra.ir (itet and volt)")
 end
 
@@ -520,6 +524,7 @@ function irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
         end # END OF S LOOP
     end # END OF IOSTREAM
 
+    # Print some useful information
     println("  > Open and write the file eigen.ir (enk and occupy)")
 end
 
@@ -562,6 +567,7 @@ function irio_projs(f::String, chipsi::Array{C64,4})
         end # END OF S LOOP
     end # END OF IOSTREAM
 
+    # Print some useful information
     println("  > Open and write the file projs.ir (chipsi)")
 end
 
@@ -612,6 +618,7 @@ function irio_projs(f::String, chipsi::Array{Array{C64,4},1})
         end # END OF P LOOP
     end # END OF IOSTREAM
 
+    # Print some useful information
     println("  > Open and write the file projs.ir (chipsi)")
 end
 
@@ -637,6 +644,7 @@ function irio_fermi(f::String, fermi::F64)
         # N/A
     end # END OF IOSTREAM
 
+    # Print some useful information
     println("  > Open and write the file fermi.ir (fermi)")
 end
 

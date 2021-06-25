@@ -4,12 +4,12 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/20
+# Last modified: 2021/06/24
 #
 
-#
-# Driver Functions
-#
+#=
+### *Driver Functions*
+=#
 
 """
     setup()
@@ -19,57 +19,38 @@ Read parameters from configuration file, and then setup the related dicts.
 See also: [`inp_toml`](@ref), [`rev_dict`](@ref), [`chk_dict`](@ref).
 """
 function setup()
+    # Print the header
+    prompt("ZEN", "Setup")
+
     # S1: Parse the case.toml file to extract configuration parameters
+    println("Parse the configuration file (case.toml)")
     cfg = inp_toml(query_args(), true)
 
     # S2: Revise the configuration dictionaries
+    println("Encapsulate the parameters into dictionaries")
     rev_dict(cfg)
 
     # S3: Validate the configuration parameters
+    println("Validate the dictionaries (configuration parameters)")
     chk_dict()
-end
 
-"""
+    # S4: Print the configuration parameters
+    println("Show the dictionaries (configuration parameters)")
     exhibit()
 
-Display the configuration parameters for reference.
-
-See also: [`setup`](@ref).
-"""
-function exhibit()
-    # E0: Print the header
-    prompt("ZEN", "Configuration")
-
-    # E1: Show dict PCASE
-    println("Parameters : General")
-    cat_c()
-
-    # E2: Show dict PDFT
-    println("Parameters : Density Functional Theory")
-    cat_d()
-
-    # E3: Show dict PDMFT
-    println("Parameters : Dynamical Meal-Field Theory")
-    cat_m()
-
-    # E4: Show dict PIMP
-    println("Parameters : Quantum Impurity Atoms")
-    cat_i()
-
-    # E5: Show dict PSOLVER
-    println("Parameters : Quantum Impurity Solvers")
-    cat_s()
+    # Print the footer
+    println()
 end
 
-#
-# Service Functions (Group A)
-#
+#=
+### *Service Functions* : *Layer 1*
+=#
 
 """
     inp_toml(f::String, key::String, necessary::Bool)
 
-Parse the configuration file (toml format). It reads only parts of the
-configuration file, which depends on the value of `key`.
+Parse the configuration file (in toml format). It reads only parts of
+the configuration file, which depends on the value of `key`.
 
 See also: [`setup`](@ref).
 """
@@ -94,7 +75,7 @@ end
 """
     inp_toml(f::String, necessary::Bool)
 
-Parse the configuration file (toml format). It reads the whole file.
+Parse the configuration file (in toml format). It reads the whole file.
 
 See also: [`setup`](@ref).
 """
@@ -169,8 +150,8 @@ end
 #=
 *Remarks*:
 
-This function is far away from completeness. We should add more
-constraints here, both physically and numerically.
+This `chk_dict()` function is far away from completeness. We should
+add more constraints here, both physically and numerically.
 =#
 
 """
@@ -203,11 +184,11 @@ function chk_dict()
     @assert all(x -> x ≥ 1, get_m("niter"))
     @assert get_m("nmesh") > 0
     @assert get_m("dcount") in ("fll1", "fll2", "amf", "held", "exact")
-    @assert get_m("beta") >= 0.0
-    @assert get_m("mixer") >= 0.0 && get_m("mixer") <= 1.0
+    @assert get_m("beta") ≥ 0.0
+    @assert 0.0 ≤ get_m("mixer") ≤ 1.0
     #
     # Check impurity block
-    @assert get_i("nsite") >= 1 && get_i("nsite") <= 99
+    @assert 1 ≤ get_i("nsite") ≤ 99
     @assert all(x -> x in ("s", "p", "d", "f", "d_t2g", "d_eg"), get_i("shell"))
     @assert all(x -> x in ("ising", "full"), get_i("ising"))
     #
@@ -237,9 +218,38 @@ function chk_dict()
     # Please add more assertion statements here
 end
 
-#
-# Service Functions (Group B)
-#
+"""
+    exhibit()
+
+Display the configuration parameters for reference.
+
+See also: [`setup`](@ref).
+"""
+function exhibit()
+    # E1: Show dict PCASE
+    println("  > Parameters : General")
+    cat_c()
+
+    # E2: Show dict PDFT
+    println("  > Parameters : Density Functional Theory")
+    cat_d()
+
+    # E3: Show dict PDMFT
+    println("  > Parameters : Dynamical Meal-Field Theory")
+    cat_m()
+
+    # E4: Show dict PIMP
+    println("  > Parameters : Quantum Impurity Atoms")
+    cat_i()
+
+    # E5: Show dict PSOLVER
+    println("  > Parameters : Quantum Impurity Solvers")
+    cat_s()
+end
+
+#=
+### *Service Functions* : *Layer 2*
+=#
 
 """
     _v(key::String, val::Array{Any,1})
@@ -260,9 +270,9 @@ See also: [`chk_dict`](@ref).
     end
 end
 
-#
-# Service Functions (Group C: CAT Functions)
-#
+#=
+### *Service Functions* : *Layer 3*, *CAT Functions*
+=#
 
 """
     cat_c()
@@ -273,8 +283,7 @@ See also: [`get_c`](@ref), [`str_c`](@ref).
 """
 function cat_c()
     # See comments in cat_d()
-    println("  case     -> ", str_c("case"))
-    # println()
+    println("    case     -> ", str_c("case"))
 end
 
 #=
@@ -299,19 +308,18 @@ Print the configuration parameters to stdout: for PDFT dict.
 See also: [`get_d`](@ref), [`str_d`](@ref).
 """
 function cat_d()
-    println("  engine   -> ", str_d("engine"))
-    println("  projtype -> ", str_d("projtype"))
-    println("  smear    -> ", str_d("smear"))
-    println("  kmesh    -> ", str_d("kmesh"))
-    println("  magmom   -> ", str_d("magmom"))
-    println("  lsymm    -> ", str_d("lsymm"))
-    println("  lspins   -> ", str_d("lspins"))
-    println("  lspinorb -> ", str_d("lspinorb"))
-    println("  loptim   -> ", str_d("loptim"))
-    println("  lproj    -> ", str_d("lproj"))
-    println("  sproj    -> ", str_d("sproj"))
-    println("  window   -> ", str_d("window"))
-    # println()
+    println("    engine   -> ", str_d("engine"))
+    println("    projtype -> ", str_d("projtype"))
+    println("    smear    -> ", str_d("smear"))
+    println("    kmesh    -> ", str_d("kmesh"))
+    println("    magmom   -> ", str_d("magmom"))
+    println("    lsymm    -> ", str_d("lsymm"))
+    println("    lspins   -> ", str_d("lspins"))
+    println("    lspinorb -> ", str_d("lspinorb"))
+    println("    loptim   -> ", str_d("loptim"))
+    println("    lproj    -> ", str_d("lproj"))
+    println("    sproj    -> ", str_d("sproj"))
+    println("    window   -> ", str_d("window"))
 end
 
 """
@@ -323,22 +331,18 @@ See also: [`get_m`](@ref), [`str_m`](@ref).
 """
 function cat_m()
     # See comments in cat_d()
-    println("  mode     -> ", str_m("mode"))
-    println("  axis     -> ", str_m("axis"))
-    println("  niter    -> ", str_m("niter"))
-    println("  nmesh    -> ", str_m("nmesh"))
-    println("  dcount   -> ", str_m("dcount"))
-    println("  beta     -> ", str_m("beta"))
-    println("  mixer    -> ", str_m("mixer"))
-    println("  mc       -> ", str_m("mc"))
-    println("  cc       -> ", str_m("cc"))
-    println("  ec       -> ", str_m("ec"))
-    println("  fc       -> ", str_m("fc"))
-    println("  lfermi   -> ", str_m("lfermi"))
-    println("  lcharge  -> ", str_m("lcharge"))
-    println("  lenergy  -> ", str_m("lenergy"))
-    println("  lforce   -> ", str_m("lforce"))
-    # println()
+    println("    mode     -> ", str_m("mode"))
+    println("    axis     -> ", str_m("axis"))
+    println("    niter    -> ", str_m("niter"))
+    println("    nmesh    -> ", str_m("nmesh"))
+    println("    dcount   -> ", str_m("dcount"))
+    println("    beta     -> ", str_m("beta"))
+    println("    mixer    -> ", str_m("mixer"))
+    println("    mc       -> ", str_m("mc"))
+    println("    cc       -> ", str_m("cc"))
+    println("    ec       -> ", str_m("ec"))
+    println("    sc       -> ", str_m("sc"))
+    println("    lfermi   -> ", str_m("lfermi"))
 end
 
 """
@@ -350,16 +354,15 @@ See also: [`get_i`](@ref), [`str_i`](@ref).
 """
 function cat_i()
     # See comments in cat_d()
-    println("  nsite    -> ", str_i("nsite"))
-    println("  atoms    -> ", str_i("atoms"))
-    println("  equiv    -> ", str_i("equiv"))
-    println("  shell    -> ", str_i("shell"))
-    println("  ising    -> ", str_i("ising"))
-    println("  occup    -> ", str_i("occup"))
-    println("  upara    -> ", str_i("upara"))
-    println("  jpara    -> ", str_i("jpara"))
-    println("  lpara    -> ", str_i("lpara"))
-    # println()
+    println("    nsite    -> ", str_i("nsite"))
+    println("    atoms    -> ", str_i("atoms"))
+    println("    equiv    -> ", str_i("equiv"))
+    println("    shell    -> ", str_i("shell"))
+    println("    ising    -> ", str_i("ising"))
+    println("    occup    -> ", str_i("occup"))
+    println("    upara    -> ", str_i("upara"))
+    println("    jpara    -> ", str_i("jpara"))
+    println("    lpara    -> ", str_i("lpara"))
 end
 
 """
@@ -371,14 +374,13 @@ See also: [`get_s`](@ref), [`str_s`](@ref).
 """
 function cat_s()
     # See comments in cat_d()
-    println("  engine   -> ", str_s("engine"))
-    println("  params   -> ", str_s("params"))
-    println()
+    println("    engine   -> ", str_s("engine"))
+    println("    params   -> ", str_s("params"))
 end
 
-#
-# Service Functions (Group D: GET Functions)
-#
+#=
+### *Service Functions* : *Layer 3*, *GET Functions*
+=#
 
 """
     get_c(key::String)
@@ -455,9 +457,9 @@ See also: [`cat_s`](@ref), [`str_s`](@ref).
     end
 end
 
-#
-# Service Functions (Group E: STR Functions)
-#
+#=
+### *Service Functions* : *Layer 3*, *STR Functions*
+=#
 
 """
     str_c(key::String)

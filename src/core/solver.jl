@@ -4,12 +4,12 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/20
+# Last modified: 2021/06/25
 #
 
-#
-# CT-HYB₁ Quantum Impurity Solver
-#
+#=
+### *CT-HYB₁ Quantum Impurity Solver*
+=#
 
 """
     s_qmc1_init(it::IterInfo, imp::Impurity)
@@ -33,16 +33,16 @@ function s_qmc1_init(it::IterInfo, imp::Impurity)
     println("  > solver.ctqmc.in is ready")
 
     # Extract frequency mesh and hybridization function from `dmft.delta`
+    #println("  > Open and read hybridization functions from dmft.delta")
     fmesh, Delta = read_delta(imp)
-    println("  > Open and read hybridization functions from dmft.delta")
 
     # Write frequency mesh and hybridization function to `solver.hyb.in`
     ctqmc_delta(fmesh, Delta)
     println("  > solver.hyb.in is ready")
 
     # Extract local impurity levels from `dmft.eimpx`
+    #println("  > Open and read local impurity levels from dmft.eimpx")
     Eimpx = read_eimpx(imp)
-    println("  > Open and read local impurity levels from dmft.eimpx")
 
     # Write local impurity levels to `solver.eimp.in`
     ctqmc_eimpx(Eimpx)
@@ -192,14 +192,11 @@ function s_qmc1_save(it::IterInfo, imp::Impurity)
 
     # Update the `it` (IterInfo) struct
     it.nf[imp.index] = imp.occup
-
-    # Print the footer for a better visualization
-    println()
 end
 
-#
-# CT-HYB₂ Quantum Impurity Solver
-#
+#=
+### *CT-HYB₂ Quantum Impurity Solver*
+=#
 
 """
     s_qmc2_init(it::IterInfo)
@@ -245,9 +242,9 @@ function s_qmc2_save(it::IterInfo)
     sorry()
 end
 
-#
-# HUB-I Quantum Impurity Solver
-#
+#=
+### *HUB-I Quantum Impurity Solver*
+=#
 
 """
     s_hub1_init(it::IterInfo)
@@ -287,9 +284,9 @@ function s_hub1_save(it::IterInfo)
     sorry()
 end
 
-#
-# NORG Quantum Impurity Solver
-#
+#=
+### *NORG Quantum Impurity Solver*
+=#
 
 """
     s_norg_init(it::IterInfo)
@@ -329,21 +326,21 @@ function s_norg_save(it::IterInfo)
     sorry()
 end
 
-#
-# Service Functions: For I/O Operations
-#
+#=
+### *Service Functions* : *Files I/O Operations*
+=#
 
 """
     ctqmc_setup(imp::Impurity)
 
-Generate configuration file (`solver.ctqmc.in`) for the CT-QMC quantum
-impurity solvers automatically (according to the information encoded
-in the Impurity struct).
+Generate default configuration file (`solver.ctqmc.in`) for the CT-QMC
+quantum impurity solvers automatically (according to the information
+encoded in the `Impurity` struct).
 
 See also: [`Impurity`](@ref), [`ctqmc_atomx`](@ref).
 """
 function ctqmc_setup(imp::Impurity)
-    # File name of configuration file
+    # Filename of configuration file
     fctqmc = "solver.ctqmc.in"
 
     # Extract parameters from `Impurity` struct
@@ -406,9 +403,9 @@ function ctqmc_atomx(imp::Impurity)
     sorry()
 end
 
-#
-# Service Functions: For I/O Operations
-#
+#=
+### *Service Functions* : *Files I/O Operations*
+=#
 
 """
     ctqmc_delta(fmesh::Array{F64,1}, Delta::Array{C64,4})
@@ -499,9 +496,9 @@ function ctqmc_eimpx(Eimpx::Array{C64,3})
     end # END OF IOSTREAM
 end
 
-#
-# Service Functions: For I/O Operations
-#
+#=
+### *Service Functions* : *Files I/O Operations*
+=#
 
 """
     ctqmc_sigma(imp::Impurity)
@@ -602,9 +599,9 @@ function ctqmc_nimpx(imp::Impurity)
     imp.occup = occup
 end
 
-#
-# Service Functions: For I/O Operations
-#
+#=
+### *Service Functions* : *Files I/O Operations*
+=#
 
 """
     GetSigma(imp::Impurity)
@@ -632,14 +629,14 @@ function GetSigma(imp::Impurity)
     # Activate the corresponding `solver_sigma()` functions for various
     # quantum impurity solvers
     fmesh = nothing
-    sig_l = nothing
+    sigma = nothing
     @cswitch engine begin
         @case "ct_hyb1"
-            fmesh, sig_l = ctqmc_sigma(imp)
+            fmesh, sigma = ctqmc_sigma(imp)
             break
 
         @case "ct_hyb2"
-            fmesh, sig_l = ctqmc_sigma(imp)
+            fmesh, sigma = ctqmc_sigma(imp)
             break
 
         @case "hub1"
@@ -659,7 +656,7 @@ function GetSigma(imp::Impurity)
     cd("..")
 
     # Return the desired array
-    return (fmesh, sig_l)
+    return (fmesh, sigma)
 end
 
 """
@@ -716,9 +713,9 @@ function GetNimpx(imp::Impurity)
     cd("..")
 end
 
-#
-# Service Functions: For Impurity Problems
-#
+#=
+### *Service Functions* : *Quantum Impurity Problems*
+=#
 
 """
     GetSymmetry(Eimpx::Array{C64,3})

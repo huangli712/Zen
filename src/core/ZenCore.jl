@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/17
+# Last modified: 2021/06/25
 #
 
 """
@@ -40,9 +40,9 @@ Any suggestions, comments, and feedbacks are welcome. Enjoy it!
 """
 module ZenCore
 
-#
-# Using standard libraries
-#
+#=
+### *Using Standard Libraries*
+=#
 
 #=
 *Remarks 1*:
@@ -63,6 +63,10 @@ using Distributed
 using Dates
 using Printf
 using Base.Math: libm
+
+#=
+### *Includes And Exports* : *global.jl*
+=#
 
 #
 # global.jl
@@ -97,6 +101,10 @@ export __RELEASE__
 export __AUTHORS__
 export authors
 
+#=
+### *Includes And Exports* : *util.jl*
+=#
+
 #
 # util.jl
 #
@@ -109,6 +117,7 @@ export authors
 # Members:
 #
 # @cswitch      -> C-style switch.
+# @time_call    -> Evaluate a function call and print the elapsed time.
 # @ps1          -> Wrapper for printstyled function.
 # @ps2          -> Another wrapper for printstyled function.
 # require       -> Check julia envirnoment.
@@ -135,6 +144,7 @@ export authors
 include("util.jl")
 #
 export @cswitch
+export @time_call
 export @ps1
 export @ps2
 export require
@@ -157,6 +167,10 @@ export line_to_array
 export line_to_cmplx
 export erf
 export subscript
+
+#=
+### *Includes And Exports* : *tetra.jl*
+=#
 
 #
 # tetra.jl
@@ -189,6 +203,10 @@ export tetra_p_ek12
 export tetra_p_ek23
 export tetra_p_ek34
 export tetra_p_ek4
+
+#=
+### *Includes And Exports* : *types.jl*
+=#
 
 #
 # types.jl
@@ -230,6 +248,10 @@ export PrTrait
 export PrGroup
 export PrWindow
 
+#=
+### *Includes And Exports* : *config.jl*
+=#
+
 #
 # config.jl
 #
@@ -241,10 +263,10 @@ export PrWindow
 # Members:
 #
 # setup    -> Setup parameters.
-# exhibit  -> Display parameters for reference.
 # inp_toml -> Parse case.toml, return raw configuration information.
 # rev_dict -> Update dicts for configuration parameters.
 # chk_dict -> Check dicts for configuration parameters.
+# exhibit  -> Display parameters for reference.
 # _v       -> Verify dict's values.
 # cat_c    -> Print dict (PCASE dict).
 # cat_d    -> Print dict (PDFT dict).
@@ -265,10 +287,10 @@ export PrWindow
 include("config.jl")
 #
 export setup
-export exhibit
 export inp_toml
 export rev_dict
 export chk_dict
+export exhibit
 export _v
 export cat_c
 export cat_d
@@ -285,6 +307,10 @@ export str_d
 export str_m
 export str_i
 export str_s
+
+#=
+### *Includes And Exports* : *base.jl*
+=#
 
 #
 # base.jl
@@ -322,7 +348,9 @@ export str_s
 # incr_it     -> Increase the counters in the IterInfo struct.
 # zero_it     -> Reset the counters in the IterInfo struct.
 # prev_it     -> Return the previous iteration information.
+# cntr_it     -> Return the counters in the IterInfo struct.
 # show_it     -> Print the iteration information.
+# conv_it     -> Check whether the convergence flags are achieved.
 #
 include("base.jl")
 #
@@ -350,7 +378,13 @@ export clear_trees
 export incr_it
 export zero_it
 export prev_it
+export cntr_it
 export show_it
+export conv_it
+
+#=
+### *Includes And Exports* : *vasp.jl*
+=#
 
 #
 # vasp.jl
@@ -403,6 +437,10 @@ export vaspio_eigen
 export vaspio_projs
 export vaspio_fermi
 export vaspio_charge
+
+#=
+### *Includes And Exports* : *plo.jl*
+=#
 
 #
 # plo.jl
@@ -461,6 +499,10 @@ export view_dm
 export view_hamk
 export view_dos
 
+#=
+### *Includes And Exports* : *ir.jl*
+=#
+
 #
 # ir.jl
 #
@@ -500,6 +542,10 @@ export irio_projs
 export irio_fermi
 export irio_charge
 
+#=
+### *Includes And Exports* : *dmft.jl*
+=#
+
 #
 # dmft.jl
 #
@@ -534,6 +580,10 @@ export read_gamma
 export write_delta
 export write_eimpx
 export write_gamma
+
+#=
+### *Includes And Exports* : *solver.jl*
+=#
 
 #
 # solver.jl
@@ -593,6 +643,10 @@ export GetNimpx
 export GetSymmetry
 export GetImpurity
 
+#=
+### *Includes And Exports* : *sigma.jl*
+=#
+
 #
 # sigma.jl
 #
@@ -631,6 +685,10 @@ export read_sigdc
 export write_sigma
 export write_sigdc
 
+#=
+### *Includes And Exports* : *mixer.jl*
+=#
+
 #
 # mixer.jl
 #
@@ -645,6 +703,8 @@ export write_sigdc
 # mixer_delta -> Mix hybridization functions.
 # mixer_eimpx -> Mix local impurity levels.
 # mixer_gamma -> Mix correction of density matrix Γ.
+# amix        -> Return the mixing parameter.
+# distance    -> Calculate the difference /distance between two arrays.
 #
 include("mixer.jl")
 #
@@ -652,6 +712,12 @@ export mixer_sigma
 export mixer_delta
 export mixer_eimpx
 export mixer_gamma
+export amix
+export distance
+
+#=
+### *PreCompile*
+=#
 
 """
     __init__()

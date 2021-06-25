@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/05
+# Last modified: 2021/06/21
 #
 
 #=
@@ -22,16 +22,16 @@ Perhaps you also need to modify the `gamm` parameter (`line 133 or 168`)
 to obtain more reasonable results. Now the default algorithm is (3).
 =#
 
-#
-# Customized Structs
-#
+#=
+### *Customized Struct* : *TetraWeight*
+=#
 
 """
     TetraWeight
 
 Struct. Integration weights for analytical tetrahedron algorithm.
 
-## Members
+### Members
 
 * cw -> Blochl corrections for `dw`.
 * dw -> Density of states weights at the four corners of a given tetrahedron.
@@ -43,9 +43,9 @@ struct TetraWeight
     tw :: Array{F64,1}
 end
 
-#
-# Driver Functions
-#
+#=
+### *Driver Functions*
+=#
 
 """
     bzint(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
@@ -104,9 +104,9 @@ function bzint(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
     return W
 end
 
-#
-# Service Functions (Level 1)
-#
+#=
+### *Service Functions* : *Layer 1*
+=#
 
 """
     gauss_weight(z::F64, e::Array{F64,1})
@@ -248,9 +248,9 @@ function tetra_weight(z::F64, e::Array{F64,1})
     return TW
 end
 
-#
-# Service Functions (Level 2)
-#
+#=
+### *Service Functions* : *Layer 2*
+=#
 
 """
     tetra_p_ek1()

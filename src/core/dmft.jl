@@ -4,12 +4,12 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/21
+# Last modified: 2021/06/25
 #
 
-#
-# Driver Functions
-#
+#=
+### *Driver Functions*
+=#
 
 """
     dmft_init(it::IterInfo, task::I64)
@@ -22,6 +22,7 @@ See also: [`dmft_exec`](@ref), [`dmft_save`](@ref).
 function dmft_init(it::IterInfo, task::I64)
     # Check the task
     @assert task in (1, 2)
+    task == 2 && @assert it.sc == 2
 
     # Print the header
     println("Engine : DMFT$(subscript(task))")
@@ -38,13 +39,11 @@ function dmft_init(it::IterInfo, task::I64)
     # Parameter sets within the IR format
     fir1 = ["params.ir", "maps.ir", "groups.ir", "windows.ir"]
     #
-    # Kohn-Sham data within the IR format
+    # Kohn-Sham dataset within the IR format
     fir2 = ["lattice.ir", "kmesh.ir", "eigen.ir", "projs.ir"]
     #
     # Tetrahedron data are available
-    if get_d("smear") === "tetra"
-        push!(fir2, "tetra.ir")
-    end
+    get_d("smear") == "tetra" && push!(fir2, "tetra.ir")
     #
     # Main control file for the DMFT engine
     fdmft = ("dmft.in")
@@ -55,6 +54,7 @@ function dmft_init(it::IterInfo, task::I64)
             file_src = joinpath("../dft", x)
             file_dst = x
             cp(file_src, file_dst, force = true)
+            println("  > $x is ready")
         end,
     union(fir1, fir2) )
 
@@ -75,6 +75,7 @@ function dmft_init(it::IterInfo, task::I64)
         println(fout, "lfermi = $lfermi")
         println(fout, "ltetra = $ltetra")
     end
+    println("  > dmft.in is ready")
 
     # Check essential input files
     flist = (fdmft, fsig..., fir1..., fir2...)
@@ -83,7 +84,6 @@ function dmft_init(it::IterInfo, task::I64)
         if !isfile(filename)
             error("Please make sure the file $filename is available")
         end
-        println("  > $filename is ready")
     end
 end
 
@@ -97,6 +97,7 @@ See also: [`dmft_init`](@ref), [`dmft_save`](@ref).
 function dmft_exec(it::IterInfo, task::I64)
     # Check the task
     @assert task in (1, 2)
+    task == 2 && @assert it.sc == 2
 
     # Print the header
     println("Detect the runtime environment for dmft")
@@ -155,7 +156,7 @@ function dmft_exec(it::IterInfo, task::I64)
         lines = readlines("dmft.out")
         filter!(x -> contains(x, "Task"), lines)
 
-        # Figure out the task that is doing
+        # Figure out which task is being executing
         if length(lines) > 0
             arr = line_to_array(lines[end])
             job = arr[5]
@@ -192,6 +193,7 @@ See also: [`dmft_init`](@ref), [`dmft_exec`](@ref).
 function dmft_save(it::IterInfo, task::I64)
     # Check the task
     @assert task in (1, 2)
+    task == 2 && @assert it.sc == 2
 
     # Print the header
     println("Finalize the computational task")
@@ -214,56 +216,71 @@ function dmft_save(it::IterInfo, task::I64)
     for i in eachindex(file_list)
         f = file_list[i]
         if task == 1
-            cp(f, "$f.$(it.I₃).$(it.I₁)", force = true)
+            isfile(f) && cp(f, "$f.$(it.I₃).$(it.I₁)", force = true)
         else
-            cp(f, "$f.$(it.I₃).$(it.I₂)", force = true)
+            isfile(f) && cp(f, "$f.$(it.I₃).$(it.I₂)", force = true)
         end
     end
     println("  > Save the key output files")
 
-    # Extract the fermi level, and use it to update the IterInfo struct.
-    fermi = read_fermi()
+    # Extract the fermi level (and the lattice occupancy), and use them
+    # to update the IterInfo struct.
+    fermi, occup = read_fermi()
     task == 1 ? it.μ₁ = fermi : it.μ₂ = fermi
+    task == 1 ? it.n₁ = occup : it.n₂ = occup
     println("  > Extract the fermi level from dmft.fermi: $fermi eV")
-
-    # Print the footer for a better visualization
-    println()
+    println("  > Extract the lattice occupancy from dmft.fermi: $occup")
 end
 
-#
-# Service Functions: For I/O Operations
-#
+#=
+### *Service Functions* : *For I/O Operations* (*Fermi/Read*)
+=#
 
 """
     read_fermi()
 
-Parse the dmft1/dmft.fermi file to extract the chemical potential.
+Parse the `dmft?/dmft.fermi` file to extract the chemical potential.
+Note that if `lfermi` in `dmft.in` is false, the chemical potential
+will not be calculated by the DMFT engine. In other words, this
+file (`dmft1/dmft.fermi` or `dmft2/dmft.fermi`) could be absent.
+
+The lattice occupancy will be extracted and returned at the same time.
 
 See also: [`dmft_save`](@ref).
 """
 function read_fermi()
+    # Filename for chemical potential and lattice occupancy
     fname = "dmft.fermi"
-    fermi = 0.0
 
+    # Sometimes, if the `dmft.fermi` file is absent, it returns zero.
     if isfile(fname)
-        str = readline("dmft.fermi")
-        fermi = parse(F64, line_to_array(str)[3])
+        # There are two lines in the `dmft.fermi` file. The first line
+        # is about the fermi level, while the second one is about the
+        # lattice occupancy.
+        str = readlines("dmft.fermi")
+        fermi = parse(F64, line_to_array(str[1])[3])
+        occup = parse(F64, line_to_array(str[2])[3])
+    else
+        fermi = 0.0
+        occup = 0.0
     end
 
-    return fermi
+    # Return the desired values
+    return fermi, occup
 end
 
-#
-# Service Functions: For I/O Operations
-#
+#=
+### *Service Functions* : *For I/O Operations* (*Δ/Read*)
+=#
 
 """
     read_delta(imp::Impurity)
 
-Extract hybridization functions from `impurity.i/dmft.delta` file, which
-is generated by `sigma_split()`. These data are essential for quantum
-impurity solvers. The working directory of this function must be equal
-to `impurity.i`.
+Extract hybridization functions Δ from `impurity.i/dmft.delta` file,
+which is generated by `sigma_split()`. Then the data will be written
+into `solver.hyb.in` file (or someting else) by `write_delta()`. These
+data are essential for quantum impurity solvers. The working directory
+of this function must be equal to `impurity.i`.
 
 The frequency mesh is also extracted in this function.
 
@@ -337,6 +354,11 @@ function read_delta(imp::Impurity)
         end # END OF S LOOP
     end # END OF IOSTREAM
 
+    # Print some useful information
+    println("  > Read hybridization functions from: impurity.$index/dmft.delta")
+    println("  > Shape of Array fmesh: ", size(fmesh))
+    println("  > Shape of Array Delta: ", size(Delta))
+
     # Return the desired arrays
     return fmesh, Delta
 end
@@ -346,7 +368,8 @@ end
 
 Read the `dmft1/dmft.delta` file, extract the hybridization functions Δ
 and the corresponding frequency mesh ω. The working directory of this
-function must be the root folder.
+function must be the root folder. Usually, this function is called by
+the `mixer_delta()` function and the `sigma_split()` function.
 
 See also: [`sigma_split`](@ref), [`read_eimpx`](@ref).
 """
@@ -394,6 +417,7 @@ function read_delta(ai::Array{Impurity,1}, fhyb::String = "dmft1/dmft.delta")
                 for m = 1:nmesh
                     # Parse frequency mesh
                     fmesh[m] = parse(F64, line_to_array(fin)[3])
+
                     # Parse hybridization functions
                     for q = 1:ai[t].nband
                         for p = 1:ai[t].nband
@@ -409,6 +433,8 @@ function read_delta(ai::Array{Impurity,1}, fhyb::String = "dmft1/dmft.delta")
             end # END OF S LOOP
         end # END OF T LOOP
     end # END OF IOSTREAM
+
+    # Print some useful information
     println("  > Read hybridization functions from: $fhyb")
     println("  > Shape of Array fmesh: ", size(fmesh))
     println("  > Shape of Array Delta: ", size(Delta))
@@ -417,17 +443,18 @@ function read_delta(ai::Array{Impurity,1}, fhyb::String = "dmft1/dmft.delta")
     return fmesh, Delta
 end
 
-#
-# Service Functions: For I/O Operations
-#
+#=
+### *Service Functions* : *For I/O Operations* (*ε/Read*)
+=#
 
 """
     read_eimpx(imp::Impurity)
 
-Extract local impurity levels from `impurity.i/dmft.eimpx` file, which
-is generated by `sigma_split()`. These data are essential for quantum
-impurity solvers. The working directory for this function must be equal
-to `impurity.i`.
+Extract local impurity levels ε from `impurity.i/dmft.eimpx` file, which
+is generated by `sigma_split()`. Then the data will be written into
+`solver.eimp.in` (or something else) by `write_eimpx()`. These data are
+essential for quantum impurity solvers. The working directory for this
+function must be equal to `impurity.i`.
 
 See also: [`Impurity`](@ref), [`read_delta`](@ref).
 """
@@ -488,6 +515,10 @@ function read_eimpx(imp::Impurity)
         end # END OF S LOOP
     end # END OF IOSTREAM
 
+    # Print some useful information
+    println("  > Read local impurity levels from: impurity.$index/dmft.eimpx")
+    println("  > Shape of Array Eimpx: ", size(Eimpx))
+
     # Return the desired array
     return Eimpx
 end
@@ -495,8 +526,10 @@ end
 """
     read_eimpx(ai::Array{Impurity,1}, flev::String = "dmft1/dmft.eimpx")
 
-Read the `dmft1/dmft.eimpx` file, extract the local impurity levels εᵢ. The
-working directory of this function must be the root folder.
+Read the `dmft1/dmft.eimpx` file, extract the local impurity levels εᵢ.
+The working directory of this function must be the root folder. Usually,
+this function is called by the `mixer_eimpx()` function and the
+`sigma_split()` function.
 
 See also: [`sigma_split`](@ref), [`read_delta`](@ref).
 """
@@ -550,6 +583,7 @@ function read_eimpx(ai::Array{Impurity,1}, flev::String = "dmft1/dmft.eimpx")
         end # END OF T LOOP
     end # END OF IOSTREAM
 
+    # Print some useful information
     println("  > Read local impurity levels from: $flev")
     println("  > Shape of Array Eimpx: ", size(Eimpx))
 
@@ -557,30 +591,32 @@ function read_eimpx(ai::Array{Impurity,1}, flev::String = "dmft1/dmft.eimpx")
     return Eimpx
 end
 
-#
-# Service Functions: For I/O Operations
-#
+#=
+### *Service Functions* : *For I/O Operations* (*Γ/Read*)
+=#
 
 """
-    read_gamma()
+    read_gamma(fgamma::String = "dmft2/dmft.gamma")
 
 Read the `dmft2/dmft.gamma` file. It contains the correction for density
-matrix which is from electronic correlation.
+matrix which is from electronic correlation. The data will be fed back
+to the DFT engine finally.
 
 This function also return the 𝑘-mesh, which is useful for mixing the Γ
 matrix with the `Kerker` algorithm.
 
+The working directory of this function must be the root folder.
+
 See also: [`write_gamma`](@ref).
 """
-function read_gamma()
+function read_gamma(fgamma::String = "dmft2/dmft.gamma")
+    # Make sure the data file is available
+    @assert isfile(fgamma)
+
     # Declare the arrays for 𝑘-mesh and correction for density matrix
     kmesh = nothing
     kwin = nothing
     gamma = nothing
-
-    # Make sure the data file is available
-    fgamma = "dmft2/dmft.gamma"
-    @assert isfile(fgamma)
 
     # Parse `fgamma`, extract 𝑘-mesh and correction for density matrix
     open(fgamma, "r") do fin
@@ -602,7 +638,7 @@ function read_gamma()
         # Go through each spin and 𝑘-point
         for s = 1:nspin
             for k = 1:nkpt
-                # Parse indices and dimensional parameter
+                # Parse indices and dimensional parameters
                 #
                 # For spin
                 strs = readline(fin)
@@ -642,23 +678,30 @@ function read_gamma()
             end # END OF K LOOP
         end # END OF S LOOP
     end # END OF IOSTREAM
-    println("  Read gamma matrix from: $fgamma")
+
+    # Print some useful information
+    println("  > Read gamma matrix from: $fgamma")
+    println("  > Shape of Array kmesh: ", size(kmesh))
+    println("  > Shape of Array kwin: ", size(kwin))
+    println("  > Shape of Array gamma: ", size(gamma))
 
     # Return the desired arrays
     return kmesh, kwin, gamma
 end
 
-#
-# Service Functions: For I/O Operations
-#
+#=
+### *Service Functions* : *For I/O Operations* (*Δ/Write*)
+=#
 
 """
     write_delta(fmesh::Array{F64,1}, Delta::Array{C64,5}, ai::Array{Impurity,1})
 
-Split hybridization functions and the corresponding frequency mesh into
-the `impurity.i/dmft.delta` file, which is essential for the quantum
-impurity solver. The working directory of this function must be the
-root folder.
+Split hybridization functions Δ and the corresponding frequency mesh ω
+into the `impurity.i/dmft.delta` file, which is important for the chosen
+quantum impurity solver. The working directory of this function must be
+the root folder.
+
+This function is usually called by the `sigma_split()` function.
 
 See also: [`Impurity`](@ref), [`read_delta`](@ref), [`write_eimpx`](@ref).
 """
@@ -706,7 +749,7 @@ function write_delta(fmesh::Array{F64,1}, Delta::Array{C64,5}, ai::Array{Impurit
             end # END OF S LOOP
         end # END OF IOSTREAM
 
-        # Print message to the screen
+        # Print some useful information
         println("  > Split hybridization functions for site $t into: $fhyb")
         println("  > Shape of Array fmesh: ", size(fmesh))
         println("  > Shape of Array Delta: ", size(Delta[:,:,:,:,t]))
@@ -716,9 +759,10 @@ end
 """
     write_delta(fmesh::Array{F64,1}, Delta::Array{C64,5}, ai::Array{Impurity,1}, fhyb::String)
 
-Write hybridization functions into the `fhyb` file. This function is usually
-called by `mixer_delta()` to update the `dmft1/dmft.delta` file. The working
-directory of this function must be the root folder.
+Write hybridization functions Δ into the `fhyb` file. This function is
+usually called by `mixer_delta()` function to update the hybridization
+files stored in `dmft1/dmft.delta` file. The working directory of this
+function must be the root folder.
 
 See also: [`Impurity`](@ref), [`read_delta`](@ref), [`write_eimpx`](@ref).
 """
@@ -727,6 +771,7 @@ function write_delta(fmesh::Array{F64,1}, Delta::Array{C64,5}, ai::Array{Impurit
     _, qdim, nmesh, nspin, nsite = size(Delta)
 
     # Determine filename for hybridization functions
+    # So far, `fhyb` is locked.
     @assert fhyb == "dmft1/dmft.delta"
 
     # Write the data
@@ -767,22 +812,24 @@ function write_delta(fmesh::Array{F64,1}, Delta::Array{C64,5}, ai::Array{Impurit
         end # END OF T LOOP
     end # END OF IOSTREAM
 
-    # Print message to the screen
+    # Print some useful information
     println("  > Write hybridization functions into: $fhyb")
     println("  > Shape of Array fmesh: ", size(fmesh))
     println("  > Shape of Array Delta: ", size(Delta))
 end
 
-#
-# Service Functions: For I/O Operations
-#
+#=
+### *Service Functions* : *For I/O Operations* (*ε/Write*)
+=#
 
 """
     write_eimpx(Eimpx::Array{C64,4}, ai::Array{Impurity,1})
 
-Split local impurity levels into the `impurity.i/dmft.eimpx` file, which
-is essential for the quantum impurity solver. The working directory of
-this function must be the root folder.
+Split local impurity levels ε into the `impurity.i/dmft.eimpx` file,
+which is important for the chosen quantum impurity solver. The working
+directory of this function must be the root folder.
+
+This function is usually called by the `sigma_split()` function.
 
 See also: [`Impurity`](@ref), [`read_eimpx`](@ref), [`write_delta`](@ref).
 """
@@ -790,7 +837,7 @@ function write_eimpx(Eimpx::Array{C64,4}, ai::Array{Impurity,1})
     # Extract the dimensional parameters
     _, qdim, nspin, nsite = size(Eimpx)
 
-    # Go through each quantum impurity problems
+    # Go through each quantum impurity problem
     for t = 1:nsite
         # Determine filename for local impurity levels
         flev = "impurity.$t/dmft.eimpx"
@@ -825,7 +872,7 @@ function write_eimpx(Eimpx::Array{C64,4}, ai::Array{Impurity,1})
             end # END OF S LOOP
         end # END OF IOSTREAM
 
-        # Print message to the screen
+        # Print some useful information
         println("  > Split local impurity levels for site $t into: $flev")
         println("  > Shape of Array Eimpx: ", size(Eimpx[:,:,:,t]))
     end # END OF T LOOP
@@ -834,9 +881,10 @@ end
 """
     write_eimpx(Eimpx::Array{C64,4}, ai::Array{Impurity,1}, flev::String)
 
-Write local impurity levels into the `flev` file. This function is usually
-called by `mixer_eimpx()` to update the `dmft1/dmft.eimpx` file. The
-working directory of this function must be the root folder.
+Write local impurity levels ε into the `flev` file. This function is
+usually called by `mixer_eimpx()` function to update the local impurity
+levels stored in `dmft1/dmft.eimpx` file. The working directory of this
+function must be the root folder.
 
 See also: [`Impurity`](@ref), [`read_eimpx`](@ref), [`write_delta`](@ref).
 """
@@ -845,6 +893,7 @@ function write_eimpx(Eimpx::Array{C64,4}, ai::Array{Impurity,1}, flev::String)
     _, qdim, nspin, nsite = size(Eimpx)
 
     # Determine filename for local impurity levels
+    # So far, `flev` is locked.
     @assert flev == "dmft1/dmft.eimpx"
 
     # Write the data
@@ -880,27 +929,31 @@ function write_eimpx(Eimpx::Array{C64,4}, ai::Array{Impurity,1}, flev::String)
         end # END OF T LOOP
     end # END OF IOSTREAM
 
-    # Print message to the screen
+    # Print some useful information
     println("  > Write local impurity levels into: $flev")
     println("  > Shape of Array Eimpx: ", size(Eimpx))
 end
 
-#
-# Service Functions: For I/O Operations
-#
+#=
+### *Service Functions* : *For I/O Operations* (*Γ/Write*)
+=#
 
 """
-    write_gamma(kmesh::Array{F64,2}, kwin::Array{I64,3}, gamma::Array{C64,4})
+    write_gamma(kmesh::Array{F64,2}, kwin::Array{I64,3}, gamma::Array{C64,4}, fgamma::String)
 
-Write correction for density matrix to `dmft2/dmft.gamma` file. This
-function is usually called by `mixer_gamma()` function. The working
+Write correction for density matrix Γ into `fgamma` file. This function
+is usually called by `mixer_gamma()` function to update the correction
+for density matrix stored in the `dmft2/dmft.gamma` file. The working
 directory of this function must be the root folder.
+
+See also: [`read_gamma`](@ref), [`write_delta`](@ref), [`write_eimpx`](@ref).
 """
-function write_gamma(kmesh::Array{F64,2}, kwin::Array{I64,3}, gamma::Array{C64,4})
+function write_gamma(kmesh::Array{F64,2}, kwin::Array{I64,3}, gamma::Array{C64,4}, fgamma::String)
     # Extract the dimensional parameters
     _, qbnd, nkpt, nspin = size(gamma)
 
     # Determine filename for correction for density matrix
+    # So far, `fgamma` is locked.
     fgamma = "dmft2/dmft.gamma"
 
     # Write the data
@@ -917,7 +970,7 @@ function write_gamma(kmesh::Array{F64,2}, kwin::Array{I64,3}, gamma::Array{C64,4
         # Go through each spin
         for s = 1:nspin
             # Go through 𝑘-point
-            for k = 1:nkpt                
+            for k = 1:nkpt
                 # Write key parameters
                 #
                 # For spin
@@ -948,5 +1001,8 @@ function write_gamma(kmesh::Array{F64,2}, kwin::Array{I64,3}, gamma::Array{C64,4
     end # END OF IOSTREAM
 
     # Print message to the screen
-    println("  Write gamma matrix into: $fgamma")
+    println("  > Write correction for density matrix into: $fgamma")
+    println("  > Shape of Array kmesh: ", size(kmesh))
+    println("  > Shape of Array kwin: ", size(kwin))
+    println("  > Shape of Array gamma: ", size(gamma))
 end

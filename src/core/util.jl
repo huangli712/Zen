@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/18
+# Last modified: 2021/06/25
 #
 
 #=
@@ -68,6 +68,26 @@ macro cswitch(constexpr, body)
 end
 
 """
+    @time_call(ex)
+
+Evaluate a function call (`ex`), and then print the elapsed time (number
+of seconds) it took to execute.
+
+This macro is a variation of the standard `@elapsed` macro.
+
+See also: [`@elapsed`](@ref).
+"""
+macro time_call(ex)
+    quote
+        while false; end
+        local t0 = time_ns()
+        $(esc(ex))
+        δt = (time_ns() - t0) / 1e9
+        println("Report: Total elapsed time $(δt) s\n")
+    end
+end
+
+"""
     @ps1(str, c)
 
 Wrapper for `printstyled` function. Here `str` is a string, and `c`
@@ -99,6 +119,10 @@ macro ps2(str1, c1, str2, c2)
     end
     return :( $(esc(ex)) )
 end
+
+#=
+### *Query Runtime Environment*
+=#
 
 """
     require()
@@ -223,6 +247,20 @@ function query_stop()
     isfile(query_case() * ".stop")
 end
 
+#=
+*Remarks*:
+
+In the `ZenCore` package, the following environment variables matter:
+
+* ZEN_HOME
+* ZEN_CORE
+* ZEN_DMFT
+* ZEN_SOLVER
+* VASP_HOME
+
+Please setup them in your `.bashrc` (Lniux) or `.profile` (macOS) files.
+=#
+
 """
     query_home()
 
@@ -261,7 +299,7 @@ end
 """
     query_dft(engine::String)
 
-Query the home directory of the DFT engine.
+Query the home directory of the chosen DFT engine.
 
 See also: [`query_dmft`](@ref), [`query_solver`](@ref).
 """
@@ -347,6 +385,10 @@ function query_solver(engine::String)
         solver_dir
     end
 end
+
+#=
+### *Colorful Outputs*
+=#
 
 """
     welcome()
@@ -435,6 +477,10 @@ function prompt(io::IOStream, msg::String)
     flush(io)
 end
 
+#=
+### *I/O Operations*
+=#
+
 """
     line_to_array(io::IOStream)
 
@@ -467,6 +513,10 @@ See also: [`vaspio_projs`](@ref).
     _im = str[30:end]
     return parse(F64, _re) + parse(F64, _im) * im
 end
+
+#=
+### *Mathematical Functions*
+=#
 
 #=
 *Remarks 1*:
@@ -507,6 +557,10 @@ See also: [`gauss_weight`](@ref).
 function erf(x::F64)
     ccall(("erf", libm), F64, (F64,), x)
 end
+
+#=
+### *Utility Functions*
+=#
 
 """
     subscript(num::I64)

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Stable
 #
-# Last modified: 2021/06/21
+# Last modified: 2021/06/25
 #
 
 #=
@@ -81,7 +81,7 @@ Version of this julia package.
 
 See also: [`__RELEASE__`](@ref).
 """
-const __VERSION__ = v"0.4.7-devel.210621"
+const __VERSION__ = v"0.4.11-devel.210625"
 
 """
     __RELEASE__
@@ -95,7 +95,7 @@ const __RELEASE__ = "2021/06"
 #=
 *Remarks*:
 
-The elements of the following array should be a `NamedTuple` object,
+The elements of the Array `__AUTHORS__` should be a `NamedTuple` object,
 such as:
 
 > (*name* = "author's name", *email* = "author's email").

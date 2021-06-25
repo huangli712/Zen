@@ -4,12 +4,12 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/18
+# Last modified: 2021/06/24
 #
 
-#
-# Customized Dictionaries
-#
+#=
+### *Customized Dictionaries*
+=#
 
 #=
 *Remarks*:
@@ -55,7 +55,7 @@ const PDFT  = Dict{String,Array{Any,1}}(
           "loptim"   => [missing, 1, :Bool  , "The generated projectors are optimized or not"],
           "lproj"    => [missing, 1, :Bool  , "The projectors are generated or not"],
           "sproj"    => [missing, 1, :Array , "Specifications for generating projectors"],
-          "window"   => [missing, 1, :Array , "Band / energy window for orthogonalizing projectors"],
+          "window"   => [missing, 1, :Array , "Band / energy window for normalizing projectors"],
       )
 
 """
@@ -76,11 +76,8 @@ const PDMFT = Dict{String,Array{Any,1}}(
           "mc"       => [missing, 0, :F64   , "Convergence criterion of chemical potential"],
           "cc"       => [missing, 0, :F64   , "Convergence criterion of charge"],
           "ec"       => [missing, 0, :F64   , "Convergence criterion of total energy"],
-          "fc"       => [missing, 0, :F64   , "Convergence criterion of force"],
+          "sc"       => [missing, 0, :F64   , "Convergence criterion of self-energy function"],
           "lfermi"   => [missing, 0, :Bool  , "Test whether chemical potential is updated"],
-          "lcharge"  => [missing, 0, :Bool  , "Test whether charge is converged"],
-          "lenergy"  => [missing, 0, :Bool  , "Test whether total energy is converged"],
-          "lforce"   => [missing, 0, :Bool  , "Test whether force is converged"],
       )
 
 """
@@ -111,19 +108,19 @@ See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref).
 """
 const PSOLVER= Dict{String,Array{Any,1}}(
           "engine"   => [missing, 1, :String, "Name of quantum impurity solver"],
-          "params"   => [missing, 1, :Array , "Additional parameter sets of quantum impurity solver"],
+          "params"   => [missing, 1, :Array , "Extra parameter sets of quantum impurity solver"],
       )
 
-#
-# Customized Structs
-#
+#=
+### *Customized Structs*
+=#
 
 """
     Logger
 
 Mutable struct. Store the IOStreams for case.log and case.cycle files.
 
-## Members
+### Members
 
 * log   -> IOStream for case.log file.
 * cycle -> IOStream for case.cycle file.
@@ -140,7 +137,7 @@ end
 
 Mutable struct. Record the DFT + DMFT iteration information.
 
-## Members
+### Members
 
 * I₁ -> Number of iterations between `dmft1` and quantum impurity solver.
 * I₂ -> Number of iterations between `dmft2` and DFT engine.
@@ -154,8 +151,13 @@ Mutable struct. Record the DFT + DMFT iteration information.
 * μ₁ -> Fermi level obtained by DMFT engine (`dmft1`).
 * μ₂ -> Fermi level obtained by DMFT engine (`dmft2`).
 * dc -> Double counting terms.
-* nf -> Number of impurity occupancy.
+* n₁ -> Number of lattice occupancy obtained by DMFT engine (`dmft1`).
+* n₂ -> Number of lattice occupancy obtained by DMFT engine (`dmft2`).
+* nf -> Number of impurity occupancy obtained by impurity solver.
 * et -> Total DFT + DMFT energy.
+* cc -> Convergence flag for charge density.
+* ce -> Convergence flag for total energy.
+* cs -> Convergence flag for self-energy functions.
 
 See also: [`Logger`](@ref).
 """
@@ -172,8 +174,13 @@ mutable struct IterInfo
     μ₁ :: F64
     μ₂ :: F64
     dc :: Vector{F64}
+    n₁ :: F64
+    n₂ :: F64
     nf :: Vector{F64}
     et :: F64
+    cc :: Bool
+    ce :: Bool
+    cs :: Bool
 end
 
 """
@@ -182,7 +189,7 @@ end
 Mutable struct. Contain the crystallography information. This struct is
 designed for the `POSCAR` file used by the `vasp` code.
 
-## Members
+### Members
 
 * _case -> The name of system.
 * scale -> Universal scaling factor (lattice constant), which is used to
@@ -216,7 +223,7 @@ end
 Mutable struct. Mapping between quantum impurity problems and groups
 of projectors (or band windows).
 
-## Members
+### Members
 
 * i_grp -> Mapping from quntum impurity problems to groups of projectors.
 * i_wnd -> Mapping from quantum impurity problems to windows of dft bands.
@@ -237,7 +244,7 @@ end
 
 Mutable struct. Essential information of quantum impurity problem.
 
-## Members
+### Members
 
 * index -> Index of the quantum impurity problem.
 * atoms -> Chemical symbol of impurity atom.
@@ -272,11 +279,11 @@ end
 
 Mutable struct. Essential information of a given projector.
 
-## Members
+### Members
 
 * site -> Site in which the projector is defined.
-* l    -> Quantum number l.
-* m    -> Quantum number m.
+* l    -> Quantum number 𝑙.
+* m    -> Quantum number 𝑚.
 * desc -> Projector's specification.
 
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
@@ -293,16 +300,16 @@ end
 
 Mutable struct. Essential information of group of projectors.
 
-## Members
+### Members
 
 * site   -> Site in which the projectors are defined. In principle, the
             projectors included in the same group should be defined at
             the same site (or equivalently atom).
-* l      -> Quantum number l. In principle, the projectors included in
-            the same group should have the same quantum number l (but
-            with different m).
+* l      -> Quantum number 𝑙. In principle, the projectors included in
+            the same group should have the same quantum number 𝑙 (but
+            with different 𝑚).
 * corr   -> Test if the projectors in this group are correlated.
-* shell  -> Type of correlated orbitals. It is infered from quantum number l.
+* shell  -> Type of correlated orbitals. It is infered from quantum number 𝑙.
 * Pr     -> Array. It contains the indices of projectors.
 * Tr     -> Array. It contains the transformation matrix. This parameter
             could be useful to select certain subset of orbitals or perform
@@ -322,9 +329,9 @@ end
 """
     PrWindow
 
-Mutable struct. Define the band window for group of projectors.
+Mutable struct. Define the band window for a given group of projectors.
 
-## Members
+### Members
 
 * bmin -> Minimum band index.
 * bmax -> Maximum band index.
@@ -344,9 +351,9 @@ mutable struct PrWindow
     bwin  :: Tuple{R64,R64}
 end
 
-#
-# Customized Constructors
-#
+#=
+### *Customized Constructors*
+=#
 
 """
     Logger(case::String = "case")
@@ -375,6 +382,9 @@ function IterInfo()
     @assert _M₃ ≥ 1 && _M₁ ≥ 1 && _M₂ ≥ 1
 
     # Initialize key fields
+    #
+    # Note that sc = 1 means one-shot DFT + DMFT calculations,
+    # while sc = 2 means fully self-consistent DFT + DMFT calculations.
     I  = 0
     M₁ = _M₁
     M₂ = _M₂
@@ -382,11 +392,23 @@ function IterInfo()
     sc = 1
     μ  = 0.0
     dc = fill(0.0, nsite)
+    n₁ = 0.0
+    n₂ = 0.0
     nf = fill(0.0, nsite)
     et = 0.0
+    cc = false
+    ce = false
+    cs = false
 
     # Call the default constructor
-    IterInfo(I, I, I, I, M₁, M₂, M₃, sc, μ, μ, μ, dc, nf, et)
+    IterInfo(I, I, I, I,
+             M₁, M₂, M₃,
+             sc,
+             μ, μ, μ,
+             dc,
+             n₁, n₂, nf,
+             et,
+             cc, ce, cs)
 end
 
 """
@@ -412,8 +434,8 @@ Outer constructor for Mapping struct.
 """
 function Mapping(nsite::I64, ngrp::I64, nwnd::I64)
     # Sanity check
-    @assert ngrp >= nsite
-    @assert nwnd == ngrp
+    @assert ngrp ≥ nsite
+    @assert nwnd ≤ ngrp
 
     # Initialize the arrays
     i_grp = zeros(I64, nsite)
@@ -530,9 +552,9 @@ function PrWindow(kwin::Array{I64,3}, bwin::Tuple{R64,R64})
     PrWindow(bmin, bmax, nbnd, kwin, bwin)
 end
 
-#
-# Customized Base.show() Functions
-#
+#=
+### *Customized Base.show() Functions*
+=#
 
 """
     Base.show(io::IO, it::IterInfo)
@@ -571,8 +593,13 @@ function Base.show(io::IO, it::IterInfo)
     println(io, "μ₁ : ", it.μ₁)
     println(io, "μ₂ : ", it.μ₂)
     println(io, "dc : ", it.dc)
+    println(io, "n₁ : ", it.n₁)
+    println(io, "n₂ : ", it.n₂)
     println(io, "nf : ", it.nf)
     println(io, "et : ", it.et)
+    println(io, "cc : ", it.cc)
+    println(io, "ce : ", it.ce)
+    println(io, "cs : ", it.cs)
 end
 
 """

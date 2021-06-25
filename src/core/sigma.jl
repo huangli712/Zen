@@ -4,12 +4,12 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/21
+# Last modified: 2021/06/25
 #
 
-#
-# Driver Functions
-#
+#=
+### *Driver Functions*
+=#
 
 """
     sigma_reset(ai::Array{Impurity,1})
@@ -21,7 +21,7 @@ Now this function only supports Matsubara self-energy functions.
 See also: [`sigma_dcount`](@ref).
 """
 function sigma_reset(ai::Array{Impurity,1})
-    # Print the log
+    # Print the header
     println("Sigma : Reset")
     println("Try to create default self-energy functions")
     println("Current directory: ", pwd())
@@ -41,10 +41,11 @@ function sigma_reset(ai::Array{Impurity,1})
         for i = 1:nmesh
             fmesh[i] = (2 * i - 1) * pi / beta
         end
+        #
         println("  > Create Matsubara frequency mesh: $nmesh points")
     else # Real axis
-        println("  > Create real frequency mesh")
         sorry()
+        println("  > Create real frequency mesh")
     end
 
     # Create default self-energy functions
@@ -63,15 +64,13 @@ function sigma_reset(ai::Array{Impurity,1})
 
         # Push S into SA to save it
         push!(SA, S)
-        println("  > Shape of Array S for site $i: ", size(S))
+        #
+        println("  > Shape of Array S: $i -> ", size(S))
     end # END OF I LOOP
 
     # Write self-energy functions and the corresponding frequency mesh
     println("Write self-energy functions")
     write_sigma(fmesh, SA, ai)
-
-    # Print blank line for better visualization
-    println()
 end
 
 """
@@ -86,7 +85,7 @@ The field `it.dc` will be updated in this function as well.
 See also: [`sigma_reset`](@ref).
 """
 function sigma_dcount(it::IterInfo, ai::Array{Impurity,1})
-    # Print the log
+    # Print the header
     println("Sigma : Dcount")
     println("Try to build double counting terms for self-energy functions")
     println("Current directory: ", pwd())
@@ -150,8 +149,10 @@ function sigma_dcount(it::IterInfo, ai::Array{Impurity,1})
                 sorry()
                 break
         end
+        #
+        # Print some useful information
         println("  > Using the $(get_m("dcount")) scheme: Vdc = $sigdc")
-        println("  > Shape of Array DC: ", size(DC))
+        println("  > Shape of Array DC: $i -> ", size(DC))
 
         # Special treatment for the first iteration
         if it.I₃ <= 1 && it.I₁ <= 1
@@ -170,9 +171,6 @@ function sigma_dcount(it::IterInfo, ai::Array{Impurity,1})
     # Write double counting terms
     println("Write double counting terms")
     write_sigdc(DCA, ai)
-
-    # Print blank line for better visualization
-    println()
 end
 
 """
@@ -184,23 +182,28 @@ distribute them into the `impurity.i` folder.
 See also: [`sigma_gather`](@ref).
 """
 function sigma_split(ai::Array{Impurity,1})
-    # Print the log
+    # Print the header
     println("Sigma : Split")
     println("Try to split the hybridization functions and local impurity levels")
     println("Current directory: ", pwd())
 
     # Split the hybridization functions Δ
     println("Treat hybridization functions")
+    #
+    # Read it from dmft1/dmft.delta
     fmesh, Delta = read_delta(ai)
+    #
+    # Write it into impurity.i/dmft.delta
     write_delta(fmesh, Delta, ai)
 
     # Split the local impurity levels εᵢ
     println("Treat local impurity levels")
+    #
+    # Read it from dmft1/dmft.eimpx
     Eimpx = read_eimpx(ai)
+    #
+    # Write it into impurity.i/dmft.eimpx
     write_eimpx(Eimpx, ai)
-
-    # Print blank line for better visualization
-    println()
 end
 
 """
@@ -213,7 +216,7 @@ the all the `impurity.i` folders and then combine them into a single
 See also: [`sigma_split`](@ref).
 """
 function sigma_gather(it::IterInfo, ai::Array{Impurity,1})
-    # Print the log
+    # Print the header
     println("Sigma : Gather")
     println("Try to combine self-energy functions for various impurities")
     println("Current directory: ", pwd())
@@ -234,6 +237,8 @@ function sigma_gather(it::IterInfo, ai::Array{Impurity,1})
     for t = 1:nsite
         # Extract the frequency mesh and self-energy function
         fmesh, sigma = GetSigma(ai[t])
+
+        # Print some useful information
         println("  > Read self-energy functions for impurity: $t")
         println("  > Shape of Array fmesh: ", size(fmesh))
         println("  > Shape of Array sigma: ", size(sigma))
@@ -258,14 +263,11 @@ function sigma_gather(it::IterInfo, ai::Array{Impurity,1})
     # Backup the self-energy functions
     fsig = "dmft1/sigma.bare"
     cp(fsig, "$fsig.$(it.I₃).$(it.I₁)", force = true)
-
-    # Print blank line for better visualization
-    println()
 end
 
-#
-# Service Functions: For Double Counting Terms
-#
+#=
+### *Service Functions* : *For Double Counting Terms*
+=#
 
 #=
 *Theory*:
@@ -321,15 +323,17 @@ function cal_dc_exact(U::F64, J::F64, N::F64)
     sorry()
 end
 
-#
-# Service Functions: For I/O Operations
-#
+#=
+### *Service Functions* : *Files I/O Operations*
+=#
 
 """
     read_sigma(ai::Array{Impurity,1}, fsig::String = "dmft1/sigma.bare")
 
 Read the self-energy functions from the `dmft1/sigma.bare` file. The
 working directory of this function must be the root folder.
+
+This function is usually called by `mixer_sigma()` function.
 
 See also: [`read_sigdc`](@ref).
 """
@@ -407,6 +411,8 @@ function read_sigma(ai::Array{Impurity,1}, fsig::String = "dmft1/sigma.bare")
             push!(SA, Sigma)
         end # END OF T LOOP
     end # END OF IOSTREAM
+
+    # Print some useful information
     println("  > Read self-energy functions from: $fsig")
     println("  > Shape of Array fmesh: ", size(fmesh))
     for t in eachindex(SA)
@@ -484,15 +490,20 @@ function read_sigdc(ai::Array{Impurity,1}, fsig::String = "dmft1/sigma.dc")
             push!(DCA, DC)
         end # END OF T LOOP
     end # END OF IOSTREAM
+
+    # Print some useful information
     println("  > Read double counting terms from: $fsig")
+    for t in eachindex(DCA)
+        println("  > Shape of Array DC: $t -> ", size(DCA[t]))
+    end
 
     # Return the desire array
     return DCA
 end
 
-#
-# Service Functions: For I/O Operations
-#
+#=
+### *Service Functions* : *Files I/O Operations*
+=#
 
 """
     write_sigma(fmesh::Array{F64,1}, SA::Array{Array{C64,4},1}, ai::Array{Impurity,1})
@@ -551,7 +562,7 @@ function write_sigma(fmesh::Array{F64,1}, SA::Array{Array{C64,4},1}, ai::Array{I
         end # END OF I LOOP
     end # END OF IOSTREAM
 
-    # Print message to the screen
+    # Print some useful information
     println("  > Write self-energy functions into: dmft1/sigma.bare")
     println("  > Shape of Array fmesh: ", size(fmesh))
     for t in eachindex(SA)
@@ -561,7 +572,7 @@ function write_sigma(fmesh::Array{F64,1}, SA::Array{Array{C64,4},1}, ai::Array{I
     # Copy sigma.bare to the dmft2 directory
     cp("dmft1/sigma.bare", "dmft2/sigma.bare", force = true)
 
-    # Print message to the screen
+    # Print some useful information
     println("  > Write self-energy functions into: dmft2/sigma.bare")
     println("  > Shape of Array fmesh: ", size(fmesh))
     for t in eachindex(SA)
@@ -621,12 +632,18 @@ function write_sigdc(DCA::Array{Array{F64,3},1}, ai::Array{Impurity,1})
         end # END OF I LOOP
     end # END OF IOSTREAM
 
-    # Print message to the screen
+    # Print some useful information
     println("  > Write double counting terms into: dmft1/sigma.dc")
+    for t in eachindex(DCA)
+        println("  > Shape of Array DC: $t -> ", size(DCA[t]))
+    end
 
     # Copy sigma.dc to the dmft2 directory
     cp("dmft1/sigma.dc", "dmft2/sigma.dc", force = true)
 
-    # Print message to the screen
+    # Print some useful information
     println("  > Write double counting terms into: dmft2/sigma.dc")
+    for t in eachindex(DCA)
+        println("  > Shape of Array DC: $t -> ", size(DCA[t]))
+    end
 end

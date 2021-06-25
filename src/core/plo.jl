@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/19
+# Last modified: 2021/06/25
 #
 
 #=
@@ -87,9 +87,6 @@ function plo_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     if cmp(basename(splitext(PROGRAM_FILE)[1]), "test") === 0
         plo_monitor(D)
     end
-
-    # P11: Print the footer for a better visualization
-    println()
 end
 
 #=
@@ -100,7 +97,7 @@ end
     plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
 
 Create connections / mappings between projectors (or band windows) and
-quantum impurity problems. Return a Mapping struct.
+quantum impurity problems. Return a `Mapping` struct.
 
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref), [`Mapping`](@ref).
 """
@@ -169,6 +166,7 @@ function plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
     # For a given quantum impurity problem, we can always find out the
     # corresponding group of projectors.
     @assert all(x -> (0 < x <= ngrp), Map.i_grp)
+    #
     println("  > Create quantum impurity problems -> groups (i_grp)")
 
     # Examine Map.g_imp
@@ -176,15 +174,18 @@ function plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
     # For a given group of projectors, if we fail to find out the
     # corresponding quantum impurity problem, it must be non-correlated.
     @assert all(x -> (0 <= x <= nsite), Map.g_imp)
+    #
     println("  > Create groups -> quantum impurity problems (g_imp)")
 
     # Setup Map.i_wnd and Map.w_imp
     #
     # They are actually copies of i_grp and g_imp
     Map.i_wnd[:] = Map.i_grp[:]
+    #
     println("  > Create quantum impurity problems -> windows (i_grp)")
     #
     Map.w_imp[:] = Map.g_imp[:]
+    #
     println("  > Create windows -> quantum impurity problems (g_imp)")
 
     # Return the desired struct
@@ -285,7 +286,7 @@ function plo_group(MAP::Mapping, PG::Array{PrGroup,1})
                 break
         end
         println("  > Build transformation matrix for group $g (site: $(PG[g].site))")
-    end
+    end # END OF G LOOP
 end
 
 #=
@@ -360,8 +361,9 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
         # Create the `PrWindow` struct, and push it into the PW array.
         push!(PW, PrWindow(kwin, bwin))
 
+        # Print some useful information
         println("  > Create window $p: $bwin <--> ($(PW[p].bmin), $(PW[p].bmax))")
-    end
+    end # END OF P LOOP
 
     # Well, now CW contains all the windows for correlated groups of
     # projectors. In Zen, we assume that all of the correlated groups of
@@ -390,7 +392,7 @@ end
 #=
 *Remarks*:
 
-PG[i].Tr must be a matrix. Its size must be (ndim, p2 - p1 + 1).
+`PG[i].Tr` must be a matrix. Its size must be `(ndim, p2 - p1 + 1)`.
 =#
 
 """
@@ -440,6 +442,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
         # Push R into Rchipsi to save it
         push!(Rchipsi, R)
 
+        # Print some useful information
         println("  > Rotate group $i (site: $(PG[i].site)): number of local orbitals -> $ndim")
     end # END OF I LOOP
 
@@ -510,6 +513,7 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
         # Push F into Fchipsi to save it
         push!(Fchipsi, F)
 
+        # Print some useful information
         println("  > Apply window $p: maximum number of bands -> $(PW[p].nbnd)")
     end # END OF P LOOP
 
@@ -552,6 +556,7 @@ function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
         try_blk2(PW, chipsi)
     end
 
+    # Print some useful information
     for p in eachindex(chipsi)
         println("  > Final shape of Array chipsi (group $p): $(size(chipsi[p]))")
     end
@@ -589,9 +594,9 @@ function plo_monitor(D::Dict{Symbol,Any})
     end
 end
 
-#
-# Service Functions (Group B)
-#
+#=
+### *Service Functions* : *Group B*
+=#
 
 """
     get_win1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
@@ -830,9 +835,9 @@ function try_diag(M::AbstractArray{C64,2})
     copy!(M, S * M)
 end
 
-#
-# Service Functions (Group C)
-#
+#=
+### *Service Functions* : *Group C*
+=#
 
 """
     calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
@@ -1146,9 +1151,9 @@ function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Ar
     return MA, DA
 end
 
-#
-# Service Functions (Group D)
-#
+#=
+### *Service Functions* : *Group D*
+=#
 
 """
     view_ovlp(ovlp::Array{F64,3})

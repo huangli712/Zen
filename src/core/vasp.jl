@@ -4,12 +4,12 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/19
+# Last modified: 2021/06/25
 #
 
-#
-# Driver Functions
-#
+#=
+### *Driver Functions*
+=#
 
 """
     vasp_adaptor(D::Dict{Symbol,Any})
@@ -47,9 +47,6 @@ function vasp_adaptor(D::Dict{Symbol,Any})
     if get_d("smear") === "tetra"
         D[:volt], D[:itet] = vaspio_tetra(pwd())
     end
-
-    # V08: Print the footer for a better visualization
-    println()
 end
 
 """
@@ -220,7 +217,7 @@ function vasp_save(it::IterInfo)
 
     # Print the header
     println("Finalize the computational task")
-       
+
     # Store the data files
     #
     # Create list of files
@@ -237,14 +234,11 @@ function vasp_save(it::IterInfo)
     # will be saved at IterInfo.μ₀.
     it.μ₀ = vaspio_fermi(pwd())
     println("  > Extract the fermi level from DOSCAR: $(it.μ₀) eV")
-
-    # Print the footer
-    println()
 end
 
-#
-# Service Functions (Group A)
-#
+#=
+### *Service Functions* : *Group A*
+=#
 
 #=
 *Remarks*:
@@ -438,6 +432,11 @@ end
 
 """
     vasp_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
+
+Generate a valid `GAMMA` file for vasp. The vasp will need this file
+when `ICHARG = 5`.
+
+See also: [`write_gamma`](@ref), [`read_gamma`](@ref).
 """
 function vasp_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
     # Extract the dimensional parameters
@@ -472,11 +471,18 @@ end
 
 """
     vasp_lock()
+
+Return whether the `vasp.lock` file is available.
 """
 function vasp_lock()
     return isfile("dft/vasp.lock")
 end
 
+"""
+    vasp_lock(action::String)
+
+Create the `vasp.lock` file.
+"""
 function vasp_lock(action::String)
     @assert startswith(action, "c") || startswith(action, "C")
     touch("vasp.lock")
@@ -506,9 +512,9 @@ See also: [`adaptor_init`](@ref).
 """
 vasp_files() = vasp_files(pwd())
 
-#
-# Service Functions (Group B)
-#
+#=
+### *Service Functions* : *Group B*
+=#
 
 #=
 Remarks:
@@ -1045,7 +1051,7 @@ function vaspio_kmesh(f::String)
     # Print some useful information to check
     println("  > Number of k-points: ", nkpt)
     println("  > Total sum of weights: ", sum(weight))
-    
+
     # Return the desired arrays
     return kmesh, weight
 end
@@ -1157,7 +1163,7 @@ Reading vasp's `EIGENVAL` file, return energy band information. Here `f`
 means only the directory that contains `EIGENVAL`.
 
 Sometimes the `EIGENVAL` file does not contain any useful data, then we
-turn to the `LOCPROJ` file to obtain the energy band information. 
+turn to the `LOCPROJ` file to obtain the energy band information.
 
 See also: [`irio_eigen`](@ref).
 """
@@ -1235,6 +1241,7 @@ function vaspio_eigen(f::String)
         enk = zeros(F64, nband, nkpt, nspin)
         occupy = zeros(F64, nband, nkpt, nspin)
 
+        # Read in the energy bands and the corresponding occupations
         for s = 1:nspin
             for k = 1:nkpt
                 for b = 1:nband
@@ -1385,7 +1392,7 @@ function vaspio_projs(f::String)
         println()
     end
     println("  > Shape of Array chipsi: ", size(chipsi))
-    
+
     # Return the desired arrays
     # Note: PG should be further setup at plo_group() function.
     return PT, PG, chipsi
@@ -1406,6 +1413,9 @@ vaspio_projs() = vaspio_projs(pwd())
 Reading vasp's `DOSCAR` file, return the fermi level. Here `f` means
 only the directory that contains `DOSCAR`.
 
+Sometimes the `DOSCAR` file does not contain the necessary data. Thus
+we have to turn to the `LOCPROJ` file.
+
 See also: [`irio_fermi`](@ref).
 """
 function vaspio_fermi(f::String, silent::Bool = true)
@@ -1416,7 +1426,7 @@ function vaspio_fermi(f::String, silent::Bool = true)
 
     if length(lines) ≥ 6
         !silent && println("  > Open and read DOSCAR")
-    
+
         # Open the iostream
         fin = open(joinpath(f, "DOSCAR"), "r")
 
@@ -1449,7 +1459,7 @@ function vaspio_fermi(f::String, silent::Bool = true)
 
         # Print some useful information to check
         !silent && println("  > Fermi level: $fermi eV")
-    
+
         # Return the desired data
         return fermi
     end
