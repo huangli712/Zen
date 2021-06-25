@@ -1,0 +1,43 @@
+case = "Ni"
+
+[dft]
+engine = "vasp"
+smear = "tetra"
+kmesh = "medium"
+magmom = "1.0"
+lsymm = false
+lspins = true
+lspinorb = false
+loptim = true
+lproj = true
+sproj = ["1 : d : Pr"]
+window = [-9.2, 8.0]
+
+[dmft]
+mode = 1
+axis = 1
+niter = 60
+dcount = "fll1"
+beta = 40.0
+mixer = 0.5
+cc = 1.0E-4
+ec = 1.0E-4
+fc = 1.0E-4
+lcharge = true
+lenergy = true
+lforce = false
+
+[impurity]
+nsite = 1
+atoms = ["Ni : 1"]
+equiv = [1]
+shell = ["d"]
+ising = ["ising"]
+occup = [8.0]
+upara = [4.0]
+jpara = [0.7]
+lpara = [0.0]
+
+[solver]
+engine = "ct_hyb1"
+params = [""]
