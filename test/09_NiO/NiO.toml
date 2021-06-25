@@ -1,0 +1,44 @@
+case = "NiO"
+
+[dft]
+engine = "vasp"
+projtype = "plo"
+smear = "tetra"
+kmesh = "coarse"
+magmom = "2.0 -2.0 0.0 0.0"
+lsymm = false
+lspins = true
+lspinorb = false
+loptim = true
+lproj = true
+sproj = ["1 : d : Pr", "2 : d : Pr", "3 : p : Pr", "4 : p : Pr"]
+window = [-9.0, 2.0, -9.0, 2.0, -9.0, 2.0, -9.0, 2.0]
+
+[dmft]
+mode = 1
+axis = 1
+niter = 60
+dcount = "fll1"
+beta = 40.0
+mixer = 0.5
+cc = 1.0E-4
+ec = 1.0E-4
+fc = 1.0E-4
+lcharge = true
+lenergy = true
+lforce = false
+
+[impurity]
+nsite = 2
+atoms = ["Ni : 1", "Ni : 2"]
+equiv = [1, -1]
+shell = ["d", "d"]
+ising = ["ising", "ising"]
+occup = [6.0, 6.0]
+upara = [5.0, 5.0]
+jpara = [0.8, 0.8]
+lpara = [0.0]
+
+[solver]
+engine = "ct_hyb1"
+params = [""]
