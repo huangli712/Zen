@@ -30,20 +30,28 @@ Fe-*3d* orbitals, two Fe sites
 
 * **07_Ni**
 
+Ni-*3d* orbitals, paramagnetic
+
+* **08_Ni**
+
 Ni-*3d* orbitals, ferromagnetic
 
 ## case: NiO
 
-* **08_NiO**
+* **09_NiO**
+
+Ni-*3d* orbitals + O-*2p* orbitals, paramagnetic
+
+* **10_NiO**
 
 Ni-*3d* orbitals + O-*2p* orbitals, two Ni sites, antiferromagnetic
 
 ## case: Ce
 
-* **09_Ce**
+* **11_Ce**
 
-Ce-*4f* orbitals
+Ce-``4f`` orbitals, without spin-orbit coupling
 
-* **10_Ce**
+* **12_Ce**
 
-Ce-*4f* orbitals, spin-orbit coupling
+Ce-``4f`` orbitals, with spin-orbit coupling
