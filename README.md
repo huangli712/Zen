@@ -13,7 +13,7 @@ Now this package is currently under developement. **IT DOESN'T WORK NOW!**
 
 ## Version
 
-v0.4.1-devel.210622
+v0.4.2-devel.210625
 
 ## License
 
