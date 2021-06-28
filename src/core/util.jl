@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/25
+# Last modified: 2021/06/27
 #
 
 #=
@@ -101,7 +101,7 @@ denotes color.
 See also: [`@ps2`](@ref).
 """
 macro ps1(str, c)
-    return :( printstyled($str, color = $c) )
+    return :( print(eval($c)($str)) )
 end
 
 """
@@ -114,8 +114,8 @@ See also: [`@ps1`](@ref).
 """
 macro ps2(str1, c1, str2, c2)
     ex = quote
-        printstyled($str1, color = $c1)
-        printstyled($str2, color = $c2)
+        print(eval($c1)($str1))
+        print(eval($c2)($str2))
     end
     return :( $(esc(ex)) )
 end
@@ -419,7 +419,7 @@ function overview()
     str2 = "(myid = $(myid()))"
 
     # Write the information
-    prompt("ZEN", "Overview")
+    prompt("Overview")
     println("Time : ", Dates.format(now(), "yyyy-mm-dd / HH:MM:SS"))
     println("Para : Using ", nprocs(), str1, str2)
     println("Dirs : ", pwd())
@@ -446,22 +446,25 @@ function sorry()
 end
 
 """
-    prompt(from::String, msg::String)
-
-Print a format Zen message to the screen.
-"""
-function prompt(from::String, msg::String)
-    @ps2 "$from > " :green msg :magenta
-    println()
-end
-
-"""
     prompt(msg::String)
 
 Print a format Zen message to the screen.
 """
 function prompt(msg::String)
-    @ps2 "Task -> " :blue msg :light_red
+    print(green("ZEN > "))
+    print(magenta(msg))
+    println()
+end
+
+"""
+    prompt(msg1::String, msg2::String)
+
+Print a format Zen message to the screen.
+"""
+function prompt(msg1::String, msg2::String)
+    print(blue("Task -> "))
+    print(light_red(msg1))
+    print(magenta(msg2))
     println()
 end
 
@@ -571,4 +574,119 @@ function subscript(num::I64)
     @assert num >=0 && num <= 9
     SUB = ["\u2080" "\u2081" "\u2082" "\u2083" "\u2084" "\u2085" "\u2086" "\u2087" "\u2088" "\u2089"]
     return SUB[num + 1]
+end
+
+#=
+### *Color Tools*
+=#
+
+#=
+*Remarks*:
+
+Actually, the following codes are inspried by this repository:
+
+* https://github.com/Aerlinger/AnsiColor.jl
+
+The purpose of these codes is to provide some convenient tools to output
+colorful texts.
+=#
+
+"""
+    COLORS
+
+A global dict, which is used to specify the system colors.
+"""
+const COLORS = Dict{String,I64}(
+    "black"          => 0,
+    "red"            => 1,
+    "green"          => 2,
+    "yellow"         => 3,
+    "blue"           => 4,
+    "magenta"        => 5,
+    "cyan"           => 6,
+    "white"          => 7,
+    "default"        => 9,
+    "light_black"    => 60,
+    "light_red"      => 61,
+    "light_green"    => 62,
+    "light_yellow"   => 63,
+    "light_blue"     => 64,
+    "light_magenta"  => 65,
+    "light_cyan"     => 66,
+    "light_white"    => 67
+)
+
+"""
+    MODES
+
+A global dict, which is used to specify the mode for output characters.
+"""
+const MODES = Dict{String,I64}(
+    "default"        => 0,
+    "bold"           => 1,
+    "underline"      => 4,
+    "blink"          => 5,
+    "swap"           => 7,
+    "hide"           => 8
+)
+
+"""
+    colorize(c::String, s::String; bg::String = "default", m::String="default")
+
+Return some escape sequences, which will be displayed as colorized texts
+in the terminal.
+"""
+function colorize(c::String, s::String; bg::String = "default", m::String="default")
+    C_OFFSET = 30
+    B_OFFSET = 40
+    "\033[$(MODES[m]);$(C_OFFSET + COLORS[c]);$(B_OFFSET + COLORS[bg])m$(s)\033[0m"
+end
+
+"""
+    colorize(c::String, s::String; bg::String = "default", m::String="default")
+
+Return some escape sequences, which will be displayed as colorized texts
+in the terminal.
+"""
+function colorize(c::Symbol, s::String; bg::String = "default", m::String="default")
+    colorize(string(c), s; bg=bg, m=m)
+end
+
+#=
+*Remarks*:
+
+The following codes will generate and export dynamically some color
+functions, including:
+
+* black(str::String)
+* red(str::String)
+* green(str::String)
+* yellow(str::String)
+* blue(str::String)
+* magenta(str::String)
+* cyan(str::String)
+* white(str::String)
+* light_black(str::String)
+* light_red(str::String)
+* light_green(str::String)
+* light_yellow(str::String)
+* light_blue(str::String)
+* light_magenta(str::String)
+* light_cyan(str::String)
+* light_white(str::String)
+
+These functions provide some shortcuts to create texts decorated by
+special escape sequences. These texts will be show as colorized texts
+in the terminal.
+
+```julia
+julia> println(red("hello world!")) 
+```
+=#
+
+for k in keys(COLORS)
+    f = Symbol(k)
+    k == "default" && continue
+    @eval ($f)(str::String) = colorize(Symbol($f), str)
+    @eval export ($f)
 end

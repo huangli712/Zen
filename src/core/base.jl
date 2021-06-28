@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/25
+# Last modified: 2021/06/26
 #
 
 #=
@@ -134,7 +134,7 @@ function cycle1()
 #
 # Initialization (C01-C04)
 #
-    prompt("ZEN", "Initialization")
+    prompt("Initialization")
 
     # C01: Perform DFT calculation (for the first time)
     @time_call dft_run(it, lr)
@@ -151,12 +151,12 @@ function cycle1()
 #
 # DFT + DMFT Iterations (C05-C12)
 #
-    prompt("ZEN", "Iterations")
+    prompt("Iterations")
     show_it(it, lr)
 
     for iter = 1:it.M₃
         # Print the log
-        prompt("ZEN", "Cycle $iter")
+        prompt("Cycle $iter")
         prompt(lr.log, "")
         prompt(lr.log, "< dft_dmft_cycle >")
 
@@ -229,7 +229,7 @@ function cycle2()
 #
 # Initialization (C01-C04)
 #
-    prompt("ZEN", "Initialization")
+    prompt("Initialization")
 
     # C01: Perform DFT calculation (for the first time)
     #dft_run(it, lr)
@@ -243,7 +243,7 @@ function cycle2()
 #
 # DFT + DMFT Iterations (C05-C12)
 #
-    prompt("ZEN", "Iterations")
+    prompt("Iterations")
     show_it(it, lr)
 
     dft_run(it, lr)
@@ -253,7 +253,7 @@ function cycle2()
         suspend(2)
 
         # Print the log
-        prompt("ZEN", "Cycle $iter")
+        prompt("Cycle $iter")
         prompt(lr.log, "")
         prompt(lr.log, "< dft_dmft_cycle >")
 
@@ -603,7 +603,7 @@ function dft_run(it::IterInfo, lr::Logger)
     engine = get_d("engine")
 
     # Print the log
-    prompt("DFT $(cntr_it(it))")
+    prompt("DFT", cntr_it(it))
     prompt(lr.log, engine)
 
     # Enter dft directory
@@ -646,7 +646,7 @@ function dft_run(lr::Logger)
     engine = get_d("engine")
 
     # Print the log
-    prompt("DFT $(cntr_it(it))")
+    prompt("DFT", cntr_it(it))
     prompt(lr.log, engine)
 
     # Read in the correction for density matrix
@@ -695,7 +695,7 @@ function dmft_run(it::IterInfo, lr::Logger, task::I64)
     @assert task === 1 || task === 2
 
     # Print the log
-    prompt("DMFT $(cntr_it(it))")
+    prompt("DMFT", cntr_it(it))
     prompt(lr.log, "dmft$task")
 
     # Enter dmft1 or dmft2 directory
@@ -750,7 +750,7 @@ function solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
         imp = ai[i]
 
         # Print the log
-        prompt("Solvers $(cntr_it(it))")
+        prompt("Solvers", cntr_it(it))
         prompt(lr.log, engine)
 
         # Enter impurity.i directory
@@ -835,7 +835,7 @@ function adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
     # Kohn-Sham data will be stored in the DFTData dict.
     #
     engine = get_d("engine")
-    prompt("Adaptor $(cntr_it(it))")
+    prompt("Adaptor", cntr_it(it))
     prompt(lr.log, "adaptor::$engine")
     @cswitch engine begin
         # For VASP
@@ -864,7 +864,7 @@ function adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
     # using the `src/tools/test.jl` tool to examine the DFT data.
     #
     projtype = get_d("projtype")
-    prompt("Adaptor $(cntr_it(it))")
+    prompt("Adaptor", cntr_it(it))
     prompt(lr.log, "adaptor::$projtype")
     @cswitch projtype begin
         # For projected local orbital scheme
@@ -889,7 +889,7 @@ function adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
     # to some specified files with the IR format. Then these files will
     # be saved immediately.
     #
-    prompt("Adaptor $(cntr_it(it))")
+    prompt("Adaptor", cntr_it(it))
     prompt(lr.log, "adaptor::ir")
     @time_call ir_adaptor(DFTData)
     ir_save(it)
@@ -923,7 +923,7 @@ function sigma_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::Strin
     @assert task in ("reset", "dcount", "split", "gather")
 
     # Print the log
-    prompt("Sigma $(cntr_it(it))")
+    prompt("Sigma", cntr_it(it))
     prompt(lr.log, "sigma::$task")
 
     # Launch suitable subroutine
@@ -973,7 +973,7 @@ function mixer_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::Strin
     @assert task in ("sigma", "delta", "eimpx", "gamma")
 
     # Print the log
-    prompt("Mixer $(cntr_it(it))")
+    prompt("Mixer", cntr_it(it))
     prompt(lr.log, "mixer::$task")
 
     # Check iteration number to see whether we have enough data to be mixed
@@ -1191,7 +1191,7 @@ Return the counters in the IterInfo struct as a format string.
 See also: [`IterInfo`](@ref)
 """
 function cntr_it(it::IterInfo)
-    "(Cycle -> $(it.sc) : $(it.I₄) : $(it.I₃) : $(it.I₁) : $(it.I₂))"
+    " [Cycle -> $(it.sc) : $(it.I₄) : $(it.I₃) : $(it.I₁) : $(it.I₂)] "
 end
 
 """

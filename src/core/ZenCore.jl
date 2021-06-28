@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/25
+# Last modified: 2021/06/26
 #
 
 """
@@ -729,7 +729,7 @@ Here, we will try to precompile the whole ZenCore package to reduce the
 runtime latency and speed up the successive calculations.
 """
 function __init__()
-    prompt("ZEN", "Loading...")
+    prompt("Loading...")
 
     # Get an array of the names exported by the `ZenCore` module
     nl = names(ZenCore)
@@ -765,8 +765,8 @@ function __init__()
         end
     end
 
-    prompt("ZEN", "Well, ZenCore is compiled and loaded ($cf functions).")
-    prompt("ZEN", "We are ready to go!")
+    prompt("Well, ZenCore is compiled and loaded ($cf functions).")
+    prompt("We are ready to go!")
     println()
 end
 

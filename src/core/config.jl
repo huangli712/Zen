@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/24
+# Last modified: 2021/06/26
 #
 
 #=
@@ -20,7 +20,7 @@ See also: [`inp_toml`](@ref), [`rev_dict`](@ref), [`chk_dict`](@ref).
 """
 function setup()
     # Print the header
-    prompt("ZEN", "Setup")
+    prompt("Setup")
 
     # S1: Parse the case.toml file to extract configuration parameters
     println("Parse the configuration file (case.toml)")
