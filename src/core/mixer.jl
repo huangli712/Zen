@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/25
+# Last modified: 2021/06/29
 #
 
 """
@@ -56,7 +56,7 @@ function mixer_sigma(it::IterInfo, ai::Array{Impurity,1})
     @assert size(Scurr) == size(Sprev) && size(fcurr) == size(fprev)
 
     # Mix the self-energy functions using linear mixing algorithm
-    println("Mix self-energy functions for two successive iterations")
+    println("Mix self-energy functions from two successive iterations")
     α = amix(it)
     Snew = Scurr * α + Sprev * (1.0 - α)
     println("  > Mixing parameter α = $α")
@@ -121,7 +121,7 @@ function mixer_delta(it::IterInfo, ai::Array{Impurity,1})
     @assert size(Dcurr) == size(Dprev) && size(fcurr) == size(fprev)
 
     # Mix the hybridization functions using linear mixing algorithm
-    println("Mix hybridization functions for two successive iterations")
+    println("Mix hybridization functions from two successive iterations")
     α = amix(it)
     Dnew = Dcurr * α + Dprev * (1.0 - α)
     println("  > Mixing parameter α = $α")
@@ -180,7 +180,7 @@ function mixer_eimpx(it::IterInfo, ai::Array{Impurity,1})
     @assert size(Ecurr) == size(Eprev)
 
     # Mix the local impurity levels using linear mixing algorithm
-    println("Mix local impurity levels for two successive iterations")
+    println("Mix local impurity levels from two successive iterations")
     α = amix(it)
     Enew = Ecurr * α + Eprev * (1.0 - α)
     println("  > Mixing parameter α = $α")
@@ -193,11 +193,68 @@ end
 """
     mixer_gamma(it::IterInfo)
 
+Try to mix the correction for density matrix Γ and then use the mixed value
+to update the `dmft2/dmft.gamma` file.
+
 See also: [`mixer_core`](@ref).
 """
 function mixer_gamma(it::IterInfo)
     # Print the header
     println("Mixer : Gamma")
+    println("Try to mix correction for density matrix")
+    println("Current directory: ", pwd())
+
+    # Get current dmft loop
+    cycle = it.I₃
+
+    # Get current iteration
+    curr = it.I₂
+
+    # Get previous iteration
+    @assert it.sc == 2
+    _cycle, _prev = prev_it(it, 2)
+    @assert cycle ≥ _cycle ≥ 1
+    @assert _prev ≥ 1
+    println("Determine previous and current objects")
+    @printf("  > Curr: (I₃, I₂) -> (%4i,%4i)\n", cycle, curr)
+    @printf("  > Prev: (I₃, I₂) -> (%4i,%4i)\n", _cycle, _prev)
+
+    # Determine filenames for correction for density matrix
+    fcurr = "dmft2/dmft.gamma.$cycle.$curr"
+    fprev = "dmft2/dmft.gamma.$_cycle.$_prev"
+
+    # Check whether these files are available
+    @assert isfile(fcurr) && isfile(fprev)
+
+    # Read in the correction for density matrix (previous and current)
+    println("Read correction for density matrix")
+    kmesh_curr, kwin_curr, gamma_curr = read_gamma(fcurr)
+    kmesh_prev, kwin_prev, gamma_prev = read_gamma(fprev)
+    @assert size(kmesh_curr) == size(kmesh_prev)
+    @assert size(kwin_curr) == size(kwin_prev)
+    @assert size(gamma_curr) == size(gammma_prev)
+
+    # Mix the correction for density matrix using Kerker algorithm
+    println("Mix correction for density matrix from two successive iterations")
+    #
+    # Extract and setup key parameters
+    _, _, nkpt, nspin = size(gamma_curr)
+    α = 0.1
+    γ = 1.0
+    #
+    # Apply the Kerker algorithm
+    for s = 1:nspin
+        for k = 1:nkpt
+            G₂ = sum(kmesh_curr[k,:] .^ 2)
+            amix = α * G₂ / (G₂ + γ^2)
+            gamma_curr[:,:,k,s] = amix * gamma_curr[:,:,k,s] + (1.0 - amix) * gamma_prev[:,:,k,s]
+            @printf("  > Mixing parameter α = %12.7f (for 𝑘-point %4i and spin %4i)", amix, k, s)
+        end # END OF K LOOP
+    end # END OF S LOOP
+
+    # Write the new correction for density matrix into `dmft2/dmft.gamma`
+    println("Write correction for density matrix")
+    write_gamma(kmesh_curr, kwin_curr, gamma_curr, "dmft2/dmft.gamma")
 end
 
 """

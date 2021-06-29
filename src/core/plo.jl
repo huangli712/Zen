@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/25
+# Last modified: 2021/06/29
 #
 
 #=
@@ -18,10 +18,11 @@ Adaptor support. It will preprocess the raw projector matrix. The dict
 `D` contains all of the necessary Kohn-Sham data, which will be modified
 in this function.
 
-If `PROGRAM_FILE` is `zen/src/tools/test.jl`, this function will try to
-calculate some physical quantities, such as the density matrix, overlap
-matrix, and local hamiltonian, and partial density of states, which will
-be written to external files or terminal for reference.
+If it is in the REPL mode and the file `case.test` is available, this
+function will try to calculate some physical quantities, such as the
+density matrix, overlap matrix, local hamiltonian, and partial density
+of states, which will be written to external files or terminal for
+further reference.
 
 See also: [`vasp_adaptor`](@ref), [`ir_adaptor`](@ref).
 """
@@ -84,9 +85,9 @@ function plo_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     # density of states. Of course, it is time-comsuming to do
     # these things. So it is a good idea to turn off this feature
     # if everything is on the way.
-    if cmp(basename(splitext(PROGRAM_FILE)[1]), "test") === 0
-        plo_monitor(D)
-    end
+    isinteractive() && 
+    isfile(query_case()*".test") &&
+    plo_monitor(D)
 end
 
 #=

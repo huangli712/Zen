@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/25
+# Last modified: 2021/06/28
 #
 
 #=
@@ -270,12 +270,40 @@ end
 =#
 
 #=
-*Theory*:
+*Fully Localized Limit Scheme*:
 
+For spin-unpolarized case,
 ```math
+\begin{equation}
 \Sigma^{\text{FLL}}_{\text{dc}}
     =
-    U\left(N - \frac{1}{2}\right) - \frac{J}{2} (N - 1).
+    U\left(N - \frac{1}{2}\right) 
+    -
+    J \left(\frac{N}{2} - \frac{1}{2}\right).
+\end{equation}
+```
+
+For spin-polarized case,
+```math
+\begin{equation}
+\Sigma^{\text{FLL}}_{\text{dc},\uparrow}
+    =
+    U\left(N_{\uparrow} + N_{\downarrow} - \frac{1}{2}\right) 
+    - 
+    J \left(N_{\uparrow} - \frac{1}{2}\right),
+\end{equation}
+```
+
+and
+
+```math
+\begin{equation}
+\Sigma^{\text{FLL}}_{\text{dc},\downarrow}
+    =
+    U\left(N_{\uparrow} + N_{\downarrow} - \frac{1}{2}\right) 
+    - 
+    J \left(N_{\downarrow} - \frac{1}{2}\right).
+\end{equation}
 ```
 =#
 
@@ -283,6 +311,7 @@ end
     cal_dc_fll(U::F64, J::F64, N::F64)
 
 Evaluate the double counting term by the fully localized limit scheme.
+This function is for the spin-unpolarized case.
 
 See also: [`cal_dc_amf`](@ref), [`cal_dc_exact`](@ref).
 """
@@ -291,25 +320,128 @@ function cal_dc_fll(U::F64, J::F64, N::F64)
 end
 
 """
-    cal_dc_amf(U::F64, J::F64, N::F64)
+    cal_dc_fll(U::F64, J::F64, Nup::F64, Ndn::F64)
+
+Evaluate the double counting term by the fully localized limit scheme.
+This function is for the spin-polarized case.
+
+See also: [`cal_dc_amf`](@ref), [`cal_dc_exact`](@ref).
+"""
+function cal_dc_fll(U::F64, J::F64, Nup::F64, Ndn::F64)
+    DCup = U * ( Nup + Ndn - 0.5 ) - J * ( Nup - 0.5 )
+    DCdn = U * ( Nup + Ndn - 0.5 ) - J * ( Ndn - 0.5 )
+    return DCup, DCdn
+end
+
+#=
+*Around Mean-Field Scheme*:
+
+The original formula are:
+
+```math
+\begin{equation}
+\Sigma^{\text{AMF}}_{\text{dc},\uparrow}
+    =
+    UN_{\downarrow} + (U - J) N_{\uparrow} \frac{2l}{2l+1}.
+\end{equation}
+```
+
+and
+
+```math
+\begin{equation}
+\Sigma^{\text{AMF}}_{\text{dc},\downarrow}
+    =
+    UN_{\uparrow} + (U - J) N_{\downarrow} \frac{2l}{2l+1}.
+\end{equation}
+```
+
+In the following codes, we implement a slightly different version:
+
+
+```math
+\begin{equation}
+\Sigma^{\text{AMF}}_{\text{dc},\uparrow}
+    =
+    U\left(N_{\uparrow} + N_{\downarrow} - \frac{N_{\uparrow}}{M}\right)
+    -
+    J\left(N_{\uparrow} - \frac{N_{\uparrow}}{M}\right).
+\end{equation}
+```
+
+and
+
+```math
+\begin{equation}
+\Sigma^{\text{AMF}}_{\text{dc},\downarrow}
+    =
+    U\left(N_{\uparrow} + N_{\downarrow} - \frac{N_{\downarrow}}{M}\right)
+    -
+    J\left(N_{\downarrow} - \frac{N_{\downarrow}}{M}\right).
+\end{equation}
+```
+
+In these equations, ``l`` means the quantum number of angular momentum,
+while ``M`` is the number of correlated orbitals.
+=#
+
+"""
+    cal_dc_amf(U::F64, J::F64, N::F64, M::I64)
 
 Evaluate the double counting term by the around mean-field scheme.
+This function is for the spin-unpolarized case.
 
 See also: [`cal_dc_fll`](@ref), [`cal_dc_exact`](@ref).
 """
-function cal_dc_amf(U::F64, J::F64, N::F64)
-    sorry()
+function cal_dc_amf(U::F64, J::F64, N::F64, M::I64)
+    U * ( N - N / (2.0* M) ) - J * ( N / 2.0 - N / (2.0 * M) )
 end
 
 """
-    cal_dc_held()
+    cal_dc_amf(U::F64, J::F64, Nup::F64, Ndn::F64, M::I64)
+
+Evaluate the double counting term by the around mean-field scheme.
+This function is for the spin-polarized case.
+
+See also: [`cal_dc_fll`](@ref), [`cal_dc_exact`](@ref).
+"""
+function cal_dc_amf(U::F64, J::F64, Nup::F64, Ndn::F64, M::I64)
+    DCup = U * ( Nup + Ndn - Nup / M ) - J * ( Nup - Nup / M )
+    DCdn = U * ( Nup + Ndn - Ndn / M ) - J * ( Ndn - Ndn / M )
+    return DCup, DCdn
+end
+
+#=
+*K. Held's Double Counting Scheme*:
+
+```math
+\begin{equation}
+\Sigma_{\text{dc}} = \bar{U} \left(N - \frac{1}{2}\right),
+\end{equation}
+```
+
+where the averaged interaction ``U_{\text{av}}`` reads
+
+```math
+\begin{equation}
+U_{\text{av}} = \frac{U + (M - 1)(2U - 5J)}{2M - 1}.
+\end{equation}
+```
+
+Here ``M`` is the number of correlated orbitals.
+
+=#
+
+"""
+    cal_dc_held(U::F64, J::F64, N::F64, M::I64)
 
 Evaluate the double counting term by the K. Held scheme.
 
 See also: [`cal_dc_fll`](@ref), [`cal_dc_exact`](@ref).
 """
-function cal_dc_held()
-    sorry()
+function cal_dc_held(U::F64, J::F64, N::F64, M::I64)
+    Uav = ( U + (M - 1.0)*(2.0*U - 5.0*J) ) / (2.0 * M - 1.0)
+    Uav * (N - 0.5)
 end
 
 """

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/26
+# Last modified: 2021/06/29
 #
 
 #=
@@ -66,7 +66,7 @@ Finalize the DFT + DMFT calculations.
 See also: [`go`](@ref).
 """
 function final()
-    sorry()
+    prompt("It is time to sleep. See you later.")
 end
 
 #=
