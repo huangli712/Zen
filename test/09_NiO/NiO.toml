@@ -4,14 +4,14 @@ case = "NiO"
 engine = "vasp"
 projtype = "plo"
 smear = "tetra"
-kmesh = "medium"
+kmesh = "coarse"
 lsymm = false
 lspins = false
 lspinorb = false
 loptim = true
 lproj = true
 sproj = ["1 : d : Pr"]
-window = [-9.0, 2.0]
+window = [2, 10]
 
 [dmft]
 mode = 1
@@ -33,7 +33,7 @@ atoms = ["Ni : 1"]
 equiv = [1]
 shell = ["d"]
 ising = ["ising"]
-occup = [6.0]
+occup = [7.0]
 upara = [8.0]
 jpara = [1.0]
 lpara = [0.0]
