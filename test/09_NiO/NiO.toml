@@ -10,7 +10,7 @@ lspins = false
 lspinorb = false
 loptim = true
 lproj = true
-sproj = ["1 : d : Pr"]
+sproj = ["1 : d : Pr", "2 : p : Pr"]
 window = [2, 10]
 
 [dmft]
@@ -33,7 +33,7 @@ atoms = ["Ni : 1"]
 equiv = [1]
 shell = ["d"]
 ising = ["ising"]
-occup = [7.0]
+occup = [8.2]
 upara = [8.0]
 jpara = [1.0]
 lpara = [0.0]
