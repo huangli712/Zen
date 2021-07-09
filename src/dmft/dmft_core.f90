@@ -40,7 +40,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           06/15/2021 by li huang (last modified)
+!!!           06/23/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -119,6 +119,7 @@
 !! one-shot dft + dmft calculations.
 !!
   subroutine dmft_try1()
+     use constants, only : dp, zero
      use constants, only : mystd
 
      use control, only : cname
@@ -132,13 +133,19 @@
 
      implicit none
 
+! local variables
+! lattice occupancy
+     real(dp) :: occup
+
 ! try to search the fermi level
      if ( myid == master ) then
          write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
      endif ! back if ( myid == master ) block
      !
+     occup = zero
+     !
      if ( lfermi .eqv. .true. ) then
-         call cal_fermi()
+         call cal_fermi(occup)
      else
          if ( myid == master ) then
              write(mystd,'(4X,a)') 'SKIP'
@@ -200,7 +207,7 @@
          write(mystd,'(2X,a)') cname // ' >>> Task : Write'
          !
          write(mystd,'(4X,a)') 'save fermi...'
-         call dmft_dump_fermi(fermi)
+         call dmft_dump_fermi(fermi, occup)
          !
          write(mystd,'(4X,a)') 'save eimps...'
          call dmft_dump_eimps(eimps)
@@ -232,6 +239,7 @@
 !! dft + dmft calculations.
 !!
   subroutine dmft_try2()
+     use constants, only : dp, zero
      use constants, only : mystd
 
      use control, only : cname
@@ -243,13 +251,19 @@
 
      implicit none
 
+! local variables
+! lattice occupancy
+     real(dp) :: occup
+
 ! try to search the fermi level
      if ( myid == master ) then
          write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
      endif ! back if ( myid == master ) block
      !
+     occup = zero
+     !
      if ( lfermi .eqv. .true. ) then
-         call cal_fermi()
+         call cal_fermi(occup)
      else
          if ( myid == master ) then
              write(mystd,'(4X,a)') 'SKIP'
@@ -276,7 +290,7 @@
          write(mystd,'(2X,a)') cname // ' >>> Task : Write'
          !
          write(mystd,'(4X,a)') 'save fermi...'
-         call dmft_dump_fermi(fermi)
+         call dmft_dump_fermi(fermi, occup)
          !
          write(mystd,'(4X,a)') 'save gamma...'
          call dmft_dump_gamma(gamma)
@@ -294,6 +308,7 @@
 !! updated in this subroutine. it is just for testing purpose.
 !!
   subroutine dmft_try3()
+     use constants, only : dp, zero
      use constants, only : mystd
 
      use control, only : cname
@@ -303,6 +318,10 @@
 
      implicit none
 
+! local variables
+! lattice occupancy
+     real(dp) :: occup
+
 ! check lfermi at first
      call s_assert2(lfermi .eqv. .true., 'lfermi must be true')
 
@@ -311,7 +330,9 @@
          write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
      endif ! back if ( myid == master ) block
      !
-     call cal_fermi()
+     occup = zero
+     !
+     call cal_fermi(occup)
      !
      if ( myid == master ) then
          write(mystd,*)
@@ -322,7 +343,7 @@
          write(mystd,'(2X,a)') cname // ' >>> Task : Write'
          !
          write(mystd,'(4X,a)') 'save fermi...'
-         call dmft_dump_fermi(fermi)
+         call dmft_dump_fermi(fermi, occup)
          !
          write(mystd,*)
      endif ! back if ( myid == master ) block
@@ -607,9 +628,10 @@
 !!
 !! @sub cal_fermi
 !!
-!! try to determine the fermi level
+!! try to determine the fermi level. and the lattice occupancy will be
+!! calculated at the same time.
 !!
-  subroutine cal_fermi()
+  subroutine cal_fermi(occup)
      use constants, only : dp, mystd
      use constants, only : czero
 
@@ -619,6 +641,10 @@
      use context, only : qbnd
 
      implicit none
+
+! external arguments
+! lattice occupancy
+     real(dp), intent(out) :: occup
 
 ! local variables
 ! desired charge density
@@ -645,7 +671,7 @@
      endif ! back if ( istat /= 0 ) block
 
 ! calculate the nominal charge density according to the dft eigenvalues
-     call cal_nelect(ndens)
+     call cal_nelect(ndens); occup = ndens
 
 ! construct H + \Sigma, diagonalize it to obtain the dft + dmft eigenvalues
      call cal_eigsys(eigs, einf)

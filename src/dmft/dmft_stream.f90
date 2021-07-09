@@ -19,7 +19,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           06/10/2021 by li huang (last modified)
+!!!           07/07/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -346,9 +346,6 @@
      implicit none
 
 ! local variables
-! loop index
-     integer :: i
-
 ! dummy integer variables
      integer :: itmp
 
@@ -438,13 +435,7 @@
 ! note: all of the impurity problems should share the same band window!
      call s_assert2(nsite <= ngrp, 'nsite must be smaller or equal to ngrp')
      !
-     call s_assert2(nwnd <= ngrp, 'nwnd must be smaller or equal to ngrp')
-     !
-     do i=1,nsite
-         if ( i_wnd(i) /= i_wnd(1) ) then
-             call s_print_error('dmft_input_map', 'please check i_wnd')
-         endif ! back if ( i_wnd(i) /= i_wnd(1) ) block
-     enddo ! over i={1,nsite} loop
+     call s_assert2(nwnd == ngrp, 'nwnd must be equal to ngrp')
 
      return
   end subroutine dmft_input_map
