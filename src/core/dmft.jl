@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/29
+# Last modified: 2021/07/07
 #
 
 #=
@@ -26,7 +26,7 @@ function dmft_init(it::IterInfo, task::I64)
 
     # Print the header
     println("Engine : DMFT$(subscript(task))")
-    println("Try to solve the dynamical mean-field self-consistent equation")
+    println("Try to solve the dynamical mean-field equation")
     println("Current directory: ", pwd())
     println("Prepare necessary input files for dmft")
 
@@ -54,7 +54,7 @@ function dmft_init(it::IterInfo, task::I64)
             file_src = joinpath("../dft", x)
             file_dst = x
             cp(file_src, file_dst, force = true)
-            println("  > $x is ready")
+            println("  > File $x is ready")
         end,
     union(fir1, fir2) )
 
@@ -63,7 +63,7 @@ function dmft_init(it::IterInfo, task::I64)
     beta = get_m("beta")
     mc = ( get_m("mc") isa Missing ? 0.001 : get_m("mc") )
     lfermi = ( get_m("lfermi") isa Missing ? true : get_m("lfermi") )
-    ltetra = ( get_d("smear") === "tetra" )
+    ltetra = ( get_d("smear") == "tetra" )
 
     # Generate essential input files, such as dmft.in, dynamically.
     # If the `dmft.in` file exists already, it will be overwritten.
@@ -75,7 +75,7 @@ function dmft_init(it::IterInfo, task::I64)
         println(fout, "lfermi = $lfermi")
         println(fout, "ltetra = $ltetra")
     end
-    println("  > dmft.in is ready")
+    println("  > File dmft.in is ready")
 
     # Check essential input files
     flist = (fdmft, fsig..., fir1..., fir2...)
@@ -598,12 +598,12 @@ end
 """
     read_gamma(fgamma::String = "dmft2/dmft.gamma")
 
-Read the `dmft2/dmft.gamma` file. It contains the correction for density
-matrix which is from electronic correlation. The data will be fed back
-to the DFT engine finally.
+Read the `dmft2/dmft.gamma` file. It contains the correlation-induced
+correction for density matrix. The correction will be fed back to the
+DFT engine, and then the DFT engine will generate new Kohn-Sham dataset.
 
 This function also return the 𝑘-mesh, which is useful for mixing the Γ
-matrix with the `Kerker` algorithm.
+matrix with the `Kerker` mixing algorithm.
 
 The working directory of this function must be the root folder.
 

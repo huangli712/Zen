@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/26
+# Last modified: 2021/07/05
 #
 
 #=
@@ -148,10 +148,10 @@ function rev_dict(cfg::Dict{String,Any})
 end
 
 #=
-*Remarks*:
+*Remarks* :
 
-This `chk_dict()` function is far away from completeness. We should
-add more constraints here, both physically and numerically.
+This `chk_dict()` function is far away from completeness. We would like
+to insert more constraints here, both physically and numerically.
 =#
 
 """
@@ -282,12 +282,12 @@ Print the configuration parameters to stdout: for PCASE dict.
 See also: [`get_c`](@ref), [`str_c`](@ref).
 """
 function cat_c()
-    # See comments in cat_d()
+    # See comments above cat_d()
     println("    case     -> ", str_c("case"))
 end
 
 #=
-*Remarks*:
+*Remarks* :
 
 The `get_d("sproj")` is actually an `Array{String,1}`. It would be quite
 low efficiency if we print it directly. So we have to convert it into a
@@ -330,7 +330,7 @@ Print the configuration parameters to stdout: for PDMFT dict.
 See also: [`get_m`](@ref), [`str_m`](@ref).
 """
 function cat_m()
-    # See comments in cat_d()
+    # See comments above cat_d()
     println("    mode     -> ", str_m("mode"))
     println("    axis     -> ", str_m("axis"))
     println("    niter    -> ", str_m("niter"))
@@ -353,7 +353,7 @@ Print the configuration parameters to stdout: for PIMP dict.
 See also: [`get_i`](@ref), [`str_i`](@ref).
 """
 function cat_i()
-    # See comments in cat_d()
+    # See comments above cat_d()
     println("    nsite    -> ", str_i("nsite"))
     println("    atoms    -> ", str_i("atoms"))
     println("    equiv    -> ", str_i("equiv"))
@@ -373,7 +373,7 @@ Print the configuration parameters to stdout: for PSOLVER dict.
 See also: [`get_s`](@ref), [`str_s`](@ref).
 """
 function cat_s()
-    # See comments in cat_d()
+    # See comments above cat_d()
     println("    engine   -> ", str_s("engine"))
     println("    params   -> ", str_s("params"))
 end

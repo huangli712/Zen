@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/24
+# Last modified: 2021/07/07
 #
 
 #=
@@ -12,7 +12,7 @@
 =#
 
 #=
-*Remarks*:
+*Remarks* :
 
 The values in the following dictionaries are actually arrays, which
 usually contain four elements:
@@ -68,7 +68,7 @@ See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 const PDMFT = Dict{String,Array{Any,1}}(
           "mode"     => [missing, 1, :I64   , "Scheme of dynamical mean-field theory calculations"],
           "axis"     => [missing, 1, :I64   , "Imaginary-time axis or real-frequency axis"],
-          "niter"    => [missing, 1, :Array , "Maximum number of all iterations"],
+          "niter"    => [missing, 1, :Array , "Maximum number of all kinds of iterations"],
           "nmesh"    => [missing, 1, :I64   , "Number of frequency points"],
           "dcount"   => [missing, 1, :String, "Scheme of double counting term"],
           "beta"     => [missing, 1, :F64   , "Inverse system temperature"],
@@ -77,7 +77,7 @@ const PDMFT = Dict{String,Array{Any,1}}(
           "cc"       => [missing, 0, :F64   , "Convergence criterion of charge"],
           "ec"       => [missing, 0, :F64   , "Convergence criterion of total energy"],
           "sc"       => [missing, 0, :F64   , "Convergence criterion of self-energy function"],
-          "lfermi"   => [missing, 0, :Bool  , "Test whether chemical potential is updated"],
+          "lfermi"   => [missing, 0, :Bool  , "Whether chemical potential should be updated"],
       )
 
 """
@@ -142,7 +142,7 @@ Mutable struct. Record the DFT + DMFT iteration information.
 * I₁ -> Number of iterations between `dmft1` and quantum impurity solver.
 * I₂ -> Number of iterations between `dmft2` and DFT engine.
 * I₃ -> Number of DFT + DMFT iterations.
-* I₄ -> Counter for each iteration.
+* I₄ -> Counter for all internal iteration.
 * M₁ -> Maximum allowed number of iterations (between `dmft1` and solver).
 * M₂ -> Maximum allowed number of iterations (between `dmft2` and DFT).
 * M₃ -> Maximum allowed number of DFT + DMFT iterations.
@@ -226,9 +226,9 @@ of projectors (or band windows).
 ### Members
 
 * i_grp -> Mapping from quntum impurity problems to groups of projectors.
-* i_wnd -> Mapping from quantum impurity problems to windows of dft bands.
+* i_wnd -> Mapping from quantum impurity problems to DFT band windows.
 * g_imp -> Mapping from groups of projectors to quantum impurity problems.
-* w_imp -> Mapping from windows of dft bands to quantum impurity problems.
+* w_imp -> Mapping from DFT band windows to quantum impurity problems.
 
 See also: [`Impurity`](@ref), [`PrGroup`](@ref), [`PrWindow`](@ref).
 """
@@ -249,9 +249,12 @@ Mutable struct. Essential information of quantum impurity problem.
 * index -> Index of the quantum impurity problem.
 * atoms -> Chemical symbol of impurity atom.
 * sites -> Index of impurity atom.
+* equiv -> Equivalence of quantum impurity problem.
 * shell -> Angular momentum of correlated orbitals.
 * ising -> Interaction type of correlated orbitals.
-* occup -> Impurity occupancy.
+* occup -> Impurity occupancy 𝑛.
+* nup   -> Impurity occupancy 𝑛↑ (spin up).
+* ndown -> Impurity occupancy 𝑛↓ (spin down).
 * upara -> Coulomb interaction parameter.
 * jpara -> Hund's coupling parameter.
 * lpara -> Spin-orbit coupling parameter.
@@ -264,9 +267,12 @@ mutable struct Impurity
     index :: I64
     atoms :: String
     sites :: I64
+    equiv :: I64
     shell :: String
     ising :: String
     occup :: F64
+    nup   :: F64
+    ndown :: F64
     upara :: F64
     jpara :: F64
     lpara :: F64
@@ -335,7 +341,7 @@ Mutable struct. Define the band window for a given group of projectors.
 
 * bmin -> Minimum band index.
 * bmax -> Maximum band index.
-* nbnd -> Maximum number of bands in the current window (≡ `bmax-bmin+1`).
+* nbnd -> Maximum number of bands in the current window (≡ `bmax - bmin + 1`).
 * kwin -> Momentum-dependent and spin-dependent band window.
 * bwin -> Tuple. It is the band window or energy window, which is used
           to filter the Kohn-Sham band structure. The mesh for calculating
@@ -435,7 +441,7 @@ Outer constructor for Mapping struct.
 function Mapping(nsite::I64, ngrp::I64, nwnd::I64)
     # Sanity check
     @assert ngrp ≥ nsite
-    @assert nwnd ≤ ngrp
+    @assert nwnd == ngrp
 
     # Initialize the arrays
     i_grp = zeros(I64, nsite)
@@ -452,8 +458,8 @@ end
 
 Outer constructor for Impurity struct.
 """
-function Impurity(index::I64,
-                  atoms::String, sites::I64, shell::String, ising::String,
+function Impurity(index::I64, atoms::String, sites::I64,
+                  equiv::I64, shell::String, ising::String,
                   occup::F64, upara::F64, jpara::F64, lpara::F64, beta::F64)
     # Define the mapping between `shell` and number of orbitals
     shell_to_dim = Dict{String,I64}(
@@ -468,12 +474,19 @@ function Impurity(index::I64,
     # Determine number of orbitals of the quantum impurity problem
     nband = shell_to_dim[shell]
 
+    # Determine impurity occupancy
+    nup = occup / 2.0
+    ndown = occup / 2.0
+
     # Call the default constructor
-    Impurity(index, atoms, sites, shell, ising, occup, upara, jpara, lpara, beta, nband)
+    Impurity(index, atoms, sites,
+             equiv, shell, ising,
+             occup, nup, ndown,
+             upara, jpara, lpara, beta, nband)
 end
 
 #=
-*Remarks*:
+*Remarks* :
 
 Please go to the following webpage for more details about the original
 specifications of projectors in the `vasp` code:
@@ -550,6 +563,27 @@ function PrWindow(kwin::Array{I64,3}, bwin::Tuple{R64,R64})
 
     # Call the default constructor
     PrWindow(bmin, bmax, nbnd, kwin, bwin)
+end
+
+#=
+### *Customized Binary Operations*
+=#
+
+import Base.==
+
+"""
+    ==(PW₁::PrWindow, PW₂::PrWindow)
+
+Compare two PrWindow objects.
+
+See also: [`PrWindow`](@ref).
+"""
+function ==(PW₁::PrWindow, PW₂::PrWindow)
+    PW₁.bmin == PW₂.bmin &&
+    PW₁.bmax == PW₂.bmax &&
+    PW₁.nbnd == PW₂.nbnd &&
+    PW₁.kwin == PW₂.kwin &&
+    PW₁.bwin == PW₂.bwin
 end
 
 #=
@@ -648,9 +682,12 @@ function Base.show(io::IO, imp::Impurity)
     println(io, "index : ", imp.index)
     println(io, "atoms : ", imp.atoms)
     println(io, "sites : ", imp.sites)
+    println(io, "equiv : ", imp.equiv)
     println(io, "shell : ", imp.shell)
     println(io, "ising : ", imp.ising)
     println(io, "occup : ", imp.occup)
+    println(io, "nup   : ", imp.nup)
+    println(io, "ndown : ", imp.ndown)
     println(io, "upara : ", imp.upara)
     println(io, "jpara : ", imp.jpara)
     println(io, "lpara : ", imp.lpara)

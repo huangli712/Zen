@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/28
+# Last modified: 2021/07/05
 #
 
 #=
@@ -16,14 +16,16 @@
 
 Create initial self-energy functions and write them to `sigma.bare`. The
 `sigma.bare` file is key input for the dynamical mean-field theory engine.
-Now this function only supports Matsubara self-energy functions.
+The word `bare` means that the double counting term has not been removed
+from the self-energy functions. Now this function only supports Matsubara
+self-energy functions Σ(𝑖ωₙ).
 
 See also: [`sigma_dcount`](@ref).
 """
 function sigma_reset(ai::Array{Impurity,1})
     # Print the header
     println("Sigma : Reset")
-    println("Try to create default self-energy functions")
+    println("Try to create bare self-energy functions")
     println("Current directory: ", pwd())
 
     # Extract some necessary parameters
@@ -45,7 +47,7 @@ function sigma_reset(ai::Array{Impurity,1})
         println("  > Create Matsubara frequency mesh: $nmesh points")
     else # Real axis
         sorry()
-        println("  > Create real frequency mesh")
+        println("  > Create real frequency mesh: $nmesh points")
     end
 
     # Create default self-energy functions
@@ -77,8 +79,8 @@ end
     sigma_dcount(it::IterInfo, ai::Array{Impurity,1})
 
 Calculate double counting terms for local self-energy functions and
-write them to `sigma.dc`, which is key input for the dynamical mean-
-field theory engine.
+write them to `sigma.dc`, which is an essential input for the dynamical
+mean-field theory engine.
 
 The field `it.dc` will be updated in this function as well.
 
@@ -107,12 +109,18 @@ function sigma_dcount(it::IterInfo, ai::Array{Impurity,1})
         U = ai[i].upara
         J = ai[i].jpara
 
+        # Determine impurity occupancy
+        #
         # Get nominal occupation number
         N = get_i("occup")[i]
-
+        #
         # Get realistic occupation number
         GetNimpx(ai[i])
         occup = ai[i].occup
+        #
+        # How about spin-resolved impurity occupancy
+        nup = ai[i].nup
+        ndown = ai[i].ndown
 
         # Get number of orbitals
         nband = ai[i].nband
@@ -122,26 +130,25 @@ function sigma_dcount(it::IterInfo, ai::Array{Impurity,1})
 
         # Choose suitable double counting scheme
         @cswitch get_m("dcount") begin
-            # Fully localized limit scheme with fixed occupation number
+            # Fully localized limit scheme (nominal occupation number)
             @case "fll1"
-                sigdc = cal_dc_fll(U, J, N)
-                fill!(DC, sigdc)
+                sigup, sigdn = cal_dc_fll(U, J, N / 2.0, N / 2.0)
                 break
 
-            # Fully localized limit scheme with dynamic occupation number
+            # Fully localized limit scheme (dynamic occupation number)
             @case "fll2"
-                sigdc = cal_dc_fll(U, J, occup)
-                fill!(DC, sigdc)
+                sigup, sigdn = cal_dc_fll(U, J, nup, ndown)
                 break
 
             # Around mean-field scheme
             @case "amf"
-                sorry()
+                sigup, sigdn = cal_dc_amf(U, J, nup, ndown, nband)
                 break
 
             # K. Held scheme
             @case "held"
-                sorry()
+                sigup = cal_dc_held(U, J, occup, nband)
+                sigdn = sigup
                 break
 
             # Exact double counting scheme
@@ -150,19 +157,27 @@ function sigma_dcount(it::IterInfo, ai::Array{Impurity,1})
                 break
         end
         #
+        # Setup the DC arrays
+        if nspin == 1
+            fill!(DC, sigup)
+        else
+            fill!(DC[:,:,1], sigup)
+            fill!(DC[:,:,2], sigdn)
+        end
+        #
         # Print some useful information
-        println("  > Using the $(get_m("dcount")) scheme: Vdc = $sigdc")
+        println("  > Using the $(get_m("dcount")) scheme: Vdc = $sigup (spin up)")
+        println("  > Using the $(get_m("dcount")) scheme: Vdc = $sigdn (spin down)")
         println("  > Shape of Array DC: $i -> ", size(DC))
 
         # Special treatment for the first iteration
         if it.I₃ <= 1 && it.I₁ <= 1
-            sigdc = 0.0
-            fill!(DC, sigdc)
-            println("  > Reset Vdc to: ", sigdc)
+            fill!(DC, 0.0)
+            println("  > Reset Vdc to: ", 0.0)
         end
 
-        # Use `sigdc` to update the IterInfo struct
-        it.dc[i] = DC[1,1,1]
+        # Use `sigup` to update the IterInfo struct
+        it.dc[i] = sigup
 
         # Push DC into DCA to save it
         push!(DCA, DC)
@@ -218,7 +233,7 @@ See also: [`sigma_split`](@ref).
 function sigma_gather(it::IterInfo, ai::Array{Impurity,1})
     # Print the header
     println("Sigma : Gather")
-    println("Try to combine self-energy functions for various impurities")
+    println("Try to combine self-energy functions from quantum impurities")
     println("Current directory: ", pwd())
 
     # Extract some necessary parameters
@@ -277,7 +292,7 @@ For spin-unpolarized case,
 \begin{equation}
 \Sigma^{\text{FLL}}_{\text{dc}}
     =
-    U\left(N - \frac{1}{2}\right) 
+    U\left(N - \frac{1}{2}\right)
     -
     J \left(\frac{N}{2} - \frac{1}{2}\right).
 \end{equation}
@@ -288,8 +303,8 @@ For spin-polarized case,
 \begin{equation}
 \Sigma^{\text{FLL}}_{\text{dc},\uparrow}
     =
-    U\left(N_{\uparrow} + N_{\downarrow} - \frac{1}{2}\right) 
-    - 
+    U\left(N_{\uparrow} + N_{\downarrow} - \frac{1}{2}\right)
+    -
     J \left(N_{\uparrow} - \frac{1}{2}\right),
 \end{equation}
 ```
@@ -300,8 +315,8 @@ and
 \begin{equation}
 \Sigma^{\text{FLL}}_{\text{dc},\downarrow}
     =
-    U\left(N_{\uparrow} + N_{\downarrow} - \frac{1}{2}\right) 
-    - 
+    U\left(N_{\uparrow} + N_{\downarrow} - \frac{1}{2}\right)
+    -
     J \left(N_{\downarrow} - \frac{1}{2}\right).
 \end{equation}
 ```
@@ -394,7 +409,7 @@ This function is for the spin-unpolarized case.
 See also: [`cal_dc_fll`](@ref), [`cal_dc_exact`](@ref).
 """
 function cal_dc_amf(U::F64, J::F64, N::F64, M::I64)
-    U * ( N - N / (2.0* M) ) - J * ( N / 2.0 - N / (2.0 * M) )
+    U * ( N - N / ( 2.0 * M ) ) - J * ( N / 2.0 - N / ( 2.0 * M ) )
 end
 
 """
@@ -437,11 +452,11 @@ Here ``M`` is the number of correlated orbitals.
 
 Evaluate the double counting term by the K. Held scheme.
 
-See also: [`cal_dc_fll`](@ref), [`cal_dc_exact`](@ref).
+See also: [`cal_dc_fll`](@ref), [`cal_dc_amf`](@ref), [`cal_dc_exact`](@ref).
 """
 function cal_dc_held(U::F64, J::F64, N::F64, M::I64)
-    Uav = ( U + (M - 1.0)*(2.0*U - 5.0*J) ) / (2.0 * M - 1.0)
-    Uav * (N - 0.5)
+    Uav = ( U + ( M - 1.0 ) * ( 2.0 * U - 5.0 * J ) ) / ( 2.0 * M - 1.0 )
+    Uav * ( N - 0.5 )
 end
 
 """

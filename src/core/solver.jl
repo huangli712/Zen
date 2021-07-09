@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/29
+# Last modified: 2021/07/07
 #
 
 #=
@@ -30,23 +30,25 @@ function s_qmc1_init(it::IterInfo, imp::Impurity)
 
     # Generate configuration file for quantum impurity solver
     ctqmc_setup(imp)
-    println("  > solver.ctqmc.in is ready")
+    println("  > File solver.ctqmc.in is ready")
 
+    # Prepare hybridization functions
+    #
     # Extract frequency mesh and hybridization function from `dmft.delta`
-    #println("  > Open and read hybridization functions from dmft.delta")
     fmesh, Delta = read_delta(imp)
-
+    #
     # Write frequency mesh and hybridization function to `solver.hyb.in`
     ctqmc_delta(fmesh, Delta)
-    println("  > solver.hyb.in is ready")
+    println("  > File solver.hyb.in is ready")
 
+    # Prepare local impurity levels
+    #
     # Extract local impurity levels from `dmft.eimpx`
-    #println("  > Open and read local impurity levels from dmft.eimpx")
     Eimpx = read_eimpx(imp)
-
+    #
     # Write local impurity levels to `solver.eimp.in`
     ctqmc_eimpx(Eimpx)
-    println("  > solver.eimp.in is ready")
+    println("  > File solver.eimp.in is ready")
 end
 
 """
@@ -194,6 +196,59 @@ function s_qmc1_save(it::IterInfo, imp::Impurity)
     it.nf[imp.index] = imp.occup
 end
 
+"""
+    s_qmc1_save(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
+
+Backup output files of the CT-HYB₁ quantum impurity solver. We just copy
+selected output files from impurity.1 to impurity.2. Be careful, now we
+already in directory `impurity.2`.
+
+This quantum impurity solver is from the `iQIST` software package.
+
+See also: [`s_qmc1_init`](@ref), [`s_qmc1_exec`](@ref).
+"""
+function s_qmc1_save(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
+    # Print the header
+    println("Transfer results from impurity $(imp₁.index) to $(imp₂.index)")
+
+    # Determine which files are important
+    #
+    # Major output
+    fout = ["solver.out"]
+    #
+    # Green's functions
+    fgrn = ["solver.grn.dat", "solver.green.dat"]
+    #
+    # Hybridization functions
+    fhyb = ["solver.hyb.dat", "solver.hybri.dat"]
+    #
+    # Self-energy functions
+    fsgm = ["solver.sgm.dat"]
+    #
+    # Auxiliary output files
+    faux = ["solver.nmat.dat", "solver.paux.dat", "solver.prob.dat", "solver.hist.dat"]
+
+    # Determine the index for imp₁
+    index = imp₁.index
+
+    # Next, we have to backup the above files.
+    foreach( x ->
+        begin
+            file_src = "../impurity.$index/$x"
+            file_dst = "$x"
+            cp(file_src, file_dst, force = true)
+        end,
+    union(fout, fgrn, fhyb, fsgm, faux) )
+    println("  > Copy the key output files")
+
+    # Update the `occup` field in `imp` (Impurity struct)
+    ctqmc_nimpx(imp₂)
+    println("  > Extract the impurity occupancy from solver.nmat.dat: $(imp₂.occup)")
+
+    # Update the `it` (IterInfo) struct
+    it.nf[imp₂.index] = imp₂.occup
+end
+
 #=
 ### *CT-HYB₂ Quantum Impurity Solver*
 =#
@@ -242,6 +297,21 @@ function s_qmc2_save(it::IterInfo)
     sorry()
 end
 
+"""
+    s_qmc2_save(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
+
+Backup output files of the CT-HYB₂ quantum impurity solver. We just copy
+selected output files from impurity.1 to impurity.2. Be careful, now we
+already in directory `impurity.2`.
+
+This quantum impurity solver is from the `iQIST` software package.
+
+See also: [`s_qmc2_init`](@ref), [`s_qmc2_exec`](@ref).
+"""
+function s_qmc2_save(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
+    sorry()
+end
+
 #=
 ### *HUB-I Quantum Impurity Solver*
 =#
@@ -284,6 +354,19 @@ function s_hub1_save(it::IterInfo)
     sorry()
 end
 
+"""
+    s_hub1_save(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
+
+Backup output files of the HIA quantum impurity solver. We just copy
+selected output files from impurity.1 to impurity.2. Be careful, now we
+already in directory `impurity.2`.
+
+See also: [`s_hub1_init`](@ref), [`s_hub1_exec`](@ref).
+"""
+function s_hub1_save(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
+    sorry()
+end
+
 #=
 ### *NORG Quantum Impurity Solver*
 =#
@@ -323,6 +406,19 @@ Backup output files of the NORG quantum impurity solver.
 See also: [`s_norg_init`](@ref), [`s_norg_exec`](@ref).
 """
 function s_norg_save(it::IterInfo)
+    sorry()
+end
+
+"""
+    s_norg_save(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
+
+Backup output files of the NORG quantum impurity solver. We just copy
+selected output files from impurity.1 to impurity.2. Be careful, now we
+already in directory `impurity.2`.
+
+See also: [`s_norg_init`](@ref), [`s_norg_exec`](@ref).
+"""
+function s_norg_save(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
     sorry()
 end
 
@@ -588,14 +684,25 @@ function ctqmc_nimpx(imp::Impurity)
         return
     end
 
+    # Open the solver.nmat.dat file for reading
+    fin = open(fnmat, "r")
+
     # Parse the data file to extract total impurity occupancy
-    lines = readlines(fnmat)
-    filter!(x -> contains(x, "sum"), lines)
-    @assert length(lines) == 1
-    arr = line_to_array(lines[end])
-    occup = parse(F64, arr[2])
+    readuntil(fin, "sup")
+    nup   = parse(F64, line_to_array(fin)[1])
+    #
+    readuntil(fin, "sdn")
+    ndown = parse(F64, line_to_array(fin)[1])
+    #
+    readuntil(fin, "sum")
+    occup = parse(F64, line_to_array(fin)[1])
+
+    # Close the solver.nmat.dat file
+    close(fin)
 
     # Update the Impurity struct
+    imp.nup = nup
+    imp.ndown = ndown
     imp.occup = occup
 end
 
@@ -777,6 +884,7 @@ function GetImpurity()
         index = i
         atoms = String(line_to_array(str)[1])
         sites = parse(I64, line_to_array(str)[3])
+        equiv = get_i("equiv")[i]
         shell = get_i("shell")[i]
         ising = get_i("ising")[i]
         occup = get_i("occup")[i]
@@ -786,7 +894,9 @@ function GetImpurity()
         beta  = get_m("beta")
 
         # Call the constructor
-        Im = Impurity(index, atoms, sites, shell, ising, occup, upara, jpara, lpara, beta)
+        Im = Impurity(index, atoms, sites,
+                      equiv, shell, ising,
+                      occup, upara, jpara, lpara, beta)
 
         # Save Im in AI
         push!(AI, Im)
@@ -795,4 +905,27 @@ function GetImpurity()
 
     # Return the desired array
     return AI
+end
+
+"""
+    CatImpurity(imp::Impurity)
+
+Display the Impurity struct that need to be solved.
+"""
+function CatImpurity(imp::Impurity)
+    println()
+    println(blue("[ Impurity $(imp.index) ]"))
+    println("  atoms : ", imp.atoms)
+    println("  sites : ", imp.sites)
+    println("  equiv : ", imp.equiv)
+    println("  shell : ", imp.shell)
+    println("  ising : ", imp.ising)
+    println("  occup : ", imp.occup)
+    println("  nup   : ", imp.nup)
+    println("  ndown : ", imp.ndown)
+    println("  upara : ", imp.upara)
+    println("  jpara : ", imp.jpara)
+    println("  lpara : ", imp.lpara)
+    println("  beta  : ", imp.beta)
+    println("  nband : ", imp.nband)
 end

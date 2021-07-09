@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/27
+# Last modified: 2021/07/04
 #
 
 #=
@@ -90,7 +90,7 @@ end
 """
     @ps1(str, c)
 
-Wrapper for `printstyled` function. Here `str` is a string, and `c`
+Wrapper for colorful output function. Here `str` is a string, and `c`
 denotes color.
 
 ### Examples
@@ -107,8 +107,13 @@ end
 """
     @ps2(str1, c1, str2, c2)
 
-Wrapper for `printstyled` function. Here `str1` and `str2` are strings,
+Wrapper for colorful output function. Here `str1` and `str2` are strings,
 and `c1` and `c2` denote colors.
+
+### Examples
+```julia
+@ps2 "Hello " :red "world!" :green
+```
 
 See also: [`@ps1`](@ref).
 """
@@ -203,13 +208,14 @@ function query_case()
 end
 
 #=
-*Remarks*:
+*Remarks* :
 
-For `VASP`, the essential input files include:
+For `vasp`, the essential input files include:
 * POSCAR
 * POTCAR
 
-As for the `INCAR` and `KPOINTS`, they will be generated automatically.
+As for the `INCAR` and `KPOINTS` files, they should be generated
+automatically. Do not worry about them.
 =#
 
 """
@@ -248,7 +254,7 @@ function query_stop()
 end
 
 #=
-*Remarks*:
+*Remarks* :
 
 In the `ZenCore` package, the following environment variables matter:
 
@@ -256,7 +262,7 @@ In the `ZenCore` package, the following environment variables matter:
 * ZEN_CORE
 * ZEN_DMFT
 * ZEN_SOLVER
-* VASP_HOME
+* VASP_HOME (If you are using vasp as your DFT engine)
 
 Please setup them in your `.bashrc` (Lniux) or `.profile` (macOS) files.
 =#
@@ -338,7 +344,7 @@ function query_dmft()
 end
 
 #=
-*Remarks*:
+*Remarks* :
 
 The `atomic` code is considered as a preprocessor of `ct_hyb2`, it is
 not a valid quantum impurity solver.
@@ -433,7 +439,9 @@ end
 Print the goodbye messages to the screen.
 """
 function goodbye()
-    println("See you later")
+    println(  red("╔═╗┌─┐┌┐┌"), magenta("╔═╗┌─┐┬─┐┌─┐"))
+    println(green("╔═╝├┤ │││"), magenta("║  │ │├┬┘├┤ "))
+    println( blue("╚═╝└─┘┘└┘"), magenta("╚═╝└─┘┴└─└─┘"))
 end
 
 """
@@ -448,7 +456,7 @@ end
 """
     prompt(msg::String)
 
-Print a format Zen message to the screen.
+Print a stylized Zen message to the screen.
 """
 function prompt(msg::String)
     print(green("ZEN > "))
@@ -459,7 +467,7 @@ end
 """
     prompt(msg1::String, msg2::String)
 
-Print a format Zen message to the screen.
+Print a stylized Zen message to the screen.
 """
 function prompt(msg1::String, msg2::String)
     print(blue("Task -> "))
@@ -471,8 +479,8 @@ end
 """
     prompt(io::IOStream, msg::String)
 
-Print a format Zen message to the given IOStream. This function is used
-to log the events during DFT + DMFT iterations.
+Print a stylized Zen message to the given IOStream. This function is used
+to log the key events during DFT + DMFT iterations.
 """
 function prompt(io::IOStream, msg::String)
     date = Dates.format(now(), "yyyy-mm-dd / HH:MM:SS")
@@ -522,7 +530,7 @@ end
 =#
 
 #=
-*Remarks 1*:
+*Remarks 1* :
 
 The definition of Gauss error function is as follows:
 
@@ -530,7 +538,7 @@ The definition of Gauss error function is as follows:
 erf(x) = \frac{2}{\sqrt{\pi}}\int^{x}_{0} e^{-\eta^2} d\eta.
 ```
 
-*Remarks 2*:
+*Remarks 2* :
 
 We call the `erf()` function defined in the mathematical library `libm`
 or `openlibm` directly, instead of implementing it again by ourselves.
@@ -540,12 +548,12 @@ websites:
 * https://github.com/JuliaMath/openlibm
 * https://sourceware.org/newlib/libm.html
 
-*Remarks 3*:
+*Remarks 3* :
 
 This below implementation is taken from the `SpecialFunctions.jl`. See:
 * https://github.com/JuliaMath/SpecialFunctions.jl
 
-*Remarks 4*:
+*Remarks 4* :
 
 `Base.Math.libm` is actually a string. It denotes `libopenlibm`.
 =#
@@ -581,14 +589,21 @@ end
 =#
 
 #=
-*Remarks*:
+*Remarks* :
 
-Actually, the following codes are inspried by this repository:
+The purpose of the following codes is to provide some convenient tools
+to output colorful and stylized texts in the terminal. Actually, these
+codes are inspried by this repository:
 
 * https://github.com/Aerlinger/AnsiColor.jl
 
-The purpose of these codes is to provide some convenient tools to output
-colorful texts.
+For more information about the ANSI color escape sequences, please check
+the following websites further:
+
+* https://stackoverflow.com/questions/4842424/
+* https://en.wikipedia.org/wiki/ANSI_escape_code
+
+Note that the macros `@ps1` and `@ps2` rely on these codes.
 =#
 
 """
@@ -653,34 +668,42 @@ function colorize(c::Symbol, s::String; bg::String = "default", m::String="defau
 end
 
 #=
-*Remarks*:
+*Remarks* :
 
 The following codes will generate and export dynamically some color
 functions, including:
 
-* black(str::String)
-* red(str::String)
-* green(str::String)
-* yellow(str::String)
-* blue(str::String)
-* magenta(str::String)
-* cyan(str::String)
-* white(str::String)
-* light_black(str::String)
-* light_red(str::String)
-* light_green(str::String)
-* light_yellow(str::String)
-* light_blue(str::String)
-* light_magenta(str::String)
-* light_cyan(str::String)
-* light_white(str::String)
+```julia
+# For standard colors
+black(str::String)
+red(str::String)
+green(str::String)
+yellow(str::String)
+blue(str::String)
+magenta(str::String)
+cyan(str::String)
+white(str::String)
+```
+
+```julia
+# For light colors
+light_black(str::String)
+light_red(str::String)
+light_green(str::String)
+light_yellow(str::String)
+light_blue(str::String)
+light_magenta(str::String)
+light_cyan(str::String)
+light_white(str::String)
+```
 
 These functions provide some shortcuts to create texts decorated by
 special escape sequences. These texts will be show as colorized texts
 in the terminal.
 
+### Examples
 ```julia
-julia> println(red("hello world!")) 
+julia> println(red("hello world!"))
 ```
 =#
 

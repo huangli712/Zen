@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/29
+# Last modified: 2021/07/08
 #
 
 #=
@@ -31,7 +31,8 @@ end
     go()
 
 Dispatcher for DFT + DMFT calculations. Note that it can not call the
-`cycle3()`-`cycle8()` functions.
+`cycle3()`-`cycle8()` functions. These functions are designed only for
+testing purpose.
 
 See also: [`ready`](@ref).
 """
@@ -76,7 +77,7 @@ end
 #=
 *Some Explanations for the DFT + DMFT Algorithm*
 
-*Remarks 1*:
+*Remarks 1* :
 
 We would like to perform two successive DFT runs if `get_d("loptim")` is
 true. The purpose of the first DFT run is to evaluate the fermi level.
@@ -86,7 +87,7 @@ optimal projectors in the second DFT run.
 On the other hand, if `get_d("loptim")` is false, only the first DFT run
 is enough.
 
-*Remarks 2*:
+*Remarks 2* :
 
 We want better *optimal projectors*.
 
@@ -95,7 +96,7 @@ window -> `wrong` optimial projectors. But at this point, the fermi
 level is updated, so we have to generate the optimal projectors
 again within this new window by doing addition DFT calculation.
 
-*Remarks 3*:
+*Remarks 3* :
 
 The key Kohn-Sham data inclue lattice structures, 𝑘-mesh and its weights,
 tetrahedra data, eigenvalues, raw projectors, and fermi level, etc. At
@@ -105,7 +106,7 @@ labeling, grouping, filtering, and rotatation). Finally, the adaptor will
 write down the processed data to some specified files using the `IR`
 format.
 
-*Remarks 4*:
+*Remarks 4* :
 
 Once everything is ready, we are going to solve the DMFT self-consistent
 equation iterately.
@@ -211,7 +212,7 @@ end
     cycle2()
 
 Perform fully self-consistent DFT + DMFT calculations. The self-consistency
-is achieved at both DFT and DMFT levels.
+is achieved at both DFT and DMFT levels. This function doesn't work so far.
 
 See also: [`cycle1`](@ref), [`go`](@ref).
 """
@@ -232,13 +233,16 @@ function cycle2()
     prompt("Initialization")
 
     # C01: Perform DFT calculation (for the first time)
-    #dft_run(it, lr)
+    @time_call dft_run(it, lr)
 
-    # C02: Prepare default self-energy functions
-    sigma_core(it, lr, ai, "reset")
+    # C02: Perform DFT calculation (for the second time)
+    get_d("loptim") && @time_call dft_run(it, lr)
 
-    # C03: Change calculation mode
-    it.sc = 2 # Fully self-consistent mode
+    # C03: To bridge the gap between DFT engine and DMFT engine by adaptor
+    adaptor_run(it, lr, ai)
+
+    # C04: Prepare default self-energy functions
+    @time_call sigma_core(it, lr, ai, "reset")
 
 #
 # DFT + DMFT Iterations (C05-C12)
@@ -246,10 +250,13 @@ function cycle2()
     prompt("Iterations")
     show_it(it, lr)
 
-    dft_run(it, lr)
+    # C05: Start the self-consistent engine
+    it.sc = 2; dft_run(it, lr)
 
+    # Outer: DFT + DMFT LOOP
     for iter = 1:it.M₃
 
+        # Wait additional two seconds
         suspend(2)
 
         # Print the log
@@ -257,53 +264,76 @@ function cycle2()
         prompt(lr.log, "")
         prompt(lr.log, "< dft_dmft_cycle >")
 
+        # Update IterInfo struct, fix it.I₃
         incr_it(it, 3, iter)
 
+        # C06: Apply the adaptor to extract new Kohn-Sham dataset
         adaptor_run(it, lr, ai)
 
+        # Inner: DMFT LOOP
         for iter1 = 1:it.M₁
+            # Update IterInfo struct, fix it.I₁
             incr_it(it, 1, iter1)
 
-            # C05: Tackle with the double counting term
-            sigma_core(it, lr, ai, "dcount")
+            # C07: Tackle with the double counting term
+            @time_call sigma_core(it, lr, ai, "dcount")
 
-            # C06: Perform DMFT calculation with `task` = 1
-            dmft_run(it, lr, 1)
+            # C08: Perform DMFT calculation with `task` = 1
+            @time_call dmft_run(it, lr, 1)
 
-            # C07: Mix the hybridization functions
-            mixer_core(it, lr, ai, "delta")
+            # C09: Mix the hybridization functions
+            @time_call mixer_core(it, lr, ai, "delta")
 
-            # C08: Mix the local impurity levels
-            mixer_core(it, lr, ai, "eimpx")
+            # C10: Mix the local impurity levels
+            @time_call mixer_core(it, lr, ai, "eimpx")
 
-            # C09: Split and distribute the hybridization functions
-            sigma_core(it, lr, ai, "split")
+            # C11: Split and distribute the hybridization functions
+            @time_call sigma_core(it, lr, ai, "split")
 
-            # C10: Solve the quantum impurity problems
-            solver_run(it, lr, ai)
+            # C12: Solve the quantum impurity problems
+            @time_call solver_run(it, lr, ai)
 
-            # C11: Gather and combine the impurity self-functions
-            sigma_core(it, lr, ai, "gather")
+            # C13: Gather and combine the impurity self-functions
+            @time_call sigma_core(it, lr, ai, "gather")
 
-            # C12: Mix the impurity self-energy functions
-            mixer_core(it, lr, ai, "sigma")
+            # C14: Mix the impurity self-energy functions
+            @time_call mixer_core(it, lr, ai, "sigma")
 
+            # Print the cycle info
             show_it(it, lr)
+
+            # If the convergence has been achieved, then break the cycle.
+            conv_it(it) && break
         end
+
+        # Reset the counter in IterInfo: I₁, I₂
         zero_it(it)
 
+        # Inner: DFT LOOP
         for iter2 = 1:it.M₂
+            # Update IterInfo struct, fix it.I₂
             incr_it(it, 2, iter2)
 
-            dmft_run(it, lr, 2)
+            # C15: Perform DMFT calculation with `task` = 2
+            dmft_run(it, lr, 2) # Generate correction for density matrix
 
+            # C10: Mix the correction for density matrix
+            @time_call mixer_core(it, lr, ai, "gamma")
+
+            # C17: Reactivate the DFT engine
             dft_run(lr)
 
-            suspend(2)
-
+            # Print the cycle info
             show_it(it, lr)
+
+            # If the convergence has been achieved, then break the cycle.
+            conv_it(it) && break
         end
+
+        # Reset the counter in IterInfo: I₁, I₂
         zero_it(it)
+
+        # C18:
 
     end
 end
@@ -313,7 +343,7 @@ end
 
 Perform DFT calculations only. If there are something wrong, then you
 have chance to adjust the DFT input files manually (for example, you
-can modify `vasp_incar()/vasp.jl` by yourself).
+can modify `vaspc_incar()/vasp.jl` by yourself).
 
 See also: [`cycle1`](@ref), [`cycle2`](@ref).
 """
@@ -483,6 +513,9 @@ end
 Perform calculations using mixer engine only. The users can execute
 it in the REPL mode to see whether the mixer engine works properly.
 
+In order to run this function correctly, sometimes users should modify
+the predefined parameters in step `C01`.
+
 See also: [`cycle1`](@ref), [`cycle2`](@ref).
 """
 function cycle8(task::String = "sigma")
@@ -522,14 +555,14 @@ end
 =#
 
 #=
-*Remarks*:
+*Remarks* :
 
 In order to terminate the `Zen` code, the following two conditions
 should be fulfilled at the same time.
 
 * The argument `force_exit` is true.
 
-* The `case.stop` file exists (from `query_stop()``).
+* The `case.stop` file exists (from `query_stop()` function).
 
 We usually use this functon to stop the whole DFT + DMFT iterations.
 =#
@@ -578,7 +611,7 @@ function suspend(second::I64)
         # Check the stop condifion.
         # Here, we check the vasp.lock file. If it is absent, then we
         # break this loop
-        !vasp_lock() && break
+        !vaspq_lock() && break
     end
 end
 
@@ -593,7 +626,7 @@ Simple driver for DFT engine. It performs three tasks: (1) Examine
 the runtime environment for the DFT engine. (2) Launch the DFT engine.
 (3) Backup the output files by DFT engine for next iterations.
 
-Now only the VASP engine is supported. If you want to support the other
+Now only the vasp engine is supported. If you want to support the other
 DFT engine, this function must be adapted.
 
 See also: [`adaptor_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
@@ -611,7 +644,7 @@ function dft_run(it::IterInfo, lr::Logger)
 
     # Activate the chosen DFT engine
     @cswitch engine begin
-        # For VASP
+        # For vasp
         @case "vasp"
             vasp_init(it)
             vasp_exec(it)
@@ -657,13 +690,13 @@ function dft_run(lr::Logger)
 
     # Activate the chosen DFT engine
     @cswitch engine begin
-        # For VASP
+        # For vasp
         @case "vasp"
             # Write the GAMMA file for vasp
-            vasp_gamma(kwin, gamma)
+            vaspc_gamma(kwin, gamma)
             #
             # Create vasp.lock file to wake up the vasp
-            vasp_lock("create")
+            vaspc_lock("create")
             #
             break
 
@@ -726,12 +759,15 @@ function dmft_run(it::IterInfo, lr::Logger, task::I64)
 end
 
 """
-    solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
+    solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, force::Bool = false)
 
 Simple driver for quantum impurity solvers. It performs three tasks: (1)
 Examine the runtime environment for quantum impurity solver. (2) Launch
 the quantum impurity solver. (3) Backup output files by quantum impurity
 solver for next iterations.
+
+If `force = true`, then we will try to solve all of the quantum impurity
+problems explicitly, irrespective of their symmetries.
 
 Now only the `ct_hyb1`, `ct_hyb2`, `hub1`, and `norg` quantum impurity
 solvers are supported. If you want to support the other quantum impurity
@@ -739,63 +775,142 @@ solvers, this function must be adapted.
 
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`dmft_run`](@ref).
 """
-function solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
+function solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, force::Bool = false)
+    # Sanity check
+    @assert length(ai) == get_i("nsite")
+
+    # Analyze the symmetry of quantum impurity problems
+    println(blue("Analyze the quantum impurity problems..."))
+    #
+    # Print number of impurities
+    println("  > Number of quantum impurity problems: ", length(ai))
+    #
+    # Determine the equivalence of quantum impurity problems
+    equiv = abs.(get_i("equiv"))
+    println("  > Equivalence of quantum impurity problems (abs): ", equiv)
+    unique!(equiv)
+    println("  > Equivalence of quantum impurity problems (uniq): ", equiv)
+    #
+    # Figure out which quantum impurity problem should be solved
+    to_be_solved = fill(false, length(ai))
+    for i in eachindex(equiv)
+        ind = findfirst(x -> x.equiv == equiv[i], ai)
+        isa(ind, Nothing) && continue
+        to_be_solved[ind] = true
+    end
+    println("  > Quantum impurity problems (keep): ", findall(to_be_solved))
+    println("  > Quantum impurity problems (skip): ", findall(.!to_be_solved))
+    println(green("Now we are ready to solve them..."))
+
     # Loop over each impurity site
     for i = 1:get_i("nsite")
-
-        # Determine the chosen solver
-        engine = get_s("engine")
-
-        # Extract the Impurity strcut
+        # Extract and show the Impurity strcut
         imp = ai[i]
+        CatImpurity(imp)
 
-        # Print the log
-        prompt("Solvers", cntr_it(it))
-        prompt(lr.log, engine)
+        # The present quantum impurity problem need to be solved
+        if to_be_solved[i] || force
+            # Print the header
+            println(green("It is interesting. Let us play with it."))
 
-        # Enter impurity.i directory
-        cd("impurity.$i")
+            # Determine the chosen solver
+            engine = get_s("engine")
 
-        #
-        # If there are symmetries among the impurity problems, something
-        # must be done here.
-        #
+            # Print the log
+            prompt("Solvers", cntr_it(it))
+            prompt(lr.log, engine)
 
-        # Activate the chosen quantum impurity solver
-        @cswitch engine begin
-            @case "ct_hyb1"
-                s_qmc1_init(it, imp)
-                s_qmc1_exec(it)
-                s_qmc1_save(it, imp)
-                break
+            # Enter impurity.i directory
+            cd("impurity.$i")
 
-            @case "ct_hyb2"
-                s_qmc2_init(it)
-                s_qmc2_exec(it)
-                s_qmc2_save(it)
-                break
+            # Activate the chosen quantum impurity solver
+            @cswitch engine begin
+                @case "ct_hyb1"
+                    s_qmc1_init(it, imp)
+                    s_qmc1_exec(it)
+                    s_qmc1_save(it, imp)
+                    break
 
-            @case "hub1"
-                s_hub1_init(it)
-                s_hub1_exec(it)
-                s_hub1_save(it)
-                break
+                @case "ct_hyb2"
+                    s_qmc2_init(it)
+                    s_qmc2_exec(it)
+                    s_qmc2_save(it)
+                    break
 
-            @case "norg"
-                s_norg_init(it)
-                s_norg_exec(it)
-                s_norg_save(it)
-                break
+                @case "hub1"
+                    s_hub1_init(it)
+                    s_hub1_exec(it)
+                    s_hub1_save(it)
+                    break
 
-            @default
-                sorry()
-                break
+                @case "norg"
+                    s_norg_init(it)
+                    s_norg_exec(it)
+                    s_norg_save(it)
+                    break
+
+                @default
+                    sorry()
+                    break
+            end
+
+            # Enter the parent directory
+            cd("..")
+
+        else
+            # Print the header
+            println(red("Mmm, it is not my job..."))
+
+            # Well, the current quantum impurity problem is not solved.
+            # We have to find out its sister which has been solved before.
+            found = -1
+            for j = 1:i
+                # Impurity 𝑖 and Impurity 𝑗 are related by some kinds of
+                # symmetry. Impurity 𝑗 has been solved before. So we can
+                # copy its solution to Impurity 𝑖.
+                if abs(imp.equiv) == abs(ai[j].equiv) && to_be_solved[j]
+                    found = j
+                end
+            end
+            # Sanity check
+            @assert found > 0
+            println(green("Maybe we can learn sth. from Impurity $found"))
+
+            # Determine the chosen solver
+            engine = get_s("engine")
+
+            # Enter impurity.i directory
+            cd("impurity.$i")
+
+            # Next, we would like to copy solution from Impurity `found`
+            # to the current Impurity 𝑖.
+            @cswitch engine begin
+                @case "ct_hyb1"
+                    s_qmc1_save(it, ai[found], imp)
+                    break
+
+                @case "ct_hyb2"
+                    s_qmc2_save(it, ai[found], imp)
+                    break
+
+                @case "hub1"
+                    s_hub1_save(it, ai[found], imp)
+                    break
+
+                @case "norg"
+                    s_norg_save(it, ai[found], imp)
+                    break
+
+                @default
+                    sorry()
+                    break
+            end
+
+            # Enter the parent directory
+            cd("..")
+
         end
-
-        # Enter the parent directory
-        cd("..")
-
-    end
+    end # END OF I LOOP
 
     # Monitor the status
     monitor(true)
@@ -809,7 +924,7 @@ the adaptor, to check whether the essential files exist. (2) Parse the
 Kohn-Sham data output by the DFT engine, try to preprocess them, and
 then transform them into IR format. (3) Backup the files by adaptor.
 
-For the first task, only the VASP adaptor is supported. While for the
+For the first task, only the vasp adaptor is supported. While for the
 second task, only the PLO adaptor is supported. If you want to support
 more adaptors, please adapt this function.
 
@@ -838,9 +953,9 @@ function adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
     prompt("Adaptor", cntr_it(it))
     prompt(lr.log, "adaptor::$engine")
     @cswitch engine begin
-        # For VASP
+        # For vasp
         @case "vasp"
-            vasp_files()
+            vaspq_files()
             @time_call vasp_adaptor(DFTData)
             break
 
@@ -1030,7 +1145,7 @@ end
 =#
 
 #=
-*Remarks*:
+*Remarks* :
 
 The working directories include `dft`, `dmft1`, `dmft2`, and `impurity.i`.
 If they exist already, it would be better to remove them at first.

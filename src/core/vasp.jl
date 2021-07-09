@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/25
+# Last modified: 2021/07/07
 #
 
 #=
@@ -14,11 +14,16 @@
 """
     vasp_adaptor(D::Dict{Symbol,Any})
 
-Adaptor support for vasp code. It will read the output files of vasp
-code and then fulfill the `DFTData` dict (i.e `D`).
+Adaptor support for vasp code. It will parse the output files of vasp
+code, extract the Kohn-Sham dataset,  and then fulfill the `DFTData`
+dict (i.e `D`).
 
-The following vasp's files are needed: `POSCAR`, `IBZKPT`, `EIGENVAL`,
-`LOCPROJ`, and `DOSCAR`.
+The following vasp's output files are needed:
+* `POSCAR`
+* `IBZKPT`
+* `EIGENVAL`
+* `LOCPROJ`
+* `DOSCAR`
 
 See also: [`plo_adaptor`](@ref), [`ir_adaptor`](@ref).
 """
@@ -44,7 +49,7 @@ function vasp_adaptor(D::Dict{Symbol,Any})
     D[:fermi] = vaspio_fermi(pwd(), false)
 
     # V07: Read in tetrahedron data if they are available
-    if get_d("smear") === "tetra"
+    if get_d("smear") == "tetra"
         D[:volt], D[:itet] = vaspio_tetra(pwd())
     end
 end
@@ -59,7 +64,7 @@ See also: [`vasp_exec`](@ref), [`vasp_save`](@ref).
 function vasp_init(it::IterInfo)
     # Print the header
     println("Engine : VASP")
-    println("Try to perform ab initio calculation")
+    println("Try to perform ab initio electronic structure calculation")
     println("Current directory: ", pwd())
     println("Prepare necessary input files for vasp")
 
@@ -68,28 +73,26 @@ function vasp_init(it::IterInfo)
     # Copy POTCAR and POSCAR
     cp("../POTCAR", joinpath(pwd(), "POTCAR"), force = true)
     cp("../POSCAR", joinpath(pwd(), "POSCAR"), force = true)
-    println("  > POTCAR is ready")
-    println("  > POSCAR is ready")
+    println("  > File POTCAR is ready")
+    println("  > File POSCAR is ready")
     #
     # How about INCAR
     if it.I₃ == 0
         # Generate INCAR automatically
-        vasp_incar(it.μ₀, it.sc)
+        vaspc_incar(it.μ₀, it.sc)
     else
         # Maybe we need to update INCAR file here
-        @show it.I₃, it.μ₁, it.sc
-        vasp_incar(it.μ₁, it.sc)
+        vaspc_incar(it.μ₁, it.sc)
     end
-    println("  > INCAR is ready")
+    println("  > File INCAR is ready")
     #
     # Well, perhaps we need to generate the KPOINTS file by ourselves.
-    if get_d("kmesh") === "file"
-        vasp_kpoints()
-    end
-    println("  > KPOINTS is ready")
+    get_d("kmesh") == "file" && vaspc_kpoints()
+    println("  > File KPOINTS is ready")
 
     # Check essential input files
-    flist = ("INCAR", "POSCAR", "POTCAR")
+    flist = ["INCAR", "POSCAR", "POTCAR"]
+    get_d("kmesh") == "file" && push!(flist, "KPOINTS")
     for i in eachindex(flist)
         filename = flist[i]
         if !isfile(filename)
@@ -101,7 +104,16 @@ end
 """
     vasp_exec(it::IterInfo)
 
-Execute the vasp program.
+Execute the vasp program, monitor the convergence progress, and output
+the relevant information. Especially, if it.sc == 2 (self-consistent
+mode), this function will launch the vasp code, then return immediately.
+
+In order to execute this function correctly, you have to setup the
+following environment variables:
+
+* VASP_HOME
+
+and make sure the file `MPI.toml` is available.
 
 See also: [`vasp_init`](@ref), [`vasp_save`](@ref).
 """
@@ -150,6 +162,7 @@ function vasp_exec(it::IterInfo)
     println("  > Add the task to the scheduler's queue")
     println("  > Waiting ...")
 
+    # Special treatment for self-consistent mode
     if it.sc == 2
         println("Escape from vasp_exec()")
         return
@@ -204,12 +217,13 @@ end
 """
     vasp_save(it::IterInfo)
 
-Backup the output files of vasp if necessary. Furthermore, the fermi level
-in `IterInfo` struct is also updated (`IterInfo.μ₀`).
+Backup the output files of vasp if necessary. Furthermore, the DFT fermi
+level in `IterInfo` struct is also updated (`IterInfo.μ₀`).
 
 See also: [`vasp_init`](@ref), [`vasp_exec`](@ref).
 """
 function vasp_save(it::IterInfo)
+    # Special treatment for self-consistent mode
     if it.sc == 2
         println("Escape from vasp_save()")
         return
@@ -221,7 +235,7 @@ function vasp_save(it::IterInfo)
     # Store the data files
     #
     # Create list of files
-    fl = ["INCAR", "vasp.out", "vasprun.xml"]
+    fl = ["INCAR", "vasp.out"]
     #
     # Go through the file list, backup the files one by one.
     for i in eachindex(fl)
@@ -230,8 +244,8 @@ function vasp_save(it::IterInfo)
     end
     println("  > Save the key output files")
 
-    # Anyway, the fermi level is extracted from DOSCAR, and its value
-    # will be saved at IterInfo.μ₀.
+    # Anyway, the DFT fermi level is extracted from DOSCAR, and its
+    # value will be saved at IterInfo.μ₀.
     it.μ₀ = vaspio_fermi(pwd())
     println("  > Extract the fermi level from DOSCAR: $(it.μ₀) eV")
 end
@@ -241,26 +255,26 @@ end
 =#
 
 #=
-*Remarks*:
+*Remarks* :
 
 The parameter `NBANDS` is quite important. Sometimes its default value
 is too small. The adaptor will fail to generate reasonable projectors.
-At this case, you will see an error thrown by the try_diag() function.
-The solution is simple, i.e., increasing `NBANDS` a bit.
+At this case, you will see an error thrown by the `try_diag()` function.
+The solution is quite simple, i.e., increasing `NBANDS` a bit.
 
 The current algorithm is suitable for paramagnetic systems. It has not
 been tested for `magnetically ordered materials`.
 =#
 
 """
-    vasp_incar(fermi::F64, sc_mode::I64)
+    vaspc_incar(fermi::F64, sc_mode::I64)
 
 Generate an `INCAR` file. It will be used only when the DFT engine
 is vasp.
 
-See also: [`vasp_kpoints`](@ref).
+See also: [`vaspc_kpoints`](@ref).
 """
-function vasp_incar(fermi::F64, sc_mode::I64)
+function vaspc_incar(fermi::F64, sc_mode::I64)
     # Open the iostream
     ios = open("INCAR", "w")
 
@@ -315,7 +329,7 @@ function vasp_incar(fermi::F64, sc_mode::I64)
             write(ios, "KSPACING = 0.4 \n")
             break
 
-        # If kmesh == "file", then vasp_kpoints() will be used to
+        # If kmesh == "file", then vaspc_kpoints() will be used to
         # generate the KPOINTS file.
         @case "file"
             break
@@ -401,13 +415,13 @@ function vasp_incar(fermi::F64, sc_mode::I64)
 end
 
 """
-    vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
+    vaspc_kpoints(mp_scheme::Bool = true, n::I64 = 9)
 
 Generate a valid `KPOINTS` file for vasp.
 
-See also: [`vasp_incar`](@ref).
+See also: [`vaspc_incar`](@ref).
 """
-function vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
+function vaspc_kpoints(mp_scheme::Bool = true, n::I64 = 9)
     # If the `KPOINTS` file is available, we do nothing or else we will
     # try to create a new one.
     if !isfile("KPOINTS")
@@ -415,15 +429,15 @@ function vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
         ios = open("KPOINTS", "w")
 
         # Write the body
-        write(ios, "Automatic K-mesh Generation\n")
+        write(ios, "Automatic K-mesh Generation \n")
         write(ios, "0 \n")
         if mp_scheme
-            write(ios, "Monkhorst-Pack\n")
+            write(ios, "Monkhorst-Pack \n")
         else
-            write(ios, "Gamma\n")
+            write(ios, "Gamma \n")
         end
-        write(ios, " $n  $n  $n\n")
-        write(ios, " 0  0  0\n")
+        write(ios, " $n  $n  $n \n")
+        write(ios, " 0  0  0 \n")
 
         # Close the iostream
         close(ios)
@@ -431,14 +445,14 @@ function vasp_kpoints(mp_scheme::Bool = true, n::I64 = 9)
 end
 
 """
-    vasp_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
+    vaspc_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
 
 Generate a valid `GAMMA` file for vasp. The vasp will need this file
 when `ICHARG = 5`.
 
 See also: [`write_gamma`](@ref), [`read_gamma`](@ref).
 """
-function vasp_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
+function vaspc_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
     # Extract the dimensional parameters
     _, qbnd, nkpt, nspin = size(gamma)
     @assert nspin == 1 # Current limitation
@@ -448,12 +462,17 @@ function vasp_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
 
     # Write the data
     open(fgamma, "w") do fout
-        @printf(fout, " %i  -1  ! Number of k-points, default number of bands\n", nkpt)
+        @printf(fout, " %i  -1  ! Number of k-points, default number of bands \n", nkpt)
+        # Go through each 𝑘-point
         for k = 1:nkpt
+            # Determine the band window
             bs = kwin[k,1,1]
             be = kwin[k,1,2]
             cbnd = be - bs + 1
+            @assert cbnd ≤ qbnd
             @printf(fout, " %i  %i  %i\n", k, bs, be)
+
+            # Go through each band
             for p = 1:cbnd
                 for q = 1:cbnd
                     z = gamma[p,q,k,1]
@@ -461,42 +480,50 @@ function vasp_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
                 end
                 println(fout)
             end
-            #println(fout)
         end # END OF K LOOP
     end # END OF IOSTREAM
 
     # Print message to the screen
-    println("  Write gamma matrix into: dft/$fgamma")
+    println("  > Write gamma matrix into: dft/$fgamma")
 end
 
 """
-    vasp_lock()
+    vaspc_lock(action::String)
 
-Return whether the `vasp.lock` file is available.
-"""
-function vasp_lock()
-    return isfile("dft/vasp.lock")
-end
+Create the `vasp.lock` file. This file is relevant for `ICHARG = 5`. The
+vasp program runs only when vasp.lock is present in the current directory.
 
+See also: [`vaspq_lock`](@ref).
 """
-    vasp_lock(action::String)
-
-Create the `vasp.lock` file.
-"""
-function vasp_lock(action::String)
+function vaspc_lock(action::String)
     @assert startswith(action, "c") || startswith(action, "C")
     touch("vasp.lock")
 end
 
+#=
+### *Service Functions* : *Group B*
+=#
+
 """
-    vasp_files(f::String)
+    vaspq_lock()
+
+Return whether the `vasp.lock` file is available.
+
+See also: [`vaspc_lock`](@ref).
+"""
+function vaspq_lock()
+    return isfile("dft/vasp.lock")
+end
+
+"""
+    vaspq_files(f::String)
 
 Check the essential output files by vasp. Here `f` means only the
 directory that contains the desired files.
 
 See also: [`adaptor_init`](@ref).
 """
-function vasp_files(f::String)
+function vaspq_files(f::String)
     fl = ["POSCAR", "IBZKPT", "EIGENVAL", "LOCPROJ", "DOSCAR", "CHGCAR"]
     for i in eachindex(fl)
         @assert isfile( joinpath(f, fl[i]) )
@@ -504,20 +531,20 @@ function vasp_files(f::String)
 end
 
 """
-    vasp_files()
+    vaspq_files()
 
 Check the essential output files by vasp in the current directory.
 
 See also: [`adaptor_init`](@ref).
 """
-vasp_files() = vasp_files(pwd())
+vaspq_files() = vaspq_files(pwd())
 
 #=
-### *Service Functions* : *Group B*
+### *Service Functions* : *Group C*
 =#
 
 #=
-Remarks:
+*Remarks* :
 
 In vasp, the `NBANDS` parameter is determined automatically. According
 to the wiki of vasp, it is equal to `nelect / 2 + latt.natom / 2` for
@@ -527,7 +554,8 @@ parameter is only 20. It is too small to determine the five V``_{3d}``
 projectors. It would be better to increase it to 30.
 
 Here, we increase `NBANDS` to `1.6 * NBANDS`. The `1.6` is a magic
-number, you can adjust it by yourself.
+number, you can adjust it by yourself. For magnetic ordered systems,
+perhaps we nedd a larger factor.
 =#
 
 """
@@ -537,7 +565,7 @@ Reading vasp's `POSCAR` and `POTCAR` files, evaluating number of bands. It
 will be used to create the `INCAR` file. Here `f` means only the directory
 that contains `POSCAR` and `POTCAR`.
 
-See also: [`vasp_incar`](@ref), [`vaspio_valence`](@ref), [`vaspio_lattice`](@ref).
+See also: [`vaspc_incar`](@ref), [`vaspio_valence`](@ref), [`vaspio_lattice`](@ref).
 """
 function vaspio_nband(f::String)
     # Extract crystallography information from `POSCAR`
@@ -570,7 +598,7 @@ end
 Reading vasp's `POSCAR` and `POTCAR` files, evaluating number of bands. It
 will be used to create the `INCAR` file.
 
-See also: [`vasp_incar`](@ref), [`vaspio_valence`](@ref), [`vaspio_lattice`](@ref).
+See also: [`vaspc_incar`](@ref), [`vaspio_valence`](@ref), [`vaspio_lattice`](@ref).
 """
 vaspio_nband() = vaspio_nband(pwd())
 
@@ -583,7 +611,7 @@ directory that contains `POTCAR`.
 The information about `ZVAL` will be used to determine `NBANDS` in the
 `INCAR` file.
 
-See also: [`vasp_incar`](@ref), [`vaspio_nband`](@ref).
+See also: [`vaspc_incar`](@ref), [`vaspio_nband`](@ref).
 """
 function vaspio_valence(f::String)
     # Open the iostream
@@ -613,7 +641,7 @@ Reading vasp's `POTCAR` file, return `ZVAL`.
 The information about `ZVAL` will be used to determine `NBANDS` in the
 `INCAR` file.
 
-See also: [`vasp_incar`](@ref), [`vaspio_nband`](@ref).
+See also: [`vaspc_incar`](@ref), [`vaspio_nband`](@ref).
 """
 vaspio_valence() = vaspio_valence(pwd())
 
@@ -888,9 +916,9 @@ function vaspio_procar(f::String)
                         sorry()
                         break
                 end # @cswitch
-            end # Loop for bands
-        end # Loop for k-points
-    end # Loop for spins
+            end # END OF B LOOP
+        end # END OF K LOOP
+    end # END OF S LOOP
 
     # Close the iostream
     close(fin)
@@ -903,8 +931,8 @@ function vaspio_procar(f::String)
                     oab[o, a, b, s] = sum(worb[o, a, b, :, s]) / float(nkpt)
                 end
             end
-        end
-    end
+        end # END OF B LOOP
+    end # END OF S LOOP
 
     # Return the desired arrays
     return oab, enk, occ
@@ -1051,6 +1079,8 @@ function vaspio_kmesh(f::String)
     # Print some useful information to check
     println("  > Number of k-points: ", nkpt)
     println("  > Total sum of weights: ", sum(weight))
+    println("  > Shape of Array kmesh: ", size(kmesh))
+    println("  > Shape of Array weight: ", size(weight))
 
     # Return the desired arrays
     return kmesh, weight
@@ -1132,30 +1162,6 @@ See also: [`vaspio_kmesh`](@ref), [`irio_tetra`](@ref).
 """
 vaspio_tetra() = vaspio_tetra(pwd())
 
-#=
-*Remarks*:
-
-Here we provide two implementations to read the eigenvalues. The first
-implementation is somewhat tedious, so we don't use it. It seems that
-the second implementation looks quite graceful.
-
-*Previous Implementation*:
-
-```julia
-if nspin === 1 # for spin unpolarized case
-    enk[j, i, 1] = parse(F64, arr[2])
-    occupy[j, i, 1] = parse(F64, arr[3])
-end
-
-if nspin === 2 # for spin polarized case
-    enk[j, i, 1] = parse(F64, arr[2])
-    enk[j, i, 2] = parse(F64, arr[3])
-    occupy[j, i, 1] = parse(F64, arr[4])
-    occupy[j, i, 2] = parse(F64, arr[5])
-end
-```
-=#
-
 """
     vaspio_eigen(f::String)
 
@@ -1174,6 +1180,7 @@ function vaspio_eigen(f::String)
     # Check whether the `EIGENVAL` file contains valid data
     lines = readlines(joinpath(f, "EIGENVAL"))
 
+    # Read EIGENVAL
     if length(lines) ≥ 10
         println("  > Open and read EIGENVAL")
 
@@ -1221,6 +1228,8 @@ function vaspio_eigen(f::String)
 
         # return the desired arrays
         return enk, occupy
+
+    # Read LOCPROJ
     else
         println("  > Open and read LOCPROJ")
 
@@ -1382,14 +1391,21 @@ function vaspio_projs(f::String)
     println("  > Number of k-points: ", nkpt)
     println("  > Number of spins: ", nspin)
     println("  > Number of projectors: ", nproj)
+    for i in eachindex(PT)
+        println("    [ PrTrait $i ]")
+        println("      site -> ", PT[i].site)
+        println("      l -> ", PT[i].l)
+        println("      m -> ", PT[i].m)
+        println("      desc -> ", PT[i].desc)
+    end
     println("  > Number of groups: ", length(PG))
     for i in eachindex(PG)
-        print("  > Group $i:")
-        print(" site -> ", PG[i].site, ";")
-        print(" l -> ", PG[i].l, ";")
-        print(" corr -> ", PG[i].corr, ";")
-        print(" shell -> ", PG[i].shell)
-        println()
+        println("    [ PrGroup $i ]")
+        println("      site -> ", PG[i].site)
+        println("      l -> ", PG[i].l)
+        println("      corr -> ", PG[i].corr)
+        println("      shell -> ", PG[i].shell)
+        println("      Pr -> ", PG[i].Pr)
     end
     println("  > Shape of Array chipsi: ", size(chipsi))
 
@@ -1422,9 +1438,12 @@ function vaspio_fermi(f::String, silent::Bool = true)
     # Print the header
     !silent && println("Parse fermi level")
 
+    # Try to figure out whether the DOSCAR file is valid
     lines = readlines(joinpath(f, "DOSCAR"))
 
+    # Read DOSCAR
     if length(lines) ≥ 6
+        # Print the header
         !silent && println("  > Open and read DOSCAR")
 
         # Open the iostream
@@ -1446,12 +1465,16 @@ function vaspio_fermi(f::String, silent::Bool = true)
 
         # Return the desired data
         return fermi
+
+    # Read LOCPROJ
     else
+        # Print the header
         !silent && println("  > Open and read LOCPROJ")
 
         # Open the iostream
         fin = open(joinpath(f, "LOCPROJ"), "r")
 
+        # Extract the fermi level
         fermi = parse(F64, line_to_array(fin)[5])
 
         # Close the iostream

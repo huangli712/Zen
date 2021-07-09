@@ -8,7 +8,7 @@
 #
 
 #=
-*Remarks*:
+*Remarks* :
 
 This file provides some functions to do the brillouin zone integration.
 They are very useful for calculating the density of states. So far the

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/29
+# Last modified: 2021/07/09
 #
 
 #=
@@ -18,64 +18,70 @@ Adaptor support. It will preprocess the raw projector matrix. The dict
 `D` contains all of the necessary Kohn-Sham data, which will be modified
 in this function.
 
-If it is in the REPL mode and the file `case.test` is available, this
-function will try to calculate some physical quantities, such as the
-density matrix, overlap matrix, local hamiltonian, and partial density
-of states, which will be written to external files or terminal for
-further reference.
+If it is in the REPL mode and the file `case.test` is present in the
+current directory, this function will try to calculate some physical
+observables, such as the density matrix, overlap matrix, partial density
+of states, and local hamiltonian, which will be written to external
+files or terminal for further reference.
 
 See also: [`vasp_adaptor`](@ref), [`ir_adaptor`](@ref).
 """
 function plo_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
-    # P01: Print the header
+    # Print the header
     println("Adaptor : PLO")
     println("Try to process the Kohn-Sham dataset")
     println("Current directory: ", pwd())
 
-    # P02: Check the validity of the original dict
+    # Check the validity of the original dict
     key_list = [:enk, :fermi, :chipsi, :PG]
     for k in key_list
         @assert haskey(D, k)
     end
 
-    # P03: Create connections/mappings between projectors (or band
+    # How about the original projectors? We will try to calculate some
+    # physical observables to check the quality of the projectors.
+    isinteractive() &&
+    isfile(query_case()*".test") &&
+    plo_monitor(D)
+
+    # P01: Create connections/mappings between projectors (or band
     # windows) and quantum impurity problems
     #
     # D[:MAP] will be created
     D[:MAP] = plo_map(D[:PG], ai)
 
-    # P04: Adjust the band structure
+    # P02: Adjust the band structure
     #
     # D[:enk] will be updated
     plo_fermi(D[:enk], D[:fermi])
 
-    # P05: Setup the PrGroup strcut further
+    # P03: Setup the PrGroup strcut further
     #
     # D[:PG] will be updated
     plo_group(D[:MAP], D[:PG])
 
-    # P06: Setup the band / energy window for projectors
+    # P04: Setup the band / energy window for projectors
     #
     # D[:PW] will be created
     D[:PW] = plo_window(D[:PG], D[:enk])
 
-    # P07: Transform the projectors
+    # P05: Transform the projectors
     #
     # D[:Rchipsi] will be created
     D[:Rchipsi] = plo_rotate(D[:PG], D[:chipsi])
 
-    # P08: Filter the projectors
+    # P06: Filter the projectors
     #
     # D[:Fchipsi] will be created
     D[:Fchipsi] = plo_filter(D[:PW], D[:Rchipsi])
 
-    # P09: Orthogonalize and normalize the projectors
+    # P07: Orthogonalize and normalize the projectors
     #
     # D[:Fchipsi] will be updated. It contains the final data
     # for projector matrix.
     plo_orthog(D[:PW], D[:Fchipsi])
 
-    # P10: Are the projectors correct?
+    # Are the projectors correct?
     #
     # We will try to calculate some physical quantitites, which
     # will be written to external files or terminal for reference.
@@ -85,7 +91,7 @@ function plo_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     # density of states. Of course, it is time-comsuming to do
     # these things. So it is a good idea to turn off this feature
     # if everything is on the way.
-    isinteractive() && 
+    isinteractive() &&
     isfile(query_case()*".test") &&
     plo_monitor(D)
 end
@@ -118,7 +124,7 @@ function plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
     nwnd = ngrp
 
     # Additional check for nsite
-    @assert nsite === length(ai)
+    @assert nsite == length(ai)
 
     # The lshell creates a mapping from shell (string) to l (integer).
     # It is used to parse Impurity.shell to extract the `l` parameter.
@@ -155,7 +161,7 @@ function plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
     for i = 1:nsite
         SL = site_l[i]
         for g = 1:ngrp
-            if (PG[g].site, PG[g].l) === (SL[1], SL[2])
+            if (PG[g].site, PG[g].l) == (SL[1], SL[2])
                 Map.i_grp[i] = g
                 Map.g_imp[g] = i
             end
@@ -203,11 +209,11 @@ See also: [`vaspio_fermi`](@ref), [`irio_fermi`](@ref).
 function plo_fermi(enk::Array{F64,3}, fermi::F64)
     println("Calibrate eigenvalues")
     @. enk = enk - fermi
-    println("  > Reset fermi level to zero")
+    println("  > Reset DFT fermi level to zero")
 end
 
 #=
-*Remarks*:
+*Remarks* :
 
 Until now, the `PG` array was only created in `vasp.jl/vaspio_projs()`.
 
@@ -291,7 +297,7 @@ function plo_group(MAP::Mapping, PG::Array{PrGroup,1})
 end
 
 #=
-*Remarks*:
+*Remarks* :
 
 Here, `window` means energy window or band window. When nwin is 1, it
 means that all `PrGroup` share the same window. When nwin is equal to
@@ -317,7 +323,7 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
     println("  > Number of recognized windows: $nwin")
 
     # Sanity check
-    @assert nwin === 1 || nwin === length(PG)
+    @assert nwin == 1 || nwin == length(PG)
 
     # Initialize an array of PrWindow struct
     PW = PrWindow[]
@@ -329,7 +335,7 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
     # Scan the groups of projectors, setup PrWindow for them.
     for p in eachindex(PG)
         # Determine bwin. Don't forget it is a Tuple. bwin = (emin, emax).
-        if nwin === 1
+        if nwin == 1
             # All `PrGroup` shares the same window
             bwin = (window[1], window[2])
         else
@@ -348,7 +354,7 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
         # window must be defined by band indices (they are integers) or
         # energies (two float numbers).
         @assert bwin[2] > bwin[1]
-        @assert typeof(bwin[1]) === typeof(bwin[2])
+        @assert typeof(bwin[1]) == typeof(bwin[2])
         @assert bwin[1] isa Integer || bwin[1] isa AbstractFloat
 
         # The `bwin` is only the global window. But we actually need a
@@ -386,12 +392,31 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
     unique!(CW)
     @assert length(CW) == 1
 
+    # Chech PrWindow for correlated groups again
+    #
+    # Get the first window for correlated group
+    c1 = findfirst(x -> x.corr, PG)
+    PW₁ = PW[c1]
+    #
+    # Then search next window for correlated group
+    c2 = c1
+    while true
+        c2 = findnext(x -> x.corr, PG, c2 + 1)
+        # Find nothing, break the cycle
+        isa(c2, Nothing) && break
+        # Find new window, then we have to compare it with PW₁ and
+        # make sure they are the same window.
+        PW₂ = PW[c2]
+        @assert PW₁ == PW₂
+    end
+    println("  > Verify windows for correlated groups")
+
     # Return the desired array
     return PW
 end
 
 #=
-*Remarks*:
+*Remarks* :
 
 `PG[i].Tr` must be a matrix. Its size must be `(ndim, p2 - p1 + 1)`.
 =#
@@ -452,7 +477,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 end
 
 #=
-*Theory*:
+*Theory* :
 
 The projector matrix (`chipsi`) is defined as follows:
 ```math
@@ -498,13 +523,13 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
                 # `ib1` and `ib2` are the boundaries.
                 ib1 = PW[p].kwin[k, s, 1]
                 ib2 = PW[p].kwin[k, s, 2]
-                @assert ib1 <= ib2
+                @assert ib1 ≤ ib2
 
                 # `ib3` are total number of bands for given `s` and `k`
                 ib3 = ib2 - ib1 + 1
 
                 # Sanity check
-                @assert ib3 <= PW[p].nbnd
+                @assert ib3 ≤ PW[p].nbnd
 
                 # We just copy data from chipsi[p] to F
                 F[:, 1:ib3, k, s] = chipsi[p][:, ib1:ib2, k, s]
@@ -538,10 +563,10 @@ function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     nwin = convert(I64, length(window) / 2)
 
     # Sanity check
-    @assert nwin === 1 || nwin === length(PW)
+    @assert nwin == 1 || nwin == length(PW)
 
     # Choose suitable service functions
-    if nwin === 1
+    if nwin == 1
         # All the PrGroups share the same energy / band window, we should
         # orthogonalize and normalize the projectors as a whole.
         #
@@ -572,26 +597,40 @@ Kohn-Sham band structures. It is used for debug only.
 See also: [`plo_adaptor`](@ref).
 """
 function plo_monitor(D::Dict{Symbol,Any})
-    # Calculate and output overlap matrix
-    ovlp = calc_ovlp(D[:PW], D[:Fchipsi], D[:weight])
-    view_ovlp(D[:PG], ovlp)
+    if haskey(D, :MAP)
+        # Calculate and output overlap matrix
+        ovlp = calc_ovlp(D[:PW], D[:Fchipsi], D[:weight])
+        view_ovlp(D[:PG], ovlp)
 
-    # Calculate and output density matrix
-    dm = calc_dm(D[:PW], D[:Fchipsi], D[:weight], D[:occupy])
-    view_dm(D[:PG], dm)
+        # Calculate and output density matrix
+        dm = calc_dm(D[:PW], D[:Fchipsi], D[:weight], D[:occupy])
+        view_dm(D[:PG], dm)
 
-    # Calculate and output local hamiltonian
-    hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
-    view_hamk(D[:PG], hamk)
+        # Calculate and output local hamiltonian
+        hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
+        view_hamk(D[:PG], hamk)
 
-    # Calculate and output full hamiltonian
-    hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:enk])
-    view_hamk(hamk)
+        # Calculate and output full hamiltonian
+        hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:enk])
+        view_hamk(hamk)
 
-    # Calculate and output density of states
-    if get_d("smear") === "tetra"
-        mesh, dos = calc_dos(D[:PW], D[:Fchipsi], D[:itet], D[:enk])
-        view_dos(mesh, dos)
+        # Calculate and output density of states
+        if get_d("smear") == "tetra"
+            mesh, dos = calc_dos(D[:PW], D[:Fchipsi], D[:itet], D[:enk])
+            view_dos(mesh, dos)
+        end
+    else
+        # Calculate and output overlap matrix
+        ovlp = calc_ovlp(D[:chipsi], D[:weight])
+        view_ovlp(ovlp)
+
+        # Calculate and output density matrix
+        dm = calc_dm(D[:chipsi], D[:weight], D[:occupy])
+        view_dm(dm)
+
+        # Calculate and output local hamiltonian
+        #hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
+        #view_hamk(D[:PG], hamk)
     end
 end
 
@@ -668,7 +707,7 @@ function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
             end
 
             # Check the boundaries
-            @assert ib1 <= ib2
+            @assert ib1 < ib2
 
             # Save the boundaries. The ib1 and ib2 mean the lower and
             # upper boundaries, respectively.
@@ -682,7 +721,7 @@ function get_win2(enk::Array{F64,3}, bwin::Tuple{F64,F64})
 end
 
 #=
-*Remarks*:
+*Remarks* :
 
 We assume that the energy / band windows for all of the projectors are
 the same. In other words, `PW` only has an unique PrWindow object.
@@ -729,9 +768,8 @@ function try_blk1(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
             ib3 = ib2 - ib1 + 1
 
             # Sanity check
-            @assert max_band >= ib3
-            #@show s, k, ib3, max_proj
-            @assert ib3 >= max_proj
+            @assert max_band ≥ ib3
+            @assert ib3 ≥ max_proj
 
             # Try to combine all of the groups of projectors
             for p in eachindex(PW)
@@ -761,7 +799,7 @@ function try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     for p in eachindex(PW)
         # Extract some key parameters
         ndim, nbnd, nkpt, nspin = size(chipsi[p])
-        @assert nbnd === PW[p].nbnd
+        @assert nbnd == PW[p].nbnd
 
         # Loop over spins and k-points
         for s = 1:nspin
@@ -774,8 +812,8 @@ function try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
                 ib3 = ib2 - ib1 + 1
 
                 # Sanity check
-                @assert ib3 <= PW[p].nbnd
-                @assert ib3 >= ndim
+                @assert ib3 ≤ PW[p].nbnd
+                @assert ib3 ≥ ndim
 
                 # Make a view for the desired subarray
                 M = view(chipsi[p], 1:ndim, 1:ib3, k, s)
@@ -788,7 +826,7 @@ function try_blk2(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 end
 
 #=
-*Theory*:
+*Theory* :
 
 First, we try to calcuate the overlap matrix:
 ```math
@@ -883,7 +921,7 @@ function calc_ovlp(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight:
     for p in eachindex(PW)
         # Extract some key parameters
         ndim, nbnd, nkpt, nspin = size(chipsi[p])
-        @assert nbnd === PW[p].nbnd
+        @assert nbnd == PW[p].nbnd
 
         # Create a temporary array
         V = zeros(F64, ndim, ndim, nspin)
@@ -918,7 +956,7 @@ function calc_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3
     @assert nband ≥ nproj
 
     # Evaluate spin factor
-    sf = (nspin === 1 ? 2 : 1)
+    sf = (nspin == 1 ? 2 : 1)
 
     # Create density matrix array
     dm = zeros(F64, nproj, nproj, nspin)
@@ -952,10 +990,10 @@ function calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::A
     for p in eachindex(PW)
         # Extract some key parameters
         ndim, nbnd, nkpt, nspin = size(chipsi[p])
-        @assert nbnd === PW[p].nbnd
+        @assert nbnd == PW[p].nbnd
 
         # Evaluate spin factor
-        sf = (nspin === 1 ? 2 : 1)
+        sf = (nspin == 1 ? 2 : 1)
 
         # Create a temporary array
         M = zeros(F64, ndim, ndim, nspin)
@@ -993,7 +1031,7 @@ function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight:
     for p in eachindex(PW)
         # Extract some key parameters
         ndim, nbnd, nkpt, nspin = size(chipsi[p])
-        @assert nbnd === PW[p].nbnd
+        @assert nbnd == PW[p].nbnd
 
         # Create a temporary array
         H = zeros(C64, ndim, ndim, nspin)
@@ -1017,7 +1055,7 @@ function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight:
 end
 
 #=
-*Remarks*:
+*Remarks* :
 
 We assume that the energy / band windows for all of the projectors are
 the same. In other words, `PW` only has an unique PrWindow object.
@@ -1067,7 +1105,7 @@ function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Ar
             ib3 = ib2 - ib1 + 1
 
             # Sanity check
-            @assert max_band >= ib3
+            @assert max_band ≥ ib3
 
             # Try to combine all of the groups of projectors
             for p in eachindex(PW)
@@ -1104,7 +1142,7 @@ function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Ar
     for p in eachindex(PW)
         # Extract some key parameters
         ndim, nbnd, nkpt, nspin = size(chipsi[p])
-        @assert nbnd === PW[p].nbnd
+        @assert nbnd == PW[p].nbnd
 
         # Create the mesh. It depends on PrWindow.bwin.
         #
@@ -1302,7 +1340,7 @@ function view_hamk(PG::Array{PrGroup,1}, hamk::Array{Array{C64,3},1})
 end
 
 #=
-*Remarks*:
+*Remarks* :
 
 The data file `hamk.chk` is used to debug. It should not be read by the
 DMFT engine. That is the reason why we name this function as `view_hamk`
