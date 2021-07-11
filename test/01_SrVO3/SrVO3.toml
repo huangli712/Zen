@@ -40,4 +40,4 @@ lpara = [0.0]
 
 [solver]
 engine = "ct_hyb1"
-params = ["isbnd = 2", "isort = 2", "nsweep = 50000000"]
+params = ["isbnd = 2", "isort = 2", "nsweep = 10000000"]
