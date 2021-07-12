@@ -2346,7 +2346,7 @@
 !!
   subroutine cal_denmat(kocc)
      use constants, only : dp, mystd
-     use constants, only : zero, czero, czi
+     use constants, only : one, zero, czero
 
      use mmpi, only : mp_barrier
      use mmpi, only : mp_allreduce
@@ -2378,6 +2378,9 @@
 
 ! loop index for k-points
      integer :: k
+
+! loop index for orbitals
+     integer :: p, q
 
 ! loop index for impurity sites
      integer :: t
@@ -2493,7 +2496,13 @@
 ! calculate lattice green's function
              call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
 
-
+! try to calculate the momentum- and spin-dependent density matrix
+             do p=1,cbnd
+                 do q=1,cbnd
+                     call s_fft_backward(nmesh, fmesh, Gk(q,p,:), ntime, tmesh, gtau, beta)
+                     kocc(q,p,k,s) = one + gtau(1) 
+                 enddo
+             enddo
 
 ! deallocate memories
              if ( allocated(Sk) ) deallocate(Sk)
