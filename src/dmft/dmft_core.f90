@@ -40,7 +40,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           06/23/2021 by li huang (last modified)
+!!!           07/13/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -1296,14 +1296,12 @@
 !!
 !! @sub cal_gamma
 !!
-!! try to calculate correction for density matrix
+!! try to calculate correlation-induced correction for density matrix
 !!
   subroutine cal_gamma()
      use constants, only : dp
 
      use control, only : nkpt, nspin
-     use control, only : nmesh
-     use control, only : fermi
 
      use context, only : qbnd
      use context, only : gamma
@@ -1314,43 +1312,22 @@
 ! status flag
      integer  :: istat
 
-! dummy array, used to save the eigenvalues of H + \Sigma(i\omega_n)
-     complex(dp), allocatable :: eigs(:,:,:,:)
-
-! dummy array, used to save the eigenvalues of H + \Sigma(oo)
-     complex(dp), allocatable :: einf(:,:,:)
-
-! density matrix
-     complex(dp), allocatable :: kocc(:,:,:)
+! dft + dmft density matrix
+     complex(dp), allocatable :: kocc(:,:,:,:)
 
 ! allocate memory
-     allocate(eigs(qbnd,nmesh,nkpt,nspin), stat = istat)
+     allocate(kocc(qbnd,qbnd,nkpt,nspin), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_gamma','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
-     !
-     allocate(einf(qbnd,nkpt,nspin),       stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_gamma','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-     allocate(kocc(qbnd,nkpt,nspin),       stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_gamma','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-
-! construct H + \Sigma, diagonalize it to obtain the dft + dmft eigenvalues
-     call cal_eigsys(eigs, einf)
 
 ! calculate new density matrix based on the dft + dmft eigenvalues
-     call cal_denmat(fermi, eigs, einf, kocc)
+     call cal_denmat(kocc)
 
 ! calculate the difference between dft and dft + dmft density matrices
      call correction(kocc, gamma)
 
 ! deallocate memory
-     if ( allocated(eigs) ) deallocate(eigs)
-     if ( allocated(einf) ) deallocate(einf)
      if ( allocated(kocc) ) deallocate(kocc)
 
      return
