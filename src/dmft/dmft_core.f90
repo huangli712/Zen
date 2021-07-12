@@ -2365,6 +2365,10 @@
 
      implicit none
 
+! external arguments
+! dft + dmft density matrix
+     complex(dp), intent(out) :: kocc(qbnd,qbnd,nkpt,nspin)
+     
 ! local variables
 ! loop index for spin
      integer :: s
@@ -2393,6 +2397,15 @@
 
 ! dummy array: for lattice green's function
      complex(dp), allocatable :: Gk(:,:,:)
+
+! dummy array: used to perform mpi reduce operation for kocc
+     complex(dp), allocatable :: kocc_mpi(:,:,:,:)
+
+! allocate memory
+     allocate(kocc_mpi(qbnd,qbnd,nkpt,nspin), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_denmat','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
 
 ! reset cbnd and cdim. they will be updated later
 ! cbnd should be k-dependent and cdim should be impurity-dependent.
