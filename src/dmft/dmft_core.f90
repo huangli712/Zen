@@ -279,6 +279,7 @@
          write(mystd,'(2X,a)') cname // ' >>> Task : Gamma'
      endif ! back if ( myid == master ) block
      !
+     fermi = -2.99735689357974_dp
      call cal_gamma()
      !
      if ( myid == master ) then
@@ -1992,7 +1993,7 @@
 
 ! external arguments
 ! density matrix from dft + dmft calculations
-     complex(dp), intent(in)  :: kocc(qbnd,nkpt,nspin)
+     complex(dp), intent(in)  :: kocc(qbnd,qbnd,nkpt,nspin)
 
 ! correction for density matrix
      complex(dp), intent(out) :: gamma(qbnd,qbnd,nkpt,nspin)
@@ -2361,6 +2362,7 @@
      use context, only : qbnd
      use context, only : ndim
      use context, only : kwin
+     use context, only : fmesh
 
      implicit none
 
@@ -2500,7 +2502,11 @@
              do p=1,cbnd
                  do q=1,cbnd
                      call s_fft_backward(nmesh, fmesh, Gk(q,p,:), ntime, tmesh, gtau, beta)
-                     kocc(q,p,k,s) = one + gtau(1) 
+                     if ( p == q ) then
+                         kocc(q,p,k,s) = one + gtau(1)
+                     else
+                         kocc(q,p,k,s) = gtau(1)
+                     endif
                  enddo
              enddo
 
@@ -2517,19 +2523,23 @@
      !
      call mp_barrier()
      !
-     call mp_allreduce(green, green_mpi)
+     call mp_allreduce(kocc, kocc_mpi)
      !
      call mp_barrier()
      !
 # else  /* MPI */
 
-     green_mpi = green
+     kocc_mpi = kocc
 
 # endif /* MPI */
 
-! renormalize local green's function
+! renormalize density matrix
+     kocc = kocc_mpi
 
 ! deallocate memory
+     if ( allocated(tmesh) )    deallocate(tmesh)
+     if ( allocated(gtau) )     deallocate(gtau)
+     if ( allocated(kocc_mpi) ) deallocate(kocc_mpi)
 
      return
   end subroutine cal_denmat
