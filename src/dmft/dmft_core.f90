@@ -2346,7 +2346,7 @@
 !!
   subroutine cal_denmat(kocc)
      use constants, only : dp, mystd
-     use constants, only : czero, czi
+     use constants, only : zero, czero, czi
 
      use mmpi, only : mp_barrier
      use mmpi, only : mp_allreduce
@@ -2354,14 +2354,13 @@
      use control, only : nkpt, nspin
      use control, only : nsite
      use control, only : nmesh
+     use control, only : beta
      use control, only : myid, master, nprocs
 
      use context, only : i_wnd
-     use context, only : qdim
+     use context, only : qbnd
      use context, only : ndim
      use context, only : kwin
-     use context, only : weight
-     use context, only : green
 
      implicit none
 
@@ -2524,7 +2523,7 @@
 ! deallocate memory
 
      return
-  end subroutine cal_green
+  end subroutine cal_denmat
 
 !!
 !! @sub cal_eigsys
