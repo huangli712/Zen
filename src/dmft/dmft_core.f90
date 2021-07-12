@@ -2399,10 +2399,6 @@
      cbnd = 0
      cdim = 0
 
-! reset green
-     green = czero
-     green_mpi = czero
-
 ! print some useful information
      if ( myid == master ) then
          write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate green for', nsite, 'sites'
@@ -2442,7 +2438,7 @@
              allocate(Gk(cbnd,cbnd,nmesh), stat = istat)
              !
              if ( istat /= 0 ) then
-                 call s_print_error('cal_green','can not allocate enough memory')
+                 call s_print_error('cal_denmat','can not allocate enough memory')
              endif ! back if ( istat /= 0 ) block
 
 ! build self-energy function, and then upfold it into Kohn-Sham basis
@@ -2458,14 +2454,7 @@
 ! calculate lattice green's function
              call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
 
-! downfold the lattice green's function to obtain local green's function,
-! then we have to perform k-summation
-             do t=1,nsite
-                 Gl = czero
-                 cdim = ndim(t)
-                 call cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl(1:cdim,1:cdim,:))
-                 green(:,:,:,s,t) = green(:,:,:,s,t) + Gl * weight(k)
-             enddo ! over t={1,nsite} loop
+
 
 ! deallocate memories
              if ( allocated(Sk) ) deallocate(Sk)
@@ -2491,11 +2480,8 @@
 # endif /* MPI */
 
 ! renormalize local green's function
-     green = green_mpi / float(nkpt)
 
 ! deallocate memory
-     if ( allocated(Gl) ) deallocate(Gl)
-     if ( allocated(green_mpi) ) deallocate(green_mpi)
 
      return
   end subroutine cal_green
