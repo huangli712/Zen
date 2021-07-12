@@ -2005,6 +2005,9 @@
 ! index for k-points
      integer :: k
 
+! index for orbitals
+     integer :: p, q
+
 ! index for impurity sites
      integer :: t
 
@@ -2017,25 +2020,16 @@
 ! status flag
      integer :: istat
 
-! dummy vector, used to save the difference of density
-     complex(dp), allocatable :: vm(:)
-
 ! dummy array, used to perform mpi reduce operation for gamma
      complex(dp), allocatable :: gamma_mpi(:,:,:,:)
 
 ! allocate memory
-     allocate(vm(qbnd), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('correction','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
      allocate(gamma_mpi(qbnd,qbnd,nkpt,nspin), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('correction','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
 ! reset gamma
-     vm = czero
      gamma = czero
      gamma_mpi = czero
 
@@ -2072,12 +2066,16 @@
              write(mystd,'(2X,a,i2)') 'proc: ', myid
 
 ! calculate the difference between dft + dmft density matrix `kocc` and
-! the dft density matrix `occupy`. the results are saved at `vm`.
-             vm = czero
-             vm(1:cbnd) = kocc(1:cbnd,k,s) - occupy(bs:be,k,s)
-
-! to fill the gamma array using the values in vm
-             call s_diag_z(qbnd, vm, gamma(:,:,k,s))
+! the dft density matrix `occupy`. the results are saved at `gamma`.
+             do p = 1,cbnd
+                 do q = 1,cbnd
+                     if p /= q then
+                         gamma(q,p,k,s) = kocc(q,p,k,s)
+                     else
+                         gamma(q,p,k,s) = kocc(q,p,k,s) - occupy(bs + q - 1,k,s) 
+                     endif
+                 enddo
+             enddo
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
@@ -2101,7 +2099,6 @@
      gamma = gamma_mpi
 
 ! deallocate memory
-     deallocate(vm)
      deallocate(gamma_mpi)
 
      return
