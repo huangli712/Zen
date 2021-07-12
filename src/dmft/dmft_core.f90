@@ -2068,7 +2068,7 @@
 ! the dft density matrix `occupy`. the results are saved at `gamma`.
              do p = 1,cbnd
                  do q = 1,cbnd
-                     if p /= q then
+                     if ( p /= q ) then
                          gamma(q,p,k,s) = kocc(q,p,k,s)
                      else
                          gamma(q,p,k,s) = kocc(q,p,k,s) - occupy(bs + q - 1,k,s) 
