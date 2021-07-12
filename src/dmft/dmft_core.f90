@@ -279,7 +279,6 @@
          write(mystd,'(2X,a)') cname // ' >>> Task : Gamma'
      endif ! back if ( myid == master ) block
      !
-     fermi = -2.99735689357974_dp
      call cal_gamma()
      !
      if ( myid == master ) then
