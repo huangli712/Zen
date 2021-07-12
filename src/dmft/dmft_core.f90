@@ -2365,6 +2365,10 @@
 
      implicit none
 
+! local parameters
+! number of time slices on imaginary time axis
+     integer, parameter :: ntime = 1024
+
 ! external arguments
 ! dft + dmft density matrix
      complex(dp), intent(out) :: kocc(qbnd,qbnd,nkpt,nspin)
@@ -2391,6 +2395,12 @@
 ! status flag
      integer :: istat
 
+! imaginary time axis
+     real(dp), allocatable :: tmesh(:)
+
+! green's function on imaginary time axis
+     real(dp), allocatable :: gtau(:)
+
 ! dummy array: for self-energy function (upfolded to Kohn-Sham basis)
      complex(dp), allocatable :: Sk(:,:,:)
      complex(dp), allocatable :: Xk(:,:,:)
@@ -2412,10 +2422,14 @@
      cbnd = 0
      cdim = 0
 
+! reset kocc and kocc_mpi
+     kocc = czero
+     kocc_mpi = czero
+
 ! print some useful information
      if ( myid == master ) then
-         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate green for', nsite, 'sites'
-         write(mystd,'(4X,a,2X,i4,2X,a)') 'add contributions from', nkpt, 'kpoints'
+         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate density matrix for', nsite, 'sites'
+         write(mystd,'(4X,a,2X,i4,2X,a)') 'consider contributions from', nkpt, 'kpoints'
      endif ! back if ( myid == master ) block
 
 ! mpi barrier. waiting all processes reach here.
