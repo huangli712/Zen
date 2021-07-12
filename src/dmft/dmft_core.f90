@@ -2344,136 +2344,161 @@
 !!
 !! try to calculate the dft + dmft density matrix for given fermi level
 !!
-  subroutine cal_denmat(fermi, eigs, einf, kocc)
+  subroutine cal_denmat(kocc)
      use constants, only : dp, mystd
-     use constants, only : one, two
-     use constants, only : czi, czero
+     use constants, only : czero, czi
 
-     use control, only : axis
+     use mmpi, only : mp_barrier
+     use mmpi, only : mp_allreduce
+
      use control, only : nkpt, nspin
+     use control, only : nsite
      use control, only : nmesh
-     use control, only : beta
-     use control, only : myid, master
+     use control, only : myid, master, nprocs
 
      use context, only : i_wnd
-     use context, only : qbnd
+     use context, only : qdim
+     use context, only : ndim
      use context, only : kwin
-     use context, only : fmesh
+     use context, only : weight
+     use context, only : green
 
      implicit none
 
-! external arguments
-! assumed fermi level
-     real(dp), intent(in)     :: fermi
-
-! eigenvalues for H(k) + \Sigma(i\omega_n)
-     complex(dp), intent(in)  :: eigs(qbnd,nmesh,nkpt,nspin)
-
-! eigenvalues for H(k) + \Sigma(\infty)
-     complex(dp), intent(in)  :: einf(qbnd,nkpt,nspin)
-
-! density matrix
-     complex(dp), intent(out) :: kocc(qbnd,nkpt,nspin)
-
 ! local variables
-! loop index for spins
-     integer  :: s
+! loop index for spin
+     integer :: s
 
 ! loop index for k-points
-     integer  :: k
+     integer :: k
 
-! loop index for frequency points
-     integer  :: m
-
-! loop index for bands
-     integer  :: b
-
-! band window: start index and end index for bands
-     integer  :: bs, be
+! loop index for impurity sites
+     integer :: t
 
 ! number of dft bands for given k-point and spin
-     integer  :: cbnd
+     integer :: cbnd
+
+! number of correlated orbitals for given impurity site
+     integer :: cdim
+
+! band window: start index and end index for bands
+     integer :: bs, be
 
 ! status flag
-     integer  :: istat
+     integer :: istat
 
-! complex(dp) dummy variable
-     complex(dp) :: caux
+! dummy array: for self-energy function (upfolded to Kohn-Sham basis)
+     complex(dp), allocatable :: Sk(:,:,:)
+     complex(dp), allocatable :: Xk(:,:,:)
 
-! lattice green's function
-     complex(dp), allocatable :: glat(:,:,:,:)
+! dummy array: for lattice green's function
+     complex(dp), allocatable :: Gk(:,:,:)
 
-! external functions
-! used to calculate fermi-dirac function
-     real(dp), external :: fermi_dirac
+! reset cbnd and cdim. they will be updated later
+! cbnd should be k-dependent and cdim should be impurity-dependent.
+     cbnd = 0
+     cdim = 0
 
-! allocate memory
-     allocate(glat(qbnd,nmesh,nkpt,nspin), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_denmat','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-
-! check axis
-     call s_assert2(axis == 1, 'axis is wrong')
-
-! reset glat
-     glat = czero
+! reset green
+     green = czero
+     green_mpi = czero
 
 ! print some useful information
      if ( myid == master ) then
-         write(mystd,'(4X,a)') 'calculating dft + dmft density matrix'
+         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate green for', nsite, 'sites'
+         write(mystd,'(4X,a,2X,i4,2X,a)') 'add contributions from', nkpt, 'kpoints'
      endif ! back if ( myid == master ) block
 
-! loop over spins and k-points to calculate the lattice green's function
-     SPIN_LOOP: do s=1,nspin
-         KPNT_LOOP: do k=1,nkpt
+! mpi barrier. waiting all processes reach here.
+# if defined (MPI)
+     !
+     call mp_barrier()
+     !
+# endif /* MPI */
 
-! determine the band window
-! see remarks in cal_nelect()
-             bs = kwin(k,s,1,i_wnd(1))
-             be = kwin(k,s,2,i_wnd(1))
+! loop over spins and k-points
+     SPIN_LOOP: do s=1,nspin
+         KPNT_LOOP: do k=myid+1,nkpt,nprocs
+
+! evaluate band window for the current k-point and spin
+! i_wnd(t) returns the corresponding band window for given impurity site t
+! see remarks in cal_nelect() for more details
+             t = 1 ! t is fixed to 1
+             bs = kwin(k,s,1,i_wnd(t))
+             be = kwin(k,s,2,i_wnd(t))
+
+! determine cbnd
              cbnd = be - bs + 1
 
-! here, the asymptotic part is substracted
-             do m=1,nmesh
-                 caux = czi * fmesh(m) + fermi
-                 do b=1,cbnd
-                     glat(b,m,k,s) = one / ( caux - eigs(b,m,k,s) ) - one / ( caux - einf(b,k,s) )
-                 enddo ! over b={1,cbnd} loop
-             enddo ! over m={1,nmesh} loop
+! provide some useful information
+             write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
+             write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
+             write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
+             write(mystd,'(2X,a,i2)') 'proc: ', myid
+
+! allocate memories Sk, Xk, and Gk. their sizes are k-dependent
+             allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
+             allocate(Xk(cbnd,cbnd,nmesh), stat = istat)
+             allocate(Gk(cbnd,cbnd,nmesh), stat = istat)
+             !
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_green','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
+
+! build self-energy function, and then upfold it into Kohn-Sham basis
+! Sk should contain contributions from all impurity sites
+             Sk = czero
+             do t=1,nsite
+                 Xk = czero ! reset Xk
+                 cdim = ndim(t)
+                 call cal_sl_sk(cdim, cbnd, k, s, t, Xk)
+                 Sk = Sk + Xk
+             enddo ! over t={1,nsite} loop
+
+! calculate lattice green's function
+             call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
+
+! downfold the lattice green's function to obtain local green's function,
+! then we have to perform k-summation
+             do t=1,nsite
+                 Gl = czero
+                 cdim = ndim(t)
+                 call cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl(1:cdim,1:cdim,:))
+                 green(:,:,:,s,t) = green(:,:,:,s,t) + Gl * weight(k)
+             enddo ! over t={1,nsite} loop
+
+! deallocate memories
+             if ( allocated(Sk) ) deallocate(Sk)
+             if ( allocated(Xk) ) deallocate(Xk)
+             if ( allocated(Gk) ) deallocate(Gk)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
-! calculate frequency-summation of the lattice green's function
-     do s=1,nspin
-         do k=1,nkpt
-             do b=1,qbnd
-                 kocc(b,k,s) = sum( glat(b,:,k,s) ) * ( two / beta )
-             enddo ! over b={1,cbnd} loop
-         enddo ! over k={1,nkpt} loop
-     enddo ! over s={1,nspin} loop
+! collect data from all mpi processes
+# if defined (MPI)
+     !
+     call mp_barrier()
+     !
+     call mp_allreduce(green, green_mpi)
+     !
+     call mp_barrier()
+     !
+# else  /* MPI */
 
-! consider the contribution from asymptotic part
-     do s=1,nspin
-         do k=1,nkpt
-! determine the band window
-! see remarks in cal_nelect()
-             bs = kwin(k,s,1,i_wnd(1))
-             be = kwin(k,s,2,i_wnd(1))
-             cbnd = be - bs + 1
-             do b=1,cbnd
-                 caux = einf(b,k,s) - fermi
-                 kocc(b,k,s) = kocc(b,k,s) + fermi_dirac( real(caux) )
-             enddo ! over b={1,cbnd} loop
-         enddo ! over k={1,nkpt} loop
-     enddo ! over s={1,nspin} loop
+     green_mpi = green
+
+# endif /* MPI */
+
+! renormalize local green's function
+     green = green_mpi / float(nkpt)
 
 ! deallocate memory
-     if ( allocated(glat) ) deallocate(glat)
+     if ( allocated(Gl) ) deallocate(Gl)
+     if ( allocated(green_mpi) ) deallocate(green_mpi)
 
      return
-  end subroutine cal_denmat
+  end subroutine cal_green
 
 !!
 !! @sub cal_eigsys
