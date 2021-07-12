@@ -2412,6 +2412,16 @@
      complex(dp), allocatable :: kocc_mpi(:,:,:,:)
 
 ! allocate memory
+     allocate(tmesh(ntime), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_denmat','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(gtau(ntime), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_denmat','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
      allocate(kocc_mpi(qbnd,qbnd,nkpt,nspin), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_denmat','can not allocate enough memory')
@@ -2425,6 +2435,9 @@
 ! reset kocc and kocc_mpi
      kocc = czero
      kocc_mpi = czero
+
+! build imaginary time axis
+     call s_linspace_d(zero, beta, ntime, tmesh)
 
 ! print some useful information
      if ( myid == master ) then
