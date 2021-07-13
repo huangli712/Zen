@@ -2362,10 +2362,6 @@
 
      implicit none
 
-! local parameters
-! number of time slices on imaginary time axis
-     integer, parameter :: ntime = 1024
-
 ! external arguments
 ! dft + dmft density matrix
      complex(dp), intent(out) :: kocc(qbnd,qbnd,nkpt,nspin)
@@ -2395,6 +2391,7 @@
 ! status flag
      integer :: istat
 
+! orbital density for given k and spin
      complex(dp) :: density
 
 ! dummy array: for self-energy function (upfolded to Kohn-Sham basis)
