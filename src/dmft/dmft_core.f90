@@ -2343,7 +2343,7 @@
 !!
   subroutine cal_denmat(kocc)
      use constants, only : dp, mystd
-     use constants, only : one, zero, czero
+     use constants, only : one, czero
 
      use mmpi, only : mp_barrier
      use mmpi, only : mp_allreduce
@@ -2395,11 +2395,7 @@
 ! status flag
      integer :: istat
 
-! imaginary time axis
-     real(dp), allocatable :: tmesh(:)
-
-! green's function on imaginary time axis
-     real(dp), allocatable :: gtau(:)
+     complex(dp) :: density
 
 ! dummy array: for self-energy function (upfolded to Kohn-Sham basis)
      complex(dp), allocatable :: Sk(:,:,:)
@@ -2412,16 +2408,6 @@
      complex(dp), allocatable :: kocc_mpi(:,:,:,:)
 
 ! allocate memory
-     allocate(tmesh(ntime), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_denmat','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-     allocate(gtau(ntime), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_denmat','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
      allocate(kocc_mpi(qbnd,qbnd,nkpt,nspin), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_denmat','can not allocate enough memory')
@@ -2436,13 +2422,9 @@
      kocc = czero
      kocc_mpi = czero
 
-! build imaginary time axis
-     call s_linspace_d(zero, beta, ntime, tmesh)
-
 ! print some useful information
      if ( myid == master ) then
-         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate density matrix for', nsite, 'sites'
-         write(mystd,'(4X,a,2X,i4,2X,a)') 'consider contributions from', nkpt, 'kpoints'
+         write(mystd,'(4X,a)') 'calculate dft + dmft density matrix'
      endif ! back if ( myid == master ) block
 
 ! mpi barrier. waiting all processes reach here.
@@ -2497,11 +2479,11 @@
 ! try to calculate the momentum- and spin-dependent density matrix
              do p=1,cbnd
                  do q=1,cbnd
-                     call s_fft_backward(nmesh, fmesh, Gk(q,p,:), ntime, tmesh, gtau, beta)
+                     call s_fft_density(nmesh, fmesh, Gk(q,p,:), density, beta)
                      if ( p == q ) then
-                         kocc(q,p,k,s) = one + gtau(1)
+                         kocc(q,p,k,s) = one + density
                      else
-                         kocc(q,p,k,s) = gtau(1)
+                         kocc(q,p,k,s) = density
                      endif
                  enddo
              enddo
@@ -2533,8 +2515,6 @@
      kocc = kocc_mpi
 
 ! deallocate memory
-     if ( allocated(tmesh) )    deallocate(tmesh)
-     if ( allocated(gtau) )     deallocate(gtau)
      if ( allocated(kocc_mpi) ) deallocate(kocc_mpi)
 
      return
