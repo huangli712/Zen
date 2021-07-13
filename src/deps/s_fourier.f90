@@ -247,7 +247,6 @@
 
 ! local variables
 ! loop index
-     integer  :: i
      integer  :: j
 
 ! real(dp) dummy variables
@@ -260,19 +259,13 @@
 ! perform infourier transformation
      raux = zero
      do j=1,mfreq
-         raux = raux + cos( rmesh(j) * tmesh(i) ) *   real( fmat(j) )
-         raux = raux + sin( rmesh(j) * tmesh(i) ) * (aimag( fmat(j) ) + tail / rmesh(j))
+         raux = raux + real( fmat(j) )
      enddo ! over j={1,mfreq} loop
-     ftau(i) = two * raux / beta - half * tail
+     density = two * raux / beta - half * tail
 
 ! corrections for the boundary point
      raux = real( fmat(mfreq) ) * rmesh(mfreq) / pi
-     ftau(1) = ftau(1) + raux
-     ftau(ntime) = ftau(ntime) - raux
-
-! additional corrections, may be useful for lda + dmft calculations
-     ftau(1) = 3.0_dp * ftau(2) - 3.0_dp * ftau(3) + ftau(4)
-     ftau(ntime) = 3.0_dp * ftau(ntime-1) - 3.0_dp * ftau(ntime-2) + ftau(ntime-3)
+     density = density + raux
 
      return
   end subroutine s_fft_density
