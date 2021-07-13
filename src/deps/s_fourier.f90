@@ -258,14 +258,12 @@
      call s_fft_tails(tail, mfreq, rmesh, fmat)
 
 ! perform infourier transformation
-     do i=1,ntime
-         raux = zero
-         do j=1,mfreq
-             raux = raux + cos( rmesh(j) * tmesh(i) ) *   real( fmat(j) )
-             raux = raux + sin( rmesh(j) * tmesh(i) ) * (aimag( fmat(j) ) + tail / rmesh(j))
-         enddo ! over j={1,mfreq} loop
-         ftau(i) = two * raux / beta - half * tail
-     enddo ! over i={1,ntime} loop
+     raux = zero
+     do j=1,mfreq
+         raux = raux + cos( rmesh(j) * tmesh(i) ) *   real( fmat(j) )
+         raux = raux + sin( rmesh(j) * tmesh(i) ) * (aimag( fmat(j) ) + tail / rmesh(j))
+     enddo ! over j={1,mfreq} loop
+     ftau(i) = two * raux / beta - half * tail
 
 ! corrections for the boundary point
      raux = real( fmat(mfreq) ) * rmesh(mfreq) / pi
