@@ -16,7 +16,7 @@ window = [17, 24]
 [dmft]
 mode = 2
 axis = 1
-niter = [10, 2, 6]
+niter = [12, 2, 8]
 nmesh = 8193
 dcount = "fll1"
 beta = 40.0
