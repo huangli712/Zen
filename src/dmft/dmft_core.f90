@@ -40,7 +40,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           07/13/2021 by li huang (last modified)
+!!!           07/20/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -207,7 +207,7 @@
          write(mystd,'(2X,a)') cname // ' >>> Task : Write'
          !
          write(mystd,'(4X,a)') 'save fermi...'
-         call dmft_dump_fermi(fermi, occup)
+         call dmft_dump_fermi(fermi, occup, zero)
          !
          write(mystd,'(4X,a)') 'save eimps...'
          call dmft_dump_eimps(eimps)
@@ -255,6 +255,9 @@
 ! lattice occupancy
      real(dp) :: occup
 
+! correction to band energy
+     real(dp) :: ecorr
+
 ! try to search the fermi level
      if ( myid == master ) then
          write(mystd,'(2X,a)') cname // ' >>> Task : Fermi'
@@ -279,7 +282,9 @@
          write(mystd,'(2X,a)') cname // ' >>> Task : Gamma'
      endif ! back if ( myid == master ) block
      !
-     call cal_gamma()
+     ecorr = zero
+     !
+     call cal_gamma(ecorr)
      !
      if ( myid == master ) then
          write(mystd,*)
@@ -290,7 +295,7 @@
          write(mystd,'(2X,a)') cname // ' >>> Task : Write'
          !
          write(mystd,'(4X,a)') 'save fermi...'
-         call dmft_dump_fermi(fermi, occup)
+         call dmft_dump_fermi(fermi, occup, ecorr)
          !
          write(mystd,'(4X,a)') 'save gamma...'
          call dmft_dump_gamma(gamma)
@@ -343,7 +348,7 @@
          write(mystd,'(2X,a)') cname // ' >>> Task : Write'
          !
          write(mystd,'(4X,a)') 'save fermi...'
-         call dmft_dump_fermi(fermi, occup)
+         call dmft_dump_fermi(fermi, occup, zero)
          !
          write(mystd,*)
      endif ! back if ( myid == master ) block
@@ -1298,7 +1303,7 @@
 !!
 !! try to calculate correlation-induced correction for density matrix
 !!
-  subroutine cal_gamma()
+  subroutine cal_gamma(ecorr)
      use constants, only : dp
 
      use control, only : nkpt, nspin
@@ -1307,6 +1312,10 @@
      use context, only : gamma
 
      implicit none
+
+! external arguments
+! correction to band energy
+     real(dp), intent(out) :: ecorr
 
 ! local variables
 ! status flag
@@ -1325,7 +1334,7 @@
      call cal_denmat(kocc)
 
 ! calculate the difference between dft and dft + dmft density matrices
-     call correction(kocc, gamma)
+     call correction(kocc, gamma, ecorr)
 
 ! deallocate memory
      if ( allocated(kocc) ) deallocate(kocc)
@@ -1973,9 +1982,9 @@
 !! try to evaluate the difference between the dft density matrix and the
 !! dft + dmft density matrix
 !!
-  subroutine correction(kocc, gamma)
+  subroutine correction(kocc, gamma, ecorr)
      use constants, only : dp, mystd
-     use constants, only : czero
+     use constants, only : zero, two, czero
 
      use mmpi, only : mp_barrier
      use mmpi, only : mp_allreduce
@@ -1986,7 +1995,8 @@
      use context, only : i_wnd
      use context, only : qbnd
      use context, only : kwin
-     use context, only : occupy
+     use context, only : weight
+     use context, only : enk, occupy
 
      implicit none
 
@@ -1996,6 +2006,9 @@
 
 ! correction for density matrix
      complex(dp), intent(out) :: gamma(qbnd,qbnd,nkpt,nspin)
+
+! correction for band energy
+     real(dp), intent(out)    :: ecorr
 
 ! local variables
 ! index for spins
@@ -2019,6 +2032,14 @@
 ! status flag
      integer :: istat
 
+! dummy variable, used to perform mpi reduce operation for ecorr
+     real(dp), allocatable    :: ecorr_mpi
+     complex(dp) :: tr
+
+! dummy arrays, used to build effective hamiltonian
+     complex(dp), allocatable :: Em(:)
+     complex(dp), allocatable :: Hm(:,:)
+
 ! dummy array, used to perform mpi reduce operation for gamma
      complex(dp), allocatable :: gamma_mpi(:,:,:,:)
 
@@ -2031,6 +2052,10 @@
 ! reset gamma
      gamma = czero
      gamma_mpi = czero
+
+! reset ecorr
+     ecorr = zero
+     ecorr_mpi = zero
 
 ! print some useful information
      if ( myid == master ) then
@@ -2064,8 +2089,16 @@
              write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
              write(mystd,'(2X,a,i2)') 'proc: ', myid
 
+! allocate memory
+             allocate(Em(cbnd),      stat = istat)
+             allocate(Hm(cbnd,cbnd), stat = istat)
+             !
+             if ( istat /= 0 ) then
+                 call s_print_error('correction','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
+
 ! calculate the difference between dft + dmft density matrix `kocc` and
-! the dft density matrix `occupy`. the results are saved at `gamma`.
+! the dft density matrix `occupy`. the results are saved at `gamma.
              do p = 1,cbnd
                  do q = 1,cbnd
                      if ( p /= q ) then
@@ -2076,6 +2109,24 @@
                  enddo
              enddo
 
+! Now gamma(:,:,k,s) is ready, we would like to use it to calculate its
+! contribution to band energy.
+
+! evaluate Em, which is the eigenvalues
+             Em = enk(bs:be,k,s)
+
+! convert `Em` to diagonal matrix `Hm`
+             call s_diag_z(cbnd, Em, Hm)
+
+! evaluate correction to band energy
+             Hm = matmul(gamma(:,:,k,s), Hm)
+             call s_trace_z(cbnd, Hm, tr)
+             ecorr = ecorr + real(tr) * weight(k) 
+
+! deallocate memory
+             if ( allocated(Em) ) deallocate(Em)
+             if ( allocated(Hm) ) deallocate(Hm)
+
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
@@ -2085,17 +2136,23 @@
      call mp_barrier()
      !
      call mp_allreduce(gamma, gamma_mpi)
+     call mp_allreduce(ecorr, ecorr_mpi)
      !
      call mp_barrier()
      !
 # else  /* MPI */
 
      gamma_mpi = gamma
+     ecorr_mpi = ecorr
 
 # endif /* MPI */
 
 ! get the final correction for density matrix
      gamma = gamma_mpi
+     ecorr = ecorr_mpi / float(nkpt)
+     if ( nspin == 1 ) then
+         ecorr = ecorr * two
+     endif ! back if ( nspin == 1 ) block
 
 ! deallocate memory
      deallocate(gamma_mpi)

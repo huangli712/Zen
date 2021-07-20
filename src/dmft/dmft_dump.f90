@@ -12,7 +12,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           06/23/2021 by li huang (last modified)
+!!!           07/20/2021 by li huang (last modified)
 !!! purpose :
 !!! status  : unstable
 !!! comment :
@@ -21,9 +21,10 @@
 !!
 !! @sub dmft_dump_fermi
 !!
-!! write out calculated fermi level and lattice occupancy
+!! write out calculated fermi level, lattice occupancy, and correction to
+!! band energy.
 !!
-  subroutine dmft_dump_fermi(fermi, occup)
+  subroutine dmft_dump_fermi(fermi, occup, ecorr)
      use constants, only : dp
      use constants, only : mytmp
 
@@ -36,12 +37,16 @@
 ! lattice occupancy
      real(dp), intent(in) :: occup
 
+! correction to band energy
+     real(dp), intent(in) :: ecorr
+
 ! open data file: dmft.fermi
      open(mytmp, file='dmft.fermi', form='formatted', status='unknown')
 
 ! write parameters
      write(mytmp,'(a9,f16.8)') '# fermi: ', fermi
      write(mytmp,'(a9,f16.8)') '# occup: ', occup
+     write(mytmp,'(a9,f16.8)') '# ecorr: ', ecorr
 
 ! close data file
      close(mytmp)
