@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/05
+# Last modified: 2021/07/14
 #
 
 #=
@@ -200,7 +200,7 @@ function chk_dict()
     # C3. Check self-consistency
     #
     # Check dft block
-    @assert get_d("projtype") === "plo"
+    @assert get_d("projtype") == "plo"
     if get_d("lspinorb")
         @assert !get_d("lspins")
     end
@@ -210,9 +210,9 @@ function chk_dict()
     #
     # Check solver block
     if get_s("engine") in ("ct_hyb1", "ct_hyb2", "hub1")
-        @assert get_m("axis") === 1 # Imaginary axis
+        @assert get_m("axis") == 1 # Imaginary axis
     elseif get_s("engine") in ("norg",)
-        @assert get_m("axis") === 2 # Real axis
+        @assert get_m("axis") == 2 # Real axis
     end
     #
     # Please add more assertion statements here
@@ -471,7 +471,7 @@ See also: [`cat_c`](@ref), [`get_c`](@ref).
 @inline function str_c(key::String)
     if haskey(PCASE, key)
         c = PCASE[key][1]
-        if PCASE[key][3] === :Array && !isa(c, Missing)
+        if PCASE[key][3] == :Array && !isa(c, Missing)
             join(c, "; ")
         else
             c isa String ? c : string(c)
@@ -491,7 +491,7 @@ See also: [`cat_d`](@ref), [`get_d`](@ref).
 @inline function str_d(key::String)
     if haskey(PDFT, key)
         d = PDFT[key][1]
-        if PDFT[key][3] === :Array && !isa(d, Missing)
+        if PDFT[key][3] == :Array && !isa(d, Missing)
             join(d, "; ")
         else
             d isa String ? d : string(d)
@@ -511,7 +511,7 @@ See also: [`cat_m`](@ref), [`get_m`](@ref).
 @inline function str_m(key::String)
     if haskey(PDMFT, key)
         m = PDMFT[key][1]
-        if PDMFT[key][3] === :Array && !isa(m, Missing)
+        if PDMFT[key][3] == :Array && !isa(m, Missing)
             join(m, "; ")
         else
             m isa String ? m : string(m)
@@ -531,7 +531,7 @@ See also: [`cat_i`](@ref), [`get_i`](@ref).
 @inline function str_i(key::String)
     if haskey(PIMP, key)
         i = PIMP[key][1]
-        if PIMP[key][3] === :Array && !isa(i, Missing)
+        if PIMP[key][3] == :Array && !isa(i, Missing)
             join(i, "; ")
         else
             i isa String ? i : string(i)
@@ -551,7 +551,7 @@ See also: [`cat_s`](@ref), [`get_s`](@ref).
 @inline function str_s(key::String)
     if haskey(PSOLVER, key)
         s = PSOLVER[key][1]
-        if PSOLVER[key][3] === :Array && !isa(s, Missing)
+        if PSOLVER[key][3] == :Array && !isa(s, Missing)
             join(PSOLVER[key][1], "; ")
         else
             s isa String ? s : string(s)

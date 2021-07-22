@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/06/21
+# Last modified: 2021/07/14
 #
 
 #=
@@ -18,8 +18,8 @@ following algorithms are supported:
 * Analytical tetrahedron algorithm with Blochl corrections.
 
 Note that you have to modify the `line 87-89` to choose suitable driver.
-Perhaps you also need to modify the `gamm` parameter (`line 133 or 168`)
-to obtain more reasonable results. Now the default algorithm is (3).
+Perhaps you also need to modify the `γ` parameter (`line 133 or 168`)
+to obtain more reasonable results. Now the default algorithm is (`3`).
 =#
 
 #=
@@ -58,7 +58,7 @@ See also: [`gauss_weight`](@ref), [`fermi_weight`](@ref), [`tetra_weight`](@ref)
 function bzint(z::F64, itet::Array{I64,2}, enk::Array{F64,3})
     # Extract some key parameters
     ntet, ndim = size(itet)
-    @assert ndim === 5
+    @assert ndim == 5
 
     # Extract some key parameters
     nband, nkpt, nspin = size(enk)
@@ -130,13 +130,13 @@ function gauss_weight(z::F64, e::Array{F64,1})
     TW = TetraWeight(cw, dw, tw)
 
     # Parameter for gaussian broadening
-    gamm = 0.25
+    γ = 0.25
 
     # Further setup the integration weights
     for i = 1:4
-        dummy = ( z - e[i] ) / gamm
+        dummy = ( z - e[i] ) / γ
         TW.tw[i] = 0.125 * ( 1.0 - erf(-dummy) )
-        TW.dw[i] = 0.25 * exp(-dummy^2.0) / ( sqrt(pi) * gamm )
+        TW.dw[i] = 0.25 * exp(-dummy^2.0) / ( sqrt(pi) * γ )
     end
 
     # Return the TetraWeight struct
@@ -165,11 +165,11 @@ function fermi_weight(z::F64, e::Array{F64,1})
     TW = TetraWeight(cw, dw, tw)
 
     # Parameter for gaussian broadening
-    gamm = 0.25
+    γ = 0.25
 
     # Further setup the integration weights
     for i = 1:4
-        dummy = ( z - e[i] ) / gamm
+        dummy = ( z - e[i] ) / γ
         TW.tw[i] = 1.0 / (1.0 +  exp(-dummy) )
         TW.dw[i] = 0.5 / (1.0 + cosh( dummy) )
     end
@@ -198,9 +198,14 @@ function tetra_weight(z::F64, e::Array{F64,1})
         end
     end
 
+    # Remove possible degenerancies between e and z.
+    #
+    # The original implementation uses `/`. We find that sometimes it is
+    # not enough to remove the degenerancies. So we turn to `*`.
     for i = 1:4
         if abs( e[i] - z ) < eps(F64) / 10.0
-            e[i] = e[i] + eps(F64) / 10.0 / float(i)
+            # e[i] = e[i] + eps(F64) / 10.0 / float(i)
+            e[i] = e[i] + eps(F64) * 10.0 * float(i)
         end
     end
 
@@ -282,7 +287,7 @@ See also: [`tetra_weight`](@ref).
 """
 function tetra_p_ek12(z::F64, e::Array{F64,1})
     # Sainty check
-    @assert length(e) === 4
+    @assert length(e) == 4
 
     # Setup common variables
     # zei: ze_{i} = e - e_{i}
@@ -336,7 +341,7 @@ See also: [`tetra_weight`](@ref).
 """
 function tetra_p_ek23(z::F64, e::Array{F64,1})
     # Sainty check
-    @assert length(e) === 4
+    @assert length(e) == 4
 
     # Setup common variables
     # zei: ze_{i} = e - e_{i}
@@ -404,7 +409,7 @@ See also: [`tetra_weight`](@ref).
 """
 function tetra_p_ek34(z::F64, e::Array{F64,1})
     # Sainty check
-    @assert length(e) === 4
+    @assert length(e) == 4
 
     # Setup common variables
     # zei: ze_{i} = e - e_{i}

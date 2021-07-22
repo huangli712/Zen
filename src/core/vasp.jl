@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/07
+# Last modified: 2021/07/21
 #
 
 #=
@@ -137,6 +137,7 @@ function vasp_exec(it::IterInfo)
         vasp_exe = "$dft_home/vasp_std"
     end
     @assert isfile(vasp_exe)
+    println("  > Executable program is available: ", basename(vasp_exe))
 
     # Assemble command
     if isnothing(mpi_prefix)
@@ -164,7 +165,7 @@ function vasp_exec(it::IterInfo)
 
     # Special treatment for self-consistent mode
     if it.sc == 2
-        println("Escape from vasp_exec()")
+        println("Let's Rock & Roll\n")
         return
     end
 
@@ -196,7 +197,7 @@ function vasp_exec(it::IterInfo)
         end
 
         # Print the log to screen
-        @printf("  > Elapsed %4i seconds, %4i iterations (dE = %12s)\r", 5*c, ni, dE)
+        @printf("  > Elapsed %4i seconds, %3i iterations (dE = %12s)\r", 5*c, ni, dE)
 
         # Break the loop
         istaskdone(t) && break
@@ -224,10 +225,7 @@ See also: [`vasp_init`](@ref), [`vasp_exec`](@ref).
 """
 function vasp_save(it::IterInfo)
     # Special treatment for self-consistent mode
-    if it.sc == 2
-        println("Escape from vasp_save()")
-        return
-    end
+    it.sc == 2 && return
 
     # Print the header
     println("Finalize the computational task")
@@ -248,6 +246,31 @@ function vasp_save(it::IterInfo)
     # value will be saved at IterInfo.μ₀.
     it.μ₀ = vaspio_fermi(pwd())
     println("  > Extract the fermi level from DOSCAR: $(it.μ₀) eV")
+
+    # We also try to read the DFT band energy from OSZICAR, and its
+    # value will be saved at IterInfo.et.
+    it.et.dft = vaspio_energy(pwd())
+    println("  > Extract the DFT band energy from OSZICAR: $(it.et.dft) eV")
+end
+
+"""
+    vasp_back()
+
+Reactivate the vasp engine to continue the charge self-consistent
+DFT + DMFT calculation.
+"""
+function vasp_back()
+    # Read in the correction for density matrix
+    println("Read correction for density matrix")
+    _, kwin, gamma = read_gamma("../dmft2/dmft.gamma")
+
+    # Write the GAMMA file for vasp
+    println("Write correction for density matrix")
+    vaspc_gamma(kwin, gamma)
+
+    # Create vasp.lock file to wake up the vasp
+    println("Reactivate the vasp engine (vasp.lock)")
+    vaspc_lock("create")
 end
 
 #=
@@ -262,8 +285,8 @@ is too small. The adaptor will fail to generate reasonable projectors.
 At this case, you will see an error thrown by the `try_diag()` function.
 The solution is quite simple, i.e., increasing `NBANDS` a bit.
 
-The current algorithm is suitable for paramagnetic systems. It has not
-been tested for `magnetically ordered materials`.
+The current algorithm is suitable for paramagnetic systems. But it has
+not been tested for `magnetically ordered materials`.
 =#
 
 """
@@ -315,6 +338,9 @@ function vaspc_incar(fermi::F64, sc_mode::I64)
     end
 
     # For kmesh density
+    #
+    # If kmesh == "file", then vaspc_kpoints() will be used to generate
+    # the KPOINTS file.
     kmesh = get_d("kmesh")
     @cswitch kmesh begin
         @case "accurate"
@@ -329,8 +355,6 @@ function vaspc_incar(fermi::F64, sc_mode::I64)
             write(ios, "KSPACING = 0.4 \n")
             break
 
-        # If kmesh == "file", then vaspc_kpoints() will be used to
-        # generate the KPOINTS file.
         @case "file"
             break
 
@@ -407,7 +431,7 @@ function vaspc_incar(fermi::F64, sc_mode::I64)
         write(ios, "ICHARG   = 5 \n")
         write(ios, "NELM     = 1000 \n")
         write(ios, "NELMIN   = 1000 \n")
-        write(ios, "IMIX     = 0 \n")
+        write(ios, "NELMDL   = -8 \n")
     end
 
     # Close the iostream
@@ -488,10 +512,30 @@ function vaspc_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
 end
 
 """
+    vaspc_stopcar()
+
+Create the `STOPCAR` file in the dft directory to stop the vasp engine.
+Vasp will stop at the next electronic step, i.e. `WAVECAR` and `CHGCAR`
+might contain non converged results.
+"""
+function vaspc_stopcar()
+    # Create STOPCAR
+    fstop = "dft/STOPCAR"
+    open(fstop, "w") do fout
+        println(fout, "LABORT = .TRUE.")
+    end
+    println("  > Create STOPCAR for vasp: $fstop")
+
+    # May be vasp.lock is necessary.
+    vaspc_lock("create")
+end
+
+"""
     vaspc_lock(action::String)
 
-Create the `vasp.lock` file. This file is relevant for `ICHARG = 5`. The
-vasp program runs only when vasp.lock is present in the current directory.
+Create the `vasp.lock` file. This file is relevant for `ICHARG = 5`.
+The vasp program runs only when the `vasp.lock` file is present in the
+current directory. Its working directory is just `dft`.
 
 See also: [`vaspq_lock`](@ref).
 """
@@ -507,12 +551,13 @@ end
 """
     vaspq_lock()
 
-Return whether the `vasp.lock` file is available.
+Return whether the `vasp.lock` file is available. Its working directory
+might be `root` or `dft`.
 
 See also: [`vaspc_lock`](@ref).
 """
 function vaspq_lock()
-    return isfile("dft/vasp.lock")
+    return isfile("dft/vasp.lock") || isfile("vasp.lock")
 end
 
 """
@@ -576,7 +621,7 @@ function vaspio_nband(f::String)
 
     # Sanity check
     nsort, _ = size(latt.sorts)
-    @assert nsort === length(zval)
+    @assert nsort == length(zval)
 
     # Evaluate number of valence electrons in total
     nelect = sum(@. latt.sorts[:, 2] * zval)
@@ -646,6 +691,38 @@ See also: [`vaspc_incar`](@ref), [`vaspio_nband`](@ref).
 vaspio_valence() = vaspio_valence(pwd())
 
 """
+    vaspio_energy(f::String)
+
+Reading vasp's `OSZICAR` file, return DFT total energy, which will be
+used to determine the DFT + DMFT energy. Here `f` means only the
+directory that contains `OSZICAR`.
+"""
+function vaspio_energy(f::String)
+    # Open the iostream
+    fin = open(joinpath(f, "OSZICAR"), "r")
+
+    # Read the OSZICAR
+    strs = readlines(fin)
+
+    # Extract ZVAL, convert it into float, than save it.
+    etot = parse(F64, line_to_array(strs[end])[3])
+
+    # Close the iostream
+    close(fin)
+
+    # Return the desired value
+    return etot
+end
+
+"""
+    vaspio_energy()
+
+Reading vasp's `OSZICAR` file, return DFT total energy, which will be
+used to determine the DFT + DMFT energy.
+"""
+vaspio_energy() = vaspio_energy(pwd())
+
+"""
     vaspio_procar(f::String)
 
 Reading vasp's `PROCAR` file, extract orbital weight information. Here `f`
@@ -677,7 +754,7 @@ function vaspio_procar(f::String)
     readuntil(fin, "ion ")
     arr = line_to_array(fin)
     norbs = length(arr) - 1
-    @assert norbs === 9 || norbs === 16
+    @assert norbs == 9 || norbs == 16
     seekstart(fin) # Rewind the stream
     #
     # (3) Determine key parameters: nspin.
@@ -741,7 +818,7 @@ function vaspio_procar(f::String)
     #
     # (5) Additional check. `soc` must be compatible with `nspin`.
     if soc
-        @assert nspin === 1
+        @assert nspin == 1
     end
     #
     # (6) Debug
@@ -755,14 +832,14 @@ function vaspio_procar(f::String)
     fstr = ""
     #
     # (2) Single atom vs. multiple atoms
-    if natom === 1
+    if natom == 1
         fstr = fstr * "1"
     else
         fstr = fstr * "2"
     end
     #
     # (3) d system vs. f system
-    if norbs === 9
+    if norbs == 9
         fstr = fstr * "d"
     else
         fstr = fstr * "f"
@@ -804,7 +881,7 @@ function vaspio_procar(f::String)
 
             # Check k-index
             arr = line_to_array(fin)
-            @assert k === parse(I64, arr[2])
+            @assert k == parse(I64, arr[2])
             println("Finishing spin $s k-point $k")
 
             # Go through each band for the given k-point and spin
@@ -814,7 +891,7 @@ function vaspio_procar(f::String)
 
                 # Check band index
                 arr = line_to_array(fin)
-                @assert b === parse(I64, arr[2])
+                @assert b == parse(I64, arr[2])
 
                 # Parse eigenvalues and occupations
                 enk[b, k, s] = parse(F64, arr[5])
@@ -828,8 +905,8 @@ function vaspio_procar(f::String)
                 # Go through each atom and orbital
                 for a = 1:natom
                     arr = line_to_array(fin)
-                    @assert parse(I64, arr[1]) === a
-                    @assert norbs === length(arr) - 2
+                    @assert parse(I64, arr[1]) == a
+                    @assert norbs == length(arr) - 2
                     worb[:, a, b, k, s] = parse.(F64, arr[2:end-1])
                 end
 
@@ -1013,7 +1090,7 @@ function vaspio_lattice(f::String, silent::Bool = true)
         end
     end
     # Sanity check
-    @assert k === natom
+    @assert k == natom
 
     # Get the coordinates of atoms
     readline(fin)
@@ -1189,7 +1266,7 @@ function vaspio_eigen(f::String)
 
         # Determine number of spins
         nspin = parse(I64, line_to_array(fin)[end])
-        @assert nspin === 1 || nspin === 2
+        @assert nspin == 1 || nspin == 2
 
         # Skip for lines
         for i = 1:4
@@ -1239,7 +1316,7 @@ function vaspio_eigen(f::String)
         # Extract number of spins (nspin), number of k-points (nkpt),
         # number of bands (nband), and number of projectors (nproj).
         nspin, nkpt, nband, nproj = parse.(I64, line_to_array(fin)[1:4])
-        @assert nspin === 1 || nspin === 2
+        @assert nspin == 1 || nspin == 2
 
         #@show nspin, nkpt, nband, nproj
         for i = 1:nproj
@@ -1313,7 +1390,7 @@ function vaspio_projs(f::String)
     # Extract number of spins (nspin), number of k-points (nkpt),
     # number of bands (nband), and number of projectors (nproj).
     nspin, nkpt, nband, nproj = parse.(I64, line_to_array(fin)[1:4])
-    @assert nspin === 1 || nspin === 2
+    @assert nspin == 1 || nspin == 2
 
     # Extract raw information about projectors
     sites = zeros(I64, nproj)
@@ -1358,11 +1435,11 @@ function vaspio_projs(f::String)
     # save them at PrGroup.Pr array.
     for i in eachindex(PG)
         site, l = PG[i].site, PG[i].l
-        PG[i].Pr = findall(x -> (x.site, x.l) === (site, l), PT)
+        PG[i].Pr = findall(x -> (x.site, x.l) == (site, l), PT)
     end
     #
     # Finally, check correctness
-    @assert nproj === sum(x -> length(x.Pr), PG)
+    @assert nproj == sum(x -> length(x.Pr), PG)
 
     # Create arrays
     chipsi = zeros(C64, nproj, nband, nkpt, nspin)

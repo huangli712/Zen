@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/07
+# Last modified: 2021/07/21
 #
 
 #=
@@ -114,6 +114,7 @@ function dmft_exec(it::IterInfo, task::I64)
     # Select suitable dmft program
     dmft_exe = "$dmft_home/dmft"
     @assert isfile(dmft_exe)
+    println("  > Executable program is available: ", basename(dmft_exe))
 
     # Assemble command
     if isnothing(mpi_prefix)
@@ -225,11 +226,16 @@ function dmft_save(it::IterInfo, task::I64)
 
     # Extract the fermi level (and the lattice occupancy), and use them
     # to update the IterInfo struct.
-    fermi, occup = read_fermi()
+    fermi, occup, ecorr = read_fermi()
     task == 1 ? it.μ₁ = fermi : it.μ₂ = fermi
     task == 1 ? it.n₁ = occup : it.n₂ = occup
+    # We update it.et only when ecorr is finite.
+    if abs(ecorr) > 0.0
+        it.et.corr = ecorr
+    end
     println("  > Extract the fermi level from dmft.fermi: $fermi eV")
     println("  > Extract the lattice occupancy from dmft.fermi: $occup")
+    println("  > Extract the DMFT correction to DFT band energy: $ecorr eV")
 end
 
 #=
@@ -240,33 +246,38 @@ end
     read_fermi()
 
 Parse the `dmft?/dmft.fermi` file to extract the chemical potential.
-Note that if `lfermi` in `dmft.in` is false, the chemical potential
-will not be calculated by the DMFT engine. In other words, this
-file (`dmft1/dmft.fermi` or `dmft2/dmft.fermi`) could be absent.
+The lattice occupancy and correction to the DFT band energy will be
+extracted and returned at the same time.
 
-The lattice occupancy will be extracted and returned at the same time.
+Note that if `lfermi` in `dmft.in` is false, the chemical potential
+and lattice occupancy will not be calculated by the DMFT engine. On
+the other hand, if the DMFT engine works on non-self-consistent mode,
+the correction to DFT band energy will be zero as well.
 
 See also: [`dmft_save`](@ref).
 """
 function read_fermi()
-    # Filename for chemical potential and lattice occupancy
+    # Filename for chemical potential, etc.
     fname = "dmft.fermi"
 
     # Sometimes, if the `dmft.fermi` file is absent, it returns zero.
     if isfile(fname)
-        # There are two lines in the `dmft.fermi` file. The first line
+        # There are three lines in the `dmft.fermi` file. The first line
         # is about the fermi level, while the second one is about the
-        # lattice occupancy.
+        # lattice occupancy. The last one is for the DMFT correction to
+        # the DFT band energy.
         str = readlines("dmft.fermi")
         fermi = parse(F64, line_to_array(str[1])[3])
         occup = parse(F64, line_to_array(str[2])[3])
+        ecorr = parse(F64, line_to_array(str[3])[3])
     else
         fermi = 0.0
         occup = 0.0
+        ecorr = 0.0
     end
 
     # Return the desired values
-    return fermi, occup
+    return fermi, occup, ecorr
 end
 
 #=

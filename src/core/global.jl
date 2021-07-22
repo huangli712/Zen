@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Stable
 #
-# Last modified: 2021/07/09
+# Last modified: 2021/07/21
 #
 
 #=
@@ -12,57 +12,97 @@
 =#
 
 """
-    I32 and I64
+    I32
 
-Alias of Integer type.
+Alias of Integer type (32 bit).
 
 See also: [`R32`](@ref), [`R64`](@ref), [`N32`](@ref), [`N64`](@ref).
 """
 const I32 = Int32
+
+"""
+    I64
+
+Alias of Integer type (64 bit).
+
+See also: [`R32`](@ref), [`R64`](@ref), [`N32`](@ref), [`N64`](@ref).
+"""
 const I64 = Int64
 
 """
-    F32 and F64
+    F32
 
-Alias of Float type.
+Alias of Float type (32 bit).
 
 See also: [`R32`](@ref), [`R64`](@ref), [`N32`](@ref), [`N64`](@ref).
 """
 const F32 = Float32
+
+"""
+    F64
+
+Alias of Float type (64 bit).
+
+See also: [`R32`](@ref), [`R64`](@ref), [`N32`](@ref), [`N64`](@ref).
+"""
 const F64 = Float64
 
 """
-    C32 and C64
+    C32
 
-Alias of Complex type.
+Alias of Complex type (32 bit).
 
 See also: [`N32`](@ref), [`N64`](@ref).
 """
 const C32 = ComplexF32
+
+"""
+    C64
+
+Alias of Complex type (64 bit).
+
+See also: [`N32`](@ref), [`N64`](@ref).
+"""
 const C64 = ComplexF64
 
 """
-    R32 and R64
+    R32
 
-Alias of Integer and Float types. Here `R` means Real.
+Alias of Integer and Float types (32 bit). Here `R` means Real.
 
 See also: [`N32`](@ref), [`N64`](@ref).
 """
 const R32 = Union{I32,F32}
+
+"""
+    R64
+
+Alias of Integer and Float types (64 bit). Here `R` means Real.
+
+See also: [`N32`](@ref), [`N64`](@ref).
+"""
 const R64 = Union{I64,F64}
 
 """
-    N32 and N64
+    N32
 
-Alias of Integer, Float, and Complex types. Here `N` means Number.
+Alias of Integer, Float, and Complex types (32 bit). Here `N` means Number.
 
 See also: [`R32`](@ref), [`R64`](@ref).
 """
 const N32 = Union{I32,F32,C32}
+
+"""
+    N64
+
+Alias of Integer, Float, and Complex types (64 bit). Here `N` means Number.
+
+See also: [`R32`](@ref), [`R64`](@ref).
+"""
 const N64 = Union{I64,F64,C64}
 
 #=
-### *Global Constants* : *Strings*
+### *Global Constants* : *Literal Strings*
 =#
 
 """
@@ -81,7 +121,7 @@ Version of this julia package.
 
 See also: [`__RELEASE__`](@ref).
 """
-const __VERSION__ = v"0.5.4-devel.210709"
+const __VERSION__ = v"0.6.4-devel.210721"
 
 """
     __RELEASE__

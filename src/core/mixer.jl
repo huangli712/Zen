@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/05
+# Last modified: 2021/07/19
 #
 
 """
@@ -39,8 +39,8 @@ function mixer_sigma(it::IterInfo, ai::Array{Impurity,1})
         @assert _prev ≥ 1
     end
     println("Determine previous and current objects")
-    @printf("  > Curr: (I₃, I₁) -> (%4i,%4i)\n", cycle, curr)
-    @printf("  > Prev: (I₃, I₁) -> (%4i,%4i)\n", _cycle, _prev)
+    println("  > Curr: (I₃, I₁) -> ($cycle, $curr)")
+    println("  > Prev: (I₃, I₁) -> ($_cycle, $_prev)")
 
     # Determine filenames for self-energy functions
     fcurr = "dmft1/sigma.bare.$cycle.$curr"
@@ -69,7 +69,7 @@ function mixer_sigma(it::IterInfo, ai::Array{Impurity,1})
     println("Evaluate the convergence condition for self-energy functions")
     dist = distance(Scurr, Sprev)
     it.cs = ( dist < get_m("sc") )
-    println("  > Averaged ΔΣ = $dist ( convergence is $(it.cs) )" )
+    println("  > Averaged ΔΣ = $dist ( convergence is $(it.cs) )")
 end
 
 """
@@ -104,8 +104,8 @@ function mixer_delta(it::IterInfo, ai::Array{Impurity,1})
         @assert _prev ≥ 1
     end
     println("Determine previous and current objects")
-    @printf("  > Curr: (I₃, I₁) -> (%4i,%4i)\n", cycle, curr)
-    @printf("  > Prev: (I₃, I₁) -> (%4i,%4i)\n", _cycle, _prev)
+    println("  > Curr: (I₃, I₁) -> ($cycle, $curr)")
+    println("  > Prev: (I₃, I₁) -> ($_cycle, $_prev)")
 
     # Determine filenames for hybridization functions
     fcurr = "dmft1/dmft.delta.$cycle.$curr"
@@ -163,8 +163,8 @@ function mixer_eimpx(it::IterInfo, ai::Array{Impurity,1})
         @assert _prev ≥ 1
     end
     println("Determine previous and current objects")
-    @printf("  > Curr: (I₃, I₁) -> (%4i,%4i)\n", cycle, curr)
-    @printf("  > Prev: (I₃, I₁) -> (%4i,%4i)\n", _cycle, _prev)
+    println("  > Curr: (I₃, I₁) -> ($cycle, $curr)")
+    println("  > Prev: (I₃, I₁) -> ($_cycle, $_prev)")
 
     # Determine filenames for local impurity levels
     fcurr = "dmft1/dmft.eimpx.$cycle.$curr"
@@ -236,8 +236,8 @@ function mixer_gamma(it::IterInfo)
     @assert cycle ≥ _cycle ≥ 1
     @assert _prev ≥ 1
     println("Determine previous and current objects")
-    @printf("  > Curr: (I₃, I₂) -> (%4i,%4i)\n", cycle, curr)
-    @printf("  > Prev: (I₃, I₂) -> (%4i,%4i)\n", _cycle, _prev)
+    println("  > Curr: (I₃, I₂) -> ($cycle, $curr)")
+    println("  > Prev: (I₃, I₂) -> ($_cycle, $_prev)")
 
     # Determine filenames for correction for density matrix
     fcurr = "dmft2/dmft.gamma.$cycle.$curr"
@@ -252,7 +252,11 @@ function mixer_gamma(it::IterInfo)
     kmesh_prev, kwin_prev, gamma_prev = read_gamma(fprev)
     @assert size(kmesh_curr) == size(kmesh_prev)
     @assert size(kwin_curr) == size(kwin_prev)
-    @assert size(gamma_curr) == size(gammma_prev)
+    if size(gamma_curr) != size(gamma_prev)
+        print("  > Size of density matrix does not match each other")
+        println(red(" (Very dangerous)"))
+        return
+    end
 
     # Mix the correction for density matrix using Kerker algorithm
     println("Mix correction for density matrix from two successive iterations")
@@ -265,16 +269,30 @@ function mixer_gamma(it::IterInfo)
     # Apply the Kerker algorithm
     for s = 1:nspin
         for k = 1:nkpt
+            # Evaluate the mixing factor
             G₂ = sum(kmesh_curr[k,:] .^ 2)
             amix = α * G₂ / (G₂ + γ^2)
-            gamma_curr[:,:,k,s] = amix * gamma_curr[:,:,k,s] + (1.0 - amix) * gamma_prev[:,:,k,s]
-            @printf("  > Mixing parameter α = %12.7f (for 𝑘-point %4i and spin %4i)", amix, k, s)
+            @printf("  > Mixing parameter α = %10.7f (for 𝑘 %4i and σ %1i)\n", amix, k, s)
+            #
+            # Create a view for the diagonal elements only
+            ind = diagind(gamma_curr[:,:,k,s])
+            Γcurr = view(view(gamma_curr,:,:,k,s), ind)
+            Γprev = view(view(gamma_prev,:,:,k,s), ind)
+            #
+            # Mix the diagonal elements only
+            @. Γcurr = amix * Γcurr + (1.0 - amix) * Γprev
         end # END OF K LOOP
     end # END OF S LOOP
 
     # Write the new correction for density matrix into `dmft2/dmft.gamma`
     println("Write correction for density matrix")
     write_gamma(kmesh_curr, kwin_curr, gamma_curr, "dmft2/dmft.gamma")
+
+    # Check the convergence condition
+    println("Evaluate the convergence condition for density matrix")
+    dist = distance(gamma_curr, gamma_prev)
+    it.cc = ( dist < get_m("cc") )
+    println("  > Averaged ΔΓ = $dist ( convergence is $(it.cc) )")
 end
 
 """
@@ -301,6 +319,8 @@ end
 Calculate the difference between two multi-dimensional arrays. Usually
 We apply this function to calculate the difference between two
 self-energy functions.
+
+See also: [`mixer_sigma`](@ref).
 """
 function distance(SA::Vector{Array{C64,4}}, SB::Vector{Array{C64,4}})
     # Check the dimensional parameters to make sure SA is similar to SB
@@ -316,6 +336,27 @@ function distance(SA::Vector{Array{C64,4}}, SB::Vector{Array{C64,4}})
         diff = diff + sum(SC[i]) / (length(SC[i]) - num_zeros_elements)
     end
     diff = diff / length(SC)
+
+    # Return the desired value
+    return abs(diff)
+end
+
+"""
+    distance(GA::Array{C64,4}, GB::Array{C64,4})
+
+Calculate the difference between two multi-dimensional arrays. Usually
+We apply this function to calculate the difference between two
+corrections for density matrix.
+
+See also: [`mixer_gamma`](@ref).
+"""
+function distance(GA::Array{C64,4}, GB::Array{C64,4})
+    # Check the dimensional parameters to make sure GA is similar to GB
+    @assert size(GA) == size(GB)
+
+    # Evaluate the difference
+    GC = GA - GB
+    diff = sum(GC) / length(GC)
 
     # Return the desired value
     return abs(diff)

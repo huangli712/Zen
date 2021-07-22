@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/07
+# Last modified: 2021/07/21
 #
 
 #=
@@ -33,8 +33,8 @@ Dictionary for configuration parameters: case summary.
 See also: [`PDFT`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
 const PCASE = Dict{String,Array{Any,1}}(
-          "case"     => [missing, 1, :String, "System's name"]
-      )
+    "case"     => [missing, 1, :String, "System's name"]
+)
 
 """
     PDFT
@@ -44,19 +44,19 @@ Dictionary for configuration parameters: density functional theory calculations.
 See also: [`PCASE`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
 const PDFT  = Dict{String,Array{Any,1}}(
-          "engine"   => [missing, 1, :String, "Engine for density functional theory calculations"],
-          "projtype" => [missing, 1, :String, "Types of projectors"],
-          "smear"    => [missing, 1, :String, "Scheme for smearing"],
-          "kmesh"    => [missing, 1, :String, "K-mesh for brillouin zone sampling / integration"],
-          "magmom"   => [missing, 0, :String, "Initial magnetic moments"],
-          "lsymm"    => [missing, 1, :Bool  , "The symmetry is turned on or off"],
-          "lspins"   => [missing, 1, :Bool  , "The spin orientations are polarized or not"],
-          "lspinorb" => [missing, 1, :Bool  , "The spin-orbit coupling is considered or not"],
-          "loptim"   => [missing, 1, :Bool  , "The generated projectors are optimized or not"],
-          "lproj"    => [missing, 1, :Bool  , "The projectors are generated or not"],
-          "sproj"    => [missing, 1, :Array , "Specifications for generating projectors"],
-          "window"   => [missing, 1, :Array , "Band / energy window for normalizing projectors"],
-      )
+    "engine"   => [missing, 1, :String, "Engine for density functional theory calculations"],
+    "projtype" => [missing, 1, :String, "Types of projectors"],
+    "smear"    => [missing, 1, :String, "Scheme for smearing"],
+    "kmesh"    => [missing, 1, :String, "K-mesh for brillouin zone sampling / integration"],
+    "magmom"   => [missing, 0, :String, "Initial magnetic moments"],
+    "lsymm"    => [missing, 1, :Bool  , "The symmetry is turned on or off"],
+    "lspins"   => [missing, 1, :Bool  , "The spin orientations are polarized or not"],
+    "lspinorb" => [missing, 1, :Bool  , "The spin-orbit coupling is considered or not"],
+    "loptim"   => [missing, 1, :Bool  , "The generated projectors are optimized or not"],
+    "lproj"    => [missing, 1, :Bool  , "The projectors are generated or not"],
+    "sproj"    => [missing, 1, :Array , "Specifications for generating projectors"],
+    "window"   => [missing, 1, :Array , "Band / energy window for normalizing projectors"],
+)
 
 """
     PDMFT
@@ -66,19 +66,19 @@ Dictionary for configuration parameters: dynamical mean-field theory calculation
 See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
 const PDMFT = Dict{String,Array{Any,1}}(
-          "mode"     => [missing, 1, :I64   , "Scheme of dynamical mean-field theory calculations"],
-          "axis"     => [missing, 1, :I64   , "Imaginary-time axis or real-frequency axis"],
-          "niter"    => [missing, 1, :Array , "Maximum number of all kinds of iterations"],
-          "nmesh"    => [missing, 1, :I64   , "Number of frequency points"],
-          "dcount"   => [missing, 1, :String, "Scheme of double counting term"],
-          "beta"     => [missing, 1, :F64   , "Inverse system temperature"],
-          "mixer"    => [missing, 1, :F64   , "Mixing factor"],
-          "mc"       => [missing, 0, :F64   , "Convergence criterion of chemical potential"],
-          "cc"       => [missing, 0, :F64   , "Convergence criterion of charge"],
-          "ec"       => [missing, 0, :F64   , "Convergence criterion of total energy"],
-          "sc"       => [missing, 0, :F64   , "Convergence criterion of self-energy function"],
-          "lfermi"   => [missing, 0, :Bool  , "Whether chemical potential should be updated"],
-      )
+    "mode"     => [missing, 1, :I64   , "Scheme of dynamical mean-field theory calculations"],
+    "axis"     => [missing, 1, :I64   , "Imaginary-time axis or real-frequency axis"],
+    "niter"    => [missing, 1, :Array , "Maximum number of all kinds of iterations"],
+    "nmesh"    => [missing, 1, :I64   , "Number of frequency points"],
+    "dcount"   => [missing, 1, :String, "Scheme of double counting term"],
+    "beta"     => [missing, 1, :F64   , "Inverse system temperature"],
+    "mixer"    => [missing, 1, :F64   , "Mixing factor"],
+    "mc"       => [missing, 0, :F64   , "Convergence criterion of chemical potential"],
+    "cc"       => [missing, 0, :F64   , "Convergence criterion of charge"],
+    "ec"       => [missing, 0, :F64   , "Convergence criterion of total energy"],
+    "sc"       => [missing, 0, :F64   , "Convergence criterion of self-energy function"],
+    "lfermi"   => [missing, 0, :Bool  , "Whether chemical potential should be updated"],
+)
 
 """
     PIMP
@@ -88,16 +88,16 @@ Dictionary for configuration parameters: quantum impurity problems.
 See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PDMFT`](@ref), [`PSOLVER`](@ref).
 """
 const PIMP  = Dict{String,Array{Any,1}}(
-          "nsite"    => [missing, 1, :I64   , "Number of (correlated) impurity sites"],
-          "atoms"    => [missing, 1, :Array , "Chemical symbols of impurity atoms"],
-          "equiv"    => [missing, 1, :Array , "Equivalency of quantum impurity atoms"],
-          "shell"    => [missing, 1, :Array , "Angular momenta of correlated orbitals"],
-          "ising"    => [missing, 1, :Array , "Interaction types of correlated orbitals"],
-          "occup"    => [missing, 1, :Array , "Nominal impurity occupancy"],
-          "upara"    => [missing, 1, :Array , "Coulomb interaction parameter"],
-          "jpara"    => [missing, 1, :Array , "Hund's coupling parameter"],
-          "lpara"    => [missing, 1, :Array , "Spin-orbit coupling parameter"],
-      )
+    "nsite"    => [missing, 1, :I64   , "Number of (correlated) impurity sites"],
+    "atoms"    => [missing, 1, :Array , "Chemical symbols of impurity atoms"],
+    "equiv"    => [missing, 1, :Array , "Equivalency of quantum impurity atoms"],
+    "shell"    => [missing, 1, :Array , "Angular momenta of correlated orbitals"],
+    "ising"    => [missing, 1, :Array , "Interaction types of correlated orbitals"],
+    "occup"    => [missing, 1, :Array , "Nominal impurity occupancy"],
+    "upara"    => [missing, 1, :Array , "Coulomb interaction parameter"],
+    "jpara"    => [missing, 1, :Array , "Hund's coupling parameter"],
+    "lpara"    => [missing, 1, :Array , "Spin-orbit coupling parameter"],
+)
 
 """
     PSOLVER
@@ -107,9 +107,9 @@ Dictionary for configuration parameters: quantum impurity solvers.
 See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref).
 """
 const PSOLVER= Dict{String,Array{Any,1}}(
-          "engine"   => [missing, 1, :String, "Name of quantum impurity solver"],
-          "params"   => [missing, 1, :Array , "Extra parameter sets of quantum impurity solver"],
-      )
+    "engine"   => [missing, 1, :String, "Name of quantum impurity solver"],
+    "params"   => [missing, 1, :Array , "Extra parameter sets of quantum impurity solver"],
+)
 
 #=
 ### *Customized Structs*
@@ -133,6 +133,27 @@ mutable struct Logger
 end
 
 """
+    Energy
+
+Mutable struct. Store decomposition of the total DFT + DMFT energy.
+
+### Members
+
+* dft  -> DFT band energy.
+* dmft -> DMFT interaction energy Tr(ΣG).
+* corr -> DMFT Correction to the DFT band energy.
+* dc   -> Energy contributed by the double counting term.
+
+See also: [`IterInfo`](@ref).
+"""
+mutable struct Energy
+    dft  :: F64
+    dmft :: F64
+    corr :: F64
+    dc   :: F64
+end
+
+"""
     IterInfo
 
 Mutable struct. Record the DFT + DMFT iteration information.
@@ -153,8 +174,9 @@ Mutable struct. Record the DFT + DMFT iteration information.
 * dc -> Double counting terms.
 * n₁ -> Number of lattice occupancy obtained by DMFT engine (`dmft1`).
 * n₂ -> Number of lattice occupancy obtained by DMFT engine (`dmft2`).
-* nf -> Number of impurity occupancy obtained by impurity solver.
-* et -> Total DFT + DMFT energy.
+* nf -> Number of impurity occupancy obtained by quantum impurity solver.
+* et -> Total DFT + DMFT energy (for current iteration).
+* ep -> Total DFT + DMFT energy (for previous iteration).
 * cc -> Convergence flag for charge density.
 * ce -> Convergence flag for total energy.
 * cs -> Convergence flag for self-energy functions.
@@ -177,7 +199,8 @@ mutable struct IterInfo
     n₁ :: F64
     n₂ :: F64
     nf :: Vector{F64}
-    et :: F64
+    et :: Energy
+    ep :: Energy
     cc :: Bool
     ce :: Bool
     cs :: Bool
@@ -376,6 +399,21 @@ function Logger(case::String = "case")
 end
 
 """
+    Energy()
+
+Outer constructor for Energy struct.
+"""
+function Energy()
+    dft  = 0.0
+    dmft = 0.0
+    corr = 0.0
+    dc   = 0.0
+
+    # Call the default constructor
+    Energy(dft, dmft, corr, dc)
+end
+
+"""
     IterInfo()
 
 Outer constructor for IterInfo struct.
@@ -389,19 +427,21 @@ function IterInfo()
 
     # Initialize key fields
     #
-    # Note that sc = 1 means one-shot DFT + DMFT calculations,
-    # while sc = 2 means fully self-consistent DFT + DMFT calculations.
+    # sc = 0 means in preparation mode,
+    # sc = 1 means one-shot DFT + DMFT calculations,
+    # sc = 2 means fully self-consistent DFT + DMFT calculations.
     I  = 0
     M₁ = _M₁
     M₂ = _M₂
     M₃ = _M₃
-    sc = 1
+    sc = 0
     μ  = 0.0
     dc = fill(0.0, nsite)
     n₁ = 0.0
     n₂ = 0.0
     nf = fill(0.0, nsite)
-    et = 0.0
+    et = Energy()
+    ep = Energy()
     cc = false
     ce = false
     cs = false
@@ -413,7 +453,7 @@ function IterInfo()
              μ, μ, μ,
              dc,
              n₁, n₂, nf,
-             et,
+             et, ep,
              cc, ce, cs)
 end
 
@@ -511,7 +551,7 @@ function PrTrait(site::I64, desc::String)
     @assert desc in orb_labels
 
     # Determine quantum numbers l and m according to desc
-    lm = findfirst(x -> x === desc, orb_labels) - 1
+    lm = findfirst(x -> x == desc, orb_labels) - 1
     l = convert(I64, floor(sqrt(lm)))
     m = lm - l * l
 
@@ -602,8 +642,25 @@ function Base.show(io::IO, logger::Logger)
     @assert isopen(logger.log) && isopen(logger.cycle)
 
     println(io, "Logger struct")
-    println(io, "log   : ", logger.log  )
+    println(io, "log   : ", logger.log)
     println(io, "cycle : ", logger.cycle)
+end
+
+"""
+    Base.show(io::IO, ene::Energy)
+
+Base.show() function for Energy struct. Note that `total` is not a real
+field of the `Energy` struct.
+
+See also: [`Energy`](@ref).
+"""
+function Base.show(io::IO, ene::Energy)
+    println(io, "Energy struct")
+    println(io, "dft   : ", ene.dft)
+    println(io, "dmft  : ", ene.dmft)
+    println(io, "corr  : ", ene.corr)
+    println(io, "dc    : ", ene.dc)
+    println(io, "total : ", ene.total)
 end
 
 """
@@ -631,6 +688,7 @@ function Base.show(io::IO, it::IterInfo)
     println(io, "n₂ : ", it.n₂)
     println(io, "nf : ", it.nf)
     println(io, "et : ", it.et)
+    println(io, "ep : ", it.ep)
     println(io, "cc : ", it.cc)
     println(io, "ce : ", it.ce)
     println(io, "cs : ", it.cs)
@@ -741,4 +799,25 @@ function Base.show(io::IO, PW::PrWindow)
     println(io, "nbnd : ", PW.nbnd)
     println(io, "kwin : ", PW.kwin)
     println(io, "bwin : ", PW.bwin)
+end
+
+#=
+### *Customized Base.getproperty() Functions*
+=#
+
+"""
+    Base.getproperty(et::Energy, sym::Symbol)
+
+Implement the calculation of total DFT + DMFT energy. The `Energy` struct
+does not really contains the `total` field. This function will implement
+it by overriding the Base.getproperty() function.
+
+See also: [`Energy`](@ref).
+"""
+function Base.getproperty(et::Energy, sym::Symbol)
+    if sym == :total
+        return et.dft + et.dmft + et.corr - et.dc
+    else
+        return getfield(et, sym)
+    end
 end

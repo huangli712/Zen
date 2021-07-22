@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/05
+# Last modified: 2021/07/14
 #
 
 #=
@@ -170,7 +170,7 @@ function irio_params(f::String, D::Dict{Symbol,Any})
     nsite = get_i("nsite")
 
     # To make sure the validaty of nsite
-    @assert nsite <= ngrp
+    @assert nsite ≤ ngrp
 
     # Output the data
     open(joinpath(f, "params.ir"), "w") do fout
@@ -336,7 +336,7 @@ function irio_windows(f::String, PW::Array{PrWindow,1})
             println(fout, "nbnd  -> $(PW[p].nbnd)")
             println(fout, "kwin  ->")
             nkpt, nspin, ndir = size(PW[p].kwin)
-            @assert ndir === 2 # For lower and upper boundaries
+            @assert ndir == 2 # For lower and upper boundaries
             for s = 1:nspin
                 for k = 1:nkpt
                     @printf(fout, "%8i %8i %8i %8i\n", k, s, PW[p].kwin[k, s, :]...)
@@ -432,7 +432,7 @@ function irio_kmesh(f::String, kmesh::Array{F64,2}, weight::Array{F64,1})
     _nkpt, = size(weight)
 
     # Sanity check
-    @assert nkpt === _nkpt
+    @assert nkpt == _nkpt
 
     # Output the data
     open(joinpath(f, "kmesh.ir"), "w") do fout
@@ -468,7 +468,7 @@ function irio_tetra(f::String, volt::F64, itet::Array{I64,2})
     ntet, ndim = size(itet)
 
     # Sanity check
-    @assert ndim === 5
+    @assert ndim == 5
 
     # Output the data
     open(joinpath(f, "tetra.ir"), "w") do fout
@@ -506,7 +506,7 @@ function irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
     _nband, _nkpt, _nspin = size(enk)
 
     # Sanity check
-    @assert nband === _nband && nkpt === _nkpt && nspin === _nspin
+    @assert nband == _nband && nkpt == _nkpt && nspin == _nspin
 
     # Output the data
     open(joinpath(f, "eigen.ir"), "w") do fout

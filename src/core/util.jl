@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/04
+# Last modified: 2021/07/17
 #
 
 #=
@@ -88,39 +88,43 @@ macro time_call(ex)
 end
 
 """
-    @ps1(str, c)
+    @pcs(x...)
 
-Wrapper for colorful output function. Here `str` is a string, and `c`
-denotes color.
-
-### Examples
-```julia
-@ps1 "Hello world!" :green
-```
-
-See also: [`@ps2`](@ref).
-"""
-macro ps1(str, c)
-    return :( print(eval($c)($str)) )
-end
-
-"""
-    @ps2(str1, c1, str2, c2)
-
-Wrapper for colorful output function. Here `str1` and `str2` are strings,
-and `c1` and `c2` denote colors.
+Try to print colorful strings. Here `x` is a combination of strings and
+colors. Its format likes `string1 color1 string2 color2 (repeat)`. For
+the supported colors, please check the dict `COLORS`.
 
 ### Examples
-```julia
-@ps2 "Hello " :red "world!" :green
+```julia-repl
+julia> @pcs "Hello world!" blue
+julia> @pcs "Hello " red "world!" green
 ```
 
-See also: [`@ps1`](@ref).
+See also: [`COLORS`](@ref), [`welcome`](@ref).
 """
-macro ps2(str1, c1, str2, c2)
+macro pcs(x...)
     ex = quote
-        print(eval($c1)($str1))
-        print(eval($c2)($str2))
+        # The `args` is actually a Tuple
+        args = $x
+
+        # We have to make sure the strings and colors are paired.
+        @assert iseven(length(args))
+
+        for i = 1:2:length(args)
+            # Construct and check string
+            # Sometimes args[i] contains interpolated variables, its
+            # type is `Expr`. At this time, we have to evaluate this
+            # `Expr` at first to convert it to a format `String`.
+            str   = eval(args[i])
+            @assert str isa AbstractString
+            #
+            # Construct and check color
+            color = args[i+1]
+            @assert color isa Symbol
+
+            # Generate expression
+            print(eval(color)(str))
+        end
     end
     return :( $(esc(ex)) )
 end
@@ -154,7 +158,7 @@ and the other related functions can work correctly.
 
 ### Examples
 ```julia-repl
-julia > setup_args("SrVO3.toml")
+julia> setup_args("SrVO3.toml")
 1-element Array{String,1}:
  "SrVO3.toml"
 ```
@@ -223,8 +227,9 @@ automatically. Do not worry about them.
 
 Check whether the essential input files exist. This function is designed
 for the DFT engine only. The input files for the DMFT engine, quantum
-impurity solver, and Kohn-Sham adaptor will be generated automatically.
-The `ZenCore` package will take care of them. Do not worry.
+impurity solver, and Kohn-Sham adaptor will be generated automatically
+by default. The `ZenCore` package will take care of them. Do not worry
+about that.
 
 See also: [`query_case`](@ref).
 """
@@ -353,7 +358,7 @@ not a valid quantum impurity solver.
 """
     query_solver(engine::String)
 
-Query the home directory of the quantum impurity solver.
+Query the home directories of various quantum impurity solvers.
 
 See also: [`query_dft`](@ref), [`query_dmft`](@ref).
 """
@@ -402,15 +407,15 @@ end
 Print out the welcome messages to the screen.
 """
 function welcome()
-    @ps1 "                                        |\n" :green
-    @ps2 "ZZZZZZZZZZZZ EEEEEEEEEEEE NNNNNNNNNNNN  | "  :green "A Modern DFT + DMFT Computation Framework\n" :magenta
-    @ps1 "          Z               N          N  |\n" :green
-    @ps1 "         Z                N          N  |\n" :green
-    @ps2 "   ZZZZZZ    EEEEEEEEEEEE N          N  | "  :green "Package: $__LIBNAME__\n" :magenta
-    @ps2 "  Z                       N          N  | "  :green "Version: $__VERSION__\n" :magenta
-    @ps2 " Z                        N          N  | "  :green "Release: $__RELEASE__\n" :magenta
-    @ps2 "ZZZZZZZZZZZZ EEEEEEEEEEEE N          N  | "  :green "Powered by the julia programming language\n" :magenta
-    @ps1 "                                        |\n" :green
+    @pcs "                                       |\n" green
+    @pcs "ZZZZZZZZZZZZ EEEEEEEEEEEE NNNNNNNNNNNN | "  green "A Modern DFT + DMFT Computation Framework\n" magenta
+    @pcs "          Z               N          N |\n" green
+    @pcs "         Z                N          N |\n" green
+    @pcs "   ZZZZZZ    EEEEEEEEEEEE N          N | "  green "Package: $__LIBNAME__\n" magenta
+    @pcs "  Z                       N          N | "  green "Version: $__VERSION__\n" magenta
+    @pcs " Z                        N          N | "  green "Release: $__RELEASE__\n" magenta
+    @pcs "ZZZZZZZZZZZZ EEEEEEEEEEEE N          N | "  green "Powered by the julia programming language\n" magenta
+    @pcs "                                       |\n" green
     println()
 end
 
@@ -421,7 +426,7 @@ Print out the overview of Zen to the screen.
 """
 function overview()
     # Build strings
-    str1 = nprocs() === 1 ? " processor " : " processors "
+    str1 = nprocs() == 1 ? " processor " : " processors "
     str2 = "(myid = $(myid()))"
 
     # Write the information
@@ -579,7 +584,7 @@ end
 Convert a number (it must be in [0,9]) to subscript.
 """
 function subscript(num::I64)
-    @assert num >=0 && num <= 9
+    @assert 0 ≤ num ≤ 9
     SUB = ["\u2080" "\u2081" "\u2082" "\u2083" "\u2084" "\u2085" "\u2086" "\u2087" "\u2088" "\u2089"]
     return SUB[num + 1]
 end
@@ -603,7 +608,7 @@ the following websites further:
 * https://stackoverflow.com/questions/4842424/
 * https://en.wikipedia.org/wiki/ANSI_escape_code
 
-Note that the macros `@ps1` and `@ps2` rely on these codes.
+Note that the macro `@pcs` and functions `prompt()` rely on these codes.
 =#
 
 """
@@ -685,6 +690,8 @@ cyan(str::String)
 white(str::String)
 ```
 
+and their light color versions
+
 ```julia
 # For light colors
 light_black(str::String)
@@ -702,7 +709,7 @@ special escape sequences. These texts will be show as colorized texts
 in the terminal.
 
 ### Examples
-```julia
+```julia-repl
 julia> println(red("hello world!"))
 ```
 =#

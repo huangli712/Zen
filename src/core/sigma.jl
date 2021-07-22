@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/05
+# Last modified: 2021/07/19
 #
 
 #=
@@ -12,7 +12,7 @@
 =#
 
 """
-    sigma_reset(ai::Array{Impurity,1})
+    sigma_reset(ai::Array{Impurity,1}, with_init_dc::Bool = true)
 
 Create initial self-energy functions and write them to `sigma.bare`. The
 `sigma.bare` file is key input for the dynamical mean-field theory engine.
@@ -20,9 +20,14 @@ The word `bare` means that the double counting term has not been removed
 from the self-energy functions. Now this function only supports Matsubara
 self-energy functions Σ(𝑖ωₙ).
 
+If `with_init_dc = true`, then the real parts of self-energy functions
+are initialized by the double counting terms within the fully localized
+limited scheme. If `with_init_dc = false`, then the self-energy functions
+are set to be complex zero.
+
 See also: [`sigma_dcount`](@ref).
 """
-function sigma_reset(ai::Array{Impurity,1})
+function sigma_reset(ai::Array{Impurity,1}, with_init_dc::Bool = true)
     # Print the header
     println("Sigma : Reset")
     println("Try to create bare self-energy functions")
@@ -39,15 +44,15 @@ function sigma_reset(ai::Array{Impurity,1})
     # Create frequency mesh
     println("Create frequency mesh")
     fmesh = zeros(F64, nmesh)
-    if axis === 1 # Imaginary axis
+    if axis == 1 # Imaginary axis
         for i = 1:nmesh
             fmesh[i] = (2 * i - 1) * pi / beta
         end
         #
         println("  > Create Matsubara frequency mesh: $nmesh points")
     else # Real axis
-        sorry()
         println("  > Create real frequency mesh: $nmesh points")
+        sorry()
     end
 
     # Create default self-energy functions
@@ -64,10 +69,29 @@ function sigma_reset(ai::Array{Impurity,1})
         # Create a temporary array for self-energy function
         S = zeros(C64, nband, nband, nmesh, nspin)
 
+        # Setup initial values for the self-energy functions if needed
+        if with_init_dc
+            # Try to calculate the double counting terms within the fully
+            # localized limited scheme at first.
+            @assert ai[i].occup == get_i("occup")[i]
+            sigdc, _ = cal_dc_fll(ai[i].upara, ai[i].jpara, ai[i].occup)
+
+            # Go through spins, meshes, and bands, setup elements of S.
+            for s = 1:nspin
+                for m = 1:nmesh
+                    for b = 1:nband
+                        S[b,b,m,s] = sigdc + 0.0im
+                    end # END OF B LOOP
+                end # END OF M LOOP
+            end # END OF S LOOP
+            #
+            println("  > Initial value: $i -> ", sigdc)
+        end
+
         # Push S into SA to save it
         push!(SA, S)
         #
-        println("  > Shape of Array S: $i -> ", size(S))
+        println("  > Shape of Array Σ: $i -> ", size(S))
     end # END OF I LOOP
 
     # Write self-energy functions and the corresponding frequency mesh
@@ -76,17 +100,21 @@ function sigma_reset(ai::Array{Impurity,1})
 end
 
 """
-    sigma_dcount(it::IterInfo, ai::Array{Impurity,1})
+    sigma_dcount(it::IterInfo, ai::Array{Impurity,1}, reset_dc::Bool = false)
 
 Calculate double counting terms for local self-energy functions and
 write them to `sigma.dc`, which is an essential input for the dynamical
 mean-field theory engine.
 
+If `reset_dc = true`, it will reset the double counting terms to zero.
+This is particularly useful for the first DFT + DMFT iteration. However,
+if `reset_dc = false`, it will retain the double counting terms.
+
 The field `it.dc` will be updated in this function as well.
 
 See also: [`sigma_reset`](@ref).
 """
-function sigma_dcount(it::IterInfo, ai::Array{Impurity,1})
+function sigma_dcount(it::IterInfo, ai::Array{Impurity,1}, reset_dc::Bool = false)
     # Print the header
     println("Sigma : Dcount")
     println("Try to build double counting terms for self-energy functions")
@@ -102,6 +130,7 @@ function sigma_dcount(it::IterInfo, ai::Array{Impurity,1})
     #
     # Initialize an array for dc
     DCA = Array{F64,3}[]
+    Edc = F64[]
     #
     # Go through the quantum impurity problems and calculate dc
     for i = 1:nsite
@@ -129,25 +158,26 @@ function sigma_dcount(it::IterInfo, ai::Array{Impurity,1})
         DC = zeros(F64, nband, nband, nspin)
 
         # Choose suitable double counting scheme
-        @cswitch get_m("dcount") begin
+        scheme = get_m("dcount")
+        @cswitch scheme begin
             # Fully localized limit scheme (nominal occupation number)
             @case "fll1"
-                sigup, sigdn = cal_dc_fll(U, J, N / 2.0, N / 2.0)
+                sigup, sigdn, edc = cal_dc_fll(U, J, N / 2.0, N / 2.0)
                 break
 
             # Fully localized limit scheme (dynamic occupation number)
             @case "fll2"
-                sigup, sigdn = cal_dc_fll(U, J, nup, ndown)
+                sigup, sigdn, edc = cal_dc_fll(U, J, nup, ndown)
                 break
 
             # Around mean-field scheme
             @case "amf"
-                sigup, sigdn = cal_dc_amf(U, J, nup, ndown, nband)
+                sigup, sigdn, edc = cal_dc_amf(U, J, nup, ndown, nband)
                 break
 
             # K. Held scheme
             @case "held"
-                sigup = cal_dc_held(U, J, occup, nband)
+                sigup, edc = cal_dc_held(U, J, occup, nband)
                 sigdn = sigup
                 break
 
@@ -166,14 +196,17 @@ function sigma_dcount(it::IterInfo, ai::Array{Impurity,1})
         end
         #
         # Print some useful information
-        println("  > Using the $(get_m("dcount")) scheme: Vdc = $sigup (spin up)")
-        println("  > Using the $(get_m("dcount")) scheme: Vdc = $sigdn (spin down)")
-        println("  > Shape of Array DC: $i -> ", size(DC))
+        println("  > Using the $scheme scheme: Σdc = $sigup (spin up)")
+        println("  > Using the $scheme scheme: Σdc = $sigdn (spin down)")
+        println("  > Using the $scheme scheme: Edc = $edc eV")
+        println("  > Shape of Array Σdc: $i -> ", size(DC))
 
         # Special treatment for the first iteration
-        if it.I₃ <= 1 && it.I₁ <= 1
+        if reset_dc && ( it.I₃ ≤ 1 && it.I₁ ≤ 1 )
             fill!(DC, 0.0)
-            println("  > Reset Vdc to: ", 0.0)
+            edc = 0.0
+            println("  > Reset Σdc to: ", 0.0)
+            println("  > Reset Edc to: ", 0.0)
         end
 
         # Use `sigup` to update the IterInfo struct
@@ -181,7 +214,11 @@ function sigma_dcount(it::IterInfo, ai::Array{Impurity,1})
 
         # Push DC into DCA to save it
         push!(DCA, DC)
+        push!(Edc, edc)
     end # END OF I LOOP
+
+    # Update the energy due to double counting
+    it.et.dc = sum(Edc)
 
     # Write double counting terms
     println("Write double counting terms")
@@ -255,8 +292,8 @@ function sigma_gather(it::IterInfo, ai::Array{Impurity,1})
 
         # Print some useful information
         println("  > Read self-energy functions for impurity: $t")
-        println("  > Shape of Array fmesh: ", size(fmesh))
-        println("  > Shape of Array sigma: ", size(sigma))
+        println("  > Shape of Array ω: ", size(fmesh))
+        println("  > Shape of Array Σ: ", size(sigma))
 
         # Extract and verify the dimensional parameters
         _, _b, _m, _ = size(sigma)
@@ -320,6 +357,14 @@ and
     J \left(N_{\downarrow} - \frac{1}{2}\right).
 \end{equation}
 ```
+
+The energy due to double counting reads
+
+```math
+\begin{equation}
+E_{\text{dc}} = \frac{U}{2}N(N-1) - \frac{J}{4}N(N-2).
+\end{equation}
+```
 =#
 
 """
@@ -331,7 +376,9 @@ This function is for the spin-unpolarized case.
 See also: [`cal_dc_amf`](@ref), [`cal_dc_exact`](@ref).
 """
 function cal_dc_fll(U::F64, J::F64, N::F64)
-    U * ( N - 0.5 ) - J / 2.0 * ( N - 1.0 )
+    Vdc = U * ( N - 0.5 ) - J / 2.0 * ( N - 1.0 )
+    Edc = U / 2.0 * N * ( N - 1.0 ) - J / 4.0 * N * ( N - 2.0 )
+    return Vdc, Edc
 end
 
 """
@@ -343,9 +390,11 @@ This function is for the spin-polarized case.
 See also: [`cal_dc_amf`](@ref), [`cal_dc_exact`](@ref).
 """
 function cal_dc_fll(U::F64, J::F64, Nup::F64, Ndn::F64)
-    DCup = U * ( Nup + Ndn - 0.5 ) - J * ( Nup - 0.5 )
-    DCdn = U * ( Nup + Ndn - 0.5 ) - J * ( Ndn - 0.5 )
-    return DCup, DCdn
+    N = Nup + Ndn
+    Vup = U * ( Nup + Ndn - 0.5 ) - J * ( Nup - 0.5 )
+    Vdn = U * ( Nup + Ndn - 0.5 ) - J * ( Ndn - 0.5 )
+    Edc = U / 2.0 * N * ( N - 1.0 ) - J / 4.0 * N * ( N - 2.0 )
+    return Vup, Vdn, Edc
 end
 
 #=
@@ -398,6 +447,18 @@ and
 
 In these equations, ``l`` means the quantum number of angular momentum,
 while ``M`` is the number of correlated orbitals.
+
+In addition, the energy due to double counting reads
+
+```math
+\begin{equation}
+E_{\text{dc}}
+    =
+    \frac{UN^2}{2}\left(1 - \frac{1}{2M}\right)
+    -
+    \frac{JN^2}{2}\left(\frac{1}{2} - \frac{1}{2M}\right).
+\end{equation}
+```
 =#
 
 """
@@ -409,7 +470,10 @@ This function is for the spin-unpolarized case.
 See also: [`cal_dc_fll`](@ref), [`cal_dc_exact`](@ref).
 """
 function cal_dc_amf(U::F64, J::F64, N::F64, M::I64)
-    U * ( N - N / ( 2.0 * M ) ) - J * ( N / 2.0 - N / ( 2.0 * M ) )
+    Vdc = U * ( N - N / ( 2.0 * M ) ) - J * ( N / 2.0 - N / ( 2.0 * M ) )
+    Edc = U * N^2 / 2.0 * ( 1.0 - 1.0 / ( 2.0 * M ) )
+          - J * N^2 / 2.0 * ( 1.0 / 2.0 - 1.0 / ( 2.0 * M ) )
+    return Vdc, Edc
 end
 
 """
@@ -421,9 +485,12 @@ This function is for the spin-polarized case.
 See also: [`cal_dc_fll`](@ref), [`cal_dc_exact`](@ref).
 """
 function cal_dc_amf(U::F64, J::F64, Nup::F64, Ndn::F64, M::I64)
-    DCup = U * ( Nup + Ndn - Nup / M ) - J * ( Nup - Nup / M )
-    DCdn = U * ( Nup + Ndn - Ndn / M ) - J * ( Ndn - Ndn / M )
-    return DCup, DCdn
+    N = Nup + Ndn
+    Vup = U * ( Nup + Ndn - Nup / M ) - J * ( Nup - Nup / M )
+    Vdn = U * ( Nup + Ndn - Ndn / M ) - J * ( Ndn - Ndn / M )
+    Edc = U * N^2 / 2.0 * ( 1.0 - 1.0 / ( 2.0 * M ) )
+          - J * N^2 / 2.0 * ( 1.0 / 2.0 - 1.0 / ( 2.0 * M ) )
+    return Vup, Vdn, Edc
 end
 
 #=
@@ -445,6 +512,13 @@ U_{\text{av}} = \frac{U + (M - 1)(2U - 5J)}{2M - 1}.
 
 Here ``M`` is the number of correlated orbitals.
 
+The energy due to double counting reads
+
+```math
+\begin{equation}
+E_{\text{dc}} = \frac{U}{2} N (N - 1).
+\end{equation}
+```
 =#
 
 """
@@ -456,7 +530,9 @@ See also: [`cal_dc_fll`](@ref), [`cal_dc_amf`](@ref), [`cal_dc_exact`](@ref).
 """
 function cal_dc_held(U::F64, J::F64, N::F64, M::I64)
     Uav = ( U + ( M - 1.0 ) * ( 2.0 * U - 5.0 * J ) ) / ( 2.0 * M - 1.0 )
-    Uav * ( N - 0.5 )
+    Vdc = Uav * ( N - 0.5 )
+    Edc = Uav / 2.0 * N * ( N - 1.0 )
+    return Vdc, Edc
 end
 
 """
@@ -561,9 +637,9 @@ function read_sigma(ai::Array{Impurity,1}, fsig::String = "dmft1/sigma.bare")
 
     # Print some useful information
     println("  > Read self-energy functions from: $fsig")
-    println("  > Shape of Array fmesh: ", size(fmesh))
+    println("  > Shape of Array ω: ", size(fmesh))
     for t in eachindex(SA)
-        println("  > Shape of Array Sigma: $t -> ", size(SA[t]))
+        println("  > Shape of Array Σ: $t -> ", size(SA[t]))
     end
 
     # Return the desired arrays
@@ -641,7 +717,7 @@ function read_sigdc(ai::Array{Impurity,1}, fsig::String = "dmft1/sigma.dc")
     # Print some useful information
     println("  > Read double counting terms from: $fsig")
     for t in eachindex(DCA)
-        println("  > Shape of Array DC: $t -> ", size(DCA[t]))
+        println("  > Shape of Array Σdc: $t -> ", size(DCA[t]))
     end
 
     # Return the desire array
@@ -711,9 +787,9 @@ function write_sigma(fmesh::Array{F64,1}, SA::Array{Array{C64,4},1}, ai::Array{I
 
     # Print some useful information
     println("  > Write self-energy functions into: dmft1/sigma.bare")
-    println("  > Shape of Array fmesh: ", size(fmesh))
+    println("  > Shape of Array ω: ", size(fmesh))
     for t in eachindex(SA)
-        println("  > Shape of Array Sigma: $t -> ", size(SA[t]))
+        println("  > Shape of Array Σ: $t -> ", size(SA[t]))
     end
 
     # Copy sigma.bare to the dmft2 directory
@@ -721,9 +797,9 @@ function write_sigma(fmesh::Array{F64,1}, SA::Array{Array{C64,4},1}, ai::Array{I
 
     # Print some useful information
     println("  > Write self-energy functions into: dmft2/sigma.bare")
-    println("  > Shape of Array fmesh: ", size(fmesh))
+    println("  > Shape of Array ω: ", size(fmesh))
     for t in eachindex(SA)
-        println("  > Shape of Array Sigma: $t -> ", size(SA[t]))
+        println("  > Shape of Array Σ: $t -> ", size(SA[t]))
     end
 end
 
@@ -782,7 +858,7 @@ function write_sigdc(DCA::Array{Array{F64,3},1}, ai::Array{Impurity,1})
     # Print some useful information
     println("  > Write double counting terms into: dmft1/sigma.dc")
     for t in eachindex(DCA)
-        println("  > Shape of Array DC: $t -> ", size(DCA[t]))
+        println("  > Shape of Array Σdc: $t -> ", size(DCA[t]))
     end
 
     # Copy sigma.dc to the dmft2 directory
@@ -791,6 +867,6 @@ function write_sigdc(DCA::Array{Array{F64,3},1}, ai::Array{Impurity,1})
     # Print some useful information
     println("  > Write double counting terms into: dmft2/sigma.dc")
     for t in eachindex(DCA)
-        println("  > Shape of Array DC: $t -> ", size(DCA[t]))
+        println("  > Shape of Array Σdc: $t -> ", size(DCA[t]))
     end
 end

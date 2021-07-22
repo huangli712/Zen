@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/09
+# Last modified: 2021/07/14
 #
 
 #=
@@ -172,7 +172,7 @@ function plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
     #
     # For a given quantum impurity problem, we can always find out the
     # corresponding group of projectors.
-    @assert all(x -> (0 < x <= ngrp), Map.i_grp)
+    @assert all(x -> (0 < x ≤ ngrp), Map.i_grp)
     #
     println("  > Create quantum impurity problems -> groups (i_grp)")
 
@@ -180,7 +180,7 @@ function plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
     #
     # For a given group of projectors, if we fail to find out the
     # corresponding quantum impurity problem, it must be non-correlated.
-    @assert all(x -> (0 <= x <= nsite), Map.g_imp)
+    @assert all(x -> (0 ≤ x ≤ nsite), Map.g_imp)
     #
     println("  > Create groups -> quantum impurity problems (g_imp)")
 
@@ -450,11 +450,11 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
 
         # Determine the number of projectors after rotation
         ndim = size(PG[i].Tr)[1]
-        @assert size(PG[i].Tr)[2] === (p2 - p1 + 1)
+        @assert size(PG[i].Tr)[2] == (p2 - p1 + 1)
 
         # Create a temporary array R
         R = zeros(C64, ndim, nband, nkpt, nspin)
-        @assert nband >= ndim
+        @assert nband ≥ ndim
 
         # Rotate chipsi by Tr, the results are stored at R.
         for s = 1:nspin
@@ -652,7 +652,7 @@ function get_win1(enk::Array{F64,3}, bwin::Tuple{I64,I64})
 
     # Extract some key parameters
     nband, nkpt, nspin = size(enk)
-    @assert nband >= bmin && nband >= bmax
+    @assert nband ≥ bmin && nband ≥ bmax
 
     # Create array `kwin`, which is used to record the band window
     # for each k-point and each spin.
@@ -1395,7 +1395,7 @@ function view_dos(mesh::Array{Array{F64,1},1}, dos::Array{Array{F64,3},1})
     for p in eachindex(dos)
         # Extract some key parameters
         ndim, nspin, npnts = size(dos[p])
-        @assert npnts === length(mesh[p])
+        @assert npnts == length(mesh[p])
 
         # Output the data
         open("dos.chk.$p", "w") do fout

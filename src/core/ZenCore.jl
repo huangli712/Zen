@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/06
+# Last modified: 2021/07/22
 #
 
 """
@@ -64,6 +64,7 @@ using LinearAlgebra
 using Distributed
 using Dates
 using Printf
+using Base: Symbol
 using Base.Math: libm
 
 #=
@@ -121,8 +122,7 @@ input strings, etc.
 ```text
 @cswitch      -> C-style switch.
 @time_call    -> Evaluate a function call and print the elapsed time.
-@ps1          -> Wrapper for printstyled function.
-@ps2          -> Another wrapper for printstyled function.
+@pcs          -> Print colorful strings.
 require       -> Check julia envirnoment.
 setup_args    -> Setup ARGS manually.
 query_args    -> Query program's arguments.
@@ -151,8 +151,7 @@ include("util.jl")
 #
 export @cswitch
 export @time_call
-export @ps1
-export @ps2
+export @pcs
 export require
 export setup_args
 export query_args
@@ -232,6 +231,7 @@ PDMFT    -> Dict for DMFT engine.
 PIMP     -> Dict for quantum impurity problems.
 PSOLVER  -> Dict for quantum impurity solvers.
 Logger   -> Struct for logger.
+Energy   -> Struct for total DFT + DMFT energy.
 IterInfo -> Struct for DFT + DMFT iteration information.
 Lattice  -> Struct for crystallography information.
 Mapping  -> Struct for mapping between impurity problems and projectors.
@@ -251,6 +251,7 @@ export PDMFT
 export PIMP
 export PSOLVER
 export Logger
+export Energy
 export IterInfo
 export Lattice
 export Mapping
@@ -350,12 +351,14 @@ cycle7      -> Execute self-energy engine only (for testing purpose).
 cycle8      -> Execute mixer engine only (for testing purpose).
 monitor     -> Monitor the DFT + DMFT calculations.
 suspend     -> Suspend the DFT engine.
+suicide     -> Kill the DFT engine.
 dft_run     -> Driver for DFT engine.
 dmft_run    -> Driver for DMFT engine.
 solver_run  -> Driver for quantum impurity solvers.
 adaptor_run -> Driver for Kohn-Sham adaptor.
 sigma_core  -> Driver for self-energy engine.
 mixer_core  -> Driver for mixer engine.
+energy_core -> Driver for treating DFT + DMFT energy.
 build_trees -> Make working directories.
 clear_trees -> Remove working directories.
 incr_it     -> Increase the counters in the IterInfo struct.
@@ -383,12 +386,14 @@ export cycle7
 export cycle8
 export monitor
 export suspend
+export suicide
 export dft_run
 export dmft_run
 export solver_run
 export adaptor_run
 export sigma_core
 export mixer_core
+export energy_core
 export build_trees
 export clear_trees
 export incr_it
@@ -415,14 +420,17 @@ vasp_adaptor   -> Adaptor support.
 vasp_init      -> Prepare vasp's input files.
 vasp_exec      -> Execute vasp program.
 vasp_save      -> Backup vasp's output files.
+vasp_back      -> Reactivate the vasp program to continue calculation.
 vaspc_incar    -> Generate essential input file (INCAR).
 vaspc_kpoints  -> Generate essential input file (KPOINTS).
 vaspc_gamma    -> Generate essential input file (GAMMA).
-vaspc_lock     -> Create/Delete the vasp.lock file.
+vaspc_stopcar  -> Create the STOPCAR file to stop vasp.
+vaspc_lock     -> Create the vasp.lock file.
 vaspq_lock     -> Check the vasp.lock file.
 vaspq_files    -> Check essential output files.
 vaspio_nband   -> Determine number of bands.
 vaspio_valence -> Read number of valence electrons for each sort.
+vaspio_energy  -> Read DFT total energy.
 vaspio_procar  -> Read PROCAR file.
 vaspio_lattice -> Read lattice information.
 vaspio_kmesh   -> Read kmesh.
@@ -441,14 +449,17 @@ export vasp_adaptor
 export vasp_init
 export vasp_exec
 export vasp_save
+export vasp_back
 export vaspc_incar
 export vaspc_kpoints
 export vaspc_gamma
+export vaspc_stopcar
 export vaspc_lock
 export vaspq_lock
 export vaspq_files
 export vaspio_nband
 export vaspio_valence
+export vaspio_energy
 export vaspio_procar
 export vaspio_lattice
 export vaspio_kmesh
@@ -621,29 +632,31 @@ CT-HYB₂, HIA, and NORG quantum impurity solvers are supported.
 *Members* :
 
 ```text
-s_qmc1_init -> Prepare input files for the CT-HYB₁ impurity solver.
-s_qmc1_exec -> Execute the CT-HYB₁ impurity solver.
-s_qmc1_save -> Backup output files for the CT-HYB₁ impurity solver.
-s_qmc2_init -> Prepare input files for the CT-HYB₂ impurity solver.
-s_qmc2_exec -> Execute the CT-HYB₂ impurity solver.
-s_qmc2_save -> Backup output files for the CT-HYB₂ impurity solver.
-s_hub1_init -> Prepare input files for the HIA impurity solver.
-s_hub1_exec -> Execute the HIA impurity solver.
-s_hub1_save -> Backup output files for the HIA impurity solver.
-s_norg_init -> Prepare input files for the NORG impurity solver.
-s_norg_exec -> Execute the NORG impurity solver.
-s_norg_save -> Backup output files for the NORG impurity solver.
-ctqmc_setup -> Prepare configuration parameters for CT-QMC impurity solver.
-ctqmc_atomx -> Prepare configuration parameters for atomic problem solver.
-ctqmc_delta -> Prepare hybridization function for CT-QMC impurity solver.
-ctqmc_eimpx -> Prepare local impurity levels for CT-QMC impurity solver.
-ctqmc_sigma -> Return self-energy function by CT-QMC impurity solver.
-ctqmc_nimpx -> Return impurity occupancy by CT-QMC impurity solver.
-GetSigma    -> Parse the self-energy functions.
-GetNimpx    -> Parse the impurity occupancy.
-GetSymmetry -> Analyze orbital degeneracy via local impurity levels.
-GetImpurity -> Build Impurity struct according to configuration file.
-CatImpurity -> Display Impurity struct that need to be solved.
+s_qmc1_init  -> Prepare input files for the CT-HYB₁ impurity solver.
+s_qmc1_exec  -> Execute the CT-HYB₁ impurity solver.
+s_qmc1_save  -> Backup output files for the CT-HYB₁ impurity solver.
+s_qmc2_init  -> Prepare input files for the CT-HYB₂ impurity solver.
+s_qmc2_exec  -> Execute the CT-HYB₂ impurity solver.
+s_qmc2_save  -> Backup output files for the CT-HYB₂ impurity solver.
+s_hub1_init  -> Prepare input files for the HIA impurity solver.
+s_hub1_exec  -> Execute the HIA impurity solver.
+s_hub1_save  -> Backup output files for the HIA impurity solver.
+s_norg_init  -> Prepare input files for the NORG impurity solver.
+s_norg_exec  -> Execute the NORG impurity solver.
+s_norg_save  -> Backup output files for the NORG impurity solver.
+ctqmc_setup  -> Prepare configuration parameters for CT-QMC impurity solver.
+ctqmc_atomx  -> Prepare configuration parameters for atomic problem solver.
+ctqmc_delta  -> Prepare hybridization function for CT-QMC impurity solver.
+ctqmc_eimpx  -> Prepare local impurity levels for CT-QMC impurity solver.
+ctqmc_sigma  -> Return self-energy function by CT-QMC impurity solver.
+ctqmc_nimpx  -> Return impurity occupancy by CT-QMC impurity solver.
+ctqmc_energy -> Return interaction energy by CT-QMC impurity solver.
+GetSigma     -> Parse the self-energy functions.
+GetNimpx     -> Parse the impurity occupancy.
+GetEnergy    -> Parse the interaction energy (potential energy).
+GetSymmetry  -> Analyze orbital degeneracy via local impurity levels.
+GetImpurity  -> Build Impurity struct according to configuration file.
+CatImpurity  -> Display Impurity struct that need to be solved.
 ```
 =#
 
@@ -668,8 +681,10 @@ export ctqmc_delta
 export ctqmc_eimpx
 export ctqmc_sigma
 export ctqmc_nimpx
+export ctqmc_energy
 export GetSigma
 export GetNimpx
+export GetEnergy
 export GetSymmetry
 export GetImpurity
 export CatImpurity
@@ -759,15 +774,15 @@ export distance
 ### *PreCompile*
 =#
 
-"""
-    __init__()
+export _precompile
 
-This function would be executed immediately after the module is loaded
-at runtime for the first time. Here, we would like to precompile the
-whole `ZenCore` package to reduce the runtime latency and speed up the
-successive calculations.
 """
-function __init__()
+    _precompile()
+
+Here, we would like to precompile the whole `ZenCore` package to reduce
+the runtime latency and speed up the successive calculations.
+"""
+function _precompile()
     prompt("Loading...")
 
     # Get an array of the names exported by the `ZenCore` module
@@ -808,5 +823,15 @@ function __init__()
     prompt("We are ready to go!")
     println()
 end
+
+"""
+    __init__()
+
+This function would be executed immediately after the module is loaded
+at runtime for the first time.
+"""
+##
+##__init__() = _precompile()
+##
 
 end # END OF MODULE

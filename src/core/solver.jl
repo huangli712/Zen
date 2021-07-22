@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/07
+# Last modified: 2021/07/21
 #
 
 #=
@@ -76,6 +76,7 @@ function s_qmc1_exec(it::IterInfo)
     # Select suitable solver program
     solver_exe = "$solver_home/ctqmc"
     @assert isfile(solver_exe)
+    println("  > Executable program is available: ", basename(solver_exe))
 
     # Assemble command
     if isnothing(mpi_prefix)
@@ -146,6 +147,14 @@ function s_qmc1_exec(it::IterInfo)
     lines = readlines("solver.out")
     filter!(x -> contains(x, "iter:"), lines)
     println("  > Finished after $(length(lines)) Monte Carlo sampling blocks")
+
+    # Extract perturbation expansion order information
+    println("Statistics about diagrammatic quantum Monte Carlo algorithm")
+    println("  > Order / Count / Percent / Error bar")
+    lines = readlines("solver.hist.dat")
+    filter!(!endswith("0.000000"), lines)
+    filter!(!startswith("#"), lines)
+    foreach(x -> println(x), lines)
 end
 
 """
@@ -706,6 +715,32 @@ function ctqmc_nimpx(imp::Impurity)
     imp.occup = occup
 end
 
+"""
+    ctqmc_energy()
+
+Parse the `solver.paux.dat` file to extract the interaction energy.
+
+See also: [`GetEnergy`](@ref).
+"""
+function ctqmc_energy()
+    # File name for DMFT energy
+    fene = "solver.paux.dat"
+
+    # To make sure the data file is present
+    if !isfile(fene)
+        return 0.0
+    end
+
+    # Parse the data file to extract potential energy
+    lines = readlines(fene)
+    filter!(x -> contains(x, "epot:"), lines)
+    @assert length(lines) == 1
+    epot = parse(F64, line_to_array(lines[1])[2])
+
+    # Return the desired value
+    return epot
+end
+
 #=
 ### *Service Functions* : *Files I/O Operations*
 =#
@@ -775,7 +810,7 @@ be updated, which will then be used to evaluate the double counting
 term for self-energy functions. The working directory of this function
 must be the root folder.
 
-The argument `imp` will be modified in this function.
+The argument `imp` may be modified in this function.
 
 See also: [`Impurity`](@ref), [`ctqmc_nimpx`](@ref).
 """
@@ -820,6 +855,56 @@ function GetNimpx(imp::Impurity)
     cd("..")
 end
 
+"""
+    GetEnergy(imp::Impurity)
+
+Extract interaction energy (i.e potential energy) from the output files
+of various quantum impurity solvers. The input Impurity struct won't be
+modified. The working directory of this function must be the root folder.
+
+See also: [`Impurity`](@ref), [`ctqmc_energy`](@ref).
+"""
+function GetEnergy(imp::Impurity)
+    # Get the index for current quantum impurity problem
+    index = imp.index
+
+    # Change the directory
+    cd("impurity.$index")
+
+    # Determine the chosen solver
+    engine = get_s("engine")
+
+    # Activate the corresponding solver_energy() functions for various
+    # quantum impurity solvers
+    @cswitch engine begin
+        @case "ct_hyb1"
+            epot = ctqmc_energy()
+            break
+
+        @case "ct_hyb2"
+            epot = ctqmc_energy()
+            break
+
+        @case "hub1"
+            sorry()
+            break
+
+        @case "norg"
+            sorry()
+            break
+
+        @default
+            sorry()
+            break
+    end
+
+    # Enter the parent directory
+    cd("..")
+
+    # Return the desired value
+    return epot
+end
+
 #=
 ### *Service Functions* : *Quantum Impurity Problems*
 =#
@@ -841,7 +926,7 @@ function GetSymmetry(Eimpx::Array{C64,3})
     eimp = zeros(F64, nband, nspin)
     for s = 1:nspin
         for b = 1:nband
-            eimp[b,s] = round(real(Eimpx[b,b,s]), digits = 3)
+            eimp[b,s] = round(real(Eimpx[b,b,s]), digits = 2)
         end
     end # END OF S LOOP
 

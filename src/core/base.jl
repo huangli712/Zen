@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/08
+# Last modified: 2021/07/22
 #
 
 #=
@@ -67,7 +67,7 @@ Finalize the DFT + DMFT calculations.
 See also: [`go`](@ref).
 """
 function final()
-    prompt("It is time to sleep. See you later.")
+    prompt("Thank you for using $(__LIBNAME__). See you later.")
 end
 
 #=
@@ -124,7 +124,6 @@ See also: [`cycle2`](@ref), [`go`](@ref).
 function cycle1()
     # C-2: Create IterInfo struct
     it = IterInfo()
-    it.sc = 1 # One-shot mode
 
     # C-1: Create Logger struct
     lr = Logger(query_case())
@@ -136,6 +135,7 @@ function cycle1()
 # Initialization (C01-C04)
 #
     prompt("Initialization")
+    it.sc = 0 # In preparation mode
 
     # C01: Perform DFT calculation (for the first time)
     @time_call dft_run(it, lr)
@@ -153,6 +153,9 @@ function cycle1()
 # DFT + DMFT Iterations (C05-C12)
 #
     prompt("Iterations")
+    it.sc = 1 # In one-shot DFT + DMFT mode
+
+    # Print the cycle info
     show_it(it, lr)
 
     for iter = 1:it.M₃
@@ -188,12 +191,18 @@ function cycle1()
         # C12: Mix the impurity self-energy functions
         @time_call mixer_core(it, lr, ai, "sigma")
 
+        # C18: Check the convergence for total energy
+        energy_core(it)
+
         # Print the cycle info
         show_it(it, lr)
 
         # If the convergence has been achieved, then break the cycle.
         conv_it(it) && break
     end
+
+    # C97: Kill the DFT engine if it is still alive
+    suicide(it)
 
     # C98: Close Logger.log
     if isopen(lr.log)
@@ -219,7 +228,6 @@ See also: [`cycle1`](@ref), [`go`](@ref).
 function cycle2()
     # C-2: Create IterInfo struct
     it = IterInfo()
-    it.sc = 1 # Still one-shot mode
 
     # C-1: Create Logger struct
     lr = Logger(query_case())
@@ -231,6 +239,7 @@ function cycle2()
 # Initialization (C01-C04)
 #
     prompt("Initialization")
+    it.sc = 0 # In preparation mode
 
     # C01: Perform DFT calculation (for the first time)
     @time_call dft_run(it, lr)
@@ -248,16 +257,19 @@ function cycle2()
 # DFT + DMFT Iterations (C05-C12)
 #
     prompt("Iterations")
+    it.sc = 2 # In self-consistent DFT + DMFT mode
+
+    # Print the cycle info
     show_it(it, lr)
 
     # C05: Start the self-consistent engine
-    it.sc = 2; dft_run(it, lr)
+    dft_run(it, lr)
+
+    # Wait the DFT engine to finish its job and sleep
+    suspend(4) # Apply a larger time interval
 
     # Outer: DFT + DMFT LOOP
     for iter = 1:it.M₃
-
-        # Wait additional two seconds
-        suspend(2)
 
         # Print the log
         prompt("Cycle $iter")
@@ -267,11 +279,19 @@ function cycle2()
         # Update IterInfo struct, fix it.I₃
         incr_it(it, 3, iter)
 
-        # C06: Apply the adaptor to extract new Kohn-Sham dataset
-        adaptor_run(it, lr, ai)
+        # Inner: Adaptor BLOCK
+        # Try to extract Kohn-Sham dataset
+        begin
 
-        # Inner: DMFT LOOP
+            # C06: Apply the adaptor to extract new Kohn-Sham dataset
+            adaptor_run(it, lr, ai)
+
+        end
+
+        # Inner: DMFT₁ BLOCK
+        # Try to solve the quantum impurity problems
         for iter1 = 1:it.M₁
+
             # Update IterInfo struct, fix it.I₁
             incr_it(it, 1, iter1)
 
@@ -301,40 +321,67 @@ function cycle2()
 
             # Print the cycle info
             show_it(it, lr)
+            show_it("dmft1", iter1, it.M₁)
 
-            # If the convergence has been achieved, then break the cycle.
-            conv_it(it) && break
+        end # END OF ITER1 LOOP
+
+        # Inner: DMFT₂ BLOCK
+        # Try to generate update for density matrix
+        begin
+
+            # Update IterInfo struct, fix it.I₂
+            incr_it(it, 2, 1)
+
+            # C15: Perform DMFT calculation with `task` = 2
+            @time_call dmft_run(it, lr, 2) # Generate correction for density matrix
+
+            # C16: Mix the correction for density matrix
+            @time_call mixer_core(it, lr, ai, "gamma")
+
+            # Print the cycle info
+            show_it("dmft2", 1, 1)
+
         end
 
-        # Reset the counter in IterInfo: I₁, I₂
-        zero_it(it)
-
-        # Inner: DFT LOOP
+        # Inner: DFT BLOCK
+        # Try DFT engine with a fixed charge density update
         for iter2 = 1:it.M₂
+
             # Update IterInfo struct, fix it.I₂
             incr_it(it, 2, iter2)
 
-            # C15: Perform DMFT calculation with `task` = 2
-            dmft_run(it, lr, 2) # Generate correction for density matrix
-
-            # C10: Mix the correction for density matrix
-            @time_call mixer_core(it, lr, ai, "gamma")
-
             # C17: Reactivate the DFT engine
-            dft_run(lr)
+            dft_run(it, lr, true)
 
             # Print the cycle info
             show_it(it, lr)
+            show_it("dft", iter2, it.M₂)
 
-            # If the convergence has been achieved, then break the cycle.
-            conv_it(it) && break
-        end
-
+        end # END OF ITER2 LOOP
+        #
         # Reset the counter in IterInfo: I₁, I₂
         zero_it(it)
 
-        # C18:
+        # C18: Check the convergence for total energy
+        energy_core(it)
 
+        # If the convergence has been achieved, then break the cycle.
+        conv_it(it) && break
+    end # END OF ITER LOOP
+
+    # C97: Kill the DFT engine if it is still alive
+    suicide(it)
+
+    # C98: Close Logger.log
+    if isopen(lr.log)
+        flush(lr.log)
+        close(lr.log)
+    end
+
+    # C99: Close Logger.cycle
+    if isopen(lr.cycle)
+        flush(lr.cycle)
+        close(lr.cycle)
     end
 end
 
@@ -531,8 +578,7 @@ function cycle8(task::String = "sigma")
     # C01: Further setup the IterInfo struct
     #
     # Please modify the I₃ and I₁ parameters to fit your requirements
-    it.I₃ = 1
-    it.I₁ = 10
+    it.I₃ = 2; it.I₁ = 0; it.I₂ = 1; it.sc = 2 # Test mixer_gamma()
 
     # C02: Execute the Kohn-Sham adaptor
     @time_call mixer_core(it, lr, ai, task)
@@ -597,21 +643,57 @@ function suspend(second::I64)
         second = 5
     end
 
-    # Sleep at first
+    # Sleep some seconds at first
     sleep(second)
 
     # Enter an infinite loop until some conditions are fulfilled.
+    engine = get_d("engine")
+    print("Waiting for $engine. Ticking")
     while true
         # Sleep
         sleep(second)
         #
         # Print some hints
-        println("Pending for DFT engine")
+        print(".")
         #
         # Check the stop condifion.
         # Here, we check the vasp.lock file. If it is absent, then we
         # break this loop
         !vaspq_lock() && break
+    end
+    println("\n")
+end
+
+"""
+    suicide(it::IterInfo)
+
+Kill the DFT engine abnormally.
+
+See also: [`dft_run`](@ref).
+"""
+function suicide(it::IterInfo)
+    # Stop it! Only for self-consistent DFT + DMFT iterations.
+    if it.sc == 2
+        println("Try to kill the $engine app. Please waiting...")
+        #
+        engine = get_d("engine")
+        @cswitch engine begin
+            # For vasp
+            @case "vasp"
+                vaspc_stopcar()
+                break
+
+            @default
+                sorry()
+                break
+        end
+    end
+
+    # Print the footer
+    if ( it.sc == 1 && it.I₁ < it.M₃ ) || ( it.sc == 2 && it.I₃ < it.M₃ )
+        println("Good news. The self-consistent iteration is converged.\n")
+    else
+        println("Sorry, maximum number of iterations is reached.\n")
     end
 end
 
@@ -620,18 +702,22 @@ end
 =#
 
 """
-    dft_run(it::IterInfo, lr::Logger)
+    dft_run(it::IterInfo, lr::Logger, sc::Bool = false)
 
 Simple driver for DFT engine. It performs three tasks: (1) Examine
 the runtime environment for the DFT engine. (2) Launch the DFT engine.
 (3) Backup the output files by DFT engine for next iterations.
+
+If `sc = true`, this function will read in the correction for density
+matrix, and then feed it back to the DFT engine to continue the DFT
++ DMFT calculations.
 
 Now only the vasp engine is supported. If you want to support the other
 DFT engine, this function must be adapted.
 
 See also: [`adaptor_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
-function dft_run(it::IterInfo, lr::Logger)
+function dft_run(it::IterInfo, lr::Logger, sc::Bool = false)
     # Determine the chosen engine
     engine = get_d("engine")
 
@@ -643,66 +729,39 @@ function dft_run(it::IterInfo, lr::Logger)
     cd("dft")
 
     # Activate the chosen DFT engine
-    @cswitch engine begin
-        # For vasp
-        @case "vasp"
-            vasp_init(it)
-            vasp_exec(it)
-            vasp_save(it)
-            break
+    if !sc
+        @cswitch engine begin
+            # For vasp
+            @case "vasp"
+                vasp_init(it)
+                vasp_exec(it)
+                vasp_save(it)
+                break
 
-        @default
-            sorry()
-            break
-    end
+            @default
+                sorry()
+                break
+        end
+    else
+        @cswitch engine begin
+            # For vasp
+            @case "vasp"
+                # Reactivate the DFT engine
+                @time_call vasp_back()
+                #
+                # Wait the DFT engine to finish its job and sleep
+                suspend(2)
+                #
+                # Get the DFT energy
+                edft = vaspio_energy()
+                break
 
-    # Enter the parent directory
-    cd("..")
-
-    # Monitor the status
-    monitor(true)
-end
-
-"""
-    dft_run(lr::Logger)
-
-Read in the correction for density matrix, and then feed it back to the
-DFT engine to continue the DFT + DMFT calculations.
-
-Now this function only supports the vasp code. We have to improve it
-to support more DFT engines.
-
-See also: [`suspend`](@ref).
-"""
-function dft_run(lr::Logger)
-    # Determine the chosen engine
-    engine = get_d("engine")
-
-    # Print the log
-    prompt("DFT", cntr_it(it))
-    prompt(lr.log, engine)
-
-    # Read in the correction for density matrix
-    _, kwin, gamma = read_gamma()
-
-    # Enter dft directory
-    cd("dft")
-
-    # Activate the chosen DFT engine
-    @cswitch engine begin
-        # For vasp
-        @case "vasp"
-            # Write the GAMMA file for vasp
-            vaspc_gamma(kwin, gamma)
-            #
-            # Create vasp.lock file to wake up the vasp
-            vaspc_lock("create")
-            #
-            break
-
-        @default
-            sorry()
-            break
+            @default
+                sorry()
+                break
+        end
+        # Save DFT energy for the current DFT + DMFT iteration
+        it.et.dft = edft
     end
 
     # Enter the parent directory
@@ -725,7 +784,7 @@ See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`solver_run`](@ref).
 """
 function dmft_run(it::IterInfo, lr::Logger, task::I64)
     # Examine the argument `task`
-    @assert task === 1 || task === 2
+    @assert task == 1 || task == 2
 
     # Print the log
     prompt("DMFT", cntr_it(it))
@@ -800,6 +859,10 @@ function solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, force::Bool
     end
     println("  > Quantum impurity problems (keep): ", findall(to_be_solved))
     println("  > Quantum impurity problems (skip): ", findall(.!to_be_solved))
+    #
+    # Reset DMFT energy
+    it.et.dmft = 0.0
+    #
     println(green("Now we are ready to solve them..."))
 
     # Loop over each impurity site
@@ -910,6 +973,11 @@ function solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, force::Bool
             cd("..")
 
         end
+
+        # Well, now we would like to extract the DMFT energy.
+        edmft = GetEnergy(imp)
+        it.et.dmft = it.et.dmft + edmft
+        println("  > DMFT interaction energy: $i -> $edmft eV")
     end # END OF I LOOP
 
     # Monitor the status
@@ -976,7 +1044,8 @@ function adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
     # some selected physical quantities (such as overlap matrix and
     # density of states) to check the correctness of the Kohn-Sham
     # data. This feature will be activated automatically if you are
-    # using the `src/tools/test.jl` tool to examine the DFT data.
+    # in the REPL mode and there is a `case.test` file in the present
+    # directory (i.e, the `dft` folder).
     #
     projtype = get_d("projtype")
     prompt("Adaptor", cntr_it(it))
@@ -1140,6 +1209,56 @@ function mixer_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::Strin
     monitor(true)
 end
 
+"""
+    energy_core(it::IterInfo)
+
+Simple driver for treating the total DFT + DMFT energy. It will print
+the decomposition of total energy, and try to calculate the energy
+difference between two successive DFT + DMFT iterations.
+
+See also: [`Energy`](@ref), [`IterInfo`](@ref).
+"""
+function energy_core(it::IterInfo)
+    if it.sc == 1
+        println("The DFT + DMFT Energy At Cycle [$(it.I₁) / $(it.M₃)]")
+    else
+        println("The DFT + DMFT Energy At Cycle [$(it.I₃) / $(it.M₃)]")
+    end
+    println(repeat("==", 36))
+    #
+    if it.I₃ == 1
+        println("  > E[DFT]   : $(it.et.dft) eV")
+        println("  > E[DMFT]  : $(it.et.dmft) eV")
+        println("  > E[CORR]  : $(it.et.corr) eV")
+        println("  > E[DC]    : $(it.et.dc) eV")
+        println("  > E[TOTAL] : $(it.et.total) eV")
+    else
+        # Calculate error bar
+        err_dft = abs((it.et.dft - it.ep.dft) / it.et.dft) * 100
+        err_dmft = abs((it.et.dmft - it.ep.dmft) / it.et.dmft) * 100
+        err_corr = abs((it.et.corr - it.ep.corr) / it.et.corr) * 100
+        err_dc = abs((it.et.dc - it.ep.dc) / it.et.dc) * 100
+        err_total = abs((it.et.total - it.ep.total) / it.et.total) * 100
+        #
+        # Print energy and error bar
+        println("  > E[DFT]   : $(it.et.dft) eV (err: $err_dft %)")
+        println("  > E[DMFT]  : $(it.et.dmft) eV (err: $err_dmft %)")
+        println("  > E[CORR]  : $(it.et.corr) eV (err: $err_corr %)")
+        println("  > E[DC]    : $(it.et.dc) eV (err: $err_dc %)")
+        println("  > E[TOTAL] : $(it.et.total) eV (err: $err_total %)")
+        #
+        # Calculate and show the difference
+        dist = abs(it.et.total - it.ep.total)
+        it.ce = ( dist < get_m("ec") )
+        println("  > Calculated ΔE(TOTAL) = $dist ( convergence is $(it.ce) )")
+    end
+    #
+    println(repeat("==", 36), "\n")
+
+    # Update it.ep with it.et
+    it.ep = deepcopy(it.et)
+end
+
 #=
 ### *Service Functions* : *Layer 3*
 =#
@@ -1290,8 +1409,10 @@ function prev_it(it::IterInfo, c::I64)
         @assert ind ≥ 2
         return newlist[ind - 1]
     else
-        list = [(i3,i2) for i2 = 1:it.M₂, i3 = 1:it.M₃]
-        newlist = reshape(list, it.M₂ * it.M₃)
+        # Special treatment for vasp code
+        trueM₂ = ( get_d("engine") == "vasp" ? 1 : it.M₂ )
+        list = [(i3,i2) for i2 = 1:trueM₂, i3 = 1:it.M₃]
+        newlist = reshape(list, trueM₂ * it.M₃)
         ind = findfirst(x -> x == (it.I₃, it.I₂), newlist)
         @assert ind ≥ 2
         return newlist[ind - 1]
@@ -1328,9 +1449,9 @@ function show_it(it::IterInfo, lr::Logger)
         for t = 1:nsite
             print(lr.cycle, "Vdc$t        ")
         end
-        print(lr.cycle, "Nlo1        Nlo2        ")
+        print(lr.cycle, "Ndmft1      Ndmft2      ")
         for t = 1:nsite
-            print(lr.cycle, "Nio$t        ")
+            print(lr.cycle, "Nimp$t       ")
         end
         print(lr.cycle, "Etot        ")
         println(lr.cycle, "C(C)    C(E)    C(S)")
@@ -1369,7 +1490,7 @@ function show_it(it::IterInfo, lr::Logger)
             @printf(lr.cycle, "%-12.7f", it.nf[t])
         end
         #
-        @printf(lr.cycle, "%-12.7f", it.et)
+        @printf(lr.cycle, "%-12.7f", it.et.total)
         #
         @printf(lr.cycle, "%-8s", it.cc ? "true" : "false")
         @printf(lr.cycle, "%-8s", it.ce ? "true" : "false")
@@ -1380,6 +1501,20 @@ function show_it(it::IterInfo, lr::Logger)
 
     # Flush the IOStream
     flush(lr.cycle)
+end
+
+"""
+    show_it(mode::String, iter::I64, max_iter::I64)
+
+Try to record the iteration information in the terminal.
+"""
+function show_it(mode::String, iter::I64, max_iter::I64)
+    @assert mode in ("dmft1", "dmft2", "dft")
+    @assert iter ≥ 1
+    @assert max_iter ≥ iter
+    print("Mode : [ $mode ], ")
+    print("Requested Iteration : [ $max_iter ], ")
+    println("Finished Iteration: [ $iter ]. \n")
 end
 
 """
