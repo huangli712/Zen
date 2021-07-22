@@ -12,6 +12,7 @@
 *.cycle
 .DS_Store
 fort.*
+test/*/POTCAR
 test/*/dft
 test/*/dmft*
 test/*/impurity.*
