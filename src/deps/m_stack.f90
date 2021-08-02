@@ -5,112 +5,12 @@
 !!! type    : module
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 09/14/2009 by li huang (created)
-!!!           04/10/2019 by li huang (last modified)
+!!!           07/30/2021 by li huang (last modified)
 !!! purpose : the purpose of this module is to define a stack-type (LIFO)
 !!!           data structure in fortran version.
 !!! status  : unstable
 !!! comment :
 !!!-----------------------------------------------------------------------
-
-!!
-!!
-!! Introduction
-!! ============
-!!
-!! In this module, we implement two types of stack, istack and gstack. The
-!! istack type was designed to deal with integer numbers only. However,
-!! gstack is a generic type stack. More specifically, it supports the
-!! following four data types:
-!!     integer,
-!!     logical,
-!!     real(dp),
-!!     complex(dp).
-!! The usages, subroutine parameters for these two stack types are almost
-!! identical. To implement gstack type, we generally use the unlimited
-!! polymorphic features in fortran 2003/2008 standard. Noted that not all
-!! fortran compilers can support these features. This module was tested
-!! using intel fortran compiler only. We do not guarantee it can work/be
-!! compiled correctly for using the other fortran compilers. So please
-!! use it carefully. In the iqist project, so far we only use the istack
-!! type. However, in the future, we will turn to the gstack type.
-!!
-!! Usage
-!! =====
-!!
-!! 1. import stack support
-!! -----------------------
-!!
-!! use stack
-!!
-!! 2. declare stack
-!! ----------------
-!!
-!! type (istack) :: is
-!! type (gstack) :: gs
-!!
-!! 3. create stack
-!! ---------------
-!!
-!! call istack_create(is, 1024)
-!! call gstack_create(gs, 1, 1024) ! create stack to support integer
-!! call gstack_create(gs, .true., 1024) ! create stack to support logical
-!! call gstack_create(gs, 1.0_dp, 1024) ! create stack to support real(dp)
-!! call gstack_create(gs, (1.0_dp, 1.0_dp), 1024) ! create stack to support complex(dp)
-!!
-!! note: In istack_create(), the second parameter is the capacity of the
-!! stack. However, in gstack_create(), the second parameter means the data
-!! type that gstack will manipulate, and the third parameter will be used
-!! to determine the capacity. It is an optional parameter.
-!!
-!! 4. push element
-!! ---------------
-!!
-!! call istack_push(is, 1)
-!! call gstack_push(gs, 1)
-!! call gstack_push(gs, .true.)
-!! call gstack_push(gs, 2.0_dp)
-!! call gstack_push(gs, (1.0_dp, 1.0_dp))
-!!
-!! 5. pop element
-!! --------------
-!!
-!! call istack_pop(is, i) ! i is an integer
-!! call gstack_pop(is, j) ! j can be integer, logical, real(dp), and complex(dp)
-!!
-!! 6. check the status of stack
-!! ----------------------------
-!!
-!! print *, istack_isfull(is)
-!! print *, istack_isempty(is)
-!! print *, istack_getsize(is)
-!! print *, istack_getrest(is)
-!!
-!! print *, gstack_isfull(gs)
-!! print *, gstack_isempty(gs)
-!! print *, gstack_getsize(gs)
-!! print *, gstack_getrest(gs)
-!!
-!! The above three function calls will tell you whether the stack is full,
-!! whether it is empty, and its capacity.
-!!
-!! 7. clean the stack
-!! ------------------
-!!
-!! call istack_clean(is)
-!! call gstack_clean(gs)
-!!
-!! note: This operation will reset the top position of the stack, instead
-!! of releasing the memory of it. So you can still use the stack after that.
-!!
-!! 8. destroy the stack
-!! --------------------
-!!
-!! call istack_destroy(is)
-!! call gstack_destroy(gs)
-!!
-!! note: When the stack was destroyed, you can not use it any more.
-!!
-!!
 
   module stack
      implicit none
@@ -119,44 +19,46 @@
 !!>>> declare global parameters                                        <<<
 !!========================================================================
 
-! dp: number precision, double precision for reals
+!! module parameters
+     ! dp: number precision, double precision for reals
      integer, private, parameter :: dp    = kind(1.0d0)
 
-! mystd: device descriptor, console output
+     ! mystd: device descriptor, console output
      integer, private, parameter :: mystd = 6
 
-! stack size limit, default value
+     ! stack size limit, default value
      integer, private, parameter :: limit = 1024
 
 !!========================================================================
 !!>>> declare global data structure                                    <<<
 !!========================================================================
 
-! define integer type stack
+!! module structs
+     ! define integer type stack
      type istack
 
-! top position of stack
+         ! top position of stack
          integer :: top
 
-! size of allocatable array
+         ! size of allocatable array
          integer :: nsize
 
-! allocatable array, which is used to store elements in stack
+         ! allocatable array, which is used to store elements in stack.
          integer, allocatable :: item(:)
 
      end type istack
 
-! define generic type stack
+     ! define generic type stack
      type gstack
 
-! top position of stack
+         ! top position of stack
          integer :: top
 
-! size of allocatable array
+         ! size of allocatable array
          integer :: nsize
 
-! allocatable array, which is used to store elements in stack
-! note: it is an unlimited polymorphic object
+         ! allocatable array, which is used to store elements in stack.
+         ! note: it is an unlimited polymorphic object.
          class(*), allocatable :: item(:)
 
      end type gstack
@@ -210,30 +112,34 @@
 !!
 !! @sub istack_create
 !!
-!! create and initialize an integer type stack
+!! create and initialize an integer type stack.
 !!
   subroutine istack_create(s, n)
      implicit none
 
-! external arguments
-! size of stack
+!! external arguments
+     ! size of stack
      integer, optional, intent(in) :: n
 
-! integer type stack
+     ! integer type stack
      type (istack), intent(out)    :: s
 
-! determine the capacity of stack
+!! [body
+
+     ! determine the capacity of stack
      if ( present (n) ) then
          s%nsize = n
      else
          s%nsize = limit
      endif ! back if ( present (n) ) block
 
-! setup the top position
+     ! setup the top position
      s%top = 0
 
-! allocate memory for item array
+     ! allocate memory for item array
      allocate(s%item(s%nsize))
+
+!! body]
 
      return
   end subroutine istack_create
@@ -241,32 +147,34 @@
 !!
 !! @sub gstack_create
 !!
-!! create and initialize a generic type stack
+!! create and initialize a generic type stack.
 !!
   subroutine gstack_create(s, t, n)
      implicit none
 
-! external arguments
-! size of stack
+!! external arguments
+     ! size of stack
      integer, optional, intent(in) :: n
 
-! mold for the elements in the stack
+     ! mold for the elements in the stack
      class(*), intent(in)          :: t
 
-! generic type stack
+     ! generic type stack
      type (gstack), intent(out)    :: s
 
-! determine the capacity of stack
+!! [body
+
+     ! determine the capacity of stack
      if ( present (n) ) then
          s%nsize = n
      else
          s%nsize = limit
      endif ! back if ( present (n) ) block
 
-! setup the top position
+     ! setup the top position
      s%top = 0
 
-! allocate memory for item array
+     ! allocate memory for item array
      select type (t)
          type is (integer)
              allocate(s%item(s%nsize), source = 0)
@@ -281,23 +189,29 @@
              allocate(s%item(s%nsize), source = (0.0_dp, 0.0_dp))
      end select
 
+!! body]
+
      return
   end subroutine gstack_create
 
 !!
 !! @sub istack_clean
 !!
-!! reset the integer type stack, clean all its elements
+!! reset the integer type stack, clean all its elements.
 !!
   subroutine istack_clean(s)
      implicit none
 
-! external arguments
-! integer type stack
+!! external arguments
+     ! integer type stack
      type (istack), intent(inout) :: s
 
-! reset top position
+!! [body
+
+     ! reset top position
      s%top = 0
+
+!! body]
 
      return
   end subroutine istack_clean
@@ -305,17 +219,21 @@
 !!
 !! @sub gstack_clean
 !!
-!! reset the generic type stack, clean all its elements
+!! reset the generic type stack, clean all its elements.
 !!
   subroutine gstack_clean(s)
      implicit none
 
-! external arguments
-! generic type stack
+!! external arguments
+     ! generic type stack
      type (gstack), intent(inout) :: s
 
-! reset top position
+!! [body
+
+     ! reset top position
      s%top = 0
+
+!! body]
 
      return
   end subroutine gstack_clean
@@ -323,20 +241,24 @@
 !!
 !! @sub istack_destroy
 !!
-!! destroy and finalize an integer type stack
+!! destroy and finalize an integer type stack.
 !!
   subroutine istack_destroy(s)
      implicit none
 
-! external arguments
-! integer type stack
+!! external arguments
+     ! integer type stack
      type (istack), intent(inout) :: s
 
-! deallocate memory
+!! [body
+
+     ! deallocate memory
      if ( allocated(s%item) ) deallocate(s%item)
 
-! reset top position
+     ! reset top position
      s%top = 0
+
+!! body]
 
      return
   end subroutine istack_destroy
@@ -344,20 +266,24 @@
 !!
 !! @sub gstack_destroy
 !!
-!! destroy and finalize a generic type stack
+!! destroy and finalize a generic type stack.
 !!
   subroutine gstack_destroy(s)
      implicit none
 
-! external arguments
-! generic type stack
+!! external arguments
+     ! generic type stack
      type (gstack), intent(inout) :: s
 
-! deallocate memory
+!! [body
+
+     ! deallocate memory
      if ( allocated(s%item) ) deallocate(s%item)
 
-! reset top position
+     ! reset top position
      s%top = 0
+
+!! body]
 
      return
   end subroutine gstack_destroy
@@ -365,27 +291,31 @@
 !!
 !! @sub istack_copyer
 !!
-!! copy an istack object to another
+!! copy an istack object to another.
 !!
   subroutine istack_copyer(sa, sb)
      implicit none
 
-! external arguments
-! integer type stack, input
+!! external arguments
+     ! integer type stack, input
      type (istack), intent(in)    :: sa
 
-! integer type stack, output
+     ! integer type stack, output
      type (istack), intent(inout) :: sb
 
-! check nsize at first
+!! [body
+
+     ! check nsize at first
      if ( sa%nsize /= sb%nsize ) then
          write(mystd,'(a)') 'istack: the sizes of two stacks are not equal'
          STOP
      endif ! back if ( sa%nsize /= sb%nsize ) block
 
-! sync the data
+     ! sync the data
      sb%top = sa%top
      sb%item = sa%item
+
+!! body]
 
      return
   end subroutine istack_copyer
@@ -393,26 +323,29 @@
 !!
 !! @sub gstack_copyer
 !!
-!! copy an gstack object to another
+!! copy an gstack object to another.
 !!
   subroutine gstack_copyer(sa, sb)
      implicit none
 
-! external arguments
-! generic type stack, input
+!! external arguments
+     ! generic type stack, input
      type (gstack), intent(in)    :: sa
 
-! generic type stack, output
+     ! generic type stack, output
      type (gstack), intent(inout) :: sb
 
-! check nsize at first
+!! [body
+
+     ! check nsize at first
      if ( sa%nsize /= sb%nsize ) then
          write(mystd,'(a)') 'gstack: the sizes of two stacks are not equal'
          STOP
      endif ! back if ( sa%nsize /= sb%nsize ) block
 
-! sync the data
+     ! sync the data
      sb%top = sa%top
+     !
      select type (v => sb%item)
          type is (integer)
              select type (u => sa%item)
@@ -439,26 +372,30 @@
              end select
      end select
 
+!! body]
+
      return
   end subroutine gstack_copyer
 
 !!
 !! @sub istack_setter
 !!
-!! update the item's value of stack at specified position
+!! update the item's value of stack at specified position.
 !!
   subroutine istack_setter(s, pos, item)
      implicit none
 
-! external arguments
-! integer type stack
+!! external arguments
+     ! integer type stack
      type (istack), intent(inout) :: s
 
-! position of the element to be updated
+     ! position of the element to be updated
      integer, intent(in)          :: pos
 
-! elements to be setted
+     ! elements to be setted
      integer, intent(in)          :: item
+
+!! [body
 
      if ( pos < 1 .or. pos > s%nsize ) then
          write(mystd,'(a)') 'istack: the position is not correct'
@@ -467,26 +404,30 @@
          s%item(pos) = item
      endif ! back if ( pos < 1 .or. pos > s%nsize ) block
 
+!! body]
+
      return
   end subroutine istack_setter
 
 !!
 !! @sub gstack_setter
 !!
-!! update the item's value of stack at specified position
+!! update the item's value of stack at specified position.
 !!
   subroutine gstack_setter(s, pos, item)
      implicit none
 
-! external arguments
-! generic type stack
+!! external arguments
+     ! generic type stack
      type (gstack), intent(inout) :: s
 
-! position of the element to be updated
+     ! position of the element to be updated
      integer, intent(in)          :: pos
 
-! elements to be setted
+     ! elements to be setted
      class(*), intent(in)         :: item
+
+!! [body
 
      if ( pos < 1 .or. pos > s%nsize ) then
          write(mystd,'(a)') 'gstack: the position is not correct'
@@ -519,26 +460,30 @@
          end select
      endif ! back if ( pos < 1 .or. pos > s%nsize ) block
 
+!! body]
+
      return
   end subroutine gstack_setter
 
 !!
 !! @sub istack_getter
 !!
-!! return the item's value of stack at specified position
+!! return the item's value of stack at specified position.
 !!
   subroutine istack_getter(s, pos, item)
      implicit none
 
-! external arguments
-! integer type stack
+!! external arguments
+     ! integer type stack
      type (istack), intent(in) :: s
 
-! position of the item
+     ! position of the item
      integer, intent(in)       :: pos
 
-! the item's value
+     ! the item's value
      integer, intent(out)      :: item
+
+!! [body
 
      if ( pos < 1 .or. pos > s%nsize ) then
          write(mystd,'(a)') 'istack: the position is not correct'
@@ -547,26 +492,30 @@
          item = s%item(pos)
      endif ! back if ( pos < 1 .or. pos > s%nsize ) block
 
+!! body]
+
      return
   end subroutine istack_getter
 
 !!
 !! @sub gstack_getter
 !!
-!! return the item's value of stack at specified position
+!! return the item's value of stack at specified position.
 !!
   subroutine gstack_getter(s, pos, item)
      implicit none
 
-! external arguments
-! generic type stack
+!! external arguments
+     ! generic type stack
      type (gstack), intent(in) :: s
 
-! position of the item
+     ! position of the item
      integer, intent(in)       :: pos
 
-! the item's value
+     ! the item's value
      class(*), intent(out)     :: item
+
+!! [body
 
      if ( pos < 1 .or. pos > s%nsize ) then
          write(mystd,'(a)') 'gstack: the position is not correct'
@@ -599,23 +548,27 @@
          end select
      endif ! back if ( pos < 1 .or. pos > s%nsize ) block
 
+!! body]
+
      return
   end subroutine gstack_getter
 
 !!
 !! @sub istack_push
 !!
-!! push item on top of stack
+!! push item on top of stack.
 !!
   subroutine istack_push(s, item)
      implicit none
 
-! external arguments
-! integer type stack
+!! external arguments
+     ! integer type stack
      type (istack), intent(inout) :: s
 
-! elements to be pushed in the stack
+     ! elements to be pushed in the stack
      integer, intent(in)          :: item
+
+!! [body
 
      if ( s%top == s%nsize ) then
          write(mystd,'(a)') 'istack: the stack is full, can not push any item on it'
@@ -625,23 +578,27 @@
          s%item(s%top) = item
      endif ! back if ( s%top == s%nsize ) block
 
+!! body]
+
      return
   end subroutine istack_push
 
 !!
 !! @sub gstack_push
 !!
-!! push item on top of stack
+!! push item on top of stack.
 !!
   subroutine gstack_push(s, item)
      implicit none
 
-! external arguments
-! generic type stack
+!! external arguments
+     ! generic type stack
      type (gstack), intent(inout) :: s
 
-! elements to be pushed in the stack
+     ! elements to be pushed in the stack
      class(*), intent(in)         :: item
+
+!! [body
 
      if ( s%top == s%nsize ) then
          write(mystd,'(a)') 'gstack: the stack is full, can not push any item on it'
@@ -675,23 +632,27 @@
          end select
      endif ! back if ( s%top == s%nsize ) block
 
+!! body]
+
      return
   end subroutine gstack_push
 
 !!
 !! @sub istack_pop
 !!
-!! pop off item from the top of stack
+!! pop off item from the top of stack.
 !!
   subroutine istack_pop(s, item)
      implicit none
 
-! external arguments
-! integer type stack
+!! external arguments
+     ! integer type stack
      type (istack), intent(inout) :: s
 
-! the top item in the stack
+     ! the top item in the stack
      integer, intent(out)         :: item
+
+!! [body
 
      if ( s%top == 0 ) then
          write(mystd,'(a)') 'istack: the stack is empty, can not pop off any item from it'
@@ -701,23 +662,27 @@
          s%top = s%top - 1
      endif ! back if ( s%top == 0 ) block
 
+!! body]
+
      return
   end subroutine istack_pop
 
 !!
 !! @sub gstack_pop
 !!
-!! pop off item from the top of stack
+!! pop off item from the top of stack.
 !!
   subroutine gstack_pop(s, item)
      implicit none
 
-! external arguments
-! generic type stack
+!! external arguments
+     ! generic type stack
      type (gstack), intent(inout) :: s
 
-! the top item in the stack
+     ! the top item in the stack
      class(*), intent(out)        :: item
+
+!! [body
 
      if ( s%top == 0 ) then
          write(mystd,'(a)') 'gstack: the stack is empty, can not pop off any item from it'
@@ -751,23 +716,27 @@
          s%top = s%top - 1
      endif ! back if ( s%top == 0 ) block
 
+!! body]
+
      return
   end subroutine gstack_pop
 
 !!
 !! @sub istack_display
 !!
-!! display the top item in the stack without pop it off
+!! display the top item in the stack without pop it off.
 !!
   subroutine istack_display(s, item)
      implicit none
 
-! external arguments
-! integer type stack
+!! external arguments
+     ! integer type stack
      type (istack), intent(in) :: s
 
-! the top item in the stack
+     ! the top item in the stack
      integer, intent(out)      :: item
+
+!! [body
 
      if ( s%top == 0 ) then
          write(mystd,'(a)') 'istack: the stack is empty, can not return the top item of it'
@@ -776,23 +745,27 @@
          item = s%item(s%top)
      endif ! back if ( s%top == 0 ) block
 
+!! body]
+
      return
   end subroutine istack_display
 
 !!
 !! @sub gstack_display
 !!
-!! display the top item in the stack without pop it off
+!! display the top item in the stack without pop it off.
 !!
   subroutine gstack_display(s, item)
      implicit none
 
-! external arguments
-! generic type stack
+!! external arguments
+     ! generic type stack
      type (gstack), intent(in) :: s
 
-! the top item in the stack
+     ! the top item in the stack
      class(*), intent(out)     :: item
+
+!! [body
 
      if ( s%top == 0 ) then
          write(mystd,'(a)') 'gstack: the stack is empty, can not return the top item of it'
@@ -825,6 +798,8 @@
          end select
      endif ! back if ( s%top == 0 ) block
 
+!! body]
+
      return
   end subroutine gstack_display
 
@@ -832,17 +807,21 @@
 !! @fun istack_gettop
 !!
 !! return the top position of the stack, i.e, the number of items stored
-!! in the stack currently
+!! in the stack currently.
 !!
   integer &
   function istack_gettop(s) result (t)
      implicit none
 
-! external arguments
-! integer type stack
+!! external arguments
+     ! integer type stack
      type (istack), intent(in) :: s
 
+!! [body
+
      t = s%top
+
+!! body]
 
      return
   end function istack_gettop
@@ -851,17 +830,21 @@
 !! @fun gstack_gettop
 !!
 !! return the top position of the stack, i.e, the number of items stored
-!! in the stack currently
+!! in the stack currently.
 !!
   integer &
   function gstack_gettop(s) result (t)
      implicit none
 
-! external arguments
-! generic type stack
+!! external arguments
+     ! generic type stack
      type (gstack), intent(in) :: s
 
+!! [body
+
      t = s%top
+
+!! body]
 
      return
   end function gstack_gettop
@@ -869,17 +852,21 @@
 !!
 !! @fun istack_getrest
 !!
-!! return the number of empty sites of the stack
+!! return the number of empty sites of the stack.
 !!
   integer &
   function istack_getrest(s) result (r)
      implicit none
 
-! external arguments
-! integer type stack
+!! external arguments
+     ! integer type stack
      type (istack), intent(in) :: s
 
+!! [body
+
      r = s%nsize - s%top
+
+!! body]
 
      return
   end function istack_getrest
@@ -887,17 +874,21 @@
 !!
 !! @fun gstack_getrest
 !!
-!! return the number of empty sites of the stack
+!! return the number of empty sites of the stack.
 !!
   integer &
   function gstack_getrest(s) result (r)
      implicit none
 
-! external arguments
-! generic type stack
+!! external arguments
+     ! generic type stack
      type (gstack), intent(in) :: s
 
+!! [body
+
      r = s%nsize - s%top
+
+!! body]
 
      return
   end function gstack_getrest
@@ -905,17 +896,21 @@
 !!
 !! @fun istack_getsize
 !!
-!! return the actual capacity of the stack
+!! return the actual capacity of the stack.
 !!
   integer &
   function istack_getsize(s) result (n)
      implicit none
 
-! external arguments
-! integer type stack
+!! external arguments
+     ! integer type stack
      type (istack), intent(in) :: s
 
+!! [body
+
      n = s%nsize
+
+!! body]
 
      return
   end function istack_getsize
@@ -923,17 +918,21 @@
 !!
 !! @fun gstack_getsize
 !!
-!! return the actual capacity of the stack
+!! return the actual capacity of the stack.
 !!
   integer &
   function gstack_getsize(s) result (n)
      implicit none
 
-! external arguments
-! generic type stack
+!! external arguments
+     ! generic type stack
      type (gstack), intent(in) :: s
 
+!! [body
+
      n = s%nsize
+
+!! body]
 
      return
   end function gstack_getsize
@@ -941,17 +940,21 @@
 !!
 !! @fun istack_isfull
 !!
-!! check whether the stack is full of items
+!! check whether the stack is full of items.
 !!
   logical &
   function istack_isfull(s) result (b)
      implicit none
 
-! external arguments
-! integer type stack
+!! external arguments
+     ! integer type stack
      type (istack), intent(in) :: s
 
+!! [body
+
      b = ( s%top == s%nsize )
+
+!! body]
 
      return
   end function istack_isfull
@@ -959,17 +962,21 @@
 !!
 !! @fun gstack_isfull
 !!
-!! check whether the stack is full of items
+!! check whether the stack is full of items.
 !!
   logical &
   function gstack_isfull(s) result (b)
      implicit none
 
-! external arguments
-! generic type stack
+!! external arguments
+     ! generic type stack
      type (gstack), intent(in) :: s
 
+!! [body
+
      b = ( s%top == s%nsize )
+
+!! body]
 
      return
   end function gstack_isfull
@@ -977,17 +984,21 @@
 !!
 !! @fun istack_isempty
 !!
-!! check whether the stack is empty
+!! check whether the stack is empty.
 !!
   logical &
   function istack_isempty(s) result (b)
      implicit none
 
-! external arguments
-! integer type stack
+!! external arguments
+     ! integer type stack
      type (istack), intent(in) :: s
 
+!! [body
+
      b = ( s%top == 0 )
+
+!! body]
 
      return
   end function istack_isempty
@@ -995,17 +1006,21 @@
 !!
 !! @fun gstack_isempty
 !!
-!! check whether the stack is empty
+!! check whether the stack is empty.
 !!
   logical &
   function gstack_isempty(s) result (b)
      implicit none
 
-! external arguments
-! generic type stack
+!! external arguments
+     ! generic type stack
      type (gstack), intent(in) :: s
 
+!! [body
+
      b = ( s%top == 0 )
+
+!! body]
 
      return
   end function gstack_isempty
