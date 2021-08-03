@@ -1,6 +1,6 @@
 ## About
 
-This is the documentation for the *Flink* library. It is developed with the `Markdown` + `Documenter.jl`.
+This is the documentation for the *Zen* package. It is developed with the `Markdown` + `Documenter.jl`.
 
 ## Prerequisites
 
