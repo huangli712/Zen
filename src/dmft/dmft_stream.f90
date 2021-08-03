@@ -19,8 +19,8 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           07/07/2021 by li huang (last modified)
-!!! purpose :
+!!!           07/31/2021 by li huang (last modified)
+!!! purpose : setup the configuration parameters and read the input data.
 !!! status  : unstable
 !!! comment :
 !!!-----------------------------------------------------------------------
@@ -34,7 +34,7 @@
 !!
 !! setup control parameters for the dynamical mean-field theory engine.
 !! note that these parameters are extracted from the `dmft.in` file.
-!! this code can run even without `dmft.in` file
+!! this code can run even without `dmft.in` file.
 !!
   subroutine dmft_setup_tasks()
      use constants, only : dp
@@ -55,38 +55,40 @@
 
      implicit none
 
-! local variables
-! used to check whether the input file (dmft.in) exists
+!! local variables
+     ! used to check whether the input file (dmft.in) exists
      logical :: exists
 
-! setup default parameters
-!-------------------------------------------------------------------------
+!! [body
+
+     ! setup default parameters
+     !--------------------------------------------------------------------
      task   = 1         ! computational task
      axis   = 1         ! type of frequency mesh
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
      beta   = 8.00_dp   ! inverse temperature
      mc     = 0.0001_dp ! convergence criterion for fermi level search
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
      lfermi = .true.    ! fermi level search
      ltetra = .true.    ! analytical tetrahedron algorithm
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-! read in input file if possible, only master node can do it
+     ! read in input file if possible, only master node can do it
      if ( myid == master ) then
          exists = .false.
 
-! inquire file status: dmft.in
+         ! inquire file status: dmft.in
          inquire (file = 'dmft.in', exist = exists)
 
-! read in parameters, default setting should be overrided
+         ! read in parameters, default setting should be overrided
          if ( exists .eqv. .true. ) then
-! create the file parser
+             ! create the file parser
              call p_create()
 
-! parse the config file
+             ! parse the config file
              call p_parse('dmft.in')
 
-! extract parameters
+             ! extract parameters
              call p_get('task'  , task  )
              call p_get('axis'  , axis  )
 
@@ -96,13 +98,13 @@
              call p_get('lfermi', lfermi)
              call p_get('ltetra', ltetra)
 
-! destroy the parser
+             ! destroy the parser
              call p_destroy()
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
 
 ! since config parameters may be updated in master node, it is crucial
-! to broadcast config parameters from root to all children processes
+! to broadcast config parameters from root to all children processes.
 # if defined (MPI)
 
      call mp_bcast( task  , master )
@@ -118,6 +120,8 @@
      call mp_barrier()
 
 # endif  /* MPI */
+
+!! body]
 
      return
   end subroutine dmft_setup_tasks
@@ -151,46 +155,48 @@
 
      implicit none
 
-! local variables
-! used to check whether the input file (params.ir) exists
+!! local variables
+     ! used to check whether the input file (params.ir) exists
      logical :: exists
 
-! dummy character variables
+     ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! setup default parameters
-!-------------------------------------------------------------------------
+!! [body
+
+     ! setup default parameters
+     !--------------------------------------------------------------------
      model  = 'SrVO3'   ! name of system
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
      nsort  = 3         ! number of atomic sorts
      natom  = 5         ! number of atoms
      nband  = 30        ! number of bands
      nkpt   = 729       ! number of k-points
      nspin  = 1         ! number of spins
      ntet   = 4374      ! number of tetrahedra
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
      ngrp   = 1         ! number of groups for projectors
      qdim   = 3         ! maximum number of projectors in groups
      nwnd   = 1         ! number of windows for projectors
      qbnd   = 5         ! maximum number of bands in windows
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
      nsite  = 1         ! number of impurity sites
      nmesh  = 8193      ! number of frequency points
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
      scale  = 4.00_dp   ! scale factor for lattice constants
      fermi  = 0.00_dp   ! default fermi level
      volt   = 1.00_dp   ! volume of a tetrahedron
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-! read in input file if possible, only master node can do it
+     ! read in input file if possible, only master node can do it
      if ( myid == master ) then
          exists = .false.
 
-! inquire file status: params.ir
+         ! inquire file status: params.ir
          inquire (file = 'params.ir', exist = exists)
 
-! read in parameters, default setting should be overrided
+         ! read in parameters, default setting should be overrided
          if ( exists .eqv. .true. ) then
 
              open(mytmp, file='params.ir', form='formatted', status='unknown')
@@ -239,48 +245,50 @@
      endif ! back if ( myid == master ) block
 
 ! since config parameters may be updated in master node, it is crucial
-! to broadcast config parameters from root to all children processes
+! to broadcast config parameters from root to all children processes.
 # if defined (MPI)
 
-! for lattice block
+     ! for lattice block
      call mp_bcast( model , master )
      call mp_bcast( scale , master )
      call mp_bcast( nsort , master )
      call mp_bcast( natom , master )
      call mp_barrier()
 
-! for eigen block
+     ! for eigen block
      call mp_bcast( nband , master )
      call mp_bcast( nkpt  , master )
      call mp_bcast( nspin , master )
      call mp_bcast( fermi , master )
      call mp_barrier()
 
-! for tetra block
+     ! for tetra block
      call mp_bcast( ntet  , master )
      call mp_bcast( volt  , master )
      call mp_barrier()
 
-! for group block
+     ! for group block
      call mp_bcast( ngrp  , master )
      call mp_bcast( qdim  , master )
      call mp_barrier()
 
-! for window block
+     ! for window block
      call mp_bcast( nwnd  , master )
      call mp_bcast( qbnd  , master )
      call mp_barrier()
 
-! for sigma block
+     ! for sigma block
      call mp_bcast( nsite , master )
      call mp_bcast( nmesh , master )
      call mp_barrier()
 
 # endif  /* MPI */
 
-! reset fermi to zero, because it was calibrated by the adaptor.
-! see ZenCore -> plo.jl -> plo_fermi() function for more details.
+     ! reset fermi to zero, because it was calibrated by the adaptor.
+     ! see ZenCore/src/plo.jl/plo_fermi() function for more details.
      fermi = zero
+
+!! body]
 
      return
   end subroutine dmft_setup_param
@@ -290,19 +298,21 @@
 !!
 !! setup correlated electron problem, Kohn-Sham dataset, and self-energy
 !! functions for the dynamical mean-field theory engine. this subroutine
-!! is only a dispatcher for the other individual subroutines
+!! is only a dispatcher for the other individual subroutines.
 !!
   subroutine dmft_setup_system()
      use control, only : ltetra
 
      implicit none
 
-! setup correlated electron problem
+!! [body
+
+     ! setup correlated electron problem
      call dmft_input_map()
      call dmft_input_group()
      call dmft_input_window()
 
-! setup Kohn-Sham dataset
+     ! setup Kohn-Sham dataset
      call dmft_input_lattice()
      call dmft_input_kmesh()
      call dmft_input_eigen()
@@ -312,9 +322,11 @@
          call dmft_input_tetra()
      endif ! back if ( ltetra .eqv. .true. ) block
 
-! setup impurity self-energy functions and related double counting terms
+     ! setup impurity self-energy functions and double counting terms
      call dmft_input_sigdc()
      call dmft_input_sigma()
+
+!! body]
 
      return
   end subroutine dmft_setup_system
@@ -345,40 +357,44 @@
 
      implicit none
 
-! local variables
-! dummy integer variables
+!! local variables
+     ! dummy integer variables
      integer :: itmp
 
-! used to check whether the input file (maps.ir) exists
+     ! used to check whether the input file (maps.ir) exists
      logical :: exists
 
-! dummy character variables
+     ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in mappings or connections between quantum impurity problems and
-! groups of projectors. this code can not run without the file `maps.ir`
-!-------------------------------------------------------------------------
+!! [body
+
+     ! read in mappings or connections between quantum impurity problems
+     ! and groups of projectors.
+     !
+     ! this code can not run without the file `maps.ir`
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'maps.ir', exist = exists)
 
-! file maps.ir must be present
+         ! file maps.ir must be present
          if ( exists .eqv. .false. ) then
              call s_print_error('dmft_input_map','file maps.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file maps.ir for reading
+         ! open file maps.ir for reading
          open(mytmp, file='maps.ir', form='formatted', status='unknown')
 
-! skip header
+         ! skip header
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*)
 
-! check nsite, ngrp, and nwnd
+         ! check nsite, ngrp, and nwnd
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nsite, 'nsite is wrong')
          !
@@ -388,54 +404,56 @@
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nwnd, 'nwnd is wrong')
 
-! read data: i_grp
+         ! read data: i_grp
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*) i_grp
 
-! read data: i_wnd
+         ! read data: i_wnd
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*) i_wnd
 
-! read data: g_imp
+         ! read data: g_imp
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*) g_imp
 
-! read data: w_imp
+         ! read data: w_imp
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*) w_imp
 
-! close file handler
+         ! close file handler
          close(mytmp)
 
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
-! broadcast data
+     ! broadcast data
      call mp_bcast( i_grp, master )
      call mp_bcast( i_wnd, master )
      call mp_bcast( g_imp, master )
      call mp_bcast( w_imp, master )
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
 
-! additional check for the data
-! note: all of the impurity problems should share the same band window!
+     ! additional check for the data
+     ! all of the impurity problems should share the same band window!
      call s_assert2(nsite <= ngrp, 'nsite must be smaller or equal to ngrp')
      !
      call s_assert2(nwnd == ngrp, 'nwnd must be equal to ngrp')
+
+!! body]
 
      return
   end subroutine dmft_input_map
@@ -461,48 +479,50 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
 
-! dummy integer variables
+     ! dummy integer variables
      integer :: itmp
 
-! used to check whether the input file (groups.ir) exists
+     ! used to check whether the input file (groups.ir) exists
      logical :: exists
 
-! dummy character variables
+     ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in groups of projectors. apparently, this code can not run without
-! the file `groups.ir`.
-!-------------------------------------------------------------------------
+!! [body
+
+     ! read in groups of projectors.
+     ! apparently, this code can not run without the file `groups.ir`.
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'groups.ir', exist = exists)
 
-! file groups.ir must be present
+         ! file groups.ir must be present
          if ( exists .eqv. .false. ) then
              call s_print_error('dmft_input_group','file groups.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file groups.ir for reading
+         ! open file groups.ir for reading
          open(mytmp, file='groups.ir', form='formatted', status='unknown')
 
-! skip header
+         ! skip header
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*)
 
-! check ngrp
+         ! check ngrp
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == ngrp, 'ngrp is wrong')
          read(mytmp,*)
 
-! read data
+         ! read data
          do i=1,ngrp
              read(mytmp,*)
              read(mytmp,*) chr1, chr2, site(i)
@@ -513,33 +533,35 @@
              read(mytmp,*)
          enddo ! over i={1,ngrp} loop
 
-! evaluate and check qdim
+         ! evaluate and check qdim
          itmp = maxval(ndim)
          call s_assert2(itmp == qdim, 'ndim or qdim is wrong')
 
-! close file handler
+         ! close file handler
          close(mytmp)
 
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
-! broadcast data
+     ! broadcast data
      call mp_bcast( shell, master )
      call mp_bcast( corr , master )
      call mp_bcast( site , master )
      call mp_bcast( l    , master )
      call mp_bcast( ndim , master )
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
+
+!! body]
 
      return
   end subroutine dmft_input_group
@@ -566,50 +588,52 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
      integer :: s
      integer :: k
 
-! dummy integer variables
+     ! dummy integer variables
      integer :: itmp
 
-! used to check whether the input file (windows.ir) exists
+     ! used to check whether the input file (windows.ir) exists
      logical :: exists
 
-! dummy character variables
+     ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in band windows of projectors. apparently, this code can not run
-! without the file `windows.ir`.
-!-------------------------------------------------------------------------
+!! [body
+
+     ! read in band windows of projectors.
+     ! apparently, this code can not run without the file `windows.ir`.
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'windows.ir', exist = exists)
 
-! file windows.ir must be present
+         ! file windows.ir must be present
          if ( exists .eqv. .false. ) then
              call s_print_error('dmft_input_window','file windows.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file windows.ir for reading
+         ! open file windows.ir for reading
          open(mytmp, file='windows.ir', form='formatted', status='unknown')
 
-! skip header
+         ! skip header
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*)
 
-! check nwnd
+         ! check nwnd
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nwnd, 'nwnd is wrong')
          read(mytmp,*)
 
-! read data
+         ! read data
          do i=1,nwnd
              read(mytmp,*)
              read(mytmp,*) chr1, chr2, bmin(i)
@@ -624,32 +648,34 @@
              read(mytmp,*)
          enddo ! over i={1,nwnd} loop
 
-! evaluate and check qbnd
+         ! evaluate and check qbnd
          itmp = maxval(nbnd)
          call s_assert2(itmp == qbnd, 'nbnd or qbnd is wrong')
 
-! close file handler
+         ! close file handler
          close(mytmp)
 
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
-! broadcast data
+     ! broadcast data
      call mp_bcast( bmin , master )
      call mp_bcast( bmax , master )
      call mp_bcast( nbnd , master )
      call mp_bcast( kwin , master )
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
+
+!! body]
 
      return
   end subroutine dmft_input_window
@@ -661,7 +687,7 @@
 !!
 !! @sub dmft_input_lattice
 !!
-!! read in key crystallography information (see module dmft_lattice)
+!! read in key crystallography information (see module dmft_lattice).
 !!
   subroutine dmft_input_lattice()
      use constants, only : mytmp
@@ -676,42 +702,44 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
 
-! dummy integer variables
+     ! dummy integer variables
      integer :: itmp
 
-! used to check whether the input file (lattice.ir) exists
+     ! used to check whether the input file (lattice.ir) exists
      logical :: exists
 
-! dummy character variables
+     ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in crystallography information. this code can not run without
-! the file `lattice.ir`.
-!-------------------------------------------------------------------------
+!! [body
+
+     ! read in crystallography information.
+     ! this code can not run without the file `lattice.ir`.
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'lattice.ir', exist = exists)
 
-! file lattice.ir must be present
+         ! file lattice.ir must be present
          if ( exists .eqv. .false. ) then
              call s_print_error('dmft_input_lattice','file lattice.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file lattice.ir for reading
+         ! open file lattice.ir for reading
          open(mytmp, file='lattice.ir', form='formatted', status='unknown')
 
-! skip header
+         ! skip header
          read(mytmp,*)
          read(mytmp,*)
 
-! check nsort and natom
+         ! check nsort and natom
          read(mytmp,*) ! empty line
          read(mytmp,*) ! skip _case
          read(mytmp,*) ! skip scale
@@ -724,53 +752,55 @@
          !
          read(mytmp,*) ! empty line
 
-! read sorts
+         ! read sorts
          read(mytmp,*) ! header
          read(mytmp,*) sorts
          read(mytmp,*) sortn
          read(mytmp,*) ! empty line
 
-! read atoms
+         ! read atoms
          read(mytmp,*) ! header
          read(mytmp,*) atoms
          read(mytmp,*) ! empty line
 
-! read lvect
+         ! read lvect
          read(mytmp,*) ! header
          do i=1,3
              read(mytmp,*) lvect(i,1:3)
          enddo ! over i={1,3} loop
          read(mytmp,*) ! empty line
 
-! read coord
+         ! read coord
          read(mytmp,*) ! header
          do i=1,natom
              read(mytmp,*) coord(i,1:3)
          enddo ! over i={1,natom} loop
 
-! close file handler
+         ! close file handler
          close(mytmp)
 
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
-! broadcast data
+     ! broadcast data
      call mp_bcast( sorts, master )
      call mp_bcast( atoms, master )
      call mp_bcast( sortn, master )
      call mp_bcast( lvect, master )
      call mp_bcast( coord, master )
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
+
+!! body]
 
      return
   end subroutine dmft_input_lattice
@@ -778,7 +808,7 @@
 !!
 !! @sub dmft_input_kmesh
 !!
-!! read in k-mesh and the integration weights (see module dmft_kmesh)
+!! read in k-mesh and integration weights (see module dmft_kmesh).
 !!
   subroutine dmft_input_kmesh()
      use constants, only : mytmp
@@ -793,43 +823,45 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
 
-! dummy integer variables
+     ! dummy integer variables
      integer :: itmp
 
-! used to check whether the input file (kmesh.ir) exists
+     ! used to check whether the input file (kmesh.ir) exists
      logical :: exists
 
-! dummy character variables
+     ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in brillouin zone information. the code can not run without
-! the file `kmesh.ir`.
-!-------------------------------------------------------------------------
+!! [body
+
+     ! read in brillouin zone information.
+     ! the code can not run without the file `kmesh.ir`.
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'kmesh.ir', exist = exists)
 
-! file kmesh.ir must be present
+         ! file kmesh.ir must be present
          if ( exists .eqv. .false. ) then
              call s_print_error('dmft_input_kmesh','file kmesh.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file kmesh.ir for reading
+         ! open file kmesh.ir for reading
          open(mytmp, file='kmesh.ir', form='formatted', status='unknown')
 
-! skip header
+         ! skip header
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*) ! empty line
 
-! check nkpt and ndir
+         ! check nkpt and ndir
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nkpt, 'nkpt is wrong')
          !
@@ -838,35 +870,37 @@
          !
          read(mytmp,*) ! empty line
 
-! read k-points and the corresponding weights
+         ! read k-points and the corresponding weights
          do i=1,nkpt
              read(mytmp,*) kmesh(i,:), weight(i)
          enddo ! over i={1,nkpt} loop
 
-! until now, `weight' has not been renormalized. their summations should
-! be equal to nkpt.
+         ! until now, `weight' has not been renormalized.
+         ! their summations should be equal to nkpt.
          call s_assert2(sum(weight) == float(nkpt), 'weight is wrong')
 
-! close file handler
+         ! close file handler
          close(mytmp)
 
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
-! broadcast data
+     ! broadcast data
      call mp_bcast( kmesh, master )
      call mp_bcast(weight, master )
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
+
+!! body]
 
      return
   end subroutine dmft_input_kmesh
@@ -890,45 +924,47 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
 
-! dummy integer variables
+     ! dummy integer variables
      integer  :: itmp
 
-! used to check whether the input file (tetra.ir) exists
+     ! used to check whether the input file (tetra.ir) exists
      logical  :: exists
 
-! dummy real variables
+     ! dummy real variables
      real(dp) :: rtmp
 
-! dummy character variables
+     ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in tetrahedron information if available
-!-------------------------------------------------------------------------
+!! [body
+
+     ! read in tetrahedron information if available
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'tetra.ir', exist = exists)
 
-! file tetra.ir must be present
+         ! file tetra.ir must be present
          if ( exists .eqv. .false. ) then
              call s_print_error('dmft_input_tetra','file tetra.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file tetra.ir for reading
+         ! open file tetra.ir for reading
          open(mytmp, file='tetra.ir', form='formatted', status='unknown')
 
-! skip header
+         ! skip header
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*) ! empty line
 
-! check ntet and volt
+         ! check ntet and volt
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == ntet, 'ntet is wrong')
          !
@@ -937,30 +973,32 @@
          !
          read(mytmp,*) ! empty line
 
-! read tetrahedron data
+         ! read tetrahedron data
          do i=1,ntet
              read(mytmp,*) tetra(i,5), tetra(i,1:4)
          enddo ! over i={1,ntet} loop
 
-! close file handler
+         ! close file handler
          close(mytmp)
 
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
-! broadcast data
+     ! broadcast data
      call mp_bcast( tetra, master )
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
+
+!! body]
 
      return
   end subroutine dmft_input_tetra
@@ -968,7 +1006,7 @@
 !!
 !! @sub dmft_input_eigen
 !!
-!! read in band eigenvalues and band occupations (see module dmft_eigen)
+!! read in band eigenvalues and band occupations (see module dmft_eigen).
 !!
   subroutine dmft_input_eigen()
      use constants, only : mytmp
@@ -983,45 +1021,47 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: b
      integer :: k
      integer :: s
 
-! dummy integer variables
+     ! dummy integer variables
      integer :: itmp
 
-! used to check whether the input file (eigen.ir) exists
+     ! used to check whether the input file (eigen.ir) exists
      logical :: exists
 
-! dummy character variables
+     ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in Kohn-Sham band structure information. this code can not run
-! without the file `eigen.ir`.
-!-------------------------------------------------------------------------
+!! [body
+
+     ! read in Kohn-Sham band structure information.
+     ! this code can not run without the file `eigen.ir`.
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'eigen.ir', exist = exists)
 
-! file eigen.ir must be present
+         ! file eigen.ir must be present
          if ( exists .eqv. .false. ) then
              call s_print_error('dmft_input_eigen','file eigen.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file eigen.ir for reading
+         ! open file eigen.ir for reading
          open(mytmp, file='eigen.ir', form='formatted', status='unknown')
 
-! skip header
+         ! skip header
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*) ! empty line
 
-! check nband, nkpt, and nspin
+         ! check nband, nkpt, and nspin
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nband, 'nband is wrong')
          !
@@ -1033,7 +1073,7 @@
          !
          read(mytmp,*) ! empty line
 
-! read eigenvalues and occupations data
+         ! read eigenvalues and occupations data
          do s=1,nspin
              do k=1,nkpt
                  do b=1,nband
@@ -1042,26 +1082,28 @@
              enddo ! over k={1,nkpt} loop
          enddo ! over s={1,nspin} loop
 
-! close file handler
+         ! close file handler
          close(mytmp)
 
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
-! broadcast data
+     ! broadcast data
      call mp_bcast( enk  , master )
      call mp_bcast(occupy, master )
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
+
+!! body]
 
      return
   end subroutine dmft_input_eigen
@@ -1070,7 +1112,7 @@
 !! @sub dmft_input_projs
 !!
 !! read in overlap matrix between Kohn-Sham wavefunctions and local
-!! orbitals, i.e., the local orbital projectors (see module dmft_projs)
+!! orbitals, i.e., the local orbital projectors (see module dmft_projs).
 !!
   subroutine dmft_input_projs()
      use constants, only : dp, mytmp
@@ -1087,78 +1129,82 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: g
      integer  :: b
      integer  :: k
      integer  :: s
      integer  :: d
 
-! dummy integer variables
+     ! dummy integer variables
      integer  :: itmp
 
-! used to check whether the input file (projs.ir) exists
+     ! used to check whether the input file (projs.ir) exists
      logical  :: exists
 
-! dummy real variables
+     ! dummy real variables
      real(dp) :: re, im
 
-! dummy character variables
+     ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in local orbital projectors. this code can not run without the
-! file `projs.ir`.
-!-------------------------------------------------------------------------
+!! [body
+
+     ! read in local orbital projectors.
+     ! this code can not run without the file `projs.ir`.
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'projs.ir', exist = exists)
 
-! file projs.ir must be present
+         ! file projs.ir must be present
          if ( exists .eqv. .false. ) then
              call s_print_error('dmft_input_projs','file projs.ir is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file projs.ir for reading
+         ! open file projs.ir for reading
          open(mytmp, file='projs.ir', form='formatted', status='unknown')
 
-! skip header
+         ! skip header
          read(mytmp,*)
          read(mytmp,*)
 
-! go through each group of projectors and read in the data
+         ! go through each group of projectors and read in the data
          do g=1,ngrp
 
-! check group
+             ! check group
              read(mytmp,*) ! empty line
              read(mytmp,*) chr1, chr2, itmp
              call s_assert2(itmp == g, 'group is wrong')
 
-! check nproj
+             ! check nproj
              read(mytmp,*) chr1, chr2, itmp
              call s_assert2(itmp == ndim(g), 'nproj is wrong')
 
-! check nband
-! here, `nband` is not the number of bands in the dft calculations. it is
-! just the number of bands that contained in the band window for building
-! the local orbital projection. for different groups of projectors, the
-! corresponding `nband` might be different.
+             ! check nband
+             !
+             ! here, `nband` is not the number of bands used in the dft
+             ! calculations. it is just the number of bands that contained
+             ! in the band window for constructing the local orbital
+             ! projection. for different groups of projectors, the related
+             ! `nband` could be and might be different.
              read(mytmp,*) chr1, chr2, itmp
              call s_assert2(itmp == nbnd(g), 'nband is wrong')
 
-! check nkpt
+             ! check nkpt
              read(mytmp,*) chr1, chr2, itmp
              call s_assert2(itmp == nkpt, 'nkpt is wrong')
 
-! check nspin
+             ! check nspin
              read(mytmp,*) chr1, chr2, itmp
              call s_assert2(itmp == nspin, 'nspin is wrong')
              read(mytmp,*) ! empty line
 
-! parse the data
+             ! parse the data
              do s=1,nspin
                  do k=1,nkpt
                      do b=1,nbnd(g)
@@ -1173,26 +1219,28 @@
 
          enddo ! over g={1,ngrp} loop
 
-! close file handler
+         ! close file handler
          close(mytmp)
 
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
-! broadcast data
+     ! broadcast data
      call mp_bcast(chipsi, master )
      call mp_bcast(psichi, master )
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
+
+!! body]
 
      return
   end subroutine dmft_input_projs
@@ -1205,7 +1253,7 @@
 !! @sub dmft_input_sigdc
 !!
 !! read in double counting terms for the local self-energy functions (see
-!! module dmft_sigma)
+!! module dmft_sigma).
 !!
   subroutine dmft_input_sigdc()
      use constants, only : dp, mytmp
@@ -1224,57 +1272,59 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: s
      integer  :: m
      integer  :: n
 
-! dummy integer variables
+     ! dummy integer variables
      integer  :: itmp
 
-! used to check whether the input file (sigma.dc) exists
+     ! used to check whether the input file (sigma.dc) exists
      logical  :: exists
 
-! dummy real variables
+     ! dummy real variables
      real(dp) :: re, im
 
-! dummy character variables
+     ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in double counting terms. the code can not run without the
-! file `sigma.dc`.
-!-------------------------------------------------------------------------
+!! [body
+
+     ! read in double counting terms.
+     ! the code can not run without the file `sigma.dc`.
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'sigma.dc', exist = exists)
 
-! file sigma.dc must be present
+         ! file sigma.dc must be present
          if ( exists .eqv. .false. ) then
              call s_print_error('dmft_input_sigdc','file sigma.dc is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file sigma.dc for reading
+         ! open file sigma.dc for reading
          open(mytmp, file='sigma.dc', form='formatted', status='unknown')
 
-! skip header
+         ! skip header
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*) ! empty line
 
-! check nsite
+         ! check nsite
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nsite, 'nsite is wrong')
 
-! check nspin
+         ! check nspin
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nspin, 'nspin is wrong')
 
-! check ndim
+         ! check ndim
          do i=1,nsite
              read(mytmp,*) chr1, chr2, itmp
              call s_assert2(itmp == ndim(i_grp(i)), 'ndim is wrong')
@@ -1282,7 +1332,7 @@
          enddo ! over i={1,nsite} loop
          read(mytmp,*) ! empty line
 
-! parse the data
+         ! parse the data
          do i=1,nsite
              do s=1,nspin
                  read(mytmp,*) ! empty line
@@ -1296,25 +1346,27 @@
              enddo ! over s={1,nspin} loop
          enddo ! over i={1,nsite} loop
 
-! close file handler
+         ! close file handler
          close(mytmp)
 
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
-! broadcast data
+     ! broadcast data
      call mp_bcast( sigdc, master )
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
+
+!! body]
 
      return
   end subroutine dmft_input_sigdc
@@ -1322,8 +1374,8 @@
 !!
 !! @sub dmft_input_sigma
 !!
-!! read in bare self-energy functions from various quantum impurity solvers.
-!! (see module dmft_sigma)
+!! read in bare self-energy functions from various quantum impurity
+!! solvers (see module dmft_sigma).
 !!
   subroutine dmft_input_sigma()
      use constants, only : dp, mytmp
@@ -1345,71 +1397,73 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
      integer  :: k
      integer  :: s
      integer  :: m
 
-! dummy integer variables
+     ! dummy integer variables
      integer  :: itmp
 
-! used to check whether the input file (sigma.bare) exists
+     ! used to check whether the input file (sigma.bare) exists
      logical  :: exists
 
-! dummy real variables
+     ! dummy real variables
      real(dp) :: rtmp
      real(dp) :: re, im
 
-! dummy character variables
+     ! dummy character variables
      character(len = 5) :: chr1
      character(len = 2) :: chr2
 
-! read in local self-energy functions. this code can not run without
-! the file `sigma.bare`.
-!-------------------------------------------------------------------------
+!! [body
+
+     ! read in local self-energy functions.
+     ! this code can not run without the file `sigma.bare`.
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'sigma.bare', exist = exists)
 
-! file sigma.bare must be present
+         ! file sigma.bare must be present
          if ( exists .eqv. .false. ) then
              call s_print_error('dmft_input_sigma','file sigma.bare is absent')
          endif ! back if ( exists .eqv. .false. ) block
 
-! open file sigma.bare for reading
+         ! open file sigma.bare for reading
          open(mytmp, file='sigma.bare', form='formatted', status='unknown')
 
-! skip header
+         ! skip header
          read(mytmp,*)
          read(mytmp,*)
          read(mytmp,*) ! empty line
 
-! check axis
+         ! check axis
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == axis, 'axis is wrong')
 
-! check beta
+         ! check beta
          read(mytmp,*) chr1, chr2, rtmp
          call s_assert2(rtmp == beta, 'beta is wrong')
 
-! check nsite
+         ! check nsite
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nsite, 'nsite is wrong')
 
-! check nmesh
+         ! check nmesh
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nmesh, 'nmesh is wrong')
 
-! check nspin
+         ! check nspin
          read(mytmp,*) chr1, chr2, itmp
          call s_assert2(itmp == nspin, 'nspin is wrong')
 
-! check ndim
+         ! check ndim
          do i=1,nsite
              read(mytmp,*) chr1, chr2, itmp
              call s_assert2(itmp == ndim(i_grp(i)), 'ndim is wrong')
@@ -1417,7 +1471,7 @@
          enddo ! over i={1,nsite} loop
          read(mytmp,*) ! empty line
 
-! parse the data
+         ! parse the data
          do i=1,nsite
              do s=1,nspin
                  read(mytmp,*) ! empty line
@@ -1436,26 +1490,28 @@
              enddo ! over s={1,nspin} loop
          enddo ! over i={1,nsite} loop
 
-! close file handler
+         ! close file handler
          close(mytmp)
 
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! broadcast data from master node to all children nodes
 # if defined (MPI)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
-! broadcast data
+     ! broadcast data
      call mp_bcast( fmesh, master )
      call mp_bcast( sigma, master )
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
+
+!! body]
 
      return
   end subroutine dmft_input_sigma
@@ -1467,14 +1523,16 @@
 !!
 !! @sub dmft_alloc_array
 !!
-!! allocate memory for global variables and then initialize them
+!! allocate memory for global variables and then initialize them.
 !!
   subroutine dmft_alloc_array()
      use context ! ALL
 
      implicit none
 
-! allocate memory for context module
+!! [body
+
+     ! allocate memory for context module
      call cat_alloc_map()
      call cat_alloc_group()
      call cat_alloc_window()
@@ -1494,20 +1552,24 @@
 
      call cat_alloc_gamma()
 
+!! body]
+
      return
   end subroutine dmft_alloc_array
 
 !!
 !! @sub dmft_final_array
 !!
-!! garbage collection for this code, please refer to dmft_alloc_array
+!! garbage collection for this code, please refer to dmft_alloc_array.
 !!
   subroutine dmft_final_array()
      use context ! ALL
 
      implicit none
 
-! deallocate memory for context module
+!! [body
+
+     ! deallocate memory for context module
      call cat_free_map()
      call cat_free_group()
      call cat_free_window()
@@ -1526,6 +1588,8 @@
      call cat_free_delta()
 
      call cat_free_gamma()
+
+!! body]
 
      return
   end subroutine dmft_final_array

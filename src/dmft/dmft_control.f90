@@ -6,8 +6,8 @@
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           07/20/2021 by li huang (last modified)
-!!! purpose :
+!!!           08/03/2021 by li huang (last modified)
+!!! purpose : define the global control variables.
 !!! status  : unstable
 !!! comment :
 !!!-----------------------------------------------------------------------
@@ -19,7 +19,7 @@
 !!
 !! @mod control
 !!
-!! define the control parameters and dimensional parameters
+!! define the control parameters and dimensional parameters.
 !!
   module control
      use constants, only : dp
@@ -33,14 +33,14 @@
 !!
 !! @var cname
 !!
-!! code name of the current dynamical mean-field theory engine
+!! code name of the current dynamical mean-field theory engine.
 !!
      character(len = 09), public, save :: cname = 'JACARANDA'
 
 !!
 !! @var model
 !!
-!! name of strongly correlated materials or models
+!! name of strongly correlated materials or models.
 !!
      character(len = 99), public, save :: model = 'SrVO3'
 
@@ -51,7 +51,7 @@
 !!
 !! @var task
 !!
-!! control flag, determine the running mode of the code
+!! control flag, determine the running mode of the code.
 !!
 !! if task == 1:
 !!     the code will do the following jobs:
@@ -69,16 +69,24 @@
 !!     (3) write the above calculated results.
 !!
 !! if task == 3:
-!!     search the fermi level only (depends on `lfermi`)
+!!     search the fermi level only (depends on `lfermi`).
 !!
 !! if task == 4:
-!!     calculate the impurity level only
+!!     calculate the impurity level only.
 !!
 !! if task == 5:
-!!     calculate all complex frequency dependent eigenvalues only
+!!     calculate all complex frequency dependent eigenvalues only.
+!!     we can use this feature to calculate the fermi surface.
 !!
 !! if task == 6:
-!!     calculate lattice green's functions
+!!     calculate lattice green's functions.
+!!     we can use this feature to calculate the spectral functions.
+!!
+!! if task == 7:
+!!     calculate density of states.
+!!
+!! if task == 8:
+!!     calculate physical properties.
 !!
      integer, public, save :: task   = 1
 
@@ -86,13 +94,13 @@
 !! @var axis
 !!
 !! control flag, determine the working axis for brillouin zone integration
-!! and fermi level search
+!! and fermi level search.
 !!
 !! if axis == 1:
-!!     imaginary axis
+!!     imaginary axis.
 !!
 !! if axis == 2:
-!!     real axis
+!!     real axis.
 !!
      integer, public, save :: axis   = 1
 
@@ -103,13 +111,13 @@
 !!
 !! @var lfermi
 !!
-!! control flag, determine whether the fermi level should be updated
+!! control flag, determine whether the fermi level should be updated.
 !!
 !! if lfermi == .true.
-!!     search the fermi level by using the bisection algorithm
+!!     search the fermi level by using the bisection algorithm.
 !!
 !! if lfermi == .false.
-!!     fix the fermi level. in other words, the dft fermi level is used
+!!     fix the fermi level. in other words, the dft fermi level is used.
 !!
      logical, public, save :: lfermi = .true.
 
@@ -121,7 +129,7 @@
 !! been implemented.
 !!
 !! if ltetra == .true.
-!!     use the analytical tetrahedron algorithm
+!!     use the analytical tetrahedron algorithm.
 !!
 !! if ltetra == .false.
 !!     use the direct algorithm
@@ -135,14 +143,14 @@
 !!
 !! @var beta
 !!
-!! inverse temperature, \beta = 1 / T
+!! inverse temperature, \beta = 1 / T.
 !!
      real(dp), public, save :: beta  = 8.00_dp
 
 !!
 !! @var mc
 !!
-!! convergence criterion for fermi level search
+!! convergence criterion for fermi level search.
 !!
      real(dp), public, save :: mc    = 0.0001_dp
 
@@ -153,28 +161,28 @@
 !!
 !! @var nsort
 !!
-!! number of atomic sorts in the model
+!! number of atomic sorts in the model.
 !!
      integer, public, save :: nsort  = 3
 
 !!
 !! @var natom
 !!
-!! number of atoms in the model
+!! number of atoms in the model.
 !!
      integer, public, save :: natom  = 5
 
 !!
 !! @var nband
 !!
-!! number of dft bands
+!! number of dft bands.
 !!
      integer, public, save :: nband  = 30
 
 !!
 !! @var nkpt
 !!
-!! number of k-mesh points
+!! number of k-mesh points.
 !!
      integer, public, save :: nkpt   = 729
 
@@ -183,7 +191,7 @@
 !!
 !! number of spin orientations. for non-magnetic or paramagnetic systems
 !! nspin = 1, while for magnetic systems, nspin = 2. here, spin-orbit
-!! coupling has not been supported
+!! coupling has not been supported.
 !!
      integer, public, save :: nspin  = 1
 
@@ -191,7 +199,7 @@
 !! @var ntet
 !!
 !! number of tetrahedra. note that ntet = 1 means that the tetrahedron
-!! data are absent and ltetra must be .false.
+!! data are absent and `ltetra` must be .false.
 !!
      integer, public, save :: ntet   = 1
 
@@ -229,7 +237,7 @@
 !!
 !! @var nmesh
 !!
-!! number of frequency points
+!! number of frequency points.
 !!
      integer, public, save :: nmesh  = 8193
 
@@ -240,7 +248,7 @@
 !!
 !! @var scale
 !!
-!! an universal scaling factor for the lattice constants
+!! an universal scaling factor for the lattice constants.
 !!
      real(dp), public, save :: scale = 4.00_dp
 
@@ -256,7 +264,7 @@
 !! @var volt
 !!
 !! volume of a tetrahedron, which is used to renormalize the integration
-!! by using the analytical tetrahedron algorithm
+!! by using the analytical tetrahedron algorithm.
 !!
      real(dp), public, save :: volt  = 1.00_dp
 
@@ -267,42 +275,42 @@
 !!
 !! @var nprocs
 !!
-!! number of processors: default value 1
+!! number of processors: default value 1.
 !!
      integer, public, save :: nprocs = 1
 
 !!
 !! @var myid
 !!
-!! the id of current process: default value 0
+!! the id of current process: default value 0.
 !!
      integer, public, save :: myid   = 0
 
 !!
 !! @var master
 !!
-!! denote as the controller process: default value 0
+!! denote as the controller process: default value 0.
 !!
      integer, public, save :: master = 0
 
 !!
 !! @var cid
 !!
-!! the id of current process in cartesian topology (cid == myid)
+!! the id of current process in cartesian topology (cid == myid).
 !!
      integer, public, save :: cid    = 0
 
 !!
 !! @var cx
 !!
-!! the x coordinates of current process in cartesian topology
+!! the x coordinates of current process in cartesian topology.
 !!
      integer, public, save :: cx     = 0
 
 !!
 !! @var cy
 !!
-!! the y coordinates of current process in cartesian topology
+!! the y coordinates of current process in cartesian topology.
 !!
      integer, public, save :: cy     = 0
 
@@ -315,7 +323,7 @@
 !!
 !! @mod version
 !!
-!! define the version string
+!! define the semantic version string.
 !!
   module version
      implicit none
@@ -325,21 +333,21 @@
 !!
 !! version string, version number + date info. + status info.
 !!
-     character(len=20), public, parameter :: V_FULL = 'v0.6.0 @ 2021.07.20D'
+     character(len=20), public, parameter :: V_FULL = 'v0.7.1 @ 2021.08.03D'
 
 !!
 !! @var V_CURR
 !!
 !! version string, only version number
 !!
-     character(len=06), public, parameter :: V_CURR = 'v0.6.0'
+     character(len=06), public, parameter :: V_CURR = 'v0.7.1'
 
 !!
 !! @var V_DATE
 !!
 !! version string, only date info.
 !!
-     character(len=11), public, parameter :: V_DATE = '2021.07.20'
+     character(len=11), public, parameter :: V_DATE = '2021.08.03'
 
 !!
 !! @var V_STAT

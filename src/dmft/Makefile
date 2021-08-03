@@ -30,13 +30,14 @@
 include ../../build/make.sys
 
 modc = dmft_control.o dmft_context.o
-core = dmft_core.o
-lev1 = dmft_stream.o
-lev2 = dmft_dump.o dmft_print.o
+core = dmft_task.o dmft_flow.o dmft_core.o
+lev1 = dmft_psichi.o
+lev2 = dmft_stream.o dmft_dump.o dmft_print.o
+lev3 = dmft_util.o
 main = dmft_main.o
 mlib = libflink.a
 
-objects = $(modc) $(core) $(lev1) $(lev2) $(main) $(mlib)
+objects = $(modc) $(core) $(lev1) $(lev2) $(lev3) $(main) $(mlib)
 
 default: all
 

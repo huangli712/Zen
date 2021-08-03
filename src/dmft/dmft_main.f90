@@ -30,42 +30,42 @@
 ! initialize mpi envirnoment
 # if defined (MPI)
 
-! initialize the mpi execution environment
+     ! initialize the mpi execution environment
      call mp_init()
 
-! determines the rank of the calling process in the communicator
+     ! determines the rank of the calling process in the communicator
      call mp_comm_rank(myid)
 
-! determines the size of the group associated with a communicator
+     ! determines the size of the group associated with a communicator
      call mp_comm_size(nprocs)
 
 # endif /* MPI */
 
      DMFT_START: BLOCK
 
-! print the welcome messages
+         ! print the welcome messages
          if ( myid == master ) then ! only master node can do it
              call dmft_print_header()
          endif ! back if ( myid == master ) block
 
-! setup the control parameters
+         ! setup the control parameters
          call dmft_setup_tasks()
 
-! setup the dimensional parameters
+         ! setup the dimensional parameters
          call dmft_setup_param()
 
-! print the runtime parameters
+         ! print the runtime parameters
          if ( myid == master ) then ! only master node can do it
              call dmft_print_summary()
          endif ! back if ( myid == master ) block
 
-! allocate memory spaces
+         ! allocate memory spaces
          call dmft_alloc_array()
 
-! setup the correlated systems
+         ! setup the correlated systems
          call dmft_setup_system()
 
-! print the system information
+         ! print the system information
          if ( myid == master ) then ! only master node can do it
              call dmft_print_system()
          endif ! back if ( myid == master ) block
@@ -78,10 +78,10 @@
 
      DMFT_SLEEP: BLOCK
 
-! deallocate memory spaces
+         ! deallocate memory spaces
          call dmft_final_array()
 
-! print the ending messages
+         ! print the ending messages
          if ( myid == master ) then ! only master node can do it
              call dmft_print_footer()
          endif ! back if ( myid == master ) block
@@ -91,10 +91,10 @@
 ! finalize mpi envirnoment
 # if defined (MPI)
 
-! blocks until all processes have reached this routine
+     ! blocks until all processes have reached this routine
      call mp_barrier()
 
-! terminates mpi execution environment
+     ! terminates mpi execution environment
      call mp_finalize()
 
 # endif /* MPI */
