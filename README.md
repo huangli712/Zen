@@ -1,6 +1,6 @@
 # Zen
 
-Zen is a modern DFT + DMFT (namely, density functional theory plus dynamical mean-field theory) computation framework. It is composed of a few components, including:
+Zen is a modern DFT + DMFT (namely, density functional theory plus dynamical mean-field theory) computation framework, which can be employed to study the exotic properties of strongly correlated systems. It is an all-in-one package, including the following components:
 
 * **ZenApps** (v0.9.1-devel.210622)
 * **ZenTools** (v0.9.1-devel.210622)
@@ -18,3 +18,7 @@ v0.4.7-devel.210803
 ## License
 
 GNU General Public License Version 3
+
+## Documentation
+
+The reference guide is placed in the `docs` folder.
