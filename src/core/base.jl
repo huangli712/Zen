@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/22
+# Last modified: 2021/08/03
 #
 
 #=
@@ -674,9 +674,9 @@ See also: [`dft_run`](@ref).
 function suicide(it::IterInfo)
     # Stop it! Only for self-consistent DFT + DMFT iterations.
     if it.sc == 2
-        println("Try to kill the $engine app. Please waiting...")
-        #
         engine = get_d("engine")
+        #
+        println("Try to kill the $engine app. Please waiting...")
         @cswitch engine begin
             # For vasp
             @case "vasp"
