@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/21
+# Last modified: 2021/08/03
 #
 
 #=
@@ -527,21 +527,22 @@ function vaspc_stopcar()
     println("  > Create STOPCAR for vasp: $fstop")
 
     # May be vasp.lock is necessary.
-    vaspc_lock("create")
+    vaspc_lock("create", "dft")
 end
 
 """
-    vaspc_lock(action::String)
+    vaspc_lock(action::String, dir::String = ".")
 
 Create the `vasp.lock` file. This file is relevant for `ICHARG = 5`.
 The vasp program runs only when the `vasp.lock` file is present in the
-current directory. Its working directory is just `dft`.
+current directory. Its default working directory is just `dft`, but we
+can specify it via argument `dir`.
 
 See also: [`vaspq_lock`](@ref).
 """
-function vaspc_lock(action::String)
+function vaspc_lock(action::String, dir::String = ".")
     @assert startswith(action, "c") || startswith(action, "C")
-    touch("vasp.lock")
+    touch(joinpath(dir, "vasp.lock"))
 end
 
 #=
