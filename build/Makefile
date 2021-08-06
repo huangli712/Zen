@@ -62,53 +62,65 @@
 
 # targets for help
 help:
-	@echo '  Interacting Quantum Impurity Solver Toolkit Building System'
+	@echo 'Making The Zen DFT + DMFT Computation Framework'
 	@echo
 	@echo
-	@echo '  targets:'
-	@echo '     help              print full usage information          '
+	@echo 'targets:'
+	@echo '  help          print full usage information      '
 	@echo
-	@echo '     all               build all components and tools        '
-	@echo '     clean             clean all directories                 '
+	@echo '  all           build all components and tools    '
+	@echo '  clean         clean all directories             '
 	@echo
-	@echo '     solver            build all quantum impurity solvers    '
-	@echo '     clean-solver      clean all quantum impurity solvers    '
+	@echo '  deps          build internal library            '
+	@echo '  clean-deps    clean internal library            '
 	@echo
-	@echo '     atomic            build atomic eigenvalue solver        '
-	@echo '     clean-atomic      clean atomic eigenvalue solver        '
+	@echo '  solver        build all quantum impurity solvers'
+	@echo '  clean-solver  clean all quantum impurity solvers'
 	@echo
-	@echo '     ct-hyb1           build ct-hyb1 quantum impurity solver '
-	@echo '     clean-ct-hyb1     clean ct-hyb1 quantum impurity solver '
-	@echo '     ct-hyb2           build ct-hyb2 quantum impurity solver '
-	@echo '     clean-ct-hyb2     clean ct-hyb2 quantum impurity solver '
+	@echo '  dmft          build dynamical mean-field engine '
+	@echo '  clean-dmft    clean dynamical mean-field engine '
+	@echo
+	@echo '  docs          build documentations              '
+	@echo '  clean-docs    clean documentations              '
 
 # all-in-one building target
-all: solver atomic
+all: deps solver dmft docs
 
 # all-in-one cleaning target
-clean: clean-solver clean-atomic
+clean: clean-deps clean-solver clean-dmft clean-docs
 
-# targets for solver
-solver: ct-hyb1 ct-hyb2
-clean-solver: clean-ct-hyb1 clean-ct-hyb2
+# targets for internal library
+deps:
+	@echo 'building deps'
+	cd ../src/deps/; pwd; make
 
-# targets for atomic eigenvalue solver: jasmine
-atomic:
-	cd ../src/atomic/; pwd; make
+clean-deps:
+	@echo 'cleaning deps'
+	cd ../src/deps/; pwd; make clean
 
-clean-atomic:
-	cd ../src/atomic/; pwd; make clean
+# targets for quantum impurity solvers
+solver:
+	@echo 'building solvers / ct_hyb1'
+	cd ../src/solver/ct_hyb1/; pwd; make
 
-# targets for ct-hyb quantum impurity solver: segment version (narcissus)
-ct-hyb1:
-	cd ../src/ct_hyb1/; pwd; make
+clean-solver:
+	@echo 'cleaning solvers / ct_hyb1'
+	cd ../src/solver/ct_hyb1/; pwd; make clean
 
-clean-ct-hyb1:
-	cd ../src/ct_hyb1/; pwd; make clean
+# targets for dynamical mean-field engine
+dmft:
+	@echo 'building dmft'
+	cd ../src/dmft/; pwd; make
 
-# targets for ct-hyb quantum impurity solver: general version (manjushaka)
-ct-hyb2:
-	cd ../src/ct_hyb2/; pwd; make
+clean-dmft:
+	@echo 'cleaning dmft'
+	cd ../src/dmft/; pwd; make clean
 
-clean-ct-hyb2:
-	cd ../src/ct_hyb2/; pwd; make clean
+# targets for documentations
+docs:
+	@echo 'building docs'
+	cd ../docs/; pwd; julia make.jl
+
+clean-docs:
+	@echo 'cleaning docs'
+	cd ../docs/; pwd; rm -fr build
