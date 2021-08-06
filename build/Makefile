@@ -3,9 +3,9 @@
 ## Introduction
 ## ============
 ##
-## This is the top Makefile for the iQIST software package. You can use
+## This is the top Makefile for the Zen software package. You can use
 ## it to build all of the executable programs and libraries. Please do
-## not modify it by yourself even you are very familiar with iQIST.
+## not modify it by yourself even you are very familiar with Zen.
 ##
 ## Usage
 ## =====
@@ -20,25 +20,27 @@
 ##
 ## 'make all'
 ##
-## 3. build impurity solver
+## 3. build deps library
+## ---------------------
+##
+## 'make deps'
+##
+## 4. build impurity solver
 ## ------------------------
 ##
 ## 'make solver'
 ##
-## 4. build atomic eigenvalue solver
-## ---------------------------------
+## 5. build dmft engine
+## --------------------
 ##
-## 'make atomic'
+## 'make dmft'
 ##
-## 5. build specified code
-## -----------------------
+## 6. build documentation
+## ----------------------
 ##
-## 'make xxx'
+## 'make docs'
 ##
-## here xxx is the code name, please type 'make help' to obtain more
-## information about the possible values of xxx
-##
-## 6. clean the directories
+## 7. clean the directories
 ## ------------------------
 ##
 ## 'make clean'
@@ -53,8 +55,8 @@
 ## History
 ## =======
 ##
-## 02/28/2015 by li huang (created)
-## 04/15/2019 by li huang (last modified)
+## 08/06/2021 by li huang (created)
+## 08/06/2021 by li huang (last modified)
 ##
 ##
 
