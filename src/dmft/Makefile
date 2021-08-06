@@ -21,13 +21,13 @@
 ## =======
 ##
 ## 02/23/2021 by li huang (created)
-## 05/10/2021 by li huang (last modified)
+## 08/06/2021 by li huang (last modified)
 ##
 ##
 
 .SUFFIXES: .f90
 
-include ../../build/make.sys
+include ../../build/make.inc
 
 modc = dmft_control.o dmft_context.o
 core = dmft_task.o dmft_flow.o dmft_core.o
