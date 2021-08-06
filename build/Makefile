@@ -66,16 +66,16 @@ help:
 	@echo
 	@echo
 	@echo 'targets:'
-	@echo '  help          print full usage information      '
+	@echo '  help          print full help information       '
 	@echo
 	@echo '  all           build all components and tools    '
 	@echo '  clean         clean all directories             '
 	@echo
-	@echo '  deps          build internal library            '
-	@echo '  clean-deps    clean internal library            '
+	@echo '  deps          build essential library           '
+	@echo '  clean-deps    clean essential library           '
 	@echo
-	@echo '  solver        build all quantum impurity solvers'
-	@echo '  clean-solver  clean all quantum impurity solvers'
+	@echo '  solver        build quantum impurity solvers    '
+	@echo '  clean-solver  clean quantum impurity solvers    '
 	@echo
 	@echo '  dmft          build dynamical mean-field engine '
 	@echo '  clean-dmft    clean dynamical mean-field engine '
