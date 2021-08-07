@@ -23,6 +23,7 @@ makedocs(
                 "Global" => "internals/apis/global.md",
                 "Util" => "internals/apis/util.md",
                 "Tetra" => "internals/apis/tetra.md",
+                "Types" => "internals/apis/types.md",
             ],
         ],
 #        "Theory" => "theory/readme.md",
