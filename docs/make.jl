@@ -1,4 +1,6 @@
-using Documenter
+push!(LOAD_PATH, ENV["ZEN_CORE"])
+
+using Documenter, ZenCore
 
 makedocs(
     sitename="Zen",
@@ -10,11 +12,18 @@ makedocs(
     ),
     pages = [
         "Home" => "index.md",
-        "Introduction" => "intro/readme.md",
-        "Getting started" => "start/readme.md",
-        "Tutorials" => "tutor/readme.md",
-        "Guide" => "guide/readme.md",
-        "Internals" => "internals/readme.md",
-        "Theory" => "theory/readme.md",
+#        "Introduction" => "intro/readme.md",
+#        "Getting started" => "start/readme.md",
+#        "Tutorials" => "tutor/readme.md",
+#        "Guide" => "guide/readme.md",
+        "Internals" => Any[
+            "README" => "internals/README.md",
+            "ZenCore APIs" => Any[
+                "ZenCore" => "internals/apis/zencore.md",
+                "Global" => "internals/apis/global.md",
+            ],
+        ],
+#        "Theory" => "theory/readme.md",
     ],
+    modules = [ZenCore],
 )

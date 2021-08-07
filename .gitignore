@@ -19,3 +19,4 @@ test/*/impurity.*
 test/_*
 ctqmc
 dmft
+docs/build
