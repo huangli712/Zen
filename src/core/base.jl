@@ -709,8 +709,8 @@ the runtime environment for the DFT engine. (2) Launch the DFT engine.
 (3) Backup the output files by DFT engine for next iterations.
 
 If `sc = true`, this function will read in the correction for density
-matrix, and then feed it back to the DFT engine to continue the DFT
-+ DMFT calculations.
+matrix, and then feed it back to the DFT engine to continue the DFT + DMFT
+calculations.
 
 Now only the vasp engine is supported. If you want to support the other
 DFT engine, this function must be adapted.

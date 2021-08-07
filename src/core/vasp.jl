@@ -567,7 +567,7 @@ end
 Check the essential output files by vasp. Here `f` means only the
 directory that contains the desired files.
 
-See also: [`adaptor_init`](@ref).
+See also: [`adaptor_run`](@ref).
 """
 function vaspq_files(f::String)
     fl = ["POSCAR", "IBZKPT", "EIGENVAL", "LOCPROJ", "DOSCAR", "CHGCAR"]
@@ -581,7 +581,7 @@ end
 
 Check the essential output files by vasp in the current directory.
 
-See also: [`adaptor_init`](@ref).
+See also: [`adaptor_run`](@ref).
 """
 vaspq_files() = vaspq_files(pwd())
 
@@ -735,7 +735,9 @@ the most relevant, and then apply the obtained information to customize
 their case.toml configuration file (specifically, the `window` parameter
 in the `dft` block).
 
-See also: [`tools/analyze.jl`](@ref).
+!!! note
+
+    This function is only called by tools/analyze.jl or used in REPL.
 """
 function vaspio_procar(f::String)
     # Open the iostream
@@ -1027,7 +1029,9 @@ the most relevant, and then apply the obtained information to customize
 their case.toml configuration file (specifically, the `window` parameter
 in the `dft` block).
 
-See also: [`tools/analyze.jl`](@ref).
+!!! note
+
+    This function is only called by tools/analyze.jl or used in REPL.
 """
 vaspio_procar() = vaspio_procar(pwd())
 

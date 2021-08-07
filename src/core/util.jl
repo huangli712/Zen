@@ -74,8 +74,6 @@ Evaluate a function call (`ex`), and then print the elapsed time (number
 of seconds) it took to execute.
 
 This macro is a variation of the standard `@elapsed` macro.
-
-See also: [`@elapsed`](@ref).
 """
 macro time_call(ex)
     quote
@@ -713,6 +711,10 @@ in the terminal.
 julia> println(red("hello world!"))
 ```
 =#
+
+export COLORS
+export MODES
+export colorize
 
 for k in keys(COLORS)
     f = Symbol(k)
