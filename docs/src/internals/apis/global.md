@@ -1,4 +1,7 @@
-# Global
+# Global constants
+
+*Define some type aliases and string constants for the ZenCore package*.
+
 
 ## Contents
 
