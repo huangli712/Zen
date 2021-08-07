@@ -10,12 +10,13 @@ makedocs(
         prettyurls = false,
         ansicolor = true,
     ),
+    modules = [ZenCore],
     pages = [
         "Home" => "index.md",
-#        "Introduction" => "intro/readme.md",
-#        "Getting started" => "start/readme.md",
-#        "Tutorials" => "tutor/readme.md",
-#        "Guide" => "guide/readme.md",
+        "Introduction" => Any[],
+        "Getting started" => Any[],
+        "Tutorials" => Any[],
+        "Guide" => Any[],
         "Internals" => Any[
             "README" => "internals/README.md",
             "ZenCore APIs" => Any[
@@ -35,7 +36,6 @@ makedocs(
                 "Mixer" => "internals/apis/mixer.md",
             ],
         ],
-#        "Theory" => "theory/readme.md",
+        "Theory" => Any[],
     ],
-    modules = [ZenCore],
 )
