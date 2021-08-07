@@ -1,6 +1,6 @@
 # ZenCore
 
-*Declare the module and public members*.
+*Declare the module and public members.*
 
 *Source: ZenCore.jl*
 

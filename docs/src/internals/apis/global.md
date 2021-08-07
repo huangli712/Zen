@@ -1,6 +1,6 @@
 # Global constants
 
-*Define some type aliases and string constants for the ZenCore package*.
+*Define some type aliases and string constants for the ZenCore package.*
 
 *Source: global.jl*
 
