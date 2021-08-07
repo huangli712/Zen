@@ -1,4 +1,8 @@
-# PLO
+# Projected local orbitals
+
+*Tools for the projection on localized orbitals scheme (adaptor).*
+
+*Source: plo.jl*
 
 ## Contents
 

@@ -1,4 +1,8 @@
-# IR
+# Intermediate Representation
+
+*Tools for the intermediate representation format (adaptor).*
+
+*Source: ir.jl*
 
 ## Contents
 
