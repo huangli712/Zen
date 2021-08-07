@@ -1,4 +1,8 @@
-# Solver
+# Quantum impurity solvers
+
+*Wrapper for various quantum impurity solvers. Now only the CT-HYB₁, CT-HYB₂, HIA, and NORG quantum impurity solvers are supported.*
+
+*Source: solver.jl*
 
 ## Contents
 
