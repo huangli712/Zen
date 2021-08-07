@@ -1,5 +1,7 @@
-## Contents
+## Introduction
 
+## ZenCore APIs
+ 
 ```@contents
 Pages = ["apis/zencore.md",
          "apis/global.md",
@@ -16,4 +18,5 @@ Pages = ["apis/zencore.md",
          "apis/sigma.md",
          "apis/mixer.md"
         ]
+Depth = 1
 ```
