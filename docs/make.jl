@@ -22,6 +22,7 @@ makedocs(
                 "ZenCore" => "internals/apis/zencore.md",
                 "Global" => "internals/apis/global.md",
                 "Util" => "internals/apis/util.md",
+                "Tetra" => "internals/apis/tetra.md",
             ],
         ],
 #        "Theory" => "theory/readme.md",
