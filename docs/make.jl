@@ -21,7 +21,7 @@ makedocs(
             "README" => "internals/README.md",
             "ZenCore APIs" => Any[
                 "ZenCore" => "internals/apis/zencore.md",
-                "Global" => "internals/apis/global.md",
+                "Global constants" => "internals/apis/global.md",
                 "Util" => "internals/apis/util.md",
                 "Tetra" => "internals/apis/tetra.md",
                 "Types" => "internals/apis/types.md",
