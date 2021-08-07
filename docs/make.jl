@@ -21,6 +21,7 @@ makedocs(
             "ZenCore APIs" => Any[
                 "ZenCore" => "internals/apis/zencore.md",
                 "Global" => "internals/apis/global.md",
+                "Util" => "internals/apis/util.md",
             ],
         ],
 #        "Theory" => "theory/readme.md",
