@@ -20,6 +20,13 @@ Pages = ["util.md"]
 @pcs
 ```
 
+## Global dicts
+
+```@docs
+COLORS
+MODES
+```
+
 ## Functions
 
 ```@docs
@@ -43,4 +50,5 @@ line_to_array
 line_to_cmplx
 erf
 subscript
+colorize
 ```
