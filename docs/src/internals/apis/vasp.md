@@ -1,5 +1,9 @@
 # VASP
 
+*Tools for the vasp software package (adaptor). It provide a lot of functions to deal with the vasp-related files.*
+
+*Source: vasp.jl*
+
 ## Contents
 
 ```@contents
