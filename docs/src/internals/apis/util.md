@@ -1,4 +1,4 @@
-# Util
+# Utility
 
 *To provide some useful utility macros and functions. They can be used to colorize the output strings, query the environments, and parse the input strings, etc.*
 

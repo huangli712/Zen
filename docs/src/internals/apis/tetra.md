@@ -1,4 +1,8 @@
-# Tetra
+# Analytical tetrahedron method
+
+*Implementation of the analytical tetrahedron method.*
+
+*Source: tetra.jl*
 
 ## Contents
 
