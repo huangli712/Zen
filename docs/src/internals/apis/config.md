@@ -1,4 +1,4 @@
-# Config
+# Configuration
 
 *To extract, parse, verify, and print the configuration parameters. They are stored in external files (case.toml) or dictionaries.*
 
