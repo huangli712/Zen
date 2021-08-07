@@ -1,5 +1,9 @@
 # Types
 
+*Define some dicts and structs, which are used to store the config parameters or represent some essential data structures.*
+
+*Source: types.jl*
+
 ## Contents
 
 ```@contents
