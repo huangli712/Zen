@@ -14,15 +14,15 @@ sproj = ["1 : d : Pr", "2 : d : Pr"]
 window = [-2.8, 2.6, -2.8, 2.6]
 
 [dmft]
-mode = 2
+mode = 1
 axis = 1
-niter = [12, 2, 8]
+niter = [60, 2, 8]
 nmesh = 8193
 dcount = "fll2"
 beta = 40.0
 mixer = 0.1
 mc = 1.0E-4
-cc = 1.0E-4
+cc = 1.0E-6
 ec = 1.0E-4
 sc = 1.0E-4
 lfermi = true
