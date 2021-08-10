@@ -3,7 +3,7 @@
 Zen is a modern DFT + DMFT (namely, density functional theory plus dynamical mean-field theory) computation framework, which can be employed to study the exotic properties of strongly correlated systems. It is an all-in-one package, including the following components:
 
 * **ZenApps** (v0.9.1-devel.210622)
-* **ZenTools** (v0.9.1-devel.210622)
+* **ZenTools** (v0.9.2-devel.210810)
 * **ZenCore** (0.6.5-devel.210803)
 * **Dyson** (v0.7.1-devel.210803)
 * **iQIST** (v0.8.1-devel.210509)
@@ -13,7 +13,7 @@ Now this package is currently under developement. **IT DOESN'T WORK NOW!**
 
 ## Version
 
-v0.4.8-devel.210805
+v0.4.9-devel.210810
 
 ## License
 
