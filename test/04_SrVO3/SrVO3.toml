@@ -14,7 +14,7 @@ sproj = ["2 : d : Pr"]
 window = [-1.4, 6.0]
 
 [dmft]
-mode = 1
+mode = 2
 axis = 1
 niter = [60, 2, 8]
 nmesh = 8193
