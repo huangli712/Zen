@@ -1,0 +1,43 @@
+case = "FeSe"
+
+[dft]
+engine = "vasp"
+projtype = "plo"
+smear = "tetra"
+kmesh = "medium"
+lsymm = false
+lspins = false
+lspinorb = false
+loptim = true
+lproj = true
+sproj = ["1 : d : Pr", "2 : d : Pr"]
+window = [-2.8, 2.6, -2.8, 2.6]
+
+[dmft]
+mode = 2
+axis = 1
+niter = [60, 2, 8]
+nmesh = 8193
+dcount = "fll2"
+beta = 40.0
+mixer = 0.1
+mc = 1.0E-4
+cc = 1.0E-6
+ec = 1.0E-4
+sc = 1.0E-4
+lfermi = true
+
+[impurity]
+nsite = 2
+atoms = ["Fe : 1", "Fe : 2"]
+equiv = [1, 1]
+shell = ["d", "d"]
+ising = ["ising", "ising"]
+occup = [6.0, 6.0]
+upara = [5.0, 5.0]
+jpara = [0.8, 0.8]
+lpara = [0.0, 0.0]
+
+[solver]
+engine = "ct_hyb1"
+params = ["isbnd = 2", "isort = 2", "nsweep = 10000000"]
