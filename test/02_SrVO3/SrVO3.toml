@@ -10,8 +10,8 @@ lspins = false
 lspinorb = false
 loptim = true
 lproj = true
-sproj = ["2 : d : Pr", "3 : p : Pr", "4 : p : Pr", "5 : p : Pr"]
-window = [-1.4, 6.0, -8.0, -1.4, -8.0, -1.4, -8.0, -1.4]
+sproj = ["2 : d : Pr"]
+window = [-1.4, 2.0]
 
 [dmft]
 mode = 1
@@ -31,7 +31,7 @@ lfermi = true
 nsite = 1
 atoms = ["V : 2"]
 equiv = [1]
-shell = ["d"]
+shell = ["d_t2g"]
 ising = ["ising"]
 occup = [1.0]
 upara = [4.0]

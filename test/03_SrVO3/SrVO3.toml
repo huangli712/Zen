@@ -10,8 +10,8 @@ lspins = false
 lspinorb = false
 loptim = true
 lproj = true
-sproj = ["2 : d : Pr"]
-window = [-1.4, 2.0]
+sproj = ["2 : d : Pr", "3 : p : Pr", "4 : p : Pr", "5 : p : Pr"]
+window = [-1.4, 2.0, -8.0, -1.4, -8.0, -1.4, -8.0, -1.4]
 
 [dmft]
 mode = 1
