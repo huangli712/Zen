@@ -36,11 +36,11 @@ Fe-*3d* orbitals, two Fe sites, one-shot calculation.
 
 ## case: Ni
 
-* **07_Ni**
+* **20_Ni**
 
 Ni-*3d* orbitals, paramagnetic, one-shot calculation.
 
-* **08_Ni**
+* **21_Ni**
 
 Ni-*3d* orbitals, ferromagnetic, one-shot calculation.
 
@@ -48,11 +48,11 @@ Ni-*3d* orbitals, ferromagnetic, one-shot calculation.
 
 ## case: NiO
 
-* **09_NiO**
+* **30_NiO**
 
 Ni-*3d* orbitals + O-*2p* orbitals, paramagnetic
 
-* **10_NiO**
+* **31_NiO**
 
 Ni-*3d* orbitals + O-*2p* orbitals, two Ni sites, antiferromagnetic
 
