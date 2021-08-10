@@ -32,6 +32,10 @@ Fe-*3d* orbitals, two Fe sites (degenerated), one-shot calculation.
 
 Fe-*3d* orbitals, two Fe sites, one-shot calculation.
 
+* **12_FeSe**
+
+Fe-*3d* orbitals, two Fe sites (degenerated), self-consistent calculation.
+
 ---
 
 ## case: Ni
@@ -50,20 +54,20 @@ Ni-*3d* orbitals, ferromagnetic, one-shot calculation.
 
 * **30_NiO**
 
-Ni-*3d* orbitals + O-*2p* orbitals, paramagnetic
+Ni-*3d* orbitals + O-*2p* orbitals, paramagnetic, one-shot calculation.
 
 * **31_NiO**
 
-Ni-*3d* orbitals + O-*2p* orbitals, two Ni sites, antiferromagnetic
+Ni-*3d* orbitals + O-*2p* orbitals, two Ni sites, antiferromagnetic, one-shot calculation.
 
 ---
 
 ## case: Ce
 
-* **11_Ce**
+* **40_Ce**
 
-Ce-``4f`` orbitals, without spin-orbit coupling
+Ce-``4f`` orbitals, without spin-orbit coupling, one-shot calculation.
 
-* **12_Ce**
+* **41_Ce**
 
-Ce-``4f`` orbitals, with spin-orbit coupling
+Ce-``4f`` orbitals, with spin-orbit coupling, one-shot calculation.
