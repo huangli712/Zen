@@ -16,13 +16,13 @@ window = [-1.4, 6.0, -8.0, -1.4, -8.0, -1.4, -8.0, -1.4]
 [dmft]
 mode = 1
 axis = 1
-niter = [60, 10, 2]
+niter = [60, 2, 8]
 nmesh = 8193
-dcount = "fll1"
+dcount = "fll2"
 beta = 40.0
 mixer = 0.1
 mc = 1.0E-4
-cc = 1.0E-4
+cc = 1.0E-6
 ec = 1.0E-4
 sc = 1.0E-4
 lfermi = true
@@ -40,4 +40,4 @@ lpara = [0.0]
 
 [solver]
 engine = "ct_hyb1"
-params = ["isbnd = 2", "isort = 2", "nsweep = 50000000"]
+params = ["isbnd = 2", "isort = 2", "nsweep = 10000000"]
