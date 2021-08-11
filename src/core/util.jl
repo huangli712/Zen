@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/17
+# Last modified: 2021/08/11
 #
 
 #=
@@ -82,6 +82,7 @@ macro time_call(ex)
         $(esc(ex))
         δt = (time_ns() - t0) / 1e9
         println("Report: Total elapsed time $(δt) s\n")
+        flush(stdout)
     end
 end
 
@@ -415,6 +416,7 @@ function welcome()
     @pcs "ZZZZZZZZZZZZ EEEEEEEEEEEE N          N | "  green "Powered by the julia programming language\n" magenta
     @pcs "                                       |\n" green
     println()
+    flush(stdout)
 end
 
 """
@@ -434,6 +436,7 @@ function overview()
     println("Dirs : ", pwd())
     println("Task : ", query_args())
     println()
+    flush(stdout)
 end
 
 """
@@ -445,6 +448,7 @@ function goodbye()
     println(  red("╔═╗┌─┐┌┐┌"), magenta("╔═╗┌─┐┬─┐┌─┐"))
     println(green("╔═╝├┤ │││"), magenta("║  │ │├┬┘├┤ "))
     println( blue("╚═╝└─┘┘└┘"), magenta("╚═╝└─┘┴└─└─┘"))
+    flush(stdout)
 end
 
 """
@@ -465,6 +469,7 @@ function prompt(msg::String)
     print(green("ZEN > "))
     print(magenta(msg))
     println()
+    flush(stdout)
 end
 
 """
@@ -477,6 +482,7 @@ function prompt(msg1::String, msg2::String)
     print(light_red(msg1))
     print(magenta(msg2))
     println()
+    flush(stdout)
 end
 
 """

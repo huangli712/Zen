@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/14
+# Last modified: 2021/08/11
 #
 
 #=
@@ -40,6 +40,7 @@ function setup()
 
     # Print the footer
     println()
+    flush(stdout)
 end
 
 #=
