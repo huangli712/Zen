@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/08/03
+# Last modified: 2021/08/11
 #
 
 #=
@@ -143,7 +143,11 @@ function vasp_exec(it::IterInfo)
     if isnothing(mpi_prefix)
         vasp_cmd = vasp_exe
     else
-        vasp_cmd = split("$mpi_prefix $vasp_exe", " ")
+        if it.sc == 2
+            vasp_cmd = split("mpiexec -n 1 $vasp_exe", " ")
+        else
+            vasp_cmd = split("$mpi_prefix $vasp_exe", " ")
+        end
     end
     println("  > Assemble command: $(prod(x -> x * ' ', vasp_cmd))")
 
@@ -162,6 +166,12 @@ function vasp_exec(it::IterInfo)
     schedule(t)
     println("  > Add the task to the scheduler's queue")
     println("  > Waiting ...")
+    #
+    # To ensure that the task is executed
+    while true
+        sleep(2)
+        istaskstarted(t) && break
+    end
 
     # Special treatment for self-consistent mode
     if it.sc == 2
