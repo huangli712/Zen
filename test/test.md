@@ -20,6 +20,10 @@ V-*3d* *t<sub>2g</sub>* orbitals + O-*2p* orbitals, one-shot calculation.
 
 V-*3d* orbitals only, self-consistent calculation.
 
+* **05_SrVO<sub>3</sub>**
+
+V-*3d* *t<sub>2g</sub>* orbitals, self-consistent calculation.
+
 ---
 
 ## case: FeSe
