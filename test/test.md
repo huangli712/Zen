@@ -2,7 +2,7 @@
 
 * **00_SrVO<sub>3</sub>**
 
-V-*3d* orbitals only, one-shot calculation.
+V-*3d* orbitals, one-shot calculation.
 
 * **01_SrVO<sub>3</sub>**
 
@@ -18,11 +18,23 @@ V-*3d* *t<sub>2g</sub>* orbitals + O-*2p* orbitals, one-shot calculation.
 
 * **04_SrVO<sub>3</sub>**
 
-V-*3d* orbitals only, self-consistent calculation.
+V-*3d* orbitals, self-consistent calculation.
 
 * **05_SrVO<sub>3</sub>**
 
 V-*3d* *t<sub>2g</sub>* orbitals, self-consistent calculation.
+
+* **06_SrVO<sub>3</sub>**
+
+V-*3d* orbitals, self-consistent calculation, dc = fll1.
+
+* **07_SrVO<sub>3</sub>**
+
+V-*3d* orbitals, self-consistent calculation, dc = amf.
+
+* **08_SrVO<sub>3</sub>**
+
+V-*3d* orbitals, self-consistent calculation, dc = held.
 
 ---
 
