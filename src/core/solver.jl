@@ -951,6 +951,15 @@ function GetSymmetry(Eimpx::Array{C64,3})
         end
     end # END OF S LOOP
 
+    # Adjust the symmetry vectors for spin down
+    #
+    # Sometimes the symmetry vectors for spin up and spin down are the
+    # same, we have to avoid this case.
+    if nspin == 2
+        max_ind = maximum(symm[:,1])
+        @. symm[:,2] = symm[:,2] + max_ind
+    end
+
     # Return the desired array
     return symm
 end
