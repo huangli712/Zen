@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/08/12
+# Last modified: 2021/08/13
 #
 
 #=
@@ -664,6 +664,10 @@ function read_gamma(fgamma::String = "dmft2/dmft.gamma")
                 #
                 # For 𝑘-point
                 strs = readline(fin)
+                # For large 𝑘 index, there is no space between "kpt:"
+                # and the number. At this time, the parse() function
+                # will fail.
+                strs = replace(strs, ":" => ": ")
                 _k = parse(I64, line_to_array(strs)[3])
                 @assert _k == k
                 kmesh[k,1:3] = parse.(F64, line_to_array(strs)[4:6])
