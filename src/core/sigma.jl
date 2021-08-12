@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/19
+# Last modified: 2021/08/12
 #
 
 #=
@@ -191,8 +191,8 @@ function sigma_dcount(it::IterInfo, ai::Array{Impurity,1}, reset_dc::Bool = fals
         if nspin == 1
             fill!(DC, sigup)
         else
-            fill!(DC[:,:,1], sigup)
-            fill!(DC[:,:,2], sigdn)
+            fill!(view(DC,:,:,1), sigup)
+            fill!(view(DC,:,:,2), sigdn)
         end
         #
         # Print some useful information
