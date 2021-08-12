@@ -947,7 +947,7 @@ function GetSymmetry(Eimpx::Array{C64,3})
         # Scan all the impurity levels. Try to find out its corresponding
         # value in `E`.
         for b = 1:nband
-            symm[b,s] = findfirst(isequal(eimp[b]), E)
+            symm[b,s] = findfirst(x -> x == eimp[b,s], E)
         end
     end # END OF S LOOP
 
