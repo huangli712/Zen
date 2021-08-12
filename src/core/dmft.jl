@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/21
+# Last modified: 2021/08/12
 #
 
 #=
@@ -139,6 +139,12 @@ function dmft_exec(it::IterInfo, task::I64)
     schedule(t)
     println("  > Add the task to the scheduler's queue")
     println("  > Waiting ...")
+
+    # To ensure that the task is executed
+    while true
+        sleep(2)
+        istaskstarted(t) && break
+    end
 
     # Analyze the dmft.out file during the calculation
     #

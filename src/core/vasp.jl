@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/08/11
+# Last modified: 2021/08/12
 #
 
 #=
@@ -166,7 +166,7 @@ function vasp_exec(it::IterInfo)
     schedule(t)
     println("  > Add the task to the scheduler's queue")
     println("  > Waiting ...")
-    #
+
     # To ensure that the task is executed
     while true
         sleep(2)
@@ -268,6 +268,8 @@ end
 
 Reactivate the vasp engine to continue the charge self-consistent
 DFT + DMFT calculation.
+
+See also: [`vasp_stop`](@ref).
 """
 function vasp_back()
     # Read in the correction for density matrix
@@ -281,6 +283,32 @@ function vasp_back()
     # Create vasp.lock file to wake up the vasp
     println("Reactivate the vasp engine (vasp.lock)")
     vaspc_lock("create")
+end
+
+"""
+    vasp_stop()
+
+Stop the vasp engine by creating a STOPCAR file in the working folder.
+It will not return until the vasp engine is completely termined.
+
+See also: [`vasp_back`](@ref).
+"""
+function vasp_stop()
+    # Create the STOPCAR file in the dft folder.
+    vaspc_stopcar()
+
+    # Maybe vasp.lock is necessary.
+    vaspc_lock("create", "dft")
+
+    # Sleep until the STOPCAR is deleted automatically, which means
+    # that the vasp process is termined completely. 
+    while true
+        # Sleep two seconds
+        sleep(2)
+
+        # Check the status of STOPCAR
+        !vaspc_stopcar() && break
+    end
 end
 
 #=
@@ -526,18 +554,17 @@ end
 
 Create the `STOPCAR` file in the dft directory to stop the vasp engine.
 Vasp will stop at the next electronic step, i.e. `WAVECAR` and `CHGCAR`
-might contain non converged results.
+might contain non-converged results.
 """
 function vaspc_stopcar()
     # Create STOPCAR
     fstop = "dft/STOPCAR"
+    #
     open(fstop, "w") do fout
         println(fout, "LABORT = .TRUE.")
     end
+    #
     println("  > Create STOPCAR for vasp: $fstop")
-
-    # May be vasp.lock is necessary.
-    vaspc_lock("create", "dft")
 end
 
 """
@@ -558,6 +585,18 @@ end
 #=
 ### *Service Functions* : *Group B*
 =#
+
+"""
+    vaspq_stopcar()
+
+Return whether the `STOPCAR` file is available. Its working directory
+might be `root` or `dft`.
+
+See also: [`vaspc_stopcar`](@ref).
+"""
+function vaspq_stopcar()
+    return isfile("dft/STOPCAR") || isfile("STOPCAR")
+end
 
 """
     vaspq_lock()

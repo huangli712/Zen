@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/08/03
+# Last modified: 2021/08/12
 #
 
 #=
@@ -680,7 +680,7 @@ function suicide(it::IterInfo)
         @cswitch engine begin
             # For vasp
             @case "vasp"
-                vaspc_stopcar()
+                vasp_stop()
                 break
 
             @default
