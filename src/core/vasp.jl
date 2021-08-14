@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/08/12
+# Last modified: 2021/08/14
 #
 
 #=
@@ -307,7 +307,7 @@ function vasp_stop()
         sleep(2)
 
         # Check the status of STOPCAR
-        !vaspc_stopcar() && break
+        !vaspq_stopcar() && break
     end
 end
 
