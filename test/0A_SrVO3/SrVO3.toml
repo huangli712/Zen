@@ -1,7 +1,7 @@
 case = "SrVO3"
 
 [dft]
-engine = "vasp"
+engine = "pwscf"
 projtype = "plo"
 smear = "tetra"
 kmesh = "medium"
