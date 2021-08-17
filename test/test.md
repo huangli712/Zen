@@ -1,24 +1,29 @@
 ## case: SrVO<sub>3</sub>
 
-* **00_SrVO<sub>3</sub>** (PASSED)
+* **00_SrVO<sub>3</sub>**
 
-V-*3d* orbitals, one-shot calculation.
+    * V-*3d* orbitals
+    * one-shot calculation
 
 * **01_SrVO<sub>3</sub>**
 
-V-*3d* orbitals + O-*2p* orbitals, one-shot calculation.
+    * V-*3d* orbitals + O-*2p* orbitals
+    * one-shot calculation
 
-* **02_SrVO<sub>3</sub>** (PASSED)
+* **02_SrVO<sub>3</sub>**
 
-V-*3d* *t<sub>2g</sub>* orbitals, one-shot calculation.
+    * V-*3d* *t<sub>2g</sub>* orbitals
+    * one-shot calculation
 
 * **03_SrVO<sub>3</sub>**
 
-V-*3d* *t<sub>2g</sub>* orbitals + O-*2p* orbitals, one-shot calculation.
+    * V-*3d* *t<sub>2g</sub>* orbitals + O-*2p* orbitals
+    * one-shot calculation
 
-* **04_SrVO<sub>3</sub>** (PASSED)
+* **04_SrVO<sub>3</sub>**
 
-V-*3d* orbitals, self-consistent calculation.
+    * V-*3d* orbitals
+    * self-consistent calculation
 
 * **05_SrVO<sub>3</sub>** (PASSED)
 
