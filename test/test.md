@@ -25,25 +25,34 @@
     * V-*3d* orbitals
     * self-consistent calculation
 
-* **05_SrVO<sub>3</sub>** (PASSED)
+* **05_SrVO<sub>3</sub>**
 
-V-*3d* *t<sub>2g</sub>* orbitals, self-consistent calculation.
+    * V-*3d* *t<sub>2g</sub>* orbitals
+    * self-consistent calculation
 
-* **06_SrVO<sub>3</sub>** (PASSED)
+* **06_SrVO<sub>3</sub>**
 
-V-*3d* orbitals, self-consistent calculation, dc = fll1.
+    * V-*3d* orbitals
+    * dc = fll1
+    * self-consistent calculation
 
-* **07_SrVO<sub>3</sub>** (PASSED)
+* **07_SrVO<sub>3</sub>**
 
-V-*3d* orbitals, self-consistent calculation, dc = amf.
+    * V-*3d* orbitals
+    * dc = amf
+    * self-consistent calculation
 
-* **08_SrVO<sub>3</sub>** (PASSED)
+* **08_SrVO<sub>3</sub>**
 
-V-*3d* orbitals, self-consistent calculation, dc = held.
+    * V-*3d* orbitals
+    * dc = held
+    * self-consistent calculation
 
 * **09_SrVO<sub>3</sub>**
 
-V-*3d* orbitals, one-shot calculation, spin polarization (but up = down ).
+    * V-*3d* orbitals
+    * spin polarization (but up = down)
+    * one-shot calculation
 
 ---
 
