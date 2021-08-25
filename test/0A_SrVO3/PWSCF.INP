@@ -19,8 +19,8 @@
     nbnd = 40,
  /
  &electrons
-    diagonalization = "cg",
-    conv_thr =  1.0d-8,
+    diagonalization = "david",
+    conv_thr =  1.0d-10,
     mixing_beta = 0.3,
  /
 ATOMIC_SPECIES
