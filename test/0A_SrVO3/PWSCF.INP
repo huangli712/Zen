@@ -3,10 +3,10 @@
     restart_mode = 'from_scratch',
     tstress = .true.,
     tprnfor = .true.,
-    wf_collect = .true.,
     prefix = 'SrVO3',
     pseudo_dir = '../_PSEUDO_/', 
     outdir = '.', 
+    verbosity = 'high',
  /
  &system
     ibrav = 1,
@@ -17,7 +17,7 @@
     occupations = 'smearing',
     smearing = 'gaussian',
     degauss = 0.02,
-    nbnd = 55,
+    nbnd = 40,
  /
  &electrons
     diagonalization = "cg",
