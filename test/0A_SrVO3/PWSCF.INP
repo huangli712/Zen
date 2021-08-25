@@ -6,7 +6,6 @@
     prefix = 'SrVO3',
     pseudo_dir = '../_PSEUDO_/', 
     outdir = '.', 
-    verbosity = 'high',
  /
  &system
     ibrav = 1,
