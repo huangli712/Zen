@@ -10,7 +10,7 @@ lspins = false
 lspinorb = false
 loptim = false
 lproj = true
-sproj = ["2 : d : Pr"]
+sproj = ["std", "V : d"]
 window = [-1.4, 6.0]
 
 [dmft]
