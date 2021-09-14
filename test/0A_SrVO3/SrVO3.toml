@@ -3,7 +3,7 @@ case = "SrVO3"
 [dft]
 engine = "pwscf"
 projtype = "wannier"
-smear = "tetra"
+smear = "gauss"
 kmesh = "coarse"
 lsymm = true
 lspins = false

@@ -16,7 +16,7 @@
     occupations = 'smearing',
     smearing = 'gaussian',
     degauss = 0.02,
-    nbnd = 40,
+    nbnd = 36,
  /
  &electrons
     diagonalization = "david",
