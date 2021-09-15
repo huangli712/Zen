@@ -19,7 +19,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           07/31/2021 by li huang (last modified)
+!!!           09/16/2021 by li huang (last modified)
 !!! purpose : setup the configuration parameters and read the input data.
 !!! status  : unstable
 !!! comment :
@@ -1335,14 +1335,18 @@
          ! parse the data
          do i=1,nsite
              do s=1,nspin
+                 !
                  read(mytmp,*) ! empty line
+                 !
                  do m=1,ndim(i_grp(i))
                      do n=1,ndim(i_grp(i))
                          read(mytmp,*) re, im
-                         sigdc(n,m,s,i) = dcmplx(re, im)
+                         sigdc(n,m,s,i_grp(i)) = dcmplx(re, im)
                      enddo ! over n={1,ndim(i_grp(i))} loop
                  enddo ! over m={1,ndim(i_grp(i))} loop
+                 !
                  read(mytmp,*) ! empty line
+                 !
              enddo ! over s={1,nspin} loop
          enddo ! over i={1,nsite} loop
 
