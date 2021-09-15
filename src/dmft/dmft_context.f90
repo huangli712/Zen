@@ -993,7 +993,7 @@
 !! [body
 
      ! allocate memory
-     allocate(green(qdim,qdim,nmesh,nspin,nsite), stat = istat)
+     allocate(green(qdim,qdim,nmesh,nspin,ngrp), stat = istat)
 
      ! check the status
      if ( istat /= 0 ) then
@@ -1019,7 +1019,7 @@
 !! [body
 
      ! allocate memory
-     allocate(weiss(qdim,qdim,nmesh,nspin,nsite), stat = istat)
+     allocate(weiss(qdim,qdim,nmesh,nspin,ngrp), stat = istat)
 
      ! check the status
      if ( istat /= 0 ) then
