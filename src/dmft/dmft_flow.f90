@@ -366,12 +366,12 @@
 
              ! project effective hamiltonian from the Kohn-Sham basis
              ! to the local basis, and then sum it up.
-             do t=1,nsite
+             do t=1,ngrp
                  Xe = czero
                  cdim = ndim(t)
                  call one_psi_chi(cbnd, cdim, k, s, t, Hm, Xe(1:cdim,1:cdim))
-                 eimps(:,:,s,t) = eimps(:,:,s,t) + Xe * weight(k)
-             enddo ! over t={1,nsite} loop
+                 eimps(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) + Xe * weight(k)
+             enddo ! over t={1,ngrp} loop
 
              ! deallocate memory
              if ( allocated(Em) ) deallocate(Em)
