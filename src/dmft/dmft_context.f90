@@ -963,9 +963,9 @@
 !! [body
 
      ! allocate memory
-     allocate(sigdc(qdim,qdim,nspin,nsite),       stat = istat)
-     allocate(sigoo(qdim,qdim,nspin,nsite),       stat = istat)
-     allocate(sigma(qdim,qdim,nmesh,nspin,nsite), stat = istat)
+     allocate(sigdc(qdim,qdim,nspin,ngrp),       stat = istat)
+     allocate(sigoo(qdim,qdim,nspin,ngrp),       stat = istat)
+     allocate(sigma(qdim,qdim,nmesh,nspin,ngrp), stat = istat)
 
      ! check the status
      if ( istat /= 0 ) then
