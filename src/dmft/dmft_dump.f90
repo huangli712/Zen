@@ -418,7 +418,9 @@
      use constants, only : mytmp
 
      use control, only : nspin
-     use control, only : nsite, nmesh
+     use control, only : ngrp
+     use control, only : nsite
+     use control, only : nmesh
 
      use context, only : qdim
      use context, only : ndim
@@ -428,11 +430,11 @@
 
 !! external arguments
      ! local weiss's function
-     complex(dp), intent(in) :: weiss(qdim,qdim,nmesh,nspin,nsite)
+     complex(dp), intent(in) :: weiss(qdim,qdim,nmesh,nspin,ngrp)
 
 !! local variables
      ! loop index for impurity sites
-     integer :: t
+     integer :: t, r
 
      ! loop index for spins
      integer :: s
@@ -459,11 +461,18 @@
      write(mytmp,*)
 
      ! write body
-     do t=1,nsite
+     do t=1,ngrp
+         !
+         ! get the corresponding impurity site
+         r = g_imp(t)
+         !
+         ! it is not a correlated problem
+         if ( r == 0 ) CYCLE
+         !
          do s=1,nspin
              !
              ! write data for given spin and site
-             write(mytmp,'(3(a,i4,2X))') '# site:', t, 'spin:', s, 'dims:', ndim(t)
+             write(mytmp,'(3(a,i4,2X))') '# site:', r, 'spin:', s, 'dims:', ndim(t)
              do m=1,nmesh
                  write(mytmp,'(a2,i6,f16.8)') 'w:', m, fmesh(m)
                  do q=1,ndim(t)
@@ -478,7 +487,7 @@
              write(mytmp,*)
              !
          enddo ! over s={1,nspin} loop
-     enddo ! over t={1,nsite} loop
+     enddo ! over t={1,ngrp} loop
 
      ! close data file
      close(mytmp)
