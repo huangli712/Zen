@@ -643,7 +643,8 @@
      use constants, only : czero
 
      use control, only : nspin
-     use control, only : nsite, nmesh
+     use control, only : nsite
+     use control, only : nmesh
      use control, only : myid, master
 
      use context, only : ndim
@@ -694,7 +695,7 @@
 !
 
      ! loop over quantum impurities
-     SITE_LOOP: do t=1,nsite
+     SITE_LOOP: do t=1,ngrp
          ! get size of orbital space
          cdim = ndim(t)
 
@@ -735,7 +736,7 @@
          ! deallocate memory
          if ( allocated(Gl) ) deallocate(Gl)
 
-     enddo SITE_LOOP ! over t={1,nsite} loop
+     enddo SITE_LOOP ! over t={1,ngrp} loop
 
 !! body]
 
