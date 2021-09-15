@@ -106,7 +106,7 @@
 !! @sub cal_sk_hk
 !!
 !! try to build H(k) + \Sigma(i\omega_n). here, \Sigma should contain
-!! contributions from all impurity sites. so, only when nsite = 1, we
+!! contributions from all impurity sites. so, only when ngrp = 1, we
 !! can use the output of cal_sl_sk() as the input of this subroutine.
 !!
   subroutine cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
@@ -292,7 +292,7 @@
 !! @sub cal_so_ho
 !!
 !! try to build H(k) + \Sigma(\infty). here, \Sigma should contain full
-!! contributions from all impurity sites. so, only when nsite = 1, we
+!! contributions from all impurity sites. so, only when ngrp = 1, we
 !! can use the output of cal_sl_so() as the input of this subroutine.
 !!
   subroutine cal_so_ho(cbnd, bs, be, k, s, So, Ho)
@@ -1150,7 +1150,7 @@
      use mmpi, only : mp_allreduce
 
      use control, only : nkpt, nspin
-     use control, only : nsite
+     use control, only : ngrp
      use control, only : nmesh
      use control, only : beta
      use control, only : myid, master, nprocs
@@ -1269,12 +1269,12 @@
              ! Kohn-Sham basis. Sk should contain contributions from
              ! all impurity sites
              Sk = czero
-             do t=1,nsite
+             do t=1,ngrp
                  Xk = czero ! reset Xk
                  cdim = ndim(t)
                  call cal_sl_sk(cdim, cbnd, k, s, t, Xk)
                  Sk = Sk + Xk
-             enddo ! over t={1,nsite} loop
+             enddo ! over t={1,ngrp} loop
 
              ! calculate lattice green's function
              call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
@@ -1340,7 +1340,7 @@
      use mmpi, only : mp_allreduce
 
      use control, only : nkpt, nspin
-     use control, only : nsite
+     use control, only : ngrp
      use control, only : nmesh
      use control, only : myid, master, nprocs
 
@@ -1481,12 +1481,12 @@
              ! construct H(k) + \Sigma(i\omega_n) and diagonalize it
              Sk = czero
              !
-             do t=1,nsite ! add contributions from all impurity sites
+             do t=1,ngrp ! add contributions from all impurity sites
                  Xk = czero
                  cdim = ndim(t)
                  call cal_sl_sk(cdim, cbnd, k, s, t, Xk)
                  Sk = Sk + Xk
-             enddo ! over t={1,nsite} loop
+             enddo ! over t={1,ngrp} loop
              !
              call cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
              !
@@ -1497,12 +1497,12 @@
              ! construct H(k) + \Sigma(\infty) and diagonalize it
              So = czero
              !
-             do t=1,nsite ! add contributions from all impurity sites
+             do t=1,ngrp ! add contributions from all impurity sites
                  Xo = czero
                  cdim = ndim(t)
                  call cal_sl_so(cdim, cbnd, k, s, t, Xo)
                  So = So + Xo
-             enddo ! over t={1,nsite} loop
+             enddo ! over t={1,ngrp} loop
              !
              call cal_so_ho(cbnd, bs, be, k, s, So, Ho)
              !
