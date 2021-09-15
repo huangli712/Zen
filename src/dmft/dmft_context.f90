@@ -1045,7 +1045,7 @@
 !! [body
 
      ! allocate memory
-     allocate(delta(qdim,qdim,nmesh,nspin,nsite), stat = istat)
+     allocate(delta(qdim,qdim,nmesh,nspin,ngrp), stat = istat)
 
      ! check the status
      if ( istat /= 0 ) then
