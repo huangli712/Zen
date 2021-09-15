@@ -13,7 +13,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 07/29/2021 by li huang (created)
-!!!           07/31/2021 by li huang (last modified)
+!!!           09/15/2021 by li huang (last modified)
 !!! purpose : implement the main work flow of dft + dmft calculation.
 !!! status  : unstable
 !!! comment :
@@ -93,7 +93,7 @@
      ! calculate the averaged values. up to now, the double counting
      ! terms have not been substracted from sigma. in other words,
      ! sigma is still bare.
-     do t=1,nsite
+     do t=1,ngrp
          do s=1,nspin
              Sm = czero
              !
@@ -103,7 +103,7 @@
              !
              sigoo(:,:,s,t) = Sm / float(mcut)
          enddo ! over s={1,nspin} loop
-     enddo ! over t={1,nsite} loop
+     enddo ! over t={1,ngrp} loop
 
      ! we substract the double counting terms from sigoo
      sigoo = sigoo - sigdc
