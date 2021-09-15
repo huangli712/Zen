@@ -1262,8 +1262,8 @@
      use mmpi, only : mp_bcast
      use mmpi, only : mp_barrier
 
-     use control, only : nsite
      use control, only : nspin
+     use control, only : nsite
      use control, only : myid, master
 
      use context, only : i_grp
