@@ -810,7 +810,7 @@
      endif ! back if ( myid == master ) block
 
      ! loop over quantum impurities
-     SITE_LOOP: do t=1,nsite
+     SITE_LOOP: do t=1,ngrp
 
          ! determine dimensional parameter
          cdim = ndim(t)
@@ -874,7 +874,7 @@
          if ( allocated(Tm) ) deallocate(Tm)
          if ( allocated(Sm) ) deallocate(Sm)
 
-     enddo SITE_LOOP ! over t={1,nsite} loop
+     enddo SITE_LOOP ! over t={1,ngrp} loop
 
 !! body]
 
