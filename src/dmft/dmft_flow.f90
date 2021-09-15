@@ -436,12 +436,12 @@
 !! [body
 
      ! substract the double counting terms from eimps to build eimpx
-     do t=1,nsite
+     do t=1,ngrp
          do s=1,nspin
              cdim = ndim(t)
              eimpx(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) - sigdc(1:cdim,1:cdim,s,t)
          enddo ! over s={1,nspin} loop
-     enddo ! over t={1,nsite} loop
+     enddo ! over t={1,ngrp} loop
 
 !! body]
 
