@@ -18,7 +18,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           08/01/2021 by li huang (last modified)
+!!!           09/15/2021 by li huang (last modified)
 !!! purpose : provide the core service subroutines for the work flow of
 !!!           the dft + dmft calculations.
 !!! status  : unstable
@@ -848,7 +848,7 @@
              call s_diag_z(cbnd, Em, Hm)
 
              ! evaluate correction to band energy
-             Hm = matmul(gamma(:,:,k,s), Hm)
+             Hm = matmul(gamma(1:cbnd,1:cbnd,k,s), Hm)
              call s_trace_z(cbnd, Hm, tr)
              ecorr = ecorr + real(tr) * weight(k)
 
