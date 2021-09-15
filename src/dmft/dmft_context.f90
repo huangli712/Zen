@@ -20,7 +20,7 @@
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           07/30/2021 by li huang (last modified)
+!!!           09/15/2021 by li huang (last modified)
 !!! purpose : try to define the global modules and arrays, and implement
 !!!           memory managment.
 !!! status  : unstable
@@ -935,8 +935,8 @@
 !! [body
 
      ! allocate memory
-     allocate(eimps(qdim,qdim,nspin,nsite), stat = istat)
-     allocate(eimpx(qdim,qdim,nspin,nsite), stat = istat)
+     allocate(eimps(qdim,qdim,nspin,ngrp), stat = istat)
+     allocate(eimpx(qdim,qdim,nspin,ngrp), stat = istat)
 
      ! check the status
      if ( istat /= 0 ) then
