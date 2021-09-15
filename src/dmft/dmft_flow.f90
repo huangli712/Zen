@@ -32,7 +32,7 @@
 
      use control, only : axis
      use control, only : nspin
-     use control, only : nsite
+     use control, only : ngrp
      use control, only : nmesh
 
      use context, only : qdim
@@ -127,7 +127,7 @@
   subroutine cal_sigma()
      use control, only : axis
      use control, only : nspin
-     use control, only : nsite
+     use control, only : ngrp
      use control, only : nmesh
 
      use context, only : sigdc, sigma
@@ -248,7 +248,7 @@
      use mmpi, only : mp_allreduce
 
      use control, only : nkpt, nspin
-     use control, only : nsite
+     use control, only : ngrp
      use control, only : fermi
      use control, only : myid, master, nprocs
 
@@ -302,7 +302,7 @@
          call s_print_error('cal_eimps','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
      !
-     allocate(eimps_mpi(qdim,qdim,nspin,nsite), stat = istat)
+     allocate(eimps_mpi(qdim,qdim,nspin,ngrp), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_eimps','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
@@ -318,7 +318,7 @@
 
      ! print some useful information
      if ( myid == master ) then
-         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate eimps for', nsite, 'sites'
+         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate eimps for', ngrp, 'groups'
          write(mystd,'(4X,a,2X,i4,2X,a)') 'add contributions from', nkpt, 'kpoints'
      endif ! back if ( myid == master ) block
 
@@ -415,7 +415,7 @@
 !!
   subroutine cal_eimpx()
      use control, only : nspin
-     use control, only : nsite
+     use control, only : ngrp
 
      use context, only : ndim
      use context, only : eimps, eimpx
@@ -461,7 +461,7 @@
      use mmpi, only : mp_allreduce
 
      use control, only : nkpt, nspin
-     use control, only : nsite
+     use control, only : ngrp
      use control, only : nmesh
      use control, only : myid, master, nprocs
 
@@ -517,7 +517,7 @@
          call s_print_error('cal_green','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
      !
-     allocate(green_mpi(qdim,qdim,nmesh,nspin,nsite), stat = istat)
+     allocate(green_mpi(qdim,qdim,nmesh,nspin,ngrp), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_green','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
@@ -533,7 +533,7 @@
 
      ! print some useful information
      if ( myid == master ) then
-         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate green for', nsite, 'sites'
+         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate green for', ngrp, 'groups'
          write(mystd,'(4X,a,2X,i4,2X,a)') 'add contributions from', nkpt, 'kpoints'
      endif ! back if ( myid == master ) block
 
@@ -643,7 +643,7 @@
      use constants, only : czero
 
      use control, only : nspin
-     use control, only : nsite
+     use control, only : ngrp
      use control, only : nmesh
      use control, only : myid, master
 
@@ -680,7 +680,7 @@
 
      ! print some useful information
      if ( myid == master ) then
-         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate weiss for', nsite, 'sites'
+         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate weiss for', ngrp, 'groups'
      endif ! back if ( myid == master ) block
 
 !
@@ -754,7 +754,7 @@
 
      use control, only : axis
      use control, only : nspin
-     use control, only : nsite
+     use control, only : ngrp
      use control, only : nmesh
      use control, only : myid, master
 
@@ -806,7 +806,7 @@
 
      ! print some useful information
      if ( myid == master ) then
-         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate delta for', nsite, 'sites'
+         write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate delta for', ngrp, 'groups'
      endif ! back if ( myid == master ) block
 
      ! loop over quantum impurities
