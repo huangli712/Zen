@@ -579,24 +579,24 @@
              ! Kohn-Sham basis. Sk should contain contributions from
              ! all impurity sites.
              Sk = czero
-             do t=1,nsite
+             do t=1,ngrp
                  Xk = czero ! reset Xk
                  cdim = ndim(t)
                  call cal_sl_sk(cdim, cbnd, k, s, t, Xk)
                  Sk = Sk + Xk
-             enddo ! over t={1,nsite} loop
+             enddo ! over t={1,ngrp} loop
 
              ! calculate lattice green's function
              call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
 
              ! downfold the lattice green's function to obtain local
              ! green's function, then we have to perform k-summation.
-             do t=1,nsite
-                 Gl = czero
+             do t=1,ngrp
+                 Gl = czero ! reset Gl
                  cdim = ndim(t)
                  call cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl(1:cdim,1:cdim,:))
                  green(:,:,:,s,t) = green(:,:,:,s,t) + Gl * weight(k)
-             enddo ! over t={1,nsite} loop
+             enddo ! over t={1,ngrp} loop
 
              ! deallocate memories
              if ( allocated(Sk) ) deallocate(Sk)
