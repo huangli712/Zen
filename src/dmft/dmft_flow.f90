@@ -135,14 +135,14 @@
      implicit none
 
 !! local variables
-     ! loop index for frequency mesh
-     integer :: m
+     ! loop index for impurity sites
+     integer :: t
 
      ! loop index for spins
      integer :: s
 
-     ! loop index for impurity sites
-     integer :: t
+     ! loop index for frequency mesh
+     integer :: m
 
 !! [body
 
@@ -153,13 +153,13 @@
      ! loop over quantum impurities, spins, and frequency points.
      !
      ! substract the double counting terms: new sigma = sigma - sigdc.
-     do t=1,nsite
+     do t=1,ngrp
          do s=1,nspin
              do m=1,nmesh
                  sigma(:,:,m,s,t) = sigma(:,:,m,s,t) - sigdc(:,:,s,t)
              enddo ! over m={1,nmesh} loop
          enddo ! over s={1,nspin} loop
-     enddo ! over t={1,nsite} loop
+     enddo ! over t={1,ngrp} loop
 
 !! body]
 
