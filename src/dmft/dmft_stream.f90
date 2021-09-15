@@ -1389,9 +1389,9 @@
      use mmpi, only : mp_barrier
 
      use control, only : axis
+     use control, only : nspin
      use control, only : nsite
      use control, only : nmesh
-     use control, only : nspin
      use control, only : beta
      use control, only : myid, master
 
@@ -1478,19 +1478,21 @@
          ! parse the data
          do i=1,nsite
              do s=1,nspin
+                 !
                  read(mytmp,*) ! empty line
-
+                 !
                  do m=1,nmesh
                      read(mytmp,*) chr2, itmp, fmesh(m)
                      do j=1,ndim(i_grp(i))
                          do k=1,ndim(i_grp(i))
                              read(mytmp,*) re, im
-                             sigma(k,j,m,s,i) = dcmplx(re, im)
+                             sigma(k,j,m,s,i_grp(i)) = dcmplx(re, im)
                          enddo ! over k={1,ndim(i_grp(i))} loop
                      enddo ! over j={1,ndim(i_grp(i))} loop
                  enddo ! over m={1,nmesh} loop
-
+                 !
                  read(mytmp,*) ! empty line
+                 !
              enddo ! over s={1,nspin} loop
          enddo ! over i={1,nsite} loop
 
