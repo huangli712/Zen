@@ -20,7 +20,7 @@
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/17/2021 by li huang (last modified)
+!!!           09/18/2021 by li huang (last modified)
 !!! purpose : try to define the global modules and arrays, and implement
 !!!           memory managment.
 !!! status  : unstable
@@ -188,7 +188,7 @@
 !! momentum- and spin-dependent band windows. it records an union for all
 !! windows for each k-point and spin orientation.
 !!
-     integer, public, save, allocatable :: qwin(:,:)
+     integer, public, save, allocatable :: qwin(:,:,:)
 !!
 !! @var kwin
 !!
@@ -742,7 +742,7 @@
      allocate(bmin(nwnd), stat = istat)
      allocate(bmax(nwnd), stat = istat)
      allocate(nbnd(nwnd), stat = istat)
-     allocate(qwin(nkpt,nspin), stat = istat)
+     allocate(qwin(nkpt,nspin,2), stat = istat)
      allocate(kwin(nkpt,nspin,2,nwnd), stat = istat)
 
      ! check the status
