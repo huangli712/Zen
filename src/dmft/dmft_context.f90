@@ -20,7 +20,7 @@
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/15/2021 by li huang (last modified)
+!!!           09/17/2021 by li huang (last modified)
 !!! purpose : try to define the global modules and arrays, and implement
 !!!           memory managment.
 !!! status  : unstable
@@ -60,10 +60,8 @@
 !! @var g_imp
 !!
 !! given a given group of projectors, return the corresponding quantum
-!! impurity problem, group -> impurity.
-!!
-!! 0 value means that this group of projectors is just for non-correlated
-!! orbitals.
+!! impurity problem, group -> impurity. note that 0 value means that
+!! this group of projectors is just for non-correlated orbitals.
 !!
      integer, public, save, allocatable :: g_imp(:)
 
