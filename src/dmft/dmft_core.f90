@@ -18,7 +18,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/15/2021 by li huang (last modified)
+!!!           09/17/2021 by li huang (last modified)
 !!! purpose : provide the core service subroutines for the work flow of
 !!!           the dft + dmft calculations.
 !!! status  : unstable
@@ -706,7 +706,7 @@
 !! try to evaluate the difference between the dft density matrix and the
 !! dft + dmft density matrix.
 !!
-  subroutine correction(kocc, gamma, ecorr)
+  subroutine correction(kocc, gcorr, ecorr)
      use constants, only : dp, mystd
      use constants, only : zero, two, czero
 
@@ -729,7 +729,7 @@
      complex(dp), intent(in)  :: kocc(qbnd,qbnd,nkpt,nspin)
 
      ! correction for density matrix
-     complex(dp), intent(out) :: gamma(qbnd,qbnd,nkpt,nspin)
+     complex(dp), intent(out) :: gcorr(qbnd,qbnd,nkpt,nspin)
 
      ! correction for band energy
      real(dp), intent(out)    :: ecorr
@@ -764,21 +764,21 @@
      complex(dp), allocatable :: Em(:)
      complex(dp), allocatable :: Hm(:,:)
 
-     ! dummy array, used to perform mpi reduce operation for gamma
-     complex(dp), allocatable :: gamma_mpi(:,:,:,:)
+     ! dummy array, used to perform mpi reduce operation for gcorr
+     complex(dp), allocatable :: gcorr_mpi(:,:,:,:)
 
 !! [body
 
      ! allocate memory
-     allocate(gamma_mpi(qbnd,qbnd,nkpt,nspin), stat = istat)
+     allocate(gcorr_mpi(qbnd,qbnd,nkpt,nspin), stat = istat)
      !
      if ( istat /= 0 ) then
          call s_print_error('correction','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-     ! reset gamma
-     gamma = czero
-     gamma_mpi = czero
+     ! reset gcorr
+     gcorr = czero
+     gcorr_mpi = czero
 
      ! reset ecorr
      ecorr = zero
@@ -827,18 +827,18 @@
 
              ! calculate the difference between dft + dmft density matrix
              ! `kocc` and the dft density matrix `occupy`. the results are
-             ! saved at `gamma.
+             ! saved at `gcorr.
              do p = 1,cbnd
                  do q = 1,cbnd
                      if ( p /= q ) then
-                         gamma(q,p,k,s) = kocc(q,p,k,s)
+                         gcorr(q,p,k,s) = kocc(q,p,k,s)
                      else
-                         gamma(q,p,k,s) = kocc(q,p,k,s) - occupy(bs + q - 1,k,s)
+                         gcorr(q,p,k,s) = kocc(q,p,k,s) - occupy(bs + q - 1,k,s)
                      endif
                  enddo ! over q={1,cbnd} loop
              enddo ! over p={1,cbnd} loop
 
-             ! Now gamma(:,:,k,s) is ready, we would like to use it to
+             ! now gcorr(:,:,k,s) is ready, we would like to use it to
              ! calculate its contribution to band energy.
 
              ! evaluate Em, which is the eigenvalues.
@@ -848,7 +848,7 @@
              call s_diag_z(cbnd, Em, Hm)
 
              ! evaluate correction to band energy
-             Hm = matmul(gamma(1:cbnd,1:cbnd,k,s), Hm)
+             Hm = matmul(gcorr(1:cbnd,1:cbnd,k,s), Hm)
              call s_trace_z(cbnd, Hm, tr)
              ecorr = ecorr + real(tr) * weight(k)
 
@@ -864,27 +864,27 @@
      !
      call mp_barrier()
      !
-     call mp_allreduce(gamma, gamma_mpi)
+     call mp_allreduce(gcorr, gcorr_mpi)
      call mp_allreduce(ecorr, ecorr_mpi)
      !
      call mp_barrier()
      !
 # else  /* MPI */
 
-     gamma_mpi = gamma
+     gcorr_mpi = gcorr
      ecorr_mpi = ecorr
 
 # endif /* MPI */
 
      ! get the final correction for density matrix
-     gamma = gamma_mpi
+     gcorr = gcorr_mpi
      ecorr = ecorr_mpi / float(nkpt)
      if ( nspin == 1 ) then
          ecorr = ecorr * two
      endif ! back if ( nspin == 1 ) block
 
      ! deallocate memory
-     deallocate(gamma_mpi)
+     deallocate(gcorr_mpi)
 
 !! body]
 
