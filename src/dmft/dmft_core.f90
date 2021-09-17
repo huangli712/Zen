@@ -1140,17 +1140,16 @@
      use control, only : beta
      use control, only : myid, master, nprocs
 
-     use context, only : i_wnd
-     use context, only : xbnd
      use context, only : ndim
-     use context, only : kwin
+     use context, only : xbnd
+     use context, only : qwin
      use context, only : fmesh
 
      implicit none
 
 !! external arguments
      ! dft + dmft density matrix
-     complex(dp), intent(out) :: kocc(qbnd,qbnd,nkpt,nspin)
+     complex(dp), intent(out) :: kocc(xbnd,xbnd,nkpt,nspin)
 
 !! local variables
      ! loop index for spin
