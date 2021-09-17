@@ -1165,13 +1165,14 @@
      integer :: t
 
      ! number of dft bands for given k-point and spin
-     integer :: cbnd, _cbnd
+     integer :: cbnd, cbnd1, cbnd2
 
      ! number of correlated orbitals for given impurity site
      integer :: cdim
 
      ! band window: start index and end index for bands
-     integer :: bs, be, _bs, _be
+     integer :: bs, bs1, bs2
+     integer :: be, be1, be2
 
      ! status flag
      integer :: istat
@@ -1191,7 +1192,7 @@
 
 !! [body
 
-     ! allocate memories Sk, Xk, and Gk.
+     ! allocate memory
      allocate(Sk(xbnd,xbnd,nmesh), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_denmat','can not allocate enough memory')
@@ -1243,6 +1244,7 @@
 
              ! determine cbnd
              cbnd = be - bs + 1
+             call s_assert2(cbnd <= xbnd, 'cbnd is wrong')
 
              ! provide some useful information
              write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
@@ -1255,10 +1257,30 @@
              ! all impurity sites
              Sk = czero
              do t=1,ngrp
-                 Xk = czero ! reset Xk
+                 ! reset Xk
+                 Xk = czero
+                 !
+                 ! get number of orbitals for this group
                  cdim = ndim(t)
-                 call cal_sl_sk(cdim, cbnd, k, s, t, Xk)
-                 Sk = Sk + Xk
+                 !
+                 ! get dft band window for this group
+                 bs1 = kwin(k,s,1,i_wnd(t))
+                 be1 = kwin(k,s,2,i_wnd(t))
+                 cbnd1 = be1 - bs1 + 1
+                 call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
+                 !
+                 ! get shifted dft band window for this group
+                 p = 1 - bs ! it is shift
+                 bs2 = bs1 + p
+                 be2 = be1 + p
+                 cbnd2 = be2 - bs2 + 1
+                 call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
+                 !
+                 ! upfold the self-energy function
+                 call cal_sl_sk(cdim, cbnd2, k, s, t, Xk(bs2:be2,bs2:be2,:))
+                 !
+                 ! merge the contribution
+                 Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk(bs2:be2,bs2:be2,:)
              enddo ! over t={1,ngrp} loop
 
              ! calculate lattice green's function
