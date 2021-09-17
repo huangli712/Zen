@@ -6,7 +6,7 @@
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/15/2021 by li huang (last modified)
+!!!           09/17/2021 by li huang (last modified)
 !!! purpose : define the global control variables.
 !!! status  : unstable
 !!! comment :
@@ -217,11 +217,7 @@
 !! @var nwnd
 !!
 !! number of energy windows or band windows, which are used to restrict
-!! how many energy states are included in the calculations. note that in
-!! the current implementation, `nwnd` can be larger than 1. but for the
-!! correlated projectors or orbitals, they have to share the same energy
-!! window or band window. in order words, the array `i_wnd` has only one
-!! unique element. see comments in dmft_context.f90 and dmft_stream.f90.
+!! how many energy states are included in the calculations.
 !!
      integer, public, save :: nwnd   = 1
 
@@ -333,21 +329,21 @@
 !!
 !! version string, version number + date info. + status info.
 !!
-     character(len=20), public, parameter :: V_FULL = 'v0.7.2 @ 2021.09.15D'
+     character(len=20), public, parameter :: V_FULL = 'v0.7.3 @ 2021.09.17D'
 
 !!
 !! @var V_CURR
 !!
 !! version string, only version number
 !!
-     character(len=06), public, parameter :: V_CURR = 'v0.7.2'
+     character(len=06), public, parameter :: V_CURR = 'v0.7.3'
 
 !!
 !! @var V_DATE
 !!
 !! version string, only date info.
 !!
-     character(len=11), public, parameter :: V_DATE = '2021.09.15'
+     character(len=11), public, parameter :: V_DATE = '2021.09.17'
 
 !!
 !! @var V_STAT
