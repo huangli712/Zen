@@ -961,7 +961,7 @@
 !! @sub cal_occupy
 !!
 !! for given fermi level, try to calculate the corresponding occupations.
-!! note that this subroutine only works in imaginary axis.
+!! note that this subroutine only works in imaginary axis so far.
 !!
   subroutine cal_occupy(fermi, val, eigs, einf)
      use constants, only : dp
@@ -974,7 +974,7 @@
      use control, only : beta
 
      use context, only : i_wnd
-     use context, only : qbnd
+     use context, only : xbnd
      use context, only : kwin
      use context, only : weight
      use context, only : fmesh
@@ -989,10 +989,10 @@
      real(dp), intent(out) :: val
 
      ! eigenvalues for H(k) + \Sigma(i\omega_n)
-     complex(dp), intent(in) :: eigs(qbnd,nmesh,nkpt,nspin)
+     complex(dp), intent(in) :: eigs(xbnd,nmesh,nkpt,nspin)
 
      ! eigenvalues for H(k) + \Sigma(\infty)
-     complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
+     complex(dp), intent(in) :: einf(xbnd,nkpt,nspin)
 
 !! local variables
      ! loop index for bands
