@@ -69,9 +69,8 @@
 !! @var w_imp
 !!
 !! given a given dft band window, return the corresponding quantum impurity
-!! problem, window -> impurity.
-!!
-!! 0 value means that this dft band window is for non-correlated orbitals.
+!! problem, window -> impurity. note that 0 value means that this dft band
+!! window is just for non-correlated orbitals.
 !!
      integer, public, save, allocatable :: w_imp(:)
 
