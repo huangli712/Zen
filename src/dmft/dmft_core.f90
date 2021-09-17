@@ -812,6 +812,7 @@
 
              ! determine cbnd
              cbnd = be - bs + 1
+             call s_assert2(cbnd <= xbnd, 'cbnd is wrong')
 
              ! provide some useful information
              write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
@@ -836,14 +837,14 @@
              ! calculate its contribution to band energy.
 
              ! evaluate Em, which is the eigenvalues.
-             Em = enk(bs:be,k,s)
+             Em(1:cbnd) = enk(bs:be,k,s)
 
              ! convert `Em` to diagonal matrix `Hm`
-             call s_diag_z(cbnd, Em, Hm)
+             call s_diag_z(cbnd, Em(1:cbnd), Hm(1:cbnd,1:cbnd))
 
              ! evaluate correction to band energy
-             Hm = matmul(gcorr(1:cbnd,1:cbnd,k,s), Hm)
-             call s_trace_z(cbnd, Hm, tr)
+             Hm(1:cbnd,1:cbnd) = matmul(gcorr(1:cbnd,1:cbnd,k,s), Hm(1:cbnd,1:cbnd))
+             call s_trace_z(cbnd, Hm(1:cbnd,1:cbnd), tr)
              ecorr = ecorr + real(tr) * weight(k)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
