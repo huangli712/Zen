@@ -85,6 +85,7 @@
      endif ! back if ( istat /= 0 ) block
 
      ! we use Sl to store parts of sigma.
+     !
      ! note that actually sigdc has been substracted from sigma before
      ! hand. please see cal_sigma() for more details.
      do m=1,nmesh
@@ -106,8 +107,7 @@
 !! @sub cal_sk_hk
 !!
 !! try to build H(k) + \Sigma(i\omega_n). here, \Sigma should contain
-!! contributions from all impurity sites. so, only when ngrp = 1, we
-!! can use the output of cal_sl_sk() as the input of this subroutine.
+!! contributions from all impurity sites.
 !!
   subroutine cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
      use constants, only : dp
@@ -165,6 +165,7 @@
      Em = enk(bs:be,k,s)
 
      ! convert `Em` to diagonal matrix `Hm`
+     call s_assert(cbnd == be - bs + 1, 'cbnd is wrong')
      call s_diag_z(cbnd, Em, Hm)
 
      ! combine `Hm` and `Sk` to build the effective hamiltonian
