@@ -7,12 +7,12 @@
 !!!           dmft_dump_green
 !!!           dmft_dump_weiss
 !!!           dmft_dump_delta
-!!!           dmft_dump_gamma
+!!!           dmft_dump_gcorr
 !!! source  : dmft_dump.f90
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/15/2021 by li huang (last modified)
+!!!           09/17/2021 by li huang (last modified)
 !!! purpose : provide some subroutines to write down the calculated data.
 !!! status  : unstable
 !!! comment :
@@ -592,11 +592,11 @@
   end subroutine dmft_dump_delta
 
 !!
-!! @sub dmft_dump_gamma
+!! @sub dmft_dump_gcorr
 !!
 !! write out the dmft correction for dft density matrix.
 !!
-  subroutine dmft_dump_gamma(gamma)
+  subroutine dmft_dump_gcorr(gcorr)
      use constants, only : dp
      use constants, only : mytmp
 
@@ -611,7 +611,7 @@
 
 !! external arguments
      ! local hybridization function
-     complex(dp), intent(in) :: gamma(qbnd,qbnd,nkpt,nspin)
+     complex(dp), intent(in) :: gcorr(qbnd,qbnd,nkpt,nspin)
 
 !! local variables
      ! loop index for spins
@@ -634,8 +634,8 @@
 
 !! [body
 
-     ! open data file: dmft.gamma
-     open(mytmp, file='dmft.gamma', form='formatted', status='unknown')
+     ! open data file: dmft.gcorr
+     open(mytmp, file='dmft.gcorr', form='formatted', status='unknown')
 
      ! write parameters
      write(mytmp,'(a9,i4)') '# nkpt : ', nkpt
@@ -667,7 +667,7 @@
              write(mytmp,'(3(a,i4,2X))') '# cbnd:', cbnd, 'bs:', bs, 'be:', be
              do q=1,cbnd
                  do p=1,cbnd
-                     write(mytmp,'(2i4,2f16.8)') p, q, gamma(p,q,k,s)
+                     write(mytmp,'(2i4,2f16.8)') p, q, gcorr(p,q,k,s)
                  enddo ! over p={1,cbnd} loop
              enddo ! over q={1,cbnd} loop
 
@@ -684,4 +684,4 @@
 !! body]
 
      return
-  end subroutine dmft_dump_gamma
+  end subroutine dmft_dump_gcorr
