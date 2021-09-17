@@ -728,10 +728,10 @@
 
 !! external arguments
      ! density matrix from dft + dmft calculations
-     complex(dp), intent(in)  :: kocc(qbnd,qbnd,nkpt,nspin)
+     complex(dp), intent(in)  :: kocc(xbnd,xbnd,nkpt,nspin)
 
      ! correction for density matrix
-     complex(dp), intent(out) :: gcorr(qbnd,qbnd,nkpt,nspin)
+     complex(dp), intent(out) :: gcorr(xbnd,xbnd,nkpt,nspin)
 
      ! correction for band energy
      real(dp), intent(out)    :: ecorr
