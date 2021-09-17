@@ -766,6 +766,7 @@
      complex(dp), allocatable :: gcorr_mpi(:,:,:,:)
 
 !! [body
+
      ! allocate memory
      allocate(Em(xbnd),      stat = istat)
      if ( istat /= 0 ) then
@@ -843,7 +844,7 @@
              call s_diag_z(cbnd, Em(1:cbnd), Hm(1:cbnd,1:cbnd))
 
              ! evaluate correction to band energy
-             Hm(1:cbnd,1:cbnd) = matmul(gcorr(1:cbnd,1:cbnd,k,s), Hm(1:cbnd,1:cbnd))
+             Hm(1:cbnd,1:cbnd) = matmul( gcorr(1:cbnd,1:cbnd,k,s), Hm(1:cbnd,1:cbnd) )
              call s_trace_z(cbnd, Hm(1:cbnd,1:cbnd), tr)
              ecorr = ecorr + real(tr) * weight(k)
 
@@ -870,6 +871,7 @@
      ! get the final correction for density matrix
      gcorr = gcorr_mpi
      ecorr = ecorr_mpi / float(nkpt)
+     !
      if ( nspin == 1 ) then
          ecorr = ecorr * two
      endif ! back if ( nspin == 1 ) block
@@ -926,30 +928,20 @@
          write(mystd,'(4X,a)') 'calculating desired charge density'
      endif ! back if ( myid == master ) block
 
-!
-! important remarks:
-!
-! there is an important question. which band window shall we used?
-! multiple band windows are always possible since we don't have enough
-! reason to restrict `nwnd` to be 1.
-!
-! the answer is the band window that is connected to the quantum
-! impurity problems. basically, now we require that all the quantum
-! impurity problems share the same band window. so in this subroutine,
-! we only need to consider ONE band window, which is defined by
-! i_wnd(1) or i_wnd(2). whatever, they should point to the same band
-! window according to our assumption.
-!
-
      ! reset nelect
      nelect = zero
 
      ! loop over spins and k-points to perform summation
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
-             bs = kwin(k,s,1,i_wnd(1))
-             be = kwin(k,s,2,i_wnd(1))
+
+             ! determine the band boundary
+             bs = qwin(k,s,1)
+             be = qwin(k,s,2)
+
+             ! add its contribution to nelect
              nelect = nelect + sum( occupy(bs:be,k,s) ) * weight(k)
+
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
