@@ -148,10 +148,18 @@
 !!
 !! @var qbnd
 !!
+!! maximum number of dft bands for all the band windows. actually, it
+!! should be equal to maxval(nbnd).
+!!
+     integer, public, save :: qbnd = -1
+
+!!
+!! @var xbnd
+!!
 !! maximum number of dft bands included in all the windows. actually, it
 !! should be considered as an union of all the dft band windows.
 !!
-     integer, public, save :: qbnd = -1
+     integer, public, save :: xbnd = -1
 
 !!
 !! @var bmin
