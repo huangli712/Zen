@@ -14,7 +14,7 @@
 !!!           dmft_green    module
 !!!           dmft_weiss    module
 !!!           dmft_delta    module
-!!!           dmft_gamma    module
+!!!           dmft_gcorr    module
 !!!           context       module
 !!! source  : dmft_context.f90
 !!! type    : modules
@@ -543,28 +543,28 @@
   end module dmft_delta
 
 !!========================================================================
-!!>>> module dmft_gamma                                                <<<
+!!>>> module dmft_gcorr                                                <<<
 !!========================================================================
 
 !!
-!! @mod dmft_gamma
+!! @mod dmft_gcorr
 !!
 !! contain dft + dmft correction for density matrix.
 !!
-  module dmft_gamma
+  module dmft_gcorr
      use constants, only : dp
 
      implicit none
 
 !!
-!! @var gamma
+!! @var gcorr
 !!
 !! dft + dmft correction for density matrix, which is used to carry out
 !! fully charge self-consistent dft + dmft calculations.
 !!
-     complex(dp), public, save, allocatable :: gamma(:,:,:,:)
+     complex(dp), public, save, allocatable :: gcorr(:,:,:,:)
 
-  end module dmft_gamma
+  end module dmft_gcorr
 
 !!========================================================================
 !!>>> module context                                                   <<<
@@ -601,7 +601,7 @@
      use dmft_green
      use dmft_weiss
      use dmft_delta
-     use dmft_gamma
+     use dmft_gcorr
 
      implicit none
 
@@ -631,7 +631,7 @@
      public :: cat_alloc_green
      public :: cat_alloc_weiss
      public :: cat_alloc_delta
-     public :: cat_alloc_gamma
+     public :: cat_alloc_gcorr
 
      ! declaration of module procedures: deallocate memory
      public :: cat_free_map
@@ -648,7 +648,7 @@
      public :: cat_free_green
      public :: cat_free_weiss
      public :: cat_free_delta
-     public :: cat_free_gamma
+     public :: cat_free_gcorr
 
   contains ! encapsulated functionality
 
@@ -1075,30 +1075,30 @@
   end subroutine cat_alloc_delta
 
 !!
-!! @sub cat_alloc_gamma
+!! @sub cat_alloc_gcorr
 !!
-!! allocate memory for gamma-related variables.
+!! allocate memory for gcorr-related variables.
 !!
-  subroutine cat_alloc_gamma()
+  subroutine cat_alloc_gcorr()
      implicit none
 
 !! [body
 
      ! allocate memory
-     allocate(gamma(xbnd,xbnd,nkpt,nspin), stat = istat)
+     allocate(gcorr(xbnd,xbnd,nkpt,nspin), stat = istat)
 
      ! check the status
      if ( istat /= 0 ) then
-         call s_print_error('cat_alloc_gamma','can not allocate enough memory')
+         call s_print_error('cat_alloc_gcorr','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
      ! initialize them
-     gamma = czero
+     gcorr = czero
 
 !! body]
 
      return
-  end subroutine cat_alloc_gamma
+  end subroutine cat_alloc_gcorr
 
 !!========================================================================
 !!>>> deallocate memory subroutines                                    <<<
@@ -1364,20 +1364,20 @@
   end subroutine cat_free_delta
 
 !!
-!! @sub cat_free_gamma
+!! @sub cat_free_gcorr
 !!
-!! deallocate memory for gamma-related variables.
+!! deallocate memory for gcorr-related variables.
 !!
-  subroutine cat_free_gamma()
+  subroutine cat_free_gcorr()
      implicit none
 
 !! [body
 
-     if ( allocated(gamma) ) deallocate(gamma)
+     if ( allocated(gcorr) ) deallocate(gcorr)
 
 !! body]
 
      return
-  end subroutine cat_free_gamma
+  end subroutine cat_free_gcorr
 
   end module context
