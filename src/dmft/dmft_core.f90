@@ -900,8 +900,7 @@
      use control, only : nkpt, nspin
      use control, only : myid, master
 
-     use context, only : i_wnd
-     use context, only : kwin
+     use context, only : qwin
      use context, only : weight
      use context, only : occupy
 
