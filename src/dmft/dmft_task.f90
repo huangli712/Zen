@@ -14,7 +14,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 07/29/2021 by li huang (created)
-!!!           07/31/2021 by li huang (last modified)
+!!!           09/17/2021 by li huang (last modified)
 !!! purpose : driver subroutines.
 !!! status  : unstable
 !!! comment :
@@ -237,7 +237,7 @@
      use control, only : fermi
      use control, only : myid, master
 
-     use context, only : gamma
+     use context, only : gcorr
 
      implicit none
 
@@ -276,7 +276,7 @@
      !
      ecorr = zero
      !
-     call cal_gamma(ecorr)
+     call cal_gcorr(ecorr)
      !
      if ( myid == master ) then
          write(mystd,*)
@@ -289,8 +289,8 @@
          write(mystd,'(4X,a)') 'save fermi...'
          call dmft_dump_fermi(fermi, occup, ecorr)
          !
-         write(mystd,'(4X,a)') 'save gamma...'
-         call dmft_dump_gamma(gamma)
+         write(mystd,'(4X,a)') 'save gcorr...'
+         call dmft_dump_gcorr(gcorr)
          !
          write(mystd,*)
      endif ! back if ( myid == master ) block
