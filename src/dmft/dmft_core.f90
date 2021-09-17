@@ -771,12 +771,12 @@
 
 !! [body
      ! allocate memory
-     allocate(Em(cbnd),      stat = istat)
+     allocate(Em(xbnd),      stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('correction','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
      !
-     allocate(Hm(cbnd,cbnd), stat = istat)
+     allocate(Hm(xbnd,xbnd), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('correction','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
