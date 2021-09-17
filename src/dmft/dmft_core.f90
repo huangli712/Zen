@@ -973,9 +973,8 @@
      use control, only : nmesh
      use control, only : beta
 
-     use context, only : i_wnd
      use context, only : xbnd
-     use context, only : kwin
+     use context, only : qwin
      use context, only : weight
      use context, only : fmesh
 
@@ -1032,12 +1031,12 @@
 !! [body
 
      ! allocate memory
-     allocate(zocc(qbnd,nspin),       stat = istat)
+     allocate(zocc(xbnd,nspin),       stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_occupy','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
      !
-     allocate(gloc(qbnd,nmesh,nspin), stat = istat)
+     allocate(gloc(xbnd,nmesh,nspin), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_occupy','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
@@ -1055,9 +1054,9 @@
          KPNT_LOOP: do k=1,nkpt
 
              ! determine the band window
-             ! see remarks in cal_nelect()
-             bs = kwin(k,s,1,i_wnd(1))
-             be = kwin(k,s,2,i_wnd(1))
+             bs = qwin(k,s,1)
+             be = qwin(k,s,2)
+             !
              cbnd = be - bs + 1
 
              ! here, the asymptotic part is substracted
@@ -1074,9 +1073,9 @@
 
      ! calculate summation of the local green's function
      do s=1,nspin
-         do b=1,qbnd
+         do b=1,xbnd
              zocc(b,s) = sum( gloc(b,:,s) ) / real(nkpt) * ( two / beta )
-         enddo ! over b={1,cbnd} loop
+         enddo ! over b={1,xbnd} loop
      enddo ! over s={1,nspin} loop
 
      ! consider the contribution from asymptotic part
@@ -1085,10 +1084,12 @@
 
              ! determine the band window
              ! see remarks in cal_nelect()
-             bs = kwin(k,s,1,i_wnd(1))
-             be = kwin(k,s,2,i_wnd(1))
+             bs = qwin(k,s,1)
+             be = qwin(k,s,2)
+             !
              cbnd = be - bs + 1
 
+             ! here, the asymptotic part is added
              do b=1,cbnd
                  caux = einf(b,k,s) - fermi
                  zocc(b,s) = zocc(b,s) + fermi_dirac( real(caux) ) * weight(k) / real(nkpt)
