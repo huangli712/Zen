@@ -718,9 +718,8 @@
      use control, only : nkpt, nspin
      use control, only : myid, master, nprocs
 
-     use context, only : i_wnd
      use context, only : xbnd
-     use context, only : kwin
+     use context, only : qwin
      use context, only : weight
      use context, only : enk, occupy
 
@@ -745,9 +744,6 @@
 
      ! index for orbitals
      integer :: p, q
-
-     ! index for impurity sites
-     integer :: t
 
      ! band window: start index and end index for bands
      integer :: bs, be
