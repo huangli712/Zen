@@ -106,7 +106,7 @@
 !!
 !! @var corr
 !!
-!! tell us this group is correlated or not.
+!! tell us whether this group is correlated or not.
 !!
      logical, public, save, allocatable :: corr(:)
 
@@ -148,8 +148,8 @@
 !!
 !! @var qbnd
 !!
-!! maximum number of dft bands for all the band windows. actually, it
-!! should be equal to maxval(nbnd).
+!! maximum number of dft bands included in all the windows. actually, it
+!! should be considered as an union of all the dft band windows.
 !!
      integer, public, save :: qbnd = -1
 
@@ -174,6 +174,13 @@
 !!
      integer, public, save, allocatable :: nbnd(:)
 
+!!
+!! @var qwin
+!!
+!! momentum- and spin-dependent band windows. it records an union for all
+!! windows for each k-point and spin orientation.
+!!
+     integer, public, save, allocatable :: qwin(:,:)
 !!
 !! @var kwin
 !!
@@ -727,6 +734,7 @@
      allocate(bmin(nwnd), stat = istat)
      allocate(bmax(nwnd), stat = istat)
      allocate(nbnd(nwnd), stat = istat)
+     allocate(qwin(nkpt,nspin), stat = istat)
      allocate(kwin(nkpt,nspin,2,nwnd), stat = istat)
 
      ! check the status
@@ -738,10 +746,11 @@
      bmin = 0
      bmax = 0
      nbnd = 0
+     qwin = 0
      kwin = 0
 
      ! special treatment for `qbnd`.
-     ! qbnd should be initialized in dmft_setup_param().
+     ! qbnd should be initialized within dmft_setup_param().
      if ( qbnd < 0 ) then
          call s_print_error('cat_alloc_window','qbnd is less than 0')
      endif ! back if ( qbnd < 0 ) block
@@ -1141,6 +1150,7 @@
      if ( allocated(bmin) ) deallocate(bmin)
      if ( allocated(bmax) ) deallocate(bmax)
      if ( allocated(nbnd) ) deallocate(nbnd)
+     if ( allocated(qwin) ) deallocate(qwin)
      if ( allocated(kwin) ) deallocate(kwin)
 
 !! body]
