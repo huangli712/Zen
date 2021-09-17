@@ -1085,7 +1085,7 @@
 !! [body
 
      ! allocate memory
-     allocate(gamma(qbnd,qbnd,nkpt,nspin), stat = istat)
+     allocate(gamma(xbnd,xbnd,nkpt,nspin), stat = istat)
 
      ! check the status
      if ( istat /= 0 ) then
