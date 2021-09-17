@@ -293,8 +293,7 @@
 !! @sub cal_so_ho
 !!
 !! try to build H(k) + \Sigma(\infty). here, \Sigma should contain full
-!! contributions from all impurity sites. so, only when ngrp = 1, we
-!! can use the output of cal_sl_so() as the input of this subroutine.
+!! contributions from all impurity sites.
 !!
   subroutine cal_so_ho(cbnd, bs, be, k, s, So, Ho)
      use constants, only : dp
