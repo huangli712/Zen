@@ -346,6 +346,7 @@
      Em = enk(bs:be,k,s)
 
      ! convert `Em` to diagonal matrix `Hm`
+     call s_assert(cbnd == be - bs + 1, 'cbnd is wrong')
      call s_diag_z(cbnd, Em, Hm)
 
      ! combine `Hm` and `So` to build the effective hamiltonian
@@ -401,7 +402,7 @@
 !! try to calculate lattice green's function at given k-point and spin.
 !! this subroutine needs the self-energy function at Kohn-Sham basis (i.e
 !! `Sk`), that is the reason why it is named as `cal_sk_gk`. note that Sk
-!! have to contain the full contributions from all impurity sites.
+!! has to contain the full contributions from all impurity sites.
 !!
   subroutine cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
      use constants, only : dp
@@ -566,7 +567,7 @@
      use control, only : mc
      use control, only : myid, master
 
-     use context, only : qbnd
+     use context, only : xbnd
 
      implicit none
 
@@ -575,10 +576,10 @@
      real(dp), intent(in)    :: desired
 
      ! eigenvalues for H(k) + \Sigma(i\omega_n)
-     complex(dp), intent(in) :: eigs(qbnd,nmesh,nkpt,nspin)
+     complex(dp), intent(in) :: eigs(xbnd,nmesh,nkpt,nspin)
 
      ! eigenvalues for H(k) + \Sigma(\infty)
-     complex(dp), intent(in) :: einf(qbnd,nkpt,nspin)
+     complex(dp), intent(in) :: einf(xbnd,nkpt,nspin)
 
 !! local parameters
      ! maximum number of loops for the bisection algorithm
@@ -708,7 +709,8 @@
 !!
   subroutine correction(kocc, gcorr, ecorr)
      use constants, only : dp, mystd
-     use constants, only : zero, two, czero
+     use constants, only : zero, two
+     use constants, only : czero
 
      use mmpi, only : mp_barrier
      use mmpi, only : mp_allreduce
@@ -717,7 +719,7 @@
      use control, only : myid, master, nprocs
 
      use context, only : i_wnd
-     use context, only : qbnd
+     use context, only : xbnd
      use context, only : kwin
      use context, only : weight
      use context, only : enk, occupy
