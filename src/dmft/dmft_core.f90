@@ -770,10 +770,18 @@
      complex(dp), allocatable :: gcorr_mpi(:,:,:,:)
 
 !! [body
-
      ! allocate memory
-     allocate(gcorr_mpi(qbnd,qbnd,nkpt,nspin), stat = istat)
+     allocate(Em(cbnd),      stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('correction','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
      !
+     allocate(Hm(cbnd,cbnd), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('correction','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(gcorr_mpi(xbnd,xbnd,nkpt,nspin), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('correction','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
@@ -819,14 +827,6 @@
              write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
              write(mystd,'(2X,a,i2)') 'proc: ', myid
 
-             ! allocate memory
-             allocate(Em(cbnd),      stat = istat)
-             allocate(Hm(cbnd,cbnd), stat = istat)
-             !
-             if ( istat /= 0 ) then
-                 call s_print_error('correction','can not allocate enough memory')
-             endif ! back if ( istat /= 0 ) block
-
              ! calculate the difference between dft + dmft density matrix
              ! `kocc` and the dft density matrix `occupy`. the results are
              ! saved at `gcorr.
@@ -853,10 +853,6 @@
              Hm = matmul(gcorr(1:cbnd,1:cbnd,k,s), Hm)
              call s_trace_z(cbnd, Hm, tr)
              ecorr = ecorr + real(tr) * weight(k)
-
-             ! deallocate memory
-             if ( allocated(Em) ) deallocate(Em)
-             if ( allocated(Hm) ) deallocate(Hm)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
@@ -886,7 +882,9 @@
      endif ! back if ( nspin == 1 ) block
 
      ! deallocate memory
-     deallocate(gcorr_mpi)
+     if ( allocated(Em) ) deallocate(Em)
+     if ( allocated(Hm) ) deallocate(Hm)
+     if ( allocated(gcorr_mpi)) deallocate(gcorr_mpi)
 
 !! body]
 
