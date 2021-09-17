@@ -1284,7 +1284,7 @@
              enddo ! over t={1,ngrp} loop
 
              ! calculate lattice green's function
-             call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
+             call cal_sk_gk(cbnd, bs, be, k, s, Sk(1:cbnd,1:cbnd,:), Gk(1:cbnd,1:cbnd,:))
 
              ! try to calculate momentum-dependent and spin-dependent
              ! density matrix.
@@ -1298,11 +1298,6 @@
                      endif
                  enddo ! over q={1,cbnd} loop
              enddo ! over p={1,cbnd} loop
-
-             ! deallocate memories
-             if ( allocated(Sk) ) deallocate(Sk)
-             if ( allocated(Xk) ) deallocate(Xk)
-             if ( allocated(Gk) ) deallocate(Gk)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
@@ -1326,6 +1321,9 @@
      kocc = kocc_mpi
 
      ! deallocate memory
+     if ( allocated(Sk) ) deallocate(Sk)
+     if ( allocated(Xk) ) deallocate(Xk)
+     if ( allocated(Gk) ) deallocate(Gk)
      if ( allocated(kocc_mpi) ) deallocate(kocc_mpi)
 
 !! body]
