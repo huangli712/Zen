@@ -1165,13 +1165,13 @@
      integer :: t
 
      ! number of dft bands for given k-point and spin
-     integer :: cbnd
+     integer :: cbnd, _cbnd
 
      ! number of correlated orbitals for given impurity site
      integer :: cdim
 
      ! band window: start index and end index for bands
-     integer :: bs, be
+     integer :: bs, be, _bs, _be
 
      ! status flag
      integer :: istat
@@ -1249,8 +1249,6 @@
              write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
              write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
              write(mystd,'(2X,a,i2)') 'proc: ', myid
-
-
 
              ! build self-energy function, and then upfold it into
              ! Kohn-Sham basis. Sk should contain contributions from
