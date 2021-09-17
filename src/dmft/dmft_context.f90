@@ -91,7 +91,7 @@
 !!
 !! @var qdim
 !!
-!! maximum number of correlated orbitals for all groups. actually, it
+!! maximum number of correlated orbitals among all groups. actually, it
 !! should be equal to maxval(ndim).
 !!
      integer, public, save :: qdim = -1
@@ -148,7 +148,7 @@
 !!
 !! @var qbnd
 !!
-!! maximum number of dft bands for all the band windows. actually, it
+!! maximum number of dft bands among all the band windows. actually, it
 !! should be equal to maxval(nbnd).
 !!
      integer, public, save :: qbnd = -1
