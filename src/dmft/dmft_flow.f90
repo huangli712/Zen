@@ -8,12 +8,12 @@
 !!!           cal_green
 !!!           cal_weiss
 !!!           cal_delta
-!!!           cal_gamma
+!!!           cal_gcorr
 !!! source  : dmft_flow.f90
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 07/29/2021 by li huang (created)
-!!!           09/15/2021 by li huang (last modified)
+!!!           09/17/2021 by li huang (last modified)
 !!! purpose : implement the main work flow of dft + dmft calculation.
 !!! status  : unstable
 !!! comment :
@@ -882,17 +882,17 @@
   end subroutine cal_delta
 
 !!
-!! @sub cal_gamma
+!! @sub cal_gcorr
 !!
 !! try to calculate correlation-induced correction for density matrix.
 !!
-  subroutine cal_gamma(ecorr)
+  subroutine cal_gcorr(ecorr)
      use constants, only : dp
 
      use control, only : nkpt, nspin
 
      use context, only : qbnd
-     use context, only : gamma
+     use context, only : gcorr
 
      implicit none
 
@@ -913,7 +913,7 @@
      allocate(kocc(qbnd,qbnd,nkpt,nspin), stat = istat)
      !
      if ( istat /= 0 ) then
-         call s_print_error('cal_gamma','can not allocate enough memory')
+         call s_print_error('cal_gcorr','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
      ! calculate new density matrix based
@@ -922,7 +922,7 @@
 
      ! calculate the difference between dft
      ! and dft + dmft density matrices.
-     call correction(kocc, gamma, ecorr)
+     call correction(kocc, gcorr, ecorr)
 
      ! deallocate memory
      if ( allocated(kocc) ) deallocate(kocc)
@@ -930,4 +930,4 @@
 !! body]
 
      return
-  end subroutine cal_gamma
+  end subroutine cal_gcorr

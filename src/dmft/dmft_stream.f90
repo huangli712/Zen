@@ -19,7 +19,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/16/2021 by li huang (last modified)
+!!!           09/17/2021 by li huang (last modified)
 !!! purpose : setup the configuration parameters and read the input data.
 !!! status  : unstable
 !!! comment :
@@ -1556,7 +1556,7 @@
      call cat_alloc_weiss()
      call cat_alloc_delta()
 
-     call cat_alloc_gamma()
+     call cat_alloc_gcorr()
 
 !! body]
 
@@ -1593,7 +1593,7 @@
      call cat_free_weiss()
      call cat_free_delta()
 
-     call cat_free_gamma()
+     call cat_free_gcorr()
 
 !! body]
 
