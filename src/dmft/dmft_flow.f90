@@ -274,7 +274,7 @@
      integer :: t
 
      ! number of dft bands for given k-point and spin
-     integer :: cbnd
+     integer :: cbnd, cbnd1, cbnd2
 
      ! number of correlated orbitals for given impurity site
      integer :: cdim
