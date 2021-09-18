@@ -1360,10 +1360,10 @@
 
 !! external arguments
      ! eigenvalues for H(k) + \Sigma(i\omega_n)
-     complex(dp), intent(out) :: eigs(qbnd,nmesh,nkpt,nspin)
+     complex(dp), intent(out) :: eigs(xbnd,nmesh,nkpt,nspin)
 
      ! eigenvalues for H(k) + \Sigma(\infty)
-     complex(dp), intent(out) :: einf(qbnd,nkpt,nspin)
+     complex(dp), intent(out) :: einf(xbnd,nkpt,nspin)
 
 !! local variables
      ! loop index for spins
@@ -1416,12 +1416,12 @@
 !! [body
 
      ! allocate memory
-     allocate(eigs_mpi(qbnd,nmesh,nkpt,nspin), stat = istat)
+     allocate(eigs_mpi(xbnd,nmesh,nkpt,nspin), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_eigsys','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
      !
-     allocate(einf_mpi(qbnd,nkpt,nspin), stat = istat)
+     allocate(einf_mpi(xbnd,nkpt,nspin), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_eigsys','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
