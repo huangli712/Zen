@@ -1508,8 +1508,18 @@
              Sk = czero
              !
              do t=1,ngrp ! add contributions from all impurity sites
+                 ! reset Xk
                  Xk = czero
+                 !
+                 ! get number of orbitals for this group
                  cdim = ndim(t)
+                 !
+                 ! get dft band window for this group
+                 bs1 = kwin(k,s,1,i_wnd(t))
+                 be1 = kwin(k,s,2,i_wnd(t))
+                 cbnd1 = be1 - bs1 + 1
+                 call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
+
                  call cal_sl_sk(cdim, cbnd, k, s, t, Xk)
                  Sk = Sk + Xk
              enddo ! over t={1,ngrp} loop
