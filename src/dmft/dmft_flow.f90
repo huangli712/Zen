@@ -386,14 +386,11 @@
                  be2 = be1 + p
                  cbnd2 = be2 - bs2 + 1
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
-                  
-                 call one_psi_chi(cbnd, cdim, k, s, t, Hm, Xe(1:cdim,1:cdim))
-                 eimps(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) + Xe * weight(k)
+                 !
+                 ! downfold the hamiltonian
+                 call one_psi_chi(cbnd2, cdim, k, s, t, Hm(bs2:be2,bs2:be2), Xe(1:cdim,1:cdim))
+                 eimps(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) + Xe(1:cdim,1:cdim) * weight(k)
              enddo ! over t={1,ngrp} loop
-
-             ! deallocate memory
-             if ( allocated(Em) ) deallocate(Em)
-             if ( allocated(Hm) ) deallocate(Hm)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
@@ -417,6 +414,8 @@
      eimps = eimps_mpi / float(nkpt)
 
      ! deallocate memory
+     if ( allocated(Em) ) deallocate(Em)
+     if ( allocated(Hm) ) deallocate(Hm)
      if ( allocated(Xe) ) deallocate(Xe)
      if ( allocated(eimps_mpi) ) deallocate(eimps_mpi)
 
