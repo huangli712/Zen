@@ -255,6 +255,7 @@
      use context, only : i_wnd
      use context, only : qdim
      use context, only : ndim
+     use context, only : qwin
      use context, only : kwin
      use context, only : weight
      use context, only : enk
@@ -370,13 +371,19 @@
                  ! get number of orbitals for this group
                  cdim = ndim(t)
                  !
-                 !
+                 ! get dft band window for this group
                  bs1 = kwin(k,s,1,i_wnd(t))
                  be1 = kwin(k,s,2,i_wnd(t))
                  cbnd1 = be1 - bs1 + 1
+                 call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
                  !
-                 !
-                 
+                 ! get shifted dft band window for this group
+                 p = 1 - bs ! it is shift
+                 bs2 = bs1 + p
+                 be2 = be1 + p
+                 cbnd2 = be2 - bs2 + 1
+                 call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
+                  
                  call one_psi_chi(cbnd, cdim, k, s, t, Hm, Xe(1:cdim,1:cdim))
                  eimps(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) + Xe * weight(k)
              enddo ! over t={1,ngrp} loop
