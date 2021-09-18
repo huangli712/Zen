@@ -508,17 +508,21 @@
      ! loop index for k-points
      integer :: k
 
+     ! loop index for orbitals
+     integer :: p
+
      ! loop index for impurity sites
      integer :: t
 
      ! number of dft bands for given k-point and spin
-     integer :: cbnd
+     integer :: cbnd, cbnd1, cbnd2
 
      ! number of correlated orbitals for given impurity site
      integer :: cdim
 
      ! band window: start index and end index for bands
-     integer :: bs, be
+     integer :: bs, bs1, bs2
+     integer :: be, be1, be2
 
      ! status flag
      integer :: istat
