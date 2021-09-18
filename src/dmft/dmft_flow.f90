@@ -279,7 +279,8 @@
      integer :: cdim
 
      ! band window: start index and end index for bands
-     integer :: bs, be
+     integer :: bs, bs1, bs2
+     integer :: be, be1, be2
 
      ! status flag
      integer :: istat
@@ -363,11 +364,19 @@
              ! project effective hamiltonian from the Kohn-Sham basis
              ! to the local basis, and then sum it up.
              do t=1,ngrp
-                 ! reset Xk
+                 ! reset Xe
                  Xe = czero
                  !
                  ! get number of orbitals for this group
                  cdim = ndim(t)
+                 !
+                 !
+                 bs1 = kwin(k,s,1,i_wnd(t))
+                 be1 = kwin(k,s,2,i_wnd(t))
+                 cbnd1 = be1 - bs1 + 1
+                 !
+                 !
+                 
                  call one_psi_chi(cbnd, cdim, k, s, t, Hm, Xe(1:cdim,1:cdim))
                  eimps(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) + Xe * weight(k)
              enddo ! over t={1,ngrp} loop
