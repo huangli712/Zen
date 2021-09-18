@@ -302,6 +302,16 @@
 !! [body
 
      ! allocate memory
+     allocate(Em(xbnd),      stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eimps','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(Hm(xbnd,xbnd), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eimps','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
      allocate(Xe(qdim,qdim), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_eimps','can not allocate enough memory')
@@ -349,14 +359,6 @@
              write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
              write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
              write(mystd,'(2X,a,i2)') 'proc: ', myid
-
-             ! allocate memory
-             allocate(Em(cbnd),      stat = istat)
-             allocate(Hm(cbnd,cbnd), stat = istat)
-             !
-             if ( istat /= 0 ) then
-                 call s_print_error('cal_eimps','can not allocate enough memory')
-             endif ! back if ( istat /= 0 ) block
 
              ! evaluate `Em`, which is the eigenvalues substracted
              ! by the fermi level.
