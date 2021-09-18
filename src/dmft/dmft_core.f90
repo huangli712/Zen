@@ -1416,6 +1416,25 @@
 !! [body
 
      ! allocate memory
+     allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
+     allocate(Xk(cbnd,cbnd,nmesh), stat = istat)
+     allocate(Hk(cbnd,cbnd,nmesh), stat = istat)
+     allocate(Ek(cbnd,nmesh),      stat = istat)
+     !
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eigsys','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(So(cbnd,cbnd),       stat = istat)
+     allocate(Xo(cbnd,cbnd),       stat = istat)
+     allocate(Ho(cbnd,cbnd),       stat = istat)
+     allocate(Eo(cbnd),            stat = istat)
+     !
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eigsys','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
+     ! allocate memory
      allocate(eigs_mpi(xbnd,nmesh,nkpt,nspin), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_eigsys','can not allocate enough memory')
@@ -1465,25 +1484,6 @@
              write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
              write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
              write(mystd,'(2X,a,i2)') 'proc: ', myid
-
-             ! allocate memory
-             allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
-             allocate(Xk(cbnd,cbnd,nmesh), stat = istat)
-             allocate(Hk(cbnd,cbnd,nmesh), stat = istat)
-             allocate(Ek(cbnd,nmesh),      stat = istat)
-             !
-             if ( istat /= 0 ) then
-                 call s_print_error('cal_eigsys','can not allocate enough memory')
-             endif ! back if ( istat /= 0 ) block
-             !
-             allocate(So(cbnd,cbnd),       stat = istat)
-             allocate(Xo(cbnd,cbnd),       stat = istat)
-             allocate(Ho(cbnd,cbnd),       stat = istat)
-             allocate(Eo(cbnd),            stat = istat)
-             !
-             if ( istat /= 0 ) then
-                 call s_print_error('cal_eigsys','can not allocate enough memory')
-             endif ! back if ( istat /= 0 ) block
 
              ! construct H(k) + \Sigma(i\omega_n) and diagonalize it
              Sk = czero
