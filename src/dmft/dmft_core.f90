@@ -1526,8 +1526,10 @@
                  be2 = be1 + p
                  cbnd2 = be2 - bs2 + 1
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
+                 !
+                 ! upfold the self-energy function
+                 call cal_sl_sk(cdim, cbnd2, k, s, t, Xk(bs2:be2,bs2:be2,:))
 
-                 call cal_sl_sk(cdim, cbnd, k, s, t, Xk)
                  Sk = Sk + Xk
              enddo ! over t={1,ngrp} loop
              !
