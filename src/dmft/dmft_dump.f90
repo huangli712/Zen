@@ -595,7 +595,7 @@
      use control, only : nkpt, nspin
 
      use context, only : i_wnd
-     use context, only : qbnd
+     use context, only : xbnd
      use context, only : kwin
      use context, only : kmesh
 
@@ -603,7 +603,7 @@
 
 !! external arguments
      ! local hybridization function
-     complex(dp), intent(in) :: gcorr(qbnd,qbnd,nkpt,nspin)
+     complex(dp), intent(in) :: gcorr(xbnd,xbnd,nkpt,nspin)
 
 !! local variables
      ! loop index for spins
