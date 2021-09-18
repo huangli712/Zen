@@ -8,7 +8,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 07/29/2021 by li huang (created)
-!!!           09/16/2021 by li huang (last modified)
+!!!           09/19/2021 by li huang (last modified)
 !!! purpose : service subroutines for upfolding and downfolding.
 !!! status  : unstable
 !!! comment :
@@ -27,6 +27,8 @@
   subroutine map_chi_psi(cdim, cbnd, nfrq, k, s, t, Mc, Mp)
      use constants, only : dp
 
+     use context, only : qdim
+     use context, only : qbnd
      use context, only : chipsi
      use context, only : psichi
 
@@ -80,6 +82,10 @@
      if ( istat /= 0 ) then
          call s_print_error('map_chi_psi','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
+
+     ! check arguments
+     call s_assert2(cdim <= qdim, 'cdim is wrong')
+     call s_assert2(cbnd <= qbnd, 'cbnd is wrong')
 
      ! copy data
      Cp = chipsi(1:cdim,1:cbnd,k,s,t)
