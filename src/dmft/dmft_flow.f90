@@ -596,6 +596,7 @@
 
              ! determine cbnd
              cbnd = be - bs + 1
+             call s_assert2(cbnd <= xbnd, 'cbnd is wrong')
 
              ! provide some useful information
              write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
@@ -635,13 +636,30 @@
              enddo ! over t={1,ngrp} loop
 
              ! calculate lattice green's function
-             call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
+             call cal_sk_gk(cbnd, bs, be, k, s, Sk(1:cbnd,1:cbnd,:), Gk(1:cbnd,1:cbnd,:))
 
              ! downfold the lattice green's function to obtain local
              ! green's function, then we have to perform k-summation.
              do t=1,ngrp
-                 Gl = czero ! reset Gl
+                 ! reset Gl
+                 Gl = czero
+                 !
+                 ! get number of orbitals for this group
                  cdim = ndim(t)
+                 !
+                 ! get dft band window for this group
+                 bs1 = kwin(k,s,1,i_wnd(t))
+                 be1 = kwin(k,s,2,i_wnd(t))
+                 cbnd1 = be1 - bs1 + 1
+                 call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
+                 !
+                 ! get shifted dft band window for this group
+                 p = 1 - bs ! it is shift
+                 bs2 = bs1 + p
+                 be2 = be1 + p
+                 cbnd2 = be2 - bs2 + 1
+                 call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
+
                  call cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl(1:cdim,1:cdim,:))
                  green(:,:,:,s,t) = green(:,:,:,s,t) + Gl * weight(k)
              enddo ! over t={1,ngrp} loop
