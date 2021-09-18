@@ -537,17 +537,17 @@
 !! [body
 
      ! allocate memory
-     allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
+     allocate(Sk(xbnd,xbnd,nmesh), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_green','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
      !
-     allocate(Xk(cbnd,cbnd,nmesh), stat = istat)
+     allocate(Xk(xbnd,xbnd,nmesh), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_green','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
      !
-     allocate(Gk(cbnd,cbnd,nmesh), stat = istat)
+     allocate(Gk(xbnd,xbnd,nmesh), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_green','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
