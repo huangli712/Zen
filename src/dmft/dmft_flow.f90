@@ -363,7 +363,10 @@
              ! project effective hamiltonian from the Kohn-Sham basis
              ! to the local basis, and then sum it up.
              do t=1,ngrp
+                 ! reset Xk
                  Xe = czero
+                 !
+                 ! get number of orbitals for this group
                  cdim = ndim(t)
                  call one_psi_chi(cbnd, cdim, k, s, t, Hm, Xe(1:cdim,1:cdim))
                  eimps(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) + Xe * weight(k)
