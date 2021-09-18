@@ -18,7 +18,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/17/2021 by li huang (last modified)
+!!!           09/18/2021 by li huang (last modified)
 !!! purpose : provide the core service subroutines for the work flow of
 !!!           the dft + dmft calculations.
 !!! status  : unstable
@@ -1590,17 +1590,6 @@
              ! copy the eigenvalues
              einf(1:cbnd,k,s) = Eo(1:cbnd)
 
-             ! deallocate memory
-             if ( allocated(So) ) deallocate(So)
-             if ( allocated(Xo) ) deallocate(Xo)
-             if ( allocated(Ho) ) deallocate(Ho)
-             if ( allocated(Eo) ) deallocate(Eo)
-             !
-             if ( allocated(Sk) ) deallocate(Sk)
-             if ( allocated(Xk) ) deallocate(Xk)
-             if ( allocated(Hk) ) deallocate(Hk)
-             if ( allocated(Ek) ) deallocate(Ek)
-
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
@@ -1626,8 +1615,18 @@
      einf = einf_mpi
 
      ! deallocate memory
-     deallocate(eigs_mpi)
-     deallocate(einf_mpi)
+     if ( allocated(Sk) ) deallocate(Sk)
+     if ( allocated(Xk) ) deallocate(Xk)
+     if ( allocated(Hk) ) deallocate(Hk)
+     if ( allocated(Ek) ) deallocate(Ek)
+     !
+     if ( allocated(So) ) deallocate(So)
+     if ( allocated(Xo) ) deallocate(Xo)
+     if ( allocated(Ho) ) deallocate(Ho)
+     if ( allocated(Eo) ) deallocate(Eo)
+     !
+     if ( allocated(eigs_mpi) ) deallocate(eigs_mpi)
+     if ( allocated(einf_mpi) ) deallocate(einf_mpi)
 
 !! body]
 
