@@ -287,12 +287,8 @@
          do k=1,nkpt
 
              ! evaluate band window for the current k-point and spin.
-             !
-             ! i_wnd(t) returns the corresponding band window for given
-             ! impurity site t. see remarks in cal_nelect() subroutine.
-             t = 1 ! t is fixed to 1
-             bs = kwin(k,s,1,i_wnd(t))
-             be = kwin(k,s,2,i_wnd(t))
+             bs = qwin(k,s,1)
+             be = qwin(k,s,2)
 
              ! determine cbnd
              cbnd = be - bs + 1
