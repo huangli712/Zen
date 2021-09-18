@@ -119,6 +119,7 @@
              !
              ! write data for given spin and site
              write(mytmp,'(3(a,i4,2X))') '# site:', r, 'spin:', s, 'dims:', ndim(t)
+             !
              do q=1,ndim(t)
                  do p=1,ndim(t)
                      write(mytmp,'(2i4,2f16.8)') p, q, eimps(p,q,s,t)
@@ -201,6 +202,7 @@
              !
              ! write data for given spin and site
              write(mytmp,'(3(a,i4,2X))') '# site:', r, 'spin:', s, 'dims:', ndim(t)
+             !
              do q=1,ndim(t)
                  do p=1,ndim(t)
                      write(mytmp,'(2i4,2f16.8)') p, q, eimpx(p,q,s,t)
@@ -291,8 +293,10 @@
 
              ! write data for given spin and site
              write(mytmp,'(3(a,i4,2X))') '# kpt:', k, 'spin:', s, 'cbnd:', cbnd
+             !
              do m=1,nmesh
                  write(mytmp,'(a2,i6,f16.8)') 'w:', m, fmesh(m)
+                 !
                  do q=1,cbnd
                      write(mytmp,'(i4,2f16.8)') q, eigs(q,m,k,s)
                  enddo ! over q={1,cbnd} loop
@@ -379,8 +383,10 @@
              !
              ! write data for given spin and site
              write(mytmp,'(3(a,i4,2X))') '# site:', r, 'spin:', s, 'dims:', ndim(t)
+             !
              do m=1,nmesh
                  write(mytmp,'(a2,i6,f16.8)') 'w:', m, fmesh(m)
+                 !
                  do q=1,ndim(t)
                      do p=1,ndim(t)
                          write(mytmp,'(2i4,2f16.8)') p, q, green(p,q,m,s,t)
@@ -469,8 +475,10 @@
              !
              ! write data for given spin and site
              write(mytmp,'(3(a,i4,2X))') '# site:', r, 'spin:', s, 'dims:', ndim(t)
+             !
              do m=1,nmesh
                  write(mytmp,'(a2,i6,f16.8)') 'w:', m, fmesh(m)
+                 !
                  do q=1,ndim(t)
                      do p=1,ndim(t)
                          write(mytmp,'(2i4,2f16.8)') p, q, weiss(p,q,m,s,t)
