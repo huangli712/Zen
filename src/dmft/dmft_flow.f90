@@ -13,7 +13,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 07/29/2021 by li huang (created)
-!!!           09/17/2021 by li huang (last modified)
+!!!           09/19/2021 by li huang (last modified)
 !!! purpose : implement the main work flow of dft + dmft calculation.
 !!! status  : unstable
 !!! comment :
@@ -179,7 +179,7 @@
      use control, only : nkpt, nspin
      use control, only : nmesh
 
-     use context, only : qbnd
+     use context, only : xbnd
 
      implicit none
 
@@ -203,12 +203,12 @@
 !! [body
 
      ! allocate memory
-     allocate(eigs(qbnd,nmesh,nkpt,nspin), stat = istat)
+     allocate(eigs(xbnd,nmesh,nkpt,nspin), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_fermi','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
      !
-     allocate(einf(qbnd,nkpt,nspin),       stat = istat)
+     allocate(einf(xbnd,nkpt,nspin),       stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_fermi','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
@@ -333,12 +333,8 @@
          KPNT_LOOP: do k=myid+1,nkpt,nprocs
 
              ! evaluate band window for the current k-point and spin.
-             !
-             ! i_wnd(t) returns the corresponding band window for given
-             ! impurity site t. see remarks in cal_nelect().
-             t = 1 ! t is fixed to 1
-             bs = kwin(k,s,1,i_wnd(t))
-             be = kwin(k,s,2,i_wnd(t))
+             bs = qwin(k,s,1)
+             be = qwin(k,s,2)
 
              ! determine cbnd
              cbnd = be - bs + 1
