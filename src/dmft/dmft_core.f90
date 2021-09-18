@@ -1519,6 +1519,13 @@
                  be1 = kwin(k,s,2,i_wnd(t))
                  cbnd1 = be1 - bs1 + 1
                  call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
+                 !
+                 ! get shifted dft band window for this group
+                 p = 1 - bs ! it is shift
+                 bs2 = bs1 + p
+                 be2 = be1 + p
+                 cbnd2 = be2 - bs2 + 1
+                 call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
 
                  call cal_sl_sk(cdim, cbnd, k, s, t, Xk)
                  Sk = Sk + Xk
