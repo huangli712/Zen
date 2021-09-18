@@ -659,8 +659,9 @@
                  be2 = be1 + p
                  cbnd2 = be2 - bs2 + 1
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
-
-                 call cal_gk_gl(cbnd, cdim, k, s, t, Gk, Gl(1:cdim,1:cdim,:))
+                 !
+                 ! downfold the lattice green's function
+                 call cal_gk_gl(cbnd2, cdim, k, s, t, Gk(bs2:be2,bs2:be2,:), Gl(1:cdim,1:cdim,:))
                  green(:,:,:,s,t) = green(:,:,:,s,t) + Gl * weight(k)
              enddo ! over t={1,ngrp} loop
 
