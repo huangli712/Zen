@@ -629,7 +629,9 @@
                  !
                  ! upfold the self-energy function
                  call cal_sl_sk(cdim, cbnd2, k, s, t, Xk(bs2:be2,bs2:be2,:))
-                 Sk = Sk + Xk
+                 !
+                 ! merge the contribution
+                 Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk(bs2:be2,bs2:be2,:)
              enddo ! over t={1,ngrp} loop
 
              ! calculate lattice green's function
