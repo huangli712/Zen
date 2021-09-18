@@ -270,6 +270,9 @@
      ! loop index for k-points
      integer :: k
 
+     ! loop index for orbitals
+     integer :: p
+
      ! index for impurity sites
      integer :: t
 
