@@ -1505,7 +1505,11 @@
              write(mystd,'(2X,a,i2)') 'proc: ', myid
 
              ! construct H(k) + \Sigma(i\omega_n) and diagonalize it
+             !
+             ! reset some arrays
              Sk = czero
+             Hk = czero
+             Ek = czero
              !
              do t=1,ngrp ! add contributions from all impurity sites
                  ! reset Xk
