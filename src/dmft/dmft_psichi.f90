@@ -162,6 +162,10 @@
          call s_print_error('one_chi_psi','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
+     ! check arguments
+     call s_assert2(cdim <= qdim, 'cdim is wrong')
+     call s_assert2(cbnd <= qbnd, 'cbnd is wrong')
+
      ! copy data
      Cp = chipsi(1:cdim,1:cbnd,k,s,t)
      Pc = psichi(1:cbnd,1:cdim,k,s,t)
@@ -245,6 +249,10 @@
          call s_print_error('map_psi_chi','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
+     ! check arguments
+     call s_assert2(cdim <= qdim, 'cdim is wrong')
+     call s_assert2(cbnd <= qbnd, 'cbnd is wrong')
+
      ! copy data
      Cp = chipsi(1:cdim,1:cbnd,k,s,t)
      Pc = psichi(1:cbnd,1:cdim,k,s,t)
@@ -319,6 +327,10 @@
      if ( istat /= 0 ) then
          call s_print_error('one_psi_chi','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
+
+     ! check arguments
+     call s_assert2(cdim <= qdim, 'cdim is wrong')
+     call s_assert2(cbnd <= qbnd, 'cbnd is wrong')
 
      ! copy data
      Cp = chipsi(1:cdim,1:cbnd,k,s,t)
