@@ -395,7 +395,7 @@
                  ! downfold the hamiltonian
                  call one_psi_chi(cbnd2, cdim, k, s, t, Hm(bs2:be2,bs2:be2), Xe(1:cdim,1:cdim))
                  !
-                 ! add the contribution
+                 ! merge the contribution
                  eimps(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) + Xe(1:cdim,1:cdim) * weight(k)
              enddo ! over t={1,ngrp} loop
 
@@ -662,7 +662,9 @@
                  !
                  ! downfold the lattice green's function
                  call cal_gk_gl(cbnd2, cdim, k, s, t, Gk(bs2:be2,bs2:be2,:), Gl(1:cdim,1:cdim,:))
-                 green(:,:,:,s,t) = green(:,:,:,s,t) + Gl * weight(k)
+                 !
+                 ! merge the contribution
+                 green(1:cdim,1:cdim,:,s,t) = green(1:cdim,1:cdim,:,s,t) + Gl(1:cdim,1:cdim,:) * weight(k)
              enddo ! over t={1,ngrp} loop
 
              ! deallocate memories
