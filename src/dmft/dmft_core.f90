@@ -1351,9 +1351,10 @@
      use control, only : nmesh
      use control, only : myid, master, nprocs
 
-     use context, only : i_wnd
      use context, only : ndim
-     use context, only : qbnd
+     use context, only : i_wnd
+     use context, only : xbnd
+     use context, only : qwin
      use context, only : kwin
 
      implicit none
