@@ -603,14 +603,32 @@
              write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
              write(mystd,'(2X,a,i2)') 'proc: ', myid
 
-             ! build self-energy function, and then upfold it into
+             ! build self-energy function, and then upfold it into the
              ! Kohn-Sham basis. Sk should contain contributions from
              ! all impurity sites.
              Sk = czero
              do t=1,ngrp
-                 Xk = czero ! reset Xk
+                 ! reset Xk
+                 Xk = czero
+                 !
+                 ! get number of orbitals for this group
                  cdim = ndim(t)
-                 call cal_sl_sk(cdim, cbnd, k, s, t, Xk)
+                 !
+                 ! get dft band window for this group
+                 bs1 = kwin(k,s,1,i_wnd(t))
+                 be1 = kwin(k,s,2,i_wnd(t))
+                 cbnd1 = be1 - bs1 + 1
+                 call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
+                 !
+                 ! get shifted dft band window for this group
+                 p = 1 - bs ! it is shift
+                 bs2 = bs1 + p
+                 be2 = be1 + p
+                 cbnd2 = be2 - bs2 + 1
+                 call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
+                 !
+                 ! upfold the self-energy function
+                 call cal_sl_sk(cdim, cbnd2, k, s, t, Xk(bs2:be2,bs2:be2,:))
                  Sk = Sk + Xk
              enddo ! over t={1,ngrp} loop
 
