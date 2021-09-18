@@ -394,6 +394,8 @@
                  !
                  ! downfold the hamiltonian
                  call one_psi_chi(cbnd2, cdim, k, s, t, Hm(bs2:be2,bs2:be2), Xe(1:cdim,1:cdim))
+                 !
+                 ! add the contribution
                  eimps(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) + Xe(1:cdim,1:cdim) * weight(k)
              enddo ! over t={1,ngrp} loop
 
@@ -422,6 +424,7 @@
      if ( allocated(Em) ) deallocate(Em)
      if ( allocated(Hm) ) deallocate(Hm)
      if ( allocated(Xe) ) deallocate(Xe)
+     !
      if ( allocated(eimps_mpi) ) deallocate(eimps_mpi)
 
 !! body]
