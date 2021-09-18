@@ -493,6 +493,8 @@
      use context, only : i_wnd
      use context, only : qdim
      use context, only : ndim
+     use context, only : xbnd
+     use context, only : qwin
      use context, only : kwin
      use context, only : weight
      use context, only : green
