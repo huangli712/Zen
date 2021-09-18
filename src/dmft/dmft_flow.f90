@@ -667,11 +667,6 @@
                  green(1:cdim,1:cdim,:,s,t) = green(1:cdim,1:cdim,:,s,t) + Gl(1:cdim,1:cdim,:) * weight(k)
              enddo ! over t={1,ngrp} loop
 
-             ! deallocate memories
-             if ( allocated(Sk) ) deallocate(Sk)
-             if ( allocated(Xk) ) deallocate(Xk)
-             if ( allocated(Gk) ) deallocate(Gk)
-
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
 
@@ -694,7 +689,11 @@
      green = green_mpi / float(nkpt)
 
      ! deallocate memory
+     if ( allocated(Sk) ) deallocate(Sk)
+     if ( allocated(Xk) ) deallocate(Xk)
+     if ( allocated(Gk) ) deallocate(Gk)
      if ( allocated(Gl) ) deallocate(Gl)
+     !
      if ( allocated(green_mpi) ) deallocate(green_mpi)
 
 !! body]
