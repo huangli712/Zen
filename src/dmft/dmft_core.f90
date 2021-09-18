@@ -1538,7 +1538,7 @@
              !
              call cal_hk_ek(cbnd, Hk(1:cbnd,1:cbnd,:), Ek(1:cbnd,:))
              !
-             eigs(1:cbnd,:,k,s) = Ek
+             eigs(1:cbnd,:,k,s) = Ek(1:cbnd,:)
 
              ! construct H(k) + \Sigma(\infty) and diagonalize it
              So = czero
