@@ -255,6 +255,7 @@
      use context, only : i_wnd
      use context, only : qdim
      use context, only : ndim
+     use context, only : xbnd
      use context, only : qwin
      use context, only : kwin
      use context, only : weight
@@ -362,10 +363,12 @@
 
              ! evaluate `Em`, which is the eigenvalues substracted
              ! by the fermi level.
-             Em = enk(bs:be,k,s) - fermi
+             Em = czero
+             Em(1:cbnd) = enk(bs:be,k,s) - fermi
 
              ! convert `Em` to diagonal matrix `Hm`
-             call s_diag_z(cbnd, Em, Hm)
+             Hm = czero
+             call s_diag_z(cbnd, Em(1:cbnd), Hm(1:cbnd,1:cbnd))
 
              ! project effective hamiltonian from the Kohn-Sham basis
              ! to the local basis, and then sum it up.
