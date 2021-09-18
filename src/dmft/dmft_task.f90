@@ -14,7 +14,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 07/29/2021 by li huang (created)
-!!!           09/17/2021 by li huang (last modified)
+!!!           09/19/2021 by li huang (last modified)
 !!! purpose : driver subroutines.
 !!! status  : unstable
 !!! comment :
@@ -417,7 +417,7 @@
      use control, only : nmesh
      use control, only : myid, master
 
-     use context, only : qbnd
+     use context, only : xbnd
 
      implicit none
 
@@ -434,12 +434,12 @@
 !! [body
 
      ! allocate memory
-     allocate(eigs(qbnd,nmesh,nkpt,nspin), stat = istat)
+     allocate(eigs(xbnd,nmesh,nkpt,nspin), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('dmft_try5','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
      !
-     allocate(einf(qbnd,nkpt,nspin),       stat = istat)
+     allocate(einf(xbnd,nkpt,nspin),       stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('dmft_try5','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block

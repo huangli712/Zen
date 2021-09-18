@@ -114,6 +114,8 @@
   subroutine one_chi_psi(cdim, cbnd, k, s, t, Mc, Mp)
      use constants, only : dp
 
+     use context, only : qdim
+     use context, only : qbnd
      use context, only : chipsi
      use context, only : psichi
 
@@ -195,6 +197,8 @@
   subroutine map_psi_chi(cbnd, cdim, nfrq, k, s, t, Mp, Mc)
      use constants, only : dp
 
+     use context, only : qdim
+     use context, only : qbnd
      use context, only : chipsi
      use context, only : psichi
 
@@ -280,6 +284,8 @@
   subroutine one_psi_chi(cbnd, cdim, k, s, t, Mp, Mc)
      use constants, only : dp
 
+     use context, only : qdim
+     use context, only : qbnd
      use context, only : chipsi
      use context, only : psichi
 
