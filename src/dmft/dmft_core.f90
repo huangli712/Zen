@@ -1538,10 +1538,13 @@
                  Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk(bs2:be2,bs2:be2,:)
              enddo ! over t={1,ngrp} loop
              !
+             ! build effective hamiltonian
              call cal_sk_hk(cbnd, bs, be, k, s, Sk(1:cbnd,1:cbnd,:), Hk(1:cbnd,1:cbnd,:))
              !
+             ! diagonalize it
              call cal_hk_ek(cbnd, Hk(1:cbnd,1:cbnd,:), Ek(1:cbnd,:))
              !
+             ! copy the eigenvalues
              eigs(1:cbnd,:,k,s) = Ek(1:cbnd,:)
 
              ! construct H(k) + \Sigma(\infty) and diagonalize it
