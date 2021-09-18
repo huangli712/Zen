@@ -1417,24 +1417,45 @@
 
      ! allocate memory
      allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
-     allocate(Xk(cbnd,cbnd,nmesh), stat = istat)
-     allocate(Hk(cbnd,cbnd,nmesh), stat = istat)
-     allocate(Ek(cbnd,nmesh),      stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eigsys','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
      !
+     allocate(Xk(cbnd,cbnd,nmesh), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eigsys','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(Hk(cbnd,cbnd,nmesh), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eigsys','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(Ek(cbnd,nmesh),      stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_eigsys','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
      !
      allocate(So(cbnd,cbnd),       stat = istat)
-     allocate(Xo(cbnd,cbnd),       stat = istat)
-     allocate(Ho(cbnd,cbnd),       stat = istat)
-     allocate(Eo(cbnd),            stat = istat)
-     !
      if ( istat /= 0 ) then
          call s_print_error('cal_eigsys','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
-
-     ! allocate memory
+     !
+     allocate(Xo(cbnd,cbnd),       stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eigsys','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(Ho(cbnd,cbnd),       stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eigsys','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(Eo(cbnd),            stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eigsys','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
      allocate(eigs_mpi(xbnd,nmesh,nkpt,nspin), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_eigsys','can not allocate enough memory')
