@@ -234,9 +234,8 @@
      use control, only : nkpt, nspin
      use control, only : nmesh
 
-     use context, only : i_wnd
      use context, only : xbnd
-     use context, only : kwin
+     use context, only : qwin
      use context, only : fmesh
 
      implicit none
@@ -251,9 +250,6 @@
 
      ! loop index for k-points
      integer :: k
-
-     ! loop index for impurity sites
-     integer :: t
 
      ! loop index for frequency grid
      integer :: m
