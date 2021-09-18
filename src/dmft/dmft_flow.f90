@@ -964,7 +964,7 @@
 
      use control, only : nkpt, nspin
 
-     use context, only : qbnd
+     use context, only : xbnd
      use context, only : gcorr
 
      implicit none
@@ -983,7 +983,7 @@
 !! [body
 
      ! allocate memory
-     allocate(kocc(qbnd,qbnd,nkpt,nspin), stat = istat)
+     allocate(kocc(xbnd,xbnd,nkpt,nspin), stat = istat)
      !
      if ( istat /= 0 ) then
          call s_print_error('cal_gcorr','can not allocate enough memory')
