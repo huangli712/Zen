@@ -1534,9 +1534,9 @@
                  Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk(bs2:be2,bs2:be2,:)
              enddo ! over t={1,ngrp} loop
              !
-             call cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
+             call cal_sk_hk(cbnd, bs, be, k, s, Sk(1:cbnd,1:cbnd,:), Hk(1:cbnd,1:cbnd,:))
              !
-             call cal_hk_ek(cbnd, Hk, Ek)
+             call cal_hk_ek(cbnd, Hk(1:cbnd,1:cbnd,:), Ek(1:cbnd,:))
              !
              eigs(1:cbnd,:,k,s) = Ek
 
