@@ -559,8 +559,10 @@
              !
              ! write data for given spin and site
              write(mytmp,'(3(a,i4,2X))') '# site:', r, 'spin:', s, 'dims:', ndim(t)
+             !
              do m=1,nmesh
                  write(mytmp,'(a2,i6,f16.8)') 'w:', m, fmesh(m)
+                 !
                  do q=1,ndim(t)
                      do p=1,ndim(t)
                          write(mytmp,'(2i4,2f16.8)') p, q, delta(p,q,m,s,t)
@@ -594,9 +596,8 @@
 
      use control, only : nkpt, nspin
 
-     use context, only : i_wnd
      use context, only : xbnd
-     use context, only : kwin
+     use context, only : qwin
      use context, only : kmesh
 
      implicit none
@@ -611,9 +612,6 @@
 
      ! loop index for k-points
      integer :: k
-
-     ! loop index for impurity sites
-     integer :: t
 
      ! loop index for bands in band window
      integer :: p, q
@@ -632,7 +630,7 @@
      ! write parameters
      write(mytmp,'(a9,i4)') '# nkpt : ', nkpt
      write(mytmp,'(a9,i4)') '# nspin: ', nspin
-     write(mytmp,'(a9,i4)') '# qbnd : ', qbnd
+     write(mytmp,'(a9,i4)') '# xbnd : ', xbnd
 
      ! write separators
      write(mytmp,*)
@@ -643,12 +641,8 @@
          do k=1,nkpt
 
              ! evaluate band window for the current k-point and spin.
-             !
-             ! i_wnd(t) returns the corresponding band window for given
-             ! impurity site t. see remarks in cal_nelect() subroutine.
-             t = 1 ! t is fixed to 1
-             bs = kwin(k,s,1,i_wnd(t))
-             be = kwin(k,s,2,i_wnd(t))
+             bs = qwin(k,s,1)
+             be = qwin(k,s,2)
 
              ! determine cbnd
              cbnd = be - bs + 1
@@ -657,6 +651,7 @@
              write(mytmp,'(a,i4)') '# spin:', s
              write(mytmp,'(a,i4,2X,3f16.12)') '# kpt:', k, kmesh(k,1:3)
              write(mytmp,'(3(a,i4,2X))') '# cbnd:', cbnd, 'bs:', bs, 'be:', be
+             !
              do q=1,cbnd
                  do p=1,cbnd
                      write(mytmp,'(2i4,2f16.8)') p, q, gcorr(p,q,k,s)
