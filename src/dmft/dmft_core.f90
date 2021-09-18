@@ -1548,6 +1548,7 @@
              eigs(1:cbnd,:,k,s) = Ek(1:cbnd,:)
 
              ! construct H(k) + \Sigma(\infty) and diagonalize it
+             !
              So = czero
              !
              do t=1,ngrp ! add contributions from all impurity sites
