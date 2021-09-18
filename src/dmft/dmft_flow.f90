@@ -536,7 +536,22 @@
 
 !! [body
 
-     ! allocate memory for Gl and green_mpi
+     ! allocate memory
+     allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_green','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(Xk(cbnd,cbnd,nmesh), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_green','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
+     allocate(Gk(cbnd,cbnd,nmesh), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_green','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+     !
      allocate(Gl(qdim,qdim,nmesh), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_green','can not allocate enough memory')
@@ -585,16 +600,6 @@
              write(mystd,'(2X,a,i5)',advance='no') 'kpnt: ', k
              write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
              write(mystd,'(2X,a,i2)') 'proc: ', myid
-
-             ! allocate memories Sk, Xk, and Gk.
-             ! their sizes are k-dependent.
-             allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
-             allocate(Xk(cbnd,cbnd,nmesh), stat = istat)
-             allocate(Gk(cbnd,cbnd,nmesh), stat = istat)
-             !
-             if ( istat /= 0 ) then
-                 call s_print_error('cal_green','can not allocate enough memory')
-             endif ! back if ( istat /= 0 ) block
 
              ! build self-energy function, and then upfold it into
              ! Kohn-Sham basis. Sk should contain contributions from
