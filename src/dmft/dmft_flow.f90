@@ -768,6 +768,7 @@
 
      ! loop over quantum impurities
      SITE_LOOP: do t=1,ngrp
+
          ! get size of orbital space
          cdim = ndim(t)
 
