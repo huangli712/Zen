@@ -12,7 +12,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/17/2021 by li huang (last modified)
+!!!           09/18/2021 by li huang (last modified)
 !!! purpose : provide some subroutines to write down the calculated data.
 !!! status  : unstable
 !!! comment :
@@ -235,7 +235,7 @@
      use control, only : nmesh
 
      use context, only : i_wnd
-     use context, only : qbnd
+     use context, only : xbnd
      use context, only : kwin
      use context, only : fmesh
 
@@ -243,7 +243,7 @@
 
 !! external arguments
      ! eigenvalues for H(k) + \Sigma(i\omega_n)
-     complex(dp), intent(in) :: eigs(qbnd,nmesh,nkpt,nspin)
+     complex(dp), intent(in) :: eigs(xbnd,nmesh,nkpt,nspin)
 
 !! local variables
      ! loop index for spins
@@ -276,7 +276,7 @@
      write(mytmp,'(a9,i4)') '# nkpt : ', nkpt
      write(mytmp,'(a9,i4)') '# nspin: ', nspin
      write(mytmp,'(a9,i4)') '# nmesh: ', nmesh
-     write(mytmp,'(a9,i4)') '# qbnd : ', qbnd
+     write(mytmp,'(a9,i4)') '# xbnd : ', xbnd
 
      ! write separators
      write(mytmp,*)
