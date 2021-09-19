@@ -1420,21 +1420,6 @@
 !! [body
 
      ! allocate memory
-     allocate(Sk(xbnd,xbnd,nmesh), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_eigsys','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-     allocate(Hk(xbnd,xbnd,nmesh), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_eigsys','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-     allocate(Ek(xbnd,nmesh),      stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_eigsys','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
      allocate(So(xbnd,xbnd),       stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_eigsys','can not allocate enough memory')
@@ -1497,9 +1482,25 @@
              write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
              write(mystd,'(2X,a,i2)') 'proc: ', myid
 
+             ! allocate memory
+             allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_eigsys','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
+             !
+             allocate(Hk(cbnd,cbnd,nmesh), stat = istat)
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_eigsys','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
+             !
+             allocate(Ek(cbnd,nmesh),      stat = istat)
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_eigsys','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
+
              ! construct H(k) + \Sigma(i\omega_n) and diagonalize it
              !
-             ! reset some arrays
+             ! reset memory
              Sk = czero
              Hk = czero
              Ek = czero
@@ -1539,13 +1540,13 @@
              enddo ! over t={1,ngrp} loop
              !
              ! build effective hamiltonian
-             call cal_sk_hk(cbnd, bs, be, k, s, Sk(1:cbnd,1:cbnd,:), Hk(1:cbnd,1:cbnd,:))
+             call cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
              !
              ! diagonalize it
-             call cal_hk_ek(cbnd, Hk(1:cbnd,1:cbnd,:), Ek(1:cbnd,:))
+             call cal_hk_ek(cbnd, Hk, Ek)
              !
              ! copy the eigenvalues
-             eigs(1:cbnd,:,k,s) = Ek(1:cbnd,:)
+             eigs(1:cbnd,:,k,s) = Ek
 
              ! construct H(k) + \Sigma(\infty) and diagonalize it
              !
