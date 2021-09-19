@@ -1483,24 +1483,24 @@
                  call s_print_error('cal_eigsys','can not allocate enough memory')
              endif ! back if ( istat /= 0 ) block
              !
-             allocate(So(xbnd,xbnd),       stat = istat)
+             allocate(So(cbnd,cbnd),       stat = istat)
              if ( istat /= 0 ) then
                  call s_print_error('cal_eigsys','can not allocate enough memory')
              endif ! back if ( istat /= 0 ) block
              !
-             allocate(Ho(xbnd,xbnd),       stat = istat)
+             allocate(Ho(cbnd,cbnd),       stat = istat)
              if ( istat /= 0 ) then
                  call s_print_error('cal_eigsys','can not allocate enough memory')
              endif ! back if ( istat /= 0 ) block
              !
-             allocate(Eo(xbnd),            stat = istat)
+             allocate(Eo(cbnd),            stat = istat)
              if ( istat /= 0 ) then
                  call s_print_error('cal_eigsys','can not allocate enough memory')
              endif ! back if ( istat /= 0 ) block
 
              ! construct H(k) + \Sigma(i\omega_n) and diagonalize it
              !
-             ! reset memory
+             ! reset some arrays
              Sk = czero
              Hk = czero
              Ek = czero
@@ -1590,13 +1590,22 @@
              enddo ! over t={1,ngrp} loop
              !
              ! build effective hamiltonian
-             call cal_so_ho(cbnd, bs, be, k, s, So(1:cbnd,1:cbnd), Ho(1:cbnd,1:cbnd))
+             call cal_so_ho(cbnd, bs, be, k, s, So, Ho)
              !
              ! diagonalize it
-             call cal_ho_eo(cbnd, Ho(1:cbnd,1:cbnd), Eo(1:cbnd))
+             call cal_ho_eo(cbnd, Ho, Eo)
              !
              ! copy the eigenvalues
-             einf(1:cbnd,k,s) = Eo(1:cbnd)
+             einf(1:cbnd,k,s) = Eo
+
+             ! deallocate memory
+             if ( allocated(Sk) ) deallocate(Sk)
+             if ( allocated(Hk) ) deallocate(Hk)
+             if ( allocated(Ek) ) deallocate(Ek)
+             !
+             if ( allocated(So) ) deallocate(So)
+             if ( allocated(Ho) ) deallocate(Ho)
+             if ( allocated(Eo) ) deallocate(Eo)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
@@ -1623,14 +1632,6 @@
      einf = einf_mpi
 
      ! deallocate memory
-     if ( allocated(Sk) ) deallocate(Sk)
-     if ( allocated(Hk) ) deallocate(Hk)
-     if ( allocated(Ek) ) deallocate(Ek)
-     !
-     if ( allocated(So) ) deallocate(So)
-     if ( allocated(Ho) ) deallocate(Ho)
-     if ( allocated(Eo) ) deallocate(Eo)
-     !
      if ( allocated(eigs_mpi) ) deallocate(eigs_mpi)
      if ( allocated(einf_mpi) ) deallocate(einf_mpi)
 
