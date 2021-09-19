@@ -252,7 +252,6 @@
      use control, only : fermi
      use control, only : myid, master, nprocs
 
-     use context, only : i_wnd
      use context, only : qdim
      use context, only : ndim
      use context, only : xbnd
@@ -380,8 +379,8 @@
                  cdim = ndim(t)
                  !
                  ! get dft band window for this group
-                 bs1 = kwin(k,s,1,i_wnd(t))
-                 be1 = kwin(k,s,2,i_wnd(t))
+                 bs1 = kwin(k,s,1,t)
+                 be1 = kwin(k,s,2,t)
                  cbnd1 = be1 - bs1 + 1
                  call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
                  !
@@ -490,7 +489,6 @@
      use control, only : nmesh
      use control, only : myid, master, nprocs
 
-     use context, only : i_wnd
      use context, only : qdim
      use context, only : ndim
      use context, only : xbnd
@@ -620,8 +618,8 @@
                  cdim = ndim(t)
                  !
                  ! get dft band window for this group
-                 bs1 = kwin(k,s,1,i_wnd(t))
-                 be1 = kwin(k,s,2,i_wnd(t))
+                 bs1 = kwin(k,s,1,t)
+                 be1 = kwin(k,s,2,t)
                  cbnd1 = be1 - bs1 + 1
                  call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
                  !
@@ -652,8 +650,8 @@
                  cdim = ndim(t)
                  !
                  ! get dft band window for this group
-                 bs1 = kwin(k,s,1,i_wnd(t))
-                 be1 = kwin(k,s,2,i_wnd(t))
+                 bs1 = kwin(k,s,1,t)
+                 be1 = kwin(k,s,2,t)
                  cbnd1 = be1 - bs1 + 1
                  call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
                  !
