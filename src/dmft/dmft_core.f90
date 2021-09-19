@@ -1526,6 +1526,7 @@
                  if ( istat /= 0 ) then
                      call s_print_error('cal_eigsys','can not allocate enough memory')
                  endif ! back if ( istat /= 0 ) block
+                 Xk = czero
                  !
                  ! upfold the self-energy function
                  call cal_sl_sk(cdim, cbnd2, k, s, t, Xk)
@@ -1575,6 +1576,7 @@
                  if ( istat /= 0 ) then
                      call s_print_error('cal_eigsys','can not allocate enough memory')
                  endif ! back if ( istat /= 0 ) block
+                 Xo = czero
                  !
                  ! upfold the self-energy function
                  call cal_sl_so(cdim, cbnd2, k, s, t, Xo)
