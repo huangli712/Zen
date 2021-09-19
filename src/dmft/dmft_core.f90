@@ -1352,7 +1352,6 @@
      use control, only : myid, master, nprocs
 
      use context, only : ndim
-     use context, only : i_wnd
      use context, only : xbnd
      use context, only : qwin
      use context, only : kwin
@@ -1426,11 +1425,6 @@
          call s_print_error('cal_eigsys','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
      !
-     !allocate(Xk(xbnd,xbnd,nmesh), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_eigsys','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
      allocate(Hk(xbnd,xbnd,nmesh), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_eigsys','can not allocate enough memory')
@@ -1442,11 +1436,6 @@
      endif ! back if ( istat /= 0 ) block
      !
      allocate(So(xbnd,xbnd),       stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_eigsys','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-     allocate(Xo(xbnd,xbnd),       stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_eigsys','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
@@ -1516,9 +1505,6 @@
              Ek = czero
              !
              do t=1,ngrp ! add contributions from all impurity sites
-                 ! reset Xk
-                 !Xk = czero
-                 !
                  ! get number of orbitals for this group
                  cdim = ndim(t)
                  !
@@ -1526,7 +1512,6 @@
                  bs1 = kwin(k,s,1,t)
                  be1 = kwin(k,s,2,t)
                  cbnd1 = be1 - bs1 + 1
-                 print *, 'group: ', t, bs1, be1, cbnd1
                  call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
                  !
                  ! get shifted dft band window for this group
@@ -1534,21 +1519,23 @@
                  bs2 = bs1 + p
                  be2 = be1 + p
                  cbnd2 = be2 - bs2 + 1
-                 print *, 'group: ', t, bs2, be2, cbnd2
-                 allocate(Xk(cbnd2,cbnd2,nmesh))
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
                  !
+                 ! allocate memory for Xk to avoid segment fault
+                 allocate(Xk(cbnd2,cbnd2,nmesh), stat = istat)
+                 if ( istat /= 0 ) then
+                     call s_print_error('cal_eigsys','can not allocate enough memory')
+                 endif ! back if ( istat /= 0 ) block
+                 !
                  ! upfold the self-energy function
-                 !print *, cdim, cbnd2, xbnd, Xk(bs2:be2,bs2:be2,1)
-                 !call cal_sl_sk(cdim, cbnd2, k, s, t, Xk(1:cbnd2,1:cbnd2,:))
                  call cal_sl_sk(cdim, cbnd2, k, s, t, Xk)
-                 print *, "here"
                  !
                  ! merge the contribution
-                 Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk !Xk(bs2:be2,bs2:be2,:)
-                 deallocate(Xk)
+                 Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk
+                 !
+                 ! deallocate memory for Xk to avoid segment falut
+                 if ( allocated(Xk) ) deallocate(Xk)
              enddo ! over t={1,ngrp} loop
-             STOP
              !
              ! build effective hamiltonian
              call cal_sk_hk(cbnd, bs, be, k, s, Sk(1:cbnd,1:cbnd,:), Hk(1:cbnd,1:cbnd,:))
@@ -1567,15 +1554,12 @@
              Eo = czero
              !
              do t=1,ngrp ! add contributions from all impurity sites
-                 ! reset Xo
-                 Xo = czero
-                 !
                  ! get number of orbitals for this group
                  cdim = ndim(t)
                  !
                  ! get dft band window for this group
-                 bs1 = kwin(k,s,1,i_wnd(t))
-                 be1 = kwin(k,s,2,i_wnd(t))
+                 bs1 = kwin(k,s,1,t)
+                 be1 = kwin(k,s,2,t)
                  cbnd1 = be1 - bs1 + 1
                  call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
                  !
@@ -1586,11 +1570,20 @@
                  cbnd2 = be2 - bs2 + 1
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
                  !
+                 ! allocate memory for Xo to avoid segment fault
+                 allocate(Xo(cbnd2,cbnd2), stat = istat)
+                 if ( istat /= 0 ) then
+                     call s_print_error('cal_eigsys','can not allocate enough memory')
+                 endif ! back if ( istat /= 0 ) block
+                 !
                  ! upfold the self-energy function
-                 call cal_sl_so(cdim, cbnd2, k, s, t, Xo(bs2:be2,bs2:be2))
+                 call cal_sl_so(cdim, cbnd2, k, s, t, Xo)
                  !
                  ! merge the contribution
-                 So(bs2:be2,bs2:be2) = So(bs2:be2,bs2:be2) + Xo(bs2:be2,bs2:be2)
+                 So(bs2:be2,bs2:be2) = So(bs2:be2,bs2:be2) + Xo
+                 !
+                 ! deallocate memory for Xo to avoid segment falut
+                 if ( allocated(Xo) ) deallocate(Xo)
              enddo ! over t={1,ngrp} loop
              !
              ! build effective hamiltonian
@@ -1628,12 +1621,10 @@
 
      ! deallocate memory
      if ( allocated(Sk) ) deallocate(Sk)
-     if ( allocated(Xk) ) deallocate(Xk)
      if ( allocated(Hk) ) deallocate(Hk)
      if ( allocated(Ek) ) deallocate(Ek)
      !
      if ( allocated(So) ) deallocate(So)
-     if ( allocated(Xo) ) deallocate(Xo)
      if ( allocated(Ho) ) deallocate(Ho)
      if ( allocated(Eo) ) deallocate(Eo)
      !
