@@ -77,6 +77,8 @@
 
 !! [body
 
+     print *, "in cal_sl_sk"
+
      ! allocate memory
      allocate(Sl(cdim,cdim,nmesh), stat = istat)
      !
@@ -1523,9 +1525,10 @@
                  cdim = ndim(t)
                  !
                  ! get dft band window for this group
-                 bs1 = kwin(k,s,1,i_wnd(t))
-                 be1 = kwin(k,s,2,i_wnd(t))
+                 bs1 = kwin(k,s,1,t)
+                 be1 = kwin(k,s,2,t)
                  cbnd1 = be1 - bs1 + 1
+                 print *, 'group: ', t, bs1, be1, cbnd1
                  call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
                  !
                  ! get shifted dft band window for this group
@@ -1533,13 +1536,17 @@
                  bs2 = bs1 + p
                  be2 = be1 + p
                  cbnd2 = be2 - bs2 + 1
+                 print *, 'group: ', t, bs2, be2, cbnd2
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
                  !
                  ! upfold the self-energy function
+                 print *, cdim, cbnd2, xbnd, Xk(bs2:be2,bs2:be2,1)
                  call cal_sl_sk(cdim, cbnd2, k, s, t, Xk(bs2:be2,bs2:be2,:))
+                 print *, "here"
                  !
                  ! merge the contribution
                  Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk(bs2:be2,bs2:be2,:)
+
              enddo ! over t={1,ngrp} loop
              !
              ! build effective hamiltonian

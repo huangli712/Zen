@@ -19,7 +19,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/17/2021 by li huang (last modified)
+!!!           09/19/2021 by li huang (last modified)
 !!! purpose : setup the configuration parameters and read the input data.
 !!! status  : unstable
 !!! comment :
@@ -584,7 +584,8 @@
      use control, only : myid, master
 
      use context, only : qbnd
-     use context, only : bmin, bmax, nbnd, kwin
+     use context, only : xbnd
+     use context, only : bmin, bmax, nbnd, qwin, kwin
 
      implicit none
 
@@ -674,6 +675,16 @@
      call mp_barrier()
 
 # endif  /* MPI */
+
+     ! well, next we will try to build qwin and xbnd
+     do s=1,nspin
+         do k=1,nkpt
+             qwin(k,s,1) = minval(kwin(k,s,1,:))
+             qwin(k,s,2) = maxval(kwin(k,s,2,:))
+         enddo ! over k={1,nkpt} loop
+     enddo ! over s={1,nspin} loop
+     !
+     xbnd = maxval(bmax) - minval(bmin) + 1
 
 !! body]
 
