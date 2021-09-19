@@ -18,7 +18,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/18/2021 by li huang (last modified)
+!!!           09/19/2021 by li huang (last modified)
 !!! purpose : provide the core service subroutines for the work flow of
 !!!           the dft + dmft calculations.
 !!! status  : unstable
@@ -76,8 +76,6 @@
      complex(dp), allocatable :: Sl(:,:,:)
 
 !! [body
-
-     print *, "in cal_sl_sk"
 
      ! allocate memory
      allocate(Sl(cdim,cdim,nmesh), stat = istat)
@@ -1428,7 +1426,7 @@
          call s_print_error('cal_eigsys','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
      !
-     allocate(Xk(xbnd,xbnd,nmesh), stat = istat)
+     !allocate(Xk(xbnd,xbnd,nmesh), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_eigsys','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
@@ -1519,7 +1517,7 @@
              !
              do t=1,ngrp ! add contributions from all impurity sites
                  ! reset Xk
-                 Xk = czero
+                 !Xk = czero
                  !
                  ! get number of orbitals for this group
                  cdim = ndim(t)
@@ -1537,17 +1535,20 @@
                  be2 = be1 + p
                  cbnd2 = be2 - bs2 + 1
                  print *, 'group: ', t, bs2, be2, cbnd2
+                 allocate(Xk(cbnd2,cbnd2,nmesh))
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
                  !
                  ! upfold the self-energy function
-                 print *, cdim, cbnd2, xbnd, Xk(bs2:be2,bs2:be2,1)
-                 call cal_sl_sk(cdim, cbnd2, k, s, t, Xk(bs2:be2,bs2:be2,:))
+                 !print *, cdim, cbnd2, xbnd, Xk(bs2:be2,bs2:be2,1)
+                 !call cal_sl_sk(cdim, cbnd2, k, s, t, Xk(1:cbnd2,1:cbnd2,:))
+                 call cal_sl_sk(cdim, cbnd2, k, s, t, Xk)
                  print *, "here"
                  !
                  ! merge the contribution
-                 Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk(bs2:be2,bs2:be2,:)
-
+                 Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk !Xk(bs2:be2,bs2:be2,:)
+                 deallocate(Xk)
              enddo ! over t={1,ngrp} loop
+             STOP
              !
              ! build effective hamiltonian
              call cal_sk_hk(cbnd, bs, be, k, s, Sk(1:cbnd,1:cbnd,:), Hk(1:cbnd,1:cbnd,:))
