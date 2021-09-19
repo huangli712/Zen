@@ -541,26 +541,6 @@
 !! [body
 
      ! allocate memory
-     allocate(Sk(xbnd,xbnd,nmesh), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_green','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-     allocate(Xk(xbnd,xbnd,nmesh), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_green','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-     allocate(Gk(xbnd,xbnd,nmesh), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_green','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-     allocate(Gl(qdim,qdim,nmesh), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_green','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
      allocate(green_mpi(qdim,qdim,nmesh,nspin,ngrp), stat = istat)
      if ( istat /= 0 ) then
          call s_print_error('cal_green','can not allocate enough memory')
@@ -606,6 +586,17 @@
              write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
              write(mystd,'(2X,a,i2)') 'proc: ', myid
 
+             ! allocate memory
+             allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_green','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
+             !
+             allocate(Gk(cbnd,cbnd,nmesh), stat = istat)
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_green','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
+
              ! build self-energy function, and then upfold it into the
              ! Kohn-Sham basis. Sk should contain contributions from
              ! all impurity sites.
@@ -645,14 +636,11 @@
              enddo ! over t={1,ngrp} loop
 
              ! calculate lattice green's function
-             call cal_sk_gk(cbnd, bs, be, k, s, Sk(1:cbnd,1:cbnd,:), Gk(1:cbnd,1:cbnd,:))
+             call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
 
              ! downfold the lattice green's function to obtain local
              ! green's function, then we have to perform k-summation.
              do t=1,ngrp
-                 ! reset Gl
-                 Gl = czero
-                 !
                  ! get number of orbitals for this group
                  cdim = ndim(t)
                  !
@@ -669,12 +657,34 @@
                  cbnd2 = be2 - bs2 + 1
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
                  !
+                 ! allocate memory for Xk and Gl to avoid segment fault
+                 allocate(Xk(cbnd2,cbnd2,nmesh), stat = istat)
+                 if ( istat /= 0 ) then
+                     call s_print_error('cal_eigsys','can not allocate enough memory')
+                 endif ! back if ( istat /= 0 ) block
+                 Xk = czero
+                 !
+                 allocate(Gl(cdim,cdim,nmesh),   stat = istat)
+                 if ( istat /= 0 ) then
+                     call s_print_error('cal_green','can not allocate enough memory')
+                 endif ! back if ( istat /= 0 ) block
+                 Gl = czero
+                 !
                  ! downfold the lattice green's function
-                 call cal_gk_gl(cbnd2, cdim, k, s, t, Gk(bs2:be2,bs2:be2,:), Gl(1:cdim,1:cdim,:))
+                 Xk = Gk(bs2:be2,bs2:be2,:)
+                 call cal_gk_gl(cbnd2, cdim, k, s, t, Xk, Gl)
                  !
                  ! merge the contribution
-                 green(1:cdim,1:cdim,:,s,t) = green(1:cdim,1:cdim,:,s,t) + Gl(1:cdim,1:cdim,:) * weight(k)
+                 green(1:cdim,1:cdim,:,s,t) = green(1:cdim,1:cdim,:,s,t) + Gl * weight(k)
+                 !
+                 ! deallocate memory for Xk and Gl to avoid segment falut
+                 if ( allocated(Xk) ) deallocate(Xk)
+                 if ( allocated(Gl) ) deallocate(Gl)
              enddo ! over t={1,ngrp} loop
+
+             ! deallocate memory
+             if ( allocated(Sk) ) deallocate(Sk)
+             if ( allocated(Gk) ) deallocate(Gk)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
@@ -698,11 +708,6 @@
      green = green_mpi / float(nkpt)
 
      ! deallocate memory
-     if ( allocated(Sk) ) deallocate(Sk)
-     if ( allocated(Xk) ) deallocate(Xk)
-     if ( allocated(Gk) ) deallocate(Gk)
-     if ( allocated(Gl) ) deallocate(Gl)
-     !
      if ( allocated(green_mpi) ) deallocate(green_mpi)
 
 !! body]
