@@ -611,9 +611,6 @@
              ! all impurity sites.
              Sk = czero
              do t=1,ngrp
-                 ! reset Xk
-                 Xk = czero
-                 !
                  ! get number of orbitals for this group
                  cdim = ndim(t)
                  !
@@ -630,11 +627,21 @@
                  cbnd2 = be2 - bs2 + 1
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
                  !
+                 ! allocate memory for Xk to avoid segment fault
+                 allocate(Xk(cbnd2,cbnd2,nmesh), stat = istat)
+                 if ( istat /= 0 ) then
+                     call s_print_error('cal_eigsys','can not allocate enough memory')
+                 endif ! back if ( istat /= 0 ) block
+                 Xk = czero
+                 !
                  ! upfold the self-energy function
-                 call cal_sl_sk(cdim, cbnd2, k, s, t, Xk(bs2:be2,bs2:be2,:))
+                 call cal_sl_sk(cdim, cbnd2, k, s, t, Xk)
                  !
                  ! merge the contribution
-                 Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk(bs2:be2,bs2:be2,:)
+                 Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk
+                 !
+                 ! deallocate memory for Xk to avoid segment falut
+                 if ( allocated(Xk) ) deallocate(Xk)
              enddo ! over t={1,ngrp} loop
 
              ! calculate lattice green's function
