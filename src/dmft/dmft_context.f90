@@ -86,8 +86,8 @@
 !!
 !! specify the traits of groups of projectors. the projectors denote the
 !! overlap matrices between the Kohn-Sham bands and local orbitals. they
-!! are split into some groups, which are labelled by the sites, angular
-!! momenta, and number of projectors, etc.
+!! are split into some groups, which are labelled by the site, angular
+!! momentum, and number of projectors, etc.
 !!
   module dmft_group
      implicit none
