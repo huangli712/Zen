@@ -20,7 +20,7 @@
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/18/2021 by li huang (last modified)
+!!!           09/20/2021 by li huang (last modified)
 !!! purpose : try to define the global modules and arrays, and implement
 !!!           memory managment.
 !!! status  : unstable
@@ -35,7 +35,7 @@
 !! @mod dmft_map
 !!
 !! define connections / mappings between the quantum impurity problems and
-!! the groups of projectors (and band windows).
+!! the groups of projectors or windows of dft bands.
 !!
   module dmft_map
      implicit none
