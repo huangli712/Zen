@@ -51,8 +51,8 @@
 !!
 !! @var i_wnd
 !!
-!! given a given quantum impurity problem, return the corresponding dft
-!! band window, impurity -> window.
+!! given a given quantum impurity problem, return the corresponding window
+!! of dft bands, impurity -> window.
 !!
      integer, public, save, allocatable :: i_wnd(:)
 
