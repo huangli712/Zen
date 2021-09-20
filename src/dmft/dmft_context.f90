@@ -52,7 +52,7 @@
 !! @var i_wnd
 !!
 !! given a given quantum impurity problem, return the corresponding window
-!! of dft bands, impurity -> window.
+!! of dft bands, impurity -> window. actually, this array hasn't been used.
 !!
      integer, public, save, allocatable :: i_wnd(:)
 
@@ -68,9 +68,10 @@
 !!
 !! @var w_imp
 !!
-!! given a given dft band window, return the corresponding quantum impurity
-!! problem, window -> impurity. note that 0 value means that this dft band
-!! window is just for non-correlated orbitals.
+!! given a window of dft bands, return the corresponding quantum impurity
+!! problem, window -> impurity. note that 0 value means that this window
+!! of dft bands is just for non-correlated orbitals. actually, this array
+!! hasn't been used.
 !!
      integer, public, save, allocatable :: w_imp(:)
 
