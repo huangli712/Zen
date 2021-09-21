@@ -277,7 +277,7 @@
 !!
 !! @var kmesh
 !!
-!! k-mesh in the brillouin zone.
+!! k-mesh in the uniform brillouin zone.
 !!
      real(dp), public, save, allocatable :: kmesh(:,:)
 
@@ -352,7 +352,8 @@
 !!
 !! @mod dmft_projs
 !!
-!! contain the local orbital projectors.
+!! contain the projectors, which are basically overlap matrices between
+!! the Kohn-Sham states and the local orbitals.
 !!
   module dmft_projs
      use constants, only : dp
