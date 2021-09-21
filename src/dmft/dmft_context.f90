@@ -363,7 +363,7 @@
 !!
 !! @var chipsi
 !!
-!! overlap matrix between the local orbitals and the Kohn-Sham basis. its
+!! overlap matrix between the local orbitals and the Kohn-Sham states. its
 !! definition is \langle \chi^{I}_{\alpha,k} | \psi_{b,k} \rangle, where
 !! `I` means the index for correlated sites, \alpha means the index for
 !! correlated orbitals. `b`, `k`, `s` are indices for dft bands, k-points,
@@ -375,7 +375,7 @@
 !!
 !! @var psichi
 !!
-!! overlap matrix between the Kohn-Sham basis and the local orbitals. its
+!! overlap matrix between the Kohn-Sham states and the local orbitals. its
 !! definition is \langle \psi_{b,k} | \chi^{I}_{\alpha,k} \rangle.
 !! actually, psichi can be obtained by chipsi via conjugate transpose.
 !!
