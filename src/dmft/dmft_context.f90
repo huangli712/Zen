@@ -20,7 +20,7 @@
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/20/2021 by li huang (last modified)
+!!!           09/22/2021 by li huang (last modified)
 !!! purpose : try to define the global modules and arrays, and implement
 !!!           memory managment.
 !!! status  : unstable
@@ -169,7 +169,7 @@
 !! i.e, two windows. One is from band 1 to band 9, another one is from
 !! band 10 to 14. Then nbnd = (9, 5), qbnd is 9, and xbnd is 14.
 !!
-     integer, public, save :: xbnd = -1
+     integer, public, save :: xbnd = +1
 
 !!
 !! @var bmin
@@ -1097,8 +1097,6 @@
 
 !! [body
 
-     print *, xbnd
-     STOP
      ! allocate memory
      allocate(gcorr(xbnd,xbnd,nkpt,nspin), stat = istat)
 
