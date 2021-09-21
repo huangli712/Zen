@@ -103,7 +103,7 @@
 !!
 !! @var shell
 !!
-!! specification of orbital shell.
+!! type of local orbital.
 !!
      character(len=5), public, save, allocatable :: shell(:)
 
@@ -124,7 +124,7 @@
 !!
 !! @var l
 !!
-!! the corresponding angular momentum quantum number of this group.
+!! the corresponding angular momentum of this group.
 !!
      integer, public, save, allocatable :: l(:)
 
@@ -144,7 +144,9 @@
 !!
 !! @mod dmft_window
 !!
-!! specify the dft band windows for projectors.
+!! specify the windows of dft bands for projectors. there is a one-to-one
+!! match between each group of projectors and each window of dft bands.
+!! in other words, the number of groups and number of windows are equal. 
 !!
   module dmft_window
      implicit none
@@ -162,6 +164,10 @@
 !!
 !! maximum number of dft bands included in all the windows. actually, it
 !! should be considered as an union of all the dft band windows.
+!!
+!! we have to distinguish qbnd and xbnd. supposed that we have two groups
+!! i.e, two windows. One is from band 1 to band 9, another one is from
+!! band 10 to 14. Then nbnd = (9, 5), qbnd is 9, and xbnd is 14.
 !!
      integer, public, save :: xbnd = -1
 
