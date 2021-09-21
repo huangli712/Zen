@@ -6,7 +6,7 @@
 !!! type    : modules
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/17/2021 by li huang (last modified)
+!!!           09/22/2021 by li huang (last modified)
 !!! purpose : define the global control variables.
 !!! status  : unstable
 !!! comment :
@@ -86,7 +86,7 @@
 !!     calculate density of states.
 !!
 !! if task == 8:
-!!     calculate physical properties.
+!!     calculate unknown physical properties.
 !!
      integer, public, save :: task   = 1
 
@@ -126,7 +126,7 @@
 !!
 !! control flag, determine whether the analytical tetrahedron method is
 !! used to perform the brillouin zone integration. this feature has not
-!! been implemented.
+!! been implemented so far.
 !!
 !! if ltetra == .true.
 !!     use the analytical tetrahedron algorithm.
@@ -217,7 +217,10 @@
 !! @var nwnd
 !!
 !! number of energy windows or band windows, which are used to restrict
-!! how many energy states are included in the calculations.
+!! how many Kohn-Sham states are included in the calculations. please
+!! notice that nwnd is always equal to ngrp. in other words, there is
+!! one-to-one match between each group of projectors and each window of
+!! Kohn-Sham states.
 !!
      integer, public, save :: nwnd   = 1
 
@@ -329,21 +332,21 @@
 !!
 !! version string, version number + date info. + status info.
 !!
-     character(len=20), public, parameter :: V_FULL = 'v0.7.3 @ 2021.09.17D'
+     character(len=20), public, parameter :: V_FULL = 'v0.7.4 @ 2021.09.22D'
 
 !!
 !! @var V_CURR
 !!
 !! version string, only version number
 !!
-     character(len=06), public, parameter :: V_CURR = 'v0.7.3'
+     character(len=06), public, parameter :: V_CURR = 'v0.7.4'
 
 !!
 !! @var V_DATE
 !!
 !! version string, only date info.
 !!
-     character(len=11), public, parameter :: V_DATE = '2021.09.17'
+     character(len=11), public, parameter :: V_DATE = '2021.09.22'
 
 !!
 !! @var V_STAT
