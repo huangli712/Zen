@@ -773,6 +773,8 @@
      if ( qbnd < 0 ) then
          call s_print_error('cat_alloc_window','qbnd is less than 0')
      endif ! back if ( qbnd < 0 ) block
+     !
+     ! xbnd should be initialized with in dmft_input_window().
 
 !! body]
 
@@ -1095,6 +1097,8 @@
 
 !! [body
 
+     print *, xbnd
+     STOP
      ! allocate memory
      allocate(gcorr(xbnd,xbnd,nkpt,nspin), stat = istat)
 
