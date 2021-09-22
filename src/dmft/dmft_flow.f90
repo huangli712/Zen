@@ -256,6 +256,7 @@
 
      use context, only : qdim
      use context, only : ndim
+     use context, only : xbnd
      use context, only : qwin
      use context, only : kwin
      use context, only : weight
@@ -340,6 +341,9 @@
 
              ! determine cbnd
              cbnd = be - bs + 1
+             !
+             ! sanity check
+             call s_assert2(cbnd <= xbnd, 'cbnd is wrong')
 
              ! provide some useful information
              write(mystd,'(6X,a,i2)',advance='no') 'spin: ', s
@@ -463,13 +467,13 @@
      implicit none
 
 !! local variables
-     ! index for impurity sites
-     integer :: t
-
      ! loop index for spins
      integer :: s
 
-     ! number of correlated orbitals for given impurity site
+     ! index for groups
+     integer :: t
+
+     ! number of correlated orbitals for given group
      integer :: cdim
 
 !! [body
@@ -477,8 +481,10 @@
      ! substract the double counting terms from eimps to build eimpx
      do t=1,ngrp
          do s=1,nspin
+             !
              cdim = ndim(t)
              eimpx(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) - sigdc(1:cdim,1:cdim,s,t)
+             !
          enddo ! over s={1,nspin} loop
      enddo ! over t={1,ngrp} loop
 
@@ -515,22 +521,22 @@
      implicit none
 
 !! local variables
+     ! loop index for k-points
+     integer :: k
+
      ! loop index for spin
      integer :: s
 
-     ! loop index for k-points
-     integer :: k
+     ! loop index for groups
+     integer :: t
 
      ! loop index for orbitals
      integer :: p
 
-     ! loop index for impurity sites
-     integer :: t
-
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer :: cbnd, cbnd1, cbnd2
 
-     ! number of correlated orbitals for given impurity site
+     ! number of correlated orbitals for given group
      integer :: cdim
 
      ! band window: start index and end index for bands
@@ -557,6 +563,7 @@
 
      ! allocate memory
      allocate(green_mpi(qdim,qdim,nmesh,nspin,ngrp), stat = istat)
+     !
      if ( istat /= 0 ) then
          call s_print_error('cal_green','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
@@ -593,6 +600,8 @@
 
              ! determine cbnd
              cbnd = be - bs + 1
+             !
+             ! sanity check
              call s_assert2(cbnd <= xbnd, 'cbnd is wrong')
 
              ! provide some useful information
