@@ -348,26 +348,16 @@
              write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
              write(mystd,'(2X,a,i2)') 'proc: ', myid
 
-     ! allocate memory
-     allocate(Em(xbnd),      stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_eimps','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-     allocate(Hm(xbnd,xbnd), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_eimps','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-     allocate(Xe(qdim,qdim), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_eimps','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-
-
-
-
+             ! allocate memory
+             allocate(Em(cbnd),      stat = istat)
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_eimps','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
+             !
+             allocate(Hm(cbnd,cbnd), stat = istat)
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_eimps','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
 
              ! evaluate Em
              !
@@ -375,7 +365,7 @@
              Em = czero
              !
              ! it is the eigenvalues substracted by the fermi level.
-             Em(1:cbnd) = enk(bs:be,k,s) - fermi
+             Em = enk(bs:be,k,s) - fermi
 
              ! build diagonal Kohn-Sham hamiltonian
              !
@@ -383,7 +373,7 @@
              Hm = czero
              !
              ! convert Em to diagonal matrix Hm
-             call s_diag_z(cbnd, Em(1:cbnd), Hm(1:cbnd,1:cbnd))
+             call s_diag_z(cbnd, Em, Hm)
 
              ! project effective hamiltonian from the Kohn-Sham basis
              ! to the local basis, and then sum it up.
@@ -406,6 +396,12 @@
                  be2 = be1 + p
                  cbnd2 = be2 - bs2 + 1
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
+
+     allocate(Xe(qdim,qdim), stat = istat)
+     if ( istat /= 0 ) then
+         call s_print_error('cal_eimps','can not allocate enough memory')
+     endif ! back if ( istat /= 0 ) block
+
                  !
                  ! downfold the hamiltonian
                  call one_psi_chi(cbnd2, cdim, k, s, t, Hm(bs2:be2,bs2:be2), Xe(1:cdim,1:cdim))
