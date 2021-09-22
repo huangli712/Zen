@@ -378,37 +378,45 @@
              ! project effective hamiltonian from the Kohn-Sham basis
              ! to the local basis, and then sum it up.
              do t=1,ngrp
-                 ! reset Xe
-                 Xe = czero
-                 !
                  ! get number of orbitals for this group
                  cdim = ndim(t)
                  !
                  ! get dft band window for this group
                  bs1 = kwin(k,s,1,t)
                  be1 = kwin(k,s,2,t)
+                 !
+                 ! determine cbnd1
+                 ! local band window is only a subset of global band window
                  cbnd1 = be1 - bs1 + 1
                  call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
                  !
-                 ! get shifted dft band window for this group
+                 ! convert the band index to 1-based
                  p = 1 - bs ! it is shift
                  bs2 = bs1 + p
                  be2 = be1 + p
-                 cbnd2 = be2 - bs2 + 1
+                 cbnd2 = be2 - bs2 + 1 ! cbnd2 is equal to cbnd1
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
-
-     allocate(Xe(qdim,qdim), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_eimps','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-
+                 !
+                 ! allocate memory for Xe to avoid segment fault
+                 allocate(Xe(cdim,cdim), stat = istat)
+                 if ( istat /= 0 ) then
+                     call s_print_error('cal_eimps','can not allocate enough memory')
+                 endif ! back if ( istat /= 0 ) block
+                 Xe = czero
                  !
                  ! downfold the hamiltonian
-                 call one_psi_chi(cbnd2, cdim, k, s, t, Hm(bs2:be2,bs2:be2), Xe(1:cdim,1:cdim))
+                 call one_psi_chi(cbnd2, cdim, k, s, t, Hm(bs2:be2,bs2:be2), Xe)
                  !
                  ! merge the contribution
-                 eimps(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) + Xe(1:cdim,1:cdim) * weight(k)
+                 eimps(1:cdim,1:cdim,s,t) = eimps(1:cdim,1:cdim,s,t) + Xe * weight(k)
+                 !
+                 ! deallocate memory for Xe to avoid segment fault
+                 if ( allocated(Xe) ) deallocate(Xe)
              enddo ! over t={1,ngrp} loop
+
+             ! deallocate memory
+             if ( allocated(Em) ) deallocate(Em)
+             if ( allocated(Hm) ) deallocate(Hm)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
@@ -432,10 +440,6 @@
      eimps = eimps_mpi / float(nkpt)
 
      ! deallocate memory
-     if ( allocated(Em) ) deallocate(Em)
-     if ( allocated(Hm) ) deallocate(Hm)
-     if ( allocated(Xe) ) deallocate(Xe)
-     !
      if ( allocated(eimps_mpi) ) deallocate(eimps_mpi)
 
 !! body]
