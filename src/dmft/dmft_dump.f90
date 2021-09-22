@@ -435,14 +435,14 @@
      complex(dp), intent(in) :: weiss(qdim,qdim,nmesh,nspin,ngrp)
 
 !! local variables
-     ! loop index for impurity sites
-     integer :: t, r
-
      ! loop index for spins
      integer :: s
 
      ! loop index for frequency grid
      integer :: m
+
+     ! loop index for groups
+     integer :: t, r
 
      ! loop index for correlated orbitals
      integer :: p, q
@@ -468,7 +468,7 @@
          ! get the corresponding impurity site
          r = g_imp(t)
          !
-         ! it is not a correlated problem
+         ! it is not a correlated group
          if ( r == 0 ) CYCLE
          !
          do s=1,nspin
