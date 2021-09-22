@@ -348,11 +348,13 @@
          call s_print_error('cal_so_ho','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
+     ! check arguments
+     call s_assert(cbnd == be - bs + 1, 'cbnd is wrong')
+
      ! evaluate Em, which is just some dft eigenvalues
      Em = enk(bs:be,k,s)
 
      ! convert `Em` to diagonal matrix `Hm`
-     call s_assert(cbnd == be - bs + 1, 'cbnd is wrong')
      call s_diag_z(cbnd, Em, Hm)
 
      ! combine `Hm` and `So` to build the effective hamiltonian
