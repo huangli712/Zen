@@ -266,22 +266,22 @@
      implicit none
 
 !! local variables
+     ! loop index for k-points
+     integer :: k
+
      ! loop index for spins
      integer :: s
 
-     ! loop index for k-points
-     integer :: k
+     ! index for groups
+     integer :: t
 
      ! loop index for orbitals
      integer :: p
 
-     ! index for impurity sites
-     integer :: t
-
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer :: cbnd, cbnd1, cbnd2
 
-     ! number of correlated orbitals for given impurity site
+     ! number of correlated orbitals for given group
      integer :: cdim
 
      ! band window: start index and end index for bands
@@ -362,13 +362,20 @@
              write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
              write(mystd,'(2X,a,i2)') 'proc: ', myid
 
-             ! evaluate `Em`, which is the eigenvalues substracted
-             ! by the fermi level.
+             ! evaluate Em
+             !
+             ! reset it
              Em = czero
+             !
+             ! it is the eigenvalues substracted by the fermi level.
              Em(1:cbnd) = enk(bs:be,k,s) - fermi
 
-             ! convert `Em` to diagonal matrix `Hm`
+             ! build diagonal Kohn-Sham hamiltonian
+             !
+             ! reset it
              Hm = czero
+             !
+             ! convert Em to diagonal matrix Hm
              call s_diag_z(cbnd, Em(1:cbnd), Hm(1:cbnd,1:cbnd))
 
              ! project effective hamiltonian from the Kohn-Sham basis
