@@ -938,10 +938,21 @@
 
          ! allocate memory
          allocate(Im(cdim,cdim), stat = istat)
-         allocate(Em(cdim,cdim), stat = istat)
-         allocate(Tm(cdim,cdim), stat = istat)
-         allocate(Sm(cdim,cdim), stat = istat)
+         if ( istat /= 0 ) then
+             call s_print_error('cal_delta','can not allocate enough memory')
+         endif ! back if ( istat /= 0 ) block
          !
+         allocate(Em(cdim,cdim), stat = istat)
+         if ( istat /= 0 ) then
+             call s_print_error('cal_delta','can not allocate enough memory')
+         endif ! back if ( istat /= 0 ) block
+         !
+         allocate(Tm(cdim,cdim), stat = istat)
+         if ( istat /= 0 ) then
+             call s_print_error('cal_delta','can not allocate enough memory')
+         endif ! back if ( istat /= 0 ) block
+         !
+         allocate(Sm(cdim,cdim), stat = istat)
          if ( istat /= 0 ) then
              call s_print_error('cal_delta','can not allocate enough memory')
          endif ! back if ( istat /= 0 ) block
