@@ -190,11 +190,11 @@
      real(dp), intent(out) :: occup
 
 !! local variables
-     ! desired charge density
-     real(dp) :: ndens
-
      ! status flag
      integer  :: istat
+
+     ! desired charge density
+     real(dp) :: ndens
 
      ! dummy array, used to save the eigenvalues of H + \Sigma(i\omega_n)
      complex(dp), allocatable :: eigs(:,:,:,:)
@@ -215,8 +215,8 @@
          call s_print_error('cal_fermi','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-     ! calculate the nominal charge density according to the raw
-     ! dft eigenvalues.
+     ! calculate the nominal charge density.
+     ! the raw Kohn-Sham states are used.
      call cal_nelect(ndens); occup = ndens
 
      ! construct H + \Sigma, then diagonalize it to obtain the
