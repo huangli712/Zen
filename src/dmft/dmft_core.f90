@@ -1269,7 +1269,7 @@
 
              ! build self-energy function Sk
              !
-             ! the self-energy function must be uploaded into Kohn-Sham
+             ! the self-energy function must be upfolded into Kohn-Sham
              ! basis at first. finally, Sk should contain contributions
              ! from all groups, irrespective of correlated or not.
              !
