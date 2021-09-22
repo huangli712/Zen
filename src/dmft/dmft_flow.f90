@@ -13,7 +13,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 07/29/2021 by li huang (created)
-!!!           09/19/2021 by li huang (last modified)
+!!!           09/22/2021 by li huang (last modified)
 !!! purpose : implement the main work flow of dft + dmft calculation.
 !!! status  : unstable
 !!! comment :
@@ -46,7 +46,7 @@
      integer, parameter :: mcut = 16
 
 !! local variables
-     ! loop index for impurity sites
+     ! loop index for groups
      integer :: t
 
      ! loop index for spins
@@ -106,6 +106,7 @@
      enddo ! over t={1,ngrp} loop
 
      ! we substract the double counting terms from sigoo
+     ! be careful, for uncorrelated groups, both sigoo and sigdc are zero.
      sigoo = sigoo - sigdc
 
      ! deallocate memory
@@ -135,7 +136,7 @@
      implicit none
 
 !! local variables
-     ! loop index for impurity sites
+     ! loop index for groups
      integer :: t
 
      ! loop index for spins
@@ -150,9 +151,10 @@
      ! now only the Matsubara frequency axis is supported.
      call s_assert2(axis == 1, 'axis is wrong')
 
-     ! loop over quantum impurities, spins, and frequency points.
+     ! loop over group, spins, and frequency points.
      !
      ! substract the double counting terms: new sigma = sigma - sigdc.
+     ! be careful, for uncorrelated groups, both sigma and sigdc are zero.
      do t=1,ngrp
          do s=1,nspin
              do m=1,nmesh
