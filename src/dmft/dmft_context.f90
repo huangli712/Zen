@@ -146,7 +146,7 @@
 !!
 !! specify the windows of dft bands for projectors. there is a one-to-one
 !! match between each group of projectors and each window of dft bands.
-!! in other words, the number of groups and number of windows are equal. 
+!! in other words, the number of groups and number of windows are equal.
 !!
   module dmft_window
      implicit none
