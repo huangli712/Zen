@@ -1311,6 +1311,9 @@
                  !
                  ! merge the contribution
                  Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk
+                 !
+                 ! deallocate memory for Xk to avoid segment falut
+                 if ( allocated(Xk) ) deallocate(Xk)
              enddo ! over t={1,ngrp} loop
 
              ! calculate lattice green's function
@@ -1329,13 +1332,9 @@
                  enddo ! over q={1,cbnd} loop
              enddo ! over p={1,cbnd} loop
 
-
-
-
-
-
-
-
+             ! deallocate memory
+             if ( allocated(Sk) ) deallocate(Sk)
+             if ( allocated(Gk) ) deallocate(Gk)
 
          enddo KPNT_LOOP ! over k={1,nkpt} loop
      enddo SPIN_LOOP ! over s={1,nspin} loop
@@ -1359,9 +1358,6 @@
      kocc = kocc_mpi
 
      ! deallocate memory
-     if ( allocated(Sk) ) deallocate(Sk)
-     if ( allocated(Xk) ) deallocate(Xk)
-     if ( allocated(Gk) ) deallocate(Gk)
      if ( allocated(kocc_mpi) ) deallocate(kocc_mpi)
 
 !! body]
