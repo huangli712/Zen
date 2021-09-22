@@ -426,7 +426,7 @@
      implicit none
 
 !! external arguments
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer, intent(in) :: cbnd
 
      ! band window: start index and end index for bands
@@ -476,10 +476,13 @@
          call s_print_error('cal_sk_gk','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
+     ! check arguments
+     call s_assert(cbnd == be - bs + 1, 'cbnd is wrong')
+
      ! evaluate Fm, which is k-dependent, but frequency-independent.
      !
      ! if you want to consider magnetic or the other external fields,
-     ! you can insert your codes here.
+     ! please insert your codes here.
      Fm = fermi - enk(bs:be,k,s)
 
      ! loop over frequency points
@@ -527,10 +530,10 @@
      implicit none
 
 !! external arguments
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer, intent(in) :: cbnd
 
-     ! number of correlated orbitals for given impurity site
+     ! number of correlated orbitals for given group
      integer, intent(in) :: cdim
 
      ! index for k-points
@@ -539,13 +542,13 @@
      ! index for spin
      integer, intent(in) :: s
 
-     ! index for impurity sites
+     ! index for groups
      integer, intent(in) :: t
 
      ! lattice green's function at given k-point and spin
      complex(dp), intent(in)  :: Gk(cbnd,cbnd,nmesh)
 
-     ! local green's function (contributions from the given k-point and spin)
+     ! local green's function (contributions from given k-point and spin)
      complex(dp), intent(out) :: Gl(cdim,cdim,nmesh)
 
 !! [body
