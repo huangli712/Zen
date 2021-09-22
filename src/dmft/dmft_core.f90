@@ -1000,7 +1000,7 @@
      ! assumed fermi level
      real(dp), intent(in)  :: fermi
 
-     ! occupation number
+     ! calculated occupation number
      real(dp), intent(out) :: val
 
      ! eigenvalues for H(k) + \Sigma(i\omega_n)
@@ -1010,6 +1010,12 @@
      complex(dp), intent(in) :: einf(xbnd,nkpt,nspin)
 
 !! local variables
+     ! band window: start index and end index for bands
+     integer  :: bs, be
+
+     ! number of included dft bands for given k-point and spin
+     integer  :: cbnd
+
      ! loop index for bands
      integer  :: b
 
@@ -1019,14 +1025,8 @@
      ! loop index for spins
      integer  :: s
 
-     ! loop index for frequency mesh
+     ! loop index for frequency
      integer  :: m
-
-     ! band window: start index and end index for bands
-     integer  :: bs, be
-
-     ! number of dft bands for given k-point and spin
-     integer  :: cbnd
 
      ! status flag
      integer  :: istat
@@ -1041,7 +1041,7 @@
      complex(dp), allocatable :: gloc(:,:,:)
 
 !! external functions
-     ! used to calculate fermi-dirac function
+     ! it is used to calculate fermi-dirac function
      real(dp), external :: fermi_dirac
 
 !! [body
@@ -1069,10 +1069,11 @@
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=1,nkpt
 
-             ! determine the band window
+             ! determine the global band window
              bs = qwin(k,s,1)
              be = qwin(k,s,2)
              !
+             ! determine cbnd
              cbnd = be - bs + 1
 
              ! here, the asymptotic part is substracted
@@ -1098,11 +1099,11 @@
      do s=1,nspin
          do k=1,nkpt
 
-             ! determine the band window
-             ! see remarks in cal_nelect()
+             ! determine the global band window
              bs = qwin(k,s,1)
              be = qwin(k,s,2)
              !
+             ! determine cbnd
              cbnd = be - bs + 1
 
              ! here, the asymptotic part is added
