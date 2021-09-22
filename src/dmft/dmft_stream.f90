@@ -444,6 +444,7 @@
      ! broadcast data
      call mp_bcast( i_grp, master )
      call mp_bcast( i_wnd, master )
+     !
      call mp_bcast( g_imp, master )
      call mp_bcast( w_imp, master )
 
@@ -453,7 +454,6 @@
 # endif  /* MPI */
 
      ! additional check for the data
-     ! all of the impurity problems should share the same band window!
      call s_assert2(nsite <= ngrp, 'nsite must be smaller or equal to ngrp')
      !
      call s_assert2(nwnd == ngrp, 'nwnd must be equal to ngrp')
@@ -530,11 +530,13 @@
          ! read data
          do i=1,ngrp
              read(mytmp,*)
+             !
              read(mytmp,*) chr1, chr2, site(i)
              read(mytmp,*) chr1, chr2, l(i)
              read(mytmp,*) chr1, chr2, corr(i)
              read(mytmp,*) chr1, chr2, shell(i)
              read(mytmp,*) chr1, chr2, ndim(i)
+             !
              read(mytmp,*)
          enddo ! over i={1,ngrp} loop
 
@@ -574,9 +576,9 @@
 !!
 !! @sub dmft_input_window
 !!
-!! read in band windows of projectors (see module dmft_window). the data
-!! are used to upfold or downfold the self-energy functions and green's
-!! functions.
+!! read in dft band windows of projectors (see module dmft_window). the
+!! data are used to upfold or downfold the self-energy functions and
+!! the green's functions.
 !!
   subroutine dmft_input_window()
      use constants, only : mytmp
@@ -642,15 +644,19 @@
          ! read data
          do i=1,nwnd
              read(mytmp,*)
+             !
              read(mytmp,*) chr1, chr2, bmin(i)
              read(mytmp,*) chr1, chr2, bmax(i)
              read(mytmp,*) chr1, chr2, nbnd(i)
+             !
              read(mytmp,*) ! for kwin
+             !
              do s=1,nspin
                  do k=1,nkpt
                      read(mytmp,*) itmp, itmp, kwin(k,s,1,i), kwin(k,s,2,i)
                  enddo ! over k={1,nkpt} loop
              enddo ! over s={1,nspin} loop
+             !
              read(mytmp,*)
          enddo ! over i={1,nwnd} loop
 
@@ -689,7 +695,8 @@
          enddo ! over k={1,nkpt} loop
      enddo ! over s={1,nspin} loop
      !
-     xbnd = maxval(bmax) - minval(bmin) + 1
+     itmp = maxval(bmax) - minval(bmin) + 1
+     call s_assert2(itmp == xbnd, 'xbnd is wrong')
 
 !! body]
 
