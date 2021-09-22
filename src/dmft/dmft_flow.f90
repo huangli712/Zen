@@ -814,7 +814,7 @@
 ! from the self-energy function. see subroutine cal_sigma().
 !
 
-     ! loop over quantum impurities
+     ! loop over groups
      SITE_LOOP: do t=1,ngrp
 
          ! get size of orbital space
@@ -889,16 +889,16 @@
      implicit none
 
 !! local variables
-     ! index for impurity sites
-     integer :: t
-
      ! loop index for spin
      integer :: s
+
+     ! index for groups
+     integer :: t
 
      ! loop index for frequency mesh
      integer :: m
 
-     ! number of correlated orbitals for given impurity site
+     ! number of correlated orbitals for given group
      integer :: cdim
 
      ! status flag
@@ -930,7 +930,7 @@
          write(mystd,'(4X,a,2X,i2,2X,a)') 'calculate delta for', ngrp, 'groups'
      endif ! back if ( myid == master ) block
 
-     ! loop over quantum impurities
+     ! loop over groups
      SITE_LOOP: do t=1,ngrp
 
          ! determine dimensional parameter
