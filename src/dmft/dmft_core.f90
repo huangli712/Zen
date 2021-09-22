@@ -1314,7 +1314,7 @@
              enddo ! over t={1,ngrp} loop
 
              ! calculate lattice green's function
-             call cal_sk_gk(cbnd, bs, be, k, s, Sk(1:cbnd,1:cbnd,:), Gk(1:cbnd,1:cbnd,:))
+             call cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
 
              ! try to calculate momentum-dependent and spin-dependent
              ! density matrix.
