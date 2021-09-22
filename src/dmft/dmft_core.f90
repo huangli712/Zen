@@ -747,6 +747,12 @@
      real(dp), intent(out)    :: ecorr
 
 !! local variables
+     ! band window: start index and end index for bands
+     integer :: bs, be
+
+     ! number of included dft bands for given k-point and spin
+     integer :: cbnd
+
      ! index for spins
      integer :: s
 
@@ -755,12 +761,6 @@
 
      ! index for orbitals
      integer :: p, q
-
-     ! band window: start index and end index for bands
-     integer :: bs, be
-
-     ! number of dft bands for given k-point and spin
-     integer :: cbnd
 
      ! status flag
      integer :: istat
@@ -818,12 +818,14 @@
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=myid+1,nkpt,nprocs
 
-             ! evaluate band window for the current k-point and spin.
+             ! evaluate global band window for the current k-point and spin.
              bs = qwin(k,s,1)
              be = qwin(k,s,2)
 
              ! determine cbnd
              cbnd = be - bs + 1
+             !
+             ! sanity check
              call s_assert2(cbnd <= xbnd, 'cbnd is wrong')
 
              ! provide some useful information
@@ -881,6 +883,8 @@
 
      ! get the final correction for density matrix
      gcorr = gcorr_mpi
+
+     ! renormalize ecorr
      ecorr = ecorr_mpi / float(nkpt)
      !
      if ( nspin == 1 ) then
@@ -890,6 +894,7 @@
      ! deallocate memory
      if ( allocated(Em) ) deallocate(Em)
      if ( allocated(Hm) ) deallocate(Hm)
+     !
      if ( allocated(gcorr_mpi)) deallocate(gcorr_mpi)
 
 !! body]
