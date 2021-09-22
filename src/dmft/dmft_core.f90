@@ -107,7 +107,7 @@
 !! @sub cal_sk_hk
 !!
 !! try to build H(k) + \Sigma(i\omega_n). here, \Sigma should contain
-!! contributions from all impurity sites.
+!! contributions from all groups.
 !!
   subroutine cal_sk_hk(cbnd, bs, be, k, s, Sk, Hk)
      use constants, only : dp
@@ -119,7 +119,7 @@
      implicit none
 
 !! external arguments
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer, intent(in) :: cbnd
 
      ! band window: start index and end index for bands
@@ -161,11 +161,13 @@
          call s_print_error('cal_sk_hk','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
+     ! check arguments
+     call s_assert(cbnd == be - bs + 1, 'cbnd is wrong')
+
      ! evaluate Em, which is just some dft eigenvalues
      Em = enk(bs:be,k,s)
 
      ! convert `Em` to diagonal matrix `Hm`
-     call s_assert(cbnd == be - bs + 1, 'cbnd is wrong')
      call s_diag_z(cbnd, Em, Hm)
 
      ! combine `Hm` and `Sk` to build the effective hamiltonian
