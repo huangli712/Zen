@@ -788,9 +788,11 @@
 
          ! read lvect
          read(mytmp,*) ! header
+         !
          do i=1,3
              read(mytmp,*) lvect(i,1:3)
          enddo ! over i={1,3} loop
+         !
          read(mytmp,*) ! empty line
 
          ! read coord
@@ -1232,9 +1234,12 @@
                  do k=1,nkpt
                      do b=1,nbnd(g)
                          do d=1,ndim(g)
+                             !
                              read(mytmp,*) re, im
+                             !
                              chipsi(d,b,k,s,g) = dcmplx(re,+im)
                              psichi(b,d,k,s,g) = dcmplx(re,-im)
+                             !
                          enddo ! over d={1,ndim(g)} loop
                      enddo ! over b={1,nbnd(g)} loop
                  enddo ! over k={1,nkpt} loop
@@ -1356,6 +1361,7 @@
          read(mytmp,*) ! empty line
 
          ! parse the data
+         ! be careful, the data are for correlated orbitals only.
          do i=1,nsite
              do s=1,nspin
                  !
@@ -1496,9 +1502,11 @@
              call s_assert2(itmp == ndim(i_grp(i)), 'ndim is wrong')
              call s_assert2(itmp <= qdim, 'ndim is wrong')
          enddo ! over i={1,nsite} loop
+         !
          read(mytmp,*) ! empty line
 
          ! parse the data
+         ! be careful, the data are for correlated orbitals only.
          do i=1,nsite
              do s=1,nspin
                  !
