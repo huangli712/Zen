@@ -12,7 +12,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/18/2021 by li huang (last modified)
+!!!           09/22/2021 by li huang (last modified)
 !!! purpose : provide some subroutines to write down the calculated data.
 !!! status  : unstable
 !!! comment :
@@ -83,11 +83,11 @@
      complex(dp), intent(in) :: eimps(qdim,qdim,nspin,ngrp)
 
 !! local variables
-     ! loop index for impurity sites
-     integer :: t, r
-
      ! loop index for spins
      integer :: s
+
+     ! loop index for groups
+     integer :: t, r
 
      ! loop index for correlated orbitals
      integer :: p, q
@@ -112,7 +112,7 @@
          ! get the corresponding impurity site
          r = g_imp(t)
          !
-         ! it is not a correlated problem
+         ! it is not a correlated group
          if ( r == 0 ) CYCLE
          !
          do s=1,nspin
@@ -166,11 +166,11 @@
      complex(dp), intent(in) :: eimpx(qdim,qdim,nspin,ngrp)
 
 !! local variables
-     ! loop index for impurity sites
-     integer :: t, r
-
      ! loop index for spins
      integer :: s
+
+     ! loop index for groups
+     integer :: t, r
 
      ! loop index for correlated orbitals
      integer :: p, q
@@ -195,7 +195,7 @@
          ! get the corresponding impurity site
          r = g_imp(t)
          !
-         ! it is not a correlated problem
+         ! it is not a correlated group
          if ( r == 0 ) CYCLE
          !
          do s=1,nspin
