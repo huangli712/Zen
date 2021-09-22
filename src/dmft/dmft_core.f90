@@ -172,7 +172,9 @@
 
      ! combine `Hm` and `Sk` to build the effective hamiltonian
      FREQ_LOOP: do m=1,nmesh
+         !
          Hk(:,:,m) = Hm + Sk(:,:,m)
+         !
      enddo FREQ_LOOP ! over m={1,nmesh} loop
 
      ! deallocate memory
