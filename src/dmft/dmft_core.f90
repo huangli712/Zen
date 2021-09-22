@@ -18,7 +18,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 02/23/2021 by li huang (created)
-!!!           09/19/2021 by li huang (last modified)
+!!!           09/22/2021 by li huang (last modified)
 !!! purpose : provide the core service subroutines for the work flow of
 !!!           the dft + dmft calculations.
 !!! status  : unstable
@@ -47,7 +47,7 @@
      implicit none
 
 !! external arguments
-     ! number of correlated orbitals for given impurity site
+     ! number of correlated orbitals for given group
      integer, intent(in) :: cdim
 
      ! number of dft bands for given k-point and spin
@@ -59,7 +59,7 @@
      ! index for spin
      integer, intent(in) :: s
 
-     ! index for impurity sites
+     ! index for groups
      integer, intent(in) :: t
 
      ! self-energy function in Kohn-Sham basis
@@ -84,7 +84,7 @@
          call s_print_error('cal_sl_sk','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-     ! we use Sl to store parts of sigma.
+     ! we use Sl to save self-energy function temporarily
      !
      ! note that actually sigdc has been substracted from sigma before
      ! hand. please see cal_sigma() for more details.
