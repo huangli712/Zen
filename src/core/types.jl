@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/21
+# Last modified: 2021/09/05
 #
 
 #=
@@ -536,7 +536,7 @@ May need to be fixed for the other DFT codes.
 =#
 
 """
-    PrTrait(site::I64, sort::String, desc::String)
+    PrTrait(site::I64, desc::String)
 
 Outer constructor for PrTrait struct.
 """

@@ -301,7 +301,7 @@ function vasp_stop()
     vaspc_lock("create", "dft")
 
     # Sleep until the STOPCAR is deleted automatically, which means
-    # that the vasp process is termined completely. 
+    # that the vasp process is termined completely.
     while true
         # Sleep two seconds
         sleep(2)
@@ -516,7 +516,7 @@ See also: [`write_gamma`](@ref), [`read_gamma`](@ref).
 """
 function vaspc_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
     # Extract the dimensional parameters
-    _, qbnd, nkpt, nspin = size(gamma)
+    _, xbnd, nkpt, nspin = size(gamma)
     @assert nspin == 1 # Current limitation
 
     # Determine filename for correction for density matrix
@@ -531,7 +531,7 @@ function vaspc_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
             bs = kwin[k,1,1]
             be = kwin[k,1,2]
             cbnd = be - bs + 1
-            @assert cbnd ≤ qbnd
+            @assert cbnd ≤ xbnd
             @printf(fout, " %i  %i  %i\n", k, bs, be)
 
             # Go through each band

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/08/11
+# Last modified: 2021/09/14
 #
 
 #=
@@ -173,11 +173,11 @@ function chk_dict()
     # C2. Check rationalities
     #
     # Check dft block
-    @assert get_d("engine") in ("vasp",)
+    @assert get_d("engine") in ("vasp", "pwscf")
     @assert get_d("projtype") in ("plo", "wannier")
     @assert get_d("smear") in ("mp2", "mp1", "gauss", "tetra")
     @assert get_d("kmesh") in ("accurate", "medium", "coarse", "file")
-    @assert iseven( length( get_d("window") ) )
+    #@assert iseven( length( get_d("window") ) )
     #
     # Check dmft block
     @assert get_m("mode") in (1, 2)
@@ -201,12 +201,19 @@ function chk_dict()
     # C3. Check self-consistency
     #
     # Check dft block
-    @assert get_d("projtype") == "plo"
+    if get_d("engine") == "vasp"
+        @assert get_d("projtype") == "plo"
+    elseif get_d("engine") == "pwscf"
+        @assert get_d("projtype") == "wannier"
+    end
+    if get_d("engine") == "pwscf"
+        @assert get_d("smear") != "tetra"
+    end
     if get_d("lspinorb")
         @assert !get_d("lspins")
     end
     if get_d("lproj")
-        @assert !get_d("lsymm") && !isa(get_d("sproj"), Missing)
+        @assert !isa(get_d("sproj"), Missing)
     end
     #
     # Check solver block

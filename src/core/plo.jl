@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/14
+# Last modified: 2021/09/22
 #
 
 #=
@@ -189,11 +189,11 @@ function plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
     # They are actually copies of i_grp and g_imp
     Map.i_wnd[:] = Map.i_grp[:]
     #
-    println("  > Create quantum impurity problems -> windows (i_grp)")
+    println("  > Create quantum impurity problems -> windows (i_wnd)")
     #
     Map.w_imp[:] = Map.g_imp[:]
     #
-    println("  > Create windows -> quantum impurity problems (g_imp)")
+    println("  > Create windows -> quantum impurity problems (w_imp)")
 
     # Return the desired struct
     return Map

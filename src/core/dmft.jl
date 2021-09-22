@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/08/13
+# Last modified: 2021/09/22
 #
 
 #=
@@ -640,7 +640,7 @@ function read_gamma(fgamma::String = "dmft2/dmft.gamma")
         # Get the dimensional parameters
         nkpt  = parse(I64, line_to_array(fin)[4])
         nspin = parse(I64, line_to_array(fin)[3])
-        qbnd  = parse(I64, line_to_array(fin)[4])
+        xbnd  = parse(I64, line_to_array(fin)[4])
 
         # Skip two lines
         readline(fin)
@@ -649,7 +649,7 @@ function read_gamma(fgamma::String = "dmft2/dmft.gamma")
         # Create arrays
         kmesh = zeros(F64, nkpt, 3)
         kwin = zeros(I64, nkpt, nspin, 2)
-        gamma = zeros(C64, qbnd, qbnd, nkpt, nspin)
+        gamma = zeros(C64, xbnd, xbnd, nkpt, nspin)
 
         # Read the data
         # Go through each spin and 𝑘-point
@@ -675,7 +675,7 @@ function read_gamma(fgamma::String = "dmft2/dmft.gamma")
                 # For band window
                 strs = readline(fin)
                 cbnd = parse(I64, line_to_array(strs)[3])
-                @assert cbnd ≤ qbnd
+                @assert cbnd ≤ xbnd
                 bs = parse(I64, line_to_array(strs)[5])
                 be = parse(I64, line_to_array(strs)[7])
                 @assert bs ≤ be
@@ -971,7 +971,7 @@ See also: [`read_gamma`](@ref), [`write_delta`](@ref), [`write_eimpx`](@ref).
 """
 function write_gamma(kmesh::Array{F64,2}, kwin::Array{I64,3}, gamma::Array{C64,4}, fgamma::String)
     # Extract the dimensional parameters
-    _, qbnd, nkpt, nspin = size(gamma)
+    _, xbnd, nkpt, nspin = size(gamma)
 
     # Determine filename for correction for density matrix
     # So far, `fgamma` is locked.
@@ -982,7 +982,7 @@ function write_gamma(kmesh::Array{F64,2}, kwin::Array{I64,3}, gamma::Array{C64,4
         # Write dimensional parameters
         @printf(fout, "# nkpt : %4i\n", nkpt)
         @printf(fout, "# nspin: %4i\n", nspin)
-        @printf(fout, "# qbnd : %4i\n", qbnd)
+        @printf(fout, "# xbnd : %4i\n", xbnd)
 
         # Write separators
         println(fout)

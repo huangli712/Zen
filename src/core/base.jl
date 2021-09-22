@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/08/12
+# Last modified: 2021/08/30
 #
 
 #=
@@ -712,8 +712,8 @@ If `sc = true`, this function will read in the correction for density
 matrix, and then feed it back to the DFT engine to continue the DFT + DMFT
 calculations.
 
-Now only the vasp engine is supported. If you want to support the other
-DFT engine, this function must be adapted.
+Now only the vasp and pwscf engines are supported. If you want to support
+more DFT engines, this function must be adapted.
 
 See also: [`adaptor_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
@@ -736,6 +736,14 @@ function dft_run(it::IterInfo, lr::Logger, sc::Bool = false)
                 vasp_init(it)
                 vasp_exec(it)
                 vasp_save(it)
+                break
+
+            # For pwscf
+            @case "pwscf"
+                pwscf_init(it)
+                pwscf_exec(it, true)
+                pwscf_exec(it, false)
+                pwscf_save(it)
                 break
 
             @default
@@ -1027,6 +1035,11 @@ function adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
             @time_call vasp_adaptor(DFTData)
             break
 
+        @case "pwscf"
+            pwscfq_files()
+            @time_call pwscf_adaptor(DFTData)
+            break
+
         @default
             sorry()
             break
@@ -1058,7 +1071,7 @@ function adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
 
         # For maximally localized wannier function scheme
         @case "wannier"
-            sorry()
+            @time_call wannier_adaptor(DFTData, ai)
             break
 
         @default

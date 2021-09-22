@@ -4,8 +4,8 @@ Zen is a modern DFT + DMFT (namely, density functional theory plus dynamical mea
 
 * **ZenApps** (v0.9.1-devel.210622)
 * **ZenTools** (v0.9.2-devel.210810)
-* **ZenCore** (0.6.8-devel.210814)
-* **Dyson** (v0.7.1-devel.210803)
+* **ZenCore** (0.7.20-devel.210922)
+* **Dyson** (v0.7.4-devel.210922)
 * **iQIST** (v0.8.1-devel.210509)
 * **Flink** (v1.0.5-devel.210802)
 

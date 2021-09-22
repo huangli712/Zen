@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/08/12
+# Last modified: 2021/09/13
 #
 
 """
@@ -17,6 +17,7 @@ correlated materials. Now this framework is under heavy development.
 
 Zen supports the following DFT backends:
 * `VASP`
+* `PWSCF` (Actually `QUANTUM ESPRESSO`)
 
 Zen supports the following schemes for defining local orbitals:
 * `PLO`
@@ -34,7 +35,7 @@ user interface, including various applications and tools.
 
 For more details about how to obtain, install and use the Zen framework
 and the ZenCore library, please visit the following website:
-* `http://doc.zen`
+* `https://huangli712.github.io/projects/zen/index.html`
 
 Any suggestions, comments, and feedbacks are welcome. Enjoy it!
 """
@@ -64,7 +65,6 @@ using LinearAlgebra
 using Distributed
 using Dates
 using Printf
-using Base: Symbol
 using Base.Math: libm
 
 #=
@@ -413,7 +413,7 @@ export conv_it
 Tools for the vasp software package (adaptor). It provide a lot of
 functions to deal with the vasp-related files.
 
-*Members :
+*Members* :
 
 ```text
 vasp_adaptor   -> Adaptor support.
@@ -472,6 +472,48 @@ export vaspio_eigen
 export vaspio_projs
 export vaspio_fermi
 export vaspio_charge
+
+#=
+### *Includes And Exports* : *pwscf.jl*
+=#
+
+#=
+*Summary* :
+
+Tools for the pwscf software package (adaptor). It provide a lot of
+functions to deal with the pwscf-related files.
+
+*Members* :
+
+```text
+pwscf_adaptor   -> Adaptor support.
+pwscf_init      -> Prepare pwscf's input files.
+pwscf_exec      -> Execute pwscf program.
+pwscf_save      -> Backup pwscf's output files.
+pwscfc_input    -> Generate essential input file (case.scf or case.nscf).
+pwscfq_files    -> Check essential output files.
+pwscfio_energy  -> Read DFT total energy.
+pwscfio_lattice -> Read lattice information.
+pwscfio_kmesh   -> Read kmesh.
+pwscfio_eigen   -> Read eigenvalues.
+pwscfio_fermi   -> Read fermi level.
+```
+=#
+
+#
+include("pwscf.jl")
+#
+export pwscf_adaptor
+export pwscf_init
+export pwscf_exec
+export pwscf_save
+export pwscfc_input
+export pwscfq_files
+export pwscfio_energy
+export pwscfio_lattice
+export pwscfio_kmesh
+export pwscfio_eigen
+export pwscfio_fermi
 
 #=
 ### *Includes And Exports* : *plo.jl*
@@ -535,6 +577,67 @@ export view_ovlp
 export view_dm
 export view_hamk
 export view_dos
+
+#=
+### *Includes And Exports* : *wannier.jl*
+=#
+
+#=
+*Summary* :
+
+Tools for the maximally-localised Wannier function scheme (adaptor).
+
+*Members*:
+
+```text
+wannier_adaptor -> Adaptor support.
+wannier_init    -> Prepare wannier90's input files.
+wannier_exec    -> Execute wannier90 program.
+wannier_save    -> Backup wannier90's output files.
+wannier_monitor -> Check the WFs and projections.
+w90_make_ctrl   -> Prepare control parameters for wannier90.
+w90_make_proj   -> Prepare projections for wannier90.
+w90_make_map    -> Create connection between WFs and impurity problems.
+w90_make_group  -> Create groups of WFs.
+w90_make_window -> Create band windows of WFs.
+w90_make_chipsi -> Build projections.
+w90_read_amat   -> Read w90.amn file.
+w90_read_eigs   -> Read w90.eig file.
+w90_read_hmat   -> Read w90_hr.dat file.
+w90_read_umat   -> Read w90_u.mat file.
+w90_read_udis   -> Read w90_u_dis.mat file.
+w90_read_wout   -> Read w90.wout file.
+w90_write_win   -> Write w90.win file.
+pw2wan_init     -> Prepare pw2wannier90's input files.
+pw2wan_exec     -> Execute pw2wannier90 program.
+pw2wan_save     -> Backup pw2wannier90's output files.
+```
+=#
+
+#
+include("wannier.jl")
+#
+export wannier_adaptor
+export wannier_init
+export wannier_exec
+export wannier_save
+export wannier_monitor
+export w90_make_ctrl
+export w90_make_proj
+export w90_make_map
+export w90_make_group
+export w90_make_window
+export w90_make_chipsi
+export w90_read_amat
+export w90_read_eigs
+export w90_read_hmat
+export w90_read_umat
+export w90_read_udis
+export w90_read_wout
+export w90_write_win
+export pw2wan_init
+export pw2wan_exec
+export pw2wan_save
 
 #=
 ### *Includes And Exports* : *ir.jl*

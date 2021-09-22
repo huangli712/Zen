@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/08/11
+# Last modified: 2021/09/03
 #
 
 #=
@@ -211,14 +211,25 @@ function query_case()
 end
 
 #=
-*Remarks* :
+*Remarks 1* :
 
 For `vasp`, the essential input files include:
+
 * POSCAR
 * POTCAR
 
 As for the `INCAR` and `KPOINTS` files, they should be generated
 automatically. Do not worry about them.
+
+*Remarks 2* :
+
+For `pwscf`, the essential input files include:
+
+* PWSCF.INP
+* Pseudopotential files.
+
+As for the other files, they should be generated automatically. Do
+not worry about them.
 =#
 
 """
@@ -237,6 +248,12 @@ function query_inps(engine::String)
         @case "vasp"
             if !isfile("POSCAR") || !isfile("POTCAR")
                 error("Please provide both POSCAR and POTCAR files")
+            end
+            break
+
+        @case "pwscf"
+            if !isfile("PWSCF.INP")
+                error("Please provide the PWSCF.INP file")
             end
             break
 
@@ -266,7 +283,8 @@ In the `ZenCore` package, the following environment variables matter:
 * ZEN_CORE
 * ZEN_DMFT
 * ZEN_SOLVER
-* VASP_HOME (If you are using vasp as your DFT engine)
+* VASP_HOME (If we are using vasp as our DFT engine)
+* PWSCF_HOME (If we are using pwscf as our DFT engine)
 
 Please setup them in your `.bashrc` (Lniux) or `.profile` (macOS) files.
 =#
@@ -321,6 +339,22 @@ function query_dft(engine::String)
                 return ENV["VASP_HOME"]
             else
                 error("VASP_HOME is undefined")
+            end
+            break
+
+        @case "pwscf"
+            if haskey(ENV, "PWSCF_HOME")
+                return ENV["PWSCF_HOME"]
+            else
+                error("PWSCF_HOME is undefined")
+            end
+            break
+
+        @case "wannier90"
+            if haskey(ENV, "WANNIER90_HOME")
+                return ENV["WANNIER90_HOME"]
+            else
+                error("WANNIER90_HOME is undefined")
             end
             break
 

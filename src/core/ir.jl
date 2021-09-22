@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/14
+# Last modified: 2021/09/22
 #
 
 #=
@@ -68,7 +68,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     irio_fermi(pwd(), D[:fermi])
 
     # I09: Check the validity of the `D` dict further (optional)
-    if get_d("smear") == "tetra"
+    if get_d("smear") == "tetra" && get_d("engine") != "pwscf"
         key_list = [:volt, :itet]
         for k in key_list
             @assert haskey(D, k)
@@ -76,7 +76,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     end
 
     # I10: Write tetrahedron data if they are available
-    if get_d("smear") == "tetra"
+    if get_d("smear") == "tetra" && get_d("engine") != "pwscf"
         irio_tetra(pwd(), D[:volt], D[:itet])
     end
 end
@@ -95,7 +95,7 @@ function ir_save(it::IterInfo)
     file_list = union(fir1, fir2)
     #
     # If tetrahedron data are available
-    if get_d("smear") == "tetra"
+    if get_d("smear") == "tetra" && get_d("engine") != "pwscf"
         push!(file_list, "tetra")
     end
 
@@ -159,8 +159,13 @@ function irio_params(f::String, D::Dict{Symbol,Any})
     # Extract `nwnd`
     nwnd, = size(D[:PW])
     #
-    # Extract qbnd, maximum number of bands in all windows.
+    # Extract qbnd, maximum number of bands in local windows.
     qbnd = maximum( [ D[:PW][w].nbnd for w = 1:nwnd ] )
+    #
+    # Extract xbnd, maximum number of bands included in all windows.
+    _bmax = maximum( [ D[:PW][w].bmax for w = 1:nwnd ] )
+    _bmin = minimum( [ D[:PW][w].bmin for w = 1:nwnd ] )
+    xbnd = _bmax - _bmin + 1
 
     # D[:PW] and D[:PG] should have the same size
     @assert ngrp == nwnd
@@ -207,6 +212,7 @@ function irio_params(f::String, D::Dict{Symbol,Any})
         println(fout, "# Window:")
         println(fout, "nwnd  -> $nwnd")
         println(fout, "qbnd  -> $qbnd")
+        println(fout, "xbnd  -> $xbnd")
         println(fout)
 
         println(fout, "# Sigma:")
