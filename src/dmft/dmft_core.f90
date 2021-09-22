@@ -1278,9 +1278,6 @@
              !
              ! go through each group
              do t=1,ngrp
-                 ! reset Xk
-                 Xk = czero
-                 !
                  ! get number of orbitals for this group
                  cdim = ndim(t)
                  !
@@ -1305,6 +1302,7 @@
                  if ( istat /= 0 ) then
                      call s_print_error('cal_denmat','can not allocate enough memory')
                  endif ! back if ( istat /= 0 ) block
+                 Xk = czero
                  !
                  ! upfold the self-energy function
                  call cal_sl_sk(cdim, cbnd2, k, s, t, Xk)
@@ -1398,22 +1396,22 @@
      complex(dp), intent(out) :: einf(xbnd,nkpt,nspin)
 
 !! local variables
-     ! loop index for spins
-     integer :: s
-
      ! loop index for k-points
      integer :: k
+
+     ! loop index for spin
+     integer :: s
+
+     ! loop index for groups
+     integer :: t
 
      ! loop index for orbitals
      integer :: p
 
-     ! loop index for impurity sites
-     integer :: t
-
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer :: cbnd, cbnd1, cbnd2
 
-     ! number of correlated orbitals for given impurity site
+     ! number of correlated orbitals for given group
      integer :: cdim
 
      ! band window: start index and end index for bands
@@ -1462,6 +1460,11 @@
          call s_print_error('cal_eigsys','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
+     ! reset cbnd and cdim. they will be updated later.
+     ! cbnd should be k-dependent and cdim should be group-dependent.
+     cbnd = 0
+     cdim = 0
+
      ! initialization
      eigs = czero
      einf = czero
@@ -1485,7 +1488,7 @@
      SPIN_LOOP: do s=1,nspin
          KPNT_LOOP: do k=myid+1,nkpt,nprocs
 
-             ! evaluate band window for the current k-point and spin.
+             ! evaluate global band window for the current k-point and spin.
              bs = qwin(k,s,1)
              be = qwin(k,s,2)
 
@@ -1537,21 +1540,25 @@
              Hk = czero
              Ek = czero
              !
-             do t=1,ngrp ! add contributions from all impurity sites
+             ! go through each group
+             do t=1,ngrp ! add contributions from all groups
                  ! get number of orbitals for this group
                  cdim = ndim(t)
                  !
                  ! get dft band window for this group
                  bs1 = kwin(k,s,1,t)
                  be1 = kwin(k,s,2,t)
+                 !
+                 ! determine cbnd1
+                 ! local band window is only a subset of global band window
                  cbnd1 = be1 - bs1 + 1
                  call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
                  !
-                 ! get shifted dft band window for this group
+                 ! convert the band index to 1-based
                  p = 1 - bs ! it is shift
                  bs2 = bs1 + p
                  be2 = be1 + p
-                 cbnd2 = be2 - bs2 + 1
+                 cbnd2 = be2 - bs2 + 1 ! cbnd2 is equal to cbnd1
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
                  !
                  ! allocate memory for Xk to avoid segment fault
@@ -1587,21 +1594,25 @@
              Ho = czero
              Eo = czero
              !
-             do t=1,ngrp ! add contributions from all impurity sites
+             ! go through each group
+             do t=1,ngrp ! add contributions from all groups
                  ! get number of orbitals for this group
                  cdim = ndim(t)
                  !
                  ! get dft band window for this group
                  bs1 = kwin(k,s,1,t)
                  be1 = kwin(k,s,2,t)
+                 !
+                 ! determine cbnd1
+                 ! local band window is only a subset of global band window
                  cbnd1 = be1 - bs1 + 1
                  call s_assert2(cbnd1 <= cbnd, 'cbnd1 is wrong')
                  !
-                 ! get shifted dft band window for this group
+                 ! convert the band index to 1-based
                  p = 1 - bs ! it is shift
                  bs2 = bs1 + p
                  be2 = be1 + p
-                 cbnd2 = be2 - bs2 + 1
+                 cbnd2 = be2 - bs2 + 1 ! cbnd2 is equal to cbnd1
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
                  !
                  ! allocate memory for Xo to avoid segment fault
