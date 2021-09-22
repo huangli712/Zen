@@ -907,7 +907,7 @@
 !!
 !! try to calculate the number of valence electrons by dft occupations
 !! and weights. actually, what we obtain is the nominal occupation
-!! numbers in the selected band window.
+!! numbers in the global band window.
 !!
   subroutine cal_nelect(nelect)
      use constants, only : dp, mystd
@@ -923,18 +923,18 @@
      implicit none
 
 !! external arguments
-     ! number of relevant electrons
+     ! number of valence electrons
      real(dp), intent(out) :: nelect
 
 !! local variables
+     ! band window: start index and end index for bands
+     integer :: bs, be
+
      ! index for k-points
      integer :: k
 
      ! index for spin
      integer :: s
-
-     ! band window: start index and end index for bands
-     integer :: bs, be
 
 !! [body
 
