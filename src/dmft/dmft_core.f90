@@ -299,7 +299,7 @@
 !! @sub cal_so_ho
 !!
 !! try to build H(k) + \Sigma(\infty). here, \Sigma should contain full
-!! contributions from all impurity sites.
+!! contributions from all groups.
 !!
   subroutine cal_so_ho(cbnd, bs, be, k, s, So, Ho)
      use constants, only : dp
@@ -309,7 +309,7 @@
      implicit none
 
 !! external arguments
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer, intent(in) :: cbnd
 
      ! band window: start index and end index for bands
@@ -324,7 +324,7 @@
      ! self-energy function at Kohn-Sham basis, \omega = \infty
      complex(dp), intent(in)  :: So(cbnd,cbnd)
 
-     ! lattice green's function at given k-point and spin
+     ! effective hamiltonian at given k-point and spin, \omega = \infty
      complex(dp), intent(out) :: Ho(cbnd,cbnd)
 
 !! local variables
