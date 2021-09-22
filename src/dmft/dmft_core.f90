@@ -201,7 +201,7 @@
      implicit none
 
 !! external arguments
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer, intent(in) :: cbnd
 
      ! effective hamiltonian: H(k) + \Sigma(i\omega_n)
@@ -382,7 +382,7 @@
      implicit none
 
 !! external arguments
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer, intent(in) :: cbnd
 
      ! effective hamiltonian: H(k) + \Sigma(\infty)
@@ -410,7 +410,7 @@
 !! try to calculate lattice green's function at given k-point and spin.
 !! this subroutine needs the self-energy function at Kohn-Sham basis (i.e
 !! `Sk`), that is the reason why it is named as `cal_sk_gk`. note that Sk
-!! has to contain the full contributions from all impurity sites.
+!! has to contain the full contributions from all group.
 !!
   subroutine cal_sk_gk(cbnd, bs, be, k, s, Sk, Gk)
      use constants, only : dp
