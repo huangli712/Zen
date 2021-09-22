@@ -205,10 +205,10 @@
      implicit none
 
 !! external arguments
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer, intent(in) :: cbnd
 
-     ! number of correlated orbitals for given impurity site
+     ! number of correlated orbitals for given group
      integer, intent(in) :: cdim
 
      ! number of frequency points
@@ -220,7 +220,7 @@
      ! index for spin
      integer, intent(in) :: s
 
-     ! index for impurity sites
+     ! index for groups
      integer, intent(in) :: t
 
      ! input array defined at Kohn-Sham (\psi) basis
@@ -230,13 +230,13 @@
      complex(dp), intent(out) :: Mc(cdim,cdim,nfrq)
 
 !! local variables
-     ! loop index for frequency mesh
+     ! loop index for frequency points
      integer :: f
 
      ! status flag
      integer :: istat
 
-     ! overlap matrix between local orbitals and Kohn-Sham wave-functions
+     ! overlap matrix between local orbitals and Kohn-Sham states
      complex(dp), allocatable :: Cp(:,:)
      complex(dp), allocatable :: Pc(:,:)
 
