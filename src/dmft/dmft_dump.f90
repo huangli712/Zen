@@ -247,23 +247,23 @@
      complex(dp), intent(in) :: eigs(xbnd,nmesh,nkpt,nspin)
 
 !! local variables
-     ! loop index for spins
-     integer :: s
+     ! number of included dft bands for given k-point and spin
+     integer :: cbnd
+
+     ! band window: start index and end index for bands
+     integer :: bs, be
 
      ! loop index for k-points
      integer :: k
+
+     ! loop index for spins
+     integer :: s
 
      ! loop index for frequency grid
      integer :: m
 
      ! loop index for bands in band window
      integer :: q
-
-     ! number of dft bands for given k-point and spin
-     integer :: cbnd
-
-     ! band window: start index and end index for bands
-     integer :: bs, be
 
 !! [body
 
@@ -343,14 +343,14 @@
      complex(dp), intent(in) :: green(qdim,qdim,nmesh,nspin,ngrp)
 
 !! local variables
-     ! loop index for impurity sites
-     integer :: t, r
-
      ! loop index for spins
      integer :: s
 
      ! loop index for frequency grid
      integer :: m
+
+     ! loop index for groups
+     integer :: t, r
 
      ! loop index for correlated orbitals
      integer :: p, q
@@ -376,7 +376,7 @@
          ! get the corresponding impurity site
          r = g_imp(t)
          !
-         ! it is not a correlated problem
+         ! it is not a correlated group
          if ( r == 0 ) CYCLE
          !
          do s=1,nspin
