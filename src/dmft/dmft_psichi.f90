@@ -8,7 +8,7 @@
 !!! type    : subroutines
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 07/29/2021 by li huang (created)
-!!!           09/19/2021 by li huang (last modified)
+!!!           09/22/2021 by li huang (last modified)
 !!! purpose : service subroutines for upfolding and downfolding.
 !!! status  : unstable
 !!! comment :
@@ -35,10 +35,10 @@
      implicit none
 
 !! external arguments
-     ! number of correlated orbitals for given impurity site
+     ! number of correlated orbitals for given group
      integer, intent(in) :: cdim
 
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer, intent(in) :: cbnd
 
      ! number of frequency points
@@ -50,7 +50,7 @@
      ! index for spin
      integer, intent(in) :: s
 
-     ! index for impurity sites
+     ! index for groups
      integer, intent(in) :: t
 
      ! input array defined at local orbital (\chi) basis
@@ -60,13 +60,13 @@
      complex(dp), intent(out) :: Mp(cbnd,cbnd,nfrq)
 
 !! local variables
-     ! loop index for frequency mesh
+     ! loop index for frequency points
      integer :: f
 
      ! status flag
      integer :: istat
 
-     ! overlap matrix between local orbitals and Kohn-Sham wave-functions
+     ! overlap matrix between local orbitals and Kohn-Sham states
      complex(dp), allocatable :: Cp(:,:)
      complex(dp), allocatable :: Pc(:,:)
 
@@ -122,10 +122,10 @@
      implicit none
 
 !! external arguments
-     ! number of correlated orbitals for given impurity site
+     ! number of correlated orbitals for given group
      integer, intent(in) :: cdim
 
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer, intent(in) :: cbnd
 
      ! index for k-points
@@ -134,7 +134,7 @@
      ! index for spin
      integer, intent(in) :: s
 
-     ! index for impurity sites
+     ! index for groups
      integer, intent(in) :: t
 
      ! input matrix defined at local orbital (\chi) basis
@@ -147,7 +147,7 @@
      ! status flag
      integer :: istat
 
-     ! overlap matrix between local orbitals and Kohn-Sham wave-functions
+     ! overlap matrix between local orbitals and Kohn-Sham states
      complex(dp), allocatable :: Cp(:,:)
      complex(dp), allocatable :: Pc(:,:)
 
