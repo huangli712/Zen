@@ -219,8 +219,8 @@
      ! the raw Kohn-Sham states are used.
      call cal_nelect(ndens); occup = ndens
 
-     ! construct H + \Sigma, then diagonalize it to obtain the
-     ! dft + dmft eigenvalues.
+     ! construct H + \Sigma
+     ! then diagonalize it to obtain the dft + dmft eigenvalues.
      call cal_eigsys(eigs, einf)
 
      ! search the fermi level using bisection algorithm.
