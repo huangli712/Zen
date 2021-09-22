@@ -50,7 +50,7 @@
      ! number of correlated orbitals for given group
      integer, intent(in) :: cdim
 
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer, intent(in) :: cbnd
 
      ! index for k-points
@@ -217,7 +217,9 @@
 !! [body
 
      FREQ_LOOP: do m=1,nmesh
+         !
          call s_eigvals_zg(cbnd, cbnd, Hk(:,:,m), Ek(:,m))
+         !
      enddo FREQ_LOOP ! over m={1,nmesh} loop
 
 !! body]
@@ -246,10 +248,10 @@
      implicit none
 
 !! external arguments
-     ! number of correlated orbitals for given impurity site
+     ! number of correlated orbitals for given group
      integer, intent(in) :: cdim
 
-     ! number of dft bands for given k-point and spin
+     ! number of included dft bands for given k-point and spin
      integer, intent(in) :: cbnd
 
      ! index for k-points
@@ -258,7 +260,7 @@
      ! index for spin
      integer, intent(in) :: s
 
-     ! index for impurity sites
+     ! index for groups
      integer, intent(in) :: t
 
      ! self-energy function at \omega = \infty in Kohn-Sham basis
@@ -279,7 +281,7 @@
          call s_print_error('cal_sl_so','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-     ! here we use Sl to save parts of sigoo
+     ! here we use Sl to save self-energy function temporarily
      Sl = sigoo(1:cdim,1:cdim,s,t)
 
      ! upfolding: Sl (local basis) -> Sk (Kohn-Sham basis)
