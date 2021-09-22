@@ -1256,25 +1256,16 @@
              write(mystd,'(2X,a,3i3)',advance='no') 'window: ', bs, be, cbnd
              write(mystd,'(2X,a,i2)') 'proc: ', myid
 
-     ! allocate memory
-     allocate(Sk(xbnd,xbnd,nmesh), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_denmat','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-     allocate(Xk(xbnd,xbnd,nmesh), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_denmat','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-     !
-     allocate(Gk(xbnd,xbnd,nmesh), stat = istat)
-     if ( istat /= 0 ) then
-         call s_print_error('cal_denmat','can not allocate enough memory')
-     endif ! back if ( istat /= 0 ) block
-
-
-
-
+             ! allocate memory
+             allocate(Sk(cbnd,cbnd,nmesh), stat = istat)
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_denmat','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
+             !
+             allocate(Gk(cbnd,cbnd,nmesh), stat = istat)
+             if ( istat /= 0 ) then
+                 call s_print_error('cal_denmat','can not allocate enough memory')
+             endif ! back if ( istat /= 0 ) block
 
              ! build self-energy function Sk
              !
@@ -1309,11 +1300,17 @@
                  cbnd2 = be2 - bs2 + 1 ! cbnd2 is equal to cbnd1
                  call s_assert2(cbnd2 <= cbnd, 'cbnd2 is wrong')
                  !
+                 ! allocate memory for Xk to avoid segment fault
+                 allocate(Xk(cbnd2,cbnd2,nmesh), stat = istat)
+                 if ( istat /= 0 ) then
+                     call s_print_error('cal_denmat','can not allocate enough memory')
+                 endif ! back if ( istat /= 0 ) block
+                 !
                  ! upfold the self-energy function
-                 call cal_sl_sk(cdim, cbnd2, k, s, t, Xk(bs2:be2,bs2:be2,:))
+                 call cal_sl_sk(cdim, cbnd2, k, s, t, Xk)
                  !
                  ! merge the contribution
-                 Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk(bs2:be2,bs2:be2,:)
+                 Sk(bs2:be2,bs2:be2,:) = Sk(bs2:be2,bs2:be2,:) + Xk
              enddo ! over t={1,ngrp} loop
 
              ! calculate lattice green's function
