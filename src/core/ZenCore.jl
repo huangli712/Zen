@@ -487,6 +487,8 @@ lot of functions to deal with the quantum espresso (pwscf) related files.
 
 ```text
 qe_adaptor   -> Adaptor support.
+qe_to_wan    -> Adaptor support.
+qe_to_plo    -> Adaptor support.
 qe_init      -> Prepare quantum espresso's input files.
 qe_exec      -> Execute quantum espresso program.
 qe_save      -> Backup quantum espresso's output files.
@@ -504,6 +506,8 @@ qeio_fermi   -> Read fermi level.
 include("qe.jl")
 #
 export qe_adaptor
+export qe_to_wan
+export qe_to_plo
 export qe_init
 export qe_exec
 export qe_save

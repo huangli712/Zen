@@ -14,10 +14,9 @@
 """
     wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
 
-Adaptor support. It will firstly launch wannier90 + pw2wannier90 codes to
-generate maximally localized wannier functions and related transformation
-matrix. Then it will read and parse the outputs, convert the data into
-IR format. The data contained in `D` dict will be updated.
+Adaptor support. It will read and parse the outputs of the `wannier90`
+code, convert the data into IR format. The data contained in `D` dict
+will be updated.
 
 Be careful, now this adaptor only supports `quantum espresso` (`pwscf`).
 
@@ -36,65 +35,9 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     end
 
     # Extract key parameters
-    case = get_c("case") # Prefix for quantum espresso
     sp = get_d("lspins") # Is it a spin-polarized system
 
-    # Now this feature require quantum espresso as a dft engine
-    @assert get_d("engine") == "qe"
-
-    # W01: Execute the wannier90 code to generate w90.nnkp
-    if sp # For spin-polarized system
-        # Spin up
-        wannier_init(D, "up")
-        wannier_exec("up", op = "-pp")
-        wannier_save("up", op = "-pp")
-        #
-        # Spin down
-        wannier_init(D, "dn")
-        wannier_exec("dn", op = "-pp")
-        wannier_save("dn", op = "-pp")
-    else # For spin-unpolarized system
-        wannier_init(D)
-        wannier_exec(op = "-pp")
-        wannier_save(op = "-pp")
-    end
-
-    # W02: Execute the pw2wannier90 code to generate necessary files for
-    # the wannier90 code
-    if sp # For spin-polarized system
-        # Spin up
-        pw2wan_init(case, "up")
-        pw2wan_exec(case, "up")
-        pw2wan_save("up")
-        #
-        # Spin down
-        pw2wan_init(case, "dn")
-        pw2wan_exec(case, "dn")
-        pw2wan_save("dn")
-    else # For spin-unpolarized system
-        pw2wan_init(case)
-        pw2wan_exec(case)
-        pw2wan_save()
-    end
-
-    # W03: Execute the wannier90 code again to generate wannier functions
-    if sp # For spin-polarized system
-        # Spin up
-        wannier_init(D, "up")
-        wannier_exec("up")
-        wannier_save("up")
-        #
-        # Spin down
-        wannier_init(D, "dn")
-        wannier_exec("dn")
-        wannier_save("dn")
-    else # For spin-unpolarized system
-        wannier_init(D)
-        wannier_exec()
-        wannier_save()
-    end
-
-    # W04: Read energy window (outer window) from w90.wout
+    # W01: Read energy window (outer window) from w90.wout
     if sp # For spin-polarized system
         # Spin up
         ewin_up = w90_read_wout("up")
@@ -110,7 +53,7 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         ewin = ewin .- D[:fermi]
     end
 
-    # W05: Read accurate band eigenvalues from w90.eig
+    # W02: Read accurate band eigenvalues from w90.eig
     #
     # D[:enk] will be updated
     if sp # For spin-polarized system
@@ -148,7 +91,7 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     #
     # @. D[:enk] = D[:enk] - D[:fermi]
 
-    # W06: Deduce band window from energy window
+    # W03: Deduce band window from energy window
     if sp # For spin-polarized system
         # Spin up
         bwin_up = w90_find_bwin(ewin_up, eigs_up)
@@ -159,7 +102,7 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         bwin = w90_find_bwin(ewin, eigs)
     end
 
-    # W07: Read transform matrix from w90_u.mat
+    # W04: Read transform matrix from w90_u.mat
     if sp # For spin-polarized system
         # Spin up
         umat_up = w90_read_umat("up")
@@ -170,7 +113,7 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         umat = w90_read_umat()
     end
 
-    # W08: Read disentanglement matrix from w90_u_dis.mat
+    # W05: Read disentanglement matrix from w90_u_dis.mat
     if sp # For spin-polarized system
         # Spin up
         udis_up = w90_read_udis(bwin_up, "up")
@@ -181,7 +124,7 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         udis = w90_read_udis(bwin)
     end
 
-    # W09: Build projection matrix
+    # W06: Build projection matrix
     #
     # D[:chipsi] will be created
     if sp # For spin-polarized system
@@ -209,10 +152,10 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         D[:chipsi] = reshape(proj, (nproj, nband, nkpt, 1))
     end
 
-    # W10: Setup the PrTrait and PrGroup structs
+    # W07: Setup the PrTrait and PrGroup structs
     #
     # D[:PT] and D[:PG] will be created
-    latt =D[:latt]
+    latt = D[:latt]
     if sp # For spin-polarized system
         # Spin up
         PT_up, PG_up = w90_make_group(latt, "up")
@@ -233,7 +176,7 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         D[:PG] = deepcopy(PG)
     end
 
-    # W11: Setup the band window for projections
+    # W08: Setup the band window for projections
     #
     # If you do not want to filter the projections, please use another
     # version of w90_make_window(), i.e, w90_make_window(PG, eigs). It
@@ -254,23 +197,23 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         D[:PW] = deepcopy(PW)
     end
 
-    # W12: Create connections/mappings between projectors (or band
+    # W09: Create connections/mappings between projectors (or band
     # windows) and quantum impurity problems
     #
     # D[:MAP] will be created
     D[:MAP] = w90_make_map(D[:PG], ai)
 
-    # W13: Setup the PrGroup strcut further
+    # W10: Setup the PrGroup strcut further
     #
     # D[:PG] will be updated
     w90_make_group(D[:MAP], D[:PG])
 
-    # W14: Transform the projectors
+    # W11: Transform the projectors
     #
     # D[:Rchipsi] will be created
     D[:Rchipsi] = w90_make_chipsi(D[:PG], D[:chipsi])
 
-    # W15: Filter the projectors
+    # W12: Filter the projectors
     #
     # D[:Fchipsi] will be created
     D[:Fchipsi] = w90_make_chipsi(D[:PW], D[:Rchipsi])
@@ -307,12 +250,13 @@ function wannier_init(D::Dict{Symbol,Any}, sp::String = "")
     latt  = D[:latt]
     kmesh = D[:kmesh]
     enk   = D[:enk]
+    fermi = D[:fermi]
 
     # Extract the nband parameter
     nband, _, _ = size(enk)
 
     # Try to prepare control parameters
-    w90c = w90_make_ctrl(latt, nband)
+    w90c = w90_make_ctrl(latt, nband, fermi)
 
     # Try to define projections
     proj = w90_make_proj()
@@ -486,16 +430,16 @@ end
 =#
 
 """
-    w90_make_ctrl(latt:Lattice, nband::I64)
+    w90_make_ctrl(latt:Lattice, nband::I64, fermi::F64)
 
 Try to make the control parameters for the `w90.win` file. The `latt`
 object represent the crystallography information, and `nband` is the
-number of Kohn-Sham states outputed by the dft code. This function is
-called by `wannier_init()`.
+number of Kohn-Sham states outputed by the dft code, `fermi` is the
+fermi level. This function is called by `wannier_init()`.
 
 See also: [`w90_make_proj`](@ref).
 """
-function w90_make_ctrl(latt::Lattice, nband::I64)
+function w90_make_ctrl(latt::Lattice, nband::I64, fermi::F64)
     # Create a dict to store the configurations, which will be returned.
     w90c = Dict{String,Any}()
 
@@ -554,29 +498,25 @@ function w90_make_ctrl(latt::Lattice, nband::I64)
 
     # Deal with the disentanglement setup
     #
-    # Step 1, get the string for disentanglement.
+    # Step 1, get the setup for disentanglement.
     window = get_d("window")
+    @assert window isa Vector{F64}
     @assert length(window) ≥ 2
-    # The first element of window should specify the scheme for
-    # disentanglement. Now only the exclude_bands and disentanglement
-    # modes are supported.
-    @assert window[1] in ("exc", "dis")
     #
-    # Step 2, determine the disentanglement parameters and store them.
-    if window[1] == "exc"
-        w90c["exclude_bands"] = join(window[2:end], ", ")
+    # Step 2, calibrate the energy window by the fermi level
+    window = window .+ fermi
+    #
+    # Step 3, determine the disentanglement parameters and store them.
+    if length(window) == 2
+        w90c["dis_win_min"]  = window[1]
+        w90c["dis_win_max"]  = window[2]
+    elseif length(window) == 4
+        w90c["dis_win_min"]  = window[1]
+        w90c["dis_win_max"]  = window[2]
+        w90c["dis_froz_min"] = window[3]
+        w90c["dis_froz_max"] = window[4]
     else
-        if length(window) == 3
-            w90c["dis_win_min"]  = window[2]
-            w90c["dis_win_max"]  = window[3]
-        elseif length(window) == 5
-            w90c["dis_win_min"]  = window[2]
-            w90c["dis_win_max"]  = window[3]
-            w90c["dis_froz_min"] = window[4]
-            w90c["dis_froz_max"] = window[5]
-        else
-            error("Wrong window's definition")
-        end
+        error("Wrong window's definition")
     end
 
     # Some additional but necessary parameters for wannier90
@@ -1344,7 +1284,7 @@ function w90_read_amat(sp::String = "")
     println("  > Number of wannier functions: ", nproj)
     println("  > Number of DFT bands: ", nband)
     println("  > Number of k-points: ", nkpt)
-    println("  > Spin orientation: ", sp)
+    println("  > Spin orientation: ", sp == "" ? "none" : sp)
     println("  > Shape of Array Amn: ", size(Amn))
 
     # Return the desired array
@@ -1497,7 +1437,7 @@ function w90_read_hmat(sp::String = "")
     # Print some useful information to check
     println("  > Number of wannier functions: ", nproj)
     println("  > Number of Wigner-Seitz points: ", nrpt)
-    println("  > Spin orientation: ", sp)
+    println("  > Spin orientation: ", sp == "" ? "none" : sp)
     println("  > Shape of Array rdeg: ", size(rdeg))
     println("  > Shape of Array rvec: ", size(rvec))
     println("  > Shape of Array hamr: ", size(hamr))

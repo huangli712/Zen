@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/23
+# Last modified: 2021/09/24
 #
 
 #=
@@ -203,8 +203,6 @@ function chk_dict()
     # Check dft block
     if get_d("engine") == "vasp"
         @assert get_d("projtype") == "plo"
-    elseif get_d("engine") == "qe"
-        @assert get_d("projtype") == "wannier"
     end
     if get_d("engine") == "qe"
         @assert get_d("smear") != "tetra"

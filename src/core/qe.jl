@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/23
+# Last modified: 2021/09/24
 #
 
 #=
@@ -29,22 +29,254 @@ parameter must be set to 'high'.
 See also: [`wannier_adaptor`](@ref), [`ir_adaptor`](@ref).
 """
 function qe_adaptor(D::Dict{Symbol,Any})
-    # P01: Print the header
+    # Q01: Print the header
     println("Adaptor : QUANTUM ESPRESSO")
     println("Try to extract the Kohn-Sham dataset")
     println("Current directory: ", pwd())
 
-    # P02: Read in lattice structure
+    # Q02: Read in lattice structure
     D[:latt] = qeio_lattice(pwd(), false)
 
-    # P03: Read in kmesh and the corresponding weights
+    # Q03: Read in kmesh and the corresponding weights
     D[:kmesh], D[:weight] = qeio_kmesh(pwd())
 
-    # P04: Read in band structure and the corresponding occupancies
+    # Q04: Read in band structure and the corresponding occupancies
     D[:enk], D[:occupy] = qeio_eigen(pwd())
 
-    # V05: Read in fermi level
+    # Q05: Read in fermi level
     D[:fermi] = qeio_fermi(pwd(), false)
+
+    # Q06: Generate MLWFs for the QE + WANNIER mode
+    get_d("projtype") == "wannier" && qe_to_wan(D)
+
+    # Q06: Generate projected local orbitals for the QE + PLO mode
+    get_d("projtype") == "plo" && qe_to_plo(D)
+end
+
+"""
+    qe_to_wan(D::Dict{Symbol,Any})
+
+Try to call the `wannier90` and `pw2wannier90` codes to generate the
+maximally-localized wannier functions. the `DFTData` dict (i.e `D`)
+will not be modified.
+
+See also: [`wannier_adaptor`](@ref).
+"""
+function qe_to_wan(D::Dict{Symbol,Any})
+    # Check the validity of the original dict
+    key_list = [:latt, :kmesh, :enk, :fermi]
+    for k in key_list
+        @assert haskey(D, k)
+    end
+
+    # Extract key parameters
+    case = get_c("case") # Prefix for quantum espresso
+    sp = get_d("lspins") # Is it a spin-polarized system
+
+    # Now this feature require quantum espresso as a dft engine
+    @assert get_d("engine") == "qe" &&
+            get_d("projtype") == "wannier"
+
+    # W01: Execute the wannier90 code to generate w90.nnkp
+    if sp # For spin-polarized system
+        # Spin up
+        wannier_init(D, "up")
+        wannier_exec("up", op = "-pp")
+        wannier_save("up", op = "-pp")
+        #
+        # Spin down
+        wannier_init(D, "dn")
+        wannier_exec("dn", op = "-pp")
+        wannier_save("dn", op = "-pp")
+    else # For spin-unpolarized system
+        wannier_init(D)
+        wannier_exec(op = "-pp")
+        wannier_save(op = "-pp")
+    end
+
+    # W02: Execute the pw2wannier90 code to generate necessary files
+    # for the wannier90 code
+    if sp # For spin-polarized system
+        # Spin up
+        pw2wan_init(case, "up")
+        pw2wan_exec(case, "up")
+        pw2wan_save("up")
+        #
+        # Spin down
+        pw2wan_init(case, "dn")
+        pw2wan_exec(case, "dn")
+        pw2wan_save("dn")
+    else # For spin-unpolarized system
+        pw2wan_init(case)
+        pw2wan_exec(case)
+        pw2wan_save()
+    end
+
+    # W03: Execute the wannier90 code again to generate wannier functions
+    if sp # For spin-polarized system
+        # Spin up
+        wannier_init(D, "up")
+        wannier_exec("up")
+        wannier_save("up")
+        #
+        # Spin down
+        wannier_init(D, "dn")
+        wannier_exec("dn")
+        wannier_save("dn")
+    else # For spin-unpolarized system
+        wannier_init(D)
+        wannier_exec()
+        wannier_save()
+    end
+end
+
+"""
+    qe_to_plo(D::Dict{Symbol,Any})
+
+Postprocess outputs of the `quantum espresso` (`pwscf` code), call the
+`wannier90` and `pw2wannier90` codes to generate the projected local
+orbitals (which are not maximally-localized wannier functions). The key
+data are fed into the `DFTData` dict (i.e `D`).
+
+Most of the functions used in the `qe_to_plo()` function are implemented
+in another file (`wannier.jl`).
+
+See also: [`plo_adaptor`](@ref), [`qe_adaptor`](@ref).
+"""
+function qe_to_plo(D::Dict{Symbol,Any})
+    # Check the validity of the original dict
+    key_list = [:latt, :kmesh, :enk, :fermi]
+    for k in key_list
+        @assert haskey(D, k)
+    end
+
+    # Extract key parameters
+    case = get_c("case") # Prefix for quantum espresso
+    sp = get_d("lspins") # Is it a spin-polarized system
+
+    # Now this feature require quantum espresso as a dft engine
+    @assert get_d("engine") == "qe" &&
+            get_d("projtype") == "plo"
+
+    # P01: Execute the wannier90 code to generate w90.nnkp
+    if sp # For spin-polarized system
+        # Spin up
+        wannier_init(D, "up")
+        wannier_exec("up", op = "-pp")
+        wannier_save("up", op = "-pp")
+        #
+        # Spin down
+        wannier_init(D, "dn")
+        wannier_exec("dn", op = "-pp")
+        wannier_save("dn", op = "-pp")
+    else # For spin-unpolarized system
+        wannier_init(D)
+        wannier_exec(op = "-pp")
+        wannier_save(op = "-pp")
+    end
+
+    # P02: Execute the pw2wannier90 code to generate necessary files for
+    # the wannier90 code
+    if sp # For spin-polarized system
+        # Spin up
+        pw2wan_init(case, "up")
+        pw2wan_exec(case, "up")
+        pw2wan_save("up")
+        #
+        # Spin down
+        pw2wan_init(case, "dn")
+        pw2wan_exec(case, "dn")
+        pw2wan_save("dn")
+    else # For spin-unpolarized system
+        pw2wan_init(case)
+        pw2wan_exec(case)
+        pw2wan_save()
+    end
+
+    # P03: Read accurate band eigenvalues from w90.eig
+    #
+    # D[:enk] will be updated
+    # Be careful, the eigenvalues will be calibrated in plo_fermi().
+    if sp # For spin-polarized system
+        # Spin up
+        eigs_up = w90_read_eigs("up")
+        nband, nkpt = size(eigs_up)
+        eigs_up = reshape(eigs_up, (nband, nkpt, 1))
+        #
+        # Spin down
+        eigs_dn = w90_read_eigs("dn")
+        nband, nkpt = size(eigs_dn)
+        eigs_dn = reshape(eigs_dn, (nband, nkpt, 1))
+        #
+        # Sanity check
+        @assert size(eigs_up) == size(eigs_dn)
+        #
+        # Concatenate eigs_up and eigs_dn
+        D[:enk] = cat(eigs_up, eigs_dn, dims = 3)
+        #
+        # Sanity check
+        @assert size(D[:enk]) == (nband, nkpt, 2)
+    else # For spin-unpolarized system
+        eigs = w90_read_eigs()
+        nband, nkpt = size(eigs)
+        eigs = reshape(eigs, (nband, nkpt, 1))
+        D[:enk] = deepcopy(eigs)
+        @assert size(D[:enk]) == (nband, nkpt, 1)
+    end
+
+    # P04: Read projected local orbitals from w90.amn
+    #
+    # D[:chipsi] will be created
+    if sp # For spin-polarized system
+        # Spin up
+        Aup = w90_read_amat("up")
+        nproj, nband, nkpt = size(Aup)
+        Aup = reshape(Aup, (nproj, nband, nkpt, 1))
+        #
+        # Spin down
+        Adn = w90_read_amat("dn")
+        nproj, nband, nkpt = size(Adn)
+        Adn = reshape(Adn, (nproj, nband, nkpt, 1))
+        #
+        # Sanity check
+        @assert size(Aup) == size(Adn)
+        #
+        # Concatenate Aup and Adn
+        D[:chipsi] = cat(Aup, Adn, dims = 4)
+        #
+        # Sanity check
+        @assert size(D[:chipsi]) == (nproj, nband, nkpt, nspin)
+    else # For spin-unpolarized system
+        Amn = w90_read_amat()
+        nproj, nband, nkpt = size(Amn)
+        Amn = reshape(Amn, (nproj, nband, nkpt, 1))
+        D[:chipsi] = deepcopy(Amn)
+        @assert size(D[:chipsi]) == (nproj, nband, nkpt, 1)
+    end
+
+    # P05: Setup the PrTrait and PrGroup structs
+    #
+    # D[:PT] and D[:PG] will be created
+    latt =D[:latt]
+    if sp # For spin-polarized system
+        # Spin up
+        PT_up, PG_up = w90_make_group(latt, "up")
+        #
+        # Spin down
+        PT_dn, PG_dn = w90_make_group(latt, "dn")
+        #
+        # Merge PT_up and PT_dn
+        @assert PT_up == PT_dn
+        D[:PT] = deepcopy(PT_up)
+        #
+        # Merge PG_up and PG_dn
+        @assert PG_up == PG_dn
+        D[:PG] = deepcopy(PG_up)
+    else # For spin-unpolarized system
+        PT, PG = w90_make_group(latt)
+        D[:PT] = deepcopy(PT)
+        D[:PG] = deepcopy(PG)
+    end
 end
 
 """
