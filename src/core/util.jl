@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/03
+# Last modified: 2021/09/23
 #
 
 #=
@@ -223,9 +223,9 @@ automatically. Do not worry about them.
 
 *Remarks 2* :
 
-For `pwscf`, the essential input files include:
+For `quantum espresso` (`pwscf`), the essential input files include:
 
-* PWSCF.INP
+* QE.INP
 * Pseudopotential files.
 
 As for the other files, they should be generated automatically. Do
@@ -251,9 +251,9 @@ function query_inps(engine::String)
             end
             break
 
-        @case "pwscf"
-            if !isfile("PWSCF.INP")
-                error("Please provide the PWSCF.INP file")
+        @case "qe"
+            if !isfile("QE.INP")
+                error("Please provide the QE.INP file")
             end
             break
 
@@ -284,7 +284,7 @@ In the `ZenCore` package, the following environment variables matter:
 * ZEN_DMFT
 * ZEN_SOLVER
 * VASP_HOME (If we are using vasp as our DFT engine)
-* PWSCF_HOME (If we are using pwscf as our DFT engine)
+* QE_HOME (If we are using quantum espresso as our DFT engine)
 
 Please setup them in your `.bashrc` (Lniux) or `.profile` (macOS) files.
 =#
@@ -342,11 +342,11 @@ function query_dft(engine::String)
             end
             break
 
-        @case "pwscf"
-            if haskey(ENV, "PWSCF_HOME")
-                return ENV["PWSCF_HOME"]
+        @case "qe"
+            if haskey(ENV, "QE_HOME")
+                return ENV["QE_HOME"]
             else
-                error("PWSCF_HOME is undefined")
+                error("QE_HOME is undefined")
             end
             break
 

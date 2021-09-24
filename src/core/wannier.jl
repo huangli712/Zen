@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/22
+# Last modified: 2021/09/24
 #
 
 #=
@@ -19,9 +19,9 @@ generate maximally localized wannier functions and related transformation
 matrix. Then it will read and parse the outputs, convert the data into
 IR format. The data contained in `D` dict will be updated.
 
-Be careful, now this adaptor only supports `pwscf`.
+Be careful, now this adaptor only supports `quantum espresso` (`pwscf`).
 
-See also: [`pwscf_adaptor`](@ref), [`ir_adaptor`](@ref).
+See also: [`qe_adaptor`](@ref), [`ir_adaptor`](@ref).
 """
 function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     # Print the header
@@ -36,11 +36,11 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     end
 
     # Extract key parameters
-    case = get_c("case") # Prefix for pwscf
+    case = get_c("case") # Prefix for quantum espresso
     sp = get_d("lspins") # Is it a spin-polarized system
 
-    # Now this feature require pwscf as a dft engine
-    @assert get_d("engine") == "pwscf"
+    # Now this feature require quantum espresso as a dft engine
+    @assert get_d("engine") == "qe"
 
     # W01: Execute the wannier90 code to generate w90.nnkp
     if sp # For spin-polarized system
@@ -115,12 +115,12 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     # D[:enk] will be updated
     if sp # For spin-polarized system
         # Spin up
-        eigs_up = w90_read_eigs("up")
+        eigs_up = w90_read_eigs("up") .- D[:fermi]
         nband, nkpt = size(eigs_up)
         eigs_up = reshape(eigs_up, (nband, nkpt, 1))
         #
         # Spin down
-        eigs_dn = w90_read_eigs("dn")
+        eigs_dn = w90_read_eigs("dn") .- D[:fermi]
         nband, nkpt = size(eigs_dn)
         eigs_dn = reshape(eigs_dn, (nband, nkpt, 1))
         #
@@ -133,26 +133,30 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         # Sanity check
         @assert size(D[:enk]) == (nband, nkpt, 2)
     else # For spin-unpolarized system
-        eigs = w90_read_eigs()
+        eigs = w90_read_eigs() .- D[:fermi]
         nband, nkpt = size(eigs)
-        D[:enk] = reshape(eigs, (nband, nkpt, 1))
+        eigs = reshape(eigs, (nband, nkpt, 1))
+        D[:enk] = deepcopy(eigs)
         @assert size(D[:enk]) == (nband, nkpt, 1)
     end
     #
     # Calibrate the eigenvalues to force the fermi level to be zero
-    # Be careful, the original eigenvalues from pwscfio_eigen() have
+    # Be careful, the original eigenvalues from qeio_eigen() have
     # not been calibrated.
-    @. D[:enk] = D[:enk] - D[:fermi]
+    #
+    # The calibration has been done above.
+    #
+    # @. D[:enk] = D[:enk] - D[:fermi]
 
-    # W06: Determine band window from energy window
+    # W06: Deduce band window from energy window
     if sp # For spin-polarized system
         # Spin up
-        bwin_up = w90_make_window(ewin_up, eigs_up)
+        bwin_up = w90_find_bwin(ewin_up, eigs_up)
         #
         # Spin down
-        bwin_dn = w90_make_window(ewin_dn, eigs_dn)
+        bwin_dn = w90_find_bwin(ewin_dn, eigs_dn)
     else # For spin-unpolarized system
-        bwin = w90_make_window(ewin, eigs)
+        bwin = w90_find_bwin(ewin, eigs)
     end
 
     # W07: Read transform matrix from w90_u.mat
@@ -216,18 +220,21 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         # Spin down
         PT_dn, PG_dn = w90_make_group(latt, "dn")
         #
-        # Concatenate PT_up and PT_dn
-        D[:PT] = hcat(PT_up, PT_dn)
+        # Merge PT_up and PT_dn
+        @assert PT_up == PT_dn
+        D[:PT] = deepcopy(PT_up)
         #
-        # Concatenate PG_up and PG_dn
-        D[:PG] = hcat(PG_up, PG_dn)
+        # Merge PG_up and PG_dn
+        @assert PG_up == PG_dn
+        D[:PG] = deepcopy(PG_up)
     else # For spin-unpolarized system
         PT, PG = w90_make_group(latt)
-        D[:PT] = PT
-        D[:PG] = PG
+        D[:PT] = deepcopy(PT)
+        D[:PG] = deepcopy(PG)
     end
 
     # W11: Setup the band window for projections
+    #
     # If you do not want to filter the projections, please use another
     # version of w90_make_window(), i.e, w90_make_window(PG, eigs). It
     # is quite clear that the current version is much more efficient.
@@ -240,11 +247,11 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         # Spin down
         PW_dn = w90_make_window(PG_dn, ewin_dn, bwin_dn)
         #
-        # Concatenate PW_up and PW_dn
-        D[:PW] = hcat(PW_up, PW_dn)
+        # Merge PW_up and PW_dn
+        D[:PW] = w90_make_window(PW_up, PW_dn)
     else # For spin-unpolarized system
         PW = w90_make_window(PG, ewin, bwin)
-        D[:PW] = PW
+        D[:PW] = deepcopy(PW)
     end
 
     # W12: Create connections/mappings between projectors (or band
@@ -296,7 +303,7 @@ function wannier_init(D::Dict{Symbol,Any}, sp::String = "")
     println("Generate input files for wannier90")
 
     # Extract necessary data from D
-    # These data are read in pwscf_adaptor()
+    # These data are read in qe_adaptor()
     latt  = D[:latt]
     kmesh = D[:kmesh]
     enk   = D[:enk]
@@ -343,7 +350,7 @@ function wannier_exec(sp::String = ""; op::String = "")
     # Get the home directory of wannier90
     #
     # We can not guarantee that the wannier90 code is always installed
-    # within the directory of pwscf.
+    # within the directory of quantum espresso.
     wannier90_home = query_dft("wannier90")
     println("  > Home directory for wannier90: ", wannier90_home)
 
@@ -355,7 +362,7 @@ function wannier_exec(sp::String = ""; op::String = "")
     # Assemble command
     seedname = "w90" * sp
     #
-    if op == "-pp" # As a preprocessor to generate w90.nnkp 
+    if op == "-pp" # As a preprocessor to generate w90.nnkp
         wannier90_cmd = split("$wannier90_exe $op $seedname", " ")
     else # Standard run to generate wannier function
         wannier90_cmd = split("$wannier90_exe $seedname", " ")
@@ -747,14 +754,14 @@ See also: [`PrTrait`](@ref), [`PrGroup`](@ref).
 """
 function w90_make_group(latt::Lattice, sp::String = "")
     # Print the header
-    println("Build groups")
+    println("Build traits and groups")
 
     # Read and parse the `w90.nnkp` file
     #
     # Build the filename
     fnnkp = "w90" * sp * ".nnkp"
     println("  > Open and read $fnnkp")
-    println("  > Spin orientation: ", sp)
+    println("  > Spin orientation: ", sp == "" ? "none" : sp)
     #
     # Read it and figure out the projections block
     lines = readlines(fnnkp)
@@ -948,7 +955,7 @@ function w90_make_group(MAP::Mapping, PG::Array{PrGroup,1})
 end
 
 """
-    w90_make_window(PG::Array{PrGroup,1}, enk::Array{F64,2})
+    w90_make_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
 
 Make band window to filter the projections. Actually, all of the Kohn-Sham
 eigenvalues are retained, so the band window is always `[1, nband]`. This
@@ -956,12 +963,12 @@ function will return an array of `PrWindow` struct.
 
 See also: [`PrWindow`](@ref).
 """
-function w90_make_window(PG::Array{PrGroup,1}, enk::Array{F64,2})
+function w90_make_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
     # Print the header
     println("Generate windows")
 
     # Extract the key parameters
-    nband, nkpt = size(enk)
+    nband, nkpt, _ = size(enk)
 
     # Initialize an array of PrWindow struct
     PW = PrWindow[]
@@ -1000,7 +1007,7 @@ See also: [`PrWindow`](@ref).
 function w90_make_window(PG::Array{PrGroup,1}, ewin::Tuple{F64,F64}, bwin::Array{I64,2})
     # Print the header
     println("Generate windows")
-    
+
     # Extract the key parameters
     nkpt, _ = size(bwin)
 
@@ -1027,46 +1034,46 @@ function w90_make_window(PG::Array{PrGroup,1}, ewin::Tuple{F64,F64}, bwin::Array
 end
 
 """
-    w90_make_window(ewin::Tuple{F64,F64}, enk::Array{F64,2})
+    w90_make_window(PWup::Array{PrWindow,1}, PWdn::Array{PrWindow,1})
 
-During the disentanglement procedure, we can define an outer energy
-window to restrict the Kohn-Sham eigenvalues. This function will return
-the corresponding band window, which will be used to displace the
-disentanglement matrix. Here, `ewin` is the outer energy window which
-is extracted from `w90.wout`, and `enk` is the Kohn-Sham eigenvalues. 
+Try to merge two arrays of `PrWindow` struct and generate a new one.
+Actually, the new array is similar to the olds. We only modify one of
+its members, `kwin`.
 
-See also: [`w90_read_udis`](@ref), [`w90_read_wout`](@ref).
+See also: [`PrWindow`](@ref).
 """
-function w90_make_window(ewin::Tuple{F64,F64}, enk::Array{F64,2})
-    # Print the header
-    println("Extract band window for disentanglement")
+function w90_make_window(PWup::Array{PrWindow,1}, PWdn::Array{PrWindow,1})
+    # Sanity check
+    #
+    # The two arrays must be the same. The comparison of two PrWindow
+    # structs are defined in types.jl.
+    @assert PWup == PWdn
 
-    # Extract key parameters
-    nband, nkpt = size(enk)
+    # Create an empty array for PrWindow struct
+    PW = PrWindow[]
 
-    # Setup energy window
-    emin, emax = ewin
-
-    # Create an array for momentum-dependent band window
-    bwin = zeros(I64, nkpt, 2)
-
-    # Go through each k-point to figure out the band window
-    for k = 1:nkpt
-        bmin = findfirst(x -> x > emin, enk[:,k])
-        bmax = findfirst(x -> x > emax, enk[:,k]) - 1
-        bwin[k,1] = bmin
-        bwin[k,2] = bmax
-        @assert nband ≥ bmax > bmin ≥ 1
+    # Go through old array of PrWindow struct
+    for p in eachindex(PWup)
+        # Extract `kwin`
+        kwin1 = PWup[p].kwin
+        kwin2 = PWdn[p].kwin
+        #
+        # Check `kwin`, its dimension for spin orientation must be 1
+        @assert size(kwin1, 2) == 1
+        @assert size(kwin2, 2) == 1
+        #
+        # Merge two `kwin`
+        kwin = cat(kwin1, kwin2, dims = 2)
+        #
+        # Extract `bwin`
+        bwin  = PWup[p].bwin
+        #
+        # Create new PrWindow and push it into PW
+        push!(PW, PrWindow(kwin, bwin))
     end
 
-    # Print some useful information
-    println("  > Number of k-points: ", nkpt)
-    println("  > Minimum band index: ", minimum(bwin[:,1]))
-    println("  > Maixmum band index: ", maximum(bwin[:,2]))
-    println("  > Shape of Array bwin: ", size(bwin))
-
     # Return the desired array
-    return bwin
+    return PW
 end
 
 """
@@ -1230,6 +1237,52 @@ function w90_make_chipsi(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     return Fchipsi
 end
 
+"""
+    w90_find_bwin(ewin::Tuple{F64,F64}, enk::Array{F64,3})
+
+During the disentanglement procedure, we can define an outer energy
+window to restrict the Kohn-Sham eigenvalues. This function will return
+the corresponding band window, which will be used to displace the
+disentanglement matrix. Here, `ewin` is the outer energy window which
+is extracted from `w90.wout`, and `enk` is the Kohn-Sham eigenvalues.
+
+This function works for spin-unpolarized case only.
+
+See also: [`w90_read_udis`](@ref), [`w90_read_wout`](@ref).
+"""
+function w90_find_bwin(ewin::Tuple{F64,F64}, enk::Array{F64,3})
+    # Print the header
+    println("Extract band window for disentanglement")
+
+    # Extract key parameters
+    nband, nkpt, nspin = size(enk)
+    @assert nspin == 1
+
+    # Setup energy window
+    emin, emax = ewin
+
+    # Create an array for momentum-dependent band window
+    bwin = zeros(I64, nkpt, 2)
+
+    # Go through each k-point to figure out the band window
+    for k = 1:nkpt
+        bmin = findfirst(x -> x > emin, enk[:,k])
+        bmax = findfirst(x -> x > emax, enk[:,k]) - 1
+        bwin[k,1] = bmin
+        bwin[k,2] = bmax
+        @assert nband ≥ bmax > bmin ≥ 1
+    end
+
+    # Print some useful information
+    println("  > Number of k-points: ", nkpt)
+    println("  > Minimum band index: ", minimum(bwin[:,1]))
+    println("  > Maixmum band index: ", maximum(bwin[:,2]))
+    println("  > Shape of Array bwin: ", size(bwin))
+
+    # Return the desired array
+    return bwin
+end
+
 #=
 ### *Service Functions* : *Group D*
 =#
@@ -1306,7 +1359,7 @@ Note that the eigenvalues from `nscf.out` are not accurate enough. We
 will use the data extracted from `w90.eig` to update them. The argument
 `sp` denotes the spin component.
 
-See also: [`pwscfio_eigen`](@ref).
+See also: [`qeio_eigen`](@ref).
 """
 function w90_read_eigs(sp::String = "")
     # Print the header
@@ -1352,7 +1405,7 @@ function w90_read_eigs(sp::String = "")
     # Print some useful information to check
     println("  > Number of DFT bands: ", nband)
     println("  > Number of k-points: ", nkpt)
-    println("  > Spin orientation: ", sp)
+    println("  > Spin orientation: ", sp == "" ? "none" : sp)
     println("  > Shape of Array enk: ", size(eigs))
 
     # Return the desired array
@@ -1503,7 +1556,7 @@ function w90_read_umat(sp::String = "")
     # Print some useful information to check
     println("  > Number of wannier functions: ", nproj)
     println("  > Number of k-points: ", nkpt)
-    println("  > Spin orientation: ", sp)
+    println("  > Spin orientation: ", sp == "" ? "none" : sp)
     println("  > Shape of Array umat: ", size(umat))
 
     # Return the desired array
@@ -1570,7 +1623,7 @@ function w90_read_udis(bwin::Array{I64,2}, sp::String = "")
     println("  > Number of DFT bands: ", nband)
     println("  > Number of wannier functions: ", nproj)
     println("  > Number of k-points: ", nkpt)
-    println("  > Spin orientation: ", sp)
+    println("  > Spin orientation: ", sp == "" ? "none" : sp)
     println("  > Shape of Array udis: ", size(udis))
 
     # Return the desired array
@@ -1592,7 +1645,7 @@ function w90_read_wout(sp::String = "")
     # Build the filename
     fout = "w90" * sp * ".wout"
     println("  > Open and read $fout")
-    println("  > Spin orientation: ", sp)
+    println("  > Spin orientation: ", sp == "" ? "none" : sp)
 
     # Read the `w90.wout` file
     lines = readlines(fout)
@@ -1718,9 +1771,9 @@ end
     pw2wan_init(case::String, sp::String = "")
 
 Check the runtime environment of `pw2wannier90`, prepare necessary input
-files (`case.pw2wan`). The argument `case` means the prefix for `pwscf`,
-and `sp` determines the spin component which can be empty string, `up`,
-or `dn`.
+files (it is `case.pw2wan`). The argument `case` means the prefix for
+`quantum espresso`, and `sp` determines the spin component which can be
+empty string, `up`, or `dn`.
 
 See also: [`pw2wan_exec`](@ref), [`pw2wan_save`](@ref).
 """
@@ -1728,7 +1781,7 @@ function pw2wan_init(case::String, sp::String = "")
     # Print the header
     println("Generate input files for pw2wannier90")
 
-    # Try to create a PWNamelist object.
+    # Try to create a QENamelist object.
     #
     # Setup name of namelist. It is always fixed.
     name = "inputpp"
@@ -1754,13 +1807,13 @@ function pw2wan_init(case::String, sp::String = "")
     NLData["write_dmn"] = ".true."
     NLData["write_unk"] = ".false."
     #
-    # Create PWNamelist
-    PWN = PWNamelist(name, NLData)
+    # Create QENamelist
+    QEN = QENamelist(name, NLData)
 
     # Try to write case.pw2wan
     fwan = case * sp * ".pw2wan"
     open(fwan, "w") do fout
-        write(fout, PWN) # This write function is defined in pwscf.jl
+        write(fout, QEN) # This write function is defined in qe.jl
     end
     #
     println("  > File $fwan is created")
@@ -1780,18 +1833,18 @@ function pw2wan_exec(case::String, sp::String = "")
     println("Detect the runtime environment for pw2wannier90")
 
     # Get the home directory of pw2wannier90
-    # It is actually the same with that of pwscf.
-    pwscf_home = query_dft("pwscf")
-    println("  > Home directory for pw2wannier90: ", pwscf_home)
+    # It is actually the same with that of quantum espresso.
+    qe_home = query_dft("qe")
+    println("  > Home directory for pw2wannier90: ", qe_home)
 
     # Select suitable pw2wannier90 program
-    pwscf_exe = "$pwscf_home/pw2wannier90.x"
-    @assert isfile(pwscf_exe)
-    println("  > Executable program is available: ", basename(pwscf_exe))
+    qe_exe = "$qe_home/pw2wannier90.x"
+    @assert isfile(qe_exe)
+    println("  > Executable program is available: ", basename(qe_exe))
 
     # Assemble command
-    pwscf_cmd = split("$pwscf_exe", " ")
-    println("  > Assemble command: $(prod(x -> x * ' ', pwscf_cmd))")
+    qe_cmd = split("$qe_exe", " ")
+    println("  > Assemble command: $(prod(x -> x * ' ', qe_cmd))")
 
     # Determine suitable input and output files
     finp = case * sp * ".pw2wan"
@@ -1804,7 +1857,7 @@ function pw2wan_exec(case::String, sp::String = "")
 
     # Create a task, but do not run it immediately
     t = @task begin
-        run(pipeline(`$pwscf_cmd`, stdin = finp, stdout = fout))
+        run(pipeline(`$qe_cmd`, stdin = finp, stdout = fout))
     end
     println("  > Create a task")
 

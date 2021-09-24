@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/22
+# Last modified: 2021/09/23
 #
 
 #=
@@ -68,7 +68,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     irio_fermi(pwd(), D[:fermi])
 
     # I09: Check the validity of the `D` dict further (optional)
-    if get_d("smear") == "tetra" && get_d("engine") != "pwscf"
+    if get_d("smear") == "tetra" && get_d("engine") != "qe"
         key_list = [:volt, :itet]
         for k in key_list
             @assert haskey(D, k)
@@ -76,7 +76,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     end
 
     # I10: Write tetrahedron data if they are available
-    if get_d("smear") == "tetra" && get_d("engine") != "pwscf"
+    if get_d("smear") == "tetra" && get_d("engine") != "qe"
         irio_tetra(pwd(), D[:volt], D[:itet])
     end
 end
@@ -95,7 +95,7 @@ function ir_save(it::IterInfo)
     file_list = union(fir1, fir2)
     #
     # If tetrahedron data are available
-    if get_d("smear") == "tetra" && get_d("engine") != "pwscf"
+    if get_d("smear") == "tetra" && get_d("engine") != "qe"
         push!(file_list, "tetra")
     end
 

@@ -313,8 +313,8 @@ function sigma_gather(it::IterInfo, ai::Array{Impurity,1})
     write_sigma(fmesh, SA, ai)
 
     # Backup the self-energy functions
-    fsig = "dmft1/sigma.bare"
-    cp(fsig, "$fsig.$(it.I₃).$(it.I₁)", force = true)
+    #fsig = "dmft1/sigma.bare"
+    #cp(fsig, "$fsig.$(it.I₃).$(it.I₁)", force = true)
 end
 
 #=

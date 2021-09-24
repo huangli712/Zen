@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/05
+# Last modified: 2021/09/24
 #
 
 #=
@@ -610,6 +610,36 @@ end
 =#
 
 import Base.==
+
+"""
+    ==(PT₁::PrTrait, PT₂::PrTrait)
+
+Compare two PrTrait objects.
+
+See also: [`PrTrait`](@ref).
+"""
+function ==(PT₁::PrTrait, PT₂::PrTrait)
+    PT₁.site == PT₂.site &&
+    PT₁.l    == PT₂.l    &&
+    PT₁.m    == PT₂.m    &&
+    PT₁.desc == PT₂.desc
+end
+
+"""
+    ==(PG₁::PrGroup, PG₂::PrGroup)
+
+Compare two PrGroup objects.
+
+See also: [`PrGroup`](@ref).
+"""
+function ==(PG₁::PrGroup, PG₂::PrGroup)
+    PG₁.site  == PG₂.site  &&
+    PG₁.l     == PG₂.l     &&
+    PG₁.corr  == PG₂.corr  &&
+    PG₁.shell == PG₂.shell &&
+    PG₁.Pr    == PG₂.Pr    &&
+    PG₁.Tr    == PG₂.Tr
+end
 
 """
     ==(PW₁::PrWindow, PW₂::PrWindow)

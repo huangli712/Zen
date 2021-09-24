@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/22
+# Last modified: 2021/09/23
 #
 
 #=
@@ -208,8 +208,8 @@ function dmft_save(it::IterInfo, task::I64)
     # Create a list of files that need to be backup
     fdmf1 = ["dmft.out"]
     fdmf2 = ["dmft.fermi"]
-    fdmf3 = ["dmft.eimps", "dmft.eimpx"]
-    fdmf4 = ["dmft.green", "dmft.delta", "dmft.weiss"]
+    fdmf3 = ["dmft.eimps"]
+    fdmf4 = ["dmft.delta"]
     fdmf5 = ["dmft.gamma"]
 
     # Be careful, the final file list depends on the task

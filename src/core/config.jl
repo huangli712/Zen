@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/14
+# Last modified: 2021/09/23
 #
 
 #=
@@ -173,7 +173,7 @@ function chk_dict()
     # C2. Check rationalities
     #
     # Check dft block
-    @assert get_d("engine") in ("vasp", "pwscf")
+    @assert get_d("engine") in ("vasp", "qe")
     @assert get_d("projtype") in ("plo", "wannier")
     @assert get_d("smear") in ("mp2", "mp1", "gauss", "tetra")
     @assert get_d("kmesh") in ("accurate", "medium", "coarse", "file")
@@ -203,10 +203,10 @@ function chk_dict()
     # Check dft block
     if get_d("engine") == "vasp"
         @assert get_d("projtype") == "plo"
-    elseif get_d("engine") == "pwscf"
+    elseif get_d("engine") == "qe"
         @assert get_d("projtype") == "wannier"
     end
-    if get_d("engine") == "pwscf"
+    if get_d("engine") == "qe"
         @assert get_d("smear") != "tetra"
     end
     if get_d("lspinorb")

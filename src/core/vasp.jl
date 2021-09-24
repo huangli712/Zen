@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/08/14
+# Last modified: 2021/09/23
 #
 
 #=
@@ -348,6 +348,7 @@ function vaspc_incar(fermi::F64, sc_mode::I64)
     write(ios, "LASPH    = .TRUE. \n")
     write(ios, "LMAXMIX  = 6 \n")
     write(ios, "NCORE    = 4 \n")
+    write(ios, "LWAVE    = .FALSE. \n")
 
     # Customize your INCAR according to the case.toml
     #

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/13
+# Last modified: 2021/09/24
 #
 
 """
@@ -17,7 +17,7 @@ correlated materials. Now this framework is under heavy development.
 
 Zen supports the following DFT backends:
 * `VASP`
-* `PWSCF` (Actually `QUANTUM ESPRESSO`)
+* `QUANTUM ESPRESSO` (Actually only the `PWSCF` code)
 
 Zen supports the following schemes for defining local orbitals:
 * `PLO`
@@ -474,46 +474,46 @@ export vaspio_fermi
 export vaspio_charge
 
 #=
-### *Includes And Exports* : *pwscf.jl*
+### *Includes And Exports* : *qe.jl*
 =#
 
 #=
 *Summary* :
 
-Tools for the pwscf software package (adaptor). It provide a lot of
-functions to deal with the pwscf-related files.
+Tools for the quantum espresso software package (adaptor). It provide a
+lot of functions to deal with the quantum espresso (pwscf) related files.
 
 *Members* :
 
 ```text
-pwscf_adaptor   -> Adaptor support.
-pwscf_init      -> Prepare pwscf's input files.
-pwscf_exec      -> Execute pwscf program.
-pwscf_save      -> Backup pwscf's output files.
-pwscfc_input    -> Generate essential input file (case.scf or case.nscf).
-pwscfq_files    -> Check essential output files.
-pwscfio_energy  -> Read DFT total energy.
-pwscfio_lattice -> Read lattice information.
-pwscfio_kmesh   -> Read kmesh.
-pwscfio_eigen   -> Read eigenvalues.
-pwscfio_fermi   -> Read fermi level.
+qe_adaptor   -> Adaptor support.
+qe_init      -> Prepare quantum espresso's input files.
+qe_exec      -> Execute quantum espresso program.
+qe_save      -> Backup quantum espresso's output files.
+qec_input    -> Generate essential input file (case.scf or case.nscf).
+qeq_files    -> Check essential output files.
+qeio_energy  -> Read DFT total energy.
+qeio_lattice -> Read lattice information.
+qeio_kmesh   -> Read kmesh.
+qeio_eigen   -> Read eigenvalues.
+qeio_fermi   -> Read fermi level.
 ```
 =#
 
 #
-include("pwscf.jl")
+include("qe.jl")
 #
-export pwscf_adaptor
-export pwscf_init
-export pwscf_exec
-export pwscf_save
-export pwscfc_input
-export pwscfq_files
-export pwscfio_energy
-export pwscfio_lattice
-export pwscfio_kmesh
-export pwscfio_eigen
-export pwscfio_fermi
+export qe_adaptor
+export qe_init
+export qe_exec
+export qe_save
+export qec_input
+export qeq_files
+export qeio_energy
+export qeio_lattice
+export qeio_kmesh
+export qeio_eigen
+export qeio_fermi
 
 #=
 ### *Includes And Exports* : *plo.jl*
@@ -596,11 +596,12 @@ wannier_exec    -> Execute wannier90 program.
 wannier_save    -> Backup wannier90's output files.
 wannier_monitor -> Check the WFs and projections.
 w90_make_ctrl   -> Prepare control parameters for wannier90.
-w90_make_proj   -> Prepare projections for wannier90.
+w90_make_proj   -> Define projections for wannier90.
 w90_make_map    -> Create connection between WFs and impurity problems.
-w90_make_group  -> Create groups of WFs.
-w90_make_window -> Create band windows of WFs.
+w90_make_group  -> Create and manipulate groups of WFs.
+w90_make_window -> Create and manipulate band windows of WFs.
 w90_make_chipsi -> Build projections.
+w90_find_bwin   -> Figure out the band window for disentanglement.
 w90_read_amat   -> Read w90.amn file.
 w90_read_eigs   -> Read w90.eig file.
 w90_read_hmat   -> Read w90_hr.dat file.
@@ -628,6 +629,7 @@ export w90_make_map
 export w90_make_group
 export w90_make_window
 export w90_make_chipsi
+export w90_find_bwin
 export w90_read_amat
 export w90_read_eigs
 export w90_read_hmat

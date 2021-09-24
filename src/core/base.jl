@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/08/30
+# Last modified: 2021/09/23
 #
 
 #=
@@ -712,8 +712,8 @@ If `sc = true`, this function will read in the correction for density
 matrix, and then feed it back to the DFT engine to continue the DFT + DMFT
 calculations.
 
-Now only the vasp and pwscf engines are supported. If you want to support
-more DFT engines, this function must be adapted.
+Now only the `vasp` and `quantum espresso` codes are supported. If you
+want to support more DFT engines, this function must be adapted.
 
 See also: [`adaptor_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
@@ -738,12 +738,12 @@ function dft_run(it::IterInfo, lr::Logger, sc::Bool = false)
                 vasp_save(it)
                 break
 
-            # For pwscf
-            @case "pwscf"
-                pwscf_init(it)
-                pwscf_exec(it, true)
-                pwscf_exec(it, false)
-                pwscf_save(it)
+            # For quantum espresso (pwscf)
+            @case "qe"
+                qe_init(it)
+                qe_exec(it, true)  # Self-consistent calculation
+                qe_exec(it, false) # Non-self-consistent calculation
+                qe_save(it)
                 break
 
             @default
@@ -1035,9 +1035,9 @@ function adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
             @time_call vasp_adaptor(DFTData)
             break
 
-        @case "pwscf"
-            pwscfq_files()
-            @time_call pwscf_adaptor(DFTData)
+        @case "qe"
+            qeq_files()
+            @time_call qe_adaptor(DFTData)
             break
 
         @default
