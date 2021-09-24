@@ -11,7 +11,7 @@ lspinorb = false
 loptim = false
 lproj = true
 sproj = ["mlwf", "V : d", "O : p"]
-window = ["dis", "1.5", "18.5"]
+window = [-8.0, 6.0]
 
 [dmft]
 mode = 1
