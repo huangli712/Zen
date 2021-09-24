@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/23
+# Last modified: 2021/09/24
 #
 
 #=
@@ -208,7 +208,7 @@ function dmft_save(it::IterInfo, task::I64)
     # Create a list of files that need to be backup
     fdmf1 = ["dmft.out"]
     fdmf2 = ["dmft.fermi"]
-    fdmf3 = ["dmft.eimps"]
+    fdmf3 = ["dmft.eimpx"]
     fdmf4 = ["dmft.delta"]
     fdmf5 = ["dmft.gamma"]
 
