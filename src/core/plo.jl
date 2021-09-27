@@ -174,7 +174,7 @@ function plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
     # corresponding group of projectors.
     @assert all(x -> (0 < x ≤ ngrp), Map.i_grp)
     #
-    println("  > Create quantum impurity problems -> groups (i_grp)")
+    println("  > Map quantum impurity problems to groups  (i_grp)")
 
     # Examine Map.g_imp
     #
@@ -182,18 +182,18 @@ function plo_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
     # corresponding quantum impurity problem, it must be non-correlated.
     @assert all(x -> (0 ≤ x ≤ nsite), Map.g_imp)
     #
-    println("  > Create groups -> quantum impurity problems (g_imp)")
+    println("  > Map groups to quantum impurity problems  (g_imp)")
 
     # Setup Map.i_wnd and Map.w_imp
     #
     # They are actually copies of i_grp and g_imp
     Map.i_wnd[:] = Map.i_grp[:]
     #
-    println("  > Create quantum impurity problems -> windows (i_wnd)")
+    println("  > Map quantum impurity problems to windows (i_wnd)")
     #
     Map.w_imp[:] = Map.g_imp[:]
     #
-    println("  > Create windows -> quantum impurity problems (w_imp)")
+    println("  > Map windows to quantum impurity problems (w_imp)")
 
     # Return the desired struct
     return Map
@@ -594,7 +594,7 @@ end
 Generate some key physical quantities by using the projectors and the
 Kohn-Sham band structures. It is used for debug only.
 
-See also: [`plo_adaptor`](@ref).
+See also: [`plo_adaptor`](@ref), [`wannier_monitor`](@ref).
 """
 function plo_monitor(D::Dict{Symbol,Any})
     if haskey(D, :MAP)

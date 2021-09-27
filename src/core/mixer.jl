@@ -210,15 +210,15 @@ are two predefined parameters. In the present implementation, we set
 =#
 
 """
-    mixer_gamma(it::IterInfo)
+    mixer_gcorr(it::IterInfo)
 
 Try to mix the correction for density matrix Γ and then use the mixed value
-to update the `dmft2/dmft.gamma` file. Here we use the Kerker algorithm,
+to update the `dmft2/dmft.gcorr` file. Here we use the Kerker algorithm,
 instead of the linear mixing algorithm.
 
 See also: [`mixer_core`](@ref).
 """
-function mixer_gamma(it::IterInfo)
+function mixer_gcorr(it::IterInfo)
     # Print the header
     println("Mixer : Gamma")
     println("Try to mix correction for density matrix")
@@ -240,19 +240,19 @@ function mixer_gamma(it::IterInfo)
     println("  > Prev: (I₃, I₂) -> ($_cycle, $_prev)")
 
     # Determine filenames for correction for density matrix
-    fcurr = "dmft2/dmft.gamma.$cycle.$curr"
-    fprev = "dmft2/dmft.gamma.$_cycle.$_prev"
+    fcurr = "dmft2/dmft.gcorr.$cycle.$curr"
+    fprev = "dmft2/dmft.gcorr.$_cycle.$_prev"
 
     # Check whether these files are available
     @assert isfile(fcurr) && isfile(fprev)
 
     # Read in the correction for density matrix (previous and current)
     println("Read correction for density matrix")
-    kmesh_curr, kwin_curr, gamma_curr = read_gamma(fcurr)
-    kmesh_prev, kwin_prev, gamma_prev = read_gamma(fprev)
+    kmesh_curr, kwin_curr, gcorr_curr = read_gcorr(fcurr)
+    kmesh_prev, kwin_prev, gcorr_prev = read_gcorr(fprev)
     @assert size(kmesh_curr) == size(kmesh_prev)
     @assert size(kwin_curr) == size(kwin_prev)
-    if size(gamma_curr) != size(gamma_prev)
+    if size(gcorr_curr) != size(gcorr_prev)
         print("  > Size of density matrix does not match each other")
         println(red(" (Very dangerous)"))
         return
@@ -262,7 +262,7 @@ function mixer_gamma(it::IterInfo)
     println("Mix correction for density matrix from two successive iterations")
     #
     # Extract and setup key parameters
-    _, _, nkpt, nspin = size(gamma_curr)
+    _, _, nkpt, nspin = size(gcorr_curr)
     α = 0.1 # Mixing parameters
     γ = 1.0
     #
@@ -275,22 +275,22 @@ function mixer_gamma(it::IterInfo)
             @printf("  > Mixing parameter α = %10.7f (for 𝑘 %4i and σ %1i)\n", amix, k, s)
             #
             # Create a view for the diagonal elements only
-            ind = diagind(gamma_curr[:,:,k,s])
-            Γcurr = view(view(gamma_curr,:,:,k,s), ind)
-            Γprev = view(view(gamma_prev,:,:,k,s), ind)
+            ind = diagind(gcorr_curr[:,:,k,s])
+            Γcurr = view(view(gcorr_curr,:,:,k,s), ind)
+            Γprev = view(view(gcorr_prev,:,:,k,s), ind)
             #
             # Mix the diagonal elements only
             @. Γcurr = amix * Γcurr + (1.0 - amix) * Γprev
         end # END OF K LOOP
     end # END OF S LOOP
 
-    # Write the new correction for density matrix into `dmft2/dmft.gamma`
+    # Write the new correction for density matrix into `dmft2/dmft.gcorr`
     println("Write correction for density matrix")
-    write_gamma(kmesh_curr, kwin_curr, gamma_curr, "dmft2/dmft.gamma")
+    write_gcorr(kmesh_curr, kwin_curr, gcorr_curr, "dmft2/dmft.gcorr")
 
     # Check the convergence condition
     println("Evaluate the convergence condition for density matrix")
-    dist = distance(gamma_curr, gamma_prev)
+    dist = distance(gcorr_curr, gcorr_prev)
     it.cc = ( dist < get_m("cc") )
     println("  > Averaged ΔΓ = $dist ( convergence is $(it.cc) )")
 end
@@ -348,7 +348,7 @@ Calculate the difference between two multi-dimensional arrays. Usually
 We apply this function to calculate the difference between two
 corrections for density matrix.
 
-See also: [`mixer_gamma`](@ref).
+See also: [`mixer_gcorr`](@ref).
 """
 function distance(GA::Array{C64,4}, GB::Array{C64,4})
     # Check the dimensional parameters to make sure GA is similar to GB

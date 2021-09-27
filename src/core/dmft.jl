@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/24
+# Last modified: 2021/09/27
 #
 
 #=
@@ -210,7 +210,7 @@ function dmft_save(it::IterInfo, task::I64)
     fdmf2 = ["dmft.fermi"]
     fdmf3 = ["dmft.eimpx"]
     fdmf4 = ["dmft.delta"]
-    fdmf5 = ["dmft.gamma"]
+    fdmf5 = ["dmft.gcorr"]
 
     # Be careful, the final file list depends on the task
     if task == 1
@@ -613,9 +613,9 @@ end
 =#
 
 """
-    read_gamma(fgamma::String = "dmft2/dmft.gamma")
+    read_gcorr(fgcorr::String = "dmft2/dmft.gcorr")
 
-Read the `dmft2/dmft.gamma` file. It contains the correlation-induced
+Read the `dmft2/dmft.gcorr` file. It contains the correlation-induced
 correction for density matrix. The correction will be fed back to the
 DFT engine, and then the DFT engine will generate new Kohn-Sham dataset.
 
@@ -624,19 +624,19 @@ matrix with the `Kerker` mixing algorithm.
 
 The working directory of this function must be the root folder.
 
-See also: [`write_gamma`](@ref).
+See also: [`write_gcorr`](@ref).
 """
-function read_gamma(fgamma::String = "dmft2/dmft.gamma")
+function read_gcorr(fgcorr::String = "dmft2/dmft.gcorr")
     # Make sure the data file is available
-    @assert isfile(fgamma)
+    @assert isfile(fgcorr)
 
     # Declare the arrays for 𝑘-mesh and correction for density matrix
     kmesh = nothing
     kwin = nothing
-    gamma = nothing
+    gcorr = nothing
 
-    # Parse `fgamma`, extract 𝑘-mesh and correction for density matrix
-    open(fgamma, "r") do fin
+    # Parse `fgcorr`, extract 𝑘-mesh and correction for density matrix
+    open(fgcorr, "r") do fin
         # Get the dimensional parameters
         nkpt  = parse(I64, line_to_array(fin)[4])
         nspin = parse(I64, line_to_array(fin)[3])
@@ -649,7 +649,7 @@ function read_gamma(fgamma::String = "dmft2/dmft.gamma")
         # Create arrays
         kmesh = zeros(F64, nkpt, 3)
         kwin = zeros(I64, nkpt, nspin, 2)
-        gamma = zeros(C64, xbnd, xbnd, nkpt, nspin)
+        gcorr = zeros(C64, xbnd, xbnd, nkpt, nspin)
 
         # Read the data
         # Go through each spin and 𝑘-point
@@ -689,7 +689,7 @@ function read_gamma(fgamma::String = "dmft2/dmft.gamma")
                         strs = readline(fin)
                         _re = parse(F64, line_to_array(strs)[3])
                         _im = parse(F64, line_to_array(strs)[4])
-                        gamma[p,q,k,s] = _re + _im*im
+                        gcorr[p,q,k,s] = _re + _im*im
                     end
                 end
 
@@ -701,13 +701,13 @@ function read_gamma(fgamma::String = "dmft2/dmft.gamma")
     end # END OF IOSTREAM
 
     # Print some useful information
-    println("  > Read gamma matrix from: $fgamma")
+    println("  > Read gcorr matrix from: $fgcorr")
     println("  > Shape of Array kmesh: ", size(kmesh))
     println("  > Shape of Array kwin: ", size(kwin))
-    println("  > Shape of Array gamma: ", size(gamma))
+    println("  > Shape of Array gcorr: ", size(gcorr))
 
     # Return the desired arrays
-    return kmesh, kwin, gamma
+    return kmesh, kwin, gcorr
 end
 
 #=
@@ -960,25 +960,25 @@ end
 =#
 
 """
-    write_gamma(kmesh::Array{F64,2}, kwin::Array{I64,3}, gamma::Array{C64,4}, fgamma::String)
+    write_gcorr(kmesh::Array{F64,2}, kwin::Array{I64,3}, gcorr::Array{C64,4}, fgcorr::String)
 
-Write correction for density matrix Γ into `fgamma` file. This function
-is usually called by `mixer_gamma()` function to update the correction
-for density matrix stored in the `dmft2/dmft.gamma` file. The working
+Write correction for density matrix Γ into `fgcorr` file. This function
+is usually called by `mixer_gcorr()` function to update the correction
+for density matrix stored in the `dmft2/dmft.gcorr` file. The working
 directory of this function must be the root folder.
 
-See also: [`read_gamma`](@ref), [`write_delta`](@ref), [`write_eimpx`](@ref).
+See also: [`read_gcorr`](@ref), [`write_delta`](@ref), [`write_eimpx`](@ref).
 """
-function write_gamma(kmesh::Array{F64,2}, kwin::Array{I64,3}, gamma::Array{C64,4}, fgamma::String)
+function write_gcorr(kmesh::Array{F64,2}, kwin::Array{I64,3}, gcorr::Array{C64,4}, fgcorr::String)
     # Extract the dimensional parameters
-    _, xbnd, nkpt, nspin = size(gamma)
+    _, xbnd, nkpt, nspin = size(gcorr)
 
     # Determine filename for correction for density matrix
-    # So far, `fgamma` is locked.
-    @assert fgamma == "dmft2/dmft.gamma"
+    # So far, `fgcorr` is locked.
+    @assert fgcorr == "dmft2/dmft.gcorr"
 
     # Write the data
-    open(fgamma, "w") do fout
+    open(fgcorr, "w") do fout
         # Write dimensional parameters
         @printf(fout, "# nkpt : %4i\n", nkpt)
         @printf(fout, "# nspin: %4i\n", nspin)
@@ -1009,7 +1009,7 @@ function write_gamma(kmesh::Array{F64,2}, kwin::Array{I64,3}, gamma::Array{C64,4
                 # Go through the orbital space
                 for q = 1:cbnd
                     for p = 1:cbnd
-                        z = gamma[p,q,k,s]
+                        z = gcorr[p,q,k,s]
                         @printf(fout, "%4i%4i%16.8f%16.8f\n", p, q, real(z), imag(z))
                     end
                 end
@@ -1022,8 +1022,8 @@ function write_gamma(kmesh::Array{F64,2}, kwin::Array{I64,3}, gamma::Array{C64,4
     end # END OF IOSTREAM
 
     # Print message to the screen
-    println("  > Write correction for density matrix into: $fgamma")
+    println("  > Write correction for density matrix into: $fgcorr")
     println("  > Shape of Array kmesh: ", size(kmesh))
     println("  > Shape of Array kwin: ", size(kwin))
-    println("  > Shape of Array gamma: ", size(gamma))
+    println("  > Shape of Array gcorr: ", size(gcorr))
 end

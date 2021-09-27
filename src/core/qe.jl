@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/24
+# Last modified: 2021/09/26
 #
 
 #=
@@ -310,7 +310,7 @@ function qe_init(it::IterInfo)
     upf = map(x -> joinpath(pseudo_dir, x.upf), AtomicSpeciesBlock.data)
     for f in upf
         @assert isfile(f)
-        println("  > File $f (pseudopotential) is ready")
+        println("  > File $(basename(f)) is ready")
     end
 end
 

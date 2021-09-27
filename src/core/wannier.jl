@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/24
+# Last modified: 2021/09/26
 #
 
 #=
@@ -406,23 +406,21 @@ end
 
 Try to check and examine whether the obtained wannier functions are
 correct and reasonable.
+
+See also: [`wannier_adaptor`](@ref), [`plo_monitor`](@ref).
 """
 function wannier_monitor(D::Dict{Symbol,Any})
-    #for k = 1:nkpt
-    #    for j = 1:nband
-    #        for i = 1:nproj
-    #            @show k, i, j, proj[i,j,k]
-    #        end
-    #    end
-    #end
+    # Calculate and output overlap matrix
+    ovlp = calc_ovlp(D[:PW], D[:Fchipsi], D[:weight])
+    view_ovlp(D[:PG], ovlp)
 
-    #Ham = proj[:,:,1] * Diagonal(enk[:,1]) * proj[:,:,1]'
-    #println(size(Ham))
-    #for i = 1:nproj
-    #    for j = 1:nproj
-    #        @show i, j, Ham[i,j]
-    #    end
-    #end
+    # Calculate and output density matrix
+    dm = calc_dm(D[:PW], D[:Fchipsi], D[:weight], D[:occupy])
+    view_dm(D[:PG], dm)
+    
+    # Calculate and output local hamiltonian
+    hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
+    view_hamk(D[:PG], hamk)
 end
 
 #=
@@ -655,7 +653,7 @@ function w90_make_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
     # corresponding group of projectors.
     @assert all(x -> (0 < x ≤ ngrp), Map.i_grp)
     #
-    println("  > Create quantum impurity problems -> groups (i_grp)")
+    println("  > Map quantum impurity problems to groups  (i_grp)")
 
     # Examine Map.g_imp
     #
@@ -663,18 +661,18 @@ function w90_make_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
     # corresponding quantum impurity problem, it must be non-correlated.
     @assert all(x -> (0 ≤ x ≤ nsite), Map.g_imp)
     #
-    println("  > Create groups -> quantum impurity problems (g_imp)")
+    println("  > Map groups to quantum impurity problems  (g_imp)")
 
     # Setup Map.i_wnd and Map.w_imp
     #
     # They are actually copies of i_grp and g_imp
     Map.i_wnd[:] = Map.i_grp[:]
     #
-    println("  > Create quantum impurity problems -> windows (i_wnd)")
+    println("  > Map quantum impurity problems to windows (i_wnd)")
     #
     Map.w_imp[:] = Map.g_imp[:]
     #
-    println("  > Create windows -> quantum impurity problems (w_imp)")
+    println("  > Map windows to quantum impurity problems (w_imp)")
 
     # Return the desired struct
     return Map

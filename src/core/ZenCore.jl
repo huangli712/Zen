@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/24
+# Last modified: 2021/09/27
 #
 
 """
@@ -424,7 +424,7 @@ vasp_back      -> Reactivate the vasp program to continue calculation.
 vasp_stop      -> Stop vasp program.
 vaspc_incar    -> Generate essential input file (INCAR).
 vaspc_kpoints  -> Generate essential input file (KPOINTS).
-vaspc_gamma    -> Generate essential input file (GAMMA).
+vaspc_gcorr    -> Generate essential input file (GAMMA).
 vaspc_stopcar  -> Create the STOPCAR file to stop vasp.
 vaspc_lock     -> Create the vasp.lock file.
 vaspq_stopcar  -> Check the STOPCAR file.
@@ -455,7 +455,7 @@ export vasp_back
 export vasp_stop
 export vaspc_incar
 export vaspc_kpoints
-export vaspc_gamma
+export vaspc_gcorr
 export vaspc_stopcar
 export vaspc_lock
 export vaspq_stopcar
@@ -711,10 +711,10 @@ dmft_save   -> Backup output files for the DMFT engine.
 read_fermi  -> Read dmft1/dmft.fermi or dmft2/dmft.fermi.
 read_delta  -> Read dmft1/dmft.delta or impurity.i/dmft.delta.
 read_eimpx  -> Read dmft1/dmft.eimpx or impurity.i/dmft.eimpx.
-read_gamma  -> Read dmft2/dmft.gamma.
+read_gcorr  -> Read dmft2/dmft.gcorr.
 write_delta -> Write dmft1/dmft.delta or impurity.i/dmft.delta.
 write_eimpx -> Write dmft1/dmft.eimpx or impurity.i/dmft.eimpx.
-write_gamma -> Write dmft2/dmft.gamma.
+write_gcorr -> Write dmft2/dmft.gcorr.
 ```
 =#
 
@@ -727,10 +727,10 @@ export dmft_save
 export read_fermi
 export read_delta
 export read_eimpx
-export read_gamma
+export read_gcorr
 export write_delta
 export write_eimpx
-export write_gamma
+export write_gcorr
 
 #=
 ### *Includes And Exports* : *solver.jl*
@@ -867,7 +867,7 @@ matrix ``\Gamma``.
 mixer_sigma -> Mix self-energy functions.
 mixer_delta -> Mix hybridization functions.
 mixer_eimpx -> Mix local impurity levels.
-mixer_gamma -> Mix correction of density matrix Γ.
+mixer_gcorr -> Mix correction of density matrix Γ.
 amix        -> Return the mixing parameter.
 distance    -> Calculate the difference /distance between two arrays.
 ```
@@ -879,7 +879,7 @@ include("mixer.jl")
 export mixer_sigma
 export mixer_delta
 export mixer_eimpx
-export mixer_gamma
+export mixer_gcorr
 export amix
 export distance
 

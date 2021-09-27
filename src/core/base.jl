@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/23
+# Last modified: 2021/09/27
 #
 
 #=
@@ -336,7 +336,7 @@ function cycle2()
             @time_call dmft_run(it, lr, 2) # Generate correction for density matrix
 
             # C16: Mix the correction for density matrix
-            @time_call mixer_core(it, lr, ai, "gamma")
+            @time_call mixer_core(it, lr, ai, "gcorr")
 
             # Print the cycle info
             show_it("dmft2", 1, 1)
@@ -578,7 +578,7 @@ function cycle8(task::String = "sigma")
     # C01: Further setup the IterInfo struct
     #
     # Please modify the I₃ and I₁ parameters to fit your requirements
-    it.I₃ = 2; it.I₁ = 0; it.I₂ = 1; it.sc = 2 # Test mixer_gamma()
+    it.I₃ = 2; it.I₁ = 0; it.I₂ = 1; it.sc = 2 # Test mixer_gcorr()
 
     # C02: Execute the Kohn-Sham adaptor
     @time_call mixer_core(it, lr, ai, task)
@@ -1160,14 +1160,14 @@ end
 Simple driver for the mixer. It will try to mix the self-energy functions
 or hybridization functions and generate a new one.
 
-Now it supports four tasks: `sigma`, `delta`, `eimpx`, `gamma`. It
+Now it supports four tasks: `sigma`, `delta`, `eimpx`, `gcorr`. It
 won't change the current directory.
 
 See also: [`sigma_core`](@ref).
 """
 function mixer_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::String = "sigma")
     # Check the given task
-    @assert task in ("sigma", "delta", "eimpx", "gamma")
+    @assert task in ("sigma", "delta", "eimpx", "gcorr")
 
     # Print the log
     prompt("Mixer", cntr_it(it))
@@ -1184,7 +1184,7 @@ function mixer_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::Strin
                 return
             end
         else
-            @assert task == "gamma"
+            @assert task == "gcorr"
             if it.I₃ == 1 && it.I₂ == 1
                 return
             end
@@ -1209,8 +1209,8 @@ function mixer_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::Strin
             break
 
         # Try to mix the density matrix
-        @case "gamma"
-            mixer_gamma(it)
+        @case "gcorr"
+            mixer_gcorr(it)
             break
 
         @default

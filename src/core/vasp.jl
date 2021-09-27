@@ -274,11 +274,11 @@ See also: [`vasp_stop`](@ref).
 function vasp_back()
     # Read in the correction for density matrix
     println("Read correction for density matrix")
-    _, kwin, gamma = read_gamma("../dmft2/dmft.gamma")
+    _, kwin, gcorr = read_gcorr("../dmft2/dmft.gcorr")
 
     # Write the GAMMA file for vasp
     println("Write correction for density matrix")
-    vaspc_gamma(kwin, gamma)
+    vaspc_gcorr(kwin, gcorr)
 
     # Create vasp.lock file to wake up the vasp
     println("Reactivate the vasp engine (vasp.lock)")
@@ -508,23 +508,23 @@ function vaspc_kpoints(mp_scheme::Bool = true, n::I64 = 9)
 end
 
 """
-    vaspc_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
+    vaspc_gcorr(kwin::Array{I64,3}, gcorr::Array{C64,4})
 
 Generate a valid `GAMMA` file for vasp. The vasp will need this file
 when `ICHARG = 5`.
 
-See also: [`write_gamma`](@ref), [`read_gamma`](@ref).
+See also: [`write_gcorr`](@ref), [`read_gcorr`](@ref).
 """
-function vaspc_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
+function vaspc_gcorr(kwin::Array{I64,3}, gcorr::Array{C64,4})
     # Extract the dimensional parameters
-    _, xbnd, nkpt, nspin = size(gamma)
+    _, xbnd, nkpt, nspin = size(gcorr)
     @assert nspin == 1 # Current limitation
 
     # Determine filename for correction for density matrix
-    fgamma = "GAMMA"
+    fgcorr = "GAMMA"
 
     # Write the data
-    open(fgamma, "w") do fout
+    open(fgcorr, "w") do fout
         @printf(fout, " %i  -1  ! Number of k-points, default number of bands \n", nkpt)
         # Go through each 𝑘-point
         for k = 1:nkpt
@@ -538,7 +538,7 @@ function vaspc_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
             # Go through each band
             for p = 1:cbnd
                 for q = 1:cbnd
-                    z = gamma[p,q,k,1]
+                    z = gcorr[p,q,k,1]
                     @printf(fout, " %.14f  %.14f", real(z), imag(z))
                 end
                 println(fout)
@@ -547,7 +547,7 @@ function vaspc_gamma(kwin::Array{I64,3}, gamma::Array{C64,4})
     end # END OF IOSTREAM
 
     # Print message to the screen
-    println("  > Write gamma matrix into: dft/$fgamma")
+    println("  > Write gcorr matrix into: dft/$fgcorr")
 end
 
 """
