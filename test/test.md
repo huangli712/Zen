@@ -90,6 +90,12 @@
     * spin polarization (but up = down)
     * one-shot calculation
 
+* **A14_SrVO<sub>3</sub>**
+
+    * QE + PLO + CT-HYB<sub>1</sub>
+    * V-*3d* orbitals
+    * one-shot calculation
+
 ---
 
 ## case: FeSe
