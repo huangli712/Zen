@@ -100,20 +100,23 @@
 
 ## case: FeSe
 
-* **10_FeSe**
+* **B00_FeSe**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * Fe-*3d* orbitals
     * two Fe sites (degenerated)
     * one-shot calculation
 
-* **11_FeSe**
+* **B01_FeSe**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * Fe-*3d* orbitals
     * two Fe sites
     * one-shot calculation
 
-* **12_FeSe**
+* **B02_FeSe**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * Fe-*3d* orbitals
     * two Fe sites (degenerated)
     * self-consistent calculation
