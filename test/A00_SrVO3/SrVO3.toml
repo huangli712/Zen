@@ -41,4 +41,4 @@ lpara = [0.0]
 [solver]
 engine = "ct_hyb1"
 ncycle = 2
-params = ["isbnd = 2", "isort = 2", "nsweep = 10000000"]
+params = ["isbnd = 2", "isort = 2", "nsweep = 100000000"]
