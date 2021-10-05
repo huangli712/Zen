@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/26
+# Last modified: 2021/10/04
 #
 
 #=
@@ -368,7 +368,9 @@ end
 """
     wannier_save(sp::String = ""; op::String = "")
 
-Backup and check the output files of wannier90 if necessary.
+Backup and check the output files of wannier90 if necessary. Actually,
+there are no files that need to be stored. We just check whether they
+have been created correctly.
 
 See also: [`wannier_init`](@ref), [`wannier_exec`](@ref).
 """
@@ -432,7 +434,7 @@ end
 
 Try to make the control parameters for the `w90.win` file. The `latt`
 object represent the crystallography information, and `nband` is the
-number of Kohn-Sham states outputed by the dft code, `fermi` is the
+number of Kohn-Sham states outputed by the DFT code, `fermi` is the
 fermi level. This function is called by `wannier_init()`.
 
 See also: [`w90_make_proj`](@ref).
@@ -548,7 +550,7 @@ end
 
 Try to make the projection block for the `w90.win` file. We will not
 check the validness of these projections here. This function is called
-by the `wannier_init()`.
+by the `wannier_init()` function.
 
 See also: [`w90_make_ctrl`](@ref).
 """
@@ -583,7 +585,8 @@ end
     w90_make_map(PG::Array{PrGroup,1}, ai::Array{Impurity,1})
 
 Create connections / mappings between projectors (or band windows) and
-quantum impurity problems. Return a `Mapping` struct.
+quantum impurity problems. Return a `Mapping` struct. This function is
+just a copy of the `plo_map()` function.
 
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref), [`Mapping`](@ref).
 """
@@ -761,6 +764,8 @@ function w90_make_group(latt::Lattice, sp::String = "")
         push!(PT, PrTrait(site, l, m, desc))
     end
 
+    # The following codes are borrowed from vaspio_projs().
+
     # Try to split these projectors into groups.
     #
     # At first, we collect the tuple (site, l) for all projectors.
@@ -822,7 +827,8 @@ end
     w90_make_group(MAP::Mapping, PG::Array{PrGroup,1})
 
 Use the information contained in the `Mapping` struct to further setup
-the `PrGroup` struct.
+the `PrGroup` struct. This function is just a copy of the `plo_group()`
+function.
 
 See also: [`PIMP`](@ref), [`Mapping`](@ref), [`PrGroup`](@ref).
 """
@@ -873,15 +879,32 @@ function w90_make_group(MAP::Mapping, PG::Array{PrGroup,1})
 
             @case "d_t2g"
                 PG[g].Tr = zeros(C64, 3, 5)
-                PG[g].Tr[1, 1] = 1.0 + 0.0im
-                PG[g].Tr[2, 2] = 1.0 + 0.0im
-                PG[g].Tr[3, 4] = 1.0 + 0.0im
+                # For vasp
+                is_vasp() && begin
+                    PG[g].Tr[1, 1] = 1.0 + 0.0im
+                    PG[g].Tr[2, 2] = 1.0 + 0.0im
+                    PG[g].Tr[3, 4] = 1.0 + 0.0im
+                end
+                # For quantum espresso + wannier90
+                is_qe() && begin
+                    PG[g].Tr[1, 1] = 1.0 + 0.0im # WRONG
+                    PG[g].Tr[2, 2] = 1.0 + 0.0im # WRONG
+                    PG[g].Tr[3, 4] = 1.0 + 0.0im # WRONG
+                end
                 break
 
             @case "d_eg" # TO_BE_CHECK
                 PG[g].Tr = zeros(C64, 2, 5)
-                PG[g].Tr[1, 3] = 1.0 + 0.0im
-                PG[g].Tr[2, 5] = 1.0 + 0.0im
+                # For vasp
+                is_vasp() && begin
+                    PG[g].Tr[1, 3] = 1.0 + 0.0im
+                    PG[g].Tr[2, 5] = 1.0 + 0.0im
+                end
+                # For quantum espresso + wannier90
+                is_qe() && begin
+                    PG[g].Tr[1, 3] = 1.0 + 0.0im # WRONG
+                    PG[g].Tr[2, 5] = 1.0 + 0.0im # WRONG
+                end
                 break
 
             @default
@@ -917,6 +940,7 @@ function w90_make_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
         bwin = (1, nband)
         #
         # Setup momentum-dependent band window
+        # Be careful, here we assume nspin = 1.
         kwin = zeros(I64, nkpt, 1, 2)
         fill!(view(kwin, :, :, 1), 1)
         fill!(view(kwin, :, :, 2), nband)
@@ -955,6 +979,7 @@ function w90_make_window(PG::Array{PrGroup,1}, ewin::Tuple{F64,F64}, bwin::Array
     # Scan the groups of projectors, setup PrWindow for them.
     for p in eachindex(PG)
         # Setup momentum-dependent band window
+        # Be careful, here we assume nspin = 1.
         kwin = zeros(I64, nkpt, 1, 2)
         #
         # We copy bwin to kwin directly
@@ -1049,11 +1074,11 @@ function w90_make_chipsi(umat::Array{C64,3}, udis::Array{C64,3})
                 for m = 1:nproj
                     utmp[i,j] = utmp[i,j] + udis[i,m,k] * umat[m,j,k]
                 end
-            end
-        end
+            end # END OF I LOOP
+        end # END OF J LOOP
         # Calculate conjugate transpose
         chipsi[:,:,k] = utmp'
-    end
+    end # END OF K LOOP
 
     # Print some useful information
     println("  > Number of k-points: ", nkpt)
@@ -1070,7 +1095,8 @@ end
 
 Perform global rotations or transformations for the projectors. In
 this function, the projectors will be classified into different
-groups, and then they will be rotated group by group.
+groups, and then they will be rotated group by group. This function
+is just a copy of the `plo_rotate()` function.
 
 See also: [`PrGroup`](@ref), [`plo_rotate`](@ref).
 """
@@ -1123,7 +1149,8 @@ end
 """
     w90_make_chipsi(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}}
 
-Filter the projector matrix according to band window.
+Filter the projector matrix according to band window. This function is
+just a copy of the `plo_filter()` function.
 
 See also: [`PrWindow`](@ref), [`plo_filter`](@ref).
 """
@@ -1176,6 +1203,18 @@ function w90_make_chipsi(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 end
 
 """
+    w90_make_hamr()
+"""
+function w90_make_hamr()
+end
+
+"""
+    w90_make_hamk()
+"""
+function w90_make_hamk()
+end
+
+"""
     w90_find_bwin(ewin::Tuple{F64,F64}, enk::Array{F64,3})
 
 During the disentanglement procedure, we can define an outer energy
@@ -1204,8 +1243,8 @@ function w90_find_bwin(ewin::Tuple{F64,F64}, enk::Array{F64,3})
 
     # Go through each k-point to figure out the band window
     for k = 1:nkpt
-        bmin = findfirst(x -> x > emin, enk[:,k])
-        bmax = findfirst(x -> x > emax, enk[:,k]) - 1
+        bmin = findfirst(x -> x > emin, enk[:,k,1])
+        bmax = findfirst(x -> x > emax, enk[:,k,1]) - 1
         bwin[k,1] = bmin
         bwin[k,2] = bmax
         @assert nband ≥ bmax > bmin ≥ 1
@@ -1597,7 +1636,7 @@ function w90_read_wout(sp::String = "")
     arr = line_to_array(lines[1])
     wmin = parse(F64, arr[3])
     wmax = parse(F64, arr[5])
-    println("  > Energy window: ($wmin, $wmax) eV")
+    println("  > Outer energy window: ($wmin, $wmax) eV")
 
     # Return the desired energy window
     return (wmin, wmax)
@@ -1745,13 +1784,13 @@ function pw2wan_init(case::String, sp::String = "")
     NLData["write_dmn"] = ".true."
     NLData["write_unk"] = ".false."
     #
-    # Create QENamelist
-    QEN = QENamelist(name, NLData)
+    # Create a QENamelist
+    QNL = QENamelist(name, NLData)
 
     # Try to write case.pw2wan
     fwan = case * sp * ".pw2wan"
     open(fwan, "w") do fout
-        write(fout, QEN) # This write function is defined in qe.jl
+        write(fout, QNL) # This write function is defined in qe.jl
     end
     #
     println("  > File $fwan is created")

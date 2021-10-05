@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/24
+# Last modified: 2021/10/03
 #
 
 #=
@@ -215,7 +215,8 @@ end
 #=
 *Remarks* :
 
-Until now, the `PG` array was only created in `vasp.jl/vaspio_projs()`.
+Until now, the `PG` array were only created in `vasp.jl/vaspio_projs()`
+and `wannier.jl/w90_make_group()`.
 
 In this function, `corr`, `shell`,  and `Tr` which are members of
 `PrGroup` struct will be modified according to users' configuration,
@@ -277,15 +278,32 @@ function plo_group(MAP::Mapping, PG::Array{PrGroup,1})
 
             @case "d_t2g"
                 PG[g].Tr = zeros(C64, 3, 5)
-                PG[g].Tr[1, 1] = 1.0 + 0.0im
-                PG[g].Tr[2, 2] = 1.0 + 0.0im
-                PG[g].Tr[3, 4] = 1.0 + 0.0im
+                # For vasp
+                is_vasp() && begin
+                    PG[g].Tr[1, 1] = 1.0 + 0.0im
+                    PG[g].Tr[2, 2] = 1.0 + 0.0im
+                    PG[g].Tr[3, 4] = 1.0 + 0.0im
+                end
+                # For quantum espresso + wannier90
+                is_qe() && begin
+                    PG[g].Tr[1, 1] = 1.0 + 0.0im # WRONG
+                    PG[g].Tr[2, 2] = 1.0 + 0.0im # WRONG
+                    PG[g].Tr[3, 4] = 1.0 + 0.0im # WRONG
+                end
                 break
 
             @case "d_eg" # TO_BE_CHECK
                 PG[g].Tr = zeros(C64, 2, 5)
-                PG[g].Tr[1, 3] = 1.0 + 0.0im
-                PG[g].Tr[2, 5] = 1.0 + 0.0im
+                # For vasp
+                is_vasp() && begin
+                    PG[g].Tr[1, 3] = 1.0 + 0.0im
+                    PG[g].Tr[2, 5] = 1.0 + 0.0im
+                end
+                # For quantum espresso + wannier90
+                is_qe() && begin
+                    PG[g].Tr[1, 3] = 1.0 + 0.0im # WRONG
+                    PG[g].Tr[2, 5] = 1.0 + 0.0im # WRONG
+                end
                 break
 
             @default
@@ -489,7 +507,7 @@ Here, ``\mathbf{R}`` denotes the correlated atom within the primitive
 unit cell, around which the local orbital ``|\chi^{\mathbf{R}}_{m}\rangle``
 is centered, and ``m = 1, \cdots, M`` is an orbital index within the
 correlated subset. ``|\Psi_{\mathcal{k}\nu}\rangle`` denotes the Bloch
-wave functions, and ``\nu`` is an band index.
+wave functions, and ``\nu`` is a band index.
 =#
 
 """

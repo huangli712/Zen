@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/24
+# Last modified: 2021/10/03
 #
 
 #=
@@ -177,24 +177,25 @@ function chk_dict()
     @assert get_d("projtype") in ("plo", "wannier")
     @assert get_d("smear") in ("mp2", "mp1", "gauss", "tetra")
     @assert get_d("kmesh") in ("accurate", "medium", "coarse", "file")
-    #@assert iseven( length( get_d("window") ) )
+    @assert get_d("ncycle") ≥ 1
     #
     # Check dmft block
     @assert get_m("mode") in (1, 2)
     @assert get_m("axis") in (1, 2)
-    @assert all(x -> x ≥ 1, get_m("niter"))
+    @assert get_m("niter") ≥ 1
     @assert get_m("nmesh") > 0
     @assert get_m("dcount") in ("fll1", "fll2", "amf", "held", "exact")
     @assert get_m("beta") ≥ 0.0
-    @assert 0.0 ≤ get_m("mixer") ≤ 1.0
+    @assert 1.0 ≥ get_m("mixer") ≥ 0.0
     #
     # Check impurity block
-    @assert 1 ≤ get_i("nsite") ≤ 99
+    @assert 99 ≥ get_i("nsite") ≥ 1
     @assert all(x -> x in ("s", "p", "d", "f", "d_t2g", "d_eg"), get_i("shell"))
     @assert all(x -> x in ("ising", "full"), get_i("ising"))
     #
     # Check solver block
     @assert get_s("engine") in ("ct_hyb1", "ct_hyb2", "hub1", "norg")
+    @assert get_s("ncycle") ≥ 1
     #
     # Please add more assertion statements here
 
@@ -319,10 +320,10 @@ function cat_d()
     println("    smear    -> ", str_d("smear"))
     println("    kmesh    -> ", str_d("kmesh"))
     println("    magmom   -> ", str_d("magmom"))
+    println("    ncycle   -> ", str_d("ncycle"))
     println("    lsymm    -> ", str_d("lsymm"))
     println("    lspins   -> ", str_d("lspins"))
     println("    lspinorb -> ", str_d("lspinorb"))
-    println("    loptim   -> ", str_d("loptim"))
     println("    lproj    -> ", str_d("lproj"))
     println("    sproj    -> ", str_d("sproj"))
     println("    window   -> ", str_d("window"))
@@ -336,7 +337,6 @@ Print the configuration parameters to stdout: for PDMFT dict.
 See also: [`get_m`](@ref), [`str_m`](@ref).
 """
 function cat_m()
-    # See comments above cat_d()
     println("    mode     -> ", str_m("mode"))
     println("    axis     -> ", str_m("axis"))
     println("    niter    -> ", str_m("niter"))
@@ -359,7 +359,6 @@ Print the configuration parameters to stdout: for PIMP dict.
 See also: [`get_i`](@ref), [`str_i`](@ref).
 """
 function cat_i()
-    # See comments above cat_d()
     println("    nsite    -> ", str_i("nsite"))
     println("    atoms    -> ", str_i("atoms"))
     println("    equiv    -> ", str_i("equiv"))
@@ -379,8 +378,8 @@ Print the configuration parameters to stdout: for PSOLVER dict.
 See also: [`get_s`](@ref), [`str_s`](@ref).
 """
 function cat_s()
-    # See comments above cat_d()
     println("    engine   -> ", str_s("engine"))
+    println("    ncycle   -> ", str_s("ncycle"))
     println("    params   -> ", str_s("params"))
 end
 

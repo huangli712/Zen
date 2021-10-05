@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/23
+# Last modified: 2021/10/03
 #
 
 #=
@@ -16,6 +16,7 @@
 
 Provides a C-like switch statement with the *falling through* behavior.
 This implementation was borrowed from the following github repository:
+
 * https://github.com/Gnimuc/CSyntax.jl
 
 ### Examples
@@ -78,9 +79,9 @@ This macro is a variation of the standard `@elapsed` macro.
 macro time_call(ex)
     quote
         while false; end
-        local t0 = time_ns()
+        local t₀ = time_ns()
         $(esc(ex))
-        δt = (time_ns() - t0) / 1e9
+        δt = (time_ns() - t₀) / 1e9
         println("Report: Total elapsed time $(δt) s\n")
         flush(stdout)
     end
@@ -91,7 +92,7 @@ end
 
 Try to print colorful strings. Here `x` is a combination of strings and
 colors. Its format likes `string1 color1 string2 color2 (repeat)`. For
-the supported colors, please check the dict `COLORS`.
+the supported colors, please check the global dict `COLORS`.
 
 ### Examples
 ```julia-repl
@@ -125,6 +126,7 @@ macro pcs(x...)
             print(eval(color)(str))
         end
     end
+
     return :( $(esc(ex)) )
 end
 
@@ -226,7 +228,7 @@ automatically. Do not worry about them.
 For `quantum espresso` (`pwscf`), the essential input files include:
 
 * QE.INP
-* Pseudopotential files.
+* Pseudopotential files
 
 As for the other files, they should be generated automatically. Do
 not worry about them.
@@ -274,6 +276,17 @@ function query_stop()
     isfile(query_case() * ".stop")
 end
 
+"""
+    query_test()
+
+Query whether the `case.test` file exists.
+
+See also: [`query_test`](@ref).
+"""
+function query_test()
+    isfile(query_case() * ".test")
+end
+
 #=
 *Remarks* :
 
@@ -283,8 +296,9 @@ In the `ZenCore` package, the following environment variables matter:
 * ZEN_CORE
 * ZEN_DMFT
 * ZEN_SOLVER
-* VASP_HOME (If we are using vasp as our DFT engine)
-* QE_HOME (If we are using quantum espresso as our DFT engine)
+* VASP_HOME (If we are using `vasp` as our DFT engine)
+* QE_HOME (If we are using `quantum espresso` as our DFT engine)
+* W90_HOME (If we are using `wannier90` to generate projectors)
 
 Please setup them in your `.bashrc` (Lniux) or `.profile` (macOS) files.
 =#
@@ -351,10 +365,10 @@ function query_dft(engine::String)
             break
 
         @case "wannier90"
-            if haskey(ENV, "WANNIER90_HOME")
-                return ENV["WANNIER90_HOME"]
+            if haskey(ENV, "WAN90_HOME")
+                return ENV["WAN90_HOME"]
             else
-                error("WANNIER90_HOME is undefined")
+                error("WAN90_HOME is undefined")
             end
             break
 
@@ -430,6 +444,50 @@ function query_solver(engine::String)
     end
 end
 
+"""
+    is_vasp()
+
+Test whether the DFT backend is the `vasp` code.
+
+See also: [`is_qe`](@ref).
+"""
+function is_vasp()
+    get_d("engine") == "vasp"
+end
+
+"""
+    is_qe()
+
+Test whether the DFT backend is the `quantum espresso` (`pwscf`) code.
+
+See also: [`is_vasp`](@ref).
+"""
+function is_qe()
+    get_d("engine") == "qe"
+end
+
+"""
+    is_plo()
+
+Test whether the projector is the projected local orbitals.
+
+See also: [`is_plo`](@ref).
+"""
+function is_plo()
+    get_d("projtype") == "plo"
+end
+
+"""
+    is_wannier()
+
+Test whether the projector is the wannier functions.
+
+See also: [`is_wannier`](@ref).
+"""
+function is_wannier()
+    get_d("projtype") == "wannier"
+end
+
 #=
 ### *Colorful Outputs*
 =#
@@ -450,6 +508,7 @@ function welcome()
     @pcs "ZZZZZZZZZZZZ EEEEEEEEEEEE N          N | "  green "Powered by the julia programming language\n" magenta
     @pcs "                                       |\n" green
     println()
+    #
     flush(stdout)
 end
 
@@ -470,6 +529,7 @@ function overview()
     println("Dirs : ", pwd())
     println("Task : ", query_args())
     println()
+    #
     flush(stdout)
 end
 
@@ -482,6 +542,7 @@ function goodbye()
     println(  red("╔═╗┌─┐┌┐┌"), magenta("╔═╗┌─┐┬─┐┌─┐"))
     println(green("╔═╝├┤ │││"), magenta("║  │ │├┬┘├┤ "))
     println( blue("╚═╝└─┘┘└┘"), magenta("╚═╝└─┘┴└─└─┘"))
+    #
     flush(stdout)
 end
 
@@ -503,6 +564,7 @@ function prompt(msg::String)
     print(green("ZEN > "))
     print(magenta(msg))
     println()
+    #
     flush(stdout)
 end
 
@@ -516,6 +578,7 @@ function prompt(msg1::String, msg2::String)
     print(light_red(msg1))
     print(magenta(msg2))
     println()
+    #
     flush(stdout)
 end
 
@@ -528,6 +591,7 @@ to log the key events during DFT + DMFT iterations.
 function prompt(io::IOStream, msg::String)
     date = Dates.format(now(), "yyyy-mm-dd / HH:MM:SS")
     println(io, "$date  $msg")
+    #
     flush(io)
 end
 
@@ -587,6 +651,7 @@ We call the `erf()` function defined in the mathematical library `libm`
 or `openlibm` directly, instead of implementing it again by ourselves.
 For more details about `libm` and `openlibm`, please visit the following
 websites:
+
 * https://openlibm.org
 * https://github.com/JuliaMath/openlibm
 * https://sourceware.org/newlib/libm.html
@@ -594,6 +659,7 @@ websites:
 *Remarks 3* :
 
 This below implementation is taken from the `SpecialFunctions.jl`. See:
+
 * https://github.com/JuliaMath/SpecialFunctions.jl
 
 *Remarks 4* :

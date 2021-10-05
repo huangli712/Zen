@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/24
+# Last modified: 2021/10/02
 #
 
 #=
@@ -32,8 +32,8 @@ Dictionary for configuration parameters: case summary.
 
 See also: [`PDFT`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
-const PCASE = Dict{String,Array{Any,1}}(
-    "case"     => [missing, 1, :String, "System's name"]
+const PCASE  = Dict{String,Array{Any,1}}(
+    "case"     => [missing, 1, :String, "System's name or seedname"]
 )
 
 """
@@ -43,16 +43,16 @@ Dictionary for configuration parameters: density functional theory calculations.
 
 See also: [`PCASE`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
-const PDFT  = Dict{String,Array{Any,1}}(
+const PDFT   = Dict{String,Array{Any,1}}(
     "engine"   => [missing, 1, :String, "Engine for density functional theory calculations"],
     "projtype" => [missing, 1, :String, "Types of projectors"],
     "smear"    => [missing, 1, :String, "Scheme for smearing"],
     "kmesh"    => [missing, 1, :String, "K-mesh for brillouin zone sampling / integration"],
     "magmom"   => [missing, 0, :String, "Initial magnetic moments"],
+    "ncycle"   => [missing, 1, :I64   , "Number of DFT iterations per DFT + DMFT cycle"],           
     "lsymm"    => [missing, 1, :Bool  , "The symmetry is turned on or off"],
     "lspins"   => [missing, 1, :Bool  , "The spin orientations are polarized or not"],
     "lspinorb" => [missing, 1, :Bool  , "The spin-orbit coupling is considered or not"],
-    "loptim"   => [missing, 1, :Bool  , "The generated projectors are optimized or not"],
     "lproj"    => [missing, 1, :Bool  , "The projectors are generated or not"],
     "sproj"    => [missing, 1, :Array , "Specifications for generating projectors"],
     "window"   => [missing, 1, :Array , "Band / energy window for normalizing projectors"],
@@ -65,10 +65,10 @@ Dictionary for configuration parameters: dynamical mean-field theory calculation
 
 See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
-const PDMFT = Dict{String,Array{Any,1}}(
+const PDMFT  = Dict{String,Array{Any,1}}(
     "mode"     => [missing, 1, :I64   , "Scheme of dynamical mean-field theory calculations"],
     "axis"     => [missing, 1, :I64   , "Imaginary-time axis or real-frequency axis"],
-    "niter"    => [missing, 1, :Array , "Maximum number of all kinds of iterations"],
+    "niter"    => [missing, 1, :I64   , "Maximum allowed number of DFT + DMFT iterations"],
     "nmesh"    => [missing, 1, :I64   , "Number of frequency points"],
     "dcount"   => [missing, 1, :String, "Scheme of double counting term"],
     "beta"     => [missing, 1, :F64   , "Inverse system temperature"],
@@ -87,7 +87,7 @@ Dictionary for configuration parameters: quantum impurity problems.
 
 See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PDMFT`](@ref), [`PSOLVER`](@ref).
 """
-const PIMP  = Dict{String,Array{Any,1}}(
+const PIMP   = Dict{String,Array{Any,1}}(
     "nsite"    => [missing, 1, :I64   , "Number of (correlated) impurity sites"],
     "atoms"    => [missing, 1, :Array , "Chemical symbols of impurity atoms"],
     "equiv"    => [missing, 1, :Array , "Equivalency of quantum impurity atoms"],
@@ -108,6 +108,7 @@ See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref).
 """
 const PSOLVER= Dict{String,Array{Any,1}}(
     "engine"   => [missing, 1, :String, "Name of quantum impurity solver"],
+    "ncycle"   => [missing, 1, :I64   , "Number of solver iterations per DFT + DMFT cycle"],
     "params"   => [missing, 1, :Array , "Extra parameter sets of quantum impurity solver"],
 )
 
@@ -160,12 +161,12 @@ Mutable struct. Record the DFT + DMFT iteration information.
 
 ### Members
 
-* I₁ -> Number of iterations between `dmft1` and quantum impurity solver.
-* I₂ -> Number of iterations between `dmft2` and DFT engine.
+* I₁ -> Number of cycles between `dmft1` and quantum impurity solver.
+* I₂ -> Number of cycles between `dmft2` and DFT engine.
 * I₃ -> Number of DFT + DMFT iterations.
-* I₄ -> Counter for all internal iteration.
-* M₁ -> Maximum allowed number of iterations (between `dmft1` and solver).
-* M₂ -> Maximum allowed number of iterations (between `dmft2` and DFT).
+* I₄ -> Counter for all the internal cycles.
+* M₁ -> Maximum allowed number of cycles (between `dmft1` and solver).
+* M₂ -> Maximum allowed number of cycles (between `dmft2` and DFT).
 * M₃ -> Maximum allowed number of DFT + DMFT iterations.
 * sc -> Self-consistent mode.
 * μ₀ -> Fermi level obtained by DFT engine.
@@ -195,10 +196,10 @@ mutable struct IterInfo
     μ₀ :: F64
     μ₁ :: F64
     μ₂ :: F64
-    dc :: Vector{F64}
+    dc :: Vector{F64} # dc is site-dependent
     n₁ :: F64
     n₂ :: F64
-    nf :: Vector{F64}
+    nf :: Vector{F64} # nf is site-dependent
     et :: Energy
     ep :: Energy
     cc :: Bool
@@ -243,15 +244,15 @@ end
 """
     Mapping
 
-Mutable struct. Mapping between quantum impurity problems and groups
-of projectors (or band windows).
+Mutable struct. It denotes a mapping between quantum impurity problems
+and groups of projectors (or windows of Kohn-Sham states).
 
 ### Members
 
 * i_grp -> Mapping from quntum impurity problems to groups of projectors.
-* i_wnd -> Mapping from quantum impurity problems to DFT band windows.
+* i_wnd -> Mapping from quantum impurity problems to windows of Kohn-Sham states.
 * g_imp -> Mapping from groups of projectors to quantum impurity problems.
-* w_imp -> Mapping from DFT band windows to quantum impurity problems.
+* w_imp -> Mapping from windows of Kohn-Sham states to quantum impurity problems.
 
 See also: [`Impurity`](@ref), [`PrGroup`](@ref), [`PrWindow`](@ref).
 """
@@ -265,7 +266,7 @@ end
 """
     Impurity
 
-Mutable struct. Essential information of quantum impurity problem.
+Mutable struct. It includes key information of quantum impurity problems.
 
 ### Members
 
@@ -306,7 +307,7 @@ end
 """
     PrTrait
 
-Mutable struct. Essential information of a given projector.
+Mutable struct. It defines a local orbital projection (a projector).
 
 ### Members
 
@@ -327,7 +328,10 @@ end
 """
     PrGroup
 
-Mutable struct. Essential information of group of projectors.
+Mutable struct. It defines a group of projectors. There are quite a lot
+of local projectors. We always gather, reorganize, and split them into
+various groups according to their labels (such as site and 𝑙). Each group
+is connected with a quantum impurity problem.
 
 ### Members
 
@@ -358,7 +362,8 @@ end
 """
     PrWindow
 
-Mutable struct. Define the band window for a given group of projectors.
+Mutable struct. It defines a window for the Kohn-Sham states (DFT bands).
+Each window is connected with a quantum impurity problem.
 
 ### Members
 
@@ -367,8 +372,8 @@ Mutable struct. Define the band window for a given group of projectors.
 * nbnd -> Maximum number of bands in the current window (≡ `bmax - bmin + 1`).
 * kwin -> Momentum-dependent and spin-dependent band window.
 * bwin -> Tuple. It is the band window or energy window, which is used
-          to filter the Kohn-Sham band structure. The mesh for calculating
-          density of states is also deduced from `bwin`.
+          to filter the Kohn-Sham states (i.e DFT bands). The mesh for
+          calculating density of states is also deduced from `bwin`.
 
 See also: [`PrTrait`](@ref), [`PrGroup`](@ref), [`Mapping`](@ref), [`Impurity`](@ref).
 """
@@ -394,6 +399,9 @@ function Logger(case::String = "case")
     log = open("$case.log", "a")
     cycle = open("$case.cycle", "a")
 
+    # Sanity check
+    @assert isopen(log) && isopen(cycle)
+
     # Call the default constructor
     Logger(log, cycle)
 end
@@ -404,6 +412,7 @@ end
 Outer constructor for Energy struct.
 """
 function Energy()
+    # Set the decomposition of energy to zero
     dft  = 0.0
     dmft = 0.0
     corr = 0.0
@@ -419,16 +428,20 @@ end
 Outer constructor for IterInfo struct.
 """
 function IterInfo()
-    # Extract the parameter `nsite` and `niter`
+    # Extract the parameter `nsite`
     nsite = get_i("nsite")
-    _M₃, _M₁, _M₂ = get_m("niter")
     @assert nsite ≥ 1
-    @assert _M₃ ≥ 1 && _M₁ ≥ 1 && _M₂ ≥ 1
+
+    # Extract the parameters `niter` and `ncycle`
+    _M₁ = get_d("ncycle")
+    _M₂ = get_s("ncycle")
+    _M₃ = get_m("niter")
+    @assert _M₁ ≥ 1 && _M₂ ≥ 1 && _M₃ ≥ 1
 
     # Initialize key fields
     #
-    # sc = 0 means in preparation mode,
-    # sc = 1 means one-shot DFT + DMFT calculations,
+    # sc = 0 means in preparation stage;
+    # sc = 1 means one-shot DFT + DMFT calculations;
     # sc = 2 means fully self-consistent DFT + DMFT calculations.
     I  = 0
     M₁ = _M₁
@@ -480,8 +493,7 @@ Outer constructor for Mapping struct.
 """
 function Mapping(nsite::I64, ngrp::I64, nwnd::I64)
     # Sanity check
-    @assert ngrp ≥ nsite
-    @assert nwnd == ngrp
+    @assert nwnd == ngrp ≥ nsite
 
     # Initialize the arrays
     i_grp = zeros(I64, nsite)
@@ -840,7 +852,7 @@ end
 
 Implement the calculation of total DFT + DMFT energy. The `Energy` struct
 does not really contains the `total` field. This function will implement
-it by overriding the Base.getproperty() function.
+`et.total` by overriding the Base.getproperty() function.
 
 See also: [`Energy`](@ref).
 """

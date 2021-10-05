@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/23
+# Last modified: 2021/10/05
 #
 
 #=
@@ -18,12 +18,14 @@ Adaptor support for vasp code. It will parse the output files of vasp
 code, extract the Kohn-Sham dataset,  and then fulfill the `DFTData`
 dict (i.e `D`).
 
-The following vasp's output files are needed:
+The following vasp's output files must be presented:
+
 * `POSCAR`
 * `IBZKPT`
 * `EIGENVAL`
 * `LOCPROJ`
 * `DOSCAR`
+* `OSZICAR`
 
 See also: [`plo_adaptor`](@ref), [`ir_adaptor`](@ref).
 """
@@ -229,7 +231,8 @@ end
     vasp_save(it::IterInfo)
 
 Backup the output files of vasp if necessary. Furthermore, the DFT fermi
-level in `IterInfo` struct is also updated (`IterInfo.μ₀`).
+level and the DFT band energy in `IterInfo` struct will also be updated
+(i.e `IterInfo.μ₀` and `IterInfo.et.dft`).
 
 See also: [`vasp_init`](@ref), [`vasp_exec`](@ref).
 """
@@ -267,12 +270,15 @@ end
     vasp_back()
 
 Reactivate the vasp engine to continue the charge self-consistent
-DFT + DMFT calculation.
+DFT + DMFT calculation. It will prepare the file `GAMMA`, and try
+to create a lock file (`vasp.lock`). Then the vasp engine will wake
+up and continue to work automatically.
 
 See also: [`vasp_stop`](@ref).
 """
 function vasp_back()
-    # Read in the correction for density matrix
+    # Read in the correction for density matrix which is produced by
+    # the dmft1 code (Dyson).
     println("Read correction for density matrix")
     _, kwin, gcorr = read_gcorr("../dmft2/dmft.gcorr")
 
@@ -280,9 +286,9 @@ function vasp_back()
     println("Write correction for density matrix")
     vaspc_gcorr(kwin, gcorr)
 
-    # Create vasp.lock file to wake up the vasp
+    # Create a vasp.lock file to wake up the vasp
     println("Reactivate the vasp engine (vasp.lock)")
-    vaspc_lock("create")
+    vaspc_lock()
 end
 
 """
@@ -298,7 +304,7 @@ function vasp_stop()
     vaspc_stopcar()
 
     # Maybe vasp.lock is necessary.
-    vaspc_lock("create", "dft")
+    vaspc_lock("dft")
 
     # Sleep until the STOPCAR is deleted automatically, which means
     # that the vasp process is termined completely.
@@ -348,7 +354,7 @@ function vaspc_incar(fermi::F64, sc_mode::I64)
     write(ios, "LASPH    = .TRUE. \n")
     write(ios, "LMAXMIX  = 6 \n")
     write(ios, "NCORE    = 4 \n")
-    write(ios, "LWAVE    = .FALSE. \n")
+    write(ios, "LWAVE    = .TRUE. \n")
 
     # Customize your INCAR according to the case.toml
     #
@@ -434,16 +440,13 @@ function vaspc_incar(fermi::F64, sc_mode::I64)
 
     # For optimized projectors
     ewidth = 4.0 # A magic number
-    loptim = get_d("loptim")
-    if !isa(loptim, Missing)
-        if loptim
-            write(ios, "LORBIT   = 14 \n")
-            emin = fermi - ewidth
-            write(ios, "EMIN     = $emin \n")
-            emax = fermi + ewidth
-            write(ios, "EMAX     = $emax \n")
-        end
-    end
+    write(ios, "LORBIT   = 14 \n")
+    #
+    emin = fermi - ewidth
+    write(ios, "EMIN     = $emin \n")
+    #
+    emax = fermi + ewidth
+    write(ios, "EMAX     = $emax \n")
 
     # For local orbitals and projectors
     lproj = get_d("lproj")
@@ -518,32 +521,43 @@ See also: [`write_gcorr`](@ref), [`read_gcorr`](@ref).
 function vaspc_gcorr(kwin::Array{I64,3}, gcorr::Array{C64,4})
     # Extract the dimensional parameters
     _, xbnd, nkpt, nspin = size(gcorr)
-    @assert nspin == 1 # Current limitation
+    @assert nspin in (1,2) # Current limitation
 
     # Determine filename for correction for density matrix
     fgcorr = "GAMMA"
 
     # Write the data
     open(fgcorr, "w") do fout
+        # Print the header. It seems it is in old format.
+        # Please check the fileio.F/READGAMMA_HEAD() subroutine in
+        # vasp's source code for more details.
         @printf(fout, " %i  -1  ! Number of k-points, default number of bands \n", nkpt)
-        # Go through each 𝑘-point
-        for k = 1:nkpt
-            # Determine the band window
-            bs = kwin[k,1,1]
-            be = kwin[k,1,2]
-            cbnd = be - bs + 1
-            @assert cbnd ≤ xbnd
-            @printf(fout, " %i  %i  %i\n", k, bs, be)
 
-            # Go through each band
-            for p = 1:cbnd
-                for q = 1:cbnd
-                    z = gcorr[p,q,k,1]
-                    @printf(fout, " %.14f  %.14f", real(z), imag(z))
+        # Go through each spin
+        for s = 1:nspin
+            # Go through each 𝑘-point
+            for k = 1:nkpt
+                # Determine the band window
+                bs = kwin[k,s,1] # Start of band window
+                be = kwin[k,s,2] # End of band window
+                cbnd = be - bs + 1
+
+                # Sanity check
+                @assert cbnd ≤ xbnd
+
+                # Write the band window
+                @printf(fout, " %i  %i  %i\n", k, bs, be)
+
+                # Go through each band
+                for p = 1:cbnd
+                    for q = 1:cbnd
+                        z = gcorr[p,q,k,1]
+                        @printf(fout, " %.14f  %.14f", real(z), imag(z))
+                    end
+                    println(fout) # Create a new line
                 end
-                println(fout)
-            end
-        end # END OF K LOOP
+            end # END OF K LOOP
+        end # END OF S LOOP 
     end # END OF IOSTREAM
 
     # Print message to the screen
@@ -569,7 +583,7 @@ function vaspc_stopcar()
 end
 
 """
-    vaspc_lock(action::String, dir::String = ".")
+    vaspc_lock(dir::String = ".")
 
 Create the `vasp.lock` file. This file is relevant for `ICHARG = 5`.
 The vasp program runs only when the `vasp.lock` file is present in the
@@ -578,8 +592,7 @@ can specify it via argument `dir`.
 
 See also: [`vaspq_lock`](@ref).
 """
-function vaspc_lock(action::String, dir::String = ".")
-    @assert startswith(action, "c") || startswith(action, "C")
+function vaspc_lock(dir::String = ".")
     touch(joinpath(dir, "vasp.lock"))
 end
 
@@ -620,7 +633,16 @@ directory that contains the desired files.
 See also: [`adaptor_run`](@ref).
 """
 function vaspq_files(f::String)
-    fl = ["POSCAR", "IBZKPT", "EIGENVAL", "LOCPROJ", "DOSCAR", "CHGCAR"]
+    # Define file list
+    fl = ["POSCAR",
+          "IBZKPT",
+          "EIGENVAL",
+          "LOCPROJ",
+          "DOSCAR",
+          "CHGCAR",
+          "OSZICAR"]
+    
+    # Check them one by one
     for i in eachindex(fl)
         @assert isfile( joinpath(f, fl[i]) )
     end
@@ -702,10 +724,8 @@ vaspio_nband() = vaspio_nband(pwd())
     vaspio_valence(f::String)
 
 Reading vasp's `POTCAR` file, return `ZVAL`. Here `f` means only the
-directory that contains `POTCAR`.
-
-The information about `ZVAL` will be used to determine `NBANDS` in the
-`INCAR` file.
+directory that contains `POTCAR`. The information about `ZVAL` will
+be used to determine `NBANDS` in the `INCAR` file.
 
 See also: [`vaspc_incar`](@ref), [`vaspio_nband`](@ref).
 """
@@ -732,10 +752,8 @@ end
 """
     vaspio_valence()
 
-Reading vasp's `POTCAR` file, return `ZVAL`.
-
-The information about `ZVAL` will be used to determine `NBANDS` in the
-`INCAR` file.
+Reading vasp's `POTCAR` file, return `ZVAL`. The information about
+`ZVAL` will be used to determine `NBANDS` in the `INCAR` file.
 
 See also: [`vaspc_incar`](@ref), [`vaspio_nband`](@ref).
 """
@@ -745,7 +763,7 @@ vaspio_valence() = vaspio_valence(pwd())
     vaspio_energy(f::String)
 
 Reading vasp's `OSZICAR` file, return DFT total energy, which will be
-used to determine the DFT + DMFT energy. Here `f` means only the
+used to determine the total DFT + DMFT energy. Here `f` means only the
 directory that contains `OSZICAR`.
 """
 function vaspio_energy(f::String)
@@ -769,7 +787,7 @@ end
     vaspio_energy()
 
 Reading vasp's `OSZICAR` file, return DFT total energy, which will be
-used to determine the DFT + DMFT energy.
+used to determine the total DFT + DMFT energy.
 """
 vaspio_energy() = vaspio_energy(pwd())
 
@@ -1126,7 +1144,7 @@ function vaspio_lattice(f::String, silent::Bool = true)
     natom = sum(numbers)
 
     # Now all the parameters are ready, we would like to create
-    # `Lattice` struct here.
+    # a `Lattice` struct here.
     latt = Lattice(_case, scale, nsort, natom)
 
     # Update latt using the available data

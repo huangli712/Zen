@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/07/19
+# Last modified: 2021/10/02
 #
 
 """
@@ -13,7 +13,7 @@
 Try to mix the self-energy functions Σ and then use the mixed values
 to update the `dmft1/sigma.bare` file.
 
-See also: [`mixer_core`](@ref).
+See also: [`mixer_core`](@ref), [`amix`](@ref).
 """
 function mixer_sigma(it::IterInfo, ai::Array{Impurity,1})
     # Print the header
@@ -51,9 +51,9 @@ function mixer_sigma(it::IterInfo, ai::Array{Impurity,1})
 
     # Read in the self-energy functions (previous and current)
     println("Read self-energy functions")
-    fcurr, Scurr = read_sigma(ai, fcurr)
-    fprev, Sprev = read_sigma(ai, fprev)
-    @assert size(Scurr) == size(Sprev) && size(fcurr) == size(fprev)
+    Mcurr, Scurr = read_sigma(ai, fcurr)
+    Mprev, Sprev = read_sigma(ai, fprev)
+    @assert size(Scurr) == size(Sprev) && size(Mcurr) == size(Mprev)
 
     # Mix the self-energy functions using linear mixing algorithm
     println("Mix self-energy functions from two successive iterations")
@@ -63,7 +63,7 @@ function mixer_sigma(it::IterInfo, ai::Array{Impurity,1})
 
     # Write the new self-energy functions into `dmft1/sigma.bare`
     println("Write self-energy functions")
-    write_sigma(fcurr, Snew, ai)
+    write_sigma(Mcurr, Snew, ai)
 
     # Check the convergence condition
     println("Evaluate the convergence condition for self-energy functions")
@@ -78,7 +78,7 @@ end
 Try to mix the hybridization functions Δ and then use the mixed values
 to update the `dmft1/dmft.delta` file.
 
-See also: [`mixer_core`](@ref).
+See also: [`mixer_core`](@ref), [`amix`](@ref).
 """
 function mixer_delta(it::IterInfo, ai::Array{Impurity,1})
     # Print the header
@@ -116,9 +116,9 @@ function mixer_delta(it::IterInfo, ai::Array{Impurity,1})
 
     # Read in the hybridization functions (previous and current)
     println("Read hybridization functions")
-    fcurr, Dcurr = read_delta(ai, fcurr)
-    fprev, Dprev = read_delta(ai, fprev)
-    @assert size(Dcurr) == size(Dprev) && size(fcurr) == size(fprev)
+    Mcurr, Dcurr = read_delta(ai, fcurr)
+    Mprev, Dprev = read_delta(ai, fprev)
+    @assert size(Dcurr) == size(Dprev) && size(Mcurr) == size(Mprev)
 
     # Mix the hybridization functions using linear mixing algorithm
     println("Mix hybridization functions from two successive iterations")
@@ -128,7 +128,7 @@ function mixer_delta(it::IterInfo, ai::Array{Impurity,1})
 
     # Write the new hybridization functions into `dmft1/dmft.delta`
     println("Write hybridization functions")
-    write_delta(fcurr, Dnew, ai, "dmft1/dmft.delta")
+    write_delta(Mcurr, Dnew, ai, "dmft1/dmft.delta")
 end
 
 """
@@ -137,7 +137,7 @@ end
 Try to mix the local impurity levels εᵢ and then use the mixed value
 to update the `dmft1/dmft.eimpx` file.
 
-See also: [`mixer_core`](@ref).
+See also: [`mixer_core`](@ref), [`amix`](@ref).
 """
 function mixer_eimpx(it::IterInfo, ai::Array{Impurity,1})
     # Print the header
@@ -235,6 +235,7 @@ function mixer_gcorr(it::IterInfo)
     _cycle, _prev = prev_it(it, 2)
     @assert cycle ≥ _cycle ≥ 1
     @assert _prev ≥ 1
+    #
     println("Determine previous and current objects")
     println("  > Curr: (I₃, I₂) -> ($cycle, $curr)")
     println("  > Prev: (I₃, I₂) -> ($_cycle, $_prev)")

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/23
+# Last modified: 2021/10/02
 #
 
 #=
@@ -68,7 +68,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     irio_fermi(pwd(), D[:fermi])
 
     # I09: Check the validity of the `D` dict further (optional)
-    if get_d("smear") == "tetra" && get_d("engine") != "qe"
+    if get_d("smear") == "tetra" && !is_qe()
         key_list = [:volt, :itet]
         for k in key_list
             @assert haskey(D, k)
@@ -76,7 +76,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     end
 
     # I10: Write tetrahedron data if they are available
-    if get_d("smear") == "tetra" && get_d("engine") != "qe"
+    if get_d("smear") == "tetra" && !is_qe()
         irio_tetra(pwd(), D[:volt], D[:itet])
     end
 end
@@ -95,7 +95,7 @@ function ir_save(it::IterInfo)
     file_list = union(fir1, fir2)
     #
     # If tetrahedron data are available
-    if get_d("smear") == "tetra" && get_d("engine") != "qe"
+    if get_d("smear") == "tetra" && !is_qe()
         push!(file_list, "tetra")
     end
 
@@ -166,6 +166,7 @@ function irio_params(f::String, D::Dict{Symbol,Any})
     _bmax = maximum( [ D[:PW][w].bmax for w = 1:nwnd ] )
     _bmin = minimum( [ D[:PW][w].bmin for w = 1:nwnd ] )
     xbnd = _bmax - _bmin + 1
+    @assert xbnd ≥ qbnd
 
     # D[:PW] and D[:PG] should have the same size
     @assert ngrp == nwnd
@@ -298,8 +299,10 @@ function irio_groups(f::String, PG::Array{PrGroup,1})
 
         # Write each PrGroup
         ngrp = length(PG)
+        #
         println(fout, "ngrp  -> $ngrp")
         println(fout)
+        #
         for p in eachindex(PG)
             println(fout, "# PrGroup : $p")
             println(fout, "site  -> $(PG[p].site)")
@@ -333,21 +336,26 @@ function irio_windows(f::String, PW::Array{PrWindow,1})
 
         # Write each PrWindow
         nwnd = length(PW)
+        #
         println(fout, "nwnd  -> $nwnd")
         println(fout)
+        #
         for p in eachindex(PW)
             println(fout, "# PrWindow: $p")
             println(fout, "bmin  -> $(PW[p].bmin)")
             println(fout, "bmax  -> $(PW[p].bmax)")
             println(fout, "nbnd  -> $(PW[p].nbnd)")
             println(fout, "kwin  ->")
+            #
             nkpt, nspin, ndir = size(PW[p].kwin)
             @assert ndir == 2 # For lower and upper boundaries
+            #
             for s = 1:nspin
                 for k = 1:nkpt
                     @printf(fout, "%8i %8i %8i %8i\n", k, s, PW[p].kwin[k, s, :]...)
                 end
             end
+            #
             println(fout)
         end # END OF P LOOP
     end # END OF IOSTREAM
@@ -509,7 +517,7 @@ function irio_eigen(f::String, enk::Array{F64,3}, occupy::Array{F64,3})
     nband, nkpt, nspin = size(enk)
 
     # Extract some key parameters
-    _nband, _nkpt, _nspin = size(enk)
+    _nband, _nkpt, _nspin = size(occupy)
 
     # Sanity check
     @assert nband == _nband && nkpt == _nkpt && nspin == _nspin

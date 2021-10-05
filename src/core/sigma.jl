@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/24
+# Last modified: 2021/10/02
 #
 
 #=
@@ -77,6 +77,7 @@ function sigma_reset(ai::Array{Impurity,1}, with_init_dc::Bool = true)
             sigdc, _ = cal_dc_fll(ai[i].upara, ai[i].jpara, ai[i].occup)
 
             # Go through spins, meshes, and bands, setup elements of S.
+            # Only the diagonal elements in orbital space is filled.
             for s = 1:nspin
                 for m = 1:nmesh
                     for b = 1:nband
@@ -85,13 +86,13 @@ function sigma_reset(ai::Array{Impurity,1}, with_init_dc::Bool = true)
                 end # END OF M LOOP
             end # END OF S LOOP
             #
-            println("  > Initial value: $i -> ", sigdc)
+            println("  > Initial value: [$i] -> ", sigdc)
         end
 
         # Push S into SA to save it
         push!(SA, S)
         #
-        println("  > Shape of Array Σ: $i -> ", size(S))
+        println("  > Shape of Array Σ: [$i] -> ", size(S))
     end # END OF I LOOP
 
     # Write self-energy functions and the corresponding frequency mesh
@@ -199,7 +200,7 @@ function sigma_dcount(it::IterInfo, ai::Array{Impurity,1}, reset_dc::Bool = fals
         println("  > Using the $scheme scheme: Σdc = $sigup (spin up)")
         println("  > Using the $scheme scheme: Σdc = $sigdn (spin down)")
         println("  > Using the $scheme scheme: Edc = $edc eV")
-        println("  > Shape of Array Σdc: $i -> ", size(DC))
+        println("  > Shape of Array Σdc: [$i] -> ", size(DC))
 
         # Special treatment for the first iteration
         if reset_dc && ( it.I₃ ≤ 1 && it.I₁ ≤ 1 )
@@ -312,7 +313,9 @@ function sigma_gather(it::IterInfo, ai::Array{Impurity,1})
     println("Write self-energy functions")
     write_sigma(fmesh, SA, ai)
 
-    # Backup the self-energy functions
+    # Backup the self-energy functions. This operation is necessary
+    # because we have to mix the self-energy functions for the two
+    # successive runs.
     fsig = "dmft1/sigma.bare"
     cp(fsig, "$fsig.$(it.I₃).$(it.I₁)", force = true)
 end
@@ -502,11 +505,11 @@ end
 \end{equation}
 ```
 
-where the averaged interaction ``U_{\text{av}}`` reads
+where the averaged interaction ``\bar{U}`` reads
 
 ```math
 \begin{equation}
-U_{\text{av}} = \frac{U + (M - 1)(2U - 5J)}{2M - 1}.
+\bar{U} = \frac{U + (M - 1)(2U - 5J)}{2M - 1}.
 \end{equation}
 ```
 
@@ -516,7 +519,7 @@ The energy due to double counting reads
 
 ```math
 \begin{equation}
-E_{\text{dc}} = \frac{U}{2} N (N - 1).
+E_{\text{dc}} = \frac{\bar{U}}{2} N (N - 1).
 \end{equation}
 ```
 =#
@@ -639,7 +642,7 @@ function read_sigma(ai::Array{Impurity,1}, fsig::String = "dmft1/sigma.bare")
     println("  > Read self-energy functions from: $fsig")
     println("  > Shape of Array ω: ", size(fmesh))
     for t in eachindex(SA)
-        println("  > Shape of Array Σ: $t -> ", size(SA[t]))
+        println("  > Shape of Array Σ: [$t] -> ", size(SA[t]))
     end
 
     # Return the desired arrays
@@ -717,7 +720,7 @@ function read_sigdc(ai::Array{Impurity,1}, fsig::String = "dmft1/sigma.dc")
     # Print some useful information
     println("  > Read double counting terms from: $fsig")
     for t in eachindex(DCA)
-        println("  > Shape of Array Σdc: $t -> ", size(DCA[t]))
+        println("  > Shape of Array Σdc: [$t] -> ", size(DCA[t]))
     end
 
     # Return the desire array
@@ -789,7 +792,7 @@ function write_sigma(fmesh::Array{F64,1}, SA::Array{Array{C64,4},1}, ai::Array{I
     println("  > Write self-energy functions into: dmft1/sigma.bare")
     println("  > Shape of Array ω: ", size(fmesh))
     for t in eachindex(SA)
-        println("  > Shape of Array Σ: $t -> ", size(SA[t]))
+        println("  > Shape of Array Σ: [$t] -> ", size(SA[t]))
     end
 
     # Copy sigma.bare to the dmft2 directory
@@ -799,7 +802,7 @@ function write_sigma(fmesh::Array{F64,1}, SA::Array{Array{C64,4},1}, ai::Array{I
     println("  > Write self-energy functions into: dmft2/sigma.bare")
     println("  > Shape of Array ω: ", size(fmesh))
     for t in eachindex(SA)
-        println("  > Shape of Array Σ: $t -> ", size(SA[t]))
+        println("  > Shape of Array Σ: [$t] -> ", size(SA[t]))
     end
 end
 
@@ -858,7 +861,7 @@ function write_sigdc(DCA::Array{Array{F64,3},1}, ai::Array{Impurity,1})
     # Print some useful information
     println("  > Write double counting terms into: dmft1/sigma.dc")
     for t in eachindex(DCA)
-        println("  > Shape of Array Σdc: $t -> ", size(DCA[t]))
+        println("  > Shape of Array Σdc: [$t] -> ", size(DCA[t]))
     end
 
     # Copy sigma.dc to the dmft2 directory
@@ -867,6 +870,6 @@ function write_sigdc(DCA::Array{Array{F64,3},1}, ai::Array{Impurity,1})
     # Print some useful information
     println("  > Write double counting terms into: dmft2/sigma.dc")
     for t in eachindex(DCA)
-        println("  > Shape of Array Σdc: $t -> ", size(DCA[t]))
+        println("  > Shape of Array Σdc: [$t] -> ", size(DCA[t]))
     end
 end

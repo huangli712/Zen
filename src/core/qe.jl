@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/26
+# Last modified: 2021/10/03
 #
 
 #=
@@ -47,10 +47,10 @@ function qe_adaptor(D::Dict{Symbol,Any})
     D[:fermi] = qeio_fermi(pwd(), false)
 
     # Q06: Generate MLWFs for the QE + WANNIER mode
-    get_d("projtype") == "wannier" && qe_to_wan(D)
+    is_wannier() && qe_to_wan(D)
 
     # Q06: Generate projected local orbitals for the QE + PLO mode
-    get_d("projtype") == "plo" && qe_to_plo(D)
+    is_plo() && qe_to_plo(D)
 end
 
 """
@@ -71,11 +71,10 @@ function qe_to_wan(D::Dict{Symbol,Any})
 
     # Extract key parameters
     case = get_c("case") # Prefix for quantum espresso
-    sp = get_d("lspins") # Is it a spin-polarized system
+    sp = get_d("lspins") # Is it a spin-polarized system?
 
-    # Now this feature require quantum espresso as a dft engine
-    @assert get_d("engine") == "qe" &&
-            get_d("projtype") == "wannier"
+    # Now this feature require quantum espresso as a DFT engine
+    @assert is_qe() && is_wannier()
 
     # W01: Execute the wannier90 code to generate w90.nnkp
     if sp # For spin-polarized system
@@ -152,11 +151,10 @@ function qe_to_plo(D::Dict{Symbol,Any})
 
     # Extract key parameters
     case = get_c("case") # Prefix for quantum espresso
-    sp = get_d("lspins") # Is it a spin-polarized system
+    sp = get_d("lspins") # Is it a spin-polarized system?
 
-    # Now this feature require quantum espresso as a dft engine
-    @assert get_d("engine") == "qe" &&
-            get_d("projtype") == "plo"
+    # Now this feature require quantum espresso as a DFT engine
+    @assert is_qe() && is_plo()
 
     # P01: Execute the wannier90 code to generate w90.nnkp
     if sp # For spin-polarized system
@@ -192,6 +190,9 @@ function qe_to_plo(D::Dict{Symbol,Any})
         pw2wan_exec(case)
         pw2wan_save()
     end
+
+    # This is enough. We do not really need the wannier functions. The
+    # case.amn file is what we need.
 
     # P03: Read accurate band eigenvalues from w90.eig
     #
@@ -318,7 +319,7 @@ end
     qe_exec(it::IterInfo, scf::Bool = true)
 
 Execute the `quantum espresso` (`pwscf`) program, monitor the convergence
-progress, and output the relevant information. The argument `scf` denotes
+progress, and output the relevant information. The argument `scf` controls
 which input file should be used. If `scf == true`, then the input file is
 `case.scf`, or else it is `case.nscf`.
 
@@ -364,9 +365,10 @@ function qe_exec(it::IterInfo, scf::Bool = true)
 
     # Determine suitable input and output files
     case = get_c("case")
-    finp = "$case.scf"
-    fout = "scf.out"
-    if !scf
+    if scf
+        finp = "$case.scf"
+        fout = "scf.out"
+    else
         finp = "$case.nscf"
         fout = "nscf.out"
     end
@@ -533,11 +535,12 @@ according to the setup in `case.toml`.
 
 At last, it will try to generate the input files for `quantum espresso`
 (`pwscf`). They are `case.scf` and `case.nscf`. As shown by their names,
-one file is for the self-consistent calculation, while another other one
-is for the non-self-consistent calculation.
+one file is for the self-consistent calculation, while another one is
+for the non-self-consistent calculation.
 
 The return values of this function are namelist (`control`) and card
-(`ATOMIC_SPECIES`), which will be used to check the pseudopotentials.
+(`ATOMIC_SPECIES`), which will be used to check the pseudopotentials
+within the `qe_init()` function.
 
 See also: [`QENamelist`](@ref), [`QECard`](@ref).
 """
@@ -546,13 +549,13 @@ function qec_input(it::IterInfo)
     finput = "QE.INP"
     @assert isfile(finput)
 
-    # Parse the namelists, control, system, and electrons.
+    # Parse three namelists, control, system, and electrons.
     lines = readlines(finput)
     ControlNL = parse(QENamelist, lines, "control")
     SystemNL = parse(QENamelist, lines, "system")
     ElectronsNL = parse(QENamelist, lines, "electrons")
 
-    # Parse the cards, ATOMIC_SPECIES, ATOMIC_POSITIONS, and K_POINTS.
+    # Parse three cards, ATOMIC_SPECIES, ATOMIC_POSITIONS, and K_POINTS.
     line = read(finput, String)
     AtomicSpeciesBlock = parse(AtomicSpeciesCard, line)
     AtomicPositionsBlock = parse(AtomicPositionsCard, line)
@@ -636,7 +639,7 @@ function qec_input(it::IterInfo)
     lspins = get_d("lspins")
     if lspins
         SystemNL["nspin"] = 2
-        SystemNL["starting_magnetization"] = 0.0
+        @assert haskey(SystemNL, "starting_magnetization")
     else
         SystemNL["nspin"] = 1
     end
@@ -651,12 +654,6 @@ function qec_input(it::IterInfo)
         SystemNL["noncolin"] = ".false."
         SystemNL["lspinorb"] = ".false."
     end
-
-    # For local orbitals and projectors
-    # SKIP
-
-    # For number of bands
-    # SKIP
 
     # Special treatment for verbosity
     ControlNL["verbosity"] = "'high'"
@@ -730,8 +727,8 @@ function qec_input(it::IterInfo)
         write(fout, KPointsBlock)
     end
 
-    # Return the namelist and the card, which will be used to check
-    # whether the pseudopotential files are ready.
+    # Return the namelist (control) and the card (ATOMIC_SPECIES), which
+    # will be used to check whether the pseudopotential files are ready.
     return ControlNL, AtomicSpeciesBlock
 end
 
@@ -891,7 +888,7 @@ qeio_lattice() = qeio_lattice(pwd())
 Reading quantum espresso's `nscf.out` file, return `kmesh` and `weight`.
 Here `f` means only the directory that contains `nscf.out`.
 
-Note in `scf.out`, the k-mesh is not uniform. So we have to read k-mesh
+Note in `scf.out`, the 𝑘-mesh is not uniform. So we have to read k-mesh
 from the `nscf.out`. In addition, the verbosity parameter must be set to
 'high' in the input file.
 
@@ -958,7 +955,10 @@ Reading quantum espresso's `nscf.out` file, return energy band structure
 information. Here `f` means only the directory that contains `nscf.out`.
 
 Note that in `scf.out`, the eigenvalues may be not defined on the uniform
-k-mesh. So we have to read eigenvalues from the `nscf.out` file.
+𝑘-mesh. So we have to read eigenvalues from the `nscf.out` file.
+
+Note that the eigenvalues read from `nscf.out` is somewhat coarse. They
+should be updated by the values read from `case.eig`.
 
 See also: [`irio_eigen`](@ref).
 """
@@ -1226,23 +1226,25 @@ struct MonkhorstPackGrid
         @assert length(mesh) == 3
         @assert length(shift) == 3
         @assert all(mesh .≥ 1)
+        #
         if eltype(shift) != Bool
             shift = Bool.(shift)
         end
+        #
         return new(mesh, shift)
     end
 end
 
 """
-    MonkhorstPackGrid(k1::I64, k2::I64, k3::I64, s1::I64, s2::I64, s3::I64)
+    MonkhorstPackGrid(k₁::I64, k₂::I64, k₃::I64, s₁::I64, s₂::I64, s₃::I64)
 
 Constructor for `MonkhorstPackGrid`.
 
 See also: [`ReciprocalPoint`](@ref).
 """
-function MonkhorstPackGrid(k1::I64, k2::I64, k3::I64, s1::I64, s2::I64, s3::I64)
-    k = [k1, k2, k3]
-    s = [s1, s2, s3]
+function MonkhorstPackGrid(k₁::I64, k₂::I64, k₃::I64, s₁::I64, s₂::I64, s₃::I64)
+    k = [k₁, k₂, k₃]
+    s = [s₁, s₂, s₃]
     return MonkhorstPackGrid(k, s)
 end
 
@@ -1398,34 +1400,34 @@ mutable struct QENamelist <: QEInputEntry
 end
 
 """
-    Base.getindex(pnl::QENamelist, key::AbstractString)
+    Base.getindex(qnl::QENamelist, key::AbstractString)
 
-Return an entry (specified by `key`) in the namelist object (`pnl`).
-
-See also: [`QENamelist`](@ref).
-"""
-Base.getindex(pnl::QENamelist, key::AbstractString) = pnl.data[key]
-
-"""
-    Base.setindex!(pnl::QENamelist, value, key::AbstractString)
-
-Modify an entry (specified by `key`) in the namelist object (`pnl`).
+Return an entry (specified by `key`) in the namelist object (`qnl`).
 
 See also: [`QENamelist`](@ref).
 """
-function Base.setindex!(pnl::QENamelist, value, key::AbstractString)
-    pnl.data[key] = value
+Base.getindex(qnl::QENamelist, key::AbstractString) = qnl.data[key]
+
+"""
+    Base.setindex!(qnl::QENamelist, value, key::AbstractString)
+
+Modify an entry (specified by `key`) in the namelist object (`qnl`).
+
+See also: [`QENamelist`](@ref).
+"""
+function Base.setindex!(qnl::QENamelist, value, key::AbstractString)
+    qnl.data[key] = value
 end
 
 """
-    Base.delete!(pnl::QENamelist, key::AbstractString)
+    Base.delete!(qnl::QENamelist, key::AbstractString)
 
-Remove an entry (specified by `key`) in the namelist object (`pnl`).
+Remove an entry (specified by `key`) in the namelist object (`qnl`).
 
 See also: [`QENamelist`](@ref).
 """
-function Base.delete!(pnl::QENamelist, key::AbstractString)
-    delete!(pnl.data, key)
+function Base.delete!(qnl::QENamelist, key::AbstractString)
+    delete!(qnl.data, key)
 end
 
 """
@@ -1537,7 +1539,8 @@ end
 """
     SpecialPointsCard(nkx::I64, nky::I64, nkz::I64, option::String)
 
-Constructor for `SpecialPointsCard`.
+Constructor for `SpecialPointsCard`. This function is insprired by the
+`kmesh.pl` tool as included in the `wannier90` package.
 
 See also: [`KPointsCard`](@ref).
 """

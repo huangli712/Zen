@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/27
+# Last modified: 2021/10/02
 #
 
 #=
@@ -15,7 +15,10 @@
     dmft_init(it::IterInfo, task::I64)
 
 Initialize the dynamical mean-field theory engine. Prepare the necessary
-files, and generate the configuration file.
+files, and generate the configuration file. No matter what the value of
+argument `task` is, the required input files for the DMFT engine is the
+same. If `task = 1`, it means one-shot mode. If `task = 2`, it denotes
+charge self-consistent mode.
 
 See also: [`dmft_exec`](@ref), [`dmft_save`](@ref).
 """
@@ -56,7 +59,8 @@ function dmft_init(it::IterInfo, task::I64)
             cp(file_src, file_dst, force = true)
             println("  > File $x is ready")
         end,
-    union(fir1, fir2) )
+        union(fir1, fir2)
+    )
 
     # Extract key parameters, which should be written into the `dmft.in`.
     axis = get_m("axis")
@@ -208,9 +212,9 @@ function dmft_save(it::IterInfo, task::I64)
     # Create a list of files that need to be backup
     fdmf1 = ["dmft.out"]
     fdmf2 = ["dmft.fermi"]
-    fdmf3 = ["dmft.eimpx"]
-    fdmf4 = ["dmft.delta"]
-    fdmf5 = ["dmft.gcorr"]
+    fdmf3 = ["dmft.eimpx"] # For task = 1
+    fdmf4 = ["dmft.delta"] # For task = 1
+    fdmf5 = ["dmft.gcorr"] # For task = 2
 
     # Be careful, the final file list depends on the task
     if task == 1
@@ -235,10 +239,12 @@ function dmft_save(it::IterInfo, task::I64)
     fermi, occup, ecorr = read_fermi()
     task == 1 ? it.μ₁ = fermi : it.μ₂ = fermi
     task == 1 ? it.n₁ = occup : it.n₂ = occup
+    #
     # We update it.et only when ecorr is finite.
     if abs(ecorr) > 0.0
         it.et.corr = ecorr
     end
+    #
     println("  > Extract the fermi level from dmft.fermi: $fermi eV")
     println("  > Extract the lattice occupancy from dmft.fermi: $occup")
     println("  > Extract the DMFT correction to DFT band energy: $ecorr eV")
@@ -617,7 +623,7 @@ end
 
 Read the `dmft2/dmft.gcorr` file. It contains the correlation-induced
 correction for density matrix. The correction will be fed back to the
-DFT engine, and then the DFT engine will generate new Kohn-Sham dataset.
+DFT engine, and then the DFT engine will generate new Kohn-Sham states.
 
 This function also return the 𝑘-mesh, which is useful for mixing the Γ
 matrix with the `Kerker` mixing algorithm.

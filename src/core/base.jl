@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/09/27
+# Last modified: 2021/10/03
 #
 
 #=
@@ -14,8 +14,8 @@
 """
     ready()
 
-Examine whether all the conditions, including input files and working
-directories, for DFT + DMFT calculations are ready.
+Examine whether all the conditions (including input files and working
+directories) for DFT + DMFT calculations are ready.
 
 See also: [`go`](@ref).
 """
@@ -31,8 +31,8 @@ end
     go()
 
 Dispatcher for DFT + DMFT calculations. Note that it can not call the
-`cycle3()`-`cycle8()` functions. These functions are designed only for
-testing purpose.
+`try_dft()`-`try_mixer()` series functions. These functions are designed
+only for testing purpose.
 
 See also: [`ready`](@ref).
 """
@@ -79,19 +79,21 @@ end
 
 *Remarks 1* :
 
-We would like to perform two successive DFT runs if `get_d("loptim")` is
-true. The purpose of the first DFT run is to evaluate the fermi level.
-Then an energy window is determined. We will use this window to generate
-optimal projectors in the second DFT run.
+If the DFT backend is the `vasp` code, we would like to carry out two
+successive DFT runs. The purpose of the first DFT run is to evaluate
+the fermi level. Then an energy window is determined. We will use this
+window to generate optimal projectors in the second DFT run.
 
-On the other hand, if `get_d("loptim")` is false, only the first DFT run
-is enough.
+If the DFT backend is the `quantum espresso` (`pwscf`) code, we also
+carry out two successive DFT runs. The first runs is used to generate
+converged charge density, while the second runs is to produce accurate
+Kohn-Sham states at given 𝑘-mesh.
 
 *Remarks 2* :
 
-We want better *optimal projectors*.
+We want better *optimal projectors* for the `vasp` code.
 
-In the previous DFT run, `initial` fermi level = 0 -> `wrong` energy
+In the first DFT run, `initial` fermi level = 0 -> `wrong` energy
 window -> `wrong` optimial projectors. But at this point, the fermi
 level is updated, so we have to generate the optimal projectors
 again within this new window by doing addition DFT calculation.
@@ -103,8 +105,8 @@ tetrahedra data, eigenvalues, raw projectors, and fermi level, etc. At
 first, the adaptor will read in these data from the output files of DFT
 engine. And then it will process the raw projectors (such as parsing,
 labeling, grouping, filtering, and rotatation). Finally, the adaptor will
-write down the processed data to some specified files using the `IR`
-format.
+write down the processed data to some specified files using the internal
+`IR` format.
 
 *Remarks 4* :
 
@@ -137,11 +139,11 @@ function cycle1()
     prompt("Initialization")
     it.sc = 0 # In preparation mode
 
-    # C01: Perform DFT calculation (for the first time)
+    # C01: Perform DFT calculation
     @time_call dft_run(it, lr)
 
-    # C02: Perform DFT calculation (for the second time)
-    get_d("loptim") && @time_call dft_run(it, lr)
+    # C02: Perform DFT calculation again (for the vasp code only)
+    is_vasp() && @time_call dft_run(it, lr)
 
     # C03: To bridge the gap between DFT engine and DMFT engine by adaptor
     adaptor_run(it, lr, ai)
@@ -221,7 +223,8 @@ end
     cycle2()
 
 Perform fully self-consistent DFT + DMFT calculations. The self-consistency
-is achieved at both DFT and DMFT levels. This function doesn't work so far.
+is achieved at both DFT and DMFT levels. So far this function only supports
+the `vasp` + `plo` mode.
 
 See also: [`cycle1`](@ref), [`go`](@ref).
 """
@@ -241,11 +244,11 @@ function cycle2()
     prompt("Initialization")
     it.sc = 0 # In preparation mode
 
-    # C01: Perform DFT calculation (for the first time)
+    # C01: Perform DFT calculation
     @time_call dft_run(it, lr)
 
-    # C02: Perform DFT calculation (for the second time)
-    get_d("loptim") && @time_call dft_run(it, lr)
+    # C02: Perform DFT calculation again (for the vasp code only)
+    is_vasp() && @time_call dft_run(it, lr)
 
     # C03: To bridge the gap between DFT engine and DMFT engine by adaptor
     adaptor_run(it, lr, ai)
@@ -262,7 +265,7 @@ function cycle2()
     # Print the cycle info
     show_it(it, lr)
 
-    # C05: Start the self-consistent engine
+    # C05: Launch the self-consistent engine
     dft_run(it, lr)
 
     # Wait the DFT engine to finish its job and sleep
@@ -386,7 +389,7 @@ function cycle2()
 end
 
 """
-    cycle3()
+    try_dft()
 
 Perform DFT calculations only. If there are something wrong, then you
 have chance to adjust the DFT input files manually (for example, you
@@ -394,18 +397,18 @@ can modify `vaspc_incar()/vasp.jl` by yourself).
 
 See also: [`cycle1`](@ref), [`cycle2`](@ref).
 """
-function cycle3()
+function try_dft()
     # C-2: Create IterInfo struct
     it = IterInfo()
 
     # C-1: Create Logger struct
     lr = Logger(query_case())
 
-    # C01: Perform DFT calculation (for the first time)
+    # C01: Perform DFT calculation
     @time_call dft_run(it, lr)
 
-    # C02: Perform DFT calculation (for the second time)
-    get_d("loptim") && @time_call dft_run(it, lr)
+    # C02: Perform DFT calculation again (for the vasp code only)
+    is_vasp() && @time_call dft_run(it, lr)
 
     # C98: Close Logger.log
     if isopen(lr.log)
@@ -421,14 +424,17 @@ function cycle3()
 end
 
 """
-    cycle4(task::I64)
+    try_dmft(task::I64)
 
 Perform DMFT calculations only. The users can execute it in the REPL mode
-to see whether the DMFT engine works properly.
+to see whether the DMFT engine works properly. If `task = 1`, it means to
+generate a new hybridization function for quantum impurity solver. On the
+other hand, it `task = 2`, it means to generate a DMFT correction for the
+density matrix, which will be used by the DFT engine.
 
 See also: [`cycle1`](@ref), [`cycle2`](@ref).
 """
-function cycle4(task::I64)
+function try_dmft(task::I64)
     # C-2: Create IterInfo struct
     it = IterInfo()
 
@@ -452,7 +458,7 @@ function cycle4(task::I64)
 end
 
 """
-    cycle5()
+    try_solver()
 
 Perform calculations using quantum impurity solvers only. The users can
 execute it in the REPL mode to see whether the quantum impurity solvers
@@ -460,7 +466,7 @@ work properly.
 
 See also: [`cycle1`](@ref), [`cycle2`](@ref).
 """
-function cycle5()
+function try_solver()
     # C-2: Create IterInfo struct
     it = IterInfo()
 
@@ -487,14 +493,14 @@ function cycle5()
 end
 
 """
-    cycle6()
+    try_adaptor()
 
 Perform calculations using Kohn-Sham adaptor only. The users can execute
 it in the REPL mode to see whether the Kohn-Sham adaptor works properly.
 
 See also: [`cycle1`](@ref), [`cycle2`](@ref).
 """
-function cycle6()
+function try_adaptor()
     # C-2: Create IterInfo struct
     it = IterInfo()
 
@@ -521,14 +527,15 @@ function cycle6()
 end
 
 """
-    cycle7(task::String = "reset")
+    try_sigma(task::String = "reset")
 
 Perform calculations using self-energy engine only. The users can execute
 it in the REPL mode to see whether the self-energy engine works properly.
+The argument `task` can be `reset`, `dcount`, `gather`, and `split`.
 
 See also: [`cycle1`](@ref), [`cycle2`](@ref).
 """
-function cycle7(task::String = "reset")
+function try_sigma(task::String = "reset")
     # C-2: Create IterInfo struct
     it = IterInfo()
 
@@ -555,17 +562,17 @@ function cycle7(task::String = "reset")
 end
 
 """
-    cycle8(task::String = "sigma")
+    try_mixer(task::String = "sigma")
 
 Perform calculations using mixer engine only. The users can execute
 it in the REPL mode to see whether the mixer engine works properly.
 
-In order to run this function correctly, sometimes users should modify
+In order to run this function correctly, users should try to modify
 the predefined parameters in step `C01`.
 
 See also: [`cycle1`](@ref), [`cycle2`](@ref).
 """
-function cycle8(task::String = "sigma")
+function try_mixer(task::String = "sigma")
     # C-2: Create IterInfo struct
     it = IterInfo()
 
@@ -627,17 +634,17 @@ function monitor(force_exit::Bool = false)
 end
 
 """
-    suspend(second::I64)
+    suspend(second::I64 = 1)
 
 Suspend the current process to wait the DFT engine. This function is
 useful for charge fully self-consistent DFT + DMFT calculations.
 
-Now this function only supports the vasp code. We have to improve it
+Now this function only supports the `vasp` code. We have to improve it
 to support more DFT engines.
 
 See also: [`dft_run`](@ref).
 """
-function suspend(second::I64)
+function suspend(second::I64 = 1)
     # Check second
     if second ≤ 0
         second = 5
@@ -667,7 +674,7 @@ end
 """
     suicide(it::IterInfo)
 
-Kill the DFT engine abnormally.
+Kill the DFT engine abnormally. Now it supports the `vasp` code only.
 
 See also: [`dft_run`](@ref).
 """
@@ -787,6 +794,7 @@ the runtime environment for the DMFT engine. (2) Launch the DMFT engine.
 (3) Backup the output files by DMFT engine for next iterations.
 
 The argument `task` is used to specify running mode of the DMFT code.
+Its value can be 1 or 2.
 
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`solver_run`](@ref).
 """
@@ -834,7 +842,7 @@ the quantum impurity solver. (3) Backup output files by quantum impurity
 solver for next iterations.
 
 If `force = true`, then we will try to solve all of the quantum impurity
-problems explicitly, irrespective of their symmetries.
+problems explicitly, irrespective of their equivalences.
 
 Now only the `ct_hyb1`, `ct_hyb2`, `hub1`, and `norg` quantum impurity
 solvers are supported. If you want to support the other quantum impurity
@@ -957,19 +965,19 @@ function solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, force::Bool
             # to the current Impurity 𝑖.
             @cswitch engine begin
                 @case "ct_hyb1"
-                    s_qmc1_save(it, ai[found], imp)
+                    s_qmc1_copy(it, ai[found], imp)
                     break
 
                 @case "ct_hyb2"
-                    s_qmc2_save(it, ai[found], imp)
+                    s_qmc2_copy(it, ai[found], imp)
                     break
 
                 @case "hub1"
-                    s_hub1_save(it, ai[found], imp)
+                    s_hub1_copy(it, ai[found], imp)
                     break
 
                 @case "norg"
-                    s_norg_save(it, ai[found], imp)
+                    s_norg_copy(it, ai[found], imp)
                     break
 
                 @default
@@ -985,7 +993,7 @@ function solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, force::Bool
         # Well, now we would like to extract the DMFT energy.
         edmft = GetEnergy(imp)
         it.et.dmft = it.et.dmft + edmft
-        println("  > DMFT interaction energy: $i -> $edmft eV")
+        println("  > DMFT interaction energy: [$i] -> $edmft eV")
     end # END OF I LOOP
 
     # Monitor the status
@@ -1000,9 +1008,10 @@ the adaptor, to check whether the essential files exist. (2) Parse the
 Kohn-Sham data output by the DFT engine, try to preprocess them, and
 then transform them into IR format. (3) Backup the files by adaptor.
 
-For the first task, only the vasp adaptor is supported. While for the
-second task, only the PLO adaptor is supported. If you want to support
-more adaptors, please adapt this function.
+For the first task, both the `vasp` and `qe` adaptors are supported.
+While for the second task, both the `plo` and `wannier` adaptors are
+supported. If you want to support more adaptors, please adapt this
+function by yourself.
 
 See also: [`dft_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
 """
@@ -1051,14 +1060,14 @@ function adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
     # Well, now we have the Kohn-Sham data. But they can not be used
     # directly. We have to check and process them carefully. Please
     # pay attention to that the DFTData dict will be modified in
-    # the `plo_adaptor()` function.
+    # the `plo_adaptor() / wannier_adaptor()` function.
     #
-    # The plo_adaptor() function also has the ability to calculate
-    # some selected physical quantities (such as overlap matrix and
-    # density of states) to check the correctness of the Kohn-Sham
-    # data. This feature will be activated automatically if you are
-    # in the REPL mode and there is a `case.test` file in the present
-    # directory (i.e, the `dft` folder).
+    # The `plo_adaptor() / wannier_adaptor()` function also have the
+    # ability to calculate some selected physical quantities (such as
+    # overlap matrix and density of states) to check the correctness
+    # of the Kohn-Sham data. These features should be automatically
+    # activated if you are in the REPL mode and there is a `case.test`
+    # file in the present directory (i.e, the `dft` folder).
     #
     projtype = get_d("projtype")
     prompt("Adaptor", cntr_it(it))
@@ -1108,7 +1117,7 @@ end
     sigma_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::String = "reset")
 
 Simple driver for functions for processing the self-energy functions
-and hybridization functions.
+and hybridization functions (and local impurity levels).
 
 Now it supports four tasks: `reset`, `dcount`, `split`, `gather`. It
 won't change the current directory.
@@ -1158,7 +1167,8 @@ end
     mixer_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::String = "sigma")
 
 Simple driver for the mixer. It will try to mix the self-energy functions
-or hybridization functions and generate a new one.
+(or hybridization functions, local impurity levels, density matrix) and
+generate a new one.
 
 Now it supports four tasks: `sigma`, `delta`, `eimpx`, `gcorr`. It
 won't change the current directory.
@@ -1232,19 +1242,24 @@ difference between two successive DFT + DMFT iterations.
 See also: [`Energy`](@ref), [`IterInfo`](@ref).
 """
 function energy_core(it::IterInfo)
+    # Try to print the header
     if it.sc == 1
         println("The DFT + DMFT Energy At Cycle [$(it.I₁) / $(it.M₃)]")
     else
         println("The DFT + DMFT Energy At Cycle [$(it.I₃) / $(it.M₃)]")
     end
-    println(repeat("==", 36))
     #
+    println(repeat("==", 36))
+
+    # For the first iteration
     if it.I₃ == 1
         println("  > E[DFT]   : $(it.et.dft) eV")
         println("  > E[DMFT]  : $(it.et.dmft) eV")
         println("  > E[CORR]  : $(it.et.corr) eV")
         println("  > E[DC]    : $(it.et.dc) eV")
         println("  > E[TOTAL] : $(it.et.total) eV")
+    #
+    # For the second and later iterations
     else
         # Calculate error bar
         err_dft = abs((it.et.dft - it.ep.dft) / it.et.dft) * 100
@@ -1265,7 +1280,8 @@ function energy_core(it::IterInfo)
         it.ce = ( dist < get_m("ec") )
         println("  > Calculated ΔE(TOTAL) = $dist ( convergence is $(it.ce) )")
     end
-    #
+
+    # Try to print the footer
     println(repeat("==", 36), "\n")
 
     # Update it.ep with it.et
@@ -1355,6 +1371,7 @@ end
 
 Modify the internal counters in `IterInfo` struct. This function is
 used in the fully charge self-consistent DFT + DMFT calculations only.
+The argument `c` denotes the counter `it.I`, and `v` is the value.
 
 See also: [`IterInfo`](@ref), [`zero_it`](@ref).
 """
@@ -1380,7 +1397,7 @@ end
 """
     zero_it(it::IterInfo)
 
-Reset the counters in the `IterInfo` struct.
+Reset some (not all) counters in the `IterInfo` struct.
 
 See also: [`IterInfo`](@ref), [`incr_it`](@ref).
 """
@@ -1407,7 +1424,8 @@ end
     prev_it(it::IterInfo, c::I64)
 
 Return the iteration information for previous DFT + DMFT step. This
-function is suitable for fully self-consistent calculation mode.
+function is suitable for fully self-consistent calculation mode. Here
+the argument `c` denotes the counter `it.I`
 
 See also: [`mixer_core`](@ref), [`incr_it`](@ref).
 """
@@ -1423,7 +1441,7 @@ function prev_it(it::IterInfo, c::I64)
         return newlist[ind - 1]
     else
         # Special treatment for vasp code
-        trueM₂ = ( get_d("engine") == "vasp" ? 1 : it.M₂ )
+        trueM₂ = ( is_vasp() ? 1 : it.M₂ )
         list = [(i3,i2) for i2 = 1:trueM₂, i3 = 1:it.M₃]
         newlist = reshape(list, trueM₂ * it.M₃)
         ind = findfirst(x -> x == (it.I₃, it.I₂), newlist)
@@ -1462,9 +1480,9 @@ function show_it(it::IterInfo, lr::Logger)
         for t = 1:nsite
             print(lr.cycle, "Vdc$t        ")
         end
-        print(lr.cycle, "Ndmft1      Ndmft2      ")
+        print(lr.cycle, "Nd1         Nd2         ")
         for t = 1:nsite
-            print(lr.cycle, "Nimp$t       ")
+            print(lr.cycle, "Ni[$t]       ")
         end
         print(lr.cycle, "Etot        ")
         println(lr.cycle, "C(C)    C(E)    C(S)")
@@ -1525,6 +1543,7 @@ function show_it(mode::String, iter::I64, max_iter::I64)
     @assert mode in ("dmft1", "dmft2", "dft")
     @assert iter ≥ 1
     @assert max_iter ≥ iter
+    #
     print("Mode : [ $mode ], ")
     print("Requested Iteration : [ $max_iter ], ")
     println("Finished Iteration: [ $iter ]. \n")
