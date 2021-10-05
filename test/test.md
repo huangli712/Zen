@@ -2,57 +2,74 @@
 
 * **A00_SrVO<sub>3</sub>**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * one-shot calculation
 
 * **A01_SrVO<sub>3</sub>**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals + O-*2p* orbitals
     * one-shot calculation
 
 * **A02_SrVO<sub>3</sub>**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* *t<sub>2g</sub>* orbitals
     * one-shot calculation
 
 * **A03_SrVO<sub>3</sub>**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* *t<sub>2g</sub>* orbitals + O-*2p* orbitals
     * one-shot calculation
 
 * **A04_SrVO<sub>3</sub>**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * self-consistent calculation
 
 * **A05_SrVO<sub>3</sub>**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* *t<sub>2g</sub>* orbitals
     * self-consistent calculation
 
 * **A06_SrVO<sub>3</sub>**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * dc = fll1
     * self-consistent calculation
 
 * **A07_SrVO<sub>3</sub>**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * dc = amf
     * self-consistent calculation
 
 * **A08_SrVO<sub>3</sub>**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * dc = held
     * self-consistent calculation
 
 * **A09_SrVO<sub>3</sub>**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * spin polarization (but up = down)
     * one-shot calculation
+
+* **A10_SrVO<sub>3</sub>**
+
+    * VASP + PLO + CT-HYB<sub>1</sub>
+    * V-*3d* orbitals
+    * spin polarization (but up = down)
+    * self-consistent calculation
 
 ---
 
