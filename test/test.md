@@ -1,54 +1,54 @@
 ## case: SrVO<sub>3</sub>
 
-* **00_SrVO<sub>3</sub>**
+* **A00_SrVO<sub>3</sub>**
 
     * V-*3d* orbitals
     * one-shot calculation
 
-* **01_SrVO<sub>3</sub>**
+* **A01_SrVO<sub>3</sub>**
 
     * V-*3d* orbitals + O-*2p* orbitals
     * one-shot calculation
 
-* **02_SrVO<sub>3</sub>**
+* **A02_SrVO<sub>3</sub>**
 
     * V-*3d* *t<sub>2g</sub>* orbitals
     * one-shot calculation
 
-* **03_SrVO<sub>3</sub>**
+* **A03_SrVO<sub>3</sub>**
 
     * V-*3d* *t<sub>2g</sub>* orbitals + O-*2p* orbitals
     * one-shot calculation
 
-* **04_SrVO<sub>3</sub>**
+* **A04_SrVO<sub>3</sub>**
 
     * V-*3d* orbitals
     * self-consistent calculation
 
-* **05_SrVO<sub>3</sub>**
+* **A05_SrVO<sub>3</sub>**
 
     * V-*3d* *t<sub>2g</sub>* orbitals
     * self-consistent calculation
 
-* **06_SrVO<sub>3</sub>**
+* **A06_SrVO<sub>3</sub>**
 
     * V-*3d* orbitals
     * dc = fll1
     * self-consistent calculation
 
-* **07_SrVO<sub>3</sub>**
+* **A07_SrVO<sub>3</sub>**
 
     * V-*3d* orbitals
     * dc = amf
     * self-consistent calculation
 
-* **08_SrVO<sub>3</sub>**
+* **A08_SrVO<sub>3</sub>**
 
     * V-*3d* orbitals
     * dc = held
     * self-consistent calculation
 
-* **09_SrVO<sub>3</sub>**
+* **A09_SrVO<sub>3</sub>**
 
     * V-*3d* orbitals
     * spin polarization (but up = down)
