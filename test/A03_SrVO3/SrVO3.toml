@@ -5,10 +5,10 @@ engine = "vasp"
 projtype = "plo"
 smear = "tetra"
 kmesh = "medium"
+ncycle = 8
 lsymm = false
 lspins = false
 lspinorb = false
-loptim = true
 lproj = true
 sproj = ["2 : d : Pr", "3 : p : Pr", "4 : p : Pr", "5 : p : Pr"]
 window = [-1.4, 2.0, -8.0, -1.4, -8.0, -1.4, -8.0, -1.4]
@@ -16,7 +16,7 @@ window = [-1.4, 2.0, -8.0, -1.4, -8.0, -1.4, -8.0, -1.4]
 [dmft]
 mode = 1
 axis = 1
-niter = [60, 2, 8]
+niter = 60
 nmesh = 8193
 dcount = "fll2"
 beta = 40.0
@@ -40,4 +40,5 @@ lpara = [0.0]
 
 [solver]
 engine = "ct_hyb1"
-params = ["isbnd = 2", "isort = 2", "nsweep = 10000000"]
+ncycle = 2
+params = ["isbnd = 2", "isort = 2", "nsweep = 100000000"]
