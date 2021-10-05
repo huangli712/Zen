@@ -125,14 +125,16 @@
 
 ## case: Ni
 
-* **20_Ni**
+* **C00_Ni**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * Ni-*3d* orbitals
     * paramagnetic
     * one-shot calculation
 
-* **21_Ni**
+* **C01_Ni**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * Ni-*3d* orbitals
     * ferromagnetic
     * one-shot calculation
@@ -141,31 +143,34 @@
 
 ## case: NiO
 
-* **30_NiO**
+* **D00_NiO**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * Ni-*3d* orbitals + O-*2p* orbitals
     * paramagnetic
     * one-shot calculation
 
-* **31_NiO**
+* **D01_NiO**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * Ni-*3d* orbitals + O-*2p* orbitals
-    * two Ni sites
-    * antiferromagnetic
+    * two Ni sites + antiferromagnetic
     * one-shot calculation
 
 ---
 
 ## case: Ce
 
-* **40_Ce**
+* **E00_Ce**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * Ce-``4f`` orbitals
     * without spin-orbit coupling
     * one-shot calculation
 
-* **41_Ce**
+* **E01_Ce**
 
+    * VASP + PLO + CT-HYB<sub>1</sub>
     * Ce-``4f`` orbitals
-    * with spin-orbit coupling
-    * one-shot calculation
+    * without spin-orbit coupling
+    * self-consistent calculation
