@@ -4,11 +4,11 @@ case = "SrVO3"
 engine = "qe"
 projtype = "plo"
 smear = "gauss"
-kmesh = "coarse"
+kmesh = "medium"
+ncycle = 8
 lsymm = true
 lspins = false
 lspinorb = false
-loptim = false
 lproj = true
 sproj = ["mlwf", "V : d"]
 window = [-2.4, 6.0]
@@ -16,7 +16,7 @@ window = [-2.4, 6.0]
 [dmft]
 mode = 1
 axis = 1
-niter = [60, 2, 8]
+niter = 60
 nmesh = 8193
 dcount = "fll2"
 beta = 40.0
@@ -40,4 +40,5 @@ lpara = [0.0]
 
 [solver]
 engine = "ct_hyb1"
-params = ["isbnd = 2", "isort = 2", "nsweep = 10000000"]
+ncycle = 2
+params = ["isbnd = 2", "isort = 2", "nsweep = 100000000"]
