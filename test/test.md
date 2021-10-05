@@ -71,6 +71,25 @@
     * spin polarization (but up = down)
     * self-consistent calculation
 
+* **A11_SrVO<sub>3</sub>**
+
+    * QE + WANNIER + CT-HYB<sub>1</sub>
+    * V-*3d* orbitals
+    * one-shot calculation
+
+* **A12_SrVO<sub>3</sub>**
+
+    * QE + WANNIER + CT-HYB<sub>1</sub>
+    * V-*3d* orbitals + O-*2p* orbitals
+    * one-shot calculation
+
+* **A13_SrVO<sub>3</sub>**
+
+    * QE + WANNIER + CT-HYB<sub>1</sub>
+    * V-*3d* orbitals
+    * spin polarization (but up = down)
+    * one-shot calculation
+
 ---
 
 ## case: FeSe
