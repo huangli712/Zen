@@ -5,10 +5,10 @@ engine = "vasp"
 projtype = "plo"
 smear = "tetra"
 kmesh = "medium"
+ncycle = 8
 lsymm = false
 lspins = false
 lspinorb = false
-loptim = true
 lproj = true
 sproj = ["1 : f : Pr"]
 window = [-5.0, 5.0]
@@ -17,27 +17,28 @@ window = [-5.0, 5.0]
 mode = 1
 axis = 1
 niter = 60
-dcount = "fll1"
+nmesh = 8193
+dcount = "fll2"
 beta = 40.0
-mixer = 0.5
-cc = 1.0E-4
+mixer = 0.1
+mc = 1.0E-4
+cc = 1.0E-6
 ec = 1.0E-4
-fc = 1.0E-4
-lcharge = true
-lenergy = true
-lforce = false
+sc = 1.0E-4
+lfermi = true
 
 [impurity]
 nsite = 1
 atoms = ["Ce : 1"]
 equiv = [1]
 shell = ["f"]
-ising = ["full"]
+ising = ["ising"]
 occup = [1.0]
 upara = [6.0]
 jpara = [0.7]
 lpara = [0.0]
 
 [solver]
-engine = "ct_hyb2"
-params = [""]
+engine = "ct_hyb1"
+ncycle = 2
+params = ["isbnd = 2", "isort = 2", "nsweep = 100000000"]
