@@ -4,12 +4,12 @@ case = "NiO"
 engine = "vasp"
 projtype = "plo"
 smear = "tetra"
-kmesh = "coarse"
+kmesh = "medium"
 magmom = "2.0 -2.0 0.0 0.0"
+ncycle = 8
 lsymm = false
 lspins = true
 lspinorb = false
-loptim = true
 lproj = true
 sproj = ["1 : d : Pr", "2 : d : Pr", "3 : p : Pr", "4 : p : Pr"]
 window = [-9.0, 2.0, -9.0, 2.0, -9.0, 2.0, -9.0, 2.0]
@@ -18,15 +18,15 @@ window = [-9.0, 2.0, -9.0, 2.0, -9.0, 2.0, -9.0, 2.0]
 mode = 1
 axis = 1
 niter = 60
-dcount = "fll1"
-beta = 40.0
-mixer = 0.5
-cc = 1.0E-4
+nmesh = 8193
+dcount = "fll2"
+beta = 5.00
+mixer = 0.1
+mc = 1.0E-4
+cc = 1.0E-6
 ec = 1.0E-4
-fc = 1.0E-4
-lcharge = true
-lenergy = true
-lforce = false
+sc = 1.0E-4
+lfermi = true
 
 [impurity]
 nsite = 2
@@ -34,11 +34,12 @@ atoms = ["Ni : 1", "Ni : 2"]
 equiv = [1, -1]
 shell = ["d", "d"]
 ising = ["ising", "ising"]
-occup = [6.0, 6.0]
-upara = [5.0, 5.0]
-jpara = [0.8, 0.8]
-lpara = [0.0]
+occup = [8.2, 8.2]
+upara = [8.0, 8.0]
+jpara = [1.0, 1.0]
+lpara = [0.0, 0.0]
 
 [solver]
 engine = "ct_hyb1"
-params = [""]
+ncycle = 2
+params = ["isbnd = 1", "isort = 2", "nsweep = 100000000"]
