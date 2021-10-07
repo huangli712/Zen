@@ -4,11 +4,11 @@ case = "NiO"
 engine = "vasp"
 projtype = "plo"
 smear = "tetra"
-kmesh = "coarse"
+kmesh = "medium"
+ncycle = 8
 lsymm = false
 lspins = false
 lspinorb = false
-loptim = true
 lproj = true
 sproj = ["1 : d : Pr", "2 : p : Pr"]
 window = [2, 10]
@@ -16,13 +16,13 @@ window = [2, 10]
 [dmft]
 mode = 1
 axis = 1
-niter = [60, 10, 2]
+niter = 60
 nmesh = 8193
-dcount = "fll1"
+dcount = "fll2"
 beta = 5.00
 mixer = 0.1
 mc = 1.0E-4
-cc = 1.0E-4
+cc = 1.0E-6
 ec = 1.0E-4
 sc = 1.0E-4
 lfermi = true
@@ -40,4 +40,5 @@ lpara = [0.0]
 
 [solver]
 engine = "ct_hyb1"
-params = ["isbnd = 2", "isort = 2", "nsweep = 50000000"]
+ncycle = 2
+params = ["isbnd = 2", "isort = 2", "nsweep = 100000000"]
