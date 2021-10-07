@@ -136,6 +136,13 @@
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * Ni-*3d* orbitals
+    * paramagnetic
+    * self-consistent calculation
+
+* **C02_Ni**
+
+    * VASP + PLO + CT-HYB<sub>1</sub>
+    * Ni-*3d* orbitals
     * ferromagnetic
     * one-shot calculation
 
