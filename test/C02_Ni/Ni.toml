@@ -2,13 +2,14 @@ case = "Ni"
 
 [dft]
 engine = "vasp"
+projtype = 'plo'
 smear = "tetra"
 kmesh = "medium"
 magmom = "1.0"
+ncycle = 8
 lsymm = false
 lspins = true
 lspinorb = false
-loptim = true
 lproj = true
 sproj = ["1 : d : Pr"]
 window = [-9.2, 8.0]
@@ -17,15 +18,15 @@ window = [-9.2, 8.0]
 mode = 1
 axis = 1
 niter = 60
-dcount = "fll1"
+nmesh = 8193
+dcount = "fll2"
 beta = 40.0
-mixer = 0.5
-cc = 1.0E-4
+mixer = 0.1
+mc = 1.0E-4
+cc = 1.0E-6
 ec = 1.0E-4
-fc = 1.0E-4
-lcharge = true
-lenergy = true
-lforce = false
+sc = 1.0E-4
+lfermi = true
 
 [impurity]
 nsite = 1
@@ -40,4 +41,5 @@ lpara = [0.0]
 
 [solver]
 engine = "ct_hyb1"
-params = [""]
+ncycle = 2
+params = ["isbnd = 1", "isort = 2", "nsweep = 100000000"]
