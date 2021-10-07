@@ -8,13 +8,13 @@ kmesh = "medium"
 ncycle = 8
 lsymm = false
 lspins = false
-lspinorb = true
+lspinorb = false
 lproj = true
 sproj = ["1 : f : Pr"]
 window = [-5.0, 5.0]
 
 [dmft]
-mode = 1
+mode = 2
 axis = 1
 niter = 60
 nmesh = 8193
