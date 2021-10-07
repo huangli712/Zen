@@ -2,7 +2,7 @@ case = "Ni"
 
 [dft]
 engine = "vasp"
-projtype = 'plo'
+projtype = "plo"
 smear = "tetra"
 kmesh = "medium"
 magmom = "1.0"
