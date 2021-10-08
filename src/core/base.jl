@@ -879,7 +879,7 @@ function solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, force::Bool
     # Reset DMFT energy
     it.et.dmft = 0.0
     #
-    println(green("Now we are ready to solve them..."))
+    println(blue("Now we are ready to solve them..."))
 
     # Loop over each impurity site
     for i = 1:get_i("nsite")
@@ -890,7 +890,7 @@ function solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, force::Bool
         # The present quantum impurity problem need to be solved
         if to_be_solved[i] || force
             # Print the header
-            println(green("It is interesting. Let us play with it."))
+            println(green("It is interesting. Let us play with it.\n"))
 
             # Determine the chosen solver
             engine = get_s("engine")
@@ -953,7 +953,7 @@ function solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, force::Bool
             end
             # Sanity check
             @assert found > 0
-            println(green("Maybe we can learn sth. from Impurity $found"))
+            println(green("Maybe we can learn sth. from Impurity [$found]\n"))
 
             # Determine the chosen solver
             engine = get_s("engine")

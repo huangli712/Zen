@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/02
+# Last modified: 2021/10/08
 #
 
 #=
@@ -707,7 +707,7 @@ function read_gcorr(fgcorr::String = "dmft2/dmft.gcorr")
     end # END OF IOSTREAM
 
     # Print some useful information
-    println("  > Read gcorr matrix from: $fgcorr")
+    println("  > Read Γ matrix from: $fgcorr")
     println("  > Shape of Array kmesh: ", size(kmesh))
     println("  > Shape of Array kwin: ", size(kwin))
     println("  > Shape of Array gcorr: ", size(gcorr))

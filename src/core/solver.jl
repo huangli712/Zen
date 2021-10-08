@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/05
+# Last modified: 2021/10/08
 #
 
 #=
@@ -24,7 +24,7 @@ See also: [`s_qmc1_exec`](@ref), [`s_qmc1_save`](@ref).
 function s_qmc1_init(it::IterInfo, imp::Impurity)
     # Print the header
     println("Engine : CT-HYB₁")
-    println("Try to solve the quantum impurity problem: ", imp.index)
+    println("Try to solve the quantum impurity problem: [$(imp.index)]")
     println("Current directory: ", pwd())
     println("Prepare necessary input files for solver")
 
@@ -1011,6 +1011,7 @@ Display the Impurity struct that need to be solved.
 function CatImpurity(imp::Impurity)
     println()
     println(blue("[ Impurity $(imp.index) ]"))
+    println(repeat("=", 20))
     println("  atoms : ", imp.atoms)
     println("  sites : ", imp.sites)
     println("  equiv : ", imp.equiv)
@@ -1024,4 +1025,5 @@ function CatImpurity(imp::Impurity)
     println("  lpara : ", imp.lpara)
     println("  beta  : ", imp.beta)
     println("  nband : ", imp.nband)
+    println(repeat("=", 20))
 end
