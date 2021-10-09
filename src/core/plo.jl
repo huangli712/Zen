@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/03
+# Last modified: 2021/10/09
 #
 
 #=
@@ -925,13 +925,17 @@ function calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 end
 
 """
-    calc_ovlp(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1})
+    calc_ovlp(PW::Array{PrWindow,1},
+              chipsi::Array{Array{C64,4},1},
+              weight::Array{F64,1})
 
 Calculate the overlap matrix out of projectors. For normalized projectors only.
 
 See also: [`view_ovlp`](@ref), [`PrWindow`](@ref).
 """
-function calc_ovlp(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1})
+function calc_ovlp(PW::Array{PrWindow,1},
+                   chipsi::Array{Array{C64,4},1},
+                   weight::Array{F64,1})
     # Create an empty array. Next we will fill it.
     ovlp = Array{F64,3}[]
 
@@ -962,13 +966,17 @@ function calc_ovlp(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight:
 end
 
 """
-    calc_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
+    calc_dm(chipsi::Array{C64,4},
+            weight::Array{F64,1},
+            occupy::Array{F64,3})
 
 Calculate the density matrix out of projectors. For raw projectors only.
 
 See also: [`view_dm`](@ref).
 """
-function calc_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3})
+function calc_dm(chipsi::Array{C64,4},
+                 weight::Array{F64,1},
+                 occupy::Array{F64,3})
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
     @assert nband ≥ nproj
@@ -994,13 +1002,19 @@ function calc_dm(chipsi::Array{C64,4}, weight::Array{F64,1}, occupy::Array{F64,3
 end
 
 """
-    calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, occupy::Array{F64,3})
+    calc_dm(PW::Array{PrWindow,1},
+            chipsi::Array{Array{C64,4},1},
+            weight::Array{F64,1},
+            occupy::Array{F64,3})
 
 Calculate the density matrix out of projectors. For normalized projectors only.
 
 See also: [`view_dm`](@ref), [`PrWindow`](@ref).
 """
-function calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, occupy::Array{F64,3})
+function calc_dm(PW::Array{PrWindow,1},
+                 chipsi::Array{Array{C64,4},1},
+                 weight::Array{F64,1},
+                 occupy::Array{F64,3})
     # Create an empty array. Next we will fill it.
     dm = Array{F64,3}[]
 
@@ -1035,13 +1049,19 @@ function calc_dm(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::A
 end
 
 """
-    calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, enk::Array{F64,3})
+    calc_hamk(PW::Array{PrWindow,1},
+              chipsi::Array{Array{C64,4},1},
+              weight::Array{F64,1},
+              enk::Array{F64,3})
 
 Try to build the local hamiltonian. For normalized projectors only.
 
 See also: [`view_hamk`](@ref), [`PrWindow`](@ref).
 """
-function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, weight::Array{F64,1}, enk::Array{F64,3})
+function calc_hamk(PW::Array{PrWindow,1},
+                   chipsi::Array{Array{C64,4},1},
+                   weight::Array{F64,1},
+                   enk::Array{F64,3})
     # Create an empty array. Next we will fill it.
     hamk = Array{C64,3}[]
 
@@ -1080,13 +1100,17 @@ the same. In other words, `PW` only has an unique PrWindow object.
 =#
 
 """
-    calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Array{F64,3})
+    calc_hamk(PW::Array{PrWindow,1},
+              chipsi::Array{Array{C64,4},1},
+              enk::Array{F64,3})
 
 Try to build the full hamiltonian. For normalized projectors only.
 
 See also: [`view_hamk`](@ref), [`PrWindow`](@ref).
 """
-function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Array{F64,3})
+function calc_hamk(PW::Array{PrWindow,1},
+                   chipsi::Array{Array{C64,4},1},
+                   enk::Array{F64,3})
     # Extract some key parameters
     nkpt = size(chipsi[1], 3)
     nspin = size(chipsi[1], 4)
@@ -1142,14 +1166,20 @@ function calc_hamk(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, enk::Ar
 end
 
 """
-    calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Array{I64,2}, enk::Array{F64,3})
+    calc_dos(PW::Array{PrWindow,1},
+             chipsi::Array{Array{C64,4},1},
+             itet::Array{I64,2},
+             enk::Array{F64,3})
 
 Try to calculate the partial density of states using the analytical
 tetrahedron method.
 
 See also: [`view_dos`](@ref), [`PrWindow`](@ref).
 """
-function calc_dos(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1}, itet::Array{I64,2}, enk::Array{F64,3})
+function calc_dos(PW::Array{PrWindow,1},
+                  chipsi::Array{Array{C64,4},1},
+                  itet::Array{I64,2},
+                  enk::Array{F64,3})
     # Create array of mesh
     MA = Array{F64,1}[]
 

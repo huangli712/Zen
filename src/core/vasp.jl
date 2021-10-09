@@ -557,7 +557,7 @@ function vaspc_gcorr(kwin::Array{I64,3}, gcorr::Array{C64,4})
                     println(fout) # Create a new line
                 end
             end # END OF K LOOP
-        end # END OF S LOOP 
+        end # END OF S LOOP
     end # END OF IOSTREAM
 
     # Print message to the screen
@@ -641,7 +641,7 @@ function vaspq_files(f::String)
           "DOSCAR",
           "CHGCAR",
           "OSZICAR"]
-    
+
     # Check them one by one
     for i in eachindex(fl)
         @assert isfile( joinpath(f, fl[i]) )

@@ -721,7 +721,9 @@ end
 =#
 
 """
-    write_delta(fmesh::Array{F64,1}, Delta::Array{C64,5}, ai::Array{Impurity,1})
+    write_delta(fmesh::Array{F64,1},
+                Delta::Array{C64,5},
+                ai::Array{Impurity,1})
 
 Split hybridization functions Δ and the corresponding frequency mesh ω
 into the `impurity.i/dmft.delta` file, which is important for the chosen
@@ -732,7 +734,9 @@ This function is usually called by the `sigma_split()` function.
 
 See also: [`Impurity`](@ref), [`read_delta`](@ref), [`write_eimpx`](@ref).
 """
-function write_delta(fmesh::Array{F64,1}, Delta::Array{C64,5}, ai::Array{Impurity,1})
+function write_delta(fmesh::Array{F64,1},
+                     Delta::Array{C64,5},
+                     ai::Array{Impurity,1})
    # Extract the dimensional parameters
     _, qdim, nmesh, nspin, nsite = size(Delta)
 
@@ -784,7 +788,10 @@ function write_delta(fmesh::Array{F64,1}, Delta::Array{C64,5}, ai::Array{Impurit
 end
 
 """
-    write_delta(fmesh::Array{F64,1}, Delta::Array{C64,5}, ai::Array{Impurity,1}, fhyb::String)
+    write_delta(fmesh::Array{F64,1},
+                Delta::Array{C64,5},
+                ai::Array{Impurity,1},
+                fhyb::String)
 
 Write hybridization functions Δ into the `fhyb` file. This function is
 usually called by `mixer_delta()` function to update the hybridization
@@ -793,7 +800,10 @@ function must be the root folder.
 
 See also: [`Impurity`](@ref), [`read_delta`](@ref), [`write_eimpx`](@ref).
 """
-function write_delta(fmesh::Array{F64,1}, Delta::Array{C64,5}, ai::Array{Impurity,1}, fhyb::String)
+function write_delta(fmesh::Array{F64,1},
+                     Delta::Array{C64,5},
+                     ai::Array{Impurity,1},
+                     fhyb::String)
     # Extract the dimensional parameters
     _, qdim, nmesh, nspin, nsite = size(Delta)
 
@@ -906,7 +916,9 @@ function write_eimpx(Eimpx::Array{C64,4}, ai::Array{Impurity,1})
 end
 
 """
-    write_eimpx(Eimpx::Array{C64,4}, ai::Array{Impurity,1}, flev::String)
+    write_eimpx(Eimpx::Array{C64,4},
+                ai::Array{Impurity,1},
+                flev::String)
 
 Write local impurity levels ε into the `flev` file. This function is
 usually called by `mixer_eimpx()` function to update the local impurity
@@ -915,7 +927,9 @@ function must be the root folder.
 
 See also: [`Impurity`](@ref), [`read_eimpx`](@ref), [`write_delta`](@ref).
 """
-function write_eimpx(Eimpx::Array{C64,4}, ai::Array{Impurity,1}, flev::String)
+function write_eimpx(Eimpx::Array{C64,4},
+                     ai::Array{Impurity,1},
+                     flev::String)
     # Extract the dimensional parameters
     _, qdim, nspin, nsite = size(Eimpx)
 
@@ -966,7 +980,10 @@ end
 =#
 
 """
-    write_gcorr(kmesh::Array{F64,2}, kwin::Array{I64,3}, gcorr::Array{C64,4}, fgcorr::String)
+    write_gcorr(kmesh::Array{F64,2},
+                kwin::Array{I64,3},
+                gcorr::Array{C64,4},
+                fgcorr::String)
 
 Write correction for density matrix Γ into `fgcorr` file. This function
 is usually called by `mixer_gcorr()` function to update the correction
@@ -975,7 +992,10 @@ directory of this function must be the root folder.
 
 See also: [`read_gcorr`](@ref), [`write_delta`](@ref), [`write_eimpx`](@ref).
 """
-function write_gcorr(kmesh::Array{F64,2}, kwin::Array{I64,3}, gcorr::Array{C64,4}, fgcorr::String)
+function write_gcorr(kmesh::Array{F64,2},
+                     kwin::Array{I64,3},
+                     gcorr::Array{C64,4},
+                     fgcorr::String)
     # Extract the dimensional parameters
     _, xbnd, nkpt, nspin = size(gcorr)
 

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/02
+# Last modified: 2021/10/09
 #
 
 #=
@@ -101,7 +101,9 @@ function sigma_reset(ai::Array{Impurity,1}, with_init_dc::Bool = true)
 end
 
 """
-    sigma_dcount(it::IterInfo, ai::Array{Impurity,1}, reset_dc::Bool = false)
+    sigma_dcount(it::IterInfo,
+                 ai::Array{Impurity,1},
+                 reset_dc::Bool = false)
 
 Calculate double counting terms for local self-energy functions and
 write them to `sigma.dc`, which is an essential input for the dynamical
@@ -115,7 +117,9 @@ The field `it.dc` will be updated in this function as well.
 
 See also: [`sigma_reset`](@ref).
 """
-function sigma_dcount(it::IterInfo, ai::Array{Impurity,1}, reset_dc::Bool = false)
+function sigma_dcount(it::IterInfo,
+                      ai::Array{Impurity,1},
+                      reset_dc::Bool = false)
     # Print the header
     println("Sigma : Dcount")
     println("Try to build double counting terms for self-energy functions")
@@ -732,7 +736,9 @@ end
 =#
 
 """
-    write_sigma(fmesh::Array{F64,1}, SA::Array{Array{C64,4},1}, ai::Array{Impurity,1})
+    write_sigma(fmesh::Array{F64,1},
+                SA::Array{Array{C64,4},1},
+                ai::Array{Impurity,1})
 
 Write the self-energy functions and the corresponding frequency mesh into
 the `dmft1/sigma.bare` file, which is key input for the dynamical mean-
@@ -741,7 +747,9 @@ root folder.
 
 See also: [`write_sigdc`](@ref).
 """
-function write_sigma(fmesh::Array{F64,1}, SA::Array{Array{C64,4},1}, ai::Array{Impurity,1})
+function write_sigma(fmesh::Array{F64,1},
+                     SA::Array{Array{C64,4},1},
+                     ai::Array{Impurity,1})
     # Extract some necessary parameters
     axis = get_m("axis")
     nmesh = get_m("nmesh")

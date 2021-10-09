@@ -159,7 +159,9 @@ function s_qmc1_exec(it::IterInfo)
     lines = readlines("solver.out")
     start = findlast(x -> contains(x, ">>> iter:"), lines) + 1
     finish = start + 20
+    println("  [")
     foreach(x -> println(x), lines[start:finish])
+    println("  ]")
 end
 
 """

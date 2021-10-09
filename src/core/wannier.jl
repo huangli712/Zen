@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/04
+# Last modified: 2021/10/09
 #
 
 #=
@@ -419,7 +419,7 @@ function wannier_monitor(D::Dict{Symbol,Any})
     # Calculate and output density matrix
     dm = calc_dm(D[:PW], D[:Fchipsi], D[:weight], D[:occupy])
     view_dm(D[:PG], dm)
-    
+
     # Calculate and output local hamiltonian
     hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
     view_hamk(D[:PG], hamk)
@@ -957,7 +957,9 @@ function w90_make_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
 end
 
 """
-    w90_make_window(PG::Array{PrGroup,1}, ewin::Tuple{F64,F64}, bwin::Array{I64,2})
+    w90_make_window(PG::Array{PrGroup,1},
+                    ewin::Tuple{F64,F64},
+                    bwin::Array{I64,2})
 
 Make band window to filter the projections. Actually, only those relevant
 bands (which are restricted by the energy window `ewin` or the band window
@@ -966,7 +968,9 @@ struct.
 
 See also: [`PrWindow`](@ref).
 """
-function w90_make_window(PG::Array{PrGroup,1}, ewin::Tuple{F64,F64}, bwin::Array{I64,2})
+function w90_make_window(PG::Array{PrGroup,1},
+                         ewin::Tuple{F64,F64},
+                         bwin::Array{I64,2})
     # Print the header
     println("Generate windows")
 

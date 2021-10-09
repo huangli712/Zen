@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/03
+# Last modified: 2021/10/09
 #
 
 #=
@@ -834,7 +834,10 @@ function dmft_run(it::IterInfo, lr::Logger, task::I64)
 end
 
 """
-    solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, force::Bool = false)
+    solver_run(it::IterInfo,
+               lr::Logger,
+               ai::Array{Impurity,1},
+               force::Bool = false)
 
 Simple driver for quantum impurity solvers. It performs three tasks: (1)
 Examine the runtime environment for quantum impurity solver. (2) Launch
@@ -850,7 +853,10 @@ solvers, this function must be adapted.
 
 See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`dmft_run`](@ref).
 """
-function solver_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, force::Bool = false)
+function solver_run(it::IterInfo,
+                    lr::Logger,
+                    ai::Array{Impurity,1},
+                    force::Bool = false)
     # Sanity check
     @assert length(ai) == get_i("nsite")
 
@@ -1114,7 +1120,10 @@ function adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
 end
 
 """
-    sigma_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::String = "reset")
+    sigma_core(it::IterInfo,
+               lr::Logger,
+               ai::Array{Impurity,1},
+               task::String = "reset")
 
 Simple driver for functions for processing the self-energy functions
 and hybridization functions (and local impurity levels).
@@ -1124,7 +1133,10 @@ won't change the current directory.
 
 See also: [`mixer_core`](@ref).
 """
-function sigma_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::String = "reset")
+function sigma_core(it::IterInfo,
+                    lr::Logger,
+                    ai::Array{Impurity,1},
+                    task::String = "reset")
     # Check the given task
     @assert task in ("reset", "dcount", "split", "gather")
 
@@ -1164,7 +1176,10 @@ function sigma_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::Strin
 end
 
 """
-    mixer_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::String = "sigma")
+    mixer_core(it::IterInfo,
+               lr::Logger,
+               ai::Array{Impurity,1},
+               task::String = "sigma")
 
 Simple driver for the mixer. It will try to mix the self-energy functions
 (or hybridization functions, local impurity levels, density matrix) and
@@ -1175,7 +1190,10 @@ won't change the current directory.
 
 See also: [`sigma_core`](@ref).
 """
-function mixer_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1}, task::String = "sigma")
+function mixer_core(it::IterInfo,
+                    lr::Logger,
+                    ai::Array{Impurity,1},
+                    task::String = "sigma")
     # Check the given task
     @assert task in ("sigma", "delta", "eimpx", "gcorr")
 
