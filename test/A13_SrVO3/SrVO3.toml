@@ -5,6 +5,7 @@ engine = "qe"
 projtype = "wannier"
 smear = "gauss"
 kmesh = "medium"
+magmom = "0.0 0.0 0.0"
 ncycle = 8
 lsymm = true
 lspins = true
