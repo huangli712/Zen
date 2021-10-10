@@ -462,6 +462,9 @@ function vaspc_incar(fermi::F64, sc_mode::I64)
 
     # For number of bands
     nbands = vaspio_nband(pwd())
+    if nbands ≤ 10 # Special treatment for Ce
+        nbands = nbands + 8
+    end
     write(ios, "NBANDS   = $nbands \n")
 
     # Special treatment for sc_mode == 2
