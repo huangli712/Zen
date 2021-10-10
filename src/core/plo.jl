@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/09
+# Last modified: 2021/10/10
 #
 
 #=
@@ -250,12 +250,12 @@ function plo_group(MAP::Mapping, PG::Array{PrGroup,1})
         if s != 0
             # Setup corr property
             PG[g].corr = true
-            println("  > Turn group $g (site: $(PG[g].site)) into correlated")
+            println("  > Treat group [$g] as correlated")
 
             # Setup shell property
             # Later it will be used to generate `Tr`
             PG[g].shell = get_i("shell")[s]
-            println("  > Treat group $g (site: $(PG[g].site)) as $(PG[g].shell) orbitals")
+            println("  > Treat group [$g] as $(PG[g].shell) orbitals")
         end
 
         # Setup Tr array further
@@ -310,8 +310,19 @@ function plo_group(MAP::Mapping, PG::Array{PrGroup,1})
                 sorry()
                 break
         end
-        println("  > Build transformation matrix for group $g (site: $(PG[g].site))")
+        println("  > Build transformation matrix for group [$g]")
     end # END OF G LOOP
+
+    # Print the summary
+    println("  > Summary of groups:")
+    for i in eachindex(PG)
+        print("    [ Group $i ]")
+        print("  site -> ", PG[i].site)
+        print("  l -> ", PG[i].l)
+        print("  corr -> ", PG[i].corr)
+        print("  shell -> ", PG[i].shell)
+        println("  Pr -> ", PG[i].Pr)
+    end
 end
 
 #=
@@ -387,8 +398,11 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
         push!(PW, PrWindow(kwin, bwin))
 
         # Print some useful information
-        println("  > Create window $p: $bwin <--> ($(PW[p].bmin), $(PW[p].bmax))")
+        println("  > Create window [$p]")
     end # END OF P LOOP
+
+#=
+    THIS LIMITATION HAS BEEN REMOVED.
 
     # Well, now CW contains all the windows for correlated groups of
     # projectors. In Zen, we assume that all of the correlated groups of
@@ -428,6 +442,18 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
         @assert PW₁ == PW₂
     end
     println("  > Verify windows for correlated groups")
+
+=#
+
+    # Print the summary
+    println("  > Summary of windows:")
+    for i in eachindex(PW)
+        print("    [ Window $i ]")
+        print("  bmin -> ", PW[i].bmin)
+        print("  bmax -> ", PW[i].bmax)
+        print("  nbnd -> ", PW[i].nbnd)
+        println("  bwin -> ", PW[i].bwin)
+    end
 
     # Return the desired array
     return PW
@@ -487,7 +513,7 @@ function plo_rotate(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
         push!(Rchipsi, R)
 
         # Print some useful information
-        println("  > Rotate group $i (site: $(PG[i].site)): number of local orbitals -> $ndim")
+        println("  > Rotate group [$i]: number of correlated bands -> $ndim")
     end # END OF I LOOP
 
     # Return the desired array
@@ -558,7 +584,7 @@ function plo_filter(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
         push!(Fchipsi, F)
 
         # Print some useful information
-        println("  > Apply window $p: maximum number of bands -> $(PW[p].nbnd)")
+        println("  > Filter group [$p]: number of Kohn-Sham states -> $(PW[p].nbnd)")
     end # END OF P LOOP
 
     # Return the desired array
@@ -602,7 +628,7 @@ function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
 
     # Print some useful information
     for p in eachindex(chipsi)
-        println("  > Final shape of Array chipsi (group $p): $(size(chipsi[p]))")
+        println("  > Final shape of chipsi ⟨χ|ψ⟩ (group [$p]): $(size(chipsi[p]))")
     end
 end
 
