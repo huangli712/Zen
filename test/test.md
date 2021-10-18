@@ -96,6 +96,13 @@
     * V-*3d* orbitals
     * one-shot calculation
 
+* **A15_SrVO<sub>3</sub>**
+
+    * VASP + PLO + CT-HYB<sub>1</sub>
+    * V-*3d* orbitals
+    * one-shot calculation
+    * enlarge window
+
 ---
 
 ## case: FeSe
