@@ -1,0 +1,3 @@
+dft = "mpiexec -n 4"
+dmft = "mpiexec -n 4"
+solver = "mpiexec -n 8" 

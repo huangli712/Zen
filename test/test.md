@@ -103,6 +103,12 @@
     * one-shot calculation
     * enlarge window
 
+* **A16_SrVO<sub>3</sub>**
+
+    * VASP + PLO + CT-HYB<sub>1</sub>
+    * V-*3d* orbitals + O-*2p* orbitals
+    * self-consistent calculation
+
 ---
 
 ## case: FeSe
