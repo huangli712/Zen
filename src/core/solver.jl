@@ -4,17 +4,169 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/08
+# Last modified: 2021/10/17
 #
 
 #=
-### *CT-HYB₁ Quantum Impurity Solver*
+### *Multiple Dispatchers*
+=#
+
+"""
+    solver_call(::NULLSolver, it::IterInfo, imp::Impurity)
+    solver_call(::CTHYB₁Solver, it::IterInfo, imp::Impurity)
+    solver_call(::CTHYB₂Solver, it::IterInfo, imp::Impurity)
+    solver_call(::HIASolver, it::IterInfo, imp::Impurity)
+    solver_call(::NORGSolver, it::IterInfo, imp::Impurity)
+    solver_call(::ATOMSolver, it::IterInfo, imp::Impurity)
+
+Try to solve the quantum impurity problems by using various quantum
+impurity solvers. It acts as a dispatcher. Now it supports `CTHYB₁`
+(`ct_hyb1`), `CTHYB₂` (`ct_hyb2`), `HIA` (`hia`), `NORG` (`norg`),
+and `ATOM` (`atomic`) solvers.
+
+See also: [`_solver_`](@ref).
+"""
+function solver_call(::NULLSolver, it::IterInfo, imp::Impurity)
+    sorry()
+end
+#
+function solver_call(::CTHYB₁Solver, it::IterInfo, imp::Impurity)
+    # For CTHYB₁ quantum impurity solver
+    s_qmc1_init(it, imp)
+    s_qmc1_exec(it)
+    s_qmc1_save(it, imp)
+end
+#
+function solver_call(::CTHYB₂Solver, it::IterInfo, imp::Impurity)
+    # For CTHYB₂ quantum impurity solver
+    s_qmc2_init(it)
+    s_qmc2_exec(it)
+    s_qmc2_save(it)
+end
+#
+function solver_call(::HIASolver, it::IterInfo, imp::Impurity)
+    # For HIA quantum impurity solver
+    s_hub1_init(it)
+    s_hub1_exec(it)
+    s_hub1_save(it)
+end
+#
+function solver_call(::NORGSolver, it::IterInfo, imp::Impurity)
+    # For NORG quantum impurity solver
+    s_norg_init(it)
+    s_norg_exec(it)
+    s_norg_save(it)
+end
+#
+function solver_call(::ATOMSolver, it::IterInfo, imp::Impurity)
+    # For atomic eigenvalues solver
+    sorry()
+end
+
+"""
+    solver_copy(::NULLSolver, it::IterInfo, imp₁::Impurity, imp₂::Impurity)
+    solver_copy(::CTHYB₁Solver, it::IterInfo, imp₁::Impurity, imp₂::Impurity)
+    solver_copy(::CTHYB₂Solver, it::IterInfo, imp₁::Impurity, imp₂::Impurity)
+    solver_copy(::HIASolver, it::IterInfo, imp₁::Impurity, imp₂::Impurity)
+    solver_copy(::NORGSolver, it::IterInfo, imp₁::Impurity, imp₂::Impurity)
+    solver_copy(::ATOMSolver, it::IterInfo, imp₁::Impurity, imp₂::Impurity)
+
+Try to solve a quantum impurity problem by copying solution from another
+equivalent quantum impurity problem. It acts as a dispatcher.
+
+See also: [`_solver_`](@ref).
+"""
+solver_copy(::NULLSolver, it::IterInfo, imp₁::Impurity, imp₂::Impurity) =
+    sorry()
+#
+solver_copy(::CTHYB₁Solver, it::IterInfo, imp₁::Impurity, imp₂::Impurity) =
+    # For CTHYB₁ quantum impurity solver
+    s_qmc1_copy(it, imp₁, imp₂)
+#
+solver_copy(::CTHYB₂Solver, it::IterInfo, imp₁::Impurity, imp₂::Impurity) =
+    # For CTHYB₂ quantum impurity solver
+    s_qmc2_copy(it, imp₁, imp₂)
+#
+solver_copy(::HIASolver, it::IterInfo, imp₁::Impurity, imp₂::Impurity) =
+    # For HIA quantum impurity solver
+    s_hub1_copy(it, imp₁, imp₂)
+#
+solver_copy(::NORGSolver, it::IterInfo, imp₁::Impurity, imp₂::Impurity) =
+    # For NORG quantum impurity solver
+    s_norg_copy(it, imp₁, imp₂)
+#
+solver_copy(::ATOMSolver, it::IterInfo, imp₁::Impurity, imp₂::Impurity) =
+    # For atomic eigenvalues solver
+    sorry()
+
+"""
+    solver_sigma(::NULLSolver, imp::Impurity)
+    solver_sigma(::CTHYB₁Solver, imp::Impurity)
+    solver_sigma(::CTHYB₂Solver, imp::Impurity)
+    solver_sigma(::HIASolver, imp::Impurity)
+    solver_sigma(::NORGSolver, imp::Impurity)
+    solver_sigma(::ATOMSolver, imp::Impurity)
+
+Try to extract self-energy function from the output data of quantum
+impurity solver. It acts as a dispatcher.
+
+See also: [`_solver_`](@ref).
+"""
+solver_sigma(::NULLSolver, imp::Impurity) = sorry()
+solver_sigma(::CTHYB₁Solver, imp::Impurity) = ctqmc_sigma(imp)
+solver_sigma(::CTHYB₂Solver, imp::Impurity) = ctqmc_sigma(imp)
+solver_sigma(::HIASolver, imp::Impurity) = sorry()
+solver_sigma(::NORGSolver, imp::Impurity) = sorry()
+solver_sigma(::ATOMSolver, imp::Impurity) = sorry()
+
+"""
+    solver_nimpx(::NULLSolver, imp::Impurity)
+    solver_nimpx(::CTHYB₁Solver, imp::Impurity)
+    solver_nimpx(::CTHYB₂Solver, imp::Impurity)
+    solver_nimpx(::HIASolver, imp::Impurity)
+    solver_nimpx(::NORGSolver, imp::Impurity)
+    solver_nimpx(::ATOMSolver, imp::Impurity)
+
+Try to extract impurity occupancy from the output data of quantum
+impurity solver. It acts as a dispatcher.
+
+See also: [`_solver_`](@ref).
+"""
+solver_nimpx(::NULLSolver, imp::Impurity) = sorry()
+solver_nimpx(::CTHYB₁Solver, imp::Impurity) = ctqmc_nimpx(imp)
+solver_nimpx(::CTHYB₂Solver, imp::Impurity) = ctqmc_nimpx(imp)
+solver_nimpx(::HIASolver, imp::Impurity) = sorry()
+solver_nimpx(::NORGSolver, imp::Impurity) = sorry()
+solver_nimpx(::ATOMSolver, imp::Impurity) = sorry()
+
+"""
+    solver_edmft(::NULLSolver)
+    solver_edmft(::CTHYB₁Solver)
+    solver_edmft(::CTHYB₂Solver)
+    solver_edmft(::HIASolver)
+    solver_edmft(::NORGSolver)
+    solver_edmft(::ATOMSolver)
+
+Try to extract interaction energy from the output data of quantum
+impurity solver. It acts as a dispatcher.
+
+See also: [`_solver_`](@ref).
+"""
+solver_edmft(::NULLSolver) = sorry()
+solver_edmft(::CTHYB₁Solver) = ctqmc_edmft()
+solver_edmft(::CTHYB₂Solver) = ctqmc_edmft()
+solver_edmft(::HIASolver) = sorry()
+solver_edmft(::NORGSolver) = sorry()
+solver_edmft(::ATOMSolver) = sorry()
+
+#=
+### *CTHYB₁ Quantum Impurity Solver*
 =#
 
 """
     s_qmc1_init(it::IterInfo, imp::Impurity)
 
-Check runtime environment of the CT-HYB₁ quantum impurity solver. Prepare
+Check runtime environment of the CTHYB₁ quantum impurity solver. Prepare
 the necessary input files.
 
 This quantum impurity solver is from the `iQIST` software package.
@@ -23,7 +175,7 @@ See also: [`s_qmc1_exec`](@ref), [`s_qmc1_save`](@ref).
 """
 function s_qmc1_init(it::IterInfo, imp::Impurity)
     # Print the header
-    println("Engine : CT-HYB₁")
+    println("Engine : CTHYB₁")
     println("Try to solve the quantum impurity problem: [$(imp.index)]")
     println("Current directory: ", pwd())
     println("Prepare necessary input files for solver")
@@ -54,7 +206,7 @@ end
 """
     s_qmc1_exec(it::IterInfo)
 
-Launch the CT-HYB₁ quantum impurity solver.
+Launch the CTHYB₁ quantum impurity solver.
 
 This quantum impurity solver is from the `iQIST` software package.
 
@@ -70,7 +222,7 @@ function s_qmc1_exec(it::IterInfo)
     println("  > Using $numproc processors (MPI)")
 
     # Get the home directory of quantum impurity solver
-    solver_home = query_solver("ct_hyb1")
+    solver_home = query_solver(_solver_)
     println("  > Home directory for solver: ", solver_home)
 
     # Select suitable solver program
@@ -155,7 +307,7 @@ function s_qmc1_exec(it::IterInfo)
     println("  > Finished after $(length(lines)) Monte Carlo sampling blocks")
 
     # Extract perturbation expansion order information
-    println("Report From CT-HYB₁ Quantum Impurity Solver")
+    println("Report From CTHYB₁ Quantum Impurity Solver")
     lines = readlines("solver.out")
     start = findlast(x -> contains(x, ">>> iter:"), lines) + 1
     finish = start + 20
@@ -167,7 +319,7 @@ end
 """
     s_qmc1_save(it::IterInfo, imp::Impurity)
 
-Backup output files of the CT-HYB₁ quantum impurity solver.
+Backup output files of the CTHYB₁ quantum impurity solver.
 
 This quantum impurity solver is from the `iQIST` software package.
 
@@ -216,7 +368,7 @@ end
 """
     s_qmc1_copy(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
 
-Backup output files of the CT-HYB₁ quantum impurity solver. We just copy
+Duplicate output files of the CTHYB₁ quantum impurity solver. We just copy
 selected output files from impurity.1 to impurity.2. Be careful, now we
 are already in directory `impurity.2`.
 
@@ -268,13 +420,13 @@ function s_qmc1_copy(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
 end
 
 #=
-### *CT-HYB₂ Quantum Impurity Solver*
+### *CTHYB₂ Quantum Impurity Solver*
 =#
 
 """
     s_qmc2_init(it::IterInfo)
 
-Check runtime environment of the CT-HYB₂ quantum impurity solver. Prepare
+Check runtime environment of the CTHYB₂ quantum impurity solver. Prepare
 the necessary input files.
 
 This quantum impurity solver is from the `iQIST` software package.
@@ -288,24 +440,20 @@ end
 """
     s_qmc2_exec(it::IterInfo)
 
-Launch the CT-HYB₂ quantum impurity solver.
+Launch the CTHYB₂ quantum impurity solver.
 
 This quantum impurity solver is from the `iQIST` software package.
 
 See also: [`s_qmc2_init`](@ref), [`s_qmc2_save`](@ref).
 """
 function s_qmc2_exec(it::IterInfo)
-    # Print the header
-    println("Engine : CT-HYB₂")
-
-    # Print the footer for a better visualization
-    println()
+    sorry()
 end
 
 """
     s_qmc2_save(it::IterInfo)
 
-Backup output files of the CT-HYB₂ quantum impurity solver.
+Backup output files of the CTHYB₂ quantum impurity solver.
 
 This quantum impurity solver is from the `iQIST` software package.
 
@@ -318,7 +466,7 @@ end
 """
     s_qmc2_copy(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
 
-Backup output files of the CT-HYB₂ quantum impurity solver. We just copy
+Duplicate output files of the CTHYB₂ quantum impurity solver. We just copy
 selected output files from impurity.1 to impurity.2. Be careful, now we
 are already in directory `impurity.2`.
 
@@ -331,7 +479,7 @@ function s_qmc2_copy(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
 end
 
 #=
-### *HUB-I Quantum Impurity Solver*
+### *HIA Quantum Impurity Solver*
 =#
 
 """
@@ -354,11 +502,7 @@ Launch the HIA quantum impurity solver.
 See also: [`s_hub1_init`](@ref), [`s_hub1_save`](@ref).
 """
 function s_hub1_exec(it::IterInfo)
-    # Print the header
-    println("Engine : HIA")
-
-    # Print the footer for a better visualization
-    println()
+    sorry()
 end
 
 """
@@ -375,7 +519,7 @@ end
 """
     s_hub1_copy(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
 
-Backup output files of the HIA quantum impurity solver. We just copy
+Duplicate output files of the HIA quantum impurity solver. We just copy
 selected output files from impurity.1 to impurity.2. Be careful, now we
 are already in directory `impurity.2`.
 
@@ -409,11 +553,7 @@ Launch the NORG quantum impurity solver.
 See also: [`s_norg_init`](@ref), [`s_norg_save`](@ref).
 """
 function s_norg_exec(it::IterInfo)
-    # Print the header
-    println("Engine : NORG")
-
-    # Print the footer for a better visualization
-    println()
+    sorry()
 end
 
 """
@@ -430,7 +570,7 @@ end
 """
     s_norg_copy(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
 
-Backup output files of the NORG quantum impurity solver. We just copy
+Duplicate output files of the NORG quantum impurity solver. We just copy
 selected output files from impurity.1 to impurity.2. Be careful, now we
 are already in directory `impurity.2`.
 
@@ -447,7 +587,7 @@ end
 """
     ctqmc_setup(imp::Impurity)
 
-Generate default configuration file (`solver.ctqmc.in`) for the CT-QMC
+Generate default configuration file (`solver.ctqmc.in`) for the CTHYB
 quantum impurity solvers automatically (according to the information
 encoded in the `Impurity` struct).
 
@@ -525,7 +665,7 @@ end
     ctqmc_delta(fmesh::Array{F64,1}, Delta::Array{C64,4})
 
 Write the hybridization functions to the `solver.hyb.in` file, which is
-suitable for the CT-QMC quantum impurity solver.
+suitable for the CTHYB quantum impurity solver.
 
 See also: [`ctqmc_eimpx`](@ref).
 """
@@ -573,7 +713,7 @@ end
     ctqmc_eimpx(Eimpx::Array{C64,3})
 
 Write the local impurity levels to the `solver.eimp.in` file, which is
-suitable for the CT-QMC quantum impurity solver.
+suitable for the CTHYB quantum impurity solver.
 
 See also: [`ctqmc_delta`](@ref).
 """
@@ -617,12 +757,13 @@ end
 """
     ctqmc_sigma(imp::Impurity)
 
-Parse the `solver.sgm.dat` file to extract the bare self-energy functions.
+Parse the `solver.sgm.dat` file, which is generated by the CTHYB quantum
+impurity solver, to extract the bare self-energy functions.
 
 In the `sigma_gather()` function, these data will be combined to generate
 the `sigma.bare` file, which is essential for the DMFT engine.
 
-See also: [`Impurity`](@ref), [`GetSigma`](@ref).
+See also: [`GetSigma`](@ref), [`solver_sigma`](@ref).
 """
 function ctqmc_sigma(imp::Impurity)
     # File name for self-energy functions
@@ -634,7 +775,7 @@ function ctqmc_sigma(imp::Impurity)
     # Extract parameters from Impurity struct
     nband = imp.nband
     norbs = nband * 2
-    nspin = 2 # In the CT-QMC impurity solver, nspin is fixed to 2.
+    nspin = 2 # In the CTHYB impurity solver, nspin is fixed to 2.
 
     # We don't know how many frequency points are used a priori.
     # Here, we used a trick to determine `nmesh`.
@@ -683,10 +824,11 @@ end
 """
     ctqmc_nimpx(imp::Impurity)
 
-Parse the `solver.nmat.dat` file to extract the impurity occupancy. Then
-the fields `nup`, `ndown`, and `occup` in Impurity struct will be updated.
+Parse the `solver.nmat.dat` file, which is generated by the CTHYB
+quantum impurity solver, to extract the impurity occupancy. Then the
+fields `nup`, `ndown`, and `occup` in Impurity struct will be updated.
 
-See also: [`Impurity`](@ref), [`GetNimpx`](@ref).
+See also: [`GetNimpx`](@ref), [`solver_nimpx`](@ref).
 """
 function ctqmc_nimpx(imp::Impurity)
     # File name for impurity occupancy
@@ -720,13 +862,14 @@ function ctqmc_nimpx(imp::Impurity)
 end
 
 """
-    ctqmc_energy()
+    ctqmc_edmft()
 
-Parse the `solver.paux.dat` file to extract the interaction energy.
+Parse the `solver.paux.dat` file, which is generated by the CTHYB quantum
+impurity solver, to extract the interaction energy.
 
-See also: [`GetEnergy`](@ref).
+See also: [`GetEdmft`](@ref), [`solver_edmft`](@ref).
 """
-function ctqmc_energy()
+function ctqmc_edmft()
     # File name for DMFT energy
     fene = "solver.paux.dat"
 
@@ -757,7 +900,7 @@ impurity solvers. The data will be combined in the `sigma_gather()`
 function. Then they will be fed back to the DMFT engine. The working
 directory of this function must be the root folder.
 
-See also: [`Impurity`](@ref), [`ctqmc_sigma`](@ref).
+See also: [`Impurity`](@ref), [`solver_sigma`](@ref).
 """
 function GetSigma(imp::Impurity)
     # Get the index for current quantum impurity problem
@@ -769,34 +912,9 @@ function GetSigma(imp::Impurity)
     # the current directory.
     cd("impurity.$index")
 
-    # Determine the chosen solver
-    engine = get_s("engine")
-
     # Activate the corresponding `solver_sigma()` functions for various
     # quantum impurity solvers
-    fmesh = nothing
-    sigma = nothing
-    @cswitch engine begin
-        @case "ct_hyb1"
-            fmesh, sigma = ctqmc_sigma(imp)
-            break
-
-        @case "ct_hyb2"
-            fmesh, sigma = ctqmc_sigma(imp)
-            break
-
-        @case "hub1"
-            sorry()
-            break
-
-        @case "norg"
-            sorry()
-            break
-
-        @default
-            sorry()
-            break
-    end
+    fmesh, sigma = solver_sigma(_solver_, imp)
 
     # Enter the parent directory
     cd("..")
@@ -816,7 +934,7 @@ must be the root folder.
 
 The argument `imp` may be modified in this function.
 
-See also: [`Impurity`](@ref), [`ctqmc_nimpx`](@ref).
+See also: [`Impurity`](@ref), [`solver_nimpx`](@ref).
 """
 function GetNimpx(imp::Impurity)
     # Get the index for current quantum impurity problem
@@ -828,79 +946,33 @@ function GetNimpx(imp::Impurity)
     # the current directory.
     cd("impurity.$index")
 
-    # Determine the chosen solver
-    engine = get_s("engine")
-
     # Activate the corresponding solver_nimpx() functions for various
     # quantum impurity solvers
-    @cswitch engine begin
-        @case "ct_hyb1"
-            ctqmc_nimpx(imp)
-            break
-
-        @case "ct_hyb2"
-            ctqmc_nimpx(imp)
-            break
-
-        @case "hub1"
-            sorry()
-            break
-
-        @case "norg"
-            sorry()
-            break
-
-        @default
-            sorry()
-            break
-    end
+    solver_nimpx(_solver_, imp)
 
     # Enter the parent directory
     cd("..")
 end
 
 """
-    GetEnergy(imp::Impurity)
+    GetEdmft(imp::Impurity)
 
 Extract interaction energy (i.e potential energy) from the output files
 of various quantum impurity solvers. The input Impurity struct won't be
 modified. The working directory of this function must be the root folder.
 
-See also: [`Impurity`](@ref), [`ctqmc_energy`](@ref).
+See also: [`Impurity`](@ref), [`solver_edmft`](@ref).
 """
-function GetEnergy(imp::Impurity)
+function GetEdmft(imp::Impurity)
     # Get the index for current quantum impurity problem
     index = imp.index
 
     # Change the directory
     cd("impurity.$index")
 
-    # Determine the chosen solver
-    engine = get_s("engine")
-
-    # Activate the corresponding solver_energy() functions for various
+    # Activate the corresponding solver_edmft() functions for various
     # quantum impurity solvers
-    @cswitch engine begin
-        @case "ct_hyb1"
-            epot = ctqmc_energy()
-            break
-
-        @case "ct_hyb2"
-            epot = ctqmc_energy()
-            break
-
-        @case "hub1"
-            sorry()
-            break
-
-        @case "norg"
-            sorry()
-            break
-
-        @default
-            sorry()
-            break
-    end
+    epot = solver_edmft(_solver_)
 
     # Enter the parent directory
     cd("..")
@@ -1009,6 +1081,8 @@ end
     CatImpurity(imp::Impurity)
 
 Display the Impurity struct that need to be solved.
+
+See also: [`Impurity`](@ref).
 """
 function CatImpurity(imp::Impurity)
     println()

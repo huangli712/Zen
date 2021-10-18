@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/03
+# Last modified: 2021/10/17
 #
 
 #=
@@ -235,34 +235,40 @@ not worry about them.
 =#
 
 """
-    query_inps(engine::String)
+    query_inps(::NULLEngine)
+    query_inps(::VASPEngine)
+    query_inps(::QEEngine)
+    query_inps(::WANNIEREngine)
 
-Check whether the essential input files exist. This function is designed
-for the DFT engine only. The input files for the DMFT engine, quantum
-impurity solver, and Kohn-Sham adaptor will be generated automatically
-by default. The `ZenCore` package will take care of them. Do not worry
-about that.
+Check whether the essential input files exist. It acts as a dispatcher.
+This function is designed for the DFT engine only. The input files for
+the DMFT engine, quantum impurity solver, and Kohn-Sham adaptor will be
+generated automatically by default. The `ZenCore` package will take care
+of them. Do not worry about that.
 
 See also: [`query_case`](@ref).
 """
-function query_inps(engine::String)
-    @cswitch engine begin
-        @case "vasp"
-            if !isfile("POSCAR") || !isfile("POTCAR")
-                error("Please provide both POSCAR and POTCAR files")
-            end
-            break
-
-        @case "qe"
-            if !isfile("QE.INP")
-                error("Please provide the QE.INP file")
-            end
-            break
-
-        @default
-            sorry()
-            break
+function query_inps(::NULLEngine)
+    sorry()
+end
+#
+function query_inps(::VASPEngine)
+    # For vasp code.
+    if !isfile("POSCAR") || !isfile("POTCAR")
+        error("Please provide both POSCAR and POTCAR files")
     end
+end
+#
+function query_inps(::QEEngine)
+    # For quantum espresso code.
+    if !isfile("QE.INP")
+        error("Please provide the QE.INP file")
+    end
+end
+#
+function query_inps(::WANNIEREngine)
+    # For wannier90 code.
+    sorry()
 end
 
 """
@@ -281,7 +287,7 @@ end
 
 Query whether the `case.test` file exists.
 
-See also: [`query_test`](@ref).
+See also: [`query_case`](@ref).
 """
 function query_test()
     isfile(query_case() * ".test")
@@ -296,9 +302,9 @@ In the `ZenCore` package, the following environment variables matter:
 * ZEN_CORE
 * ZEN_DMFT
 * ZEN_SOLVER
-* VASP_HOME (If we are using `vasp` as our DFT engine)
-* QE_HOME (If we are using `quantum espresso` as our DFT engine)
-* W90_HOME (If we are using `wannier90` to generate projectors)
+* VASP_HOME (If we are using `vasp` as our DFT backend)
+* QE_HOME (If we are using `quantum espresso` as our DFT backend)
+* WAN90_HOME (If we are using `wannier90` to generate projectors)
 
 Please setup them in your `.bashrc` (Lniux) or `.profile` (macOS) files.
 =#
@@ -339,42 +345,22 @@ function query_core()
 end
 
 """
-    query_dft(engine::String)
+    query_dft(ae::AbstractEngine)
 
-Query the home directory of the chosen DFT engine.
+Query the home directory of the chosen DFT backend. It supports vasp,
+quantum espresso, and wannier90 by now.
 
 See also: [`query_dmft`](@ref), [`query_solver`](@ref).
 """
-function query_dft(engine::String)
-    @cswitch engine begin
-        # We have to setup the environment variable VASP_HOME
-        @case "vasp"
-            if haskey(ENV, "VASP_HOME")
-                return ENV["VASP_HOME"]
-            else
-                error("VASP_HOME is undefined")
-            end
-            break
+function query_dft(ae::AbstractEngine)
+    # Build valid name for environment variable
+    var = uppercase(nameof(ae)) * "_HOME"
 
-        @case "qe"
-            if haskey(ENV, "QE_HOME")
-                return ENV["QE_HOME"]
-            else
-                error("QE_HOME is undefined")
-            end
-            break
-
-        @case "wannier90"
-            if haskey(ENV, "WAN90_HOME")
-                return ENV["WAN90_HOME"]
-            else
-                error("WAN90_HOME is undefined")
-            end
-            break
-
-        @default
-            sorry()
-            break
+    # Query the environment variable
+    if haskey(ENV, var)
+        return ENV[var]
+    else
+        error("$var is undefined")
     end
 end
 
@@ -395,52 +381,21 @@ function query_dmft()
     end
 end
 
-#=
-*Remarks* :
-
-The `atomic` code is considered as a preprocessor of `ct_hyb2`, it is
-not a valid quantum impurity solver.
-=#
-
 """
-    query_solver(engine::String)
+    query_solver(as::AbstractSolver)
 
-Query the home directories of various quantum impurity solvers.
+Query the home directories of various quantum impurity solvers. Now it
+supports CTHYB₁, CTHYB₂, HIA, and NORG.
 
 See also: [`query_dft`](@ref), [`query_dmft`](@ref).
 """
-function query_solver(engine::String)
+function query_solver(as::AbstractSolver)
     # We have to setup the environment variable ZEN_SOLVER
     if haskey(ENV, "ZEN_SOLVER")
         ENV["ZEN_SOLVER"]
     # For develop stage only
     else
-        @cswitch engine begin
-            @case "ct_hyb1"
-                solver_dir = joinpath(query_home(), "src/solver/ct_hyb1")
-                break
-
-            @case "ct_hyb2"
-                solver_dir = joinpath(query_home(), "src/solver/ct_hyb2")
-                break
-
-            @case "hub1"
-                solver_dir = joinpath(query_home(), "src/solver/hub1")
-                break
-
-            @case "norg"
-                solver_dir = joinpath(query_home(), "src/solver/norg")
-                break
-
-            @case "atomic"
-                solver_dir = joinpath(query_home(), "src/solver/atomic")
-                break
-
-            @default
-                sorry()
-                break
-        end
-        solver_dir
+        joinpath(query_home(), "src/solver/" * nameof(as))
     end
 end
 
@@ -471,7 +426,7 @@ end
 
 Test whether the projector is the projected local orbitals.
 
-See also: [`is_plo`](@ref).
+See also: [`is_wannier`](@ref).
 """
 function is_plo()
     get_d("projtype") == "plo"
@@ -482,7 +437,7 @@ end
 
 Test whether the projector is the wannier functions.
 
-See also: [`is_wannier`](@ref).
+See also: [`is_plo`](@ref).
 """
 function is_wannier()
     get_d("projtype") == "wannier"
@@ -691,6 +646,41 @@ function subscript(num::I64)
     @assert 0 ≤ num ≤ 9
     SUB = ["\u2080" "\u2081" "\u2082" "\u2083" "\u2084" "\u2085" "\u2086" "\u2087" "\u2088" "\u2089"]
     return SUB[num + 1]
+end
+
+"""
+    str_to_struct(str::AbstractString, postfix::AbstractString)
+
+Convert a string (`str`) to an instance of struct. Here `postfix` could
+be `Engine`, `Solver`, `Adaptor`, `Mode`, and `Mixer`.
+
+### Examples
+```julia-repl
+julia> str_to_struct("vasp", "Engine")
+ZenCore.VASPEngine()
+
+julia> str_to_struct("hia", "Solver")
+ZenCore.HIASolver()
+```
+"""
+@inline function str_to_struct(str::AbstractString, postfix::AbstractString)
+    # Assemble the name of the struct
+    fstr = replace(uppercase(str), "_" => "") * postfix
+
+    # Perhaps `fstr` contains some numbers, such as CTHYB1Solver.
+    # Replace number with its subscript's form (CTHYB₁Solver)
+    for i in 0:9
+        if contains(fstr, string(i))
+            fstr = replace(fstr, string(i) => subscript(i))
+        end
+    end
+
+    # Generate an instance
+    sym = Symbol(fstr)
+    @eval machine = ($sym)()
+
+    # Return the desired value
+    return machine
 end
 
 #=

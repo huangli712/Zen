@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/02
+# Last modified: 2021/10/16
 #
 
 #=
@@ -28,7 +28,9 @@ See also: [`vasp_adaptor`](@ref), [`plo_adaptor`](@ref).
 """
 function ir_adaptor(D::Dict{Symbol,Any})
     # I01: Check the validity of the `D` dict
-    key_list = [:MAP, :PG, :PW, :latt, :kmesh, :weight, :enk, :occupy, :Fchipsi, :fermi]
+    key_list = [:MAP, :PG, :PW,
+                :latt, :kmesh, :weight,
+                :enk, :occupy, :Fchipsi, :fermi]
     for k in key_list
         @assert haskey(D, k)
     end
@@ -152,14 +154,14 @@ function irio_params(f::String, D::Dict{Symbol,Any})
     # Extract `ngrp`
     ngrp, = size(D[:PG])
     #
-    # Extract `qdim`, maximum number of projectors in all groups.
+    # Extract `qdim`, maximum number of projectors among the groups.
     # `size(D[:PG][g].Tr,1)` is actually ndim
     qdim = maximum( [ size(D[:PG][g].Tr,1) for g = 1:ngrp ] )
 
     # Extract `nwnd`
     nwnd, = size(D[:PW])
     #
-    # Extract qbnd, maximum number of bands in local windows.
+    # Extract qbnd, maximum number of bands among the windows.
     qbnd = maximum( [ D[:PW][w].nbnd for w = 1:nwnd ] )
     #
     # Extract xbnd, maximum number of bands included in all windows.

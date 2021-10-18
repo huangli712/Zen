@@ -4,8 +4,53 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/02
+# Last modified: 2021/10/16
 #
+
+#=
+### *Multiple Dispatchers*
+=#
+
+"""
+    mixer_call(::NULLMixer, it::IterInfo, ai::Array{Impurity,1})
+    mixer_call(::ΣMixer, it::IterInfo, ai::Array{Impurity,1})
+    mixer_call(::ΔMixer, it::IterInfo, ai::Array{Impurity,1})
+    mixer_call(::EMixer, it::IterInfo, ai::Array{Impurity,1})
+    mixer_call(::ΓMixer, it::IterInfo, ai::Array{Impurity,1})
+
+Try to mix various functions during the iterations, including self-energy
+functions Σ, hybridization functions Δ, effective impurity levels E, and
+correction for density matrix Γ. It acts as a dispatcher.
+
+See also: [`_mixer_`](@ref).
+"""
+function mixer_call(::NULLMixer, it::IterInfo, ai::Array{Impurity,1})
+    sorry()
+end
+#
+function mixer_call(::ΣMixer, it::IterInfo, ai::Array{Impurity,1})
+    # Try to mix the self-energy functions Σ.
+    mixer_sigma(it, ai)
+end
+#
+function mixer_call(::ΔMixer, it::IterInfo, ai::Array{Impurity,1})
+    # Try to mix the hybridization functions Δ.
+    mixer_delta(it, ai)
+end
+#
+function mixer_call(::EMixer, it::IterInfo, ai::Array{Impurity,1})
+    # Try to mix the local impurity levels E.
+    mixer_eimpx(it, ai)
+end
+#
+function mixer_call(::ΓMixer, it::IterInfo, ai::Array{Impurity,1})
+    # Try to mix the correction for density matrix Γ.
+    mixer_gcorr(it)
+end
+
+#=
+### *Driver Functions*
+=#
 
 """
     mixer_sigma(it::IterInfo, ai::Array{Impurity,1})
@@ -13,7 +58,7 @@
 Try to mix the self-energy functions Σ and then use the mixed values
 to update the `dmft1/sigma.bare` file.
 
-See also: [`mixer_core`](@ref), [`amix`](@ref).
+See also: [`mixer_core`](@ref), [`amix`](@ref), [`distance`](@ref).
 """
 function mixer_sigma(it::IterInfo, ai::Array{Impurity,1})
     # Print the header
@@ -216,7 +261,7 @@ Try to mix the correction for density matrix Γ and then use the mixed value
 to update the `dmft2/dmft.gcorr` file. Here we use the Kerker algorithm,
 instead of the linear mixing algorithm.
 
-See also: [`mixer_core`](@ref).
+See also: [`mixer_core`](@ref), [`distance`](@ref).
 """
 function mixer_gcorr(it::IterInfo)
     # Print the header
@@ -295,6 +340,10 @@ function mixer_gcorr(it::IterInfo)
     it.cc = ( dist < get_m("cc") )
     println("  > Averaged ΔΓ = $dist ( convergence is $(it.cc) )")
 end
+
+#=
+### *Service Functions*
+=#
 
 """
     amix(it::IterInfo)

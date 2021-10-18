@@ -4,8 +4,15 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/09
+# Last modified: 2021/10/18
 #
+
+#=
+### *Customized Types*
+=#
+
+"Customized type. It is used to define the following dicts."
+const DType = Any
 
 #=
 ### *Customized Dictionaries*
@@ -32,7 +39,7 @@ Dictionary for configuration parameters: case summary.
 
 See also: [`PDFT`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
-const PCASE  = Dict{String,Array{Any,1}}(
+const PCASE  = Dict{String,Array{DType,1}}(
     "case"     => [missing, 1, :String, "System's name or seedname"]
 )
 
@@ -43,7 +50,7 @@ Dictionary for configuration parameters: density functional theory calculations.
 
 See also: [`PCASE`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
-const PDFT   = Dict{String,Array{Any,1}}(
+const PDFT   = Dict{String,Array{DType,1}}(
     "engine"   => [missing, 1, :String, "Engine for density functional theory calculations"],
     "projtype" => [missing, 1, :String, "Types of projectors"],
     "smear"    => [missing, 1, :String, "Scheme for smearing"],
@@ -65,7 +72,7 @@ Dictionary for configuration parameters: dynamical mean-field theory calculation
 
 See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
-const PDMFT  = Dict{String,Array{Any,1}}(
+const PDMFT  = Dict{String,Array{DType,1}}(
     "mode"     => [missing, 1, :I64   , "Scheme of dynamical mean-field theory calculations"],
     "axis"     => [missing, 1, :I64   , "Imaginary-time axis or real-frequency axis"],
     "niter"    => [missing, 1, :I64   , "Maximum allowed number of DFT + DMFT iterations"],
@@ -87,7 +94,7 @@ Dictionary for configuration parameters: quantum impurity problems.
 
 See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PDMFT`](@ref), [`PSOLVER`](@ref).
 """
-const PIMP   = Dict{String,Array{Any,1}}(
+const PIMP   = Dict{String,Array{DType,1}}(
     "nsite"    => [missing, 1, :I64   , "Number of (correlated) impurity sites"],
     "atoms"    => [missing, 1, :Array , "Chemical symbols of impurity atoms"],
     "equiv"    => [missing, 1, :Array , "Equivalency of quantum impurity atoms"],
@@ -106,11 +113,311 @@ Dictionary for configuration parameters: quantum impurity solvers.
 
 See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref).
 """
-const PSOLVER= Dict{String,Array{Any,1}}(
+const PSOLVER= Dict{String,Array{DType,1}}(
     "engine"   => [missing, 1, :String, "Name of quantum impurity solver"],
     "ncycle"   => [missing, 1, :I64   , "Number of solver iterations per DFT + DMFT cycle"],
     "params"   => [missing, 1, :Array , "Extra parameter sets of quantum impurity solver"],
 )
+
+#=
+### *Customized Structs* : *DFT Engine*
+=#
+
+"""
+    AbstractEngine
+
+An abstract type representing the DFT engine. It is used to build the
+internal type system.
+"""
+abstract type AbstractEngine end
+
+"""
+    NULLEngine
+
+It represents a null DFT engine. It is the default engine and will be
+replaced by the realistic engine.
+
+See also: [`_engine_`](@ref).
+"""
+struct NULLEngine    <: AbstractEngine end
+
+"""
+    VASPEngine
+
+It represents a vasp engine, which is used to perform DFT calculations.
+
+See also: [`QEEngine`](@ref).
+"""
+struct VASPEngine    <: AbstractEngine end
+
+"""
+    QEEngine
+
+It represents a quantum espresso (actually the PWSCF code) engine, which
+is used to perform DFT calculations.
+
+See also: [`VASPEngine`](@ref).
+"""
+struct QEEngine      <: AbstractEngine end
+
+"""
+    WANNIEREngine
+
+It represents a wannier90 engine, which is used to generate the maximally
+localized wannier functions.
+"""
+struct WANNIEREngine <: AbstractEngine end
+
+"Set up the default density functional theory calculation engine."
+_engine_ = NULLEngine()
+
+"Get name of density functional theory calculation engine."
+Base.nameof(::NULLEngine) = "null"
+Base.nameof(::VASPEngine) = "vasp"
+Base.nameof(::QEEngine) = "qe"
+Base.nameof(::WANNIEREngine) = "wan90"
+
+#=
+### *Customized Structs* : *Quantum Impurity Solver*
+=#
+
+"""
+    AbstractSolver
+
+An abstract type representing the quantum impurity solver. It is used to
+build the internal type system.
+"""
+abstract type AbstractSolver end
+
+"""
+    NULLSolver
+
+It represents a null quantum impurity solver. It is the default solver
+and will be replaced by the realistic solver.
+
+See also: [`_solver_`](@ref).
+"""
+struct NULLSolver   <: AbstractSolver end
+
+"""
+    CTHYB₁Solver
+
+It represents a quantum impurity solver based on the CTHYB₁ algorithm.
+
+See also: [`CTHYB₂Solver`](@ref).
+"""
+struct CTHYB₁Solver <: AbstractSolver end
+
+"""
+    CTHYB₂Solver
+
+It represents a quantum impurity solver based on the CTHYB₂ algorithm.
+
+See also: [`CTHYB₁Solver`](@ref).
+"""
+struct CTHYB₂Solver <: AbstractSolver end
+
+"""
+    HIASolver
+
+It represents a quantum impurity solver based on the HIA algorithm.
+"""
+struct HIASolver    <: AbstractSolver end
+
+"""
+    NORGSolver
+
+It represents a quantum impurity solver based on the NORG algorithm.
+"""
+struct NORGSolver   <: AbstractSolver end
+
+"""
+    ATOMSolver
+
+It represents a solver for atomic eigenvalue problems.
+"""
+struct ATOMSolver   <: AbstractSolver end
+
+"Set up the default quantum impurity solver."
+_solver_ = NULLSolver()
+
+"Get name of quantum impurity solver."
+Base.nameof(::NULLSolver) = "null"
+Base.nameof(::CTHYB₁Solver) = "ct_hyb1"
+Base.nameof(::CTHYB₂Solver) = "ct_hyb2"
+Base.nameof(::HIASolver) = "hia"
+Base.nameof(::NORGSolver) = "norg"
+Base.nameof(::ATOMSolver) = "atomic"
+
+#=
+### *Customized Structs* : *Adaptor*
+=#
+
+"""
+    AbstractAdaptor
+
+An abstract type representing the DFT-DMFT adaptor. It is used to build
+the internal type system.
+"""
+abstract type AbstractAdaptor end
+
+"""
+    NULLAdaptor
+
+It represents a null DFT-DMFT adaptor. It is the default adaptor and will
+be replaced by the realistic adaptor.
+
+See also: [`_adaptor_`](@ref).
+"""
+struct NULLAdaptor    <: AbstractAdaptor end
+
+"""
+    PLOAdaptor
+
+It represents a DFT-DMFT adaptor based on the projected local orbitals.
+
+See also: [`WANNIERAdaptor`](@ref).
+"""
+struct PLOAdaptor     <: AbstractAdaptor end
+
+"""
+    PLOAdaptor
+
+It represents a DFT-DMFT adaptor based on the maximally localized
+wannier functions.
+
+See also: [`PLOAdaptor`](@ref).
+"""
+struct WANNIERAdaptor <: AbstractAdaptor end
+
+"Set up the default DFT-DMFT adaptor."
+_adaptor_ = NULLAdaptor()
+
+"Get name of DFT-DMFT adaptor."
+Base.nameof(::NULLAdaptor) = "null"
+Base.nameof(::PLOAdaptor) = "plo"
+Base.nameof(::WANNIERAdaptor) = "wannier"
+
+#=
+### *Customized Structs* : *Sigma Engine*
+=#
+
+"""
+    AbstractMode
+
+An abstract type representing various operations on the self-energy
+functions. It is used to build the internal type system.
+"""
+abstract type AbstractMode end
+
+"""
+    NULLMode
+
+It represents a null operation. It is the default operation and will
+be replaced by the realistic operation.
+
+See also: [`_mode_`](@ref).
+"""
+struct NULLMode   <: AbstractMode end
+
+"""
+    RESETMode
+
+It represents a reset operation for resetting the self-energy functions.
+"""
+struct RESETMode  <: AbstractMode end
+
+"""
+    DCOUNTMode
+
+It represents a dcount operation for creating the double counting terms.
+"""
+struct DCOUNTMode <: AbstractMode end
+
+"""
+    SPLITMode
+
+It represents a split operation for splitting the hybridization functions.
+"""
+struct SPLITMode  <: AbstractMode end
+
+"""
+    GATHERMode
+
+It represents a gather operation for gathering the self-energy functions.
+"""
+struct GATHERMode <: AbstractMode end
+
+"Set up the default operation."
+_mode_ = NULLMode()
+
+"Get name of operation."
+Base.nameof(::NULLMode) = "null"
+Base.nameof(::RESETMode) = "reset"
+Base.nameof(::DCOUNTMode) = "dcount"
+Base.nameof(::SPLITMode) = "split"
+Base.nameof(::GATHERMode) = "gather"
+
+#=
+### *Customized Structs* : *Mixer Engine*
+=#
+
+"""
+    AbstractMixer
+
+An abstract type representing various mixers for self-energy functions Σ,
+hybridization function Δ, effective impurity level ϵ, and density matrix
+Γ. It is used to build the internal type system.
+"""
+abstract type AbstractMixer end
+
+"""
+    NULLMixer
+
+It represents a null mixer. It is the default mixer and will be replaced
+by the realistic mixer.
+
+See also: [`_mixer_`](@ref).
+"""
+struct NULLMixer <: AbstractMixer end
+
+"""
+    ΣMixer
+
+It represents a mixer for self-energy function Σ.
+"""
+struct ΣMixer    <: AbstractMixer end
+
+"""
+    ΔMixer
+
+It represents a mixer for hybridization function Δ.
+"""
+struct ΔMixer    <: AbstractMixer end
+
+"""
+    EMixer
+
+It represents a mixer for effective impurity level ϵ.
+"""
+struct EMixer    <: AbstractMixer end
+
+"""
+    ΓMixer
+
+It represents a mixer for density matrix Γ.
+"""
+struct ΓMixer    <: AbstractMixer end
+
+"Set up the default mixer."
+_mixer_ = NULLMixer()
+
+"Get name of mixer."
+Base.nameof(::NULLMixer) = "null"
+Base.nameof(::ΣMixer) = "Σ"
+Base.nameof(::ΔMixer) = "Δ"
+Base.nameof(::EMixer) = "E"
+Base.nameof(::ΓMixer) = "Γ"
 
 #=
 ### *Customized Structs*
@@ -433,8 +740,8 @@ function IterInfo()
     @assert nsite ≥ 1
 
     # Extract the parameters `niter` and `ncycle`
-    _M₁ = get_d("ncycle")
-    _M₂ = get_s("ncycle")
+    _M₁ = get_s("ncycle")
+    _M₂ = get_d("ncycle")
     _M₃ = get_m("niter")
     @assert _M₁ ≥ 1 && _M₂ ≥ 1 && _M₃ ≥ 1
 
@@ -546,6 +853,7 @@ end
 
 Please go to the following webpage for more details about the original
 specifications of projectors in the `vasp` code:
+
 * https://www.vasp.at/wiki/index.php/LOCPROJ
 
 May need to be fixed for the other DFT codes.
@@ -688,8 +996,12 @@ function Base.show(io::IO, logger::Logger)
     @assert isopen(logger.log) && isopen(logger.cycle)
 
     println(io, "Logger struct")
+    println(repeat("=", 20))
+    #
     println(io, "log   : ", logger.log)
     println(io, "cycle : ", logger.cycle)
+    #
+    println(repeat("=", 20))
 end
 
 """
@@ -702,11 +1014,15 @@ See also: [`Energy`](@ref).
 """
 function Base.show(io::IO, ene::Energy)
     println(io, "Energy struct")
+    println(repeat("=", 20))
+    #
     println(io, "dft   : ", ene.dft)
     println(io, "dmft  : ", ene.dmft)
     println(io, "corr  : ", ene.corr)
     println(io, "dc    : ", ene.dc)
     println(io, "total : ", ene.total)
+    #
+    println(repeat("=", 20))
 end
 
 """
@@ -718,6 +1034,8 @@ See also: [`IterInfo`](@ref).
 """
 function Base.show(io::IO, it::IterInfo)
     println(io, "IterInfo struct")
+    println(repeat("=", 20))
+    #
     println(io, "I₁ : ", it.I₁)
     println(io, "I₂ : ", it.I₂)
     println(io, "I₃ : ", it.I₃)
@@ -738,6 +1056,8 @@ function Base.show(io::IO, it::IterInfo)
     println(io, "cc : ", it.cc)
     println(io, "ce : ", it.ce)
     println(io, "cs : ", it.cs)
+    #
+    println(repeat("=", 20))
 end
 
 """
@@ -749,6 +1069,8 @@ See also: [`Lattice`](@ref).
 """
 function Base.show(io::IO, latt::Lattice)
     println(io, "Lattice struct")
+    println(repeat("=", 20))
+    #
     println(io, "_case : ", latt._case)
     println(io, "scale : ", latt.scale)
     println(io, "lvect : ", latt.lvect)
@@ -757,6 +1079,8 @@ function Base.show(io::IO, latt::Lattice)
     println(io, "sorts : ", latt.sorts)
     println(io, "atoms : ", latt.atoms)
     println(io, "coord : ", latt.coord)
+    #
+    println(repeat("=", 20))
 end
 
 """
@@ -768,10 +1092,14 @@ See also: [`Mapping`](@ref).
 """
 function Base.show(io::IO, map::Mapping)
     println(io, "Mapping struct")
+    println(repeat("=", 20))
+    #
     println(io, "i_grp : ", map.i_grp)
     println(io, "i_wnd : ", map.i_wnd)
     println(io, "g_imp : ", map.g_imp)
     println(io, "w_imp : ", map.w_imp)
+    #
+    println(repeat("=", 20))
 end
 
 """
@@ -783,6 +1111,8 @@ See also: [`Impurity`](@ref).
 """
 function Base.show(io::IO, imp::Impurity)
     println(io, "Impurity struct")
+    println(repeat("=", 20))
+    #
     println(io, "index : ", imp.index)
     println(io, "atoms : ", imp.atoms)
     println(io, "sites : ", imp.sites)
@@ -797,6 +1127,8 @@ function Base.show(io::IO, imp::Impurity)
     println(io, "lpara : ", imp.lpara)
     println(io, "beta  : ", imp.beta)
     println(io, "nband : ", imp.nband)
+    #
+    println(repeat("=", 20))
 end
 
 """
@@ -808,10 +1140,14 @@ See also: [`PrTrait`](@ref).
 """
 function Base.show(io::IO, PT::PrTrait)
     println(io, "PrTrait struct")
+    println(repeat("=", 20))
+    #
     println(io, "site : ", PT.site)
     println(io, "l    : ", PT.l)
     println(io, "m    : ", PT.m)
     println(io, "desc : ", PT.desc)
+    #
+    println(repeat("=", 20))
 end
 
 """
@@ -823,12 +1159,16 @@ See also: [`PrGroup`](@ref).
 """
 function Base.show(io::IO, PG::PrGroup)
     println(io, "PrGroup struct")
+    println(repeat("=", 20))
+    #
     println(io, "site  : ", PG.site)
     println(io, "l     : ", PG.l)
     println(io, "corr  : ", PG.corr)
     println(io, "shell : ", PG.shell)
     println(io, "Pr    : ", PG.Pr)
     println(io, "Tr    : ", PG.Tr)
+    #
+    println(repeat("=", 20))
 end
 
 """
@@ -840,11 +1180,15 @@ See also: [`PrWindow`](@ref).
 """
 function Base.show(io::IO, PW::PrWindow)
     println(io, "PrWindow struct")
+    println(repeat("=", 20))
+    #
     println(io, "bmin : ", PW.bmin)
     println(io, "bmax : ", PW.bmax)
     println(io, "nbnd : ", PW.nbnd)
     println(io, "kwin : ", PW.kwin)
     println(io, "bwin : ", PW.bwin)
+    #
+    println(repeat("=", 20))
 end
 
 #=

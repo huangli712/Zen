@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/09
+# Last modified: 2021/10/18
 #
 
 #=
@@ -12,19 +12,45 @@
 =#
 
 """
-    ready()
+    ready(mkdir::Bool = true)
 
 Examine whether all the conditions (including input files and working
 directories) for DFT + DMFT calculations are ready.
 
 See also: [`go`](@ref).
 """
-function ready()
-    # R1: Check the input files
-    query_inps(get_d("engine"))
+function ready(mkdir::Bool = true)
+    # Print the header
+    prompt("Ready")
 
-    # R2: Prepare the working directories
-    build_trees()
+    # R1: Setup _engine_, the DFT backend.
+    engine = get_d("engine")
+    global _engine_ = str_to_struct(engine, "Engine")
+    println("DFT backend: $engine -> $(typeof(_engine_))")
+
+    # R2: Setup _solver_, the quentum impurity solver.
+    solver = get_s("engine")
+    global _solver_ = str_to_struct(solver, "Solver")
+    println("Quantum impurity solver: $solver -> $(typeof(_solver_))")
+
+    # R3: Setup _adaptor_, the DFT-DMFT adaptor.
+    adaptor = get_d("projtype")
+    global _adaptor_ = str_to_struct(adaptor, "Adaptor")
+    println("Projection scheme: $adaptor -> $(typeof(_adaptor_))")
+
+    # R4: Check the input files
+    query_inps(_engine_)
+    println("Input files: ready")
+
+    # R5: Prepare the working directories
+    mkdir && begin
+        build_trees()
+        println("Build directories: ready")
+    end
+
+    # Print the footer
+    println()
+    flush(stdout)
 end
 
 """
@@ -41,22 +67,11 @@ function go()
     mode = get_m("mode")
 
     # Choose suitable computational driver
-    @cswitch mode begin
-        # One-shot DFT + DMFT calculations
-        @case 1
-            cycle1()
-            break
+    # One-shot DFT + DMFT calculations
+    mode == 1 && cycle1()
 
-        # Fully self-consistent DFT + DMFT calculations
-        @case 2
-            cycle2()
-            break
-
-        # To be implemented
-        @default
-            sorry()
-            break
-    end
+    # Fully self-consistent DFT + DMFT calculations
+    mode == 2 && cycle2()
 end
 
 """
@@ -140,13 +155,13 @@ function cycle1()
     it.sc = 0 # In preparation mode
 
     # C01: Perform DFT calculation
-    @time_call dft_run(it, lr)
+    @time_call dft_core(it, lr)
 
     # C02: Perform DFT calculation again (for the vasp code only)
-    is_vasp() && @time_call dft_run(it, lr)
+    is_vasp() && @time_call dft_core(it, lr)
 
     # C03: To bridge the gap between DFT engine and DMFT engine by adaptor
-    adaptor_run(it, lr, ai)
+    adaptor_core(it, lr, ai)
 
     # C04: Prepare default self-energy functions
     @time_call sigma_core(it, lr, ai, "reset")
@@ -173,25 +188,25 @@ function cycle1()
         @time_call sigma_core(it, lr, ai, "dcount")
 
         # C06: Perform DMFT calculation with `task` = 1
-        @time_call dmft_run(it, lr, 1)
+        @time_call dmft_core(it, lr, 1)
 
         # C07: Mix the hybridization functions
-        @time_call mixer_core(it, lr, ai, "delta")
+        @time_call mixer_core(it, lr, ai, "Δ")
 
         # C08: Mix the local impurity levels
-        @time_call mixer_core(it, lr, ai, "eimpx")
+        @time_call mixer_core(it, lr, ai, "E")
 
         # C09: Split and distribute the hybridization functions
         @time_call sigma_core(it, lr, ai, "split")
 
         # C10: Solve the quantum impurity problems
-        @time_call solver_run(it, lr, ai)
+        @time_call solver_core(it, lr, ai)
 
         # C11: Gather and combine the impurity self-functions
         @time_call sigma_core(it, lr, ai, "gather")
 
         # C12: Mix the impurity self-energy functions
-        @time_call mixer_core(it, lr, ai, "sigma")
+        @time_call mixer_core(it, lr, ai, "Σ")
 
         # C18: Check the convergence for total energy
         energy_core(it)
@@ -245,13 +260,13 @@ function cycle2()
     it.sc = 0 # In preparation mode
 
     # C01: Perform DFT calculation
-    @time_call dft_run(it, lr)
+    @time_call dft_core(it, lr)
 
     # C02: Perform DFT calculation again (for the vasp code only)
-    is_vasp() && @time_call dft_run(it, lr)
+    is_vasp() && @time_call dft_core(it, lr)
 
     # C03: To bridge the gap between DFT engine and DMFT engine by adaptor
-    adaptor_run(it, lr, ai)
+    adaptor_core(it, lr, ai)
 
     # C04: Prepare default self-energy functions
     @time_call sigma_core(it, lr, ai, "reset")
@@ -266,7 +281,7 @@ function cycle2()
     show_it(it, lr)
 
     # C05: Launch the self-consistent engine
-    dft_run(it, lr)
+    dft_core(it, lr)
 
     # Wait the DFT engine to finish its job and sleep
     suspend(4) # Apply a larger time interval
@@ -287,7 +302,7 @@ function cycle2()
         begin
 
             # C06: Apply the adaptor to extract new Kohn-Sham dataset
-            adaptor_run(it, lr, ai)
+            adaptor_core(it, lr, ai)
 
         end
 
@@ -302,25 +317,25 @@ function cycle2()
             @time_call sigma_core(it, lr, ai, "dcount")
 
             # C08: Perform DMFT calculation with `task` = 1
-            @time_call dmft_run(it, lr, 1)
+            @time_call dmft_core(it, lr, 1)
 
             # C09: Mix the hybridization functions
-            @time_call mixer_core(it, lr, ai, "delta")
+            @time_call mixer_core(it, lr, ai, "Δ")
 
             # C10: Mix the local impurity levels
-            @time_call mixer_core(it, lr, ai, "eimpx")
+            @time_call mixer_core(it, lr, ai, "E")
 
             # C11: Split and distribute the hybridization functions
             @time_call sigma_core(it, lr, ai, "split")
 
             # C12: Solve the quantum impurity problems
-            @time_call solver_run(it, lr, ai)
+            @time_call solver_core(it, lr, ai)
 
             # C13: Gather and combine the impurity self-functions
             @time_call sigma_core(it, lr, ai, "gather")
 
             # C14: Mix the impurity self-energy functions
-            @time_call mixer_core(it, lr, ai, "sigma")
+            @time_call mixer_core(it, lr, ai, "Σ")
 
             # Print the cycle info
             show_it(it, lr)
@@ -336,10 +351,10 @@ function cycle2()
             incr_it(it, 2, 1)
 
             # C15: Perform DMFT calculation with `task` = 2
-            @time_call dmft_run(it, lr, 2) # Generate correction for density matrix
+            @time_call dmft_core(it, lr, 2) # Generate correction for density matrix
 
             # C16: Mix the correction for density matrix
-            @time_call mixer_core(it, lr, ai, "gcorr")
+            @time_call mixer_core(it, lr, ai, "Γ")
 
             # Print the cycle info
             show_it("dmft2", 1, 1)
@@ -354,7 +369,7 @@ function cycle2()
             incr_it(it, 2, iter2)
 
             # C17: Reactivate the DFT engine
-            dft_run(it, lr, true)
+            dft_core(it, lr, true)
 
             # Print the cycle info
             show_it(it, lr)
@@ -405,10 +420,10 @@ function try_dft()
     lr = Logger(query_case())
 
     # C01: Perform DFT calculation
-    @time_call dft_run(it, lr)
+    @time_call dft_core(it, lr)
 
     # C02: Perform DFT calculation again (for the vasp code only)
-    is_vasp() && @time_call dft_run(it, lr)
+    is_vasp() && @time_call dft_core(it, lr)
 
     # C98: Close Logger.log
     if isopen(lr.log)
@@ -442,7 +457,7 @@ function try_dmft(task::I64)
     lr = Logger(query_case())
 
     # C01: Execuate the DMFT engine
-    @time_call dmft_run(it, lr, task)
+    @time_call dmft_core(it, lr, task)
 
     # C98: Close Logger.log
     if isopen(lr.log)
@@ -477,7 +492,7 @@ function try_solver()
     ai = GetImpurity()
 
     # C01: Execuate the quantum impurity solvers
-    @time_call solver_run(it, lr, ai)
+    @time_call solver_core(it, lr, ai)
 
     # C98: Close Logger.log
     if isopen(lr.log)
@@ -511,7 +526,7 @@ function try_adaptor()
     ai = GetImpurity()
 
     # C01: Execute the Kohn-Sham adaptor
-    adaptor_run(it, lr, ai)
+    adaptor_core(it, lr, ai)
 
     # C98: Close Logger.log
     if isopen(lr.log)
@@ -562,17 +577,18 @@ function try_sigma(task::String = "reset")
 end
 
 """
-    try_mixer(task::String = "sigma")
+    try_mixer(task::String = "Σ")
 
 Perform calculations using mixer engine only. The users can execute
 it in the REPL mode to see whether the mixer engine works properly.
+The argument `task` can be `Σ`, `Δ`, `E`, and `Γ`.
 
 In order to run this function correctly, users should try to modify
 the predefined parameters in step `C01`.
 
 See also: [`cycle1`](@ref), [`cycle2`](@ref).
 """
-function try_mixer(task::String = "sigma")
+function try_mixer(task::String = "Σ")
     # C-2: Create IterInfo struct
     it = IterInfo()
 
@@ -642,7 +658,7 @@ useful for charge fully self-consistent DFT + DMFT calculations.
 Now this function only supports the `vasp` code. We have to improve it
 to support more DFT engines.
 
-See also: [`dft_run`](@ref).
+See also: [`dft_core`](@ref).
 """
 function suspend(second::I64 = 1)
     # Check second
@@ -676,7 +692,7 @@ end
 
 Kill the DFT engine abnormally. Now it supports the `vasp` code only.
 
-See also: [`dft_run`](@ref).
+See also: [`dft_core`](@ref).
 """
 function suicide(it::IterInfo)
     # Stop it! Only for self-consistent DFT + DMFT iterations.
@@ -684,16 +700,7 @@ function suicide(it::IterInfo)
         engine = get_d("engine")
         #
         println("Try to kill the $engine app. Please waiting...")
-        @cswitch engine begin
-            # For vasp
-            @case "vasp"
-                vasp_stop()
-                break
-
-            @default
-                sorry()
-                break
-        end
+        dft_stop(_engine_)
     end
 
     # Print the footer
@@ -709,7 +716,7 @@ end
 =#
 
 """
-    dft_run(it::IterInfo, lr::Logger, sc::Bool = false)
+    dft_core(it::IterInfo, lr::Logger, sc::Bool = false)
 
 Simple driver for DFT engine. It performs three tasks: (1) Examine
 the runtime environment for the DFT engine. (2) Launch the DFT engine.
@@ -722,9 +729,9 @@ calculations.
 Now only the `vasp` and `quantum espresso` codes are supported. If you
 want to support more DFT engines, this function must be adapted.
 
-See also: [`adaptor_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
+See also: [`adaptor_core`](@ref), [`dmft_core`](@ref), [`solver_core`](@ref).
 """
-function dft_run(it::IterInfo, lr::Logger, sc::Bool = false)
+function dft_core(it::IterInfo, lr::Logger, sc::Bool = false)
     # Determine the chosen engine
     engine = get_d("engine")
 
@@ -737,46 +744,10 @@ function dft_run(it::IterInfo, lr::Logger, sc::Bool = false)
 
     # Activate the chosen DFT engine
     if !sc
-        @cswitch engine begin
-            # For vasp
-            @case "vasp"
-                vasp_init(it)
-                vasp_exec(it)
-                vasp_save(it)
-                break
-
-            # For quantum espresso (pwscf)
-            @case "qe"
-                qe_init(it)
-                qe_exec(it, true)  # Self-consistent calculation
-                qe_exec(it, false) # Non-self-consistent calculation
-                qe_save(it)
-                break
-
-            @default
-                sorry()
-                break
-        end
+        dft_call(_engine_, it)
     else
-        @cswitch engine begin
-            # For vasp
-            @case "vasp"
-                # Reactivate the DFT engine
-                @time_call vasp_back()
-                #
-                # Wait the DFT engine to finish its job and sleep
-                suspend(2)
-                #
-                # Get the DFT energy
-                edft = vaspio_energy()
-                break
-
-            @default
-                sorry()
-                break
-        end
         # Save DFT energy for the current DFT + DMFT iteration
-        it.et.dft = edft
+        it.et.dft = dft_resume(_engine_)
     end
 
     # Enter the parent directory
@@ -787,7 +758,7 @@ function dft_run(it::IterInfo, lr::Logger, sc::Bool = false)
 end
 
 """
-    dmft_run(it::IterInfo, lr::Logger, task::I64)
+    dmft_core(it::IterInfo, lr::Logger, task::I64)
 
 Simple driver for DMFT engine. It performs three tasks: (1) Examine
 the runtime environment for the DMFT engine. (2) Launch the DMFT engine.
@@ -796,9 +767,9 @@ the runtime environment for the DMFT engine. (2) Launch the DMFT engine.
 The argument `task` is used to specify running mode of the DMFT code.
 Its value can be 1 or 2.
 
-See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`solver_run`](@ref).
+See also: [`adaptor_core`](@ref), [`dft_core`](@ref), [`solver_core`](@ref).
 """
-function dmft_run(it::IterInfo, lr::Logger, task::I64)
+function dmft_core(it::IterInfo, lr::Logger, task::I64)
     # Examine the argument `task`
     @assert task == 1 || task == 2
 
@@ -810,20 +781,12 @@ function dmft_run(it::IterInfo, lr::Logger, task::I64)
     cd("dmft$task")
 
     # Activate the chosen DMFT engine
-    @cswitch task begin
-        # Solve the DMFT self-consistent equation
-        @case 1
-            dmft_init(it, 1)
-            dmft_exec(it, 1)
-            dmft_save(it, 1)
-            break
-
-        # Generate DMFT correction for DFT charge density
-        @case 2
-            dmft_init(it, 2)
-            dmft_exec(it, 2)
-            dmft_save(it, 2)
-            break
+    # Solve the DMFT self-consistent equation
+    # Generate DMFT correction for DFT charge density
+    begin
+        dmft_init(it, task)
+        dmft_exec(it, task)
+        dmft_save(it, task)
     end
 
     # Enter the parent directory
@@ -834,10 +797,10 @@ function dmft_run(it::IterInfo, lr::Logger, task::I64)
 end
 
 """
-    solver_run(it::IterInfo,
-               lr::Logger,
-               ai::Array{Impurity,1},
-               force::Bool = false)
+    solver_core(it::IterInfo,
+                lr::Logger,
+                ai::Array{Impurity,1},
+                force::Bool = false)
 
 Simple driver for quantum impurity solvers. It performs three tasks: (1)
 Examine the runtime environment for quantum impurity solver. (2) Launch
@@ -851,12 +814,12 @@ Now only the `ct_hyb1`, `ct_hyb2`, `hub1`, and `norg` quantum impurity
 solvers are supported. If you want to support the other quantum impurity
 solvers, this function must be adapted.
 
-See also: [`adaptor_run`](@ref), [`dft_run`](@ref), [`dmft_run`](@ref).
+See also: [`adaptor_core`](@ref), [`dft_core`](@ref), [`dmft_core`](@ref).
 """
-function solver_run(it::IterInfo,
-                    lr::Logger,
-                    ai::Array{Impurity,1},
-                    force::Bool = false)
+function solver_core(it::IterInfo,
+                     lr::Logger,
+                     ai::Array{Impurity,1},
+                     force::Bool = false)
     # Sanity check
     @assert length(ai) == get_i("nsite")
 
@@ -895,6 +858,7 @@ function solver_run(it::IterInfo,
 
         # The present quantum impurity problem need to be solved
         if to_be_solved[i] || force
+
             # Print the header
             println(green("It is interesting. Let us play with it.\n"))
 
@@ -909,40 +873,13 @@ function solver_run(it::IterInfo,
             cd("impurity.$i")
 
             # Activate the chosen quantum impurity solver
-            @cswitch engine begin
-                @case "ct_hyb1"
-                    s_qmc1_init(it, imp)
-                    s_qmc1_exec(it)
-                    s_qmc1_save(it, imp)
-                    break
-
-                @case "ct_hyb2"
-                    s_qmc2_init(it)
-                    s_qmc2_exec(it)
-                    s_qmc2_save(it)
-                    break
-
-                @case "hub1"
-                    s_hub1_init(it)
-                    s_hub1_exec(it)
-                    s_hub1_save(it)
-                    break
-
-                @case "norg"
-                    s_norg_init(it)
-                    s_norg_exec(it)
-                    s_norg_save(it)
-                    break
-
-                @default
-                    sorry()
-                    break
-            end
+            solver_call(_solver_, it, imp)
 
             # Enter the parent directory
             cd("..")
 
         else
+
             # Print the header
             println(red("Mmm, it is not my job..."))
 
@@ -961,35 +898,12 @@ function solver_run(it::IterInfo,
             @assert found > 0
             println(green("Maybe we can learn sth. from Impurity [$found]\n"))
 
-            # Determine the chosen solver
-            engine = get_s("engine")
-
             # Enter impurity.i directory
             cd("impurity.$i")
 
             # Next, we would like to copy solution from Impurity `found`
             # to the current Impurity 𝑖.
-            @cswitch engine begin
-                @case "ct_hyb1"
-                    s_qmc1_copy(it, ai[found], imp)
-                    break
-
-                @case "ct_hyb2"
-                    s_qmc2_copy(it, ai[found], imp)
-                    break
-
-                @case "hub1"
-                    s_hub1_copy(it, ai[found], imp)
-                    break
-
-                @case "norg"
-                    s_norg_copy(it, ai[found], imp)
-                    break
-
-                @default
-                    sorry()
-                    break
-            end
+            solver_copy(_solver_, it, ai[found], imp)
 
             # Enter the parent directory
             cd("..")
@@ -997,7 +911,7 @@ function solver_run(it::IterInfo,
         end
 
         # Well, now we would like to extract the DMFT energy.
-        edmft = GetEnergy(imp)
+        edmft = GetEdmft(imp)
         it.et.dmft = it.et.dmft + edmft
         println("  > DMFT interaction energy: [$i] -> $edmft eV")
     end # END OF I LOOP
@@ -1007,7 +921,7 @@ function solver_run(it::IterInfo,
 end
 
 """
-    adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
+    adaptor_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
 
 Simple driver for the adaptor. It performs three tasks: (1) Initialize
 the adaptor, to check whether the essential files exist. (2) Parse the
@@ -1019,9 +933,9 @@ While for the second task, both the `plo` and `wannier` adaptors are
 supported. If you want to support more adaptors, please adapt this
 function by yourself.
 
-See also: [`dft_run`](@ref), [`dmft_run`](@ref), [`solver_run`](@ref).
+See also: [`dft_core`](@ref), [`dmft_core`](@ref), [`solver_core`](@ref).
 """
-function adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
+function adaptor_core(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
     # Enter dft directory
     cd("dft")
 
@@ -1040,25 +954,10 @@ function adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
     # Choose suitable driver function according to DFT engine. The
     # Kohn-Sham data will be stored in the DFTData dict.
     #
-    engine = get_d("engine")
+    engine = nameof(_engine_)
     prompt("Adaptor", cntr_it(it))
     prompt(lr.log, "adaptor::$engine")
-    @cswitch engine begin
-        # For vasp
-        @case "vasp"
-            vaspq_files()
-            @time_call vasp_adaptor(DFTData)
-            break
-
-        @case "qe"
-            qeq_files()
-            @time_call qe_adaptor(DFTData)
-            break
-
-        @default
-            sorry()
-            break
-    end
+    @time_call adaptor_call(_engine_, DFTData)
 
     #
     # A2: Process the original Kohn-Sham data
@@ -1075,24 +974,10 @@ function adaptor_run(it::IterInfo, lr::Logger, ai::Array{Impurity,1})
     # activated if you are in the REPL mode and there is a `case.test`
     # file in the present directory (i.e, the `dft` folder).
     #
-    projtype = get_d("projtype")
+    projtype = nameof(_adaptor_)
     prompt("Adaptor", cntr_it(it))
     prompt(lr.log, "adaptor::$projtype")
-    @cswitch projtype begin
-        # For projected local orbital scheme
-        @case "plo"
-            @time_call plo_adaptor(DFTData, ai)
-            break
-
-        # For maximally localized wannier function scheme
-        @case "wannier"
-            @time_call wannier_adaptor(DFTData, ai)
-            break
-
-        @default
-            sorry()
-            break
-    end
+    @time_call adaptor_call(_adaptor_, DFTData, ai)
 
     #
     # A3: Output the processed Kohn-Sham data
@@ -1126,7 +1011,7 @@ end
                task::String = "reset")
 
 Simple driver for functions for processing the self-energy functions
-and hybridization functions (and local impurity levels).
+Σ and hybridization functions Δ (and local impurity levels ϵ).
 
 Now it supports four tasks: `reset`, `dcount`, `split`, `gather`. It
 won't change the current directory.
@@ -1145,31 +1030,7 @@ function sigma_core(it::IterInfo,
     prompt(lr.log, "sigma::$task")
 
     # Launch suitable subroutine
-    @cswitch task begin
-        # Generate default self-energy functions and store them
-        @case "reset"
-            sigma_reset(ai)
-            break
-
-        # Calculate the double counting terms and store them
-        @case "dcount"
-            sigma_dcount(it, ai)
-            break
-
-        # Split the hybridization functions and store them
-        @case "split"
-            sigma_split(ai)
-            break
-
-        # Collect impurity self-energy functions and combine them
-        @case "gather"
-            sigma_gather(it, ai)
-            break
-
-        @default
-            sorry()
-            break
-    end
+    sigma_call(str_to_struct(task, "Mode"), it, ai)
 
     # Monitor the status
     monitor(true)
@@ -1179,23 +1040,23 @@ end
     mixer_core(it::IterInfo,
                lr::Logger,
                ai::Array{Impurity,1},
-               task::String = "sigma")
+               task::String = "Σ")
 
 Simple driver for the mixer. It will try to mix the self-energy functions
-(or hybridization functions, local impurity levels, density matrix) and
-generate a new one.
+Σ (or hybridization functions Δ, local impurity levels ϵ, density matrix
+Γ) and generate a new one.
 
-Now it supports four tasks: `sigma`, `delta`, `eimpx`, `gcorr`. It
-won't change the current directory.
+Now it supports four tasks: `Σ`, `Δ`, `E`, `Γ`. It won't change the
+current directory.
 
 See also: [`sigma_core`](@ref).
 """
 function mixer_core(it::IterInfo,
                     lr::Logger,
                     ai::Array{Impurity,1},
-                    task::String = "sigma")
+                    task::String = "Σ")
     # Check the given task
-    @assert task in ("sigma", "delta", "eimpx", "gcorr")
+    @assert task in ("Σ", "Δ", "E", "Γ")
 
     # Print the log
     prompt("Mixer", cntr_it(it))
@@ -1207,12 +1068,12 @@ function mixer_core(it::IterInfo,
             return
         end
     else
-        if task in ("sigma", "delta", "eimpx")
+        if task in ("Σ", "Δ", "E")
             if it.I₃ == 1 && it.I₁ == 1
                 return
             end
         else
-            @assert task == "gcorr"
+            @assert task == "Γ"
             if it.I₃ == 1 && it.I₂ == 1
                 return
             end
@@ -1220,31 +1081,7 @@ function mixer_core(it::IterInfo,
     end
 
     # Launch suitable subroutine
-    @cswitch task begin
-        # Try to mix the self-energy functions
-        @case "sigma"
-            mixer_sigma(it, ai)
-            break
-
-        # Try to mix the hybridization functions
-        @case "delta"
-            mixer_delta(it, ai)
-            break
-
-        # Try to mix the local impurity levels
-        @case "eimpx"
-            mixer_eimpx(it, ai)
-            break
-
-        # Try to mix the density matrix
-        @case "gcorr"
-            mixer_gcorr(it)
-            break
-
-        @default
-            sorry()
-            break
-    end
+    mixer_call(str_to_struct(task, "Mixer"), it, ai)
 
     # Monitor the status
     monitor(true)
@@ -1378,9 +1215,11 @@ See also: [`IterInfo`](@ref), [`zero_it`](@ref).
 """
 function incr_it(it::IterInfo)
     @assert it.sc == 1
+    #
     it.I₃ = 1
     it.I₁ = it.I₁ + 1
     it.I₄ = it.I₄ + 1
+    #
     @assert it.I₁ ≤ it.M₃
 end
 

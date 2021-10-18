@@ -4,8 +4,76 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/10
+# Last modified: 2021/10/17
 #
+
+#=
+### *Multiple Dispatchers*
+=#
+
+"""
+    dft_call(::VASPEngine, it::IterInfo)
+
+Try to carry out full DFT calculation with the `vasp` code. It is only a
+dispatcher. Similar function is defined in `qe.jl` as well.
+
+See also: [`_engine_`](@ref).
+"""
+function dft_call(::VASPEngine, it::IterInfo)
+    vasp_init(it)
+    vasp_exec(it)
+    vasp_save(it)
+end
+
+"""
+    dft_stop(::VASPEngine)
+
+Try to terminate DFT calculation and kill running process of the DFT
+backend. It supports the `vasp` code. It is only a dispatcher. Similar
+function is defined in `qe.jl` as well.
+
+See also: [`_engine_`](@ref).
+"""
+function dft_stop(::VASPEngine)
+    vasp_stop()
+end
+
+"""
+    dft_resume(::VASPEngine)
+
+Try to wake up the DFT backend and resume the DFT calculation. It only
+supports the `vasp` code. It is only a dispatcher. Similar function is
+defined in `qe.jl` as well.
+
+See also: [`_engine_`](@ref).
+"""
+function dft_resume(::VASPEngine)
+    # Reactivate the DFT engine
+    @time_call vasp_back()
+
+    # Wait the DFT engine to finish its job and sleep
+    suspend(2)
+
+    # Get the DFT energy
+    edft = vaspio_energy()
+
+    return edft
+end
+
+"""
+    adaptor_call(::VASPEngine, D::Dict{Symbol,Any})
+
+It is a dispatcher for the DFT-DMFT adaptor. It calls `vasp_adaptor()`
+function to deal with the outputs of the DFT backend (such as vasp) and
+generate key dataset for the next level adaptor (`PLOAdaptor`). Note
+that similar function is also defined in `qe.jl`.
+
+See also: [`vasp_adaptor`](@ref).
+"""
+function adaptor_call(::VASPEngine, D::Dict{Symbol,Any})
+    vaspq_files()
+    vasp_adaptor(D)
+end
 
 #=
 ### *Driver Functions*
@@ -129,14 +197,14 @@ function vasp_exec(it::IterInfo)
     println("  > Using $numproc processors (MPI)")
 
     # Get the home directory of vasp
-    dft_home = query_dft("vasp")
-    println("  > Home directory for vasp: ", dft_home)
+    vasp_home = query_dft(_engine_)
+    println("  > Home directory for vasp: ", vasp_home)
 
     # Select suitable vasp program
     if get_d("lspinorb")
-        vasp_exe = "$dft_home/vasp_ncl"
+        vasp_exe = "$vasp_home/vasp_ncl"
     else
-        vasp_exe = "$dft_home/vasp_std"
+        vasp_exe = "$vasp_home/vasp_std"
     end
     @assert isfile(vasp_exe)
     println("  > Executable program is available: ", basename(vasp_exe))
@@ -360,53 +428,19 @@ function vaspc_incar(fermi::F64, sc_mode::I64)
     #
     # For smearing
     smear = get_d("smear")
-    @cswitch smear begin
-        @case "mp2"
-            write(ios, "ISMEAR   = 2 \n")
-            break
-
-        @case "mp1"
-            write(ios, "ISMEAR   = 1 \n")
-            break
-
-        @case "gauss"
-            write(ios, "ISMEAR   = 0 \n")
-            break
-
-        @case "tetra"
-            write(ios, "ISMEAR   =-5 \n")
-            break
-
-        @default
-            write(ios, "ISMEAR   = 2 \n")
-            break
-    end
+    smear == "mp2"   && write(ios, "ISMEAR   = 2 \n")
+    smear == "mp1"   && write(ios, "ISMEAR   = 1 \n")
+    smear == "gauss" && write(ios, "ISMEAR   = 0 \n")
+    smear == "tetra" && write(ios, "ISMEAR   =-5 \n")
 
     # For kmesh density
     #
     # If kmesh == "file", then vaspc_kpoints() will be used to generate
     # the KPOINTS file.
     kmesh = get_d("kmesh")
-    @cswitch kmesh begin
-        @case "accurate"
-            write(ios, "KSPACING = 0.1 \n")
-            break
-
-        @case "medium"
-            write(ios, "KSPACING = 0.2 \n")
-            break
-
-        @case "coarse"
-            write(ios, "KSPACING = 0.4 \n")
-            break
-
-        @case "file"
-            break
-
-        @default # Very coarse kmesh
-            write(ios, "KSPACING = 0.5 \n")
-            break
-    end
+    kmesh == "accurate" && write(ios, "KSPACING = 0.1 \n")
+    kmesh == "medium"   && write(ios, "KSPACING = 0.2 \n")
+    kmesh == "coarse"   && write(ios, "KSPACING = 0.4 \n")
 
     # For magnetic moment
     magmom = get_d("magmom")
@@ -462,7 +496,10 @@ function vaspc_incar(fermi::F64, sc_mode::I64)
 
     # For number of bands
     nbands = vaspio_nband(pwd())
-    if nbands ≤ 10 # Special treatment for Ce
+    #
+    # Special treatment for Ce. For Ce, the default nbands is 10, which
+    # is too small. Another solution is to modify vaspio_nband().
+    if nbands ≤ 10
         nbands = nbands + 8
     end
     write(ios, "NBANDS   = $nbands \n")
@@ -633,7 +670,7 @@ end
 Check the essential output files by vasp. Here `f` means only the
 directory that contains the desired files.
 
-See also: [`adaptor_run`](@ref).
+See also: [`adaptor_core`](@ref).
 """
 function vaspq_files(f::String)
     # Define file list
@@ -656,7 +693,7 @@ end
 
 Check the essential output files by vasp in the current directory.
 
-See also: [`adaptor_run`](@ref).
+See also: [`adaptor_core`](@ref).
 """
 vaspq_files() = vaspq_files(pwd())
 
@@ -852,17 +889,12 @@ function vaspio_procar(f::String)
             end
         end
 
-        @cswitch lc begin
-            @case 3
-                soc = false
-                break
-
-            @case 6
-                soc = true
-                break
-
-            @default
-                error("Something wrong in PROCAR")
+        if lc == 3
+            soc = false
+        elseif ls == 6
+            soc = true
+        else
+            error("Something wrong in PROCAR")
         end
     else # natom > 1
         lc = 0
@@ -875,17 +907,12 @@ function vaspio_procar(f::String)
             end
         end
 
-        @cswitch lc begin
-            @case 1
-                soc = false
-                break
-
-            @case 4
-                soc = true
-                break
-
-            @default
-                error("Something wrong in PROCAR")
+        if lc == 1
+            soc = false
+        elseif lc == 4
+            soc = true
+        else
+            error("Something wrong in PROCAR")
         end
     end
     seekstart(fin) # Rewind the stream
@@ -1555,6 +1582,7 @@ function vaspio_projs(f::String)
         print("  m -> ", PT[i].m)
         println("  desc -> ", PT[i].desc)
     end
+    #
     println("  > Number of groups: ", length(PG))
     for i in eachindex(PG)
         print("    [ Group $i ]")

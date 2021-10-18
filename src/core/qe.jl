@@ -4,8 +4,68 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/10
+# Last modified: 2021/10/17
 #
+
+#=
+### *Multiple Dispatchers*
+=#
+
+"""
+    dft_call(::QEEngine, it::IterInfo)
+
+Try to carry out full DFT calculation with the `qe` code. It is only a
+dispatcher. Similar function is defined in `vasp.jl` as well.
+
+See also: [`_engine_`](@ref).
+"""
+function dft_call(::QEEngine, it::IterInfo)
+    qe_init(it)
+    qe_exec(it, true)  # Self-consistent calculation
+    qe_exec(it, false) # Non-self-consistent calculation
+    qe_save(it)
+end
+
+"""
+    dft_stop(::QEEngine)
+
+Try to terminate DFT calculation and kill running process of the DFT
+backend. It supports the `qe` code. It is only a dispatcher. Similar
+function is defined in `vasp.jl` as well.
+
+See also: [`_engine_`](@ref).
+"""
+function dft_stop(::QEEngine)
+    sorry()
+end
+
+"""
+    dft_resume(::QEEngine)
+
+Try to wake up the DFT backend and resume the DFT calculation. It only
+supports the `qe` code. It is only a dispatcher. Similar function is
+defined in `vasp.jl` as well.
+
+See also: [`_engine_`](@ref).
+"""
+function dft_resume(::QEEngine)
+    sorry()
+end
+
+"""
+    adaptor_call(::QEEngine, D::Dict{Symbol,Any})
+
+It is a dispatcher for the DFT-DMFT adaptor. It calls `qe_adaptor()`
+function to deal with the outputs of the DFT backend (such as qe) and
+generate key dataset for the next level adaptor (`WANNIERAdaptor`). Note
+that similar function is also defined in `vasp.jl`.
+
+See also: [`qe_adaptor`](@ref).
+"""
+function adaptor_call(::QEEngine, D::Dict{Symbol,Any})
+    qeq_files()
+    qe_adaptor(D)
+end
 
 #=
 ### *Driver Functions*
@@ -198,6 +258,7 @@ function qe_to_plo(D::Dict{Symbol,Any})
     #
     # D[:enk] will be updated
     # Be careful, the eigenvalues will be calibrated in plo_fermi().
+    # This is different from what we see in wannier_adaptor().
     if sp # For spin-polarized system
         # Spin up
         eigs_up = w90_read_eigs("up")
@@ -342,15 +403,15 @@ function qe_exec(it::IterInfo, scf::Bool = true)
     println("  > Using $numproc processors (MPI)")
 
     # Get the home directory of quantum espresso
-    dft_home = query_dft("qe")
-    println("  > Home directory for quantum espresso: ", dft_home)
+    qe_home = query_dft(_engine_)
+    println("  > Home directory for quantum espresso: ", qe_home)
 
     # Select suitable quantum espresso program
     # We use the same code pw.x for with or without spin-orbit coupling
     if get_d("lspinorb")
-        qe_exe = "$dft_home/pw.x"
+        qe_exe = "$qe_home/pw.x"
     else
-        qe_exe = "$dft_home/pw.x"
+        qe_exe = "$qe_home/pw.x"
     end
     @assert isfile(qe_exe)
     println("  > Executable program is available: ", basename(qe_exe))
@@ -565,31 +626,24 @@ function qec_input(it::IterInfo)
     #
     # For smearing
     smear = get_d("smear")
-    @cswitch smear begin
-        @case "mp2"
-            SystemNL["occupations"] = "'smearing'"
-            SystemNL["smearing"] = "'m-p'"
-            break
-
-        @case "mp1"
-            SystemNL["occupations"] = "'smearing'"
-            SystemNL["smearing"] = "'m-p'"
-            break
-
-        @case "gauss"
-            SystemNL["occupations"] = "'smearing'"
-            SystemNL["smearing"] = "'gauss'"
-            break
-
-        @case "tetra"
-            SystemNL["occupations"] = "'tetrahedra'"
-            delete!(SystemNL, "smearing")
-            break
-
-        @default
-            SystemNL["occupations"] = "'smearing'"
-            SystemNL["smearing"] = "'gauss'"
-            break
+    smear == "mp2"   && begin
+        SystemNL["occupations"] = "'smearing'"
+        SystemNL["smearing"] = "'m-p'"
+    end
+    #
+    smear == "mp1"   && begin
+        SystemNL["occupations"] = "'smearing'"
+        SystemNL["smearing"] = "'m-p'"
+    end
+    #
+    smear == "gauss" && begin
+        SystemNL["occupations"] = "'smearing'"
+        SystemNL["smearing"] = "'gauss'"
+    end
+    #
+    smear == "tetra" && begin
+        SystemNL["occupations"] = "'tetrahedra'"
+        delete!(SystemNL, "smearing")
     end
 
     # For kmesh density
@@ -599,25 +653,14 @@ function qec_input(it::IterInfo)
     kmesh = get_d("kmesh")
     if isa(KPointsBlock,AutoKmeshCard)
         shift = copy(KPointsBlock.data.shift)
-        @cswitch kmesh begin
-            @case "accurate"
-                KPointsBlock = AutoKmeshCard([10, 10, 10], shift)
-                break
-
-            @case "medium"
-                KPointsBlock = AutoKmeshCard([08, 08, 08], shift)
-                break
-
-            @case "coarse"
-                KPointsBlock = AutoKmeshCard([06, 06, 06], shift)
-                break
-
-            @case "file"
-                break
-
-            @default # Very coarse kmesh
-                KPointsBlock = AutoKmeshCard([04, 04, 04], shift)
-                break
+        kmesh == "accurate" && begin
+            KPointsBlock = AutoKmeshCard([10, 10, 10], shift)
+        end
+        kmesh == "medium"   && begin
+            KPointsBlock = AutoKmeshCard([08, 08, 08], shift)
+        end
+        kmesh == "coarse"   && begin
+            KPointsBlock = AutoKmeshCard([06, 06, 06], shift)
         end
     end
 
@@ -699,26 +742,20 @@ function qec_input(it::IterInfo)
         # So we have to use the smearing algorithm to calculate the
         # occupations.
         SystemNL["occupations"] = "'smearing'"
-        @cswitch kmesh begin
-            @case "accurate"
-                KPointsBlock = SpecialPointsCard(10)
-                break
-
-            @case "medium"
-                KPointsBlock = SpecialPointsCard(08)
-                break
-
-            @case "coarse"
-                KPointsBlock = SpecialPointsCard(06)
-                break
-
-            @case "file"
-                @assert isa(KPointsBlock, SpecialPointsCard)
-                break
-
-            @default # Very coarse kmesh
-                KPointsBlock = SpecialPointsCard(04)
-                break
+        kmesh == "accurate" && begin
+            KPointsBlock = SpecialPointsCard(10)
+        end
+        #
+        kmesh == "medium"   && begin
+            KPointsBlock = SpecialPointsCard(08)
+        end
+        #
+        kmesh == "coarse"   && begin
+            KPointsBlock = SpecialPointsCard(06)
+        end
+        #
+        kmesh == "file"     && begin
+            @assert isa(KPointsBlock, SpecialPointsCard)
         end
     end
     #
@@ -746,7 +783,7 @@ end
 Check the essential output files by `quantum espresso` (`pwscf`). Here
 `f` means only the directory that contains the desired files.
 
-See also: [`adaptor_run`](@ref).
+See also: [`adaptor_core`](@ref).
 """
 function qeq_files(f::String)
     fl = ["scf.out", "nscf.out"]
@@ -761,7 +798,7 @@ end
 Check the essential output files by `quantum espresso` (`pwscf`) in the
 current directory.
 
-See also: [`adaptor_run`](@ref).
+See also: [`adaptor_core`](@ref).
 """
 qeq_files() = qeq_files(pwd())
 

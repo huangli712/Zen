@@ -4,8 +4,30 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/09
+# Last modified: 2021/10/17
 #
+
+#=
+### *Multiple Dispatchers*
+=#
+
+"""
+    adaptor_call(::WANNIERAdaptor,
+                 D::Dict{Symbol,Any},
+                 ai::Array{Impurity,1})
+
+It is a dispatcher for the DFT-DMFT adaptor. It calls `wannier_adaptor()`
+function to deal with the outputs of `wannier90` code and generate key
+dataset for the IR adaptor. Note that similar functions are also defined
+in `vasp.jl`, `qe.jl`, and `plo.jl`.
+
+See also: [`wannier_adaptor`](@ref).
+"""
+function adaptor_call(::WANNIERAdaptor,
+                      D::Dict{Symbol,Any},
+                      ai::Array{Impurity,1})
+    wannier_adaptor(D, ai)
+end
 
 #=
 ### *Driver Functions*
@@ -55,7 +77,11 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
 
     # W02: Read accurate band eigenvalues from w90.eig
     #
-    # D[:enk] will be updated
+    # D[:enk] will be updated.
+    #
+    # We have to calibrate the eigenvalues and force the fermi level to
+    # be zero. Be careful, the original eigenvalues from `qeio_eigen()`
+    # have not been calibrated.
     if sp # For spin-polarized system
         # Spin up
         eigs_up = w90_read_eigs("up") .- D[:fermi]
@@ -82,16 +108,8 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         D[:enk] = deepcopy(eigs)
         @assert size(D[:enk]) == (nband, nkpt, 1)
     end
-    #
-    # Calibrate the eigenvalues to force the fermi level to be zero
-    # Be careful, the original eigenvalues from qeio_eigen() have
-    # not been calibrated.
-    #
-    # The calibration has been done above.
-    #
-    # @. D[:enk] = D[:enk] - D[:fermi]
 
-    # W03: Deduce band window from energy window
+    # W03: Determine band window from energy window
     if sp # For spin-polarized system
         # Spin up
         bwin_up = w90_find_bwin(ewin_up, eigs_up)
@@ -102,7 +120,7 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         bwin = w90_find_bwin(ewin, eigs)
     end
 
-    # W04: Read transform matrix from w90_u.mat
+    # W04: Read unitary transformation matrix from w90_u.mat
     if sp # For spin-polarized system
         # Spin up
         umat_up = w90_read_umat("up")
@@ -113,7 +131,7 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         umat = w90_read_umat()
     end
 
-    # W05: Read disentanglement matrix from w90_u_dis.mat
+    # W05: Read disentanglement transformation matrix from w90_u_dis.mat
     if sp # For spin-polarized system
         # Spin up
         udis_up = w90_read_udis(bwin_up, "up")
@@ -197,7 +215,7 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         D[:PW] = deepcopy(PW)
     end
 
-    # W09: Create connections/mappings between projectors (or band
+    # W09: Create connections / mappings between projectors (or band
     # windows) and quantum impurity problems
     #
     # D[:MAP] will be created
@@ -295,24 +313,24 @@ function wannier_exec(sp::String = ""; op::String = "")
     #
     # We can not guarantee that the wannier90 code is always installed
     # within the directory of quantum espresso.
-    wannier90_home = query_dft("wannier90")
-    println("  > Home directory for wannier90: ", wannier90_home)
+    wan90_home = query_dft(WANNIEREngine())
+    println("  > Home directory for wannier90: ", wan90_home)
 
     # Select suitable wannier90 program
-    wannier90_exe = "$wannier90_home/wannier90.x"
-    @assert isfile(wannier90_exe)
-    println("  > Executable program is available: ", basename(wannier90_exe))
+    wan90_exe = "$wan90_home/wannier90.x"
+    @assert isfile(wan90_exe)
+    println("  > Executable program is available: ", basename(wan90_exe))
 
     # Assemble command
     seedname = "w90" * sp
     #
     if op == "-pp" # As a preprocessor to generate w90.nnkp
-        wannier90_cmd = split("$wannier90_exe $op $seedname", " ")
+        wan90_cmd = split("$wan90_exe $op $seedname", " ")
     else # Standard run to generate wannier function
-        wannier90_cmd = split("$wannier90_exe $seedname", " ")
+        wan90_cmd = split("$wan90_exe $seedname", " ")
     end
     #
-    println("  > Assemble command: $(prod(x -> x * ' ', wannier90_cmd))")
+    println("  > Assemble command: $(prod(x -> x * ' ', wan90_cmd))")
 
     # Determine suitable output file
     finp = "w90" * sp * ".win"
@@ -325,7 +343,7 @@ function wannier_exec(sp::String = ""; op::String = "")
 
     # Create a task, but do not run it immediately
     t = @task begin
-        run(pipeline(`$wannier90_cmd`, stdout = fout))
+        run(pipeline(`$wan90_cmd`, stdout = fout))
     end
     println("  > Create a task")
 
@@ -407,7 +425,8 @@ end
     wannier_monitor(D::Dict{Symbol,Any})
 
 Try to check and examine whether the obtained wannier functions are
-correct and reasonable.
+correct and reasonable. Be careful, the calc_ovlp(), calc_dm(), and
+calc_level() functions are defined in plo.jl.
 
 See also: [`wannier_adaptor`](@ref), [`plo_monitor`](@ref).
 """
@@ -420,9 +439,9 @@ function wannier_monitor(D::Dict{Symbol,Any})
     dm = calc_dm(D[:PW], D[:Fchipsi], D[:weight], D[:occupy])
     view_dm(D[:PG], dm)
 
-    # Calculate and output local hamiltonian
-    hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
-    view_hamk(D[:PG], hamk)
+    # Calculate and output effective atomic level
+    level = calc_level(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
+    view_level(D[:PG], level)
 end
 
 #=
@@ -434,8 +453,8 @@ end
 
 Try to make the control parameters for the `w90.win` file. The `latt`
 object represent the crystallography information, and `nband` is the
-number of Kohn-Sham states outputed by the DFT code, `fermi` is the
-fermi level. This function is called by `wannier_init()`.
+total number of Kohn-Sham states outputed by the DFT code, `fermi` is
+the fermi level. This function is called by `wannier_init()`.
 
 See also: [`w90_make_proj`](@ref).
 """
@@ -490,6 +509,7 @@ function w90_make_ctrl(latt::Lattice, nband::I64, fermi::F64)
     end
     #
     # Step 3, store num_wann in the dict.
+    # Perhaps we should consider exclude_bands here.
     w90c["num_wann"] = num_wann
 
     # Get number of bands, `num_bands`.
@@ -801,21 +821,25 @@ function w90_make_group(latt::Lattice, sp::String = "")
     # Print some useful information to check
     println("  > Number of projectors: ", nproj)
     for i in eachindex(PT)
-        println("    [ PrTrait $i ]")
-        println("      site -> ", PT[i].site)
-        println("      l -> ", PT[i].l)
-        println("      m -> ", PT[i].m)
-        println("      desc -> ", PT[i].desc)
+        if nproj ≥ 10
+            @printf("    [ Trait %2i ]", i)
+        else
+            @printf("    [ Trait %1i ]", i)
+        end
+        print("  site -> ", PT[i].site)
+        print("  l -> ", PT[i].l)
+        print("  m -> ", PT[i].m)
+        println("  desc -> ", PT[i].desc)
     end
     #
     println("  > Number of groups: ", length(PG))
     for i in eachindex(PG)
-        println("    [ PrGroup $i ]")
-        println("      site -> ", PG[i].site)
-        println("      l -> ", PG[i].l)
-        println("      corr -> ", PG[i].corr)
-        println("      shell -> ", PG[i].shell)
-        println("      Pr -> ", PG[i].Pr)
+        print("    [ Group $i ]")
+        print("  site -> ", PG[i].site)
+        print("  l -> ", PG[i].l)
+        print("  corr -> ", PG[i].corr)
+        print("  shell -> ", PG[i].shell)
+        println("  Pr -> ", PG[i].Pr)
     end
 
     # Return the desired arrays
@@ -851,12 +875,12 @@ function w90_make_group(MAP::Mapping, PG::Array{PrGroup,1})
         if s != 0
             # Setup corr property
             PG[g].corr = true
-            println("  > Turn group $g (site: $(PG[g].site)) into correlated")
+            println("  > Treat group [$g] as correlated")
 
             # Setup shell property
             # Later it will be used to generate `Tr`
             PG[g].shell = get_i("shell")[s]
-            println("  > Treat group $g (site: $(PG[g].site)) as $(PG[g].shell) orbitals")
+            println("  > Treat group [$g] as $(PG[g].shell) orbitals")
         end
 
         # Setup Tr array further
@@ -911,8 +935,19 @@ function w90_make_group(MAP::Mapping, PG::Array{PrGroup,1})
                 sorry()
                 break
         end
-        println("  > Build transformation matrix for group $g (site: $(PG[g].site))")
+        println("  > Build transformation matrix for group [$g]")
     end # END OF G LOOP
+
+    # Print the summary
+    println("  > Summary of groups:")
+    for i in eachindex(PG)
+        print("    [ Group $i ]")
+        print("  site -> ", PG[i].site)
+        print("  l -> ", PG[i].l)
+        print("  corr -> ", PG[i].corr)
+        print("  shell -> ", PG[i].shell)
+        println("  Pr -> ", PG[i].Pr)
+    end
 end
 
 """
@@ -949,8 +984,18 @@ function w90_make_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
         push!(PW, PrWindow(kwin, bwin))
         #
         # Print some useful information
-        println("  > Create window $p: $bwin <--> ($(PW[p].bmin), $(PW[p].bmax))")
+        println("  > Create window [$p]")
     end # END OF P LOOP
+
+    # Print the summary
+    println("  > Summary of windows:")
+    for i in eachindex(PW)
+        print("    [ Window $i ]")
+        print("  bmin -> ", PW[i].bmin)
+        print("  bmax -> ", PW[i].bmax)
+        print("  nbnd -> ", PW[i].nbnd)
+        println("  bwin -> ", PW[i].bwin)
+    end
 
     # Return the desired array
     return PW
@@ -964,7 +1009,8 @@ end
 Make band window to filter the projections. Actually, only those relevant
 bands (which are restricted by the energy window `ewin` or the band window
 `bwin`) are retained. This function will return an array of `PrWindow`
-struct.
+struct. Be careful, `ewin` must be consistent with `bwin` (please check
+`w90_find_bwin()` for more details).
 
 See also: [`PrWindow`](@ref).
 """
@@ -993,8 +1039,18 @@ function w90_make_window(PG::Array{PrGroup,1},
         push!(PW, PrWindow(kwin, ewin))
         #
         # Print some useful information
-        println("  > Create window $p: $ewin <--> ($(PW[p].bmin), $(PW[p].bmax))")
+        println("  > Create window [$p]")
     end # END OF P LOOP
+
+    # Print the summary
+    println("  > Summary of windows:")
+    for i in eachindex(PW)
+        print("    [ Window $i ]")
+        print("  bmin -> ", PW[i].bmin)
+        print("  bmax -> ", PW[i].bmax)
+        print("  nbnd -> ", PW[i].nbnd)
+        println("  bwin -> ", PW[i].bwin)
+    end
 
     # Return the desired array
     return PW
@@ -1010,6 +1066,9 @@ its members, `kwin`.
 See also: [`PrWindow`](@ref).
 """
 function w90_make_window(PWup::Array{PrWindow,1}, PWdn::Array{PrWindow,1})
+    # Print the header
+    println("Combine windows")
+
     # Sanity check
     #
     # The two arrays must be the same. The comparison of two PrWindow
@@ -1025,7 +1084,8 @@ function w90_make_window(PWup::Array{PrWindow,1}, PWdn::Array{PrWindow,1})
         kwin1 = PWup[p].kwin
         kwin2 = PWdn[p].kwin
         #
-        # Check `kwin`, its dimension for spin orientation must be 1
+        # Check `kwin`, its dimension for spin orientation must be 1.
+        # Please see the above `w90_make_window()`.
         @assert size(kwin1, 2) == 1
         @assert size(kwin2, 2) == 1
         #
@@ -1037,6 +1097,19 @@ function w90_make_window(PWup::Array{PrWindow,1}, PWdn::Array{PrWindow,1})
         #
         # Create new PrWindow and push it into PW
         push!(PW, PrWindow(kwin, bwin))
+        #
+        # Print some useful information
+        println("  > Combine window [$p]")
+    end
+
+    # Print the summary
+    println("  > Summary of windows:")
+    for i in eachindex(PW)
+        print("    [ Window $i ]")
+        print("  bmin -> ", PW[i].bmin)
+        print("  bmax -> ", PW[i].bmax)
+        print("  nbnd -> ", PW[i].nbnd)
+        println("  bwin -> ", PW[i].bwin)
     end
 
     # Return the desired array
@@ -1055,7 +1128,7 @@ See also: [`w90_read_umat`](@ref), [`w90_read_udis`](@ref).
 """
 function w90_make_chipsi(umat::Array{C64,3}, udis::Array{C64,3})
     # Print the header
-    println("Generate projection matrix")
+    println("Generate raw projection matrix")
 
     # Extract key parameters
     nproj, _, nkpt = size(umat) # (nproj, nproj, nkpt)
@@ -1143,7 +1216,7 @@ function w90_make_chipsi(PG::Array{PrGroup,1}, chipsi::Array{C64,4})
         push!(Rchipsi, R)
 
         # Print some useful information
-        println("  > Rotate group $i (site: $(PG[i].site)): number of local orbitals -> $ndim")
+        println("  > Rotate group [$i]: number of correlated bands -> $ndim")
     end # END OF I LOOP
 
     # Return the desired array
@@ -1199,23 +1272,11 @@ function w90_make_chipsi(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
         push!(Fchipsi, F)
 
         # Print some useful information
-        println("  > Apply window $p: maximum number of bands -> $(PW[p].nbnd)")
+        println("  > Filter group [$p]: number of Kohn-Sham states -> $(PW[p].nbnd)")
     end # END OF P LOOP
 
     # Return the desired array
     return Fchipsi
-end
-
-"""
-    w90_make_hamr()
-"""
-function w90_make_hamr()
-end
-
-"""
-    w90_make_hamk()
-"""
-function w90_make_hamk()
 end
 
 """
@@ -1304,14 +1365,18 @@ function w90_read_amat(sp::String = "")
             for b = 1:nband
                 # Increase the counter
                 start = start + 1
+                #
                 # Convert string to array
                 arr = line_to_array(lines[start])
+
                 # Determine indices for bands, projectors, and 𝑘-points
                 _b, _p, _k = parse.(I64, arr[1:3])
+                #
                 # Sanity check
                 @assert _b == b
                 @assert _p == p
                 @assert _k == k
+
                 # Fill in the array
                 _re, _im = parse.(F64, arr[4:5])
                 Amn[p,b,k] = _re + im*_im
@@ -1368,13 +1433,17 @@ function w90_read_eigs(sp::String = "")
         for b = 1:nband
             # Increase the counter
             start = start + 1
+            #
             # Convert string to array
             arr = line_to_array(lines[start])
+
             # Determine indices for bands and 𝑘-points
             _b, _k = parse.(I64, arr[1:2])
+            #
             # Sanity check
             @assert _b == b
             @assert _k == k
+
             # Fill in the array
             _v = parse(F64, arr[3])
             eigs[b,k] = _v
@@ -1459,15 +1528,20 @@ function w90_read_hmat(sp::String = "")
             for j = 1:nproj
                 # Increase the counter
                 start = start + 1
+                #
                 # Convert string to line
                 arr = line_to_array(lines[start])
+
                 # Get Wigner-Seitz grid
                 rvec[r,:] = parse.(I64, arr[1:3])
+
                 # Get indices of wannier functions
                 _j, _i = parse.(I64, arr[4:5])
+                #
                 # Sanity check
                 @assert _j == j
                 @assert _i == i
+
                 # Fill in the hamiltonian
                 _re, _im = parse.(F64, arr[6:7])
                 hamr[j, i, r] = _re + im * _im
@@ -1527,6 +1601,7 @@ function w90_read_umat(sp::String = "")
             for i = 1:nproj
                 # Increase the counter
                 start = start + 1
+                #
                 # Parse the line and fill in the array
                 _re, _im = parse.(F64, line_to_array(lines[start]))
                 umat[i, j, k] = _re + im * _im
@@ -1587,6 +1662,7 @@ function w90_read_udis(bwin::Array{I64,2}, sp::String = "")
             for i = 1:nband
                 # Increase the counter
                 start = start + 1
+                #
                 # Parse the line and fill in the array
                 _re, _im = parse.(F64, line_to_array(lines[start]))
                 utmp[i, j] = _re + im * _im
@@ -1662,6 +1738,7 @@ function w90_write_win(io::IOStream, w90c::Dict{String,Any})
         val = w90c[key]
         println(io, key, " = ", val)
     end
+    #
     # Add an empty line
     println(io)
 end
@@ -1815,7 +1892,7 @@ function pw2wan_exec(case::String, sp::String = "")
 
     # Get the home directory of pw2wannier90
     # It is actually the same with that of quantum espresso.
-    qe_home = query_dft("qe")
+    qe_home = query_dft(_engine_)
     println("  > Home directory for pw2wannier90: ", qe_home)
 
     # Select suitable pw2wannier90 program

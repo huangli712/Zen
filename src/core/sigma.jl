@@ -4,8 +4,48 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/09
+# Last modified: 2021/10/17
 #
+
+#=
+### *Multiple Dispatchers*
+=#
+
+"""
+    sigma_call(::NULLMode, it::IterInfo, ai::Array{Impurity,1})
+    sigma_call(::RESETMode, it::IterInfo, ai::Array{Impurity,1})
+    sigma_call(::DCOUNTMode, it::IterInfo, ai::Array{Impurity,1})
+    sigma_call(::SPLITMode, it::IterInfo, ai::Array{Impurity,1})
+    sigma_call(::GATHERMode, it::IterInfo, ai::Array{Impurity,1})
+
+Try to apply various operations on the self-energy functions Σ and the
+hybridization functions Δ (or impurity levels ϵ).
+
+See also: [`_mode_`](@ref).
+"""
+function sigma_call(::NULLMode, it::IterInfo, ai::Array{Impurity,1})
+    sorry()
+end
+#
+function sigma_call(::RESETMode, it::IterInfo, ai::Array{Impurity,1})
+    # Generate default self-energy functions and store them
+    sigma_reset(ai)
+end
+#
+function sigma_call(::DCOUNTMode, it::IterInfo, ai::Array{Impurity,1})
+    # Calculate the double counting terms and store them
+    sigma_dcount(it, ai)
+end
+#
+function sigma_call(::SPLITMode, it::IterInfo, ai::Array{Impurity,1})
+    # Split the hybridization functions and store them
+    sigma_split(ai)
+end
+#
+function sigma_call(::GATHERMode, it::IterInfo, ai::Array{Impurity,1})
+    # Collect impurity self-energy functions and combine them
+    sigma_gather(it, ai)
+end
 
 #=
 ### *Driver Functions*
@@ -233,8 +273,8 @@ end
 """
     sigma_split(ai::Array{Impurity,1})
 
-Split the hybridization functions (and local impurity levels) and then
-distribute them into the `impurity.i` folder.
+Split the hybridization functions Δ (and local impurity levels ϵ) and
+then distribute them into the `impurity.i` folder.
 
 See also: [`sigma_gather`](@ref).
 """
@@ -428,7 +468,6 @@ and
 ```
 
 In the following codes, we implement a slightly different version:
-
 
 ```math
 \begin{equation}

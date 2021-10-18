@@ -4,8 +4,30 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/10
+# Last modified: 2021/10/17
 #
+
+#=
+### *Multiple Dispatchers*
+=#
+
+"""
+    adaptor_call(::WANNIERAdaptor,
+                 D::Dict{Symbol,Any},
+                 ai::Array{Impurity,1})
+
+It is a dispatcher for the DFT-DMFT adaptor. It calls `plo_adaptor()`
+function to deal with the outputs of the DFT backend (such as vasp) and
+generate key dataset for the IR adaptor. Note that similar functions
+are also defined in `vasp.jl`, `qe.jl`, and `wannier.jl`.
+
+See also: [`plo_adaptor`](@ref).
+"""
+function adaptor_call(::PLOAdaptor,
+                      D::Dict{Symbol,Any},
+                      ai::Array{Impurity,1})
+    plo_adaptor(D, ai)
+end
 
 #=
 ### *Driver Functions*
@@ -442,7 +464,6 @@ function plo_window(PG::Array{PrGroup,1}, enk::Array{F64,3})
         @assert PW₁ == PW₂
     end
     println("  > Verify windows for correlated groups")
-
 =#
 
     # Print the summary
@@ -642,6 +663,9 @@ See also: [`plo_adaptor`](@ref), [`wannier_monitor`](@ref).
 """
 function plo_monitor(D::Dict{Symbol,Any})
     if haskey(D, :MAP)
+        # If D[:MAP] is ready, it means that D[:PW] is created and the
+        # projectors are normalized and orthogonalized.
+
         # Calculate and output overlap matrix
         ovlp = calc_ovlp(D[:PW], D[:Fchipsi], D[:weight])
         view_ovlp(D[:PG], ovlp)
@@ -650,9 +674,9 @@ function plo_monitor(D::Dict{Symbol,Any})
         dm = calc_dm(D[:PW], D[:Fchipsi], D[:weight], D[:occupy])
         view_dm(D[:PG], dm)
 
-        # Calculate and output local hamiltonian
-        hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
-        view_hamk(D[:PG], hamk)
+        # Calculate and output effective atomic level
+        level = calc_level(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
+        view_level(D[:PG], level)
 
         # Calculate and output full hamiltonian
         hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:enk])
@@ -664,6 +688,9 @@ function plo_monitor(D::Dict{Symbol,Any})
             view_dos(mesh, dos)
         end
     else
+        # If D[:MAP] is not ready, it means that the projectors have not
+        # been postprocessed.
+
         # Calculate and output overlap matrix
         ovlp = calc_ovlp(D[:chipsi], D[:weight])
         view_ovlp(ovlp)
@@ -671,10 +698,6 @@ function plo_monitor(D::Dict{Symbol,Any})
         # Calculate and output density matrix
         dm = calc_dm(D[:chipsi], D[:weight], D[:occupy])
         view_dm(dm)
-
-        # Calculate and output local hamiltonian
-        #hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
-        #view_hamk(D[:PG], hamk)
     end
 end
 
@@ -925,7 +948,8 @@ end
 """
     calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
 
-Calculate the overlap matrix out of projectors. For raw projectors only.
+Calculate the overlap matrix out of projectors.
+For raw projectors only.
 
 See also: [`view_ovlp`](@ref).
 """
@@ -943,7 +967,7 @@ function calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
             wght = weight[k] / nkpt
             A = view(chipsi, :, :, k, s)
             ovlp[:, :, s] = ovlp[:, :, s] + real(A * A') * wght
-        end
+        end # END OF K LOOP
     end # END OF S LOOP
 
     # Return the desired array
@@ -955,7 +979,8 @@ end
               chipsi::Array{Array{C64,4},1},
               weight::Array{F64,1})
 
-Calculate the overlap matrix out of projectors. For normalized projectors only.
+Calculate the overlap matrix out of projectors.
+For normalized projectors only.
 
 See also: [`view_ovlp`](@ref), [`PrWindow`](@ref).
 """
@@ -980,7 +1005,7 @@ function calc_ovlp(PW::Array{PrWindow,1},
                 wght = weight[k] / nkpt
                 A = view(chipsi[p], :, :, k, s)
                 V[:, :, s] = V[:, :, s] + real(A * A') * wght
-            end
+            end # END OF K LOOP
         end # END OF S LOOP
 
         # Push V into ovlp to save it
@@ -996,7 +1021,8 @@ end
             weight::Array{F64,1},
             occupy::Array{F64,3})
 
-Calculate the density matrix out of projectors. For raw projectors only.
+Calculate the density matrix out of projectors.
+For raw projectors only.
 
 See also: [`view_dm`](@ref).
 """
@@ -1020,7 +1046,7 @@ function calc_dm(chipsi::Array{C64,4},
             occs = occupy[:, k, s]
             A = view(chipsi, :, :, k, s)
             dm[:, :, s] = dm[:, :, s] + real(A * Diagonal(occs) * A') * wght
-        end
+        end # END OF K LOOP
     end # END OF S LOOP
 
     # Return the desired array
@@ -1033,7 +1059,8 @@ end
             weight::Array{F64,1},
             occupy::Array{F64,3})
 
-Calculate the density matrix out of projectors. For normalized projectors only.
+Calculate the density matrix out of projectors.
+For normalized projectors only.
 
 See also: [`view_dm`](@ref), [`PrWindow`](@ref).
 """
@@ -1056,14 +1083,26 @@ function calc_dm(PW::Array{PrWindow,1},
         # Create a temporary array
         M = zeros(F64, ndim, ndim, nspin)
 
-        # Build density matrix array
+        # Build density matrix array for given PrWindow
         for s = 1:nspin
             for k = 1:nkpt
+                # Get weight (scaled by spin factor)
                 wght = weight[k] / nkpt * sf
-                occs = occupy[PW[p].bmin:PW[p].bmax, k, s]
-                A = view(chipsi[p], :, :, k, s)
+
+                # Determine band window
+                bs = PW[p].kwin[k,s,1]
+                be = PW[p].kwin[k,s,2]
+
+                # Determine number of Kohn-Sham states in this window
+                cbnd = be - bs + 1
+
+                # Extract occupation and projectors
+                occs = occupy[bs:be, k, s]
+                A = view(chipsi[p], 1:ndim, 1:cbnd, k, s)
+
+                # Add up the contribution to the density matrix
                 M[:, :, s] = M[:, :, s] + real(A * Diagonal(occs) * A') * wght
-            end
+            end # END OF K LOOP
         end # END OF S LOOP
 
         # Push M into dm to save it
@@ -1075,21 +1114,22 @@ function calc_dm(PW::Array{PrWindow,1},
 end
 
 """
-    calc_hamk(PW::Array{PrWindow,1},
-              chipsi::Array{Array{C64,4},1},
-              weight::Array{F64,1},
-              enk::Array{F64,3})
+    calc_level(PW::Array{PrWindow,1},
+               chipsi::Array{Array{C64,4},1},
+               weight::Array{F64,1},
+               enk::Array{F64,3})
 
-Try to build the local hamiltonian. For normalized projectors only.
+Try to build the effective atomic level.
+For normalized projectors only.
 
-See also: [`view_hamk`](@ref), [`PrWindow`](@ref).
+See also: [`view_level`](@ref), [`PrWindow`](@ref).
 """
-function calc_hamk(PW::Array{PrWindow,1},
-                   chipsi::Array{Array{C64,4},1},
-                   weight::Array{F64,1},
-                   enk::Array{F64,3})
+function calc_level(PW::Array{PrWindow,1},
+                    chipsi::Array{Array{C64,4},1},
+                    weight::Array{F64,1},
+                    enk::Array{F64,3})
     # Create an empty array. Next we will fill it.
-    hamk = Array{C64,3}[]
+    level = Array{C64,3}[]
 
     # Go through each PrWindow / PrGroup
     for p in eachindex(PW)
@@ -1098,16 +1138,80 @@ function calc_hamk(PW::Array{PrWindow,1},
         @assert nbnd == PW[p].nbnd
 
         # Create a temporary array
-        H = zeros(C64, ndim, ndim, nspin)
+        E = zeros(C64, ndim, ndim, nspin)
 
-        # Build hamiltonian array
+        # Build effective atomic level for given PrWindow
         for s = 1:nspin
             for k = 1:nkpt
+                # Get weight
                 wght = weight[k] / nkpt
-                eigs = enk[PW[p].bmin:PW[p].bmax, k, s]
-                A = view(chipsi[p], :, :, k, s)
-                H[:, :, s] = H[:, :, s] + (A * Diagonal(eigs) * A') * wght
-            end
+
+                # Determine band window
+                bs = PW[p].kwin[k,s,1]
+                be = PW[p].kwin[k,s,2]
+
+                # Determine number of Kohn-Sham states in this window
+                cbnd = be - bs + 1
+
+                # Extract eigenvalues and projectors
+                eigs = enk[bs:be, k, s]
+                A = view(chipsi[p], 1:ndim, 1:cbnd, k, s)
+
+                # Add up the contribution to the effective atomic level
+                E[:, :, s] = E[:, :, s] + (A * Diagonal(eigs) * A') * wght
+            end # END OF K LOOP
+        end # END OF S LOOP
+
+        # Push E into level to save it
+        push!(level, E)
+    end # END OF P LOOP
+
+    # Return the desired array
+    return level
+end
+
+"""
+    calc_hamk(PW::Array{PrWindow,1},
+              chipsi::Array{Array{C64,4},1},
+              enk::Array{F64,3})
+
+Try to build the full hamiltonian matrix (momentum-dependent).
+For normalized projectors only.
+
+See also: [`view_hamk`](@ref), [`PrWindow`](@ref).
+"""
+function calc_hamk(PW::Array{PrWindow,1},
+                   chipsi::Array{Array{C64,4},1},
+                   enk::Array{F64,3})
+    # Create an empty array. Next we will fill it.
+    hamk = Array{C64,4}[]
+
+    # Go through each PrWindow / PrGroup
+    for p in eachindex(PW)
+        # Extract some key parameters
+        ndim, nbnd, nkpt, nspin = size(chipsi[p])
+        @assert nbnd == PW[p].nbnd
+
+        # Create an array for the hamiltonian
+        H = zeros(C64, ndim, ndim, nkpt, nspin)
+
+        # Loop over spins and k-points
+        for s = 1:nspin
+            for k = 1:nkpt
+                # Determine band window
+                bs = PW[p].kwin[k,s,1]
+                be = PW[p].kwin[k,s,2]
+
+                # Determine number of Kohn-Sham states in this window
+                cbnd = be - bs + 1
+
+                # Extract eigenvalues and projectors
+                eigs = enk[bs:be, k, s]
+                A = view(chipsi[p], 1:ndim, 1:cbnd, k, s)
+
+                # Build the hamiltonian
+                H[:, :, k, s] = A * Diagonal(eigs) * A'
+            end # END OF K LOOP
         end # END OF S LOOP
 
         # Push H into hamk to save it
@@ -1116,79 +1220,6 @@ function calc_hamk(PW::Array{PrWindow,1},
 
     # Return the desired array
     return hamk
-end
-
-#=
-*Remarks* :
-
-We assume that the energy / band windows for all of the projectors are
-the same. In other words, `PW` only has an unique PrWindow object.
-=#
-
-"""
-    calc_hamk(PW::Array{PrWindow,1},
-              chipsi::Array{Array{C64,4},1},
-              enk::Array{F64,3})
-
-Try to build the full hamiltonian. For normalized projectors only.
-
-See also: [`view_hamk`](@ref), [`PrWindow`](@ref).
-"""
-function calc_hamk(PW::Array{PrWindow,1},
-                   chipsi::Array{Array{C64,4},1},
-                   enk::Array{F64,3})
-    # Extract some key parameters
-    nkpt = size(chipsi[1], 3)
-    nspin = size(chipsi[1], 4)
-
-    # Determine number of projectors contained in each group.
-    # The `ndims` is a array.
-    dims = map(x -> size(x, 1), chipsi)
-
-    # The `block` is used to store the first index and the last
-    # index for each group of projectors.
-    block = Tuple[]
-    start = 0
-    for i in eachindex(dims)
-        push!(block, (start + 1, start + dims[i]))
-        start = start + dims[i]
-    end
-
-    # Create a temporary array
-    max_proj = sum(dims)
-    max_band = PW[1].nbnd
-    M = zeros(C64, max_proj, max_band)
-
-    # Create a array for the hamiltonian
-    H = zeros(C64, max_proj, max_proj, nkpt, nspin)
-
-    # Loop over spins and k-points
-    for s = 1:nspin
-        for k = 1:nkpt
-            # Determine band indices
-            ib1 = PW[1].kwin[k, s, 1]
-            ib2 = PW[1].kwin[k, s, 2]
-
-            # Determine band window
-            ib3 = ib2 - ib1 + 1
-
-            # Sanity check
-            @assert max_band ≥ ib3
-
-            # Try to combine all of the groups of projectors
-            for p in eachindex(PW)
-                M[block[p][1]:block[p][2], 1:ib3] = chipsi[p][:, 1:ib3, k, s]
-            end
-
-            # Build hamiltonian array
-            eigs = enk[ib1:ib2, k, s]
-            A = view(M, :, 1:ib3)
-            H[:, :, k, s] = H[:, :, k, s] + (A * Diagonal(eigs) * A')
-        end # END OF K LOOP
-    end # END OF S LOOP
-
-    # Return the desired array
-    return H
 end
 
 """
@@ -1276,20 +1307,26 @@ Output the overlap matrix to screen. For raw projectors only.
 See also: [`calc_ovlp`](@ref).
 """
 function view_ovlp(ovlp::Array{F64,3})
+    # Open IOStream
+    fn = open("ovlp.chk", "a")
+
     # Print the header
-    println("<- Overlap Matrix ->")
+    println(fn, "<- Overlap Matrix ->")
 
     # Extract some key parameters
     _, nproj, nspin = size(ovlp)
 
     # Output the data
     for s = 1:nspin
-        println("Spin: $s")
+        println(fn, "Spin: $s")
         for p = 1:nproj
-            foreach(x -> @printf("%12.7f", x), ovlp[p, :, s])
-            println()
+            foreach(x -> @printf(fn, "%12.7f", x), ovlp[p, :, s])
+            println(fn)
         end
     end # END OF S LOOP
+
+    # Close IOStream
+    close(fn)
 end
 
 """
@@ -1300,25 +1337,31 @@ Output the overlap matrix to screen. For normalized projectors only.
 See also: [`calc_ovlp`](@ref), [`PrGroup`](@ref).
 """
 function view_ovlp(PG::Array{PrGroup,1}, ovlp::Array{Array{F64,3},1})
+    # Open IOStream
+    fn = open("ovlp.chk", "a")
+
     # Print the header
-    println("<- Overlap Matrix ->")
+    println(fn, "<- Overlap Matrix ->")
 
     # Go through each PrGroup
     for p in eachindex(PG)
-        println("Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
+        println(fn, "Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
 
         # Extract some key parameters
         _, ndim, nspin = size(ovlp[p])
 
         # Output the data
         for s = 1:nspin
-            println("Spin: $s")
+            println(fn, "Spin: $s")
             for q = 1:ndim
-                foreach(x -> @printf("%12.7f", x), ovlp[p][q, 1:ndim, s])
-                println()
+                foreach(x -> @printf(fn, "%12.7f", x), ovlp[p][q, 1:ndim, s])
+                println(fn)
             end
         end # END OF S LOOP
     end # END OF P LOOP
+
+    # Close IOStream
+    close(fn)
 end
 
 """
@@ -1329,20 +1372,26 @@ Output the density matrix to screen. For raw projectors only.
 See also: [`calc_dm`](@ref).
 """
 function view_dm(dm::Array{F64,3})
+    # Open IOStream
+    fn = open("dm.chk", "a")
+
     # Print the header
-    println("<- Density Matrix ->")
+    println(fn, "<- Density Matrix ->")
 
     # Extract some key parameters
     _, nproj, nspin = size(dm)
 
     # Output the data
     for s = 1:nspin
-        println("Spin: $s")
+        println(fn, "Spin: $s")
         for p = 1:nproj
-            foreach(x -> @printf("%12.7f", x), dm[p, :, s])
-            println()
+            foreach(x -> @printf(fn, "%12.7f", x), dm[p, :, s])
+            println(fn)
         end
     end # END OF S LOOP
+
+    # Close IOStream
+    close(fn)
 end
 
 """
@@ -1353,108 +1402,124 @@ Output the density matrix to screen. For normalized projectors only.
 See also: [`calc_dm`](@ref), [`PrGroup`](@ref).
 """
 function view_dm(PG::Array{PrGroup,1}, dm::Array{Array{F64,3},1})
+    # Open IOStream
+    fn = open("dm.chk", "a")
+
     # Print the header
-    println("<- Density Matrix ->")
+    println(fn, "<- Density Matrix ->")
 
     # Go through each PrGroup
     for p in eachindex(PG)
-        println("Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
+        println(fn, "Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
 
         # Extract some key parameters
         _, ndim, nspin = size(dm[p])
 
         # Output the data
         for s = 1:nspin
-            println("Spin: $s")
+            println(fn, "Spin: $s")
             for q = 1:ndim
-                foreach(x -> @printf("%12.7f", x), dm[p][q, 1:ndim, s])
-                println()
+                foreach(x -> @printf(fn, "%12.7f", x), dm[p][q, 1:ndim, s])
+                println(fn)
             end
         end # END OF S LOOP
     end # END OF P LOOP
+
+    # Close IOStream
+    close(fn)
 end
 
 """
-    view_hamk(PG::Array{PrGroup,1}, hamk::Array{Array{C64,3},1})
+    view_level(PG::Array{PrGroup,1}, level::Array{Array{C64,3},1})
 
-Output the local hamiltonian to screen. For normalized projectors only.
+Output the effective atomic level to screen. For normalized projectors only.
 
-See also: [`calc_hamk`](@ref), [`PrGroup`](@ref).
+See also: [`calc_level`](@ref), [`PrGroup`](@ref).
 """
-function view_hamk(PG::Array{PrGroup,1}, hamk::Array{Array{C64,3},1})
+function view_level(PG::Array{PrGroup,1}, level::Array{Array{C64,3},1})
+    # Open IOStream
+    fn = open("level.chk", "a")
+
     # Print the header
-    println("<- Local Hamiltonian ->")
+    println(fn, "<- Effective Atomic Level ->")
 
     # Go through each PrGroup
     for p in eachindex(PG)
-        println("Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
+        println(fn, "Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
 
         # Extract some key parameters
-        _, ndim, nspin = size(hamk[p])
+        _, ndim, nspin = size(level[p])
 
         # Output the data
         for s = 1:nspin
-            println("Spin: $s")
+            println(fn, "Spin: $s")
 
             # Real parts
-            println("Re:")
+            println(fn, "Re:")
             for q = 1:ndim
-                foreach(x -> @printf("%12.7f", x), real(hamk[p][q, 1:ndim, s]))
-                println()
+                foreach(x -> @printf(fn, "%12.7f", x), real(level[p][q, 1:ndim, s]))
+                println(fn)
             end
 
             # Imag parts
-            println("Im:")
+            println(fn, "Im:")
             for q = 1:ndim
-                foreach(x -> @printf("%12.7f", x), imag(hamk[p][q, 1:ndim, s]))
-                println()
+                foreach(x -> @printf(fn, "%12.7f", x), imag(level[p][q, 1:ndim, s]))
+                println(fn)
             end
         end # END OF S LOOP
     end # END OF P LOOP
+
+    # Close IOStream
+    close(fn)
 end
 
 #=
 *Remarks* :
 
-The data file `hamk.chk` is used to debug. It should not be read by the
-DMFT engine. That is the reason why we name this function as `view_hamk`
-and put it in plo.jl.
+The data file `hamk.chk.i` is used to debug. It should not be read by
+the DMFT engine. That is the reason why we name this function as
+`view_hamk()` and put it in plo.jl.
 =#
 
 """
-    view_hamk(hamk::Array{C64,4})
+    view_hamk(hamk::Array{Array{C64,4},1})
 
-Output the full hamiltonian to `hamk.chk`. For normalized projectors only.
+Output the full hamiltonian to `hamk.chk.i`. For normalized projectors only.
 
 See also: [`calc_hamk`](@ref).
 """
-function view_hamk(hamk::Array{C64,4})
-    # Extract some key parameters
-    nproj, _, nkpt, nspin = size(hamk)
+function view_hamk(hamk::Array{Array{C64,4},1})
+    for g in eachindex(hamk)
+        # Extract some key parameters
+        nproj, _, nkpt, nspin = size(hamk[g])
 
-    # Output the data
-    open("hamk.chk", "w") do fout
-        # Write the header
-        println(fout, "# File: hamk.chk")
-        println(fout, "# Data: hamk[nproj,nproj,nkpt,nspin]")
-        println(fout)
-        println(fout, "nproj -> $nproj")
-        println(fout, "nkpt  -> $nkpt")
-        println(fout, "nspin -> $nspin")
-        println(fout)
+        # Output the data
+        open("hamk.chk.$g", "w") do fout
+            # Write the header
+            println(fout, "# File: hamk.chk.$g")
+            println(fout, "# Data: hamk[nproj,nproj,nkpt,nspin]")
+            println(fout)
+            println(fout, "group -> $g")
+            println(fout, "nproj -> $nproj")
+            println(fout, "nkpt  -> $nkpt")
+            println(fout, "nspin -> $nspin")
+            println(fout)
 
-        # Write the body
-        for s = 1:nspin
-            for k = 1:nkpt
-                for b = 1:nproj
-                    for p = 1:nproj
-                        z = hamk[p, b, k, s]
-                        @printf(fout, "%16.12f %16.12f\n", real(z), imag(z))
+            # Write the body
+            for s = 1:nspin
+                for k = 1:nkpt
+                    for q = 1:nproj
+                        for p = 1:nproj
+                            z = hamk[g][p, q, k, s]
+                            @printf(fout, "%16.12f %16.12f\n", real(z), imag(z))
+                        end
                     end
-                end
-            end # END OF K LOOP
-        end # END OF S LOOP
-    end # END OF IOSTREAM
+                end # END OF K LOOP
+            end # END OF S LOOP
+        end # END OF IOSTREAM
+
+    end # END OF G LOOP
 end
 
 """
