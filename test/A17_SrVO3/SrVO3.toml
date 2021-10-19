@@ -11,7 +11,6 @@ lspins = false
 lspinorb = false
 lproj = true
 sproj = ["2 : d : Pr"]
-#window = [-1.4, 6.0]
 window = ["auto"]
 
 [dmft]
