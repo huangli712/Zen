@@ -594,13 +594,14 @@ plo_adaptor  -> Adaptor support.
 plo_map      -> Create connection between projectors and impurity problems.
 plo_fermi    -> Calibrate Kohn-Sham eigenvalues with respect to fermi level.
 plo_group    -> Setup groups of projectors.
-plo_window   -> Setup band windows of projectors.
 plo_rotate   -> Rotate the projectors.
+plo_window   -> Setup band windows of projectors.
 plo_filter   -> Extract the projectors within a given energy window.
 plo_orthog   -> Orthogonalize / normalize the projectors.
 plo_monitor  -> Generate some physical quantities using the projectors.
-get_win1     -> Evaluate band window.
-get_win2     -> Evaluate energy window.
+get_win1     -> Evaluate relevant Kohn-Sham window by band indices.
+get_win2     -> Evaluate relevant Kohn-Sham window by energies.
+get_win3     -> Evaluate relevant Kohn-Sham window automatically.
 try_blk1     -> Orthogonalize / normalize the projectors group by group.
 try_blk2     -> Orthogonalize / normalize the projectors with each other.
 try_diag     -> Orthogonalizes a projector defined by a rectangular matrix.
@@ -625,13 +626,14 @@ export plo_adaptor
 export plo_map
 export plo_fermi
 export plo_group
-export plo_window
 export plo_rotate
+export plo_window
 export plo_filter
 export plo_orthog
 export plo_monitor
 export get_win1
 export get_win2
+export get_win3
 export try_blk1
 export try_blk2
 export try_diag
