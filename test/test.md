@@ -109,6 +109,20 @@
     * V-*3d* orbitals + O-*2p* orbitals
     * self-consistent calculation
 
+* **A17_SrVO<sub>3</sub>**
+
+    * VASP + PLO + CT-HYB<sub>1</sub>
+    * V-*3d* orbitals
+    * one-shot calculation
+    * auto window
+
+* **A18_SrVO<sub>3</sub>**
+
+    * VASP + PLO + CT-HYB<sub>1</sub>
+    * V-*3d* orbitals + O-*2p* orbitals
+    * self-consistent calculation
+    * auto window
+
 ---
 
 ## case: FeSe
