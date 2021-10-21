@@ -82,7 +82,7 @@
     * QE + WANNIER + CT-HYB<sub>1</sub>
     * V-*3d* orbitals + O-*2p* orbitals
     * one-shot calculation
-    * FAILED
+    * **FAILED**
 
 * **A13_SrVO<sub>3</sub>**
 
@@ -103,7 +103,7 @@
     * V-*3d* orbitals
     * one-shot calculation
     * enlarge window
-    * FAILED
+    * **FAILED**
 
 * **A16_SrVO<sub>3</sub>**
 
@@ -122,6 +122,21 @@
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals + O-*2p* orbitals
+    * self-consistent calculation
+    * auto window
+
+* **A19_SrVO<sub>3</sub>**
+
+    * VASP + PLO + CT-HYB<sub>1</sub>
+    * V-*3d* orbitals
+    * spin polarization (but up = down)
+    * self-consistent calculation
+    * auto window
+
+* **A20_SrVO<sub>3</sub>**
+
+    * VASP + PLO + CT-HYB<sub>1</sub>
+    * V-*3d* *t<sub>2g</sub>* orbitals
     * self-consistent calculation
     * auto window
 
