@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/17
+# Last modified: 2021/10/22
 #
 
 #=
@@ -597,7 +597,8 @@ end
 =#
 
 """
-    read_sigma(ai::Array{Impurity,1}, fsig::String = "dmft1/sigma.bare")
+    read_sigma(ai::Array{Impurity,1}, 
+               fsig::String = "dmft1/sigma.bare")
 
 Read the self-energy functions from the `dmft1/sigma.bare` file. The
 working directory of this function must be the root folder.
@@ -606,7 +607,8 @@ This function is usually called by `mixer_sigma()` function.
 
 See also: [`read_sigdc`](@ref).
 """
-function read_sigma(ai::Array{Impurity,1}, fsig::String = "dmft1/sigma.bare")
+function read_sigma(ai::Array{Impurity,1},
+                    fsig::String = "dmft1/sigma.bare")
     # Declare the frequency mesh and self-energy functions
     fmesh = nothing
     SA = nothing
@@ -693,14 +695,16 @@ function read_sigma(ai::Array{Impurity,1}, fsig::String = "dmft1/sigma.bare")
 end
 
 """
-    read_sigdc(ai::Array{Impurity,1}, fsig::String = "dmft1/sigma.dc")
+    read_sigdc(ai::Array{Impurity,1},
+               fsig::String = "dmft1/sigma.dc")
 
 Read the double counting terms from the `dmft1/sigma.dc` file. The
 working directory of this function must be the root folder.
 
 See also: [`read_sigma`](@ref).
 """
-function read_sigdc(ai::Array{Impurity,1}, fsig::String = "dmft1/sigma.dc")
+function read_sigdc(ai::Array{Impurity,1}, 
+                    fsig::String = "dmft1/sigma.dc")
     # Declare the double counting terms
     DCA = nothing
 

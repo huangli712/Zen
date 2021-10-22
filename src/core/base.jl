@@ -408,7 +408,7 @@ end
 
 Perform DFT calculations only. If there are something wrong, then you
 have chance to adjust the DFT input files manually (for example, you
-can modify `vaspc_incar()/vasp.jl` by yourself).
+can modify `vaspc_incar()` in `vasp.jl` by yourself).
 
 See also: [`cycle1`](@ref), [`cycle2`](@ref).
 """
