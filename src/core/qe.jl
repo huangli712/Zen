@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/17
+# Last modified: 2021/10/22
 #
 
 #=
@@ -933,7 +933,7 @@ Note in `scf.out`, the 𝑘-mesh is not uniform. So we have to read k-mesh
 from the `nscf.out`. In addition, the verbosity parameter must be set to
 'high' in the input file.
 
-See also: [`qeio_tetra`](@ref), [`irio_kmesh`](@ref).
+See also: [`irio_kmesh`](@ref).
 """
 function qeio_kmesh(f::String)
     # Print the header
@@ -985,7 +985,7 @@ end
 
 Reading quantum espresso's `nscf.out` file, return `kmesh` and `weight`.
 
-See also: [`qeio_tetra`](@ref), [`irio_kmesh`](@ref).
+See also: [`irio_kmesh`](@ref).
 """
 qeio_kmesh() = qeio_kmesh(pwd())
 
