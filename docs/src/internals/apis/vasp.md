@@ -28,6 +28,7 @@ vasp_init
 vasp_exec
 vasp_save
 vasp_back
+vasp_stop
 vaspc_incar
 vaspc_kpoints
 vaspc_gcorr

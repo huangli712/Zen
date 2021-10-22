@@ -16,6 +16,12 @@ Pages = ["types.md"]
 Pages = ["types.md"]
 ```
 
+## Customized Types
+
+```@docs
+DType
+```
+
 ## Global Dicts
 
 ```@docs
@@ -24,6 +30,16 @@ PDFT
 PDMFT
 PIMP
 PSOLVER
+```
+
+## Customized Structs: DFT Engine
+
+```@docs
+AbstractEngine
+NULLEngine
+VASPEngine
+WANNIEREngine
+_engine_
 ```
 
 ## Structs
