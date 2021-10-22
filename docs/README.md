@@ -18,4 +18,4 @@ The `Documenter.jl` will automatically generate some static webs for the documen
 
 ## Read the docs
 
-If everything is OK, you will find a new directory `build` under the `docs` folder. Get in it and then double click the `index.html` file to open it with browser (Chrome or Firefox). Enjoy it!
+If everything is OK, you will find a new directory `build` under the `docs` folder. Get in it and then double click the `index.html` file to open it with browser (`Chrome` or `Firefox`). Enjoy it!
