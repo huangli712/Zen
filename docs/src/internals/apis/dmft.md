@@ -25,8 +25,8 @@ dmft_save
 read_fermi
 read_delta
 read_eimpx
-read_gamma
+read_gcorr
 write_delta
 write_eimpx
-write_gamma
+write_gcorr
 ```

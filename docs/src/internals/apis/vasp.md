@@ -19,6 +19,10 @@ Pages = ["vasp.md"]
 ## Functions
 
 ```@docs
+dft_call
+dft_stop
+dft_resume
+adaptor_call
 vasp_adaptor
 vasp_init
 vasp_exec
@@ -26,9 +30,10 @@ vasp_save
 vasp_back
 vaspc_incar
 vaspc_kpoints
-vaspc_gamma
+vaspc_gcorr
 vaspc_stopcar
 vaspc_lock
+vaspq_stopcar
 vaspq_lock
 vaspq_files
 vaspio_nband

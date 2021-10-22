@@ -19,10 +19,11 @@ Pages = ["mixer.md"]
 ## Functions
 
 ```@docs
+mixer_call
 mixer_sigma
 mixer_delta
 mixer_eimpx
-mixer_gamma
+mixer_gcorr
 amix
 distance
 ```
