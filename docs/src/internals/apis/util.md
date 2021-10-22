@@ -40,11 +40,16 @@ query_args
 query_case
 query_inps
 query_stop
+query_test
 query_home
 query_core
 query_dft
 query_dmft
 query_solver
+is_vasp
+is_qe
+is_plo
+is_wannier
 welcome
 overview
 goodbye
@@ -54,5 +59,6 @@ line_to_array
 line_to_cmplx
 erf
 subscript
+str_to_struct
 colorize
 ```

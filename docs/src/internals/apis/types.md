@@ -35,11 +35,31 @@ PSOLVER
 ## Customized Structs: DFT Engine
 
 ```@docs
-AbstractEngine
-NULLEngine
-VASPEngine
-WANNIEREngine
 _engine_
+```
+
+## Customized Structs: Quantum Impurity Solver
+
+```@docs
+_solver_
+```
+
+## Customized Structs: Adaptor
+
+```@docs
+_adaptor_
+```
+
+## Customized Structs: Sigma Engine
+
+```@docs
+_mode_
+```
+
+## Customized Structs: Mixer Engine
+
+```@docs
+_mixer_
 ```
 
 ## Structs
