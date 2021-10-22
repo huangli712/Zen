@@ -36,4 +36,11 @@ qeio_lattice
 qeio_kmesh
 qeio_eigen
 qeio_fermi
+haskey
+getindex
+setindex!
+delete!
+tryparse
+parse
+write
 ```
