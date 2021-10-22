@@ -14,9 +14,13 @@ makedocs(
     pages = [
         "Home" => "index.md",
         "Introduction" => Any[],
+        "Installation" => Any[],
         "Getting started" => Any[],
         "Tutorials" => Any[],
-        "Guide" => Any[],
+        "Guide" => Any[
+            "README" => "guide/README.md",
+            "Parameters" => Any[],
+        ],
         "Internals" => Any[
             "README" => "internals/README.md",
             "ZenCore APIs" => Any[
@@ -30,7 +34,7 @@ makedocs(
                 "VASP" => "internals/apis/vasp.md",
                 "QE" => "internals/apis/qe.md",
                 "PLO" => "internals/apis/plo.md",
-                "WANNIER" => "internals/apis/wannier.md",
+                "Wannier" => "internals/apis/wannier.md",
                 "IR" => "internals/apis/ir.md",
                 "DMFT" => "internals/apis/dmft.md",
                 "Solver" => "internals/apis/solver.md",
