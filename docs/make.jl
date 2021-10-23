@@ -19,21 +19,29 @@ makedocs(
             "Download Zen" => Any[],
             "Compile Zen" => Any[],
             "Setup Zen" => Any[],
-            "Interactive mode" => Any[],
-            "Batch Mode" => Any[],
         ],
         "Tutorials" => Any[
             "README" => "tutor/README.md",
         ],
         "Guide" => Any[
             "README" => "guide/README.md",
-            "Parameters" => Any[
+            "Interactive mode" => Any[],
+            "Batch Mode" => Any[],
+            "Core applications" => Any[],
+            "Auxiliary tools" => Any[],
+            "Input parameters" => Any[
                 "PCASE block" => "guide/para/case.md",
                 "PDFT block" => "guide/para/dft.md",
                 "PDMFT block" => "guide/para/dmft.md",
                 "PIMP block" => "guide/para/impurity.md",
                 "PSOLVER block" => "guide/para/solver.md",
             ],
+            "Density functional theory" => Any[],
+            "Dynamical mean-field theory" => Any[],
+            "Quantum impurity solver" => Any[],
+            "Adaptor" => Any[],
+            "case.stop" => Any[],
+            "case.test" => Any[],
         ],
         "Internals" => Any[
             "README" => "internals/README.md",
