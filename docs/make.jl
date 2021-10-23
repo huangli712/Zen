@@ -15,10 +15,13 @@ makedocs(
         "Home" => "index.md",
         "Introduction" => "intro.md",
         "Getting started" => Any[
-            "README" => "start/README.md"
+            "README" => "start/README.md",
+            "Download" => Any[],
+            "Compile" => Any[],
+            "Setup" => Any[],
         ],
         "Tutorials" => Any[
-            "README" => "tutor/README.md"
+            "README" => "tutor/README.md",
         ],
         "Guide" => Any[
             "README" => "guide/README.md",
