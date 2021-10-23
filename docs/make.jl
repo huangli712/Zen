@@ -16,9 +16,11 @@ makedocs(
         "Introduction" => "intro.md",
         "Getting started" => Any[
             "README" => "start/README.md",
-            "Download" => Any[],
-            "Compile" => Any[],
-            "Setup" => Any[],
+            "Download Zen" => Any[],
+            "Compile Zen" => Any[],
+            "Setup Zen" => Any[],
+            "Interactive mode" => Any[],
+            "Batch Mode" => Any[],
         ],
         "Tutorials" => Any[
             "README" => "tutor/README.md",

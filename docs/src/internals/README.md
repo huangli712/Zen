@@ -11,9 +11,9 @@ Pages = ["apis/zencore.md",
          "apis/config.md",
          "apis/base.md",
          "apis/vasp.md",
-         "apis/qe.md"
+         "apis/qe.md",
          "apis/plo.md",
-         "apis/wannier.md"
+         "apis/wannier.md",
          "apis/ir.md",
          "apis/dmft.md",
          "apis/solver.md",
