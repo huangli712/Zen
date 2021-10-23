@@ -16,9 +16,9 @@ makedocs(
         "Introduction" => "intro.md",
         "Getting started" => Any[
             "README" => "start/README.md",
-            "Download Zen" => Any[],
-            "Compile Zen" => Any[],
-            "Configure Zen" => Any[],
+            "Download Zen" => "start/download.md",
+            "Compile Zen" => "start/compile.md",
+            "Configure Zen" => "start/configure.md",
         ],
         "Tutorials" => Any[
             "README" => "tutor/README.md",
@@ -31,9 +31,9 @@ makedocs(
             "README" => "guide/README.md",
             "Core applications" => Any[
                 "How to use" => Any[
-                    "Interactive mode" => Any[],
-                    "Batch Mode" => Any[],
-                    "Pipeline" => Any[],    
+                    "Interactive mode" => "guide/core/repl.md",
+                    "Batch Mode" => "guide/core/batch.md",
+                    "Pipeline" => "guide/core/pipeline.md",
                 ],    
                 "Input parameters" => Any[
                     "PCASE block" => "guide/core/case.md",
