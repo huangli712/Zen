@@ -16,10 +16,24 @@ Pages = ["case.md"]
 
 ### case
 
+---
+
 **Name**: case
 
 **Type**: String
 
-**Details**:
+**Details**: Short name of the system you would like to study. Note that underscores and blank spaces are not permitted. 
+
+**Syntax**: 
+
+```toml
+case = "seedname"
+```
 
 **Examples**:
+
+```toml
+case = "SrVO3"
+case = "NiO"
+case = "Ce115"
+```
