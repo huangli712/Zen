@@ -27,7 +27,13 @@ makedocs(
         ],
         "Guide" => Any[
             "README" => "guide/README.md",
-            "Parameters" => Any[],
+            "Parameters" => Any[
+                "PCASE block" => "guide/para/case.md",
+                "PDFT block" => "guide/para/dft.md",
+                "PDMFT block" => "guide/para/dmft.md",
+                "PIMP block" => "guide/para/impurity.md",
+                "PSOLVER block" => "guide/para/solver.md",
+            ],
         ],
         "Internals" => Any[
             "README" => "internals/README.md",
