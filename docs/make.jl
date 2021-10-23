@@ -3,7 +3,7 @@ push!(LOAD_PATH, ENV["ZEN_CORE"])
 using Documenter, ZenCore
 
 makedocs(
-    sitename="Zen",
+    sitename = "Zen",
     clean = false,
     authors = "Li Huang",
     format = Documenter.HTML(
@@ -18,10 +18,14 @@ makedocs(
             "README" => "start/README.md",
             "Download Zen" => Any[],
             "Compile Zen" => Any[],
-            "Setup Zen" => Any[],
+            "Configure Zen" => Any[],
         ],
         "Tutorials" => Any[
             "README" => "tutor/README.md",
+            "SrVO3" => Any[],
+            "FeSe" => Any[],
+            "NiO" => Any[],
+            "Ce" => Any[],
         ],
         "Guide" => Any[
             "README" => "guide/README.md",
