@@ -22,7 +22,7 @@ Pages = ["case.md"]
 
 **Type**: String
 
-**Details**: Short name of the system you would like to study. Note that underscores and blank spaces are not permitted. 
+**Details**: Short name of the system that you would like to study with `Zen`. Note that underscores and blank spaces are not permitted. 
 
 **Syntax**: 
 
