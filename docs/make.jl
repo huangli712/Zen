@@ -13,10 +13,13 @@ makedocs(
     modules = [ZenCore],
     pages = [
         "Home" => "index.md",
-        "Introduction" => Any[],
-        "Installation" => Any[],
-        "Getting started" => Any[],
-        "Tutorials" => Any[],
+        "Introduction" => "intro.md",
+        "Getting started" => Any[
+            "README" => "start/README.md"
+        ],
+        "Tutorials" => Any[
+            "README" => "tutor/README.md"
+        ],
         "Guide" => Any[
             "README" => "guide/README.md",
             "Parameters" => Any[],
