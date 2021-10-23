@@ -14,3 +14,12 @@ Pages = ["case.md"]
 
 ## Parameters
 
+### case
+
+**Name**: case
+
+**Type**: String
+
+**Details**:
+
+**Examples**:
