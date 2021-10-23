@@ -29,12 +29,12 @@ makedocs(
         ],
         "Guide" => Any[
             "README" => "guide/README.md",
-            "How to use" => Any[
-                "Interactive mode" => Any[],
-                "Batch Mode" => Any[],
-                "Pipeline" => Any[],    
-            ],
             "Core applications" => Any[
+                "How to use" => Any[
+                    "Interactive mode" => Any[],
+                    "Batch Mode" => Any[],
+                    "Pipeline" => Any[],    
+                ],    
                 "Input parameters" => Any[
                     "PCASE block" => "guide/core/case.md",
                     "PDFT block" => "guide/core/dft.md",
