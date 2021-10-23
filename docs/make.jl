@@ -29,17 +29,18 @@ makedocs(
         ],
         "Guide" => Any[
             "README" => "guide/README.md",
-            "Mode" => Any[
+            "How to use" => Any[
                 "Interactive mode" => Any[],
-                "Batch Mode" => Any[],    
+                "Batch Mode" => Any[],
+                "Pipeline" => Any[],    
             ],
             "Core applications" => Any[
                 "Input parameters" => Any[
-                    "PCASE block" => "guide/para/case.md",
-                    "PDFT block" => "guide/para/dft.md",
-                    "PDMFT block" => "guide/para/dmft.md",
-                    "PIMP block" => "guide/para/impurity.md",
-                    "PSOLVER block" => "guide/para/solver.md",
+                    "PCASE block" => "guide/core/case.md",
+                    "PDFT block" => "guide/core/dft.md",
+                    "PDMFT block" => "guide/core/dmft.md",
+                    "PIMP block" => "guide/core/impurity.md",
+                    "PSOLVER block" => "guide/core/solver.md",
                 ],    
             ],
             "Auxiliary tools" => Any[],
@@ -47,7 +48,7 @@ makedocs(
                 "Density functional theory" => Any[],
                 "Dynamical mean-field theory" => Any[],
                 "Quantum impurity solver" => Any[],
-                "Adaptor" => Any[],    
+                "Adaptor" => Any[],
             ],
             "Files" => Any[
                 "Standard output" => Any[],
