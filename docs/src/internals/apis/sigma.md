@@ -19,6 +19,7 @@ Pages = ["sigma.md"]
 ## Functions
 
 ```@docs
+sigma_call
 sigma_reset
 sigma_dcount
 sigma_split

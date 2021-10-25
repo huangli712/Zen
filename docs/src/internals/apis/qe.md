@@ -36,8 +36,11 @@ qeio_lattice
 qeio_kmesh
 qeio_eigen
 qeio_fermi
+ReciprocalPoint
+MonkhorstPackGrid
 AtomicSpecies
 AtomicPosition
+QEInputEntry
 QENamelist
 QECard
 KPointsCard

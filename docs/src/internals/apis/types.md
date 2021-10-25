@@ -41,30 +41,58 @@ VASPEngine
 QEEngine
 WANNIEREngine
 _engine_
+nameof(::NULLEngine)
 ```
 
 ## Customized Structs: Quantum Impurity Solver
 
 ```@docs
+AbstractSolver
+NULLSolver
+CTHYB₁Solver
+CTHYB₂Solver
+HIASolver
+NORGSolver
+ATOMSolver
 _solver_
+nameof(::NULLSolver)
 ```
 
 ## Customized Structs: Adaptor
 
 ```@docs
+AbstractAdaptor
+NULLAdaptor
+PLOAdaptor
+WANNIERAdaptor
 _adaptor_
+nameof(::NULLAdaptor)
 ```
 
 ## Customized Structs: Sigma Engine
 
 ```@docs
+AbstractMode
+NULLMode
+RESETMode
+DCOUNTMode
+SPLITMode
+GATHERMode
 _mode_
+nameof(::NULLMode)
 ```
 
 ## Customized Structs: Mixer Engine
 
 ```@docs
+AbstractMixer
+NULLMixer
+ΣMixer
+ΔMixer
+EMixer
+ΓMixer
 _mixer_
+nameof(::NULLMixer)
 ```
 
 ## Structs
