@@ -36,6 +36,16 @@ qeio_lattice
 qeio_kmesh
 qeio_eigen
 qeio_fermi
+AtomicSpecies
+AtomicPosition
+QENamelist
+QECard
+KPointsCard
+AtomicSpeciesCard
+AtomicPositionsCard
+AutoKmeshCard
+GammaPointCard
+SpecialPointsCard
 haskey
 getindex
 setindex!
