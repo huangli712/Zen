@@ -35,6 +35,11 @@ PSOLVER
 ## Customized Structs: DFT Engine
 
 ```@docs
+AbstractEngine
+NULLEngine
+VASPEngine
+QEEngine
+WANNIEREngine
 _engine_
 ```
 
