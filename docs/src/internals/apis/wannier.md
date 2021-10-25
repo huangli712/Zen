@@ -19,7 +19,7 @@ Pages = ["wannier.md"]
 ## Functions
 
 ```@docs
-adaptor_call
+adaptor_call(::WANNIERAdaptor, ::Dict{Symbol,Any}, ::Array{Impurity,1})
 wannier_adaptor
 wannier_init
 wannier_exec

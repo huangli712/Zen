@@ -19,10 +19,10 @@ Pages = ["vasp.md"]
 ## Functions
 
 ```@docs
-dft_call
-dft_stop
-dft_resume
-adaptor_call
+dft_call(::VASPEngine, ::IterInfo)
+dft_stop(::VASPEngine)
+dft_resume(::VASPEngine)
+adaptor_call(::VASPEngine, ::Dict{Symbol,Any})
 vasp_adaptor
 vasp_init
 vasp_exec
