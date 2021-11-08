@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/17
+# Last modified: 2021/11/06
 #
 
 """
@@ -74,8 +74,8 @@ such as quantum impurity solvers, parallelly.
 *About libm* :
 
 Here we import `libm` explicitly to provide a callable interface for
-the `erf()` function. Please see `util.jl/erf()` for more details. We
-usually need this to calculate the electronic density of states.
+the `erf()` function. Please see `erf()` in `util.jl` for more details.
+We usually need this to calculate the electronic density of states.
 =#
 
 using TOML
@@ -102,10 +102,12 @@ F32, F64    -> Numerical types (Float).
 C32, C64    -> Numerical types (Complex).
 R32, R64    -> Numerical types (Union of Integer and Float).
 N32, N64    -> Numerical types (Union of Integer, Float, and Complex).
+#
 __LIBNAME__ -> Name of this julia package.
 __VERSION__ -> Version of this julia package.
 __RELEASE__ -> Released date of this julia package.
 __AUTHORS__ -> Authors of this julia package.
+#
 authors     -> Print the authors of ZenCore to screen.
 ```
 =#
@@ -118,10 +120,12 @@ export F32, F64
 export C32, C64
 export R32, R64
 export N32, N64
+#
 export __LIBNAME__
 export __VERSION__
 export __RELEASE__
 export __AUTHORS__
+#
 export authors
 
 #=
@@ -137,26 +141,60 @@ parameters or represent some essential data structures.
 *Members* :
 
 ```text
-DType     -> Customized type.
-PCASE     -> Dict for case.
-PDFT      -> Dict for DFT engine.
-PDMFT     -> Dict for DMFT engine.
-PIMP      -> Dict for quantum impurity problems.
-PSOLVER   -> Dict for quantum impurity solvers.
-_engine_  -> The present DFT engine.
-_solver_  -> The present quantum impurity solver.
-_adaptor_ -> The present DFT-DMFT adaptor.
-_mode_    -> The present operation for Σ and Δ.
-_mixer_   -> The present mixer.
-Logger    -> Struct for logger.
-Energy    -> Struct for total DFT + DMFT energy.
-IterInfo  -> Struct for DFT + DMFT iteration information.
-Lattice   -> Struct for crystallography information.
-Mapping   -> Struct for mapping between impurity problems and projectors.
-Impurity  -> Struct for quantum impurity problems.
-PrTrait   -> Struct for projectors.
-PrGroup   -> Struct for groups of projectors.
-PrWindow  -> Struct for band window.
+DType           -> Customized type.
+PCASE           -> Dict for case.
+PDFT            -> Dict for DFT engine.
+PDMFT           -> Dict for DMFT engine.
+PIMP            -> Dict for quantum impurity problems.
+PSOLVER         -> Dict for quantum impurity solvers.
+#
+AbstractEngine  -> Abstract DFT engine.
+NULLEngine      -> Null DFT engine.
+VASPEngine      -> vasp.
+QEEngine        -> quantum espresso.
+WANNIEREngine   -> wannier90.
+_engine_        -> The present DFT engine.
+#
+AbstractSolver  -> Abstract quantum impurity solver.
+NULLSolver      -> Null quantum impurity solver.
+CTHYB₁Solver    -> CT-HYB₁ quantum impurity solver.
+CTHYB₂Solver    -> CT-HYB₂ quantum impurity solver.
+HIASolver       -> HIA quantum impurity solver.
+NORGSolver      -> NORG quantum impurity solver.
+ATOMSolver      -> atomic eigenvalue problem solver.
+_solver_        -> The present quantum impurity solver.
+#
+AbstractAdaptor -> Abstract DFT-DMFT adaptor.
+NULLAdaptor     -> Null DFT-DMFT adaptor.
+PLOAdaptor      -> PLO adaptor.
+WANNIERAdaptor  -> WANNIER adaptor.
+_adaptor_       -> The present DFT-DMFT adaptor.
+#
+AbstractMode    -> Abstract running mode for sigma engine.
+NULLMode        -> Null mode.
+RESETMode       -> Reset Σ.
+DCOUNTMode      -> Calculate Σdc.
+SPLITMode       -> Split Δ and ϵ.
+GATHERMode      -> Gather Σ.
+_mode_          -> The present operation for Σ and Δ.
+#
+AbstractMixer   -> Abstract mixer.
+NULLMixer       -> Null mixer.
+ΣMixer          -> Mixer for Σ.
+ΔMixer          -> Mixer for Δ.
+EMixer          -> Mixer for E.
+ΓMixer          -> Mixer for Γ.
+_mixer_         -> The present mixer.
+#
+Logger          -> Struct for logger.
+Energy          -> Struct for total DFT + DMFT energy.
+IterInfo        -> Struct for DFT + DMFT iteration information.
+Lattice         -> Struct for crystallography information.
+Mapping         -> Struct for mapping between impurity problems and projectors.
+Impurity        -> Struct for quantum impurity problems.
+PrTrait         -> Struct for projectors.
+PrGroup         -> Struct for groups of projectors.
+PrWindow        -> Struct for band window.
 ```
 =#
 
@@ -169,11 +207,45 @@ export PDFT
 export PDMFT
 export PIMP
 export PSOLVER
+#
+export AbstractEngine
+export NULLEngine
+export VASPEngine
+export QEEngine
+export WANNIEREngine
 export _engine_
+#
+export AbstractSolver
+export NULLSolver
+export CTHYB₁Solver
+export CTHYB₂Solver
+export HIASolver
+export NORGSolver
+export ATOMSolver
 export _solver_
+#
+export AbstractAdaptor
+export NULLAdaptor
+export PLOAdaptor
+export WANNIERAdaptor
 export _adaptor_
+#
+export AbstractMode
+export NULLMode
+export RESETMode
+export DCOUNTMode
+export SPLITMode
+export GATHERMode
 export _mode_
+#
+export AbstractMixer
+export NULLMixer
+export ΣMixer
+export ΔMixer
+export EMixer
+export ΓMixer
 export _mixer_
+#
 export Logger
 export Energy
 export IterInfo
@@ -458,16 +530,18 @@ functions to deal with the vasp-related files.
 *Members* :
 
 ```text
-adaptor_call   -> Launch the DFT adaptor (for vasp program).
-dft_call       -> Carry out full DFT calculations (for vasp program).
-dft_stop       -> Stop DFT calculations (for vasp program).
-dft_resume     -> Resume DFT calculations (for vasp program).
+adaptor_call   -> Launch the DFT adaptor (for vasp).
+dft_call       -> Carry out full DFT calculations (for vasp).
+dft_stop       -> Stop DFT calculations (for vasp).
+dft_resume     -> Resume DFT calculations (for vasp).
+#
 vasp_adaptor   -> Adaptor support.
 vasp_init      -> Prepare vasp's input files.
 vasp_exec      -> Execute vasp program.
 vasp_save      -> Backup vasp's output files.
 vasp_back      -> Reactivate the vasp program to continue calculation.
 vasp_stop      -> Stop vasp program.
+#
 vaspc_incar    -> Generate essential input file (INCAR).
 vaspc_kpoints  -> Generate essential input file (KPOINTS).
 vaspc_gcorr    -> Generate essential input file (GAMMA).
@@ -476,6 +550,7 @@ vaspc_lock     -> Create the vasp.lock file.
 vaspq_stopcar  -> Check the STOPCAR file.
 vaspq_lock     -> Check the vasp.lock file.
 vaspq_files    -> Check essential output files.
+#
 vaspio_nband   -> Determine number of bands.
 vaspio_valence -> Read number of valence electrons for each sort.
 vaspio_energy  -> Read DFT total energy.
@@ -497,12 +572,14 @@ export adaptor_call
 export dft_call
 export dft_stop
 export dft_resume
+#
 export vasp_adaptor
 export vasp_init
 export vasp_exec
 export vasp_save
 export vasp_back
 export vasp_stop
+#
 export vaspc_incar
 export vaspc_kpoints
 export vaspc_gcorr
@@ -511,6 +588,7 @@ export vaspc_lock
 export vaspq_stopcar
 export vaspq_lock
 export vaspq_files
+#
 export vaspio_nband
 export vaspio_valence
 export vaspio_energy
@@ -536,23 +614,42 @@ lot of functions to deal with the quantum espresso (pwscf) related files.
 *Members* :
 
 ```text
-adaptor_call -> Launch the DFT adaptor (for quantum espresso program).
-dft_call     -> Carry out full DFT calculations (for quantum espresso program).
-dft_stop     -> Stop DFT calculations (for quantum espresso program).
-dft_resume   -> Resume DFT calculations (for quantum espresso program).
-qe_adaptor   -> Adaptor support.
-qe_to_wan    -> Adaptor support (interface between qe and wannier).
-qe_to_plo    -> Adaptor support (interface between qe and plo).
-qe_init      -> Prepare quantum espresso's input files.
-qe_exec      -> Execute quantum espresso program.
-qe_save      -> Backup quantum espresso's output files.
-qec_input    -> Generate essential input file (case.scf or case.nscf).
-qeq_files    -> Check essential output files.
-qeio_energy  -> Read DFT total energy.
-qeio_lattice -> Read lattice information.
-qeio_kmesh   -> Read kmesh.
-qeio_eigen   -> Read eigenvalues.
-qeio_fermi   -> Read fermi level.
+adaptor_call        -> Launch the DFT adaptor (for quantum espresso).
+dft_call            -> Carry out full DFT calculations (for quantum espresso).
+dft_stop            -> Stop DFT calculations (for quantum espresso.
+dft_resume          -> Resume DFT calculations (for quantum espresso).
+#
+qe_adaptor          -> Adaptor support.
+qe_to_wan           -> Adaptor support (interface between qe and wannier).
+qe_to_plo           -> Adaptor support (interface between qe and plo).
+qe_init             -> Prepare quantum espresso's input files.
+qe_exec             -> Execute quantum espresso program.
+qe_save             -> Backup quantum espresso's output files.
+#
+qec_input           -> Generate essential input file (case.scf or case.nscf).
+qeq_files           -> Check essential output files.
+#
+qeio_energy         -> Read DFT total energy.
+qeio_lattice        -> Read lattice information.
+qeio_kmesh          -> Read kmesh.
+qeio_eigen          -> Read eigenvalues (general).
+qeio_band           -> Read eigenvalues (band structures).
+qeio_fermi          -> Read fermi level.
+#
+ReciprocalPoint     -> Represent single 𝑘-point.
+MonkhorstPackGrid   -> Represent Monkhorst-Pack 𝑘-grid.
+AtomicSpecies       -> Represent atomic species.
+AtomicPosition      -> Represent atomic positions.
+#
+QEInputEntry        -> Abstract input entry for quantum espresso.
+QENamelist          -> Represent the namelists in qe's input file.
+QECard              -> Represent the abstract input cards for qe.
+KPointsCard         -> Represent the abstract K_POINTS block.
+AtomicSpeciesCard   -> Represent the ATOMIC_SPECIES block.
+AtomicPositionsCard -> Represent the ATOMIC_POSITIONS block.
+AutoKmeshCard       -> Represent the K_POINTS block.
+GammaPointCard      -> Represent the K_POINTS block.
+SpecialPointsCard   -> Represent the K_POINTS block.
 ```
 =#
 
@@ -563,19 +660,38 @@ export adaptor_call
 export dft_call
 export dft_stop
 export dft_resume
+#
 export qe_adaptor
 export qe_to_wan
 export qe_to_plo
 export qe_init
 export qe_exec
 export qe_save
+#
 export qec_input
 export qeq_files
+#
 export qeio_energy
 export qeio_lattice
 export qeio_kmesh
 export qeio_eigen
+export qeio_band
 export qeio_fermi
+#
+export ReciprocalPoint
+export MonkhorstPackGrid
+export AtomicSpecies
+export AtomicPosition
+#
+export QEInputEntry
+export QENamelist
+export QECard
+export KPointsCard
+export AtomicSpeciesCard
+export AtomicPositionsCard
+export AutoKmeshCard
+export GammaPointCard
+export SpecialPointsCard
 
 #=
 ### *Includes And Exports* : *plo.jl*
@@ -673,9 +789,14 @@ w90_make_group  -> Create and manipulate groups of WFs.
 w90_make_window -> Create and manipulate band windows of WFs.
 w90_make_chipsi -> Build projections.
 w90_find_bwin   -> Figure out the band window for disentanglement.
+w90_make_kpath  -> Create 𝑘-points along the high-symmetry directions.
+w90_make_rcell  -> Create 𝑟-points within the Wigner-Seitz cell.
+w90_make_hamr   -> Create hamiltonian in 𝑟-space via wannier interpolation.
+w90_make_hamk   -> Create hamiltonian in 𝑘-space via wannier interpolation.
+w90_diag_hamk   -> Diagonalize the hamiltonian within the wannier basis.
 w90_read_amat   -> Read w90.amn file.
 w90_read_eigs   -> Read w90.eig file.
-w90_read_hmat   -> Read w90_hr.dat file.
+w90_read_hamr   -> Read w90_hr.dat file.
 w90_read_umat   -> Read w90_u.mat file.
 w90_read_udis   -> Read w90_u_dis.mat file.
 w90_read_wout   -> Read w90.wout file.
@@ -702,9 +823,14 @@ export w90_make_group
 export w90_make_window
 export w90_make_chipsi
 export w90_find_bwin
+export w90_make_kpath
+export w90_make_rcell
+export w90_make_hamr
+export w90_make_hamk
+export w90_diag_hamk
 export w90_read_amat
 export w90_read_eigs
-export w90_read_hmat
+export w90_read_hamr
 export w90_read_umat
 export w90_read_udis
 export w90_read_wout
@@ -727,6 +853,7 @@ Tools for the intermediate representation format (adaptor).
 ```text
 ir_adaptor   -> Adaptor support.
 ir_save      -> Save the output files by the adaptor.
+ir_read      -> Parse and return the output data by the adaptor.
 irio_params  -> Write key parameters extracted from Kohn-Sham data.
 irio_maps    -> Write Mapping.
 irio_groups  -> Write PrGroup.
@@ -735,8 +862,9 @@ irio_lattice -> Write lattice information.
 irio_kmesh   -> Write kmesh.
 irio_tetra   -> Write tetrahedra.
 irio_eigen   -> Write eigenvalues.
-irio_projs   -> Write projectors.
+irio_projs   -> Write projectors (normalized).
 irio_fermi   -> Write fermi level.
+irio_rawcp   -> Write projectors (raw).
 irio_charge  -> Write charge density.
 ```
 =#
@@ -746,6 +874,7 @@ include("ir.jl")
 #
 export ir_adaptor
 export ir_save
+export ir_read
 export irio_params
 export irio_maps
 export irio_groups

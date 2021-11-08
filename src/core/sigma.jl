@@ -597,7 +597,7 @@ end
 =#
 
 """
-    read_sigma(ai::Array{Impurity,1}, 
+    read_sigma(ai::Array{Impurity,1},
                fsig::String = "dmft1/sigma.bare")
 
 Read the self-energy functions from the `dmft1/sigma.bare` file. The
@@ -703,7 +703,7 @@ working directory of this function must be the root folder.
 
 See also: [`read_sigma`](@ref).
 """
-function read_sigdc(ai::Array{Impurity,1}, 
+function read_sigdc(ai::Array{Impurity,1},
                     fsig::String = "dmft1/sigma.dc")
     # Declare the double counting terms
     DCA = nothing

@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/17
+# Last modified: 2021/11/08
 #
 
 #=
@@ -442,6 +442,10 @@ function wannier_monitor(D::Dict{Symbol,Any})
     # Calculate and output effective atomic level
     level = calc_level(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
     view_level(D[:PG], level)
+
+    # Calculate and output full hamiltonian
+    hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:enk])
+    view_hamk(hamk)
 end
 
 #=
@@ -1330,6 +1334,290 @@ end
 =#
 
 """
+    w90_make_kpath(ndiv::I64,
+                   kstart::Array{F64,2},
+                   kend::Array{F64,2})
+
+Try to generate 𝑘-path along the selected high-symmetry directions in
+the Brillouin zone. The argument `ndiv` means the number of divisions
+for each 𝑘-path. While `kstart` and `kend` denote the 𝑘 coordinates for
+the starting and ending points of the 𝑘-path, respectively. Note that
+this function is used to perform wannier band interpolation.
+
+See also: [`w90_make_rcell`](@ref).
+"""
+function w90_make_kpath(ndiv::I64,
+                        kstart::Array{F64,2},
+                        kend::Array{F64,2})
+    # Get dimensional parameters
+    ndir, _ = size(kstart)
+    @assert size(kstart) == size(kend)
+    @assert ndiv ≥ 10
+
+    # Allocate memories
+    kdist = zeros(F64, ndir)
+    kstep = zeros(F64, ndir)
+    kpath = zeros(F64, ndir * ndiv + 1, 3)
+    xpath = zeros(F64, ndir * ndiv + 1)
+
+    # Calculate the length for each 𝑘-path
+    for i = 1:ndir
+        kaux = ( kstart[i,1] - kend[i,1] )^2 +
+               ( kstart[i,2] - kend[i,2] )^2 +
+               ( kstart[i,3] - kend[i,3] )^2
+        kdist[i] = sqrt(kaux)
+    end
+
+    # kstep means the distances between the original point (0) and the
+    # starting points for each 𝑘-path.
+    kstep = circshift(cumsum(kdist), 1)
+    kstep[1] = 0.0
+
+    # Setup the 𝑘-path, including the 𝑘-coordinates (`kpath`) and the
+    # distances from the original point (`xpath`).
+    c = 0 # A counter
+    for i = 1:ndir
+        ks = kstart[i,:] # Starting point for this 𝑘-segment
+        ke = kend[i,:]   # Ending point for this 𝑘-segment
+        kd = ( ke - ks ) / ndiv # Length for division
+        for j = 1:ndiv
+            c = c + 1
+            kpath[c, :] = ks + kd * (j - 1)
+            xpath[c] = kstep[i] + kdist[i] * (j - 1) / ndiv
+        end # END OF J LOOP
+    end # END OF I LOOP
+
+    # Setup the final point for the 𝑘-path
+    kpath[end,:] = kend[end,:]
+    xpath[end] = sum(kdist)
+
+    # Return the desired arrays
+    return kpath, xpath
+end
+
+"""
+    w90_make_rcell(latt::Lattice)
+
+Calculates a grid of points that fall inside of (and eventually on the
+surface of) the Wigner-Seitz supercell centered on the origin of the
+given lattice (`latt`).
+
+See also: [`w90_make_kpath`](@ref).
+"""
+function w90_make_rcell(latt::Lattice)
+    # Some internal parameters
+    #
+    # Maximum extension in each direction of the supercell of the BvK
+    # cell to search for points inside the Wigner-Seitz cell.
+    ws_search_size = 2
+    #
+    # Absolute tolerance for the distance to equivalent positions
+    ws_distance_tol = 1.0E-5
+    #
+    # Dimensions of the Monkhorst-Pack grid
+    mp_grid = [8 8 8]
+
+    # Calculate real space metrics
+    # See utility_metric() in utility.F90 (wannier90).
+    metric = zeros(F64, 3, 3)
+    for j = 1:3
+        for i = 1:j
+            for l = 1:3
+                metric[i,j] = metric[i,j] + latt.scale^2 * latt.lvect[i,l] * latt.lvect[j,l]
+                if i < j
+                    metric[j,i] = metric[i,j]
+                end
+            end
+        end # END OF I LOOP
+    end # END OF J LOOP
+
+    # Prepare arrays
+    #
+    dist_dim = ((ws_search_size + 1) * 2 + 1)^3
+    dist = zeros(F64, dist_dim)
+    #
+    ndiff = zeros(I64, 3)
+    #
+    rtmp = []
+    rdeg = Int[]
+
+    # The Wannier functions live in a supercell of the real space unit
+    # cell. This supercell is mp_grid unit cells long in each direction.
+    # We loop over grid points 𝑟 on a unit cell that is
+    #     ( 2 * ws_search_size + 1)³
+    # times larger than this primitive supercell. One of these points
+    # is in the Wigner-Seitz cell if it is closer to 𝑅 = 0 than any of
+    # the other points, where 𝑅 denotes the translation vectors of the
+    # supercell.
+
+    # Loop over the lattice vectors of the primitive cell that live in
+    # a supercell which is
+    #     ( 2 * ws_search_size + 1)³
+    # larger than the Born-von Karman supercell.
+    nrpts = 0
+    for n1 = -ws_search_size * mp_grid[1] : ws_search_size * mp_grid[1]
+        for n2 = -ws_search_size * mp_grid[2] : ws_search_size * mp_grid[2]
+            for n3 = -ws_search_size * mp_grid[3] : ws_search_size * mp_grid[3]
+
+                # Loop over the lattice vectors R of the Born-von Karman
+                # supercell that contains all the points of the previous
+                # loop. There are
+                #     ( 2 * (ws_search_size + 1) + 1)³ points R. And 𝑅 = 0
+                # corresponds to
+                #     i₁ = i₂ = i₃ = 0,
+                # or
+                #     icnt = ( ( 2 * (ws_search_size + 1) + 1)³ + 1 ) / 2.
+                icnt = 0
+                for i1 = -ws_search_size - 1 : ws_search_size + 1
+                    for i2 = -ws_search_size - 1 : ws_search_size + 1
+                        for i3 = -ws_search_size - 1 : ws_search_size + 1
+                            icnt = icnt + 1
+                            ndiff[1] = n1 - i1 * mp_grid[1]
+                            ndiff[2] = n2 - i2 * mp_grid[2]
+                            ndiff[3] = n3 - i3 * mp_grid[3]
+                            # Calculate |𝑟 - 𝑅|²
+                            dist[icnt] = 0.0
+                            for i = 1:3
+                                for j = 1:3
+                                    dist[icnt] = dist[icnt] + ndiff[i] * metric[i,j] * ndiff[j]
+                                end
+                            end
+                        end # END OF LOOP I₃
+                    end # END OF LOOP I₂
+                end # END OF LOOP I₁
+
+                # Figure out the require 𝑟 points. Their degenerancies
+                # and coordinates are saved in ndeg and rtmp, respectively.
+                dist_min = minimum(dist)
+                if abs(dist[Int((dist_dim + 1) / 2)] - dist_min) < ws_distance_tol^2
+                    nrpts = nrpts + 1
+                    ndeg = 0
+                    for i = 1:dist_dim
+                        if abs(dist[i] - dist_min) < ws_distance_tol^2
+                            ndeg = ndeg + 1
+                        end
+                    end
+                    push!(rdeg, ndeg)
+                    push!(rtmp, [n1, n2, n3])
+                end
+            end # END OF LOOP N₃
+        end # END OF LOOP N₂
+    end # END OF LOOP N₁
+
+    # Convert rtmp to rvec
+    rvec = zeros(I64, nrpts, 3)
+    for i = 1:nrpts
+        rvec[i,:] .= rtmp[i]
+    end
+
+    # Return the desired arrays
+    return rdeg, rvec
+end
+
+"""
+    w90_make_hamr(kvec::Array{F64,2},
+                  rvec::Array{I64,2},
+                  hamk::Array{C64,3})
+
+Convert the hamiltonian from 𝑘-space to 𝑟-space via the fast fourier
+transformation. The arguments `kvec` and `rvec` define the 𝑘-mesh and
+𝑟-mesh, respectively. `hamk` means ``H(K)`` which should be defined in
+a uniform 𝑘-mesh.
+
+See also: [`w90_make_hamk`](@ref).
+"""
+function w90_make_hamr(kvec::Array{F64,2},
+                       rvec::Array{I64,2},
+                       hamk::Array{C64,3})
+    # Get dimensional parameters
+    nband, _, nkpt = size(hamk)
+    nrpt, _ = size(rvec)
+
+    # Create an empty array for ``H(R)``
+    hamr = zeros(C64, nband, nband, nrpt)
+
+    # Fourier transformation from 𝑘-space to 𝑟-space
+    for r = 1:nrpt
+        for k = 1:nkpt
+            rdotk = 2.0 * π * dot(kvec[k,:], rvec[r,:])
+            ratio = exp(-rdotk * im) / nkpt
+            hamr[:,:,r] = hamr[:,:,r] + ratio * hamk[:,:,k]
+        end # END OF K LOOP
+    end # END OF R LOOP
+
+    # Return ``H(R)``
+    return hamr
+end
+
+"""
+    w90_make_hamk(kvec::Array{F64,2},
+                  rdeg::Array{I64,1},
+                  rvec::Array{I64,2},
+                  hamr::Array{C64,3})
+
+Convert the hamiltonian from 𝑟-space to 𝑘-space via the fast fourier
+transformation. The arguments `kvec` and `rvec` define the 𝑘-mesh and
+𝑟-mesh, respectively. `hamr` means ``H(R)`` which should be defined in
+a Wigner-Seitz cell.
+
+See also: [`w90_make_hamr`](@ref).
+"""
+function w90_make_hamk(kvec::Array{F64,2},
+                       rdeg::Array{I64,1},
+                       rvec::Array{I64,2},
+                       hamr::Array{C64,3})
+    # Get dimensional parameters
+    nband, _, nrpt = size(hamr)
+    nkpt, _ = size(kvec)
+
+    # Create an empty array for ``H(K)``
+    hamk = zeros(C64, nband, nband, nkpt)
+
+    # Fourier transformation from 𝑟-space to 𝑘-space
+    for k = 1:nkpt
+        for r = 1:nrpt
+            rdotk = 2.0 * π * dot(kvec[k,:], rvec[r,:])
+            ratio = exp(+rdotk * im) / rdeg[r]
+            hamk[:,:,k] = hamk[:,:,k] + ratio * hamr[:,:,r]
+        end # END OF R LOOP
+    end # END OF K LOOP
+
+    # Return ``H(K)``
+    return hamk
+end
+
+"""
+    w90_diag_hamk(hamk::Array{C64,3})
+
+Diagonalize the hamiltonian to give band structure.
+
+See also: [`w90_make_hamk`](@ref).
+"""
+function w90_diag_hamk(hamk::Array{C64,3})
+    # Get dimensional parameters
+    nband, _, nkpt = size(hamk)
+
+    # Allocate memories for eigenvalues and eigenvectors
+    eigs = zeros(F64, nband, nkpt)
+    evec = zeros(C64, nband, nband, nkpt)
+
+    # Diagonalize the hamiltonian for every 𝑘-point
+    for k = 1:nkpt
+        A = view(hamk, :, :, k)
+        E = eigen(Hermitian(A)) # It must be a hermitian matrix
+        @. eigs[:,k] = E.values
+        @. evec[:,:,k] = E.vectors
+    end
+
+    # Return eigenvalues and eigenvectors
+    return eigs, evec
+end
+
+#=
+### *Service Functions* : *Group E*
+=#
+
+"""
     w90_read_amat(sp::String = "")
 
 Try to read and parse the `w90.amn` file to get the ``A_{mn}`` matrix,
@@ -1463,7 +1751,7 @@ function w90_read_eigs(sp::String = "")
 end
 
 """
-    w90_read_hmat(sp::String = "")
+    w90_read_hamr(f::String, sp::String = "")
 
 Try to read and parse the `w90_hr.dat` file, return the hamiltonian
 matrix in WF representation, the Wigner-Seitz grid points, and their
@@ -1473,12 +1761,12 @@ matrix further.
 
 See also: [`wannier_monitor`](@ref).
 """
-function w90_read_hmat(sp::String = "")
+function w90_read_hamr(f::String, sp::String = "")
     # Print the header
     println("Parse hamiltonian in WF basis")
 
     # Build the filename
-    fhr = "w90" * sp * "_hr.dat"
+    fhr = joinpath(f, "w90" * sp * "_hr.dat")
     println("  > Open and read $fhr")
 
     # Read the `w90_hr.dat` file
@@ -1723,7 +2011,7 @@ function w90_read_wout(sp::String = "")
 end
 
 #=
-### *Service Functions* : *Group E*
+### *Service Functions* : *Group F*
 =#
 
 """

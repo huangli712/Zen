@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/22
+# Last modified: 2021/11/01
 #
 
 #=
@@ -107,7 +107,7 @@ function qe_adaptor(D::Dict{Symbol,Any})
     D[:fermi] = qeio_fermi(pwd(), false)
 
     # Q06: Generate MLWFs for the QE + WANNIER mode
-    is_wannier() && qe_to_wan(D)
+    #is_wannier() && qe_to_wan(D)
 
     # Q06: Generate projected local orbitals for the QE + PLO mode
     is_plo() && qe_to_plo(D)
@@ -1125,6 +1125,115 @@ See also: [`irio_eigen`](@ref).
 qeio_eigen() = qeio_eigen(pwd())
 
 """
+    qeio_band(f::String)
+
+Reading quantum espresso's `bands.out` file, return energy band structure
+information. Here `f` means only the directory that contains `bands.out`.
+
+In order to generate the `bands.out` file, please change the calculation
+mode of quantum espresso to `bands`, and redirect the standard output to
+the `bands.out` file.
+
+Note that the difference between `qeio_band()` and `qeio_eigen()` is that
+the former does not return the occupy matrix. This function should not be
+called in the DFT + DMFT iterations.
+"""
+function qeio_band(f::String)
+    # Print the header
+    println("Parse enk only")
+    println("  > Open and read bands.out")
+
+    # Read in all lines in `bands.out`
+    lines = readlines(joinpath(f, "bands.out"))
+
+    # Extract number of 𝑘-points
+    ind = findfirst(x -> contains(x, "number of k points="), lines)
+    @assert ind > 0
+    nkpt = parse(I64, line_to_array(lines[ind])[5])
+
+    # Extract number of bands
+    ind = findfirst(x -> contains(x, "number of Kohn-Sham states"), lines)
+    @assert ind > 0
+    nband = parse(I64, line_to_array(lines[ind])[5])
+
+    # Determine number of spins
+    #
+    # The `bands.out` file contains `SPIN UP` and `SPIN DOWN` blocks if
+    # the system is spin-polarized.
+    ind = findall(x -> contains(x, " SPIN "), lines)
+    @assert length(ind) == 2 || length(ind) == 0
+    if length(ind) == 2
+        nspin = 2
+    else
+        nspin = 1
+    end
+
+    # Create array
+    enk = zeros(F64, nband, nkpt, nspin)
+
+    # Read in the energy bands and the corresponding occupations
+    #
+    # Determine the start of data block
+    start = findfirst(x -> contains(x, "End of band structure calculation"), lines)
+    @assert start > 0
+    #
+    # Determine how many lines are there for each k-point
+    elements_per_line = 8
+    nrow = div(nband, elements_per_line)
+    nrem = rem(nband, elements_per_line)
+    #
+    # Go through each spin
+    for s = 1:nspin
+        # Skip `SPIN UP` and `SPIN DOWN` lines.
+        if nspin == 2
+            start = start + 3
+        end
+        #
+        # Go through each k-point
+        for k = 1:nkpt
+            # Read eigenvalues
+            start = start + 3
+            if nrow > 1 # nband > elements_per_line
+                for r = 1:nrow
+                    start = start + 1
+                    bs = (r - 1) * elements_per_line + 1
+                    be = (r - 1) * elements_per_line + elements_per_line
+                    enk[bs:be,k,s] = parse.(F64, line_to_array(lines[start]))
+                end # END OF R LOOP
+                if nrem > 0
+                    start = start + 1
+                    bs = nrow * elements_per_line + 1
+                    be = nband
+                    @assert nrem == be - bs + 1
+                    enk[bs:be,k,s] = parse.(F64, line_to_array(lines[start]))
+                end
+            else
+                @assert nrow == 1
+                start = start + 1
+                enk[:,k,s] = parse.(F64, line_to_array(lines[start]))
+            end
+        end # END OF K LOOP
+    end # END OF S LOOP
+
+    # Print some useful information to check
+    println("  > Number of DFT bands: ", nband)
+    println("  > Number of k-points: ", nkpt)
+    println("  > Number of spins: ", nspin)
+    println("  > Shape of Array enk: ", size(enk))
+
+    # return the desired array
+    return enk
+end
+
+"""
+    qeio_band()
+
+Reading quantum espresso's `bands.out` file, return energy band structure
+information.
+"""
+qeio_band() = qeio_band(pwd())
+
+"""
     qeio_fermi(f::String, silent::Bool = true)
 
 Reading quantum espresso's `nscf.out` file, return the fermi level. Here
@@ -1165,44 +1274,8 @@ qeio_fermi() = qeio_fermi(pwd())
 *Remarks* :
 
 The following codes are internally used to parse the input files of
-`quantum espresso` (`pwscf`). Please do not change them or export them.
+`quantum espresso` (`pwscf`). Please do not change them.
 =#
-
-#=
-### *Customized Structs : Abstract Types*
-=#
-
-"""
-    QEInputEntry
-
-An abstract type representing an input component of `quantum espresso`
-(`pwscf`). Note that all other input types (such as `QENamelist` and
-`QECard`) should subtype `QEInputEntry`.  It is used to build a internal
-type system.
-
-See also: [`QECard`](@ref), [`QENamelist`](@ref).
-"""
-abstract type QEInputEntry end
-
-"""
-    QECard
-
-It represents abstract cards in the input file of `quantum espresso`
-(`pwscf`).  It is used to build the internal type system. The input
-file of `quantum espresso` (`pwscf`) consists of various cards and
-namelists, represented by `QECard` and `QENamelist`, respectively.
-
-See also: [`QENamelist`](@ref).
-"""
-abstract type QECard <: QEInputEntry end
-
-"""
-    KPointsCard
-
-Represent an abstract card (`K-POINTS`) in the input file of
-`quantum espresso` (`pwscf`).
-"""
-abstract type KPointsCard <: QECard end
 
 #=
 ### *Customized Structs : K-Grids*
@@ -1290,7 +1363,7 @@ function MonkhorstPackGrid(k₁::I64, k₂::I64, k₃::I64, s₁::I64, s₂::I64
 end
 
 #=
-### *Customized Structs : Basic Entries*
+### *Customized Structs : Elements*
 =#
 
 """
@@ -1417,7 +1490,23 @@ See also: [`AtomicPositionsCard`](@ref).
 AtomicPosition(x::AtomicSpecies, pos, if_pos) = AtomicPosition(x.atom, pos, if_pos)
 
 #=
-### *Customized Structs : Input Blocks*
+### *Customized Structs : Abstract Types*
+=#
+
+"""
+    QEInputEntry
+
+An abstract type representing an input component of `quantum espresso`
+(`pwscf`). Note that all other input types (such as `QENamelist` and
+`QECard`) should subtype `QEInputEntry`.  It is used to build a internal
+type system.
+
+See also: [`QECard`](@ref), [`QENamelist`](@ref).
+"""
+abstract type QEInputEntry end
+
+#=
+### *Customized Structs : Namelist*
 =#
 
 """
@@ -1480,6 +1569,34 @@ See also: [`QENamelist`](@ref).
 function Base.delete!(qnl::QENamelist, key::AbstractString)
     delete!(qnl.data, key)
 end
+
+#=
+### *Customized Structs : Abstract Types*
+=#
+
+"""
+    QECard
+
+It represents abstract cards in the input file of `quantum espresso`
+(`pwscf`).  It is used to build the internal type system. The input
+file of `quantum espresso` (`pwscf`) consists of various cards and
+namelists, represented by `QECard` and `QENamelist`, respectively.
+
+See also: [`QENamelist`](@ref).
+"""
+abstract type QECard <: QEInputEntry end
+
+"""
+    KPointsCard
+
+Represent an abstract card (`K-POINTS`) in the input file of
+`quantum espresso` (`pwscf`).
+"""
+abstract type KPointsCard <: QECard end
+
+#=
+### *Customized Structs : Cards*
+=#
 
 """
     AtomicSpeciesCard
@@ -1559,7 +1676,7 @@ See also: [`KPointsCard`](@ref).
 struct GammaPointCard <: KPointsCard end
 
 """
-    SpecialKPointsCard
+    SpecialPointsCard
 
 Represent the `K_POINTS` card in the input file of `quantum espresso`
 (`pwscf`) (be compatible with the `tpiba` or `crystal` mode).
@@ -1882,7 +1999,7 @@ Parse the `QECard` object. Now we support the following cards:
 
 * `ATOMIC_SPECIES` (`AtomicSpeciesCard`)
 * `ATOMIC_POSITIONS` (`AtomicPositionsCard`)
-* `K_POINTS` (`AutoKmeshCard`, `GammaPointCard`, `SpecialKPointsCard`)
+* `K_POINTS` (`AutoKmeshCard`, `GammaPointCard`, `SpecialPointsCard`)
 
 See also: [`QECard`](@ref).
 """

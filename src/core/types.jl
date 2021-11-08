@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/18
+# Last modified: 2021/11/04
 #
 
 #=
@@ -996,12 +996,12 @@ function Base.show(io::IO, logger::Logger)
     @assert isopen(logger.log) && isopen(logger.cycle)
 
     println(io, "Logger struct")
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
     #
     println(io, "log   : ", logger.log)
     println(io, "cycle : ", logger.cycle)
     #
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
 end
 
 """
@@ -1014,7 +1014,7 @@ See also: [`Energy`](@ref).
 """
 function Base.show(io::IO, ene::Energy)
     println(io, "Energy struct")
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
     #
     println(io, "dft   : ", ene.dft)
     println(io, "dmft  : ", ene.dmft)
@@ -1022,7 +1022,7 @@ function Base.show(io::IO, ene::Energy)
     println(io, "dc    : ", ene.dc)
     println(io, "total : ", ene.total)
     #
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
 end
 
 """
@@ -1034,7 +1034,7 @@ See also: [`IterInfo`](@ref).
 """
 function Base.show(io::IO, it::IterInfo)
     println(io, "IterInfo struct")
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
     #
     println(io, "I₁ : ", it.I₁)
     println(io, "I₂ : ", it.I₂)
@@ -1057,7 +1057,7 @@ function Base.show(io::IO, it::IterInfo)
     println(io, "ce : ", it.ce)
     println(io, "cs : ", it.cs)
     #
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
 end
 
 """
@@ -1069,7 +1069,7 @@ See also: [`Lattice`](@ref).
 """
 function Base.show(io::IO, latt::Lattice)
     println(io, "Lattice struct")
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
     #
     println(io, "_case : ", latt._case)
     println(io, "scale : ", latt.scale)
@@ -1080,7 +1080,7 @@ function Base.show(io::IO, latt::Lattice)
     println(io, "atoms : ", latt.atoms)
     println(io, "coord : ", latt.coord)
     #
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
 end
 
 """
@@ -1092,14 +1092,14 @@ See also: [`Mapping`](@ref).
 """
 function Base.show(io::IO, map::Mapping)
     println(io, "Mapping struct")
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
     #
     println(io, "i_grp : ", map.i_grp)
     println(io, "i_wnd : ", map.i_wnd)
     println(io, "g_imp : ", map.g_imp)
     println(io, "w_imp : ", map.w_imp)
     #
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
 end
 
 """
@@ -1111,7 +1111,7 @@ See also: [`Impurity`](@ref).
 """
 function Base.show(io::IO, imp::Impurity)
     println(io, "Impurity struct")
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
     #
     println(io, "index : ", imp.index)
     println(io, "atoms : ", imp.atoms)
@@ -1128,7 +1128,7 @@ function Base.show(io::IO, imp::Impurity)
     println(io, "beta  : ", imp.beta)
     println(io, "nband : ", imp.nband)
     #
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
 end
 
 """
@@ -1140,14 +1140,14 @@ See also: [`PrTrait`](@ref).
 """
 function Base.show(io::IO, PT::PrTrait)
     println(io, "PrTrait struct")
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
     #
     println(io, "site : ", PT.site)
     println(io, "l    : ", PT.l)
     println(io, "m    : ", PT.m)
     println(io, "desc : ", PT.desc)
     #
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
 end
 
 """
@@ -1159,7 +1159,7 @@ See also: [`PrGroup`](@ref).
 """
 function Base.show(io::IO, PG::PrGroup)
     println(io, "PrGroup struct")
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
     #
     println(io, "site  : ", PG.site)
     println(io, "l     : ", PG.l)
@@ -1168,7 +1168,7 @@ function Base.show(io::IO, PG::PrGroup)
     println(io, "Pr    : ", PG.Pr)
     println(io, "Tr    : ", PG.Tr)
     #
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
 end
 
 """
@@ -1180,7 +1180,7 @@ See also: [`PrWindow`](@ref).
 """
 function Base.show(io::IO, PW::PrWindow)
     println(io, "PrWindow struct")
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
     #
     println(io, "bmin : ", PW.bmin)
     println(io, "bmax : ", PW.bmax)
@@ -1188,7 +1188,7 @@ function Base.show(io::IO, PW::PrWindow)
     println(io, "kwin : ", PW.kwin)
     println(io, "bwin : ", PW.bwin)
     #
-    println(repeat("=", 20))
+    println(io, repeat("=", 20))
 end
 
 #=
