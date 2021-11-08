@@ -15,7 +15,7 @@
 This script is used to parse the `PROCAR` file. The users can use it to
 figure out which bands are the most relevant and the corresponding
 energy window for these bands. These information is quite useful. Then
-we can determine the `window` entry in the `case.toml` file.  
+we can determine the `window` entry in the `case.toml` file.
 =#
 
 # Update LOAD_PATH
