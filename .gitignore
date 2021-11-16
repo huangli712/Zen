@@ -16,6 +16,12 @@ test/*/POTCAR
 test/*/dft
 test/*/dmft*
 test/*/impurity.*
+test/*/band.*
+test/*/dm.*
+test/*/level.*
+test/*/ovlp.*
+test/*/kpath.*
+test/*/hamk.*
 test/_*
 ctqmc
 dmft
