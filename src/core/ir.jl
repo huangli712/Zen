@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/08
+# Last modified: 2021/11/11
 #
 
 #=
@@ -30,7 +30,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     # I01: Check the validity of the `D` dict
     key_list = [:MAP, :PG, :PW,
                 :latt, :kmesh, :weight,
-                :enk, :occupy, :Fchipsi, :fermi]
+                :enk, :occupy, :Fchipsi, :fermi, :chipsi]
     for k in key_list
         @assert haskey(D, k)
     end
@@ -39,6 +39,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
     println("Adaptor : IR")
     println("Try to write the processed Kohn-Sham dataset with IR format")
     println("Current directory: ", pwd())
+    println("Store essential parameters")
 
     # I03: Write important parameters
     #
@@ -69,7 +70,10 @@ function ir_adaptor(D::Dict{Symbol,Any})
     # I08: Write fermi level
     irio_fermi(pwd(), D[:fermi])
 
-    # I09: Check the validity of the `D` dict further (optional)
+    # I09: Write raw projectors
+    irio_rawcp(pwd(), D[:chipsi])
+
+    # I10: Check the validity of the `D` dict further (optional)
     if get_d("smear") == "tetra" && !is_qe()
         key_list = [:volt, :itet]
         for k in key_list
@@ -77,7 +81,7 @@ function ir_adaptor(D::Dict{Symbol,Any})
         end
     end
 
-    # I10: Write tetrahedron data if they are available
+    # I11: Write tetrahedron data if they are available
     if get_d("smear") == "tetra" && !is_qe()
         irio_tetra(pwd(), D[:volt], D[:itet])
     end
@@ -113,9 +117,9 @@ end
     ir_read(f::String)
 
 Read and parse `maps.ir`, `groups.ir`, `windows.ir`, `lattice.ir`,
-`kmesh.ir`, `eigen.ir`, `projs.ir`, and `fermi.ir`. The data are
-encapsulated in a dictionary. Here `f` means the directory where the
-files as mentioned above are available.
+`kmesh.ir`, `eigen.ir`, `projs.ir`, `fermi.ir`, and `rawcp.ir`. The
+data are encapsulated in a dictionary. Here `f` means the directory
+where the files as mentioned above are available.
 
 See also: [`ir_adaptor`](@ref).
 """
@@ -141,11 +145,14 @@ function ir_read(f::String)
     # Get eigenvalues and occupations
     D[:enk], D[:occupy] = irio_eigen(f)
 
-    # Get projectors (Normalized)
+    # Get normalized projectors
     D[:Fchipsi] = irio_projs(f)
 
     # Get fermi level
     D[:fermi] = irio_fermi(f)
+
+    # Get raw projectors
+    D[:chipsi] = irio_rawcp(f)
 
     # Return the desired dict
     return D
@@ -164,9 +171,6 @@ means only the directory that we want to use.
 See also: [`PrGroup`](@ref), [`PrWindow`](@ref).
 """
 function irio_params(f::String, D::Dict{Symbol,Any})
-    # Print the header
-    println("Store essential parameters")
-
     # Extract crystallography information
     _case = D[:latt]._case
     scale = D[:latt].scale
@@ -334,6 +338,9 @@ directory that this file exists.
 See also: [`Mapping`](@ref).
 """
 function irio_maps(f::String)
+    # Print the header
+    println("Open and parse the file maps.ir")
+
     # Check file's status
     fn = joinpath(f, "maps.ir")
     @assert isfile(fn)
@@ -385,7 +392,9 @@ function irio_maps(f::String)
     end
 
     # Print some useful information
-    println("  > Open and parse the file maps.ir")
+    println("  > Number of impurity sites: ", length(MAP.i_grp))
+    println("  > Number of groups: ", length(MAP.g_imp))
+    println("  > Number of windows: ", length(MAP.w_imp))
 
     # Return the desired value
     return MAP
@@ -439,6 +448,9 @@ and `Tr` fields are not correct. But it doesn't matter.
 See also: [`PrGroup`](@ref).
 """
 function irio_groups(f::String)
+    # Print the header
+    println("Open and parse the file groups.ir")
+
     # Check file's status
     fn = joinpath(f, "groups.ir")
     @assert isfile(fn)
@@ -479,11 +491,20 @@ function irio_groups(f::String)
 
             # Store this group in PG
             push!(PG, _pg)
+            println("  > Extract group [$p]")
         end # END OF P LOOP
     end # END OF IOSTREAM
 
-    # Print some useful information
-    println("  > Open and parse the file groups.ir")
+    # Print the summary
+    println("  > Summary of groups:")
+    for i in eachindex(PG)
+        print("    [ Group $i ]")
+        print("  site -> ", PG[i].site)
+        print("  l -> ", PG[i].l)
+        print("  corr -> ", PG[i].corr)
+        print("  shell -> ", PG[i].shell)
+        println("  Pr -> ", PG[i].Pr)
+    end
 
     # Return the desired array
     return PG
@@ -544,6 +565,9 @@ directory that this file exists.
 See also: [`PrWindow`](@ref).
 """
 function irio_windows(f::String)
+    # Print the header
+    println("Open and parse the file windows.ir")
+
     # Check file's status
     fn = joinpath(f, "windows.ir")
     @assert isfile(fn)
@@ -606,11 +630,19 @@ function irio_windows(f::String)
 
             # Initialize a PrWindow struct and store it in PW
             push!(PW, PrWindow(kwin,bwin))
+            println("  > Extract window [$p]")
         end # END OF P LOOP
     end # END OF IOSTREAM
 
-    # Print some useful information
-    println("  > Open and parse the file windows.ir")
+    # Print the summary
+    println("  > Summary of windows:")
+    for i in eachindex(PW)
+        print("    [ Window $i ]")
+        print("  bmin -> ", PW[i].bmin)
+        print("  bmax -> ", PW[i].bmax)
+        print("  nbnd -> ", PW[i].nbnd)
+        println("  bwin -> ", PW[i].bwin)
+    end
 
     # Return the desired array
     return PW
@@ -691,6 +723,9 @@ directory that this file exists.
 See also: [`Lattice`](@ref).
 """
 function irio_lattice(f::String)
+    # Print the header
+    println("Open and parse the file lattice.ir (lattice)")
+
     # Check file's status
     fn = joinpath(f, "lattice.ir")
     @assert isfile(fn)
@@ -742,7 +777,8 @@ function irio_lattice(f::String)
     end # END OF IOSTREAM
 
     # Print some useful information
-    println("  > Open and parse the file lattice.ir (lattice)")
+    println("  > System: ", latt._case)
+    println("  > Atoms: ", latt.atoms)
 
     # Return the desired struct
     return latt
@@ -794,6 +830,9 @@ Extract the kmesh and weight information from `kmesh.ir`. Here `f` means
 the directory that this file exists.
 """
 function irio_kmesh(f::String)
+    # Print the header
+    println("Open and parse the file kmesh.ir (kmesh and weight)")
+
     # Check file's status
     fn = joinpath(f, "kmesh.ir")
     @assert isfile(fn)
@@ -819,7 +858,7 @@ function irio_kmesh(f::String)
         kmesh = zeros(F64, nkpt, ndir)
         weight = zeros(F64, nkpt)
 
-        # Get the kmesh and weight
+        # Read the body
         for k = 1:nkpt
             line = line_to_array(fin)
             kmesh[k,:] = parse.(F64, line[1:3])
@@ -828,7 +867,10 @@ function irio_kmesh(f::String)
     end # END OF IOSTREAM
 
     # Print some useful information
-    println("  > Open and parse the file kmesh.ir (kmesh and weight)")
+    println("  > Number of k-points: ", length(weight))
+    println("  > Total sum of weights: ", sum(weight))
+    println("  > Shape of Array kmesh: ", size(kmesh))
+    println("  > Shape of Array weight: ", size(weight))
 
     # Return the desired arrays
     return kmesh, weight
@@ -876,6 +918,9 @@ Extract the tetrahedra information from `tetra.ir`. Here `f` means the
 directory that this file exists.
 """
 function irio_tetra(f::String)
+    # Print the header
+    println("Open and parse the file tetra.ir (itet and volt)")
+
     # Check file's status
     fn = joinpath(f, "tetra.ir")
     @assert isfile(fn)
@@ -899,14 +944,16 @@ function irio_tetra(f::String)
         # Allocate memory
         itet = zeros(I64, ntet, 5)
 
-        # Get the tetrahedra
+        # Read the body
         for t = 1:ntet
             itet[t, :] = parse.(I64, line_to_array(fin))
         end
     end # END OF IOSTREAM
 
     # Print some useful information
-    println("  > Open and parse the file tetra.ir (itet and volt)")
+    println("  > Number of tetrahedra: ", size(itet)[1])
+    println("  > Volume of one tetrahedron: ", volt)
+    println("  > Shape of Array itet: ", size(itet))
 
     # Return the desired arrays
     return volt, itet
@@ -962,6 +1009,9 @@ Extract the eigenvalues from `eigen.ir`. Here `f` means the directory
 that this file exists.
 """
 function irio_eigen(f::String)
+    # Print the header
+    println("Open and parse the file eigen.ir (enk and occupy)")
+
     # Check file's status
     fn = joinpath(f, "eigen.ir")
     @assert isfile(fn)
@@ -987,7 +1037,7 @@ function irio_eigen(f::String)
         enk = zeros(F64, nband, nkpt, nspin)
         occupy = zeros(F64, nband, nkpt, nspin)
 
-        # Get the eigenvalues and occupations
+        # Read the body
         for s = 1:nspin
             for k = 1:nkpt
                 for b = 1:nband
@@ -1000,7 +1050,11 @@ function irio_eigen(f::String)
     end # END OF IOSTREAM
 
     # Print some useful information
-    println("  > Open and parse the file eigen.ir (enk and occupy)")
+    println("  > Number of DFT bands: ", size(enk)[1])
+    println("  > Number of k-points: ", size(enk)[2])
+    println("  > Number of spins: ", size(enk)[3])
+    println("  > Shape of Array enk: ", size(enk))
+    println("  > Shape of Array occupy: ", size(occupy))
 
     # Return the desired arrays
     return enk, occupy
@@ -1060,10 +1114,13 @@ end
 """
     irio_projs(f::String)
 
-Extract the projectors from `projs.ir`. Here `f` means the directory
-that this file exists.
+Extract the normalized projectors from `projs.ir`. Here `f` means the
+directory that this file exists.
 """
 function irio_projs(f::String)
+    # Print the header
+    println("Open and parse the file projs.ir (chipsi)")
+
     # Check file's status
     fn = joinpath(f, "projs.ir")
     @assert isfile(fn)
@@ -1097,7 +1154,7 @@ function irio_projs(f::String)
             # Allocate memory
             P = zeros(C64, ndim, nbnd, nkpt, nspin)
 
-            # Get the projectors
+            # Read the body
             for s = 1:nspin
                 for k = 1:nkpt
                     for b = 1:nbnd
@@ -1114,11 +1171,11 @@ function irio_projs(f::String)
 
             # Store P in chipsi
             push!(chipsi, P)
+
+            # Print some useful information
+            println("  > Shape of Array chipsi: ", size(P))
         end # END OF G LOOP
     end # END OF IOSTREAM
-
-    # Print some useful information
-    println("  > Open and parse the file projs.ir (chipsi)")
 
     # Return the desired arrays
     return chipsi
@@ -1157,6 +1214,9 @@ Extract the fermi level from `fermi.ir`. Here `f` means the directory
 that this file exists.
 """
 function irio_fermi(f::String)
+    # Print the header
+    println("Open and parse the file fermi.ir (fermi)")
+
     # Check file's status
     fn = joinpath(f, "fermi.ir")
     @assert isfile(fn)
@@ -1176,7 +1236,7 @@ function irio_fermi(f::String)
     end # END OF IOSTREAM
 
     # Print some useful information
-    println("  > Open and parse the file fermi.ir (fermi)")
+    println("  > Fermi level: $fermi eV")
 
     # Return the desired value
     return fermi
@@ -1185,7 +1245,7 @@ end
 """
     irio_rawcp(f::String, chipsi::Array{C64,4})
 
-Write the projectors to `projs.ir` using the IR format. Here `f` means
+Write the projectors to `rawcp.ir` using the IR format. Here `f` means
 only the directory that we want to use.
 
 The projectors are original data. They have not been modified.
@@ -1197,9 +1257,9 @@ function irio_rawcp(f::String, chipsi::Array{C64,4})
     nproj, nband, nkpt, nspin = size(chipsi)
 
     # Output the data
-    open(joinpath(f, "projs.ir"), "w") do fout
+    open(joinpath(f, "rawcp.ir"), "w") do fout
         # Write the header
-        println(fout, "# File: projs.ir")
+        println(fout, "# File: rawcp.ir")
         println(fout, "# Data: chipsi[nproj,nband,nkpt,nspin]")
         println(fout)
         println(fout, "nproj -> $nproj")
@@ -1222,7 +1282,61 @@ function irio_rawcp(f::String, chipsi::Array{C64,4})
     end # END OF IOSTREAM
 
     # Print some useful information
-    println("  > Open and write the file projs.ir (chipsi)")
+    println("  > Open and write the file rawcp.ir (chipsi)")
+end
+
+"""
+    irio_rawcp(f::String)
+
+Extract the raw projectors from `rawcp.ir`. Here `f` means the directory
+that this file exists.
+"""
+function irio_rawcp(f::String)
+    # Print the header
+    println("Open and parse the file rawcp.ir (chipsi)")
+
+    # Check file's status
+    fn = joinpath(f, "rawcp.ir")
+    @assert isfile(fn)
+
+    # Define the projectors
+    chipsi = nothing
+
+    # Input the data
+    open(fn, "r") do fin
+        # Skip the header
+        readline(fin)
+        readline(fin)
+        readline(fin)
+
+        # Extract some dimensional parameters
+        nproj = parse(I64, line_to_array(fin)[3])
+        nband = parse(I64, line_to_array(fin)[3])
+        nkpt  = parse(I64, line_to_array(fin)[3])
+        nspin = parse(I64, line_to_array(fin)[3])
+        readline(fin)
+
+        # Allocate memory
+        chipsi = zeros(C64, nproj, nband, nkpt, nspin)
+
+        # Read the body
+        for s = 1:nspin
+            for k = 1:nkpt
+                for b = 1:nband
+                    for p = 1:nproj
+                        _re, _im = parse.(F64, line_to_array(fin))
+                        chipsi[p, b, k, s] = _re + _im * im
+                    end # END OF P LOOP
+                end # END OF B LOOP
+            end # END OF K LOOP
+        end # END OF S LOOP
+    end # END OF IOSTREAM
+
+    # Print some useful information
+    println("  > Shape of Array chipsi: ", size(chipsi))
+
+    # Return the desired arrays
+    return chipsi
 end
 
 """

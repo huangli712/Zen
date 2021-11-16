@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/20
+# Last modified: 2021/11/16
 #
 
 #=
@@ -60,12 +60,6 @@ function plo_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
         @assert haskey(D, k)
     end
 
-    # How about the original projectors? We will try to calculate some
-    # physical observables to check the quality of the projectors.
-    isinteractive() &&
-    isfile(query_case()*".test") &&
-    plo_monitor(D)
-
     # P01: Create connections/mappings between projectors (or band
     # windows) and quantum impurity problems
     #
@@ -102,20 +96,48 @@ function plo_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     # D[:Fchipsi] will be updated. It contains the final data
     # for projector matrix.
     plo_orthog(D[:PW], D[:Fchipsi])
+end
 
-    # Are the projectors correct?
+"""
+    plo_check(D::Dict{Symbol,Any})
+
+Generate some key physical quantities by using the projectors and the
+Kohn-Sham band structures. It is used for debug only.
+"""
+function plo_check(D::Dict{Symbol,Any})
+    # Calculate and output overlap matrix
+    ovlp = calc_ovlp(D[:chipsi], D[:weight])
+    view_ovlp(ovlp)
     #
-    # We will try to calculate some physical quantitites, which
-    # will be written to external files or terminal for reference.
+    ovlp = calc_ovlp(D[:PW], D[:Fchipsi], D[:weight])
+    view_ovlp(D[:PG], ovlp)
+
+    # Calculate and output density matrix
+    dm = calc_dm(D[:chipsi], D[:weight], D[:occupy])
+    view_dm(dm)
     #
-    # These physical quantities include density matrix, overlap
-    # matrix, local hamiltonian, full hamiltonian, and partial
-    # density of states. Of course, it is time-comsuming to do
-    # these things. So it is a good idea to turn off this feature
-    # if everything is on the way.
-    isinteractive() &&
-    isfile(query_case()*".test") &&
-    plo_monitor(D)
+    dm = calc_dm(D[:PW], D[:Fchipsi], D[:weight], D[:occupy])
+    view_dm(D[:PG], dm)
+
+    # Calculate and output Kohn-Sham band level
+    level = calc_level(D[:chipsi], D[:weight], D[:enk])
+    view_level(level)
+    #
+    level = calc_level(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
+    view_level(D[:PG], level)
+
+    # Calculate and output hamiltonian matrix in local basis
+    hamk = calc_hamk(D[:chipsi], D[:enk])
+    view_hamk(hamk)
+    #
+    hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:enk])
+    view_hamk(hamk)
+
+    # Calculate and output density of states
+    if get_d("smear") === "tetra"
+        mesh, dos = calc_dos(D[:PW], D[:Fchipsi], D[:itet], D[:enk])
+        view_dos(mesh, dos)
+    end
 end
 
 #=
@@ -636,54 +658,6 @@ function plo_orthog(PW::Array{PrWindow,1}, chipsi::Array{Array{C64,4},1})
     end
 end
 
-"""
-    plo_monitor(D::Dict{Symbol,Any})
-
-Generate some key physical quantities by using the projectors and the
-Kohn-Sham band structures. It is used for debug only.
-
-See also: [`plo_adaptor`](@ref), [`wannier_monitor`](@ref).
-"""
-function plo_monitor(D::Dict{Symbol,Any})
-    if haskey(D, :MAP)
-        # If D[:MAP] is ready, it means that D[:PW] is created and the
-        # projectors are normalized and orthogonalized.
-
-        # Calculate and output overlap matrix
-        ovlp = calc_ovlp(D[:PW], D[:Fchipsi], D[:weight])
-        view_ovlp(D[:PG], ovlp)
-
-        # Calculate and output density matrix
-        dm = calc_dm(D[:PW], D[:Fchipsi], D[:weight], D[:occupy])
-        view_dm(D[:PG], dm)
-
-        # Calculate and output effective atomic level
-        level = calc_level(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
-        view_level(D[:PG], level)
-
-        # Calculate and output full hamiltonian
-        hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:enk])
-        view_hamk(hamk)
-
-        # Calculate and output density of states
-        if get_d("smear") == "tetra"
-            mesh, dos = calc_dos(D[:PW], D[:Fchipsi], D[:itet], D[:enk])
-            view_dos(mesh, dos)
-        end
-    else
-        # If D[:MAP] is not ready, it means that the projectors have not
-        # been postprocessed.
-
-        # Calculate and output overlap matrix
-        ovlp = calc_ovlp(D[:chipsi], D[:weight])
-        view_ovlp(ovlp)
-
-        # Calculate and output density matrix
-        dm = calc_dm(D[:chipsi], D[:weight], D[:occupy])
-        view_dm(dm)
-    end
-end
-
 #=
 ### *Service Functions* : *Group B*
 =#
@@ -1001,6 +975,9 @@ For raw projectors only.
 See also: [`view_ovlp`](@ref).
 """
 function calc_ovlp(chipsi::Array{C64,4}, weight::Array{F64,1})
+    # Print the header
+    println("Calculate overlap matrix using raw projectors")
+
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
     @assert nband ≥ nproj
@@ -1029,11 +1006,14 @@ end
 Calculate the overlap matrix out of projectors.
 For normalized projectors only.
 
-See also: [`view_ovlp`](@ref), [`PrWindow`](@ref).
+See also: [`view_ovlp`](@ref).
 """
 function calc_ovlp(PW::Array{PrWindow,1},
                    chipsi::Array{Array{C64,4},1},
                    weight::Array{F64,1})
+    # Print the header
+    println("Calculate overlap matrix using normalized projectors")
+
     # Create an empty array. Next we will fill it.
     ovlp = Array{F64,3}[]
 
@@ -1076,6 +1056,9 @@ See also: [`view_dm`](@ref).
 function calc_dm(chipsi::Array{C64,4},
                  weight::Array{F64,1},
                  occupy::Array{F64,3})
+    # Print the header
+    println("Calculate density matrix using raw projectors")
+
     # Extract some key parameters
     nproj, nband, nkpt, nspin = size(chipsi)
     @assert nband ≥ nproj
@@ -1109,12 +1092,15 @@ end
 Calculate the density matrix out of projectors.
 For normalized projectors only.
 
-See also: [`view_dm`](@ref), [`PrWindow`](@ref).
+See also: [`view_dm`](@ref).
 """
 function calc_dm(PW::Array{PrWindow,1},
                  chipsi::Array{Array{C64,4},1},
                  weight::Array{F64,1},
                  occupy::Array{F64,3})
+    # Print the header
+    println("Calculate density matrix using normalized projectors")
+
     # Create an empty array. Next we will fill it.
     dm = Array{F64,3}[]
 
@@ -1161,20 +1147,59 @@ function calc_dm(PW::Array{PrWindow,1},
 end
 
 """
+    calc_level(chipsi::Array{C64,4},
+               weight::Array{F64,1},
+               enk::Array{F64,3})
+
+Try to build the effective band level in local basis.
+For raw projectors only.
+
+See also: [`view_level`](@ref).
+"""
+function calc_level(chipsi::Array{C64,4},
+                    weight::Array{F64,1},
+                    enk::Array{F64,3})
+    # Print the header
+    println("Calculate band levels using raw projectors")
+
+    # Extract some key parameters
+    nproj, nband, nkpt, nspin = size(chipsi)
+    @assert nband ≥ nproj
+
+    # Create eimp array
+    level = zeros(C64, nproj, nproj, nspin)
+
+    for s = 1:nspin
+        for k = 1:nkpt
+            wght = weight[k] / nkpt
+            eigs = enk[:, k, s]
+            A = view(chipsi, :, :, k, s)
+            level[:, :, s] = level[:, :, s] + (A * Diagonal(eigs) * A') * wght
+        end # END OF K LOOP
+    end # END OF S LOOP
+
+    # Return the desired array
+    return level
+end
+
+"""
     calc_level(PW::Array{PrWindow,1},
                chipsi::Array{Array{C64,4},1},
                weight::Array{F64,1},
                enk::Array{F64,3})
 
-Try to build the effective atomic level.
+Try to build the effective band level in local basis.
 For normalized projectors only.
 
-See also: [`view_level`](@ref), [`PrWindow`](@ref).
+See also: [`view_level`](@ref).
 """
 function calc_level(PW::Array{PrWindow,1},
                     chipsi::Array{Array{C64,4},1},
                     weight::Array{F64,1},
                     enk::Array{F64,3})
+    # Print the header
+    println("Calculate band levels using normalized projectors")
+
     # Create an empty array. Next we will fill it.
     level = Array{C64,3}[]
 
@@ -1218,18 +1243,53 @@ function calc_level(PW::Array{PrWindow,1},
 end
 
 """
+    calc_hamk(chipsi::Array{C64,4}, enk::Array{F64,3})
+
+Try to build the hamiltonian matrix in local basis (momentum-dependent).
+For raw projectors only.
+
+See also: [`view_hamk`](@ref).
+"""
+function calc_hamk(chipsi::Array{C64,4}, enk::Array{F64,3})
+    # Print the header
+    println("Calculate hamiltonian matrix using raw projectors")
+
+    # Extract some key parameters
+    nproj, nband, nkpt, nspin = size(chipsi)
+    @assert nband ≥ nproj
+
+    # Create hamiltonian array
+    hamk = zeros(C64, nproj, nproj, nkpt, nspin)
+
+    # Loop over spins and 𝑘-points
+    for s = 1:nspin
+        for k = 1:nkpt
+            eigs = enk[:, k, s]
+            A = view(chipsi, :, :, k, s)
+            hamk[:, :, k, s] = A * Diagonal(eigs) * A'
+        end # END OF K LOOP
+    end # END OF S LOOP
+
+    # Return the desired array
+    return hamk
+end
+
+"""
     calc_hamk(PW::Array{PrWindow,1},
               chipsi::Array{Array{C64,4},1},
               enk::Array{F64,3})
 
-Try to build the full hamiltonian matrix (momentum-dependent).
+Try to build the hamiltonian matrix in local basis (momentum-dependent).
 For normalized projectors only.
 
-See also: [`view_hamk`](@ref), [`PrWindow`](@ref).
+See also: [`view_hamk`](@ref).
 """
 function calc_hamk(PW::Array{PrWindow,1},
                    chipsi::Array{Array{C64,4},1},
                    enk::Array{F64,3})
+    # Print the header
+    println("Calculate hamiltonian matrix using normalized projectors")
+
     # Create an empty array. Next we will fill it.
     hamk = Array{C64,4}[]
 
@@ -1242,7 +1302,7 @@ function calc_hamk(PW::Array{PrWindow,1},
         # Create an array for the hamiltonian
         H = zeros(C64, ndim, ndim, nkpt, nspin)
 
-        # Loop over spins and k-points
+        # Loop over spins and 𝑘-points
         for s = 1:nspin
             for k = 1:nkpt
                 # Determine band window
@@ -1278,12 +1338,15 @@ end
 Try to calculate the partial density of states using the analytical
 tetrahedron method.
 
-See also: [`view_dos`](@ref), [`PrWindow`](@ref).
+See also: [`view_dos`](@ref).
 """
 function calc_dos(PW::Array{PrWindow,1},
                   chipsi::Array{Array{C64,4},1},
                   itet::Array{I64,2},
                   enk::Array{F64,3})
+    # Print the header
+    println("Calculate density of states using normalized projectors")
+
     # Create array of mesh
     MA = Array{F64,1}[]
 
@@ -1349,153 +1412,138 @@ end
 """
     view_ovlp(ovlp::Array{F64,3})
 
-Output the overlap matrix to screen. For raw projectors only.
+Output the overlap matrix to `ovlp.raw`.
+For raw projectors only.
 
 See also: [`calc_ovlp`](@ref).
 """
 function view_ovlp(ovlp::Array{F64,3})
-    # Open IOStream
-    fn = open("ovlp.chk", "a")
-
-    # Print the header
-    println(fn, "<- Overlap Matrix ->")
-
     # Extract some key parameters
     _, nproj, nspin = size(ovlp)
 
-    # Output the data
-    for s = 1:nspin
-        println(fn, "Spin: $s")
-        for p = 1:nproj
-            foreach(x -> @printf(fn, "%12.7f", x), ovlp[p, :, s])
-            println(fn)
-        end
-    end # END OF S LOOP
+    open("ovlp.raw", "w") do fn
+        # Print the header
+        println(fn, "<- Overlap Matrix ->")
 
-    # Close IOStream
-    close(fn)
+        # Output the data
+        for s = 1:nspin
+            println(fn, "Spin: $s")
+            for p = 1:nproj
+                foreach(x -> @printf(fn, "%12.7f", x), ovlp[p, :, s])
+                println(fn)
+            end # END OF P LOOP
+        end # END OF S LOOP
+    end # END OF IOSTREAM
 end
 
 """
     view_ovlp(PG::Array{PrGroup,1}, ovlp::Array{Array{F64,3},1})
 
-Output the overlap matrix to screen. For normalized projectors only.
+Output the overlap matrix to `ovlp.nor`.
+For normalized projectors only.
 
-See also: [`calc_ovlp`](@ref), [`PrGroup`](@ref).
+See also: [`calc_ovlp`](@ref).
 """
 function view_ovlp(PG::Array{PrGroup,1}, ovlp::Array{Array{F64,3},1})
-    # Open IOStream
-    fn = open("ovlp.chk", "a")
+    open("ovlp.nor", "w") do fn
+        # Print the header
+        println(fn, "<- Overlap Matrix ->")
 
-    # Print the header
-    println(fn, "<- Overlap Matrix ->")
+        # Go through each PrGroup
+        for p in eachindex(PG)
+            site = PG[p].site; l = PG[p].l; shell = PG[p].shell
+            println(fn, "Site -> $site L -> $l Shell -> $shell")
 
-    # Go through each PrGroup
-    for p in eachindex(PG)
-        println(fn, "Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
+            # Extract some key parameters
+            _, ndim, nspin = size(ovlp[p])
 
-        # Extract some key parameters
-        _, ndim, nspin = size(ovlp[p])
-
-        # Output the data
-        for s = 1:nspin
-            println(fn, "Spin: $s")
-            for q = 1:ndim
-                foreach(x -> @printf(fn, "%12.7f", x), ovlp[p][q, 1:ndim, s])
-                println(fn)
-            end
-        end # END OF S LOOP
-    end # END OF P LOOP
-
-    # Close IOStream
-    close(fn)
+            # Output the data
+            for s = 1:nspin
+                println(fn, "Spin: $s")
+                for q = 1:ndim
+                    foreach(x -> @printf(fn, "%12.7f", x), ovlp[p][q, 1:ndim, s])
+                    println(fn)
+                end # END OF Q LOOP
+            end # END OF S LOOP
+        end # END OF P LOOP
+    end # END OF IOSTREAM
 end
 
 """
     view_dm(dm::Array{F64,3})
 
-Output the density matrix to screen. For raw projectors only.
+Output the density matrix to `dm.raw`.
+For raw projectors only.
 
 See also: [`calc_dm`](@ref).
 """
 function view_dm(dm::Array{F64,3})
-    # Open IOStream
-    fn = open("dm.chk", "a")
-
-    # Print the header
-    println(fn, "<- Density Matrix ->")
-
     # Extract some key parameters
     _, nproj, nspin = size(dm)
 
-    # Output the data
-    for s = 1:nspin
-        println(fn, "Spin: $s")
-        for p = 1:nproj
-            foreach(x -> @printf(fn, "%12.7f", x), dm[p, :, s])
-            println(fn)
-        end
-    end # END OF S LOOP
+    open("dm.raw", "w") do fn
+        # Print the header
+        println(fn, "<- Density Matrix ->")
 
-    # Close IOStream
-    close(fn)
+        # Output the data
+        for s = 1:nspin
+            println(fn, "Spin: $s")
+            for p = 1:nproj
+                foreach(x -> @printf(fn, "%12.7f", x), dm[p, :, s])
+                println(fn)
+            end # END OF P LOOP
+        end # END OF S LOOP
+    end # END OF IOSTREAM
 end
 
 """
     view_dm(PG::Array{PrGroup,1}, dm::Array{Array{F64,3},1})
 
-Output the density matrix to screen. For normalized projectors only.
+Output the density matrix to `dm.nor`.
+For normalized projectors only.
 
-See also: [`calc_dm`](@ref), [`PrGroup`](@ref).
+See also: [`calc_dm`](@ref).
 """
 function view_dm(PG::Array{PrGroup,1}, dm::Array{Array{F64,3},1})
-    # Open IOStream
-    fn = open("dm.chk", "a")
+    open("dm.nor", "w") do fn
+        # Print the header
+        println(fn, "<- Density Matrix ->")
 
-    # Print the header
-    println(fn, "<- Density Matrix ->")
+        # Go through each PrGroup
+        for p in eachindex(PG)
+            site = PG[p].site; l = PG[p].l; shell = PG[p].shell
+            println(fn, "Site -> $site L -> $l Shell -> $shell")
 
-    # Go through each PrGroup
-    for p in eachindex(PG)
-        println(fn, "Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
+            # Extract some key parameters
+            _, ndim, nspin = size(dm[p])
 
-        # Extract some key parameters
-        _, ndim, nspin = size(dm[p])
-
-        # Output the data
-        for s = 1:nspin
-            println(fn, "Spin: $s")
-            for q = 1:ndim
-                foreach(x -> @printf(fn, "%12.7f", x), dm[p][q, 1:ndim, s])
-                println(fn)
-            end
-        end # END OF S LOOP
-    end # END OF P LOOP
-
-    # Close IOStream
-    close(fn)
+            # Output the data
+            for s = 1:nspin
+                println(fn, "Spin: $s")
+                for q = 1:ndim
+                    foreach(x -> @printf(fn, "%12.7f", x), dm[p][q, 1:ndim, s])
+                    println(fn)
+                end # END OF Q LOOP
+            end # END OF S LOOP
+        end # END OF P LOOP
+    end # END OF IOSTREAM
 end
 
 """
-    view_level(PG::Array{PrGroup,1}, level::Array{Array{C64,3},1})
+    view_level(level::Array{C64,3})
 
-Output the effective atomic level to screen. For normalized projectors only.
+Output the effective atomic level to `level.raw`.
+For raw projectors only.
 
-See also: [`calc_level`](@ref), [`PrGroup`](@ref).
+See also: [`calc_level`](@ref).
 """
-function view_level(PG::Array{PrGroup,1}, level::Array{Array{C64,3},1})
-    # Open IOStream
-    fn = open("level.chk", "a")
+function view_level(level::Array{C64,3})
+    # Extract some key parameters
+    _, nproj, nspin = size(level)
 
-    # Print the header
-    println(fn, "<- Effective Atomic Level ->")
-
-    # Go through each PrGroup
-    for p in eachindex(PG)
-        println(fn, "Site -> $(PG[p].site) L -> $(PG[p].l) Shell -> $(PG[p].shell)")
-
-        # Extract some key parameters
-        _, ndim, nspin = size(level[p])
+    open("level.raw", "w") do fn
+        # Print the header
+        println(fn, "<- Kohn-Sham Band Level ->")
 
         # Output the data
         for s = 1:nspin
@@ -1503,36 +1551,114 @@ function view_level(PG::Array{PrGroup,1}, level::Array{Array{C64,3},1})
 
             # Real parts
             println(fn, "Re:")
-            for q = 1:ndim
-                foreach(x -> @printf(fn, "%12.7f", x), real(level[p][q, 1:ndim, s]))
+            for p = 1:nproj
+                foreach(x -> @printf(fn, "%12.7f", real(x)), level[p, :, s])
                 println(fn)
-            end
+            end # END OF P LOOP
 
             # Imag parts
             println(fn, "Im:")
-            for q = 1:ndim
-                foreach(x -> @printf(fn, "%12.7f", x), imag(level[p][q, 1:ndim, s]))
+            for p = 1:nproj
+                foreach(x -> @printf(fn, "%12.7f", imag(x)), level[p, :, s])
                 println(fn)
-            end
+            end # END OF P LOOP
         end # END OF S LOOP
-    end # END OF P LOOP
+    end # END OF IOSTREAM
+end
 
-    # Close IOStream
-    close(fn)
+"""
+    view_level(PG::Array{PrGroup,1}, level::Array{Array{C64,3},1})
+
+Output the effective atomic level to `level.nor`.
+For normalized projectors only.
+
+See also: [`calc_level`](@ref).
+"""
+function view_level(PG::Array{PrGroup,1}, level::Array{Array{C64,3},1})
+    open("level.nor", "w") do fn
+        # Print the header
+        println(fn, "<- Kohn-Sham Band Level ->")
+
+        # Go through each PrGroup
+        for p in eachindex(PG)
+            site = PG[p].site; l = PG[p].l; shell = PG[p].shell
+            println(fn, "Site -> $site L -> $l Shell -> $shell")
+
+            # Extract some key parameters
+            _, ndim, nspin = size(level[p])
+
+            # Output the data
+            for s = 1:nspin
+                println(fn, "Spin: $s")
+
+                # Real parts
+                println(fn, "Re:")
+                for q = 1:ndim
+                    foreach(x -> @printf(fn, "%12.7f", real(x)), level[p][q, 1:ndim, s])
+                    println(fn)
+                end # END OF Q LOOP
+
+                # Imag parts
+                println(fn, "Im:")
+                for q = 1:ndim
+                    foreach(x -> @printf(fn, "%12.7f", imag(x)), level[p][q, 1:ndim, s])
+                    println(fn)
+                end # END OF Q LOOP
+            end # END OF S LOOP
+        end # END OF P LOOP
+    end # END OF IOSTREAM
 end
 
 #=
 *Remarks* :
 
-The data file `hamk.chk.i` is used to debug. It should not be read by
+The data file `hamk.nor.i` is used to debug. It should not be read by
 the DMFT engine. That is the reason why we name this function as
-`view_hamk()` and put it in plo.jl.
+`view_hamk()` and put it in `plo.jl`.
 =#
+
+"""
+    view_hamk(hamk::Array{C64,4})
+
+Output the hamiltonian matrix in local basis to `hamk.raw`.
+For raw projectors only.
+
+See also: [`calc_hamk`](@ref).
+"""
+function view_hamk(hamk::Array{C64,4})
+    # Extract some key parameters
+    nproj, _, nkpt, nspin = size(hamk)
+
+    # Output the data
+    open("hamk.raw", "w") do fout
+        # Write the header
+        println(fout, "# File: hamk.raw")
+        println(fout, "# Data: hamk[nproj,nproj,nkpt,nspin]")
+        println(fout)
+        println(fout, "nproj -> $nproj")
+        println(fout, "nkpt  -> $nkpt")
+        println(fout, "nspin -> $nspin")
+        println(fout)
+
+        # Write the body
+        for s = 1:nspin
+            for k = 1:nkpt
+                for q = 1:nproj
+                    for p = 1:nproj
+                        z = hamk[p, q, k, s]
+                        @printf(fout, "%16.12f %16.12f\n", real(z), imag(z))
+                    end # END OF P LOOP
+                end # END OF Q LOOP
+            end # END OF K LOOP
+        end # END OF S LOOP
+    end # END OF IOSTREAM
+end
 
 """
     view_hamk(hamk::Array{Array{C64,4},1})
 
-Output the full hamiltonian to `hamk.chk.i`. For normalized projectors only.
+Output the hamiltonian matrix in local basis to `hamk.nor.i`.
+For normalized projectors only.
 
 See also: [`calc_hamk`](@ref).
 """
@@ -1542,9 +1668,9 @@ function view_hamk(hamk::Array{Array{C64,4},1})
         nproj, _, nkpt, nspin = size(hamk[g])
 
         # Output the data
-        open("hamk.chk.$g", "w") do fout
+        open("hamk.nor.$g", "w") do fout
             # Write the header
-            println(fout, "# File: hamk.chk.$g")
+            println(fout, "# File: hamk.nor.$g")
             println(fout, "# Data: hamk[nproj,nproj,nkpt,nspin]")
             println(fout)
             println(fout, "group -> $g")
@@ -1560,19 +1686,19 @@ function view_hamk(hamk::Array{Array{C64,4},1})
                         for p = 1:nproj
                             z = hamk[g][p, q, k, s]
                             @printf(fout, "%16.12f %16.12f\n", real(z), imag(z))
-                        end
-                    end
+                        end # END OF P LOOP
+                    end # END OF Q LOOP
                 end # END OF K LOOP
             end # END OF S LOOP
         end # END OF IOSTREAM
-
     end # END OF G LOOP
 end
 
 """
     view_dos(mesh::Array{Array{F64,1},1}, dos::Array{Array{F64,3},1})
 
-Output the density of states to `dos.chk`. For normalized projectors only.
+Output the density of states to `dos.nor`.
+For normalized projectors only.
 
 See also: [`calc_dos`](@ref).
 """
@@ -1584,9 +1710,9 @@ function view_dos(mesh::Array{Array{F64,1},1}, dos::Array{Array{F64,3},1})
         @assert npnts == length(mesh[p])
 
         # Output the data
-        open("dos.chk.$p", "w") do fout
+        open("dos.nor.$p", "w") do fout
             # Write the header
-            println(fout, "# File: dos.chk")
+            println(fout, "# File: dos.nor")
             println(fout, "# Data: mesh[npnts] and dos[ndim,nspin,npnts]")
             println(fout)
             println(fout, "npnts -> $npnts")

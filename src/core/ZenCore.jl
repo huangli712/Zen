@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/06
+# Last modified: 2021/11/16
 #
 
 """
@@ -707,6 +707,7 @@ Tools for the projection on localized orbitals scheme (adaptor).
 ```text
 adaptor_call -> Launch the DFT-DMFT adaptor (for PLO scheme).
 plo_adaptor  -> Adaptor support.
+plo_check    -> Check the projectors.
 plo_map      -> Create connection between projectors and impurity problems.
 plo_fermi    -> Calibrate Kohn-Sham eigenvalues with respect to fermi level.
 plo_group    -> Setup groups of projectors.
@@ -714,7 +715,6 @@ plo_rotate   -> Rotate the projectors.
 plo_window   -> Setup band windows of projectors.
 plo_filter   -> Extract the projectors within a given energy window.
 plo_orthog   -> Orthogonalize / normalize the projectors.
-plo_monitor  -> Generate some physical quantities using the projectors.
 get_win1     -> Evaluate relevant Kohn-Sham window by band indices.
 get_win2     -> Evaluate relevant Kohn-Sham window by energies.
 get_win3     -> Evaluate relevant Kohn-Sham window automatically.
@@ -739,6 +739,7 @@ include("plo.jl")
 #
 export adaptor_call
 export plo_adaptor
+export plo_check
 export plo_map
 export plo_fermi
 export plo_group
@@ -746,7 +747,6 @@ export plo_rotate
 export plo_window
 export plo_filter
 export plo_orthog
-export plo_monitor
 export get_win1
 export get_win2
 export get_win3
@@ -781,7 +781,6 @@ wannier_adaptor -> Adaptor support.
 wannier_init    -> Prepare wannier90's input files.
 wannier_exec    -> Execute wannier90 program.
 wannier_save    -> Backup wannier90's output files.
-wannier_monitor -> Check the WFs and projections.
 w90_make_ctrl   -> Prepare control parameters for wannier90.
 w90_make_proj   -> Define projections for wannier90.
 w90_make_map    -> Create connection between WFs and impurity problems.
@@ -815,7 +814,6 @@ export wannier_adaptor
 export wannier_init
 export wannier_exec
 export wannier_save
-export wannier_monitor
 export w90_make_ctrl
 export w90_make_proj
 export w90_make_map
@@ -855,17 +853,17 @@ ir_adaptor   -> Adaptor support.
 ir_save      -> Save the output files by the adaptor.
 ir_read      -> Parse and return the output data by the adaptor.
 irio_params  -> Write key parameters extracted from Kohn-Sham data.
-irio_maps    -> Write Mapping.
-irio_groups  -> Write PrGroup.
-irio_windows -> Write PrWindow.
-irio_lattice -> Write lattice information.
-irio_kmesh   -> Write kmesh.
-irio_tetra   -> Write tetrahedra.
-irio_eigen   -> Write eigenvalues.
-irio_projs   -> Write projectors (normalized).
-irio_fermi   -> Write fermi level.
-irio_rawcp   -> Write projectors (raw).
-irio_charge  -> Write charge density.
+irio_maps    -> Write/read Mapping.
+irio_groups  -> Write/read PrGroup.
+irio_windows -> Write/read PrWindow.
+irio_lattice -> Write/read lattice information.
+irio_kmesh   -> Write/read kmesh.
+irio_tetra   -> Write/read tetrahedra.
+irio_eigen   -> Write/read eigenvalues.
+irio_projs   -> Write/read projectors (normalized).
+irio_fermi   -> Write/read fermi level.
+irio_rawcp   -> Write/read projectors (raw).
+irio_charge  -> Write/read charge density.
 ```
 =#
 
@@ -885,6 +883,7 @@ export irio_tetra
 export irio_eigen
 export irio_projs
 export irio_fermi
+export irio_rawcp
 export irio_charge
 
 #=

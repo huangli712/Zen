@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/01
+# Last modified: 2021/11/08
 #
 
 #=
@@ -107,7 +107,7 @@ function qe_adaptor(D::Dict{Symbol,Any})
     D[:fermi] = qeio_fermi(pwd(), false)
 
     # Q06: Generate MLWFs for the QE + WANNIER mode
-    #is_wannier() && qe_to_wan(D)
+    is_wannier() && qe_to_wan(D)
 
     # Q06: Generate projected local orbitals for the QE + PLO mode
     is_plo() && qe_to_plo(D)

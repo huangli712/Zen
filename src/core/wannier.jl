@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/08
+# Last modified: 2021/11/12
 #
 
 #=
@@ -235,14 +235,6 @@ function wannier_adaptor(D::Dict{Symbol,Any}, ai::Array{Impurity,1})
     #
     # D[:Fchipsi] will be created
     D[:Fchipsi] = w90_make_chipsi(D[:PW], D[:Rchipsi])
-
-    # Are the projectors correct?
-    #
-    # We will try to calculate some physical quantitites, which
-    # will be written to external files or terminal for reference.
-    isinteractive() &&
-    isfile(query_case()*".test") &&
-    wannier_monitor(D)
 end
 
 #=
@@ -419,33 +411,6 @@ function wannier_save(sp::String = ""; op::String = "")
             end
         end
     end
-end
-
-"""
-    wannier_monitor(D::Dict{Symbol,Any})
-
-Try to check and examine whether the obtained wannier functions are
-correct and reasonable. Be careful, the calc_ovlp(), calc_dm(), and
-calc_level() functions are defined in plo.jl.
-
-See also: [`wannier_adaptor`](@ref), [`plo_monitor`](@ref).
-"""
-function wannier_monitor(D::Dict{Symbol,Any})
-    # Calculate and output overlap matrix
-    ovlp = calc_ovlp(D[:PW], D[:Fchipsi], D[:weight])
-    view_ovlp(D[:PG], ovlp)
-
-    # Calculate and output density matrix
-    dm = calc_dm(D[:PW], D[:Fchipsi], D[:weight], D[:occupy])
-    view_dm(D[:PG], dm)
-
-    # Calculate and output effective atomic level
-    level = calc_level(D[:PW], D[:Fchipsi], D[:weight], D[:enk])
-    view_level(D[:PG], level)
-
-    # Calculate and output full hamiltonian
-    hamk = calc_hamk(D[:PW], D[:Fchipsi], D[:enk])
-    view_hamk(hamk)
 end
 
 #=
@@ -1349,6 +1314,9 @@ See also: [`w90_make_rcell`](@ref).
 function w90_make_kpath(ndiv::I64,
                         kstart::Array{F64,2},
                         kend::Array{F64,2})
+    # Print the header
+    println("Generate high-symmetry directions in the Brillouin zone")
+
     # Get dimensional parameters
     ndir, _ = size(kstart)
     @assert size(kstart) == size(kend)
@@ -1391,6 +1359,11 @@ function w90_make_kpath(ndiv::I64,
     kpath[end,:] = kend[end,:]
     xpath[end] = sum(kdist)
 
+    # Print some useful information
+    println("  > Number of segments: ", ndir)
+    println("  > Number of 𝑘-points per segment: ", ndiv)
+    println("  > Number of total 𝑘-points: ", length(xpath))
+
     # Return the desired arrays
     return kpath, xpath
 end
@@ -1405,6 +1378,9 @@ given lattice (`latt`).
 See also: [`w90_make_kpath`](@ref).
 """
 function w90_make_rcell(latt::Lattice)
+    # Print the header
+    println("Generate 𝑟-points in the Wigner-Seitz cell")
+
     # Some internal parameters
     #
     # Maximum extension in each direction of the supercell of the BvK
@@ -1510,6 +1486,9 @@ function w90_make_rcell(latt::Lattice)
         rvec[i,:] .= rtmp[i]
     end
 
+    # Print some useful information
+    println("  > Number of 𝑟-points: ", nrpts)
+
     # Return the desired arrays
     return rdeg, rvec
 end
@@ -1529,6 +1508,9 @@ See also: [`w90_make_hamk`](@ref).
 function w90_make_hamr(kvec::Array{F64,2},
                        rvec::Array{I64,2},
                        hamk::Array{C64,3})
+    # Print the header
+    println("Build hamiltonian in 𝑟-space via wannier interpolation")
+
     # Get dimensional parameters
     nband, _, nkpt = size(hamk)
     nrpt, _ = size(rvec)
@@ -1544,6 +1526,12 @@ function w90_make_hamr(kvec::Array{F64,2},
             hamr[:,:,r] = hamr[:,:,r] + ratio * hamk[:,:,k]
         end # END OF K LOOP
     end # END OF R LOOP
+
+    # Print some useful information
+    println("  > Number of 𝑘-points: ", nkpt)
+    println("  > Number of 𝑟-points: ", nrpt)
+    println("  > Shape of Array hamk: ", size(hamk))
+    println("  > Shape of Array hamr: ", size(hamr))
 
     # Return ``H(R)``
     return hamr
@@ -1566,6 +1554,9 @@ function w90_make_hamk(kvec::Array{F64,2},
                        rdeg::Array{I64,1},
                        rvec::Array{I64,2},
                        hamr::Array{C64,3})
+    # Print the header
+    println("Build hamiltonian in 𝑘-space via wannier interpolation")
+
     # Get dimensional parameters
     nband, _, nrpt = size(hamr)
     nkpt, _ = size(kvec)
@@ -1582,6 +1573,12 @@ function w90_make_hamk(kvec::Array{F64,2},
         end # END OF R LOOP
     end # END OF K LOOP
 
+    # Print some useful information
+    println("  > Number of 𝑘-points: ", nkpt)
+    println("  > Number of 𝑟-points: ", nrpt)
+    println("  > Shape of Array hamk: ", size(hamk))
+    println("  > Shape of Array hamr: ", size(hamr))
+
     # Return ``H(K)``
     return hamk
 end
@@ -1594,6 +1591,9 @@ Diagonalize the hamiltonian to give band structure.
 See also: [`w90_make_hamk`](@ref).
 """
 function w90_diag_hamk(hamk::Array{C64,3})
+    # Print the header
+    println("Diagonalize hamiltonian in 𝑘-space")
+
     # Get dimensional parameters
     nband, _, nkpt = size(hamk)
 
@@ -1608,6 +1608,12 @@ function w90_diag_hamk(hamk::Array{C64,3})
         @. eigs[:,k] = E.values
         @. evec[:,:,k] = E.vectors
     end
+
+    # Print some useful information
+    println("  > Number of 𝑘-points: ", nkpt)
+    println("  > Shape of Array hamk: ", size(hamk))
+    println("  > Shape of Array eigs: ", size(eigs))
+    println("  > Shape of Array evec: ", size(evec))
 
     # Return eigenvalues and eigenvectors
     return eigs, evec
@@ -1758,12 +1764,10 @@ matrix in WF representation, the Wigner-Seitz grid points, and their
 weights (degeneracies). The argument `sp` denotes the spin component.
 The data return by this function can be used to validate the projection
 matrix further.
-
-See also: [`wannier_monitor`](@ref).
 """
 function w90_read_hamr(f::String, sp::String = "")
     # Print the header
-    println("Parse hamiltonian in WF basis")
+    println("Parse hamiltonian in wannier basis")
 
     # Build the filename
     fhr = joinpath(f, "w90" * sp * "_hr.dat")
