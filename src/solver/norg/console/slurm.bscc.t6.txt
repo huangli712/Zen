@@ -1,0 +1,13 @@
+#!/bin/bash
+#SBATCH -p v6_384
+#SBATCH -o
+#SBATCH -e
+#SBATCH -N 1
+#SBATCH -n 96
+#SBATCH -c 1
+#SBATCH -t 1440
+#SBATCH -J jmw
+
+export OMP_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+srun -n 48 ./console/exe

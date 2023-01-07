@@ -57,6 +57,7 @@
 ##
 ## 08/06/2021 by li huang (created)
 ## 08/06/2021 by li huang (last modified)
+## 01/05/2023 by jia-ming wang (last modified)
 ##
 ##
 
@@ -102,10 +103,14 @@ clean-deps:
 solver:
 	@echo 'building solvers / ct_hyb1'
 	cd ../src/solver/ct_hyb1/; pwd; make
+	@echo 'building solvers / norg'
+	cd ../src/solver/norg/; pwd; make
 
 clean-solver:
 	@echo 'cleaning solvers / ct_hyb1'
 	cd ../src/solver/ct_hyb1/; pwd; make clean
+	@echo 'cleaning solvers / norg'
+	cd ../src/solver/norg/; pwd; make clear
 
 # targets for dynamical mean-field engine
 dmft:

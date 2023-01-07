@@ -1,0 +1,5 @@
+#!/bin/sh
+job=`tail ./console/haha.job.txt`
+echo $job > haha.job.${job}.txt
+echo $job
+

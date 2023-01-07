@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -q batch
+#PBS -j oe
+#PBS -N haha
+#PBS -l nodes=2:ppn=32,walltime=72:00:00
+#PBS -l mem=64g
+NPROCS=`cat $PBS_NODEFILE|wc -l`
+export OMP_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+source /opt/intel/bin/compilervars.sh intel64
+source /opt/intel/impi/2017.0.098/bin64/mpivars.sh
+cd $PBS_O_WORKDIR
+JOBID=`echo $PBS_JOBID | cut -f1 -d.`
+cat $PBS_NODEFILE > haha.hst.$PBS_JOBID.txt
+mpirun -n $NPROCS -machinefile haha.hst.$PBS_JOBID.txt ./console/exe > haha.std.$PBS_JOBID.txt
+

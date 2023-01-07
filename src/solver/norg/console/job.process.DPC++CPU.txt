@@ -1,0 +1,5 @@
+#!/bin/sh
+job=`tail ./console/jmwang.job.txt`
+echo ${job} > jmwang.job.${job}.txt
+echo ${job}
+

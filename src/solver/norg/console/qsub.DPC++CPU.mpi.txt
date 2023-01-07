@@ -1,0 +1,13 @@
+#!/bin/sh
+#PBS -q batch
+#PBS -j oe
+#PBS -N jmwang
+#PBS -l nodes=mu01:ppn=28
+NPRC=`cat $PBS_NODEFILE|wc -l`
+export OMP_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+cd $PBS_O_WORKDIR
+set JOBID=`echo $PBS_JOBID | cut -f1 -d.`
+cat $PBS_NODEFILE > jmwang.hst.$PBS_JOBID.txt
+mpirun -n 28 ./console/exe > jmwang.std.$PBS_JOBID.txt
+
