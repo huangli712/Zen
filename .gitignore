@@ -26,3 +26,7 @@ test/_*
 ctqmc
 dmft
 docs/build
+src/solver/norg/*/*.d
+src/solver/norg/console/exe
+src/solver/norg/archives
+
