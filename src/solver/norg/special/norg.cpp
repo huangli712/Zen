@@ -28,7 +28,7 @@ NORG::NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i) :
 
 void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 	h0 = h0_i;
-	if (mm) PIO(NAV2(h0,scsp.dim));
+	// if (mm) PIO(NAV2(h0,scsp.dim));
 	scsp.coefficient = scsp.set_row_primeter_by_gived_mat(uormat, h0_i);
 	oneedm.update(); final_ground_state = oneedm.ground_state;
 	// if(mm) PIO(NAV(oneedm.sum_off_diagonal()));
@@ -66,7 +66,7 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 		}
 	}
 	iter_norg_cnt = 0;		occupationerr = 1.;		groundenererr = 1.;
-	final_ground_state = oneedm.ground_state;
+	final_ground_state = oneedm.ground_state;	norg_stable_count = 0.;
 	
 	// Finish the NORGiteration.
 }

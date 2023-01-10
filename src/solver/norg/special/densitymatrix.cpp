@@ -316,7 +316,7 @@ VEC<MatReal> DensityMat::find_unitary_orbital_rotation_matrix()
 	VEC<MatReal> bathdm;
 	for_Int(i, 0, p.norg_sets) {
 		bathdm.push_back(dm[i].truncate(p.norbs * 2, p.norbs * 2, p.nI2B[i] + p.norbs * 2, p.nI2B[i] + p.norbs * 2));
-		if (mm)WRN(NAV2(dm[i],bathdm[i]));
+		if (mm)WRN(NAV2(dm[i].truncate(0, 0, p.norbs * 2, p.norbs * 2), bathdm[i]));
 	}
 
 	VEC<VecReal> evalue;

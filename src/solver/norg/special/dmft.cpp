@@ -103,8 +103,8 @@ void DMFT::update_phy() {
     p_n /= 4;
     m_m /= 4;
 
-    MatReal d_p_ud(p.norbs, 0.);	//ud=up-down
-    MatReal p_p_ud(p.norbs, 0.);
+    MatReal d_p_ud(p.norbs, p.norbs, 0.);	//ud=up-down
+    MatReal p_p_ud(p.norbs, p.norbs, 0.);
 
     d_p_ud[0][1] = -1.;
     d_p_ud[1][0] = -1.;
