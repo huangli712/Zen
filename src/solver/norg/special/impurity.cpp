@@ -98,25 +98,3 @@ void Impurity::set_factor() {
         h0[b][b] = E[j][j];
     }
 }
-
-
-// void Impurity::find_ve(){
-//     for_Int(i, 0, ni / 2) {
-//         for_Int(j, 0, nb / 2) {
-//             V[i][j] = bth.fvb[0][i][j] + bth.fvb[1][i][j];
-//             V[i][j + nb / 2] = -bth.fvb[2][i][j] + bth.fvb[3][i][j];
-//             V[i + ni / 2][j] = -bth.fvb[2][i][j] - bth.fvb[3][i][j];
-//             V[i + ni / 2][j + nb / 2] = -bth.fvb[0][i][j] + bth.fvb[1][i][j];
-//         }
-//     }
-//     V = direct_sum(p.c2u, p.c2u) * V;
-//     E = direct_sum(bth.fvb[4] + bth.fvb[5], -bth.fvb[4] + bth.fvb[5]);
-//     sort_v_and_e();
-// }
-
-// void Impurity::sort_v_and_e(){
-//     VecReal e_temp(E.diagonal());
-//     MatReal v_temp(V.ct());
-//     slctsort(e_temp, v_temp);
-//     E = dmat(e_temp); V = v_temp.ct();
-// }
