@@ -20,8 +20,7 @@ date 2022-04-25
 //   - do the fitting
 //   - Temporarily store the build matrix information required by NORG
 
-class APIzen
-{
+class APIzen{
 	const MyMpi& mm;					// parameters
 	Prmtr& p;							// parameters
 	Int num_orbital;					// The number of orbiatals.
@@ -31,7 +30,9 @@ class APIzen
 	VecInt orbitdegenerate_idx;			// orbitals  degenerate idx.
 	VecReal solver_eimp_data;			// Impurity energy level for orbitals, correspondingly mean Impurity energy.
 	// ctqmcdata solver_ctqmc_data;
-	Real Uc, Jz, mune;
+	Real Uc, Jz, mu;
+	Int nband;							
+	Int norbs;
 
 	
 	// NORG coding console
@@ -48,8 +49,6 @@ public:
 	VecReal muvec;
 private:
 	void read_ZEN(const Str& file);
-
-	void read_NORG(const Str& file);
 
 	void fitting();
 
