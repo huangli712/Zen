@@ -32,6 +32,7 @@ int main(int argc, char* argv[])
 	// DMFT dmft(mm, prmtr, mdl);
     // Phy phy(mm, prmtr, mdl);
 
+	APIzen norg(mm, prmtr, bix + "solver", 0);
     if (mm)	TIME_END("program", t_program_bgn);
     MPI_Finalize();
 	return 0;
