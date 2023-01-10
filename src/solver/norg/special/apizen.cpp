@@ -201,16 +201,24 @@ void APIzen::read_ZEN(const Str& file)
 		ifs.close();
 	}
 	
-	{// ctqmc.in
-		Str ctqmcdata(file+".ctqmc.in");
-		IFS ifs(ctqmcdata);
+	{// norg.in
+		Str norgdata(file+".norg.in");
+		IFS ifs(norgdata);
 		if (!ifs) {
-			ERR(STR("file opening failed with ") + NAV(ctqmcdata))
+			ERR(STR("file opening failed with ") + NAV(norgdata))
 		}
 		else {
 			Str strr;
 			while (test_mode ==0){
 				ifs >> strr;
+				if(strr == "nband") {
+					ifs >> strr;
+					ifs >> nband; 
+				}
+				if(strr == "norbs") {
+					ifs >> strr;
+					ifs >> norbs; 
+				}
 				if(strr == "Uc") {
 					ifs >> strr;
 					ifs >> Uc; 
@@ -219,44 +227,9 @@ void APIzen::read_ZEN(const Str& file)
 					ifs >> strr;
 					ifs >> Jz; 
 				}
-				if(strr == "mune") {
+				if(strr == "mu") {
 					ifs >> strr;
-					ifs >> mune; 
-				}
-				if (!ifs) break;
-			}
-		}
-		ifs.close();
-	}
-}
-
-
-void APIzen::read_NORG(const Str& file)
-{
-	{// console.in
-		Str norg_console(file + ".console.in");
-		IFS ifs(norg_console);
-		if (!ifs) {
-			ERR(STR("file opening failed with ") + NAV(norg_console))
-		}
-		else {
-			Str strr;
-			while (true) {
-				ifs >> strr;
-				if (strr == "norm_mode") {
-					ifs >> strr;
-					ifs >> norm_mode;
-					if (norm_mode)WRN("Dear cutomer,you are now in the test mode PLEASE modify the console file manually.");
-				}
-				if (strr == "test_mode") {
-					ifs >> strr;
-					ifs >> test_mode;
-					if (test_mode)WRN("Dear cutomer,you are now in the test mode PLEASE modify the console file manually.");
-				}
-				if (strr == "fast_mode") {
-					ifs >> strr;
-					ifs >> fast_mode;
-					if (fast_mode)ERR("Sorry, the fast mode will coming Soon...");
+					ifs >> mu; 
 				}
 				if (strr == "restrain") {
 					Int l2, l1, r1, r2;
@@ -274,24 +247,23 @@ void APIzen::read_NORG(const Str& file)
 					distribute = { 1, l2, l1, m0, r1, r2 };
 					WRN("Finish the division distribute input:" + NAV(distribute));
 				}
-				if (test_mode == 1 && strr == "nimp") {
-					Int nimp;
+
+				if (strr == "norm_mode") {
 					ifs >> strr;
-					ifs >> nimp;
-					if (nimp > 1) ERR("Sorry for now the nimp > 1 is not support.")
+					ifs >> norm_mode;
+					if (norm_mode)WRN("Dear cutomer,you are now in the test mode PLEASE modify the console file manually.");
 				}
-				if (test_mode == 1 && strr == "Uc") {
+				if (strr == "test_mode") {
 					ifs >> strr;
-					ifs >> Uc;
+					ifs >> test_mode;
+					if (test_mode)WRN("Dear cutomer,you are now in the test mode PLEASE modify the console file manually.");
 				}
-				if (test_mode == 1 && strr == "mune") {
+				if (strr == "fast_mode") {
 					ifs >> strr;
-					ifs >> mune;
+					ifs >> fast_mode;
+					if (fast_mode)ERR("Sorry, the fast mode will coming Soon...");
 				}
-				if (test_mode == 1 && strr == "Jz") {
-					ifs >> strr;
-					ifs >> Jz;
-				}
+				
 				if (test_mode == 1 && strr == "bathose") {
 					bathose.reset(SUM(distribute) - 1);
 					Real input;
@@ -314,9 +286,6 @@ void APIzen::read_NORG(const Str& file)
 				if (!ifs) break;
 			}
 		}
-		if (!((norm_mode == 1) ^ (test_mode == 1))) ERR("Sorry, you should choose only one mode at a time.");
-		if (bathose.size() != (SUM(distribute) - 1))ERR("bathose.size is not equal as basth's number");
-		if (bathhop.size() != (SUM(distribute) - 1))ERR("bathhop.size is not equal as basth's number");
 		ifs.close();
 	}
 }
