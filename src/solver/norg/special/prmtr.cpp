@@ -17,7 +17,8 @@ Prmtr::Prmtr(const MyMpi &mm) : np(mm.np())
 void Prmtr::set_inert_values()
 {
     project = "square-Hb";
-    norbs = 4;                 
+    nband = 4;                 
+    norbs = nband * 2;
     
 	gauss_n_max = 512;		        // default value: 2048
 	gauss_n_min = 64;		        // default value: 64
@@ -46,7 +47,7 @@ void Prmtr::set_values() {
     fit_rsd = 2.; // default value: 2.
 
 
-    c2u.reset(norbs, norbs, 0.);
+    c2u.reset(nband, nband, 0.);
     Real sqrt2_inv = 1. / std::sqrt(2);
     c2u[0][0] = sqrt2_inv;
     c2u[0][2] = sqrt2_inv;
@@ -122,12 +123,6 @@ void Prmtr::derive() {
 
 }
 
-void Prmtr::check_consistency() {
-    // model related assertion
-    if (norbs < 2 || norbs > 2)
-        ERR(NAV1(norbs));
-}
-
 void Prmtr::print(std::ostream &os) const {
 #define prmtr_print(var, comment) print(os, NAME(var), STR(var), comment)
 
@@ -139,7 +134,7 @@ void Prmtr::print(std::ostream &os) const {
     prmtr_print(np, "number of mpi processes");
     prmtr_print(nbath, "number of bath orbital");
 
-    prmtr_print(norbs, "number of orbitals");
+    prmtr_print(norbs, "number of spin-orbitals");
    	prmtr_print(cnooc, "Correlation nature orbital occupation constraint.");
     prmtr_print(control_divs, "to set the number of division and the shortcut restratin.");
     prmtr_print(stage2, "to set the number of division and the shortcut restratin @ stage2.");

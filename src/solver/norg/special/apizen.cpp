@@ -40,36 +40,39 @@ coded by Jia-Ming Wang (jmw@ruc.edu.cn, RUC, China) date 2022-2023
 
 
 APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int test_mode_i) :
-	mm(mm_i), p(prmtr_i),
-	num_orbital(prmtr_i.iqust_orbiatal), num_omg(prmtr_i.num_omg),
+	mm(mm_i), p(prmtr_i),num_omg(prmtr_i.num_omg),
 	imfrq_hybrid_function(num_orbital,num_omg,0.),
 	solver_eimp_data(num_orbital,0.), orbitdegenerate_idx(num_orbital, 0),
 	num_nondegenerate(-1), test_mode(test_mode_i)
 {
-	// WRN("BEGIN:: read_ZEN(file);");
-	read_NORG(file);
-	if (test_mode == 0) read_ZEN(file);
-	// WRN("BEGIN:: fitting();");
+	read_ZEN(file);	num_orbital = norbs;
 	p.templet_restrain = restrain; p.templet_control = distribute;
 	p.after_modify_prmtr();
 	fitting();
-	// WRN("ENDING:: fitting();");
+	
 	p.nimp = 2 * num_nondegenerate;
-	p.t_ose = std::move(t_ose);
-	p.t_hyb = std::move(t_hyb);
 	p.mu.reset(p.nimp, 0.);
-	if (test_mode) {
-		for_Int(i, 0, muvec.size() * p.nimp)p.mu[i] = mune;
-		p.u_hbd = Uc; p.j_ob = Jz;
-	}
-	else {
-		for_Int(i, 0, muvec.size() * 2)p.mu[i] = muvec[int(i / 2)];
-		p.u_hbd = Uc; p.j_ob = Jz;
-	}
-	//DBG("test for after_modify_prmtr()")
+	// if (test_mode) {
+	// 	for_Int(i, 0, muvec.size() * p.nimp)p.mu[i] = mune;
+	// 	p.u_hbd = Uc; p.j_ob = Jz;
+	// }
+	// else {
+	// 	for_Int(i, 0, muvec.size() * 2)p.mu[i] = muvec[int(i / 2)];
+	// 	p.u_hbd = Uc; p.j_ob = Jz;
+	// }
+	p.hubbU = Uc;
 	p.after_modify_prmtr();
 
 
+	{
+		Impurity imp(mm, p, bth, mdl);
+		NORG norg(mm, p);
+
+		norg.up_date_h0_to_solve(imp.h0);
+		ImGreen g0imp(p.norbs * 2, p);	imp.find_g0(g0imp);						if (mm) g0imp.write("g0imp", dmft_cnt);
+		ImGreen gfimp(p.norbs * 2, p);	norg.get_g_by_KCV_spup(gfimp);			if (mm) gfimp.write("gfimp", dmft_cnt);
+		ImGreen seimp(p.norbs * 2, p);	seimp=g0imp.inverse()-gfimp.inverse();	if (mm) seimp.write("seimp", dmft_cnt);
+	}
 
 }
 

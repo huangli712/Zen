@@ -12,7 +12,8 @@ private:
 public:
 	// model related, model parameters
 	Str project;					// project name
-	Int norbs;						// number of orbitals with spin.	
+	Int nband;						// number of band in lattice model.
+	Int norbs;						// number of spin-orbitals in lattice model.
     MatReal c2u;    				//unitary transformation for c2 symmetry
 
 	
@@ -72,7 +73,6 @@ private:
 	void set_inert_values();
 	void set_values();
 	void derive();
-	void check_consistency();
 	void print(std::ostream &os, const Str &var, const Str &val, const Str &comment) const {
 		using namespace std;
 		Str true_var = var == "\"\"" ? "" : var;

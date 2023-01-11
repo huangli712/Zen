@@ -47,6 +47,7 @@ public:
 	VEC<VecReal> t_ose;						// hopping integral for all sites
 	VEC<VecReal> t_hyb;						// H_0 onset energy
 	VecReal muvec;
+	Int dmft_cnt;
 private:
 	void read_ZEN(const Str& file);
 
