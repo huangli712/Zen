@@ -58,7 +58,6 @@ void Prmtr::set_values() {
     c2u[3][0] = sqrt2_inv;
     c2u[3][2] = -sqrt2_inv;
 
-
     // NORG parameter.
     // templet_restrain = {0, -1, -2,  0,  2,  1};
     // templet_control =  {8, 22,  8,  4,  8, 22};
@@ -71,13 +70,13 @@ void Prmtr::set_values() {
     // nooc_mode = STR("nooc");
     // nooc_mode = STR("cpnooc");
     nooc_mode = STR("cnooc");
-    after_modify_prmtr();  
+    after_modify_prmtr();
     stage2_restrain = {0, -0, -3,  0,  3,  0};
     stage2_control =  {8, 20,  8,  8,  8, 20};
 }
 
-void Prmtr::after_modify_prmtr() const
 // we set first divison as impurity. The maximum number of cavity("-"); mean electron("+").
+void Prmtr::after_modify_prmtr() const
 {
     nI2B.reset(norg_sets, 0.);
     control_divs.reset(norg_sets + 1, ndiv);
@@ -114,8 +113,6 @@ void Prmtr::derive() {
 
     fit_max_omg = max_omg/ 4. ;
     fit_num_omg = Int_ROUND(fit_max_omg / unit_omg / 2); // The default value: Int_ROUND(fit_max_omg / unit_omg / 2) change for speed reason.
-
-
 
     Str key_prmtr_val = STR("prmtr");
     ofx = iox + key_prmtr_val;

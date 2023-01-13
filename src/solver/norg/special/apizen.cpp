@@ -49,8 +49,11 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	p.templet_restrain = restrain; p.templet_control = distribute;
 	p.after_modify_prmtr();
 	fitting();
+	Bath bth(mm, p);
 	
-	p.nimp = 2 * num_nondegenerate;
+	bth.number_bath_fit(hb,dmft_cnt, 0);
+	
+	p.norbs = 2 * num_nondegenerate;
 	p.mu.reset(p.nimp, 0.);
 	// if (test_mode) {
 	// 	for_Int(i, 0, muvec.size() * p.nimp)p.mu[i] = mune;
@@ -73,7 +76,6 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 		ImGreen gfimp(p.norbs * 2, p);	norg.get_g_by_KCV_spup(gfimp);			if (mm) gfimp.write("gfimp", dmft_cnt);
 		ImGreen seimp(p.norbs * 2, p);	seimp=g0imp.inverse()-gfimp.inverse();	if (mm) seimp.write("seimp", dmft_cnt);
 	}
-
 }
 
 void APIzen::fitting()
@@ -212,7 +214,7 @@ void APIzen::read_ZEN(const Str& file)
 		}
 		else {
 			Str strr;
-			while (test_mode ==0){
+			while (test_mode == 0){
 				ifs >> strr;
 				if(strr == "nband") {
 					ifs >> strr;

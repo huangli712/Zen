@@ -119,8 +119,6 @@ public:
 				const VecReal E2 = E * E;
 				return DOT(E2, E2);
 			}
-
-			
 		}
 		else if (x == 2 * nw + 1) {
 			if (mode == 1)

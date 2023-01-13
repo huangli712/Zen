@@ -55,6 +55,6 @@ private:
 
 	void test_for_fitting(const Bath& bth, const ImGreen& hby_i, Int num = 666);
 public:
-	APIzen(const MyMpi& mm_i, Prmtr& p, const Str& file = empty_str, const Int test_mode_i = 0);
+	APIzen(const MyMpi& mm_i, Prmtr& p, const Str& file = empty_str, const Int mode = 0);
 
 };

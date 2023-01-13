@@ -147,10 +147,10 @@ void Bath::number_bath_fit(const ImGreen& hb_i, Int iter,Int mode)
 			Real err = hyberr(a);
 			Real err_crv = hyberr.err_curve(a);
 			Real err_reg = hyberr.err_reg(a);
-			Real err_bsr = hyberr.err_bsr(a);
+			// Real err_bsr = hyberr.err_bsr(a);
 			Real a_norm = a.norm();
 			using namespace std;
-			cout << setw(4) << iter << "  " << NAV7(p_i, nmin, err, err_crv, err_reg, err_bsr, a_norm) << "  " << present() << endl;
+			cout << setw(4) << iter << "  " << NAV6(p_i, nmin, err, err_crv, err_reg, /*err_bsr,*/ a_norm) << "  " << present() << endl;
 		}
 	}
 }
@@ -161,7 +161,7 @@ std::tuple<Real, VecReal, Int> Bath::bath_fit_number_contest(const VecReal& a0, 
 	const HybErr hyberr(p, hb_i, nb, orb_i,mode);
 
 	const Int np = a0.size();
-	const Int ntry_fine = MAX(16, mm.np());
+	const Int ntry_fine = MAX(16, mm.np() - 1);
 	const Int ntry = MAX(8 * ntry_fine, 512);
 	const Real tol = SQR(MIN(1.e-8, std::pow(10, -5 - ((nb + 1) / 2))));
 	Int nmin = 0;		// number of fittings reaching the minimum
@@ -178,7 +178,7 @@ std::tuple<Real, VecReal, Int> Bath::bath_fit_number_contest(const VecReal& a0, 
 		Int nfst = 1;
 		Int itry = 0;
 		while (nrcv < ntot) {
-			if (nfst < mm.np()) {
+			if (nfst < mm.np() - 1) {
 				if (nsnd < ntot) {
 					a = next_initial_fitting_parameters(a0, ntry_fine, itry);
 					mm.Send(a, nfst, 1);
