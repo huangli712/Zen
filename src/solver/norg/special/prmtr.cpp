@@ -16,8 +16,8 @@ Prmtr::Prmtr(const MyMpi &mm) : np(mm.np())
 
 void Prmtr::set_inert_values()
 {
-    project = "square-Hb";
-    nband = 4;                 
+    project = "3band-SrVO3";
+    nband = 3;                 
     norbs = nband * 2;
     
 	gauss_n_max = 512;		        // default value: 2048
@@ -35,32 +35,18 @@ void Prmtr::set_inert_values()
 void Prmtr::set_values() {
     //model related
     hubbU = 8.;
-    // mu = hubbU / 2.0;
-    t.reset(4, 0.);
-    t[0] = 0.; // onset energy.
-    t[1] = 1.;
-    t[2] =-0.3;
-    t[3] = 0.2;
+    mu = 0.;
+    // t.reset(4, 0.);
+    // t[0] = 0. - mu; // onset energy.
+    // t[1] = 1.;
+    // t[2] =-0.3;
+    // t[3] = 0.2;
 
     // fitting related
     fit_pow = 2.; // default value: 2.
     fit_rsd = 2.; // default value: 2.
 
-
-    c2u.reset(nband, nband, 0.);
-    Real sqrt2_inv = 1. / std::sqrt(2);
-    c2u[0][0] = sqrt2_inv;
-    c2u[0][2] = sqrt2_inv;
-    c2u[1][1] = sqrt2_inv;
-    c2u[1][3] = sqrt2_inv;
-    c2u[2][1] = sqrt2_inv;
-    c2u[2][3] = -sqrt2_inv;
-    c2u[3][0] = sqrt2_inv;
-    c2u[3][2] = -sqrt2_inv;
-
     // NORG parameter.
-    // templet_restrain = {0, -1, -2,  0,  2,  1};
-    // templet_control =  {8, 22,  8,  4,  8, 22};
     templet_restrain = {0, -0, -4,  0,  4,  0};
     templet_control =  {8, 20,  8,  8,  8, 20};
     ndiv = templet_control.size();
@@ -104,7 +90,8 @@ void Prmtr::derive() {
     for_Int(n, 0, nfreq) Re_z[n] = Cmplx(freq_low + n * dlt_freq, eta_freq);
 
     // max_omg = 4 * SQRT(SQR(hubbU) + DOT(t, t));    
-    max_omg = 2 * (ABS(hubbU) + 8 * SQRT(DOT(t, t) - t[0] * t[0]));
+    // max_omg = 2 * (ABS(hubbU) + 8 * SQRT(DOT(t, t) - t[0] * t[0]));
+    max_omg = 2 * bandw;
 
     num_omg = Int_ROUND(max_omg / unit_omg / 2);
     Im_z.reset(num_omg);
@@ -136,7 +123,7 @@ void Prmtr::print(std::ostream &os) const {
     prmtr_print(control_divs, "to set the number of division and the shortcut restratin.");
     prmtr_print(stage2, "to set the number of division and the shortcut restratin @ stage2.");
     prmtr_print(hubbU, "The hubbard U interaction strength");
-    for_Int(i,0,t.size()) prmtr_print(t[i], "quarter bandwidth");
+    // for_Int(i,0,t.size()) prmtr_print(t[i], "quarter bandwidth");
     prmtr_print(max_omg, "max_omg of imgreen");
     prmtr_print(eta_freq, "eta of omega + i * eta");
     prmtr_print(dlt_freq, "The real x-axis unit for retarded green function");

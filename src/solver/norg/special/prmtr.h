@@ -14,13 +14,13 @@ public:
 	Str project;					// project name
 	Int nband;						// number of band in lattice model.
 	Int norbs;						// number of spin-orbitals in lattice model.
-    MatReal c2u;    				//unitary transformation for c2 symmetry
-
+	Real bandw;						// The bandwidth of this model.
 	
 	// square lattice, model parameters
 	Real hubbU;						// Hubbard interaction U
 	Real mu;						// chemical potential
-	VecReal t;						// The  hopping for sites,t[0] is (on-site energy-mu)
+	VecReal	eimp;					// the impurity energy 
+	// VecReal t;					// The  hopping for sites,t[0] is (on-site energy-mu)
 	//ReGreen
 	Real freq_upp;					// upper bound of real frequency, 1.5 * (band upper bound) suggested
 	Real freq_low;					// lower bound of real frequency, 1.5 * (band lower bound) suggested

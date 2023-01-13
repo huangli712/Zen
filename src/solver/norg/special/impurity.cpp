@@ -1,12 +1,9 @@
 #include "impurity.h"
 
-Impurity::Impurity(const MyMpi &mm_i, const Prmtr &prmtr_i, const Bath &bth_i, const Model &mdl_i, const Str &file)
-    : mm(mm_i), p(prmtr_i), bth(bth_i), mdl(mdl_i), nb(p.nbath), ni(2 * p.norbs), ns(2 * p.norbs + p.nbath),
-      V(2 * p.norbs, p.nbath, 0.), E(p.nbath, p.nbath, 0.), h0(2 * p.norbs + p.nbath, 2 * p.norbs + p.nbath, 0.) {
-    // find_ve();
-    // find_ve_for_test();
-    set_factor();
-    // if(mm) WRN(NAV(h0))
+Impurity::Impurity(const MyMpi &mm_i, const Prmtr &prmtr_i, const Bath &bth_i, const Model &mdl_i, const Str& file)
+    : mm(mm_i), p(prmtr_i), bth(bth_i), mdl(mdl_i), nb(p.nbath), ni(p.norbs), ns(p.norbit), pos_imp(p.norbs), h0(p.norbit, p.norbit, 0.)
+{
+    // if (!file.empty()) read(file);
 }
 
 using namespace std;
@@ -15,86 +12,83 @@ using namespace std;
 void Impurity::find_g0(Green &g0) const {
 
     MatCmplx Z(ns, ns);
-    // for_Int(kind, 0, p.a.size()) {
     for_Int(n, 0, g0.nomgs) {
         Z = g0.z(n);
         MatCmplx g0_z = matinvlu(Z - cmplx(h0));
-        for_Int(i, 0, ni) {
-            for_Int(j, 0, ni) {
-                g0[n][i][j] = g0_z[i][j];
-            }
+        for_Int(i, 0, p.norbs) {
+            g0[n][i][i] = g0_z[pos_imp[2 * i]][pos_imp[2 * i]];
         }
     }
+    // }
+    // find_hb(g0);
+    // for_Int(n,0,g0.nomgs){
+    //     g0[n] += dmat(p.norbs, g0.z(n)) - cmplx(mdl.hmlt0loc());
+    //     g0[n]= matinvlu(g0[n]);
+    // }
 }
 
 //rely on imp model's frame
 void Impurity::find_hb(Green &hb) const {
-    for_Int(n, 0, hb.nomgs) {
-        const MatCmplx Z=dmat(ni,hb.z(n));
-        MatCmplx S = matinvlu(Z - cmplx(E));
-        hb[n] = cmplx(V) * S * cmplx(V).co();
+    for_Int(i,0,p.norbs){
+        const Int nb_i = p.nI2B[2*i];
+        for_Int(n,0,hb.nomgs){
+            const VecCmplx Z(nb_i, hb.z(n));
+            VecCmplx S = INV(Z - cmplx(bth.vec_ose[i]));
+            VecCmplx V = cmplx(bth.vec_hop[i]);
+            hb[n][i][i] = -SUM(V * S * V.co());
+            //hb[n][i][i] = DOT(cmplx(bth.vec_hop[i]), S * cmplx(bth.vec_hop[i]));
+        }
     }
 }
 
-// void Impurity::find_ve_for_test()
-// {
-//     MatReal c2vu(4, 4, 0.5);
-//     c2vu[2][1] *= -1;
-//     c2vu[3][1] *= -1;
-//     c2vu[1][2] *= -1;
-//     c2vu[3][2] *= -1;
-//    	c2vu[1][3] *= -1;
-//     c2vu[2][3] *= -1;
-//     //nb=8*theta.size();
-//     VecReal theta({-0.312546, 0.159346});
-//     VecReal delta({-0.474855, 0.0667285});
-//     VecReal epson({-0.474855, 0.0667285});
-//     Int halfnb_qrt = theta.size();
-//     VecReal ksi = SQRT(epson * epson + delta * delta);
-//     VecReal u = delta * INV(SQRT(2. * ksi * (ksi - epson)));
-//     VecReal v = SQRT(VecReal(halfnb_qrt, 1.) - u * u);
-//     const MatReal unitm = dmat(4, 1.);
-//     VEC<Real> E_up;
-//     for_Int(n, 0, halfnb_qrt) {
-//         MatReal Theta_n = theta[n] * unitm * c2vu;
-//         VecReal un_vec({1., u[n], u[n], 1.});
-//         VecReal vn_vec({0., -v[n], v[n], 0.});
-//         VecReal en_vec({epson[n], ksi[n], ksi[n], epson[n]});
-//         MatReal Theta = Theta_n * dmat(un_vec);
-//         MatReal Delta = Theta_n * dmat(vn_vec);
-//         for_Int(i, 0, 4) {
-//             E_up.push_back(en_vec[i]);
-//             for_Int(j, 0, 4) {
-//                 Int col = j + 4 * n;
-//                 V[i][col] = Theta[i][j];
-//                 V[i + ni / 2][col + nb / 2] = -Theta[i][j];
-//                 V[i][col + nb / 2] = -Delta[i][j];
-//                 V[i + ni / 2][col] = -Delta[i][j];
-//             }
-//         }
-//     }
-//     E=direct_sum(dmat(VecReal(E_up)),-dmat(VecReal(E_up)));
-// }
+MatReal Impurity::find_hop_for_test() const
+{
+    VecReal hop({ -0.312546, 0.159346, -0.0619612, -0.312546, 0.159346 });
+    VecReal ose({ -0.474855,0.0667285, 0,           0.474855, -0.0667285 });
+    MatReal h0(0, 0, 0.);
+    for_Int(i, 0, p.norbs) {
+        const Int nb_i = p.nI2B[i * 2];
+        MatReal h0_i(1 + nb_i, 1 + nb_i, 0.);
+        for_Int(j, 0, nb_i) {
+            h0_i[0][j + 1] = hop[j];
+            h0_i[j + 1][0] = hop[j];
+            h0_i[j + 1][j + 1] = ose[j];
+        }
+        h0_i.reset(direct_sum(h0_i, h0_i));
+        h0.reset(direct_sum(h0, h0_i));
+    }
+    return h0;
+}
+
+void Impurity::update() {
+    set_factor();
+}
+
 
 //---------------------------------------------Private function---------------------------------------------
 
-//rely on the format of bath and model
+
 void Impurity::set_factor() {
     // set hyb part and bath part
+    h0 = bth.find_hop();
+    
+    // // h0 = find_hop_for_test();
+    
     // set imp part
-    const MatReal h0loc = mdl.hmlt0loc();
+    MatReal h0loc(ni);
+    for_Int(i, 0, ni) h0loc[i][i] = p.eimp[i] - p.mu;
+    
+    // find i_th imp in which site
+    Int site = 0;
     for_Int(i, 0, ni) {
-        for_Int(j, 0, ni) {
-            h0[i][j] = h0loc[i][j];
-        }
+        pos_imp[i] = site;
+        site += p.nI2B[i] + 1;
     }
 
-    for_Int(j, 0, nb) {
-        const Int b = j + ni;
-        for_Int(i, 0, ni) {
-            h0[i][b] = V[i][j];
-            h0[b][i] = V.ct()[j][i];
+    // set h0loc
+    for_Int(i, 0, ni) {
+        for_Int(j, 0, ni) {
+            h0[pos_imp[i]][pos_imp[j]] = h0loc[i][j];
         }
-        h0[b][b] = E[j][j];
     }
 }

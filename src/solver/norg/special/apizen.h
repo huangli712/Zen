@@ -51,7 +51,7 @@ public:
 private:
 	void read_ZEN(const Str& file);
 
-	void fitting();
+	// void fitting();
 
 	void test_for_fitting(const Bath& bth, const ImGreen& hby_i, Int num = 666);
 public:

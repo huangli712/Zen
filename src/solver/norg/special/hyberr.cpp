@@ -85,6 +85,7 @@ HybErr::HybErr(const Prmtr& p_i, const ImGreen& hb_i, const Int& nb_i, Int orb_i
 	{
 		sig[2 * nw + 0] = nb * std::pow(256 * p.fit_max_omg, 4);
 	}
+	/* 
 	else if (mode == 1)
 	{
 		if (nb == 1)
@@ -100,15 +101,15 @@ HybErr::HybErr(const Prmtr& p_i, const ImGreen& hb_i, const Int& nb_i, Int orb_i
 		}
 		
 	}
+	 */
 	
-	
-	
+	/* 
 	// the part of bath sum rule
 	x[2 * nw + 1] = 2 * nw + 1;
 	y[2 * nw + 1] = p.t[orb_i] * p.t[orb_i];
     // sig[2 * nw + 1] = 0.1 * (1 + p.t[orb_i] * p.t[orb_i]);
     sig[2 * nw + 1] = 50 * 0.1 * (1 + p.t[orb_i] * p.t[orb_i]);
-    
+     */
 }
 
 /*
