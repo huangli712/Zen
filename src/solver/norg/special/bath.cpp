@@ -16,10 +16,10 @@ Bath::Bath(const MyMpi& mm_i, const Prmtr& prmtr_i) :mm(mm_i), p(prmtr_i), uur(m
 	// make random seed output together
 	{ SLEEP(1); mm.barrier(); }
 
-	vec_ose.reset(p.norbs);
-	vec_hop.reset(p.norbs);
+	vec_ose.reset(p.nband);
+	vec_hop.reset(p.nband);
 
-	for_Int(i, 0, p.norbs)
+	for_Int(i, 0, p.nband)
 	{
 		vec_ose[i].reset(p.nI2B[2*i]);
 		vec_hop[i].reset(p.nI2B[2*i]);
@@ -45,7 +45,7 @@ void Bath::init_vec_ose_hop()
 
 void Bath::number_bath_fit(const ImGreen& hb_i, Int iter,Int mode)
 {
-	for_Int(p_i, 0, p.norbs)
+	for_Int(p_i, 0, p.nband)
 	{
 		ImGreen hb(hb_i,p_i,p_i);
 
@@ -266,7 +266,7 @@ VecReal Bath::next_initial_fitting_parameters(const VecReal& a0, const Int& ntry
 MatReal Bath::find_hop() const
 {
     MatReal h0(0, 0, 0.);
-    for_Int(i, 0, p.norbs) {
+    for_Int(i, 0, p.nband) {
         const Int nb_i = p.nI2B[i * 2];
         MatReal h0_i(1 + nb_i, 1 + nb_i, 0.);
         for_Int(j, 0, nb_i) {
@@ -282,7 +282,7 @@ MatReal Bath::find_hop() const
 
 void Bath::write_ose_hop(Int iter_cnt) const {
 	using namespace std;
-	for_Int(orb_i, 0, p.norbs)
+	for_Int(orb_i, 0, p.nband)
 	{
 		OFS ofs_app_ose(p.ofx + ".ose" + STR(orb_i) +".txt", std::ios::app);
 		ofs_app_ose << iofmt("sci");
