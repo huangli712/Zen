@@ -47,7 +47,7 @@ HybErr::HybErr(const Prmtr& p_i, const ImGreen& hb_i) :
 
 HybErr::HybErr(const Prmtr& p_i, const ImGreen& hb_i, const Int& nb_i, Int orb_i, Int mode_i) :
 	p(p_i), hb(hb_i), nw(p.fit_num_omg), nb(nb_i), mode(mode_i),
-	x(2 * nw + 2), y(2 * nw + 2), sig(2 * nw + 2)
+	x(2 * nw + 1), y(2 * nw + 1), sig(2 * nw + 1)
 {
 	// curve
 	{

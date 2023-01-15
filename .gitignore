@@ -29,4 +29,6 @@ docs/build
 src/solver/norg/*/*.d
 src/solver/norg/console/exe
 src/solver/norg/archives
+src/solver/norg/*.txt
+src/solver/norg/*/*.txt
 

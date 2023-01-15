@@ -1,7 +1,7 @@
 #include "impurity.h"
 
-Impurity::Impurity(const MyMpi &mm_i, const Prmtr &prmtr_i, const Bath &bth_i, const Model &mdl_i, const Str& file)
-    : mm(mm_i), p(prmtr_i), bth(bth_i), mdl(mdl_i), nb(p.nbath), ni(p.norbs), ns(p.norbit), pos_imp(p.norbs), h0(p.norbit, p.norbit, 0.)
+Impurity::Impurity(const MyMpi &mm_i, const Prmtr &prmtr_i, const Bath &bth_i, const Str& file)
+    : mm(mm_i), p(prmtr_i), bth(bth_i), nb(p.nbath), ni(p.nband), ns(p.norbit), pos_imp(p.nband), h0(p.norbit, p.norbit, 0.)
 {
     // if (!file.empty()) read(file);
 }
@@ -15,21 +15,15 @@ void Impurity::find_g0(Green &g0) const {
     for_Int(n, 0, g0.nomgs) {
         Z = g0.z(n);
         MatCmplx g0_z = matinvlu(Z - cmplx(h0));
-        for_Int(i, 0, p.norbs) {
+        for_Int(i, 0, p.nband) {
             g0[n][i][i] = g0_z[pos_imp[2 * i]][pos_imp[2 * i]];
         }
     }
-    // }
-    // find_hb(g0);
-    // for_Int(n,0,g0.nomgs){
-    //     g0[n] += dmat(p.norbs, g0.z(n)) - cmplx(mdl.hmlt0loc());
-    //     g0[n]= matinvlu(g0[n]);
-    // }
 }
 
 //rely on imp model's frame
 void Impurity::find_hb(Green &hb) const {
-    for_Int(i,0,p.norbs){
+    for_Int(i,0,p.nband){
         const Int nb_i = p.nI2B[2*i];
         for_Int(n,0,hb.nomgs){
             const VecCmplx Z(nb_i, hb.z(n));
@@ -46,7 +40,7 @@ MatReal Impurity::find_hop_for_test() const
     VecReal hop({ -0.312546, 0.159346, -0.0619612, -0.312546, 0.159346 });
     VecReal ose({ -0.474855,0.0667285, 0,           0.474855, -0.0667285 });
     MatReal h0(0, 0, 0.);
-    for_Int(i, 0, p.norbs) {
+    for_Int(i, 0, p.nband) {
         const Int nb_i = p.nI2B[i * 2];
         MatReal h0_i(1 + nb_i, 1 + nb_i, 0.);
         for_Int(j, 0, nb_i) {

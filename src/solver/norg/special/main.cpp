@@ -15,7 +15,8 @@ int main(int argc, char* argv[])
 	clock_t t_program_bgn;
 	if (mm) TIME_BGN("program", t_program_bgn);
 	Prmtr prmtr(mm);
-	Model mdl(mm,prmtr);
+
+	// Model mdl(mm,prmtr);
 	{// For test NORG only.
 		// Bath bth(mm, prmtr);
 		// Impurity imp(mm, prmtr, bth, mdl);
@@ -31,8 +32,8 @@ int main(int argc, char* argv[])
 	}
 	// DMFT dmft(mm, prmtr, mdl);
     // Phy phy(mm, prmtr, mdl);
-
 	APIzen norg(mm, prmtr, bix + "solver", 0);
+
     if (mm)	TIME_END("program", t_program_bgn);
     MPI_Finalize();
 	return 0;

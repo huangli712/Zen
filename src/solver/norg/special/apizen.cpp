@@ -6,38 +6,28 @@ coded by Jia-Ming Wang (jmw@ruc.edu.cn, RUC, China) date 2022-2023
 
 APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int test_mode_i) :
 	mm(mm_i), p(prmtr_i),num_omg(prmtr_i.num_omg),
-	imfrq_hybrid_function(num_orbital,num_omg,0.),
-	solver_eimp_data(num_orbital,0.), orbitdegenerate_idx(num_orbital, 0),
 	num_nondegenerate(-1), test_mode(test_mode_i)
 {
-	read_ZEN(file);	num_orbital = norbs;
+	read_ZEN(file);
 	p.templet_restrain = restrain; p.templet_control = distribute;
 	p.after_modify_prmtr();
-	// fitting();
-	Bath bth(mm, p);
 	ImGreen hb(nband, p);
-	for_Int(j, 0, hb.nomgs) for_Int(i, 0, nband)  hb.g[j][i][i] = imfrq_hybrid_function[i][j];
-
+	for_Int(j, 0, hb.nomgs) for_Int(i, 0, nband)  hb.g[j][i][i] = - imfrq_hybrid_function[i][j];
+	hb.write("reading_hyb");
+	if(mm) p.print();
+	Bath bth(mm, p);
 	bth.number_bath_fit(hb, dmft_cnt, 0);
 	
-	p.norbs = 2 * num_nondegenerate;
-	p.eimp.reset(p.norbs, 0.);
-	// if (test_mode) {
-	// 	for_Int(i, 0, muvec.size() * p.nimp)p.mu[i] = mune;
-	// 	p.u_hbd = Uc; p.j_ob = Jz;
-	// }
-	// else {
-	// 	for_Int(i, 0, muvec.size() * 2)p.mu[i] = muvec[int(i / 2)];
-	// 	p.u_hbd = Uc; p.j_ob = Jz;
-	// }
-	p.hubbU = Uc;
-	p.after_modify_prmtr();
+	// // p.norbs = 2 * num_nondegenerate;
+	// p.eimp.reset(p.norbs, 0.);
+	// p.hubbU = Uc;
+	// p.after_modify_prmtr();
 
 
 	{
-		// Impurity imp(mm, p, bth, mdl);
-		NORG norg(mm, p);
-
+		Impurity imp(mm, p, bth);
+		ImGreen hb_imp(p.nband, p);   	imp.find_hb(hb_imp); 	if (mm) hb_imp.write("hb_imp");
+		// NORG norg(mm, p);
 		// norg.up_date_h0_to_solve(imp.h0);
 		// ImGreen g0imp(p.norbs * 2, p);	imp.find_g0(g0imp);						if (mm) g0imp.write("g0imp", dmft_cnt);
 		// ImGreen gfimp(p.norbs * 2, p);	norg.get_g_by_KCV_spup(gfimp);			if (mm) gfimp.write("gfimp", dmft_cnt);
@@ -64,6 +54,76 @@ void APIzen::test_for_fitting(const Bath& bth, const ImGreen& hby_i, Int num)
 
 void APIzen::read_ZEN(const Str& file)
 {
+	{// norg.in
+		Str norgdata(file+".norg.in");
+		IFS ifs(norgdata);
+		if (!ifs) {
+			ERR(STR("file opening failed with ") + NAV(norgdata))
+		}
+		else {
+			Str strr;
+			while (test_mode == 0){
+				ifs >> strr;
+				if(strr == "nband") { ifs >> strr; ifs >> nband; }
+				if(strr == "norbs") { ifs >> strr; ifs >> norbs; }
+				if(strr == "Uc") { ifs >> strr; ifs >> Uc; }
+				if(strr == "Jz") { ifs >> strr; ifs >> Jz; }
+				if(strr == "mu") { ifs >> strr; ifs >> mu; }
+				if (strr == "restrain") {
+					Int l2, l1, r1, r2;
+					ifs >> strr; ifs >> strr;
+					ifs >> l2;	ifs >> l1; ifs >> strr; ifs >> r1; ifs >> r2;
+					restrain = { 0, l2, l1, 0, r1, r2 };
+					if (mm) WRN("Finish the restrain input:" + NAV(restrain));
+				}
+				if (strr == "distribute") {
+					Int l2, l1, m0, r1, r2;
+					ifs >> strr; ifs >> strr;
+					ifs >> l2;	ifs >> l1; ifs >> m0; ifs >> r1; ifs >> r2;
+					distribute = { 1, l2, l1, m0, r1, r2 };
+					if (mm) WRN("Finish the division distribute input:" + NAV(distribute));
+				}
+				if (strr == "norm_mode") {
+					ifs >> strr; ifs >> norm_mode;
+					if (mm) if (norm_mode) WRN("Dear cutomer,you are now in the test mode PLEASE modify the console file manually.");
+				}
+				if (strr == "test_mode") {
+					ifs >> strr; ifs >> test_mode;
+					if (mm) if (test_mode) WRN("Dear cutomer,you are now in the test mode PLEASE modify the console file manually.");
+				}
+				if (strr == "fast_mode") {
+					ifs >> strr; ifs >> fast_mode;
+					if (fast_mode)ERR("Sorry, the fast mode will coming Soon...");
+				}				
+				if (test_mode == 1 && strr == "bathose") {
+					bathose.reset(SUM(distribute) - 1);
+					Real input;
+					ifs >> strr;
+					for_Int(i, 0, bathose.size()) {
+						ifs >> input;
+						bathose[i] = input;
+					}
+				}
+				if (test_mode == 1 && strr == "bathhop") {
+					bathhop.reset(SUM(distribute) - 1);
+					Real input;
+					ifs >> strr;
+					for_Int(i, 0, bathhop.size()) {
+						ifs >> input;
+						bathhop[i] = input;
+					}
+					if (mm) WRN("Finish the test_mode input: nimp = 2" + NAV4(Uc, Jz, bathose, bathhop));
+				}
+				if (!ifs) break;
+			}
+		}
+		ifs.close();
+	}
+
+	imfrq_hybrid_function.reset(norbs,num_omg,0.);
+	solver_eimp_data.reset(norbs,0.);
+	orbitdegenerate_idx.reset(norbs, 0);
+
 	{// hyb.in
 		Str hybdata(file + ".hyb.in");
 		IFS ifs(hybdata);
@@ -77,7 +137,7 @@ void APIzen::read_ZEN(const Str& file)
 				VecReal omg(num_omg, 0.), re(num_omg, 0.), im(num_omg, 0.);
 				Int drop_Int(0);
 				Real drop_omg(0.), drop_re(0.), drop_im(0.), drop_err1(0.), drop_err2(0.);
-				if (i >= num_orbital) break;
+				if (i >= norbs) break;
 				for_Int(j, 0, num_omg) {
 					if (swicher) {
 						ifs >> drop_Int;
@@ -112,103 +172,15 @@ void APIzen::read_ZEN(const Str& file)
 		}
 		else {
 			Int drop_Int(0);
-			for_Int(i, 0, num_orbital) {
+			for_Int(i, 0, norbs) {
 				ifs >> drop_Int;
 				ifs >> solver_eimp_data[i]; ifs >> orbitdegenerate_idx[i];
 				if (!ifs) ERR(STR("read_ZEN-in error with ") + NAV(eimpdata));
 			}
-			if (test_mode) num_nondegenerate = 1;
-			else num_nondegenerate = MAX(orbitdegenerate_idx);
+			// if (test_mode) num_nondegenerate = 1;
+			num_nondegenerate = MAX(orbitdegenerate_idx);
 		}
 		if (num_nondegenerate <= 0)ERR(STR("read_ZEN-in error with ") + NAV2(eimpdata, num_nondegenerate));
-		ifs.close();
-	}
-	
-	{// norg.in
-		Str norgdata(file+".norg.in");
-		IFS ifs(norgdata);
-		if (!ifs) {
-			ERR(STR("file opening failed with ") + NAV(norgdata))
-		}
-		else {
-			Str strr;
-			while (test_mode == 0){
-				ifs >> strr;
-				if(strr == "nband") {
-					ifs >> strr;
-					ifs >> nband; 
-				}
-				if(strr == "norbs") {
-					ifs >> strr;
-					ifs >> norbs; 
-				}
-				if(strr == "Uc") {
-					ifs >> strr;
-					ifs >> Uc; 
-				}
-				if(strr == "Jz") {
-					ifs >> strr;
-					ifs >> Jz; 
-				}
-				if(strr == "mu") {
-					ifs >> strr;
-					ifs >> mu; 
-				}
-				if (strr == "restrain") {
-					Int l2, l1, r1, r2;
-					ifs >> strr;
-					ifs >> strr;
-					ifs >> l2;	ifs >> l1; ifs >> strr; ifs >> r1; ifs >> r2;
-					restrain = { 0, l2, l1, 0, r1, r2 };
-					WRN("Finish the restrain input:" + NAV(restrain));
-				}
-				if (strr == "distribute") {
-					Int l2, l1, m0, r1, r2;
-					ifs >> strr;
-					ifs >> strr;
-					ifs >> l2;	ifs >> l1; ifs >> m0; ifs >> r1; ifs >> r2;
-					distribute = { 1, l2, l1, m0, r1, r2 };
-					WRN("Finish the division distribute input:" + NAV(distribute));
-				}
-
-				if (strr == "norm_mode") {
-					ifs >> strr;
-					ifs >> norm_mode;
-					if (norm_mode)WRN("Dear cutomer,you are now in the test mode PLEASE modify the console file manually.");
-				}
-				if (strr == "test_mode") {
-					ifs >> strr;
-					ifs >> test_mode;
-					if (test_mode)WRN("Dear cutomer,you are now in the test mode PLEASE modify the console file manually.");
-				}
-				if (strr == "fast_mode") {
-					ifs >> strr;
-					ifs >> fast_mode;
-					if (fast_mode)ERR("Sorry, the fast mode will coming Soon...");
-				}
-				
-				if (test_mode == 1 && strr == "bathose") {
-					bathose.reset(SUM(distribute) - 1);
-					Real input;
-					ifs >> strr;
-					for_Int(i, 0, bathose.size()) {
-						ifs >> input;
-						bathose[i] = input;
-					}
-				}
-				if (test_mode == 1 && strr == "bathhop") {
-					bathhop.reset(SUM(distribute) - 1);
-					Real input;
-					ifs >> strr;
-					for_Int(i, 0, bathhop.size()) {
-						ifs >> input;
-						bathhop[i] = input;
-					}
-					WRN("Finish the test_mode input: nimp = 2" + NAV4(Uc, Jz, bathose, bathhop));
-				}
-				if (!ifs) break;
-			}
-		}
 		ifs.close();
 	}
 }

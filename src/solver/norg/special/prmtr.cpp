@@ -1,5 +1,5 @@
 /*
-coded by Rong-Qiang He (rqhe@ruc.edu.cn, RUC, China)date 2020-10-11
+coded by Jia-Ming Wang (jmw@ruc.edu.cn, RUC, China) date 2022-2023
 */
 
 #include "prmtr.h"
@@ -9,7 +9,7 @@ Prmtr::Prmtr(const MyMpi &mm) : np(mm.np())
     set_inert_values();
     set_values();
     derive();
-    if (mm) print();
+    // if (mm) print();
     if (mm) { OFS ofs(iox + "log.parameters.txt", std::ios::app);  print(ofs); }
     if (mm) { OFS ofss(cdr + "log.parameters.txt", std::ios::app);  print(ofss); }
 }
@@ -29,13 +29,15 @@ void Prmtr::set_inert_values()
     freq_upp = 5.;                      
     freq_low = -5.;
 
-    unit_omg = 0.01;
+    // unit_omg = 0.01;
+    unit_omg = 0.07853982;
 }
 
 void Prmtr::set_values() {
     //model related
     hubbU = 8.;
     mu = 0.;
+    bandw = 3.;
     // t.reset(4, 0.);
     // t[0] = 0. - mu; // onset energy.
     // t[1] = 1.;
@@ -47,18 +49,18 @@ void Prmtr::set_values() {
     fit_rsd = 2.; // default value: 2.
 
     // NORG parameter.
-    templet_restrain = {0, -0, -4,  0,  4,  0};
-    templet_control =  {8, 20,  8,  8,  8, 20};
+    templet_restrain = {0, -1, -2,  0,  2,  1};
+    templet_control =  {1,  0,  2,  1,  2,  0};
     ndiv = templet_control.size();
-    norg_sets = 1;                                      // default value: 1
+    norg_sets = 6;                                      // default value: 1
     nI2B = SUM(templet_control);                        // default value:
     iter_max_norg = 99;                                 // default
     // nooc_mode = STR("nooc");
     // nooc_mode = STR("cpnooc");
     nooc_mode = STR("cnooc");
     after_modify_prmtr();
-    stage2_restrain = {0, -0, -3,  0,  3,  0};
-    stage2_control =  {8, 20,  8,  8,  8, 20};
+    // stage2_restrain = {0, -0, -3,  0,  3,  0};
+    // stage2_control =  {8, 20,  8,  8,  8, 20};
 }
 
 // we set first divison as impurity. The maximum number of cavity("-"); mean electron("+").
@@ -121,7 +123,7 @@ void Prmtr::print(std::ostream &os) const {
     prmtr_print(norbs, "number of spin-orbitals");
    	prmtr_print(cnooc, "Correlation nature orbital occupation constraint.");
     prmtr_print(control_divs, "to set the number of division and the shortcut restratin.");
-    prmtr_print(stage2, "to set the number of division and the shortcut restratin @ stage2.");
+    // prmtr_print(stage2, "to set the number of division and the shortcut restratin @ stage2.");
     prmtr_print(hubbU, "The hubbard U interaction strength");
     // for_Int(i,0,t.size()) prmtr_print(t[i], "quarter bandwidth");
     prmtr_print(max_omg, "max_omg of imgreen");

@@ -14,7 +14,7 @@ public:
 	const Prmtr& p;			// parameters
 	const ImGreen& hb;		// hybridization function
 	const Int nw;			// nw = p.fit_num_omg
-	Int nb;			// nb = p.nbath
+	Int nb;					// nb number of bath for the fitting.
 	VecInt x;
 	VecReal y;
 	VecReal sig;

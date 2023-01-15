@@ -10,8 +10,8 @@ Uc    = 4.0
 Jz    = 0.7
 mu    = 0.0
 
-restrain   =	*	-1	-1	*	1	1
-distribute =	1	0	0	5	0	0
+restrain   =	*	-1	-2	*	2	1
+distribute =	1	0	10	1	10	0
 
 # Standard parameters: Running mode, Only choose one mode
 norm_mode = 0
