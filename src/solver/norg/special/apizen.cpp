@@ -16,7 +16,7 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	hb.write("reading_hyb");
 	if(mm) p.print();
 	Bath bth(mm, p);
-	bth.number_bath_fit(hb, dmft_cnt, 0);
+	bth.bath_fit(hb, dmft_cnt);
 	
 	// // p.norbs = 2 * num_nondegenerate;
 	// p.eimp.reset(p.norbs, 0.);
