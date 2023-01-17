@@ -21,8 +21,8 @@ HybErr::HybErr(const Prmtr& p_i, const ImGreen& hb_i, const Int nb_i) :
 			x[nw + n] = nw + n;
 			y[nw + n] = imag(hb[n][0][0]);
 			mag_imag += SQR(y[nw + n]);
-			// wght[n] = wght[nw + n] = std::pow(p.mbomg(n) + p.fit_rsd, -p.fit_pow);
-			wght[n] = wght[nw + n] = 1;
+			wght[n] = wght[nw + n] = std::pow(p.Imomg(n) + p.fit_rsd, -p.fit_pow);
+			// wght[n] = wght[nw + n] = 1;
 		}
 		mag_real = SQRT(1 + mag_real / nw);
 		mag_imag = SQRT(1 + mag_imag / nw);
@@ -36,7 +36,7 @@ HybErr::HybErr(const Prmtr& p_i, const ImGreen& hb_i, const Int nb_i) :
 	if(x.size()>= 2 * nw + 1){
 		x[2 * nw + 0]	= 2 * nw + 1;
 		y[2 * nw + 0]	= 0.;
-		sig[2 * nw + 0] = nb * std::pow(8 * p.fit_max_omg, 4);
+		sig[2 * nw + 0] = nb * std::pow(8 * p.fit_max_omg, 5);
 	}
 	// // the part of bath sum rule
 	// if (x.size() >= 2 * nw + 2) {
@@ -64,7 +64,7 @@ void HybErr::operator()(const Int x, const VecReal& a, Real& y, VecReal& dyda) c
 	VecReal temp;
 	if (x < 2 * nw) {
 		const Int n = x < nw ? x : x - nw;
-		const Cmplx iomgn = p.Imomg(n);
+		const Cmplx iomgn = p.Imz(n);
 		const VecCmplx E = cmplx(temp.sm(nb, a.p()));
 		const VecCmplx S = INV(E - VecCmplx(nb, iomgn));
 		const VecCmplx V = cmplx(temp.sm(nb, a.p() + nb));
