@@ -1,7 +1,6 @@
 /*
 code	by	Rong-Qiang He (rqhe@ruc.edu.cn, RUC, China) date 2013 - 2017
-modify	by Jia-Ming Wang (jmw@ruc.edu.cn, RUC, China) date 2022
-test	by Yin Chen (15336698809@163.com, RUC, China) date 2022
+modify	by Jia-Ming Wang (jmw@ruc.edu.cn, RUC, China) date 2022 -2023
 */
 #include "hyberr.h"
 
@@ -36,7 +35,10 @@ HybErr::HybErr(const Prmtr& p_i, const ImGreen& hb_i, const Int nb_i) :
 	if(x.size()>= 2 * nw + 1){
 		x[2 * nw + 0]	= 2 * nw + 1;
 		y[2 * nw + 0]	= 0.;
-		sig[2 * nw + 0] = nb * std::pow(8 * p.fit_max_omg, 5);
+		// // old
+		// // sig[2 * nw + 0] = nb * std::pow(8 * p.fit_max_omg, 5);
+		// x*e^(0.5*(x/bw)^2)
+		sig[2 * nw + 0] = nb * 1E3 * p.fit_max_omg * EXP(0.5 * SQR(p.fit_max_omg / p.bandw));
 	}
 	// // the part of bath sum rule
 	// if (x.size() >= 2 * nw + 2) {
@@ -76,11 +78,21 @@ void HybErr::operator()(const Int x, const VecReal& a, Real& y, VecReal& dyda) c
 		VecCmplx D = concat(D_E, D_V);
 		dyda = x < nw ? real(D) : imag(D);
 	}
+	// x*e^(0.5*(x/bw)^2)
+	// (e^((0.5 x^2)/bw^2) * (bw^2 + x^2))/bw^2
 	else if (x == 2 * nw + 0) { // the part of ose regularization
+		// // const VecReal E = temp.sm(nb, a.p());
+		// // const VecReal E2 = E * E;
+		// // y = DOT(E2, E2);
+		// // VecReal D_E = 4. * E2 * E;
+		// // VecReal D_V = VecReal(nb, 0.);
+		// // VecReal D = concat(D_E, D_V);
+		// // dyda = D;
 		const VecReal E = temp.sm(nb, a.p());
-		const VecReal E2 = E * E;
-		y = DOT(E2, E2);
-		VecReal D_E = 4. * E2 * E;
+		const VecReal E2 = EXP(0.5 * (E * (1. / p.bandw)) * (E * (1. / p.bandw)));
+		y = DOT(E, E2);
+		VecReal BW(nb, p.bandw);
+		VecReal D_E = E2 * (BW * BW + E * E) * (1. / (p.bandw * p.bandw));
 		VecReal D_V = VecReal(nb, 0.);
 		VecReal D = concat(D_E, D_V);
 		dyda = D;
