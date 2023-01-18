@@ -16,15 +16,15 @@ NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i) :
 	if(mm) WRN(NAV(scsp.dim));
 }
 
-NORG::NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i) :
-	mm(mm_i), p(prmtr_i), impgreen(prmtr_i.norbs, prmtr_i), uormat(uormat_initialize()),
-	occupationerr(1.), groundenererr(1.), correctionerr(1.), h0(imp_i.h0), occnum_pre(SUM(prmtr_i.nI2B), 0.),
-	iter_norg_cnt(0), groune_pre(1.e99), groune_lst(0.), occnum_lst(SUM(prmtr_i.nI2B), 0.),
-	scsp(prmtr_i, imp_i.h0, prmtr_i.npartical), oneedm(mm, prmtr_i, scsp), norg_stable_count(0)
-{
-	// up_date_h0_to_solve(h0);
-	// get_gimp(impgreen);
-}
+// NORG::NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i) :
+// 	mm(mm_i), p(prmtr_i), impgreen(prmtr_i.norbs, prmtr_i), uormat(uormat_initialize()),
+// 	occupationerr(1.), groundenererr(1.), correctionerr(1.), h0(imp_i.h0), occnum_pre(SUM(prmtr_i.nI2B), 0.),
+// 	iter_norg_cnt(0), groune_pre(1.e99), groune_lst(0.), occnum_lst(SUM(prmtr_i.nI2B), 0.),
+// 	scsp(prmtr_i, imp_i.h0, prmtr_i.npartical), oneedm(mm, prmtr_i, scsp), norg_stable_count(0)
+// {
+// 	// up_date_h0_to_solve(h0);
+// 	// get_gimp(impgreen);
+// }
 
 void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 	h0 = h0_i;

@@ -37,7 +37,7 @@ void Prmtr::set_values() {
     //model related
     hubbU = 8.;
     mu = 0.;
-    bandw = 3.;
+    bandw = 5.;
     // t.reset(4, 0.);
     // t[0] = 0. - mu; // onset energy.
     // t[1] = 1.;
@@ -50,9 +50,9 @@ void Prmtr::set_values() {
 
     // NORG parameter.
     templet_restrain = {0, -1, -2,  0,  2,  1};
-    templet_control =  {1,  0,  2,  1,  2,  0};
+    templet_control =  {1,  0,  4,  0,  4,  0};
     ndiv = templet_control.size();
-    norg_sets = 6;                                      // default value: 1
+    norg_sets = norbs;                                  // default value: 1
     nI2B = SUM(templet_control);                        // default value:
     iter_max_norg = 99;                                 // default
     // nooc_mode = STR("nooc");

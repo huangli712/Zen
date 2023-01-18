@@ -67,9 +67,8 @@ void Impurity::set_factor() {
     h0 = bth.find_hop();
     
     // // h0 = find_hop_for_test();
-    
     // set imp part
-    MatReal h0loc(ni);
+    MatReal h0loc(ni,ni,0.);
     for_Int(i, 0, ni) h0loc[i][i] = p.eimp[i] - p.mu;
     
     // find i_th imp in which site

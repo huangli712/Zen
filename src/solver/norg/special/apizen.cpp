@@ -6,7 +6,7 @@ coded by Jia-Ming Wang (jmw@ruc.edu.cn, RUC, China) date 2022-2023
 
 APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int test_mode_i) :
 	mm(mm_i), p(prmtr_i),num_omg(prmtr_i.num_omg),
-	num_nondegenerate(-1), test_mode(test_mode_i)
+	num_nondegenerate(-1), test_mode(test_mode_i), dmft_cnt(0)
 {
 	read_ZEN(file);
 	p.templet_restrain = restrain; p.templet_control = distribute;
@@ -16,22 +16,30 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	hb.write("reading_hyb");
 	if(mm) p.print();
 	Bath bth(mm, p);
-	bth.bath_fit(hb, dmft_cnt);
+	bth.bath_fit(hb, dmft_cnt);					if(mm)	bth.write_ose_hop(dmft_cnt);
 	
-	// // p.norbs = 2 * num_nondegenerate;
+
+	// {// test hyb
+	// 	ImGreen hb_test(1, p);
+	// 	for_Int(j, 0, hb.nomgs) hb_test[j][0][0] = hb.g[j][0][0];
+	// 	hb_test.write("zic002.mb.hb_d(3)");
 	// p.eimp.reset(p.norbs, 0.);
-	// p.hubbU = Uc;
-	// p.after_modify_prmtr();
+	// }
+	
+	p.hubbU = Uc;
+	p.after_modify_prmtr();
 
 
 	{
 		Impurity imp(mm, p, bth);
-		ImGreen hb_imp(p.nband, p);   	imp.find_hb(hb_imp); 	if (mm) hb_imp.write("hb_imp");
-		// NORG norg(mm, p);
-		// norg.up_date_h0_to_solve(imp.h0);
+		// ImGreen hb_imp(p.nband, p);   	imp.find_hb(hb_imp); 	if (mm) hb_imp.write("hb_imp");
+		imp.update();
+		if(mm) WRN(NAV(imp.h0))
+		NORG norg(mm, p);
+		norg.up_date_h0_to_solve(imp.h0);
 		// ImGreen g0imp(p.norbs * 2, p);	imp.find_g0(g0imp);						if (mm) g0imp.write("g0imp", dmft_cnt);
 		// ImGreen gfimp(p.norbs * 2, p);	norg.get_g_by_KCV_spup(gfimp);			if (mm) gfimp.write("gfimp", dmft_cnt);
-		// ImGreen seimp(p.norbs * 2, p);	seimp=g0imp.inverse()-gfimp.inverse();	if (mm) seimp.write("seimp", dmft_cnt);
+		// // ImGreen seimp(p.norbs * 2, p);	seimp=g0imp.inverse()-gfimp.inverse();	if (mm) seimp.write("seimp", dmft_cnt);
 	}
 }
 
@@ -166,6 +174,7 @@ void APIzen::read_ZEN(const Str& file)
 
 	{// eimp.in
 		Str eimpdata(file + ".eimp.in");
+		p.eimp.reset(norbs);
 		IFS ifs(eimpdata);
 		if (!ifs) {
 			ERR(STR("file opening failed with ") + NAV(eimpdata))
@@ -174,7 +183,7 @@ void APIzen::read_ZEN(const Str& file)
 			Int drop_Int(0);
 			for_Int(i, 0, norbs) {
 				ifs >> drop_Int;
-				ifs >> solver_eimp_data[i]; ifs >> orbitdegenerate_idx[i];
+				ifs >> p.eimp[i]; ifs >> orbitdegenerate_idx[i];
 				if (!ifs) ERR(STR("read_ZEN-in error with ") + NAV(eimpdata));
 			}
 			// if (test_mode) num_nondegenerate = 1;
