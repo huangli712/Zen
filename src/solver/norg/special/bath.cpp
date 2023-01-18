@@ -5,7 +5,7 @@ Bath::Bath(const MyMpi& mm_i, const Prmtr& prmtr_i) :
 {
 	// make random seed output together
 	{ SLEEP(1); mm.barrier(); }
-	init_ose_hop();
+	// init_ose_hop();
 }
 
 void Bath::bath_fit(const ImGreen& hb_i, Int iter)
@@ -14,6 +14,7 @@ void Bath::bath_fit(const ImGreen& hb_i, Int iter)
 		if(p.nband != hb_i[0].nrows()) ERR("some thing wrong with the hybrid function.")
 		for_Int(i, 0, hb_i.nomgs) hb[i] = hb_i[i][band_i][band_i];
 		ose.reset(p.nI2B[band_i]); hop.reset(p.nI2B[band_i]); nb = p.nI2B[band_i];
+		init_ose_hop();
 		const VecReal a0 = concat(ose, hop);
 		Real err;
 		VecReal a;
@@ -22,6 +23,7 @@ void Bath::bath_fit(const ImGreen& hb_i, Int iter)
 		ose = a.truncate(0, nb);
 		hop = a.truncate(nb, nb + nb);
 		regularize_ose_hop();
+		vec_ose.push_back(ose);vec_hop.push_back(hop);
 		if (mm) {
 			const HybErr hyberr(p, hb, nb);
 			const VecReal a = concat(ose, hop);
@@ -33,7 +35,6 @@ void Bath::bath_fit(const ImGreen& hb_i, Int iter)
 			using namespace std;
 			cout << setw(4) << iter << "  " << NAV6(band_i,nmin, err, err_crv, err_reg, /*err_bsr,*/ a_norm) << "  " << present() << endl;
 		}
-		vec_ose.push_back(ose);vec_hop.push_back(hop);
 	}
 }
 
@@ -67,8 +68,8 @@ std::tuple<Real, VecReal, Int> Bath::bath_fit_contest(const VecReal& a0)
 	const HybErr hyberr(p, hb, nb);
 	const Int np = a0.size();
 	const Int ntry_fine = MAX(16, mm.np());
-	const Int ntry = MAX(8 * ntry_fine, 512);
-	const Real tol = 1.e-8;
+	const Int ntry = MAX(8 * ntry_fine, 2000);
+	const Real tol = 1.e-10;
 	Int nmin = 0;		// number of fittings reaching the minimum
 	MPI_Status status;
 	VecReal a(np);

@@ -49,21 +49,22 @@ public:
 	Bath(const MyMpi& mm_i, const Prmtr& prmtr_i);
 	void bath_fit(const ImGreen& hb_i, Int iter);
 	MatReal find_hop() const;
-	void write_ose_hop(Int iter_cnt) const {
-		using namespace std;
-		OFS ofs_app(p.ofx + ".ose.hop.txt", std::ios::app);
-		ofs_app << iofmt("sci");
-		ofs_app << setw(4) << iter_cnt;
-		for_Int(i, 0, nb) { ofs_app << "\t" << setw(w_Real) << ose[i]; }
-		for_Int(i, 0, nb) { ofs_app << "\t" << setw(w_Real) << hop[i]; }
-		ofs_app << endl;
-		ofs_app.close();
 
-		OFS ofs(iox + "zic" + prefill0(iter_cnt, 3) + ".ose.hop.txt");
-		ofs << iofmt("sci");
-		for_Int(i, 0, nb) {
-			ofs << setw(3) << i << "\t" << setw(w_Real) << ose[i] << "\t" << setw(w_Real) << hop[i] << endl;;
-		}
-		ofs.close();
+void write_ose_hop(Int iter_cnt) const {
+	using namespace std;
+	for_Int(band_i, 0, p.nband)
+	{
+		OFS ofs_app_ose(p.ofx + ".ose" + STR(band_i) +".txt", std::ios::app);
+		ofs_app_ose << iofmt("sci");
+		ofs_app_ose << setw(4) << iter_cnt;
+		for_Int(i, 0, p.nI2B[2 * band_i]) { ofs_app_ose << "\t" << setw(w_Real) << vec_ose[band_i][i]; }
+		ofs_app_ose << endl; ofs_app_ose.close();
+
+		OFS ofs_app_hop(p.ofx + ".hop" + STR(band_i) +".txt", std::ios::app);
+		ofs_app_hop << iofmt("sci");
+		ofs_app_hop << setw(4) << iter_cnt;
+		for_Int(i, 0, p.nI2B[2 * band_i]) { ofs_app_hop << "\t" << setw(w_Real) << vec_hop[band_i][i]; }
+		ofs_app_hop << endl; ofs_app_hop.close();
 	}
+}
 };
