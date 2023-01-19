@@ -40,7 +40,7 @@ void Green::read(const Str& file)
 
 
 Green::Green(const Prmtr& p, Int nomgs_i, const VecCmplx& z_omg_i, const Str& file) :
-	nomgs(nomgs_i), norbs(p.norbs), z_omg(z_omg_i), g(nomgs, MatCmplx(norbs, norbs, 0.))
+	nomgs(nomgs_i), norbs(p.nband), z_omg(z_omg_i), g(nomgs, MatCmplx(norbs, norbs, 0.))
 {
 	if (!file.empty()) {
 		read(file);
@@ -65,7 +65,7 @@ Green::Green(const Green& a, Int orb0, Int orb1) :
 
 
 Green::Green(const Prmtr& p, Int orb0, Int orb1, const Green& a) :
-	nomgs(a.nomgs),norbs(p.norbs), z_omg(a.z_omg), g(nomgs, MatCmplx(norbs, norbs, 0.))
+	nomgs(a.nomgs),norbs(p.nband), z_omg(a.z_omg), g(nomgs, MatCmplx(norbs, norbs, 0.))
 {
 	for_Int(i, 0, nomgs) {
 		g[i][orb0][orb1] = a.g[i][0][0];
@@ -234,15 +234,15 @@ void write_matsubara_green(const Prmtr& p, const Green& green, Str green_name, I
 	ofs << iofmt("sci");
 	// real part of green
 	ofs << setw(w_Real) << "w";
-	for_Int(m, 0, p.norbs) {
-		for_Int(n, 0, p.norbs) {
+	for_Int(m, 0, p.nband) {
+		for_Int(n, 0, p.nband) {
 			ofs << "  " << setw(w_Real) << "Re" + STR(m + 1) + STR(n + 1);
 		}
 	}
 	// imag part of green
 	ofs << "  " << setw(w_Real) << "w";
-	for_Int(m, 0, p.norbs) {
-		for_Int(n, 0, p.norbs) {
+	for_Int(m, 0, p.nband) {
+		for_Int(n, 0, p.nband) {
 			ofs << "  " << setw(w_Real) << "Im" + STR(m + 1) + STR(n + 1);
 		}
 	}
@@ -251,15 +251,15 @@ void write_matsubara_green(const Prmtr& p, const Green& green, Str green_name, I
 		Real omg = (2 * i + 1) * p.unit_omg;
 		// real part of green
 		ofs << setw(w_Real) << omg;
-		for_Int(m, 0, p.norbs) {
-			for_Int(n, 0, p.norbs) {
+		for_Int(m, 0, p.nband) {
+			for_Int(n, 0, p.nband) {
 				ofs << "  " << setw(w_Real) << real(green[i][m][n]);
 			}
 		}
 		// imag part of green
 		ofs << "  " << setw(w_Real) << omg;
-		for_Int(m, 0, p.norbs) {
-			for_Int(n, 0, p.norbs) {
+		for_Int(m, 0, p.nband) {
+			for_Int(n, 0, p.nband) {
 				ofs << "  " << setw(w_Real) << imag(green[i][m][n]);
 			}
 		}
@@ -277,15 +277,15 @@ void write_retarded_green(const Prmtr& p, const Green& green, Str green_name, In
 		Real omg = p.freq_low + i * p.dlt_freq;
 		// real part of green
 		ofs << setw(w_Real) << omg;
-		for_Int(m, 0, p.norbs) {
-			for_Int(n, 0, p.norbs) {
+		for_Int(m, 0, p.nband) {
+			for_Int(n, 0, p.nband) {
 				ofs << "  " << setw(w_Real) << real(green[i][m][n]);
 			}
 		}
 		// imag part of green
 		ofs << "  " << setw(w_Real) << omg;
-		for_Int(m, 0, p.norbs) {
-			for_Int(n, 0, p.norbs) {
+		for_Int(m, 0, p.nband) {
+			for_Int(n, 0, p.nband) {
 				ofs << "  " << setw(w_Real) << imag(green[i][m][n]);
 			}
 		}

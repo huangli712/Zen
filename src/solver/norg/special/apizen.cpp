@@ -23,7 +23,6 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	// 	ImGreen hb_test(1, p);
 	// 	for_Int(j, 0, hb.nomgs) hb_test[j][0][0] = hb.g[j][0][0];
 	// 	hb_test.write("zic002.mb.hb_d(3)");
-	// p.eimp.reset(p.norbs, 0.);
 	// }
 	
 	p.hubbU = Uc;
@@ -37,9 +36,9 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 		if(mm) WRN(NAV(imp.h0))
 		NORG norg(mm, p);
 		norg.up_date_h0_to_solve(imp.h0);
-		// ImGreen g0imp(p.norbs * 2, p);	imp.find_g0(g0imp);						if (mm) g0imp.write("g0imp", dmft_cnt);
-		// ImGreen gfimp(p.norbs * 2, p);	norg.get_g_by_KCV_spup(gfimp);			if (mm) gfimp.write("gfimp", dmft_cnt);
-		// // ImGreen seimp(p.norbs * 2, p);	seimp=g0imp.inverse()-gfimp.inverse();	if (mm) seimp.write("seimp", dmft_cnt);
+		// ImGreen g0imp(p.nband, p);	imp.find_g0(g0imp);						if (mm) g0imp.write("g0imp", dmft_cnt);
+		// ImGreen gfimp(p.nband, p);	norg.get_g_by_KCV_spup(gfimp);			if (mm) gfimp.write("gfimp", dmft_cnt);
+		// // ImGreen seimp(p.nband, p);	seimp=g0imp.inverse()-gfimp.inverse();	if (mm) seimp.write("seimp", dmft_cnt);
 	}
 }
 
@@ -82,14 +81,14 @@ void APIzen::read_ZEN(const Str& file)
 					ifs >> strr; ifs >> strr;
 					ifs >> l2;	ifs >> l1; ifs >> strr; ifs >> r1; ifs >> r2;
 					restrain = { 0, l2, l1, 0, r1, r2 };
-					if (mm) WRN("Finish the restrain input:" + NAV(restrain));
+					if (mm) WRN("Finish the restrain input:" + NAV(restrain.mat(1,restrain.size())));
 				}
 				if (strr == "distribute") {
 					Int l2, l1, m0, r1, r2;
 					ifs >> strr; ifs >> strr;
 					ifs >> l2;	ifs >> l1; ifs >> m0; ifs >> r1; ifs >> r2;
 					distribute = { 1, l2, l1, m0, r1, r2 };
-					if (mm) WRN("Finish the division distribute input:" + NAV(distribute));
+					if (mm) WRN("Finish the division distribute input:" + NAV(distribute.mat(1,distribute.size())));
 				}
 				if (strr == "norm_mode") {
 					ifs >> strr; ifs >> norm_mode;

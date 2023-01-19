@@ -315,23 +315,23 @@ VEC<MatReal> DensityMat::find_unitary_orbital_rotation_matrix()
 {
 	VEC<MatReal> bathdm;
 	for_Int(i, 0, p.norg_sets) {
-		bathdm.push_back(dm[i].truncate(p.norbs * 2, p.norbs * 2, p.nI2B[i] + p.norbs * 2, p.nI2B[i] + p.norbs * 2));
-		if (mm)WRN(NAV2(dm[i].truncate(0, 0, p.norbs * 2, p.norbs * 2), bathdm[i]));
+		bathdm.push_back(dm[i].truncate(1, 1, p.nI2B[i] + 1, p.nI2B[i] + 1));
 	}
+	if (mm) WRN(NAV(dm[0]));
 
 	VEC<VecReal> evalue;
 	for_Int(i, 0, p.norg_sets) {
 		VecReal evalu_i(bathdm[i].nrows(), 0.);
 		// if(mm) WRN("New dm for bath" + NAV3(i, bathdm[i], bathdm.size()));
 		heevr(bathdm[i], evalu_i); bathdm[i] = bathdm[i].tr(); evalue.push_back(std::move(evalu_i));
-		if(mm) WRN("New U for bath" + NAV2(bathdm[i], evalue[i]));
+		// if(mm) WRN("New U for bath" + NAV2(bathdm[i], evalue[i]));
 		for_Int(j, 0, (p.nI2B[i] / 2.)) {
 			SWAP(bathdm[i][j], bathdm[i][p.nI2B[i] - j - 1]);
 			SWAP(evalue[i][j], evalue[i][p.nI2B[i] - j - 1]);
 		}
 		//DBG("New uorm111" + NAV3(i, bathdm[i], evalue[i]));
 	}
-
+	if(mm) WRN(NAV2(evalue[0],evalue[1]));
 	for_Int(i, 0, bathdm.size()) bathdm[i] = bathdm[i - (i%2)];
 
 	occupationnumber = evalue;

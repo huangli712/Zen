@@ -66,8 +66,8 @@ void Prmtr::set_values() {
 // we set first divison as impurity. The maximum number of cavity("-"); mean electron("+").
 void Prmtr::after_modify_prmtr() const
 {
-    nI2B.reset(norg_sets, 0.);
-    control_divs.reset(norg_sets + 1, ndiv);
+    nI2B.reset(norg_sets, 0);
+    control_divs.reset(norg_sets + 1, ndiv, 0);
     control_divs[0] = templet_restrain;
     for_Int(i, 0, norg_sets) control_divs[i + 1] = templet_control;
     for_Int(i, 0, norg_sets) nI2B[i] = SUM(control_divs[i + 1]) - control_divs[i + 1][0];

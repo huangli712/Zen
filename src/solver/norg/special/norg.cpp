@@ -42,7 +42,7 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 		iter_norg_cnt++;
 		VEC<MatReal> uormat_new(oneedm.find_unitary_orbital_rotation_matrix());
 		for_Int(i, 0, uormat.size()) uormat[i] = uormat_new[i] * uormat[i];
-		if(mm) WRN(NAV(uormat[0]));
+		// if(mm) WRN(NAV(uormat[0]));
 		scsp.coefficient = scsp.set_row_primeter_by_gived_mat(uormat, h0_i);	//if (mm) scsp.print();
 		// if (mm)PIO("ground_state size" + NAV(oneedm.ground_state.size()));
 		groune_pre = groune_lst;	occnum_pre = occnum_lst;
@@ -259,7 +259,7 @@ void NORG::write_norg_info(Int iter_cnt) const {
 	ofs_app_energy << endl; ofs_app_energy.close();
 
 	// Only show for the upper spin.
-	if(iter_cnt != 0)for_Int(i, 0, p.norbs) {
+	if(iter_cnt != 0)for_Int(i, 0, p.nband) {
 		OFS ofs_app_occupation(tox +"imp"+ STR(i*2) + "_bath_occupation_number.txt", std::ios::app);
 		ofs_app_occupation << iofmt("sci");
 		ofs_app_occupation << setw(4) << iter_cnt;
@@ -269,7 +269,7 @@ void NORG::write_norg_info(Int iter_cnt) const {
 	}
 	
 	// Only show for the upper spin.
-	if(iter_cnt != 0)for_Int(i, 0, p.norbs) {
+	if(iter_cnt != 0)for_Int(i, 0, p.nband) {
 		VEC<VecReal> dmeigen = oneedm.check_dm_get_occupation_number();
 		OFS ofs_app_occupation_all(tox +"imp"+ STR(i*2) + "_occupation_number.txt", std::ios::app);
 		ofs_app_occupation_all << iofmt("sci");
