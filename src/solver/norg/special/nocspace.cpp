@@ -55,15 +55,15 @@ VecReal NocSpace::set_row_primeter_by_gived_mat(const VEC<MatReal>& uormat_i, co
 	{
 		for (const auto& uormat_ii : uormat_i)
 		{
+			counter++;
 			for_Int(i, 0, uormat_ii.nrows()) {
 				for_Int(j, 0, uormat_ii.ncols()) {
-					transform_uormat[i + sit_mat[counter][0]][j + sit_mat[counter][0]] = uormat_ii[i][j];
+					transform_uormat[i + counter][j + counter] = uormat_ii[i][j];
 				}
 			}
 			counter += uormat_ii.nrows();
 		}
 	}
-	// WRN(NAV(transform_uormat));
 	hopint = transform_uormat * hopint * transform_uormat.ct();
 	VecReal coefficient_i(hopint.vec());
 	VecReal check_point(1, 0.); coefficient_i.reset(concat(check_point, coefficient_i));

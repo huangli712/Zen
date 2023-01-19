@@ -81,7 +81,7 @@ private:
 */
 public:
 	NORG(const MyMpi& mm_i, const Prmtr& prmtr_i);
-	NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i);
+	// NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i);
 
 	void up_date_h0_to_solve(const MatReal& h0_i);
 	
