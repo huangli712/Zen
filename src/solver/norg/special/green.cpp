@@ -119,9 +119,9 @@ void Green::write(const Str& green_name, Int iter_cnt) const
 void Green::write(const Str& green_name, const Str& rowname, Int iter_cnt) const
 {
     OFS ofs;
-    if (iter_cnt == 999) { ofs.open(iox + rowname + green_name + ".txt"); }
-    else { ofs.open(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + rowname + green_name + ".txt"); }
-    Str iter_str = iter_cnt == 999 ? "rowname_" : STR(iter_cnt)+"_";
+    if (iter_cnt == 999) { ofs.open(iox + green_name + rowname + ".txt"); }
+    else { ofs.open(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + rowname + ".txt"); }
+    Str iter_str = iter_cnt == 999 ? STR(rowname)+"_" : STR(rowname)+STR(iter_cnt)+"_";
     // OFS ofs(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + ".txt");
     ofs << iofmt("sci");
     // real part of green
