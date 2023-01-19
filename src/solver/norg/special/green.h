@@ -33,6 +33,7 @@ public:
 	inline MatCmplx& operator[](Idx i);
 	inline const MatCmplx& operator[](Idx i) const;
 	void write(const Str& green_name, Int iter_cnt=999) const;
+	void write(const Str& green_name, const Str& rowname, Int iter_cnt=999) const;
 	inline void reset(Idx n);
 };
 
