@@ -317,7 +317,7 @@ VEC<MatReal> DensityMat::find_unitary_orbital_rotation_matrix()
 	for_Int(i, 0, p.norg_sets) {
 		bathdm.push_back(dm[i].truncate(1, 1, p.nI2B[i] + 1, p.nI2B[i] + 1));
 	}
-	if (mm) WRN(NAV(dm[0]));
+	if (mm) WRN(NAV3(dm[0], dm[1], dm[2]));
 
 	VEC<VecReal> evalue;
 	for_Int(i, 0, p.norg_sets) {
@@ -331,7 +331,7 @@ VEC<MatReal> DensityMat::find_unitary_orbital_rotation_matrix()
 		}
 		//DBG("New uorm111" + NAV3(i, bathdm[i], evalue[i]));
 	}
-	if(mm) WRN(NAV2(evalue[0],evalue[1]));
+	if(mm) WRN(NAV3(evalue[0].mat(1,p.nI2B[0]), evalue[1].mat(1,p.nI2B[1]), evalue[2].mat(1,p.nI2B[2])));
 	for_Int(i, 0, bathdm.size()) bathdm[i] = bathdm[i - (i%2)];
 
 	occupationnumber = evalue;
