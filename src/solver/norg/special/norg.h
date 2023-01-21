@@ -104,17 +104,17 @@ public:
 	Real return_nointeractions_ground_state_energy(const MatReal& h0_i) const;
 //--------------------------------------- for the Green function---------------------------------
 	
-	void get_gimp_by_krylov_CV_modify(Green& imp_i) const;
+	// void get_gimp_by_krylov_CV_modify(Green& imp_i) const;
 	// // Only use for test the validity.
 	// void get_gimp_by_krylov_CV_modify(ReGreen& imp_i) const;
 
-	Int get_gimp_with_possible_degeneracy(ImGreen& imp_i, Int iter_cont = 999);
+	// Int get_gimp_with_possible_degeneracy(ImGreen& imp_i, Int iter_cont = 999);
 
-	void get_gimp_by_krylov(const ImGreen& imp_i);
+	// void get_gimp_by_krylov(const ImGreen& imp_i);
 
-	void find_g(Green &g) ;
+	// void find_g(Green &g) ;
 	
-	Int find_g_with_possible_degeneracy(VEC<ReGreen> &g, Int kind = 0) ;
+	// Int find_g_with_possible_degeneracy(VEC<ReGreen> &g, Int kind = 0) ;
 
 	// give the impurity green from krylov correction vec.
 	void get_g_by_KCV(Green& imp_i);
@@ -123,6 +123,8 @@ public:
 
 	// git the impurity green from continue fraction.
 	void get_g_by_CF(Green& imp_i);
+
+	void get_gimp(Green& imp_i);
 	
 //--------------------------------------- for the print out---------------------------------
 	void write_norg_info(Int iter_cnt) const;

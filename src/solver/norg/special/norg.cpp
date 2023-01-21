@@ -44,10 +44,12 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 		for_Int(i, 0, uormat.size()) uormat[i] = uormat_new[i] * uormat[i];
 		// if(mm) WRN(NAV(uormat[0]));
 		scsp.coefficient = scsp.set_row_primeter_by_gived_mat(uormat, h0_i);	//if (mm) scsp.print();
+		if(mm) WRN("TEST");
 		// if (mm)PIO("ground_state size" + NAV(oneedm.ground_state.size()));
 		groune_pre = groune_lst;	occnum_pre = occnum_lst;
 		oneedm.update(); final_ground_state = oneedm.ground_state;
 		// if(mm) PIO(NAV(oneedm.sum_off_diagonal()));
+		if(mm) WRN("TEST2");
 		occnum_lst = VECVectoVec(oneedm.occupationnumber);
 		groune_lst = oneedm.groundstate_energy;
 		// if(mm) WRN(NAV(oneedm.dm[0]));
@@ -58,6 +60,7 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 			// write_norg_info(iter_norg_cnt);
 			// write_state_info(iter_norg_cnt);
 		}
+		if(mm) WRN("TEST3");
 		occupationerr = SQRT(SUM(SQR(occnum_pre - occnum_lst)) / p.norbit);
 		groundenererr = 2 * (groune_pre - groune_lst) / (ABS(groune_pre) + ABS(groune_lst) + 1.);
 		if (mm) {
@@ -123,6 +126,26 @@ void NORG::get_g_by_KCV_spup(Green& imp_i)
 	// }
 
 	if(mm) std::cout << present() << std::endl;
+}
+
+void NORG::get_gimp(Green& imp_i)
+{
+	for_Int(i,1,4){
+		StdVecInt difference = {i, -i};
+		for(const auto ii: difference)
+		{
+			NocSpace scsp_sub(p, h0, nppso(p.npartical, ii));
+			Operator opr_sub(mm, p, scsp_sub);
+			scsp_sub.coefficient = scsp_sub.set_row_primeter_by_gived_mat(uormat, h0);
+			CrrltFun temp_green(mm, p, scsp, scsp_sub, opr_sub.table, final_ground_state, i * 2);
+			ImGreen green_function(1, p);
+			if(ii > 0) temp_green.find_gf_greater(groune_lst, green_function);
+			if(ii < 0) temp_green.find_gf_lesser(groune_lst, green_function);
+			// green_function.write("continued_fraction-imp_green_function", 2 * i + 1);
+			for_Int(n, 0, green_function.nomgs) imp_i[n][i-1][i-1] = green_function[n][0][0];
+		}
+		if (mm) PIO("finished the find_g_norg   "+ STR(i) + present());
+	}
 }
 
 void NORG::readmatrix(MatReal& m, const Str& file)

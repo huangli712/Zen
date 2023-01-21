@@ -8,13 +8,13 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	mm(mm_i), p(prmtr_i),num_omg(prmtr_i.num_omg),
 	num_nondegenerate(-1), test_mode(test_mode_i), dmft_cnt(0)
 {
-	read_ZEN(file);
+	read_ZEN(file);	p.hubbU = Uc;
 	p.templet_restrain = restrain; p.templet_control = distribute;
 	p.after_modify_prmtr();
+	if(mm) p.print();
 	ImGreen hb(nband, p);
 	for_Int(j, 0, hb.nomgs) for_Int(i, 0, nband)  hb.g[j][i][i] = - imfrq_hybrid_function[i][j];
-	hb.write("reading_hyb");
-	if(mm) p.print();
+	hb.write("hb_zen", "Read");
 	Bath bth(mm, p);
 	bth.bath_fit(hb, dmft_cnt);					if(mm)	bth.write_ose_hop(dmft_cnt);
 	
@@ -25,19 +25,17 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	// 	hb_test.write("zic002.mb.hb_d(3)");
 	// }
 	
-	p.hubbU = Uc;
-	p.after_modify_prmtr();
-
 
 	{
 		Impurity imp(mm, p, bth);
-		// ImGreen hb_imp(p.nband, p);   	imp.find_hb(hb_imp); 	if (mm) hb_imp.write("hb_imp");
+		ImGreen hb_imp(p.nband, p);   	imp.find_hb(hb_imp); 	if (mm) hb_imp.write("hb_imp", "Fit");
 		imp.update();
 		if(mm) WRN(NAV(imp.h0))
+		ImGreen g0(p.norbit, p);	imp.find_all_g0(g0);		if(mm)WRN(NAV(g0.particle_number()));
 		NORG norg(mm, p);
 		norg.up_date_h0_to_solve(imp.h0);
-		// ImGreen g0imp(p.nband, p);	imp.find_g0(g0imp);						if (mm) g0imp.write("g0imp", dmft_cnt);
-		// ImGreen gfimp(p.nband, p);	norg.get_g_by_KCV_spup(gfimp);			if (mm) gfimp.write("gfimp", dmft_cnt);
+		// ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp);			if (mm) gfimp.write("gfimp", dmft_cnt);
+
 		// // ImGreen seimp(p.nband, p);	seimp=g0imp.inverse()-gfimp.inverse();	if (mm) seimp.write("seimp", dmft_cnt);
 	}
 }

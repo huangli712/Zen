@@ -21,6 +21,19 @@ void Impurity::find_g0(Green &g0) const {
     }
 }
 
+// rely on imp model's frame
+void Impurity::find_all_g0(Green &g0) const {
+
+    MatCmplx Z(ns, ns);
+    for_Int(n, 0, g0.nomgs) {
+        Z = g0.z(n);
+        MatCmplx g0_z = matinvlu(Z - cmplx(h0));
+        for_Int(i, 0, p.norbit) {
+            g0[n][i][i] = g0_z[i][i];
+        }
+    }
+}
+
 //rely on imp model's frame
 void Impurity::find_hb(Green &hb) const {
     for_Int(i,0,p.nband){

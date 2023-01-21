@@ -36,6 +36,7 @@ private:
 public:
 	Impurity(const MyMpi& mm_i, const Prmtr& prmtr_i, const Bath& bth_i, const Str& file = empty_str);
 	void find_g0(Green& g0) const;
+	void find_all_g0(Green& g0) const;
 	
 	void find_hb(Green& hb) const;
 	
