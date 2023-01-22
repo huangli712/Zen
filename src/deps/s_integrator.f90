@@ -6,7 +6,7 @@
 !!! type    : functions
 !!! author  : li huang (email:lihuang.dmft@gmail.com)
 !!! history : 09/20/2014 by li huang (created)
-!!!           07/29/2022 by li huang (last modified)
+!!!           02/05/2022 by li huang (last modified)
 !!! purpose : the purpose of these functions is to implement the composite
 !!!           trapezoid or composite simpson integration algorithms.
 !!! status  : unstable
@@ -114,16 +114,16 @@
      evenSum = zero
      oddSum = zero
      !
-     do i=1,n-1
+     do i=2,n-1
          if ( mod(i,2) == 0 ) then
              evenSum = evenSum + f(a+dble(i)*h)
          else
              oddSum = oddSum + f(a+dble(i)*h)
          endif ! back if ( mod(i,2) == 0 ) block
-     enddo ! over i={1,n-1} loop
+     enddo ! over i={2,n-1} loop
 
      ! calculate the final value
-     val = ( h / 3.0_dp ) * ( f(a) + f(b) + 2.0_dp * evenSum + 4.0_dp * oddsum )
+     val = ( h / 3.0_dp ) * ( f(a) + f(b) + 4.0_dp * evenSum + 2.0_dp * oddsum )
 
 !! body]
 
