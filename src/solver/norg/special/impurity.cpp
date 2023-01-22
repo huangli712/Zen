@@ -1,9 +1,10 @@
 #include "impurity.h"
 
 Impurity::Impurity(const MyMpi &mm_i, const Prmtr &prmtr_i, const Bath &bth_i, const Str& file)
-    : mm(mm_i), p(prmtr_i), bth(bth_i), nb(p.nbath), ni(p.norbs), ns(p.norbit), pos_imp(p.nband), h0(p.norbit, p.norbit, 0.)
+    : mm(mm_i), p(prmtr_i), bth(bth_i), nb(p.nbath), ni(p.norbs), ns(p.norbit), pos_imp(p.norbs), h0(p.norbit, p.norbit, 0.)
 {
     // if (!file.empty()) read(file);
+    set_factor();
 }
 
 using namespace std;
