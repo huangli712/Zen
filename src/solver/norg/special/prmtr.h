@@ -18,6 +18,8 @@ public:
 	
 	// square lattice, model parameters
 	Real hubbU;						// Hubbard interaction U
+	Real jz;						// hund interaction Jz
+	mutable Real uprime;			// U^' as U - 2 * Jz
 	Real mu;						// chemical potential
 	VecReal	eimp;					// the impurity energy 
 	// VecReal t;					// The  hopping for sites,t[0] is (on-site energy-mu)

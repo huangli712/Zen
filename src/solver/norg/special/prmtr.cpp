@@ -35,14 +35,12 @@ void Prmtr::set_inert_values()
 
 void Prmtr::set_values() {
     //model related
-    hubbU = 8.;
+    hubbU = 4.;
+    jz = 0.7;
+    uprime = hubbU - 2 * jz;
     mu = 0.;
     bandw = 5.;
-    // t.reset(4, 0.);
-    // t[0] = 0. - mu; // onset energy.
-    // t[1] = 1.;
-    // t[2] =-0.3;
-    // t[3] = 0.2;
+
 
     // fitting related
     fit_pow = 2.; // default value: 2.
@@ -75,6 +73,7 @@ void Prmtr::after_modify_prmtr() const
     norbit = SUM(control_divs.tr()[0]) + nbath;
     npartical.reset(norg_sets, 0);
     for_Int(i, 0, norg_sets) npartical[i] = SUM(control_divs[i + 1])/2 ;
+    uprime = hubbU - 2 * jz;
 }
 
 void Prmtr::change_the_norg_restrain_and_div(VecInt new_restrain, VecInt new_control) const {
@@ -125,6 +124,9 @@ void Prmtr::print(std::ostream &os) const {
     prmtr_print(control_divs, "to set the number of division and the shortcut restratin.");
     // prmtr_print(stage2, "to set the number of division and the shortcut restratin @ stage2.");
     prmtr_print(hubbU, "The hubbard U interaction strength");
+    prmtr_print(mu, "");
+    prmtr_print(jz, "");
+    prmtr_print(uprime, "");
     // for_Int(i,0,t.size()) prmtr_print(t[i], "quarter bandwidth");
     prmtr_print(max_omg, "max_omg of imgreen");
     prmtr_print(eta_freq, "eta of omega + i * eta");
