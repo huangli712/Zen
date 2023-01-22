@@ -44,12 +44,10 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 		for_Int(i, 0, uormat.size()) uormat[i] = uormat_new[i] * uormat[i];
 		// if(mm) WRN(NAV(uormat[0]));
 		scsp.coefficient = scsp.set_row_primeter_by_gived_mat(uormat, h0_i);	//if (mm) scsp.print();
-		if(mm) WRN("TEST");
 		// if (mm)PIO("ground_state size" + NAV(oneedm.ground_state.size()));
 		groune_pre = groune_lst;	occnum_pre = occnum_lst;
 		oneedm.update(); final_ground_state = oneedm.ground_state;
 		// if(mm) PIO(NAV(oneedm.sum_off_diagonal()));
-		if(mm) WRN("TEST2");
 		occnum_lst = VECVectoVec(oneedm.occupationnumber);
 		groune_lst = oneedm.groundstate_energy;
 		// if(mm) WRN(NAV(oneedm.dm[0]));
@@ -60,7 +58,6 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 			// write_norg_info(iter_norg_cnt);
 			// write_state_info(iter_norg_cnt);
 		}
-		if(mm) WRN("TEST3");
 		occupationerr = SQRT(SUM(SQR(occnum_pre - occnum_lst)) / p.norbit);
 		groundenererr = 2 * (groune_pre - groune_lst) / (ABS(groune_pre) + ABS(groune_lst) + 1.);
 		if (mm) {
