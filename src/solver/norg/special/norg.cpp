@@ -130,8 +130,8 @@ void NORG::get_g_by_KCV_spup(Green& imp_i)
 
 void NORG::get_gimp(Green& imp_i)
 {
-	for_Int(i,1,4){
-		StdVecInt difference = {i, -i};
+	for_Int(i, 0, p.nband) {
+		StdVecInt difference = {(i+1), -(i+1)};
 		for(const auto ii: difference)
 		{
 			NocSpace scsp_sub(p, h0, nppso(p.npartical, ii));
@@ -142,9 +142,9 @@ void NORG::get_gimp(Green& imp_i)
 			if(ii > 0) temp_green.find_gf_greater(groune_lst, green_function);
 			if(ii < 0) temp_green.find_gf_lesser(groune_lst, green_function);
 			// green_function.write("continued_fraction-imp_green_function", 2 * i + 1);
-			for_Int(n, 0, green_function.nomgs) imp_i[n][i-1][i-1] = green_function[n][0][0];
+			for_Int(n, 0, green_function.nomgs) imp_i[n][i][i] += green_function[n][0][0];
 		}
-		if (mm) PIO("finished the find_g_norg   "+ STR(i) + present());
+		if (mm) PIO("finished the" + STR(i) + " find_g_norg   " + present());
 	}
 }
 

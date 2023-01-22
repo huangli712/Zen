@@ -34,7 +34,7 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 		ImGreen g0(p.norbit, p);	imp.find_all_g0(g0);		if(mm)WRN(NAV(g0.particle_number()));
 		NORG norg(mm, p);
 		norg.up_date_h0_to_solve(imp.h0);
-		// ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp);			if (mm) gfimp.write("gfimp", dmft_cnt);
+		ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp);		if (mm) gfimp.write("gfimp", dmft_cnt);
 
 		// // ImGreen seimp(p.nband, p);	seimp=g0imp.inverse()-gfimp.inverse();	if (mm) seimp.write("seimp", dmft_cnt);
 	}
