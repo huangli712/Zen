@@ -144,7 +144,7 @@ void NORG::get_gimp(Green& imp_i)
 			// green_function.write("continued_fraction-imp_green_function", 2 * i + 1);
 			for_Int(n, 0, green_function.nomgs) imp_i[n][i][i] += green_function[n][0][0];
 		}
-		if (mm) PIO("finished the" + STR(i) + " find_g_norg   " + present());
+		if (mm) PIO("finished the " + STR(i) + " find_g_norg   " + present());
 	}
 }
 

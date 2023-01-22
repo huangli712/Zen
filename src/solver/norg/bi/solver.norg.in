@@ -8,15 +8,13 @@ norbs = 6
 # Standard parameters: System's size and the NORG setting
 Uc    = 4.0
 Jz    = 0.7
-mu    = 0.0
+mu    = -1.518
 
 restrain   =	*	-1	-2	*	2	1
 distribute =	1	0	3	1	3	0
 
-# Standard parameters: Running mode, Only choose one mode
-norm_mode = 0
-test_mode = 1
-fast_mode = 0
+# Standard parameters: Running mode, now we have: norm, test and fast three mode support.
+mode = norm
 
 # Auxiliary parameters: For test mode only for 5 bath, if(test mode)then
 bathose = -5 -4 -3 6 7
