@@ -8,7 +8,7 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	mm(mm_i), p(prmtr_i),num_omg(prmtr_i.num_omg),
 	num_nondegenerate(-1), test_mode(test_mode_i), dmft_cnt(0)
 {
-	read_ZEN(file);	p.hubbU = Uc; p.mu = mu;
+	read_ZEN(file);	p.hubbU = Uc; p.mu = mu; p.jz = Jz;
 	p.templet_restrain = restrain; p.templet_control = distribute;
 	p.after_modify_prmtr();
 	if(mm) p.print();

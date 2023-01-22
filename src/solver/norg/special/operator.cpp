@@ -103,20 +103,44 @@ Tab Operator::find_h_idx()
 				for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
 			}
 		}
-
-		// add the U for the special Nambu formalism.
-		for_Int(i, 0, p.nband) if( a.cfg.cf[0].isocc(i) && a.cfg.cf[0].isocc(p.nband + i) ){
+/* 
+		// add the U.
+		for_Int(i, 0, p.nband) if( a.cfg.cf[i * 2].isocc(0) && a.cfg.cf[i * 2 + 1].isocc(0) ){
 			h_idx = { sparse_idx, h_i, h_hbd_idx};
 			for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
 		}
 
+		// add the up-down term.
+		for_Int(i, 0, p.nband) {
+			for_Int(j, 0, p.nband) if(i != j && a.cfg.cf[i * 2].isocc(0) && a.cfg.cf[j * 2 + 1].isocc(0) ){
+				h_idx = { sparse_idx, h_i, h_orb_ud_idx};
+				for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
+			}
+		}
+
+		// add the up-up term.
+		for_Int(i, 0, p.nband) {
+			for_Int(j, 0, p.nband) if(i != j && a.cfg.cf[i * 2].isocc(0) && a.cfg.cf[j * 2].isocc(0) ){
+				h_idx = { sparse_idx, h_i, h_orb_uu_idx};
+				for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
+			}
+		}
+
+		// add the down-down term.
+		for_Int(i, 0, p.nband) {
+			for_Int(j, 0, p.nband) if(i != j && a.cfg.cf[i * 2 + 1].isocc(0) && a.cfg.cf[j * 2 + 1].isocc(0) ){
+				h_idx = { sparse_idx, h_i, h_orb_dd_idx};
+				for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
+			}
+		}
+ */
 		// for_Int(i, 0, p.nband) {
 		// 	if((Real(a.cfg.cf[0][i]) - 0.5) * (Real(a.cfg.cf[0][p.nband + i]) - 0.5) > 0 ) h_idx = { sparse_idx, h_i, h_hbd_idx };
 		// 	else h_idx = { sparse_idx, h_i, -h_hbd_idx };
 		// 	for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
 		// }
 
-		/*
+
 		#define ndiv scsp.ndivs
 
 		for_Int(i, 0, p.norg_sets)
@@ -131,7 +155,7 @@ Tab Operator::find_h_idx()
 							h_idx = {sparse_idx, h_i, h_hbd_idx};
 						if (a.cfg.cf[i * ndiv][0] != a.cfg.cf[j * ndiv][0])
 							h_idx = {sparse_idx, h_i, -h_hbd_idx};
-						h_idxs.push_back(h_idx);
+						for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
 					}
 					if (i / 2 != j / 2 && i % 2 == 1 && j % 2 == 0)
 					{
@@ -139,7 +163,7 @@ Tab Operator::find_h_idx()
 							h_idx = {sparse_idx, h_i, h_orb_ud_idx};
 						if (a.cfg.cf[i * ndiv][0] != a.cfg.cf[j * ndiv][0])
 							h_idx = {sparse_idx, h_i, -h_orb_ud_idx};
-						h_idxs.push_back(h_idx);
+						for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
 					}
 					if (i / 2 != j / 2 && i % 2 == 0 && j % 2 == 1)
 					{
@@ -147,7 +171,7 @@ Tab Operator::find_h_idx()
 							h_idx = {sparse_idx, h_i, h_orb_ud_idx};
 						if (a.cfg.cf[i * ndiv][0] != a.cfg.cf[j * ndiv][0])
 							h_idx = {sparse_idx, h_i, -h_orb_ud_idx};
-						h_idxs.push_back(h_idx);
+						for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
 					}
 					if (i / 2 != j / 2 && i % 2 == 1 && j % 2 == 1)
 					{
@@ -155,7 +179,7 @@ Tab Operator::find_h_idx()
 							h_idx = {sparse_idx, h_i, h_orb_uu_idx};
 						if (a.cfg.cf[i * ndiv][0] != a.cfg.cf[j * ndiv][0])
 							h_idx = {sparse_idx, h_i, -h_orb_uu_idx};
-						h_idxs.push_back(h_idx);
+						for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
 					}
 					if (i / 2 != j / 2 && i % 2 == 0 && j % 2 == 0)
 					{
@@ -163,12 +187,12 @@ Tab Operator::find_h_idx()
 							h_idx = {sparse_idx, h_i, h_orb_dd_idx};
 						if (a.cfg.cf[i * ndiv][0] != a.cfg.cf[j * ndiv][0])
 							h_idx = {sparse_idx, h_i, -h_orb_dd_idx};
-						h_idxs.push_back(h_idx);
+						for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
 					}
 				}
 			}
 		}
-		*/
+
 		for_Int(idx_sets, 0, p.norg_sets)
 		{
 			// off_diagonal_term
