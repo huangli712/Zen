@@ -4,15 +4,18 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/04
+# Last modified: 2021/11/20
 #
 
 #=
 ### *Customized Types*
 =#
 
-"Customized type. It is used to define the following dicts."
+"Customized types. It is used to define the following dicts."
 const DType = Any
+
+"Customized types. It is used to define the following dicts."
+const ADT = Array{DType,1}
 
 #=
 ### *Customized Dictionaries*
@@ -39,18 +42,19 @@ Dictionary for configuration parameters: case summary.
 
 See also: [`PDFT`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
-const PCASE  = Dict{String,Array{DType,1}}(
+const PCASE  = Dict{String,ADT}(
     "case"     => [missing, 1, :String, "System's name or seedname"]
 )
 
 """
     PDFT
 
-Dictionary for configuration parameters: density functional theory calculations.
+Dictionary for configuration parameters: density functional theory
+calculations. Its entries can not be updated once they are initialized.
 
 See also: [`PCASE`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
-const PDFT   = Dict{String,Array{DType,1}}(
+const PDFT   = Dict{String,ADT}(
     "engine"   => [missing, 1, :String, "Engine for density functional theory calculations"],
     "projtype" => [missing, 1, :String, "Types of projectors"],
     "smear"    => [missing, 1, :String, "Scheme for smearing"],
@@ -68,11 +72,13 @@ const PDFT   = Dict{String,Array{DType,1}}(
 """
     PDMFT
 
-Dictionary for configuration parameters: dynamical mean-field theory calculations.
+Dictionary for configuration parameters: dynamical mean-field theory
+calculations. Be careful, its entries (such as `dcount`, `mixer`, `mc`,
+`cc`, `ec`, `sc`, and `lfermi`) can be updated during the iteration.
 
 See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PIMP`](@ref), [`PSOLVER`](@ref).
 """
-const PDMFT  = Dict{String,Array{DType,1}}(
+const PDMFT  = Dict{String,ADT}(
     "mode"     => [missing, 1, :I64   , "Scheme of dynamical mean-field theory calculations"],
     "axis"     => [missing, 1, :I64   , "Imaginary-time axis or real-frequency axis"],
     "niter"    => [missing, 1, :I64   , "Maximum allowed number of DFT + DMFT iterations"],
@@ -90,11 +96,13 @@ const PDMFT  = Dict{String,Array{DType,1}}(
 """
     PIMP
 
-Dictionary for configuration parameters: quantum impurity problems.
+Dictionary for configuration parameters: quantum impurity problems. Be
+careful, its entries (such as `ising`, `occup`, `upara`, `jpara`, and
+`lpara`) can be updated during the iteration. 
 
 See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PDMFT`](@ref), [`PSOLVER`](@ref).
 """
-const PIMP   = Dict{String,Array{DType,1}}(
+const PIMP   = Dict{String,ADT}(
     "nsite"    => [missing, 1, :I64   , "Number of (correlated) impurity sites"],
     "atoms"    => [missing, 1, :Array , "Chemical symbols of impurity atoms"],
     "equiv"    => [missing, 1, :Array , "Equivalency of quantum impurity atoms"],
@@ -109,11 +117,12 @@ const PIMP   = Dict{String,Array{DType,1}}(
 """
     PSOLVER
 
-Dictionary for configuration parameters: quantum impurity solvers.
+Dictionary for configuration parameters: quantum impurity solvers. Be
+careful, its entry (only `params`) can be updated during the iteration.
 
 See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PDMFT`](@ref), [`PIMP`](@ref).
 """
-const PSOLVER= Dict{String,Array{DType,1}}(
+const PSOLVER= Dict{String,ADT}(
     "engine"   => [missing, 1, :String, "Name of quantum impurity solver"],
     "ncycle"   => [missing, 1, :I64   , "Number of solver iterations per DFT + DMFT cycle"],
     "params"   => [missing, 1, :Array , "Extra parameter sets of quantum impurity solver"],
