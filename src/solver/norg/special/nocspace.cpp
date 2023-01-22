@@ -70,8 +70,8 @@ VecReal NocSpace::set_row_primeter_by_gived_mat(const VEC<MatReal>& uormat_i, co
 	// // VecReal orbital_correction({ u_hbd, (u_hbd - (2 * j_ob)), (u_hbd - (3 * j_ob)), (u_hbd - (3 * j_ob)) });
 	// // VecReal orbital_correction({ u_hbd, p.hubbU12, p.hubbU12, p.hubbU12 });
 	// {U, U':u d, U':u u, U':d d}
-	// VecReal orbital_correction({ p.hubbU, 0. * p.hubbU, 0. * p.hubbU, 0. * p.hubbU });
-	VecReal orbital_correction({ 0.25 * p.hubbU, 0. * p.hubbU, 0. * p.hubbU, 0. * p.hubbU });
+	VecReal orbital_correction({ p.hubbU, 0. * p.hubbU, 0. * p.hubbU, 0. * p.hubbU });
+	// VecReal orbital_correction({ 0.25 * p.hubbU, 0. * p.hubbU, 0. * p.hubbU, 0. * p.hubbU });
 	return concat(coefficient_i, orbital_correction);
 }
 

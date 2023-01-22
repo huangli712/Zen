@@ -104,17 +104,17 @@ Tab Operator::find_h_idx()
 			}
 		}
 
-		// // add the U for the special Nambu formalism.
-		// for_Int(i, 0, p.nband) if( a.cfg.cf[0].isocc(i) && a.cfg.cf[0].isuno(p.nband + i) ){
-		// 	h_idx = { sparse_idx, h_i, h_hbd_idx};
-		// 	for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
-		// }
-
-		for_Int(i, 0, p.nband) {
-			if((Real(a.cfg.cf[0][i]) - 0.5) * (Real(a.cfg.cf[0][p.nband + i]) - 0.5) > 0 ) h_idx = { sparse_idx, h_i, h_hbd_idx };
-			else h_idx = { sparse_idx, h_i, -h_hbd_idx };
+		// add the U for the special Nambu formalism.
+		for_Int(i, 0, p.nband) if( a.cfg.cf[0].isocc(i) && a.cfg.cf[0].isocc(p.nband + i) ){
+			h_idx = { sparse_idx, h_i, h_hbd_idx};
 			for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
 		}
+
+		// for_Int(i, 0, p.nband) {
+		// 	if((Real(a.cfg.cf[0][i]) - 0.5) * (Real(a.cfg.cf[0][p.nband + i]) - 0.5) > 0 ) h_idx = { sparse_idx, h_i, h_hbd_idx };
+		// 	else h_idx = { sparse_idx, h_i, -h_hbd_idx };
+		// 	for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
+		// }
 
 		/*
 		#define ndiv scsp.ndivs
