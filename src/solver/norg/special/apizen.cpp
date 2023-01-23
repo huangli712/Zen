@@ -177,12 +177,14 @@ void APIzen::read_ZEN(const Str& file)
 			ERR(STR("file opening failed with ") + NAV(eimpdata))
 		}
 		else {
-			Int drop_Int(0);
+			Int drop_Int(0), c(0);
+			VecReal temp_emps(norbs, 0.);
 			for_Int(i, 0, norbs) {
 				ifs >> drop_Int;
-				ifs >> p.eimp[i]; ifs >> orbitdegenerate_idx[i];
+				ifs >> temp_emps[i]; ifs >> orbitdegenerate_idx[i];
 				if (!ifs) ERR(STR("read_ZEN-in error with ") + NAV(eimpdata));
 			}
+			for_Int(j, 0, nband) for_Int(i, 0, 2) p.eimp[c++] = temp_emps[j+3*i];
 			// if (test_mode) num_nondegenerate = 1;
 			num_nondegenerate = MAX(orbitdegenerate_idx);
 		}
