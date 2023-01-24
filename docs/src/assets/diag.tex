@@ -10,13 +10,20 @@
 \thispagestyle{empty}
 
 % 流程图定义基本形状
-\tikzstyle{startstop} = [rectangle,
-                         rounded corners,
-                         minimum width = 2cm,
-                         minimum height = 1cm,
-                         text centered,
-                         draw = black,
-                         fill = red!40]
+\tikzstyle{start} = [rectangle,
+                     rounded corners,
+                     minimum width = 2cm,
+                     minimum height = 1cm,
+                     text centered,
+                     draw = black,
+                     fill = red!40]
+\tikzstyle{stop} = [rectangle,
+                    rounded corners,
+                    minimum width = 2cm,
+                    minimum height = 1cm,
+                    text centered,
+                    draw = black,
+                    fill = red!40]
 \tikzstyle{io} = [trapezium,
                   trapezium left angle = 80,
                   trapezium right angle = 100,
@@ -29,90 +36,186 @@
                        minimum width = 3cm,
                        minimum height = 1cm,
                        text centered,
-                       draw=black,
+                       draw = black,
                        fill = yellow!50]
+\tikzstyle{Aproc} = [rectangle,
+                       minimum width = 3cm,
+                       minimum height = 1cm,
+                       text centered,
+                       draw = black,
+                       fill = pink!30]
+\tikzstyle{Mproc} = [rectangle,
+                       minimum width = 3cm,
+                       minimum height = 1cm,
+                       text centered,
+                       draw = black,
+                       fill = purple!30]
+\tikzstyle{Dproc} = [rectangle,
+                       minimum width = 3cm,
+                       minimum height = 1cm,
+                       text centered,
+                       draw = black,
+                       fill = green!30!magenta!60!white]
+\tikzstyle{Tproc} = [rectangle,
+                       minimum width = 3cm,
+                       minimum height = 1cm,
+                       text centered,
+                       draw = black,
+                       fill = white!50!red!60!green]
+\tikzstyle{Sproc} = [rectangle,
+                       minimum width = 3cm,
+                       minimum height = 1cm,
+                       text centered,
+                       draw = black,
+                       fill = green!30!yellow]
 \tikzstyle{decision} = [diamond,
                         aspect = 3,
                         text centered,
-                        draw=black,
+                        draw = black,
                         fill = green!30]
 
 % 箭头形式
 \tikzstyle{arrow} = [->,>=stealth]
+
 \begin{tikzpicture}[node distance=2cm]
 
 %定义流程图具体形状
-\node (start) [startstop]
+\node (start) [start]
 {Start};
 
 \node (io1) [io, below of = start]
-{Read $G(i\omega_n)$};
+{Read and parse configuration};
 
 \node (p1) [process, below of = io1]
-{Initialize kernel $K$};
+{Initialize various componets};
 
-\node (p2) [process, below of = p1]
-{Initialize or reset $\{A_{\gamma}, P_{\gamma}\}$};
+\node (io2) [io, below of = p1]
+{Setup working directory};
 
-\node (p3) [process, right of = p2, xshift = 5cm]
-{Calculate $\chi^{2}$ and $\tilde{G}(i\omega_n)$};
+\node (p2) [process, below of = io2]
+{Initialize various observables};
 
-\node (p4) [process, below of = p3]
-{Attempt to update $\chi^{2}$ and $\tilde{G}(i\omega_n)$};
+\node (p3) [process, below of = p2]
+{Setup quantum impurity problems};
 
-\node (p5) [process, right of = p4, xshift = 5cm]
-{Try to update $A_{\gamma}$ or $P_{\gamma}$ randomly};
+\node (dft1) [Dproc, right of = p3, xshift = 5cm]
+{Solve Kohn-Sham equation};
 
-\node (d1) [decision, below of=p4]
-{Optimized?};
+\node (a1) [Aproc, right of = dft1, xshift = 5cm]
+{Extract Kohn-Sham data};
 
-\node (p6) [process, right of = d1, xshift = 5cm]
-{Accept new $A_{\gamma}$ or $P_{\gamma}$ probably};
+\node (a2) [Aproc, right of = a1, xshift = 5cm]
+{Process Kohn-Sham data};
 
-\node (p7) [process, below of = d1]
-{Accept new $A_{\gamma}$ or $P_{\gamma}$};
+\node (a3) [Aproc, right of = a2, xshift = 5cm]
+{Write Kohn-Sham data in IR format};
 
-\node (d2) [decision, below of = p6]
-{Enough updates?};
+\node (p4) [process, right of = a3, xshift = 5cm]
+{Reset self-energy function $\Sigma$};
 
-\node (p8) [process, below of = d2]
-{Backup $\chi^2$ and $\{A_{\gamma}, P_{\gamma}\}$};
+\node (dft2) [Dproc, below of = p4]
+{Launch Kohn-Sham eigensolver};
+
+\node (dft3) [Dproc, below of = dft2]
+{Suspend Kohn-Sham eigensolver};
+
+\node (io3) [io, below of = dft3]
+{Reload and parse configuration};
+
+\node (a4) [Aproc, left of = io3, xshift = -5cm]
+{Extract Kohn-Sham data};
+
+\node (a5) [Aproc, left of = a4, xshift = -5cm]
+{Process Kohn-Sham data};
+
+\node (a6) [Aproc, left of = a5, xshift = -5cm]
+{Write Kohn-Sham data in IR format};
+
+\node (p5) [process, below of = a6, yshift = -2cm]
+{Calculate double counting term};
+
+\node (t1) [Tproc, right of = p5, xshift = 5cm]
+{Solve Dyson's equation};
+
+\node (m1) [Mproc, right of = t1, xshift = 5cm]
+{Mix $\Delta$ and $\epsilon$};
+
+\node (p6) [process, right of = m1, xshift = 5cm]
+{Split $\Delta$ and $\epsilon$};
+
+\node (s1) [Sproc, below of = p6, yshift = -2cm]
+{Solve quantum impurity problems};
+
+\node (p7) [process, left of = s1, xshift = -5cm]
+{Gather $\Sigma$};
+
+\node (m2) [Mproc, left of = p7, xshift = -5cm]
+{Mix $\Sigma$};
+
+\node (d1) [decision, left of = m2, xshift = -5cm]
+{Converged?};
+
+\node (t2) [Tproc, below of = d1, yshift = -2cm]
+{Generate correction to $\rho$};
+
+\node (m3) [Mproc, right of = t2, xshift = 5cm]
+{Mix $\rho$};
+
+\node (dft4) [Dproc, below of = m3, yshift = -2cm]
+{Resume Kohn-Sham eigensolver};
+
+\node (d2) [decision, below of = dft4, yshift = -2cm]
+{Converged?};
+
+\node (p8) [process, below of = d2, yshift = -2cm]
+{Calculate total energy };
 
 \node (d3) [decision, below of = p8]
-{Enough runs?};
+{Converged?};
 
 \node (p9) [process, below of = d3]
-{Choose best $\{A_{\gamma}, P_{\gamma}\}$};
+{Finalize various observables};
 
-\node (io2) [io, left of = p9, xshift = -12cm]
-{Output $\tilde{G}(i\omega_n)$ and $G^{R}(\omega)$};
-
-\node (stop) [startstop, below of = io2]
+\node (stop) [stop, below of = p9]
 {Stop};
-
-\node (p10) [left of = d3, xshift = -12cm]
-{};
 
 %%连接具体形状
 \draw [arrow] (start) -- (io1);
 \draw [arrow] (io1) -- (p1);
-\draw [arrow] (p1) -- (p2);
+\draw [arrow] (p1) -- (io2);
+\draw [arrow] (io2) -- (p2);
 \draw [arrow] (p2) -- (p3);
-\draw [arrow] (p3) -| (p5);
-\draw [arrow] (p5) -- (p4);
-\draw [arrow] (p4) -- (d1);
-\draw [arrow] (d1) --node [above] {N} (p6);
-\draw [arrow] (d1) --node [right] {Y} (p7);
-\draw [arrow] (p6) -- (d2);
-\draw [arrow] (p7) -- (d2);
-\draw [arrow] (d2.east) -- node [above] {N} ++(1.0,0.0) |- (p5.east);
+\draw [arrow] (p3) -- (dft1);
+\draw [arrow] (dft1) -- (a1);
+\draw [arrow] (a1) -- (a2);
+\draw [arrow] (a2) -- (a3);
+\draw [arrow] (a3) -- (p4);
+\draw [arrow] (p4) -- (dft2);
+\draw [arrow] (dft2) -- (dft3);
+\draw [arrow] (dft3) -- (io3);
+\draw [arrow] (io3) -- (a4);
+\draw [arrow] (a4) -- (a5);
+\draw [arrow] (a5) -- (a6);
+\draw [arrow] (a6) -- (p5);
+\draw [arrow] (p5) -- (t1);
+\draw [arrow] (t1) -- (m1);
+\draw [arrow] (m1) -- (p6);
+\draw [arrow] (p6) -- (s1);
+\draw [arrow] (s1) -- (p7);
+\draw [arrow] (p7) -- (m2);
+\draw [arrow] (m2) -- (d1);
+\draw [arrow] (d1) --node [right] {Y} (t2);
+\draw [arrow] (t2) -- (m3);
+\draw [arrow] (m3) -- (dft4);
+\draw [arrow] (dft4) -- (d2);
 \draw [arrow] (d2) --node [right] {Y} (p8);
 \draw [arrow] (p8) -- (d3);
-\draw [arrow] (d3) -| (p2);
-\draw [arrow] (d3) -- node [above] {N} (p10) -- (p2); 
 \draw [arrow] (d3) --node [right] {Y} (p9);
-\draw [arrow] (p9) -- (io2);
-\draw [arrow] (io2) -- (stop);
+\draw [arrow] (p9) -- (stop);
+\draw [arrow] (d1.west) -- node [above] {N} ++(-2.0,0.0) |- (p5.west);
+\draw [arrow] (d2.west) -- node [above] {N} ++(-2.0,0.0) |- (dft4.west);
+\draw [arrow] (d3.east) -- node [above] {N} ++(18.0,0.0) |- (io3.east);
+
 \end{tikzpicture}
 
 \end{document}
