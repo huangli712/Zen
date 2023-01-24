@@ -1,0 +1,118 @@
+\documentclass{standalone}
+
+\usepackage{newtxmath}
+\usepackage{palatino}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+
+\begin{document}
+\thispagestyle{empty}
+
+% 流程图定义基本形状
+\tikzstyle{startstop} = [rectangle,
+                         rounded corners,
+                         minimum width = 2cm,
+                         minimum height = 1cm,
+                         text centered,
+                         draw = black,
+                         fill = red!40]
+\tikzstyle{io} = [trapezium,
+                  trapezium left angle = 80,
+                  trapezium right angle = 100,
+                  minimum width = 2cm,
+                  minimum height = 1cm,
+                  text centered,
+                  draw = black,
+                  fill = blue!40]
+\tikzstyle{process} = [rectangle,
+                       minimum width = 3cm,
+                       minimum height = 1cm,
+                       text centered,
+                       draw=black,
+                       fill = yellow!50]
+\tikzstyle{decision} = [diamond,
+                        aspect = 3,
+                        text centered,
+                        draw=black,
+                        fill = green!30]
+
+% 箭头形式
+\tikzstyle{arrow} = [->,>=stealth]
+\begin{tikzpicture}[node distance=2cm]
+
+%定义流程图具体形状
+\node (start) [startstop]
+{Start};
+
+\node (io1) [io, below of = start]
+{Read $G(i\omega_n)$};
+
+\node (p1) [process, below of = io1]
+{Initialize kernel $K$};
+
+\node (p2) [process, below of = p1]
+{Initialize or reset $\{A_{\gamma}, P_{\gamma}\}$};
+
+\node (p3) [process, right of = p2, xshift = 5cm]
+{Calculate $\chi^{2}$ and $\tilde{G}(i\omega_n)$};
+
+\node (p4) [process, below of = p3]
+{Attempt to update $\chi^{2}$ and $\tilde{G}(i\omega_n)$};
+
+\node (p5) [process, right of = p4, xshift = 5cm]
+{Try to update $A_{\gamma}$ or $P_{\gamma}$ randomly};
+
+\node (d1) [decision, below of=p4]
+{Optimized?};
+
+\node (p6) [process, right of = d1, xshift = 5cm]
+{Accept new $A_{\gamma}$ or $P_{\gamma}$ probably};
+
+\node (p7) [process, below of = d1]
+{Accept new $A_{\gamma}$ or $P_{\gamma}$};
+
+\node (d2) [decision, below of = p6]
+{Enough updates?};
+
+\node (p8) [process, below of = d2]
+{Backup $\chi^2$ and $\{A_{\gamma}, P_{\gamma}\}$};
+
+\node (d3) [decision, below of = p8]
+{Enough runs?};
+
+\node (p9) [process, below of = d3]
+{Choose best $\{A_{\gamma}, P_{\gamma}\}$};
+
+\node (io2) [io, left of = p9, xshift = -12cm]
+{Output $\tilde{G}(i\omega_n)$ and $G^{R}(\omega)$};
+
+\node (stop) [startstop, below of = io2]
+{Stop};
+
+\node (p10) [left of = d3, xshift = -12cm]
+{};
+
+%%连接具体形状
+\draw [arrow] (start) -- (io1);
+\draw [arrow] (io1) -- (p1);
+\draw [arrow] (p1) -- (p2);
+\draw [arrow] (p2) -- (p3);
+\draw [arrow] (p3) -| (p5);
+\draw [arrow] (p5) -- (p4);
+\draw [arrow] (p4) -- (d1);
+\draw [arrow] (d1) --node [above] {N} (p6);
+\draw [arrow] (d1) --node [right] {Y} (p7);
+\draw [arrow] (p6) -- (d2);
+\draw [arrow] (p7) -- (d2);
+\draw [arrow] (d2.east) -- node [above] {N} ++(1.0,0.0) |- (p5.east);
+\draw [arrow] (d2) --node [right] {Y} (p8);
+\draw [arrow] (p8) -- (d3);
+\draw [arrow] (d3) -| (p2);
+\draw [arrow] (d3) -- node [above] {N} (p10) -- (p2); 
+\draw [arrow] (d3) --node [right] {Y} (p9);
+\draw [arrow] (p9) -- (io2);
+\draw [arrow] (io2) -- (stop);
+\end{tikzpicture}
+
+\end{document}
