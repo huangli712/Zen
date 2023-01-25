@@ -106,6 +106,7 @@ Tab Operator::find_h_idx()
 
 
 		#define ndiv scsp.ndivs
+		{ // normal form of interation.
 		// add the U.
 		for_Int(i, 0, p.nband) if( a.cfg.cf[(i * 2) * ndiv].isocc(0) && a.cfg.cf[(i * 2 + 1) * ndiv].isocc(0) ){
 			h_idx = { sparse_idx, h_i, h_hbd_idx};
@@ -135,6 +136,41 @@ Tab Operator::find_h_idx()
 				for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
 			}
 		}
+		}
+		// // add the U.
+		// for_Int(i, 0, p.nband) {
+		// 	if((Real(a.cfg.cf[(i * 2) * ndiv][0]) - 0.5) * (Real(a.cfg.cf[(i * 2 + 1) * ndiv][0]) - 0.5) > 0 ) h_idx = { sparse_idx, h_i, h_hbd_idx };
+		// 	else h_idx = { sparse_idx, h_i, -h_hbd_idx };
+		// 	for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
+		// }
+
+		// // add the up-down term.
+		// for_Int(i, 0, p.nband) {
+		// 	for_Int(j, 0, p.nband) {
+		// 		if (i != j && (Real(a.cfg.cf[(i * 2) * ndiv][0]) - 0.5) * (Real(a.cfg.cf[(j * 2 + 1) * ndiv][0]) - 0.5) > 0) h_idx = { sparse_idx, h_i, h_hbd_idx };
+		// 		// if (i != j && a.cfg.cf[(i * 2) * ndiv].isocc(0) && a.cfg.cf[(j * 2 + 1) * ndiv].isocc(0)) h_idx = { sparse_idx, h_i, h_hbd_idx };
+		// 		else h_idx = {sparse_idx, h_i, -h_orb_ud_idx};
+		// 		for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
+		// 	}
+		// }
+
+		// // add the up-up term.
+		// for_Int(i, 0, p.nband) {
+		// 	for_Int(j, 0, p.nband) {
+		// 	if(i != j && (Real(a.cfg.cf[(i * 2) * ndiv][0]) - 0.5) * (Real(a.cfg.cf[(j * 2) * ndiv][0]) - 0.5) > 0) h_idx = { sparse_idx, h_i, h_orb_uu_idx};
+		// 	else h_idx = { sparse_idx, h_i, -h_orb_uu_idx};
+		// 		for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
+		// 	}
+		// }
+
+		// // add the down-down term.
+		// for_Int(i, 0, p.nband) {
+		// 	for_Int(j, 0, p.nband) {
+		// 	if(i != j && (Real(a.cfg.cf[(i * 2 + 1) * ndiv][0]) - 0.5) * (Real(a.cfg.cf[(j * 2 + 1) * ndiv][0]) - 0.5) > 0) h_idx = { sparse_idx, h_i, h_orb_dd_idx};
+		// 	else h_idx = { sparse_idx, h_i, -h_orb_dd_idx};
+		// 		for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
+		// 	}
+		// }
  
 		// for_Int(i, 0, p.nband) {
 		// 	if((Real(a.cfg.cf[0][i]) - 0.5) * (Real(a.cfg.cf[0][p.nband + i]) - 0.5) > 0 ) h_idx = { sparse_idx, h_i, h_hbd_idx };
