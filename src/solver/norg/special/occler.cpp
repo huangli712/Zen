@@ -15,18 +15,35 @@ Occler::Occler(const MyMpi& mm_i, Prmtr& prmtr_i):
 
 
 NORG Occler::find_ground_state_partical(const MatReal& h0_i){
-    while(1){
-        VecInt np_m(p.npartical), np_p(p.npartical); np_m -= 1; np_p += 1;
-        if(mm) WRN(NAV3(p.npartical, np_m, np_p))
+    // while(1){
         NORG a(mm, p);
         a.up_date_h0_to_solve(h0_i);            np_energy_b = a.groune_lst;
+        VecInt np_m(p.npartical), np_p(p.npartical); np_m -= 1; np_p += 1;
+        if(mm) WRN(NAV3(p.npartical, np_m, np_p))
         NORG a_p(mm, p, np_p);
         a_p.up_date_h0_to_solve(h0_i);          np_energy_p = a_p.groune_lst;
         NORG a_m(mm, p, np_m);
         a_m.up_date_h0_to_solve(h0_i);          np_energy_m = a_m.groune_lst;
-        if (if_ground_state()) return a;
+        // if (if_ground_state()) return a;
+        switch (if_ground_state())
+        {
+        case 0:
+            return a;
+            break;
+        case 1:
+            // VecInt np_m(p.npartical), np_p(p.npartical); np_m -= 1; np_p += 1;
+            // NORG a_pp(mm, p, np_p); a_pp.up_date_h0_to_solve(h0_i);
+            // return a_pp.groune_lst < np_energy_p ? a_pp: NORG a_p(mm, p)
+            return a_p;
+            break;
+        case 2:
+            return a_m;
+            break;
+        default:
+            break;
+        }
         // return a;
-    }
+    // }
 }
 
 
@@ -48,14 +65,26 @@ NORG Occler::find_ground_state_partical(const MatReal& h0_i){
 // 	}
 // }
 
-bool Occler::if_ground_state(){
-    if(np_energy_b <= np_energy_m && np_energy_b <= np_energy_p) return true;
+Int Occler::if_ground_state(){
+    if(np_energy_b <= np_energy_m && np_energy_b <= np_energy_p) return 0;
     else
     {
-        if (np_energy_b <= np_energy_m && np_energy_b > np_energy_p) nparticals += 1;
-        if (np_energy_b > np_energy_m && np_energy_b <= np_energy_p) nparticals -= 1;
+        if (np_energy_b <= np_energy_m && np_energy_b > np_energy_p) {
+            nparticals += 1;
+            p.templet_control[1]++;
+            p.templet_control[p.ndiv-1]--;
+            p.after_modify_prmtr();
+            return 1;
+        }
+        if (np_energy_b > np_energy_m && np_energy_b <= np_energy_p) {
+            nparticals -= 1;
+            p.templet_control[1]--;
+            p.templet_control[p.ndiv-1]++;
+            p.after_modify_prmtr();
+            return 2;
+        };
         if (np_energy_b > np_energy_m && np_energy_b > np_energy_p)
             ERR("The form of energy is no longer dominated by the quadratic form, and the Occler class needs to be changed.");
     }
-    return false;
+    return 3;
 }

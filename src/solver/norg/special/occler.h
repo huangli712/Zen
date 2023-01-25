@@ -24,7 +24,7 @@ public:
 
 private:
     // void initial_uormat();
-    bool if_ground_state();
+    Int if_ground_state();
 public:
 	Occler(const MyMpi& mm_i, Prmtr& prmtr_i);
     NORG find_ground_state_partical(const MatReal& h0_i);
