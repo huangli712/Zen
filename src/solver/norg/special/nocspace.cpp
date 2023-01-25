@@ -8,7 +8,7 @@ coded by Jia-Ming Wang (jmw@ruc.edu.cn, RUC, China) date 2022
 #define nob p.norbit
 // the NocSpace, is start frome the shortcutspace.
 NocSpace::NocSpace(const Prmtr& prmtr_i, const Int& NumberSpa) :
-	p(prmtr_i), ndivs(prmtr_i.ndiv), nspa(NumberSpa),sit_mat(prmtr_i.control_divs.truncate_row(1, control_divs.nrows())),
+	p(prmtr_i), ndivs(prmtr_i.ndiv), nspa(NumberSpa), sit_mat(p.norg_sets, prmtr_i.ndiv, 0),
 	hopint(nob, nob, 0.), coefficient((p.norbit * p.norbit) + 5, 0.),
 	control_divs(p.norg_sets + 1, prmtr_i.ndiv, 0), shortcut_countvec(prmtr_i.ndiv, 0), dim(0)
 {
@@ -18,7 +18,7 @@ NocSpace::NocSpace(const Prmtr& prmtr_i, const Int& NumberSpa) :
 }
 
 NocSpace::NocSpace(const Prmtr& prmtr_i, const MatReal& imp_i_h0, const Int& NumberSpa) :
- 	p(prmtr_i), ndivs(prmtr_i.ndiv), nspa(NumberSpa),sit_mat(prmtr_i.control_divs.truncate_row(1, control_divs.nrows())),
+ 	p(prmtr_i), ndivs(prmtr_i.ndiv), nspa(NumberSpa), sit_mat(p.norg_sets, prmtr_i.ndiv, 0),
  	hopint(imp_i_h0), coefficient((p.norbit * p.norbit) + 5, 0.),
  	control_divs(p.norg_sets + 1, prmtr_i.ndiv, 0), shortcut_countvec(prmtr_i.ndiv, 0), dim(0)
 {
@@ -28,7 +28,7 @@ NocSpace::NocSpace(const Prmtr& prmtr_i, const MatReal& imp_i_h0, const Int& Num
 
 // nppso mean: number of partical per spin orbital.
 NocSpace::NocSpace(const Prmtr& prmtr_i, const MatReal& imp_i_h0, const VecInt& nppso_i) :
-	p(prmtr_i), ndivs(prmtr_i.ndiv), nspa(SUM(nppso_i)),sit_mat(prmtr_i.control_divs.truncate_row(1, control_divs.nrows())),
+	p(prmtr_i), ndivs(prmtr_i.ndiv), nspa(SUM(nppso_i)), sit_mat(p.norg_sets, prmtr_i.ndiv, 0),
 	hopint(imp_i_h0), coefficient((p.norbit * p.norbit) + 5, 0.), nppso(nppso_i),
 	control_divs(p.norg_sets + 1, prmtr_i.ndiv, 0), shortcut_countvec(prmtr_i.ndiv, 0), dim(0)
 {
@@ -41,6 +41,20 @@ NocSpace::NocSpace(const Prmtr& prmtr_i, const MatReal& imp_i_h0, const VecInt& 
 void NocSpace::set_control()
 {
 	control_divs = p.control_divs;
+	for_Int(i, 1, control_divs.nrows()){
+		if(!(Real(SUM(control_divs[i]))/2. == nppso[i-1])) {
+			if (Real(SUM(control_divs[i])) / 2. < nppso[i-1]) {
+				control_divs[i][1]++;
+				control_divs[i][ndivs-1]--;
+			}
+			else {
+				control_divs[i][1]--;
+				control_divs[i][ndivs-1]++;
+			}
+		}
+	}
+	// WRN(NAV2(control_divs, nppso))
+	sit_mat = control_divs.truncate_row(1, control_divs.nrows());
 	for_Int(j, 0, control_divs.ncols())for_Int(i, 1, control_divs.nrows()) shortcut_countvec[j] += control_divs[i][j];
 	// sit_mat.reset(control_divs.truncate_row(1, control_divs.nrows()));
 }
@@ -51,8 +65,7 @@ VecReal NocSpace::set_row_primeter_by_gived_mat(const VEC<MatReal>& uormat_i, co
 	hopint = h0;
 	MatReal transform_uormat(dmat(p.norbit, 1.));
 	Int counter(0);
-	if (!uormat_i.empty())
-	{
+	if (!uormat_i.empty()) {
 		for (const auto& uormat_ii : uormat_i)
 		{
 			counter++;
@@ -213,7 +226,7 @@ bool NocSpace::ifin_NocSpace(MatInt& spilss_div, const VecInt& nppso) const
 	if (SUM(spilss_div) == nspa) {
 		for_Int(i, 1, control_divs.nrows()) for_Int(j, 0, ndivs) if (spilss_div[i - 1][j] < 0 || spilss_div[i - 1][j] > control_divs[i][j]) return false;
 		VecInt spilsdiv_countvec(ndivs, 0);
-		for_Int(j, 0, spilss_div.ncols())for_Int(i, 0, spilss_div.nrows()) spilsdiv_countvec[j] += spilss_div[i][j];
+		for_Int(j, 0, spilss_div.ncols()) for_Int(i, 0, spilss_div.nrows()) spilsdiv_countvec[j] += spilss_div[i][j];
 		/*
 		if (spilsdiv_countvec[1] >= shortcut_countvec[1] + control_divs[0][1] && \
 			spilsdiv_countvec[1] <= shortcut_countvec[1] && \
@@ -277,18 +290,20 @@ bool NocSpace::ifin_NocSpace_judge_by_nppso(const MatInt& spilss_div, const VecI
 bool NocSpace::if_div_in_restraint(const VecInt& restraint, const Int position, const Int max, const Int now) const
 {
 	if (position == 0 || position == ndivs / 2) return true;
-	if (restraint[position] <= 0 && now >= (max + restraint[position])) return true;
-	if (restraint[position] >= 0 && now <= restraint[position]) return true;
+	// if (restraint[position] <= 0 && now >= (max + restraint[position])) return true;
+	if (position < ndivs / 2 && now >= (max + restraint[position])) return true;
+	if (position > ndivs / 2 && now <= restraint[position]) return true;
 	return false;
 }
 
 bool NocSpace::if_col_divs_in_restraint(const Int& restraint, const VEC<Int>& divcol_i, Int col_idx) const
 {
 	VecInt divcol(divcol_i);
-	// for_Int(i, 0, divcol.size()) if(divcol[i] < 0) return 0;
-	if(restraint == 0) return true;
-	if(restraint < 0 && SUM(divcol) >= (shortcut_countvec[col_idx] + restraint) ) return true;
-	if(restraint > 0 && SUM(divcol) <= restraint ) return true;
+	// if(restraint == 0) return true;
+	if (col_idx == 0 || col_idx == ndivs / 2) return true;
+	// if(restraint < 0 && SUM(divcol) >= (shortcut_countvec[col_idx] + restraint) ) return true;
+	if(col_idx < ndivs / 2 && SUM(divcol) >= (shortcut_countvec[col_idx] + restraint)) return true;
+	if(col_idx > ndivs / 2 && SUM(divcol) <= restraint ) return true;
 	return false;
 }
 
