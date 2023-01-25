@@ -53,10 +53,12 @@ void Prmtr::set_values() {
     norg_sets = norbs;                                  // default value: 1
     nI2B = SUM(templet_control);                        // default value:
     iter_max_norg = 99;                                 // default
-    nooc_mode = STR("nooc");
+    // nooc_mode = STR("nooc");
     // nooc_mode = STR("cpnooc");
-    // nooc_mode = STR("cnooc");
+    nooc_mode = STR("cnooc");
     after_modify_prmtr();
+    npartical.reset(norg_sets, 0);
+    for_Int(i, 0, norg_sets) npartical[i] = SUM(control_divs[i + 1])/2 - 1;
     // stage2_restrain = {0, -0, -3,  0,  3,  0};
     // stage2_control =  {8, 20,  8,  8,  8, 20};
 }
@@ -71,8 +73,8 @@ void Prmtr::after_modify_prmtr() const
     for_Int(i, 0, norg_sets) nI2B[i] = SUM(control_divs[i + 1]) - control_divs[i + 1][0];
     nbath = SUM(nI2B);
     norbit = SUM(control_divs.tr()[0]) + nbath;
-    npartical.reset(norg_sets, 0);
-    for_Int(i, 0, norg_sets) npartical[i] = SUM(control_divs[i + 1])/2;
+    // npartical.reset(norg_sets, 0);
+    // for_Int(i, 0, norg_sets) npartical[i] = SUM(control_divs[i + 1])/2;
     uprime = hubbU - 2 * jz;
 }
 

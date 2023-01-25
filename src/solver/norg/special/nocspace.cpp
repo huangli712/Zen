@@ -41,19 +41,6 @@ NocSpace::NocSpace(const Prmtr& prmtr_i, const MatReal& imp_i_h0, const VecInt& 
 void NocSpace::set_control()
 {
 	control_divs = p.control_divs;
-	for_Int(i, 1, control_divs.nrows()){
-		if(!(Real(SUM(control_divs[i]))/2. == nppso[i-1])) {
-			if (Real(SUM(control_divs[i])) / 2. < nppso[i-1]) {
-				control_divs[i][1]++;
-				control_divs[i][ndivs-1]--;
-			}
-			else {
-				control_divs[i][1]--;
-				control_divs[i][ndivs-1]++;
-			}
-		}
-	}
-	// WRN(NAV2(control_divs, nppso))
 	sit_mat = control_divs.truncate_row(1, control_divs.nrows());
 	for_Int(j, 0, control_divs.ncols())for_Int(i, 1, control_divs.nrows()) shortcut_countvec[j] += control_divs[i][j];
 	// sit_mat.reset(control_divs.truncate_row(1, control_divs.nrows()));
