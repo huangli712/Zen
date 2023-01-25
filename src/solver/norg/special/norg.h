@@ -24,7 +24,6 @@ class NORG {
 	VecReal occnum_pre;						// occupation number record before one optimize iteration.
 	VecReal occnum_lst;						// occupation number record after one optimize iteration.
 	Real	groune_pre;						// ground state energy record before one optimize iteration.
-	Real	groune_lst;						// ground state energy record after one optimize iteration.
 	Real groundenererr;						// ground state energy Error: error between the two NORG iterations
 	Real occupationerr;						// occupation Error			: error between the two NORG iterations
 	Real correctionerr;						// correction Error			: error between two correction vector modify
@@ -37,6 +36,7 @@ public:
 	VEC<MatReal> uormat;					// unitary_orbital_rotation_matrix
 
 	MatReal h0;
+	Real	groune_lst;						// ground state energy record after one optimize iteration.
 	VecReal final_ground_state;
 	ImGreen impgreen;
 
@@ -81,6 +81,7 @@ private:
 */
 public:
 	NORG(const MyMpi& mm_i, const Prmtr& prmtr_i);
+	NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals);
 	// NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i);
 
 	void up_date_h0_to_solve(const MatReal& h0_i);

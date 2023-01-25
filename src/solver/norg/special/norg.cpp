@@ -16,6 +16,17 @@ NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i) :
 	if(mm) WRN(NAV(scsp.dim));
 }
 
+NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals) :
+	mm(mm_i), p(prmtr_i), impgreen(prmtr_i.norbs, prmtr_i), uormat(uormat_initialize()),
+	occupationerr(1.), groundenererr(1.), correctionerr(1.), h0(prmtr_i.norbit, prmtr_i.norbit, 0.), occnum_pre(SUM(prmtr_i.nI2B), 0.),
+	iter_norg_cnt(0), groune_pre(1.e99), groune_lst(0.), occnum_lst(SUM(prmtr_i.nI2B), 0.),
+	scsp(prmtr_i, h0, nparticals), oneedm(mm, prmtr_i, scsp),norg_stable_count(0)
+{
+	show_the_nozero_number_of_tabel();
+	// WRN(NAV(STR("tste")));
+	if(mm) WRN(NAV(scsp.dim));
+}
+
 // NORG::NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i) :
 // 	mm(mm_i), p(prmtr_i), impgreen(prmtr_i.norbs, prmtr_i), uormat(uormat_initialize()),
 // 	occupationerr(1.), groundenererr(1.), correctionerr(1.), h0(imp_i.h0), occnum_pre(SUM(prmtr_i.nI2B), 0.),
