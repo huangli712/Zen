@@ -36,7 +36,9 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 		// norg.up_date_h0_to_solve(imp.h0);
 		Occler opcler(mm,p);
 		NORG norg(opcler.find_ground_state_partical(imp.h0));
+		ImGreen g0imp(p.norbit, p);	imp.find_g0(g0imp);			if(mm)	g0imp.write("g0imp", dmft_cnt);
 		ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp);		if (mm) gfimp.write("gfimp", dmft_cnt);
+		ImGreen seimp(p.nband, p);	seimp = g0imp.inverse() - gfimp.inverse();	if (mm) seimp.write("seimp", dmft_cnt);
 		// // ImGreen seimp(p.nband, p);	seimp=g0imp.inverse()-gfimp.inverse();	if (mm) seimp.write("seimp", dmft_cnt);
 	}
 }
