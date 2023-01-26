@@ -7,7 +7,7 @@ norbs = 6
 
 # Standard parameters: System's size and the NORG setting
 Uc    = 4.0
-Jz    = 0.
+Jz    = 0.7
 mu    = 0.
 
 restrain   =	*	-2	-2	*	2	2
