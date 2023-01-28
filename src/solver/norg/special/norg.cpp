@@ -38,6 +38,7 @@ NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals) :
 // }
 
 void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
+	if(mm) std::cout << std::endl;						// blank line
 	h0 = h0_i;
 	// if (mm) PIO(NAV2(h0,scsp.dim));
 	scsp.coefficient = scsp.set_row_primeter_by_gived_mat(uormat, h0_i);
@@ -75,6 +76,7 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 			PIO(NAV2(energy_err, occupation_err));
 			std::cout << "groundE_pre " << iofmt("sci") << groune_pre << std::setw(4) << "   groundE_lst " << groune_lst  << "  " << present() << std::endl;
 		}
+		if(mm) std::cout << std::endl;						// blank line
 	}
 	iter_norg_cnt = 0;		occupation_err = 1.;		energy_err = 1.;
 	final_ground_state = oneedm.ground_state;	norg_stable_count = 0.;
