@@ -54,15 +54,15 @@ void write_ose_hop(Int iter_cnt) const {
 	using namespace std;
 	for_Int(band_i, 0, p.nband)
 	{
-		OFS ofs_app_ose(p.ofx + ".ose" + STR(band_i) +".txt", std::ios::app);
+		OFS ofs_app_ose(p.ofx + ".ose.txt", std::ios::app);
 		ofs_app_ose << iofmt("sci");
-		ofs_app_ose << setw(4) << iter_cnt;
+		ofs_app_ose << setw(4) << iter_cnt << setw(4) << band_i;
 		for_Int(i, 0, p.nI2B[2 * band_i]) { ofs_app_ose << "\t" << setw(w_Real) << vec_ose[band_i][i]; }
 		ofs_app_ose << endl; ofs_app_ose.close();
 
-		OFS ofs_app_hop(p.ofx + ".hop" + STR(band_i) +".txt", std::ios::app);
+		OFS ofs_app_hop(p.ofx + ".hop.txt", std::ios::app);
 		ofs_app_hop << iofmt("sci");
-		ofs_app_hop << setw(4) << iter_cnt;
+		ofs_app_hop << setw(4) << iter_cnt << setw(4) << band_i;
 		for_Int(i, 0, p.nI2B[2 * band_i]) { ofs_app_hop << "\t" << setw(w_Real) << vec_hop[band_i][i]; }
 		ofs_app_hop << endl; ofs_app_hop.close();
 	}
