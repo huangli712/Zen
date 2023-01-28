@@ -58,7 +58,7 @@ void Prmtr::set_values() {
     nooc_mode = STR("cnooc");
     after_modify_prmtr();
     npartical.reset(norg_sets, 0);
-    for_Int(i, 0, norg_sets) npartical[i] = SUM(control_divs[i + 1])/2 - 1;
+    for_Int(i, 0, norg_sets) npartical[i] = SUM(control_divs[i + 1])/2;
     // stage2_restrain = {0, -0, -3,  0,  3,  0};
     // stage2_control =  {8, 20,  8,  8,  8, 20};
 }

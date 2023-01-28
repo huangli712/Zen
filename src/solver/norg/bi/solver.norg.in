@@ -6,12 +6,12 @@ nband = 3
 norbs = 6
 
 # Standard parameters: System's size and the NORG setting
-Uc    = 0.
-Jz    = 0.
+Uc    = 4.0
+Jz    = 0.7
 mu    = 0.
 
 restrain   =	*	-2	-2	*	2	2
-distribute =	1	2	0	1	0	4
+distribute =	1	3	0	1	0	3
 
 # Standard parameters: Running mode, now we have: norm, test and fast three mode support.
 mode = norm
