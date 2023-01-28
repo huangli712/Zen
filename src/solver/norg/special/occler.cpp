@@ -19,7 +19,7 @@ NORG Occler::find_ground_state_partical(const MatReal& h0_i){
         NORG a(mm, p);
         a.up_date_h0_to_solve(h0_i);            np_energy_b = a.groune_lst;
         VecInt np_m(p.npartical), np_p(p.npartical); np_m -= 1; np_p += 1;
-        if(mm) WRN(NAV3(p.npartical, np_m, np_p))
+        // if(mm) WRN(NAV3(p.npartical, np_m, np_p))
         p.templet_control[1]--;     p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr();
         NORG a_m(mm, p, np_m);
         a_m.up_date_h0_to_solve(h0_i);          np_energy_m = a_m.groune_lst;

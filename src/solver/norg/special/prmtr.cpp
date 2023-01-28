@@ -126,17 +126,17 @@ void Prmtr::print(std::ostream &os) const {
     prmtr_print(control_divs, "to set the number of division and the shortcut restratin.");
     // prmtr_print(stage2, "to set the number of division and the shortcut restratin @ stage2.");
     prmtr_print(hubbU, "The hubbard U interaction strength");
-    prmtr_print(mu, "");
-    prmtr_print(jz, "");
-    prmtr_print(uprime, "");
+    prmtr_print(uprime, "The U^' term");
+    prmtr_print(jz, "The hund coupling");
+    prmtr_print(mu, "The chemical potential");
     // for_Int(i,0,t.size()) prmtr_print(t[i], "quarter bandwidth");
     prmtr_print(max_omg, "max_omg of imgreen");
     prmtr_print(eta_freq, "eta of omega + i * eta");
     prmtr_print(dlt_freq, "The real x-axis unit for retarded green function");
-    prmtr_print(fit_max_omg, "");
-    prmtr_print(fit_num_omg, "");
+    prmtr_print(fit_max_omg, "The fitting max omg");
+    prmtr_print(fit_num_omg, "The max number of fitting points.");
     prmtr_print(unit_omg*2, "The image x-axis unit for Matsubara Green's function");
-    prmtr_print(imp_backup, "if you have the impurity's back up?");
+    // prmtr_print(imp_backup, "if you have the impurity's back up?");
     prmtr_print(nooc_mode, "the tight mode is refer to the correlation nature orbital constraint");
     prmtr_print(ofx, "output filename prefix");
 

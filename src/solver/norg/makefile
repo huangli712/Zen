@@ -3,7 +3,7 @@ WORK_DIR = ./console
 DIRG = ${PRES_DIR}/general
 DIRR = ${PRES_DIR}/randomc
 DIRS = ${PRES_DIR}/special
-EXE  = ${WORK_DIR}/exe
+norg  = ${WORK_DIR}/norg
 VPATH = ${DIRG}:${DIRR}:${DIRS}
 
 CC       = mpiicpc
@@ -19,7 +19,7 @@ DEPS := $(patsubst %.cpp,%.d,$(SRCS))
 
 default: manpower
 
-qsub: ${EXE}
+qsub: ${norg}
 	@echo '______________________________________________________________ qsub ______________________________________________________________'
 	@echo ''
 	@qsub ${WORK_DIR}/qsub.DPC++CPU.mpi.txt > ${WORK_DIR}/jmwang.job.txt
@@ -29,13 +29,13 @@ qsub: ${EXE}
 	@echo '__________________________________________________________________________________________________________________________________'
 	@echo ''
 
-${EXE}: compile $(DEPS) $(OBJS)
+${norg}: compile $(DEPS) $(OBJS)
 	@echo '_____________________________________________________________ link _____________________________________________________________'
 	@echo ''
-	$(CC) $(CPPFLAGS) $(CXXFLAGS) -o ${EXE} $(OBJS) $(LIBS)
+	$(CC) $(CPPFLAGS) $(CXXFLAGS) -o ${norg} $(OBJS) $(LIBS)
 
-manpower: ${EXE}
-	@echo '_________________________________________ Now you can test by: mpirun -n 24 ./console/exe________________________________________'
+manpower: ${norg}
+	@echo '_________________________________________ Now you can test by: mpirun -n 24 ./console/norg________________________________________'
 
 start:
 	@echo '______________________________________________________________ start ______________________________________________________________'
@@ -45,7 +45,7 @@ explain:
 	@echo '______________________________________________________________ explain ______________________________________________________________'
 	@echo ''
 	@echo "the following information represents your prgram"
-	@echo "final EXE name: $(EXE)"
+	@echo "final norg name: $(norg)"
 	@echo "source files: $(SRCS)"
 	@echo "object files: $(OBJS)"
 	@echo "dependency files: $(DEPS)"
@@ -62,7 +62,7 @@ compile:
 	$(COMPILE) -o $@ $<
 
 clean:
-	-rm -rf $(OBJS) $(DEPS) $(EXE)
+	-rm -rf $(OBJS) $(DEPS) $(norg)
 
 clear:
 

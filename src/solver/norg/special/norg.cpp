@@ -7,7 +7,7 @@ coded by Jia-Ming Wang (jmw@ruc.edu.cn, RUC, China) date 2022
 
 NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i) :
 	mm(mm_i), p(prmtr_i), impgreen(prmtr_i.norbs, prmtr_i), uormat(uormat_initialize()),
-	occupationerr(1.), groundenererr(1.), correctionerr(1.), h0(prmtr_i.norbit, prmtr_i.norbit, 0.), occnum_pre(SUM(prmtr_i.nI2B), 0.),
+	occupation_err(1.), energy_err(1.), correctionerr(1.), h0(prmtr_i.norbit, prmtr_i.norbit, 0.), occnum_pre(SUM(prmtr_i.nI2B), 0.),
 	iter_norg_cnt(0), groune_pre(1.e99), groune_lst(0.), occnum_lst(SUM(prmtr_i.nI2B), 0.),
 	scsp(prmtr_i, h0, prmtr_i.npartical), oneedm(mm, prmtr_i, scsp),norg_stable_count(0)
 {
@@ -18,7 +18,7 @@ NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i) :
 
 NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals) :
 	mm(mm_i), p(prmtr_i), impgreen(prmtr_i.norbs, prmtr_i), uormat(uormat_initialize()),
-	occupationerr(1.), groundenererr(1.), correctionerr(1.), h0(prmtr_i.norbit, prmtr_i.norbit, 0.), occnum_pre(SUM(prmtr_i.nI2B), 0.),
+	occupation_err(1.), energy_err(1.), correctionerr(1.), h0(prmtr_i.norbit, prmtr_i.norbit, 0.), occnum_pre(SUM(prmtr_i.nI2B), 0.),
 	iter_norg_cnt(0), groune_pre(1.e99), groune_lst(0.), occnum_lst(SUM(prmtr_i.nI2B), 0.),
 	scsp(prmtr_i, h0, nparticals), oneedm(mm, prmtr_i, scsp),norg_stable_count(0)
 {
@@ -29,7 +29,7 @@ NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals) :
 
 // NORG::NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i) :
 // 	mm(mm_i), p(prmtr_i), impgreen(prmtr_i.norbs, prmtr_i), uormat(uormat_initialize()),
-// 	occupationerr(1.), groundenererr(1.), correctionerr(1.), h0(imp_i.h0), occnum_pre(SUM(prmtr_i.nI2B), 0.),
+// 	occupation_err(1.), energy_err(1.), correctionerr(1.), h0(imp_i.h0), occnum_pre(SUM(prmtr_i.nI2B), 0.),
 // 	iter_norg_cnt(0), groune_pre(1.e99), groune_lst(0.), occnum_lst(SUM(prmtr_i.nI2B), 0.),
 // 	scsp(prmtr_i, imp_i.h0, prmtr_i.npartical), oneedm(mm, prmtr_i, scsp), norg_stable_count(0)
 // {
@@ -51,6 +51,7 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 	}
 	while (iter_norg_cnt < p.iter_max_norg && !converged()) {
 		iter_norg_cnt++;
+		if(mm) PIO("The iteration countting: " + NAV(iter_norg_cnt));
 		VEC<MatReal> uormat_new(oneedm.find_unitary_orbital_rotation_matrix());
 		for_Int(i, 0, uormat.size()) uormat[i] = uormat_new[i] * uormat[i];
 		// if(mm) WRN(NAV(uormat[0]));
@@ -64,19 +65,18 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 		// if(mm) WRN(NAV(oneedm.dm[0]));
 		if (mm) {
 			// WRN(NAV(iter_norg_cnt));
-			std::cout << "groundE_pre" << iofmt("sci") << groune_pre << std::setw(4) << "   groundE_lst" << groune_lst  << "  " << present() << std::endl;
 			// for_Int(i, 0, uormat.size()) WRN(NAV(uormat_new[i]));
 			// write_norg_info(iter_norg_cnt);
 			// write_state_info(iter_norg_cnt);
 		}
-		occupationerr = SQRT(SUM(SQR(occnum_pre - occnum_lst)) / p.norbit);
-		groundenererr = 2 * (groune_pre - groune_lst) / (ABS(groune_pre) + ABS(groune_lst) + 1.);
+		occupation_err = SQRT(SUM(SQR(occnum_pre - occnum_lst)) / p.norbit);
+		energy_err = 2 * (groune_pre - groune_lst) / (ABS(groune_pre) + ABS(groune_lst) + 1.);
 		if (mm) {
-			PIO(NAV2(groundenererr, occupationerr));
-			PIO("The iteration countting: " + NAV(iter_norg_cnt));
+			PIO(NAV2(energy_err, occupation_err));
+			std::cout << "groundE_pre " << iofmt("sci") << groune_pre << std::setw(4) << "   groundE_lst " << groune_lst  << "  " << present() << std::endl;
 		}
 	}
-	iter_norg_cnt = 0;		occupationerr = 1.;		groundenererr = 1.;
+	iter_norg_cnt = 0;		occupation_err = 1.;		energy_err = 1.;
 	final_ground_state = oneedm.ground_state;	norg_stable_count = 0.;
 	
 	// Finish the NORGiteration.
@@ -211,15 +211,15 @@ VEC<MatReal> NORG::uormat_initialize()
 
 bool NORG::converged() 
 {
-		const Real gseerr = ABS(groundenererr);
+		const Real gseerr = ABS(energy_err);
 		if (gseerr > 1.E-3) { return false; }
 		else if (gseerr < 1.E-10) { return true; }
-		else if (groundenererr < 1.E-5) { 
+		else if (energy_err < 1.E-5) { 
 			norg_stable_count++;
 			if (norg_stable_count > 10) return true;
 			}
 		else if (iter_norg_cnt > 40) {
-			const Real occerr = ABS(occupationerr);
+			const Real occerr = ABS(occupation_err);
 			if (occerr < 1.E-8) {
 				WRN("The iteration stoped since the occerr is less than 1.E-8.");
 				return true;

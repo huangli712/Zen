@@ -35,7 +35,7 @@ NocSpace::NocSpace(const Prmtr& prmtr_i, const MatReal& imp_i_h0, const VecInt& 
 	set_control();
 	// find_combined_number_subspaces(1);
 	find_all_noc_subspaces();
-	WRN("Begin find_combined_number_subspaces()"+ NAV(dim));
+	// WRN("Begin find_combined_number_subspaces()"+ NAV(dim));
 }
 
 void NocSpace::set_control()
@@ -328,6 +328,8 @@ void NocSpace::print(std::ostream& os) const
 	// nocspace_print(h0, "transformed hopping integral");
 	// nocspace_print(mu, "-mu");
 	nocspace_print(p.hubbU, " The Hubbard term U.");
+    nocspace_print(p.uprime, "The U^' term");
+    nocspace_print(p.jz, "The hund coupling");
 	// u_hbd, p.hubbU12, p.hubbU12, p.hubbU12
 
 	os << "// prmtr print end  " << present() << endl;
