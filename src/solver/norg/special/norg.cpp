@@ -13,7 +13,7 @@ NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i) :
 {
 	show_the_nozero_number_of_tabel();
 	// WRN(NAV(STR("tste")));
-	if(mm) WRN(NAV(scsp.dim));
+	if(mm) PIO(NAV(scsp.dim));
 }
 
 NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals) :
@@ -24,7 +24,7 @@ NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals) :
 {
 	show_the_nozero_number_of_tabel();
 	// WRN(NAV(STR("tste")));
-	if(mm) WRN(NAV(scsp.dim));
+	if(mm) PIO(NAV(scsp.dim));
 }
 
 // NORG::NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i) :
@@ -52,7 +52,7 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 	}
 	while (iter_norg_cnt < p.iter_max_norg && !converged()) {
 		iter_norg_cnt++;
-		if(mm) PIO("The iteration countting: " + NAV(iter_norg_cnt));
+		if(mm) PIO("The iteration counting: " + NAV(iter_norg_cnt));
 		VEC<MatReal> uormat_new(oneedm.find_unitary_orbital_rotation_matrix());
 		for_Int(i, 0, uormat.size()) uormat[i] = uormat_new[i] * uormat[i];
 		// if(mm) WRN(NAV(uormat[0]));

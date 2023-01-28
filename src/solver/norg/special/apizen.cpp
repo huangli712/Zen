@@ -82,14 +82,14 @@ void APIzen::read_ZEN(const Str& file)
 					ifs >> strr; ifs >> strr;
 					ifs >> l2;	ifs >> l1; ifs >> strr; ifs >> r1; ifs >> r2;
 					restrain = { 0, l2, l1, 0, r1, r2 };
-					if (mm) WRN("Finish the restrain input:" + NAV(restrain.mat(1,restrain.size())));
+					if (mm) PIO("Finish the restrain input:" + NAV(restrain.mat(1,restrain.size())));
 				}
 				if (strr == "distribute") {
 					Int l2, l1, m0, r1, r2;
 					ifs >> strr; ifs >> strr;
 					ifs >> l2;	ifs >> l1; ifs >> m0; ifs >> r1; ifs >> r2;
 					distribute = { 1, l2, l1, m0, r1, r2 };
-					if (mm) WRN("Finish the division distribute input:" + NAV(distribute.mat(1,distribute.size())));
+					if (mm) PIO("Finish the division distribute input:" + NAV(distribute.mat(1,distribute.size())));
 				}
 				if (strr == "norm_mode") {
 					ifs >> strr; ifs >> norm_mode;
