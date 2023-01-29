@@ -12,8 +12,6 @@ NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i) :
 	scsp(prmtr_i, h0, prmtr_i.npartical), oneedm(mm, prmtr_i, scsp),norg_stable_count(0)
 {
 	show_the_nozero_number_of_tabel();
-	// WRN(NAV(STR("tste")));
-	if(mm) PIO(NAV(scsp.dim));
 }
 
 NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals) :
@@ -23,8 +21,6 @@ NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals) :
 	scsp(prmtr_i, h0, nparticals), oneedm(mm, prmtr_i, scsp),norg_stable_count(0)
 {
 	show_the_nozero_number_of_tabel();
-	// WRN(NAV(STR("tste")));
-	if(mm) PIO(NAV(scsp.dim));
 }
 
 // NORG::NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i) :
@@ -359,7 +355,7 @@ void NORG::show_the_nozero_number_of_tabel()
 	// if(mm) PIO(NAV3(size_of_main_t, size_of_main_n1mt, size_of_main_n1pt));
 	Real size_one(oneedm.table[2].size());
 	LLInt size_of_main_t(mm.Allreduce(size_one));
-	if(mm) PIO(NAV(size_of_main_t));
+	if(mm) PIO(NAV2(size_of_main_t, scsp.dim));
 }
 
 MatReal NORG::save_transform_uormat(){

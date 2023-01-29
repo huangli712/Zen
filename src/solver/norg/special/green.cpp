@@ -76,9 +76,9 @@ Green::Green(const Prmtr& p, Int orb0, Int orb1, const Green& a) :
 void Green::write(const Str& green_name, Int iter_cnt) const
 {
     OFS ofs;
-    if (iter_cnt == 999) { ofs.open(iox + "output_" + green_name + ".txt"); }
+    if (iter_cnt == 999) { ofs.open(iox + green_name + ".txt"); }
     else { ofs.open(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + ".txt"); }
-    Str iter_str = iter_cnt == 999 ? "output_" : STR(iter_cnt)+"_";
+    Str iter_str = iter_cnt == 999 ? "" : STR(iter_cnt)+"_";
     // OFS ofs(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + ".txt");
     ofs << iofmt("sci");
     // real part of green
