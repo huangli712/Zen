@@ -10,8 +10,8 @@ Prmtr::Prmtr(const MyMpi &mm) : np(mm.np())
     set_values();
     derive();
     // if (mm) print();
-    if (mm) { OFS ofs(iox + "log.parameters.txt", std::ios::app);  print(ofs); }
-    if (mm) { OFS ofss(cdr + "log.parameters.txt", std::ios::app);  print(ofss); }
+    // if (mm) { OFS ofs(iox + "log.parameters.txt", std::ios::app);  print(ofs); }
+    if (mm) { OFS ofss("log.parameters.txt", std::ios::app);  print(ofss); }
 }
 
 void Prmtr::set_inert_values()
@@ -100,14 +100,11 @@ void Prmtr::derive() {
     Im_z.reset(num_omg);
 	for_Int(n, 0, num_omg) Im_z[n] = Cmplx(0., (2 * n + 1) * unit_omg);
 
-
-    fit_max_omg = max_omg/ 4. ;
+    fit_max_omg = bandw/ 2. ;
     fit_num_omg = Int_ROUND(fit_max_omg / unit_omg / 2); // The default value: Int_ROUND(fit_max_omg / unit_omg / 2) change for speed reason.
 
     Str key_prmtr_val = STR("prmtr");
     ofx = iox + key_prmtr_val;
-
-
 }
 
 void Prmtr::print(std::ostream &os) const {

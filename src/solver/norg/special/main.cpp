@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
 	MyMpi mm;
 	if (mm) cout << NAV(pwd()) << endl; 
 	use_mkl(mm);
-	if (mm) io_init();
+	// if (mm) io_init();
 	clock_t t_program_bgn;
 	if (mm) TIME_BGN("program", t_program_bgn);
 	Prmtr prmtr(mm);
@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 	}
 	// DMFT dmft(mm, prmtr, mdl);
     // Phy phy(mm, prmtr, mdl);
-	APIzen norg(mm, prmtr, bix + "solver", 0);
+	APIzen norg(mm, prmtr, "solver", 0);
 
     if (mm)	TIME_END("program", t_program_bgn);
     MPI_Finalize();

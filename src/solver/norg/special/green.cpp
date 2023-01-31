@@ -76,7 +76,8 @@ Green::Green(const Prmtr& p, Int orb0, Int orb1, const Green& a) :
 void Green::write(const Str& green_name, Int iter_cnt) const
 {
     OFS ofs;
-    if (iter_cnt == 999) { ofs.open(iox + green_name + ".txt"); }
+    // if (iter_cnt == 999) { ofs.open(iox + green_name + ".txt"); }
+    if (iter_cnt == 999) { ofs.open(green_name + ".txt"); }
     else { ofs.open(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + ".txt"); }
     Str iter_str = iter_cnt == 999 ? "" : STR(iter_cnt)+"_";
     // OFS ofs(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + ".txt");
@@ -119,7 +120,8 @@ void Green::write(const Str& green_name, Int iter_cnt) const
 void Green::write(const Str& green_name, const Str& rowname, Int iter_cnt) const
 {
     OFS ofs;
-    if (iter_cnt == 999) { ofs.open(iox + green_name + rowname + ".txt"); }
+    // if (iter_cnt == 999) { ofs.open(iox + green_name + rowname + ".txt"); }
+    if (iter_cnt == 999) { ofs.open(green_name + rowname + ".txt"); }
     else { ofs.open(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + rowname + ".txt"); }
     Str iter_str = iter_cnt == 999 ? STR(rowname)+"_" : STR(rowname)+STR(iter_cnt)+"_";
     // OFS ofs(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + ".txt");
@@ -199,7 +201,7 @@ Real ImGreen::error(const ImGreen& b, Real omg_rsd) const
 Real ImGreen::sum(const VecCmplx& gf) const
 {
 	Real electron_density = real(SUM(gf));
-	/*
+	
     VecReal w = imag(z_omg.truncate(nomgs - 4, nomgs));
     VecReal g = real(gf.truncate(nomgs - 4, nomgs));
     if (ABS(real(gf[0])) < 1.E-5) 	return 0.;					//if gf is 0, insensitive with omg, return 0
@@ -236,8 +238,8 @@ Real ImGreen::sum(const VecCmplx& gf) const
         electron_density -= b1 / (SQR(omg(n)) + a1);
         electron_density -= b2 / (SQR(omg(n)) + a2);
     }
-	WRN(NAV6(a1,a2,b1,b2,w,g))	
-	*/
+	// WRN(NAV6(a1,a2,b1,b2,w,g))	
+
     const Real temp = unit_omg / pi_Real;
 	return 2 * temp * electron_density;
 }
