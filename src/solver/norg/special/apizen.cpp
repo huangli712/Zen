@@ -33,13 +33,14 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 		imp.update();
 		// if(mm) WRN(NAV(imp.h0))
 		ImGreen g0(p.norbit, p);	imp.find_all_g0(g0);		// if(mm)WRN(NAV(g0.particle_number().diagonal()));
-		// NORG norg(mm, p);
-		// norg.up_date_h0_to_solve(imp.h0);
-		Occler opcler(mm,p);
-		NORG norg(opcler.find_ground_state_partical(imp.h0));
+		NORG norg(mm, p);
+		norg.up_date_h0_to_solve(imp.h0);
+		// Occler opcler(mm,p);
+		// NORG norg(opcler.find_ground_state_partical(imp.h0));
 		ImGreen g0imp(p.nband, p);	imp.find_g0(g0imp);			if (mm)	g0imp.write("g0imp");
 		ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp);		if (mm) gfimp.write("gfimp");
 		ImGreen seimp(p.nband, p);	seimp = g0imp.inverse() - gfimp.inverse();	if (mm) seimp.write("seimp");
+		if (mm)	norg.write_occupation_info();
 		// // ImGreen seimp(p.nband, p);	seimp=g0imp.inverse()-gfimp.inverse();	if (mm) seimp.write("seimp", dmft_cnt);
 	}
 }
@@ -77,7 +78,7 @@ void APIzen::read_ZEN(const Str& file)
 				if(strr == "norbs") { ifs >> strr; ifs >> norbs; }
 				if(strr == "Uc") { ifs >> strr; ifs >> Uc; }
 				if(strr == "Jz") { ifs >> strr; ifs >> Jz; }
-				if(strr == "mu") { ifs >> strr; ifs >> mu; }
+				if(strr == "mune") { ifs >> strr; ifs >> mu; }
 				if (strr == "restrain") {
 					Int l2, l1, r1, r2;
 					ifs >> strr; ifs >> strr;

@@ -129,6 +129,8 @@ public:
 	
 //--------------------------------------- for the print out---------------------------------
 	void write_norg_info(Int iter_cnt) const;
+	
+	void write_occupation_info() const;
 
 	void write_state_info(Int iter_cnt) const;
 	

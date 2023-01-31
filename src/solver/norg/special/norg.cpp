@@ -310,6 +310,24 @@ void NORG::write_norg_info(Int iter_cnt) const {
 
 }
 
+void NORG::write_occupation_info() const {
+	using namespace std;
+	OFS ofs; ofs.open("solver.nmat.dat");
+	VEC<MatReal> dmtemp(oneedm.dm);
+	VecReal counter(3);
+	ofs << "#   < n_i >   data:"<< endl;
+	for_Int(orb_i, 0, p.norbs)	{
+		ofs << iofmt();
+		std::string temp = (orb_i % 2) == 0 ? STR(Int(orb_i / 2) + 1) + "up" : STR(Int(orb_i / 2) + 1) + "dw";
+		ofs << setw(6) << temp << setw(p_Real) << dmtemp[orb_i][0][0] << endl;
+		(orb_i % 2) == 0 ? counter[0] += dmtemp[orb_i][0][0] : counter[1] += dmtemp[orb_i][0][0];
+	}
+	counter[2] = counter[0] + counter[1];
+	ofs << setw(6) << "sup" << setw(p_Real) << counter[0] << endl;
+	ofs << setw(6) << "sdw" << setw(p_Real) << counter[1] << endl;
+	ofs << setw(6) << "sum" << setw(p_Real) << counter[2] << endl;
+	ofs.close();
+}
 
 void NORG::write_state_info(Int iter_cnt) const {
 	using namespace std;
