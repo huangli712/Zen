@@ -325,7 +325,7 @@ void NORG::write_occupation_info() const {
 	counter[2] = counter[0] + counter[1];
 	ofs << setw(6) << "sup" << setw(p_Real) << counter[0] << endl;
 	ofs << setw(6) << "sdn" << setw(p_Real) << counter[1] << endl;
-	ofs << setw(6) << "sum" << setw(p_Real) << counter[2] << endl;
+	ofs << setw(6) << "sum" << setw(p_Real) << counter[2];
 	ofs.close();
 }
 
