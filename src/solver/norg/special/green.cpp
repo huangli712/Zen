@@ -221,6 +221,7 @@ void Green::write_zen(const Str& green_name, Int iter_cnt) const
         }
         ofs << endl;
     }
+    ofs << endl;						// blank line
 }
 
 
@@ -284,6 +285,7 @@ void Green::write_zen(const Str& green_name, const Str& rowname, Int iter_cnt) c
         }
         ofs << endl;
     }
+    ofs << endl;						// blank line
 }
 
 
