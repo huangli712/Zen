@@ -37,10 +37,15 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 		norg.up_date_h0_to_solve(imp.h0);
 		// Occler opcler(mm,p);
 		// NORG norg(opcler.find_ground_state_partical(imp.h0));
-		ImGreen g0imp(p.nband, p);	imp.find_g0(g0imp);			if (mm)	g0imp.write("g0imp");
-		ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp);		if (mm) gfimp.write("gfimp");
-		ImGreen seimp(p.nband, p);	seimp = g0imp.inverse() - gfimp.inverse();	if (mm) seimp.write("seimp");
-		if (mm)	norg.write_occupation_info();
+		if (mm)	{
+			norg.write_occupation_info();
+			std::cout << "norg ground state energy:" << norg.groune_lst  << "  " << present() << std::endl;
+			std::cout << std::endl;								// blank line
+		}
+		ImGreen g0imp(p.nband, p);	imp.find_g0(g0imp);			if (mm)	g0imp.write_zen("g0imp");
+		ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp);		if (mm) gfimp.write_zen("gfimp");
+		ImGreen seimp(p.nband, p);	seimp = g0imp.inverse() - gfimp.inverse();	if (mm) seimp.write_zen("seimp");
+
 		// // ImGreen seimp(p.nband, p);	seimp=g0imp.inverse()-gfimp.inverse();	if (mm) seimp.write("seimp", dmft_cnt);
 	}
 }

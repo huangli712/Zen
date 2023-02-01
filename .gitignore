@@ -33,4 +33,3 @@ src/solver/norg/archives
 src/solver/norg/*.txt
 src/solver/norg/*/*.txt
 src/solver/norg/.vscode
-src/solver/norg/bi/norg

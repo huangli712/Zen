@@ -161,6 +161,132 @@ void Green::write(const Str& green_name, const Str& rowname, Int iter_cnt) const
 }
 
 
+void Green::write_zen(const Str& green_name, Int iter_cnt) const
+{
+    OFS ofs;
+    // if (iter_cnt == 999) { ofs.open(iox + green_name + ".txt"); }
+    if (iter_cnt == 999) { ofs.open(green_name + ".txt"); }
+    else { ofs.open(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + ".txt"); }
+    Str iter_str = iter_cnt == 999 ? "" : STR(iter_cnt)+"_";
+    // OFS ofs(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + ".txt");
+    ofs << iofmt("sci");
+    // real part of green
+    ofs << setw(w_Real) << "w";
+    for_Int(m, 0, norbs) {
+        for_Int(n, 0, norbs) {
+            ofs << "  " << setw(w_Real) << iter_str + "Re" + STR(m + 1) + STR(n + 1);
+        }
+    }
+    // imag part of green
+    ofs << "  " << setw(w_Real) << "w";
+    for_Int(m, 0, norbs) {
+        for_Int(n, 0, norbs) {
+            ofs << "  " << setw(w_Real) << iter_str + "Im" + STR(m + 1) + STR(n + 1);
+        }
+    }
+    ofs << endl;
+    for_Int(i, 0, nomgs) {
+        // real part of green
+        ofs << setw(w_Real) << omg(i);
+        for_Int(m, 0, norbs) {
+            for_Int(n, 0, norbs) {
+                ofs << "  " << setw(w_Real) << real(g[i][m][n]);
+            }
+        }
+        // imag part of green
+        ofs << "  " << setw(w_Real) << omg(i);
+        for_Int(m, 0, norbs) {
+            for_Int(n, 0, norbs) {
+                ofs << "  " << setw(w_Real) << imag(g[i][m][n]);
+            }
+        }
+        ofs << endl;
+    }
+    ofs << endl;						// blank line
+    ofs << endl;						// blank line
+    for_Int(i, 0, nomgs) {
+        // real part of green
+        ofs << setw(w_Real) << omg(i);
+        for_Int(m, 0, norbs) {
+            for_Int(n, 0, norbs) {
+                ofs << "  " << setw(w_Real) << real(g[i][m][n]);
+            }
+        }
+        // imag part of green
+        ofs << "  " << setw(w_Real) << omg(i);
+        for_Int(m, 0, norbs) {
+            for_Int(n, 0, norbs) {
+                ofs << "  " << setw(w_Real) << imag(g[i][m][n]);
+            }
+        }
+        ofs << endl;
+    }
+}
+
+
+void Green::write_zen(const Str& green_name, const Str& rowname, Int iter_cnt) const
+{
+    OFS ofs;
+    // if (iter_cnt == 999) { ofs.open(iox + green_name + rowname + ".txt"); }
+    if (iter_cnt == 999) { ofs.open(green_name + rowname + ".txt"); }
+    else { ofs.open(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + rowname + ".txt"); }
+    Str iter_str = iter_cnt == 999 ? STR(rowname)+"_" : STR(rowname)+STR(iter_cnt)+"_";
+    // OFS ofs(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + ".txt");
+    ofs << iofmt("sci");
+    // real part of green
+    ofs << setw(w_Real) << "w";
+    for_Int(m, 0, norbs) {
+        for_Int(n, 0, norbs) {
+            ofs << "  " << setw(w_Real) << iter_str + "Re" + STR(m + 1) + STR(n + 1);
+        }
+    }
+    // imag part of green
+    ofs << "  " << setw(w_Real) << "w";
+    for_Int(m, 0, norbs) {
+        for_Int(n, 0, norbs) {
+            ofs << "  " << setw(w_Real) << iter_str + "Im" + STR(m + 1) + STR(n + 1);
+        }
+    }
+    ofs << endl;
+    for_Int(i, 0, nomgs) {
+        // real part of green
+        ofs << setw(w_Real) << omg(i);
+        for_Int(m, 0, norbs) {
+            for_Int(n, 0, norbs) {
+                ofs << "  " << setw(w_Real) << real(g[i][m][n]);
+            }
+        }
+        // imag part of green
+        ofs << "  " << setw(w_Real) << omg(i);
+        for_Int(m, 0, norbs) {
+            for_Int(n, 0, norbs) {
+                ofs << "  " << setw(w_Real) << imag(g[i][m][n]);
+            }
+        }
+        ofs << endl;
+    }
+    ofs << endl;						// blank line
+    ofs << endl;						// blank line
+    for_Int(i, 0, nomgs) {
+        // real part of green
+        ofs << setw(w_Real) << omg(i);
+        for_Int(m, 0, norbs) {
+            for_Int(n, 0, norbs) {
+                ofs << "  " << setw(w_Real) << real(g[i][m][n]);
+            }
+        }
+        // imag part of green
+        ofs << "  " << setw(w_Real) << omg(i);
+        for_Int(m, 0, norbs) {
+            for_Int(n, 0, norbs) {
+                ofs << "  " << setw(w_Real) << imag(g[i][m][n]);
+            }
+        }
+        ofs << endl;
+    }
+}
+
+
 Real ImGreen::error(const ImGreen& b, Real omg_rsd) const
 {
 	VecReal wght(nomgs);
