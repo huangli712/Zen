@@ -34,8 +34,8 @@ public:
 	inline const MatCmplx& operator[](Idx i) const;
 	void write(const Str& green_name, Int iter_cnt=999) const;
 	void write(const Str& green_name, const Str& rowname, Int iter_cnt=999) const;
-	void write_zen(const Str& green_name, Int iter_cnt=999) const;
-	void write_zen(const Str& green_name, const Str& rowname, Int iter_cnt=999) const;
+	void write_zen(const Str& green_name, Int nspin=2, Int iter_cnt=999) const;
+	void write_zen(const Str& green_name, const Str& rowname, Int nspin=2, Int iter_cnt=999) const;
 	inline void reset(Idx n);
 };
 

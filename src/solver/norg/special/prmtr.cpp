@@ -94,7 +94,7 @@ void Prmtr::derive() {
 
     // max_omg = 4 * SQRT(SQR(hubbU) + DOT(t, t));    
     // max_omg = 2 * (ABS(hubbU) + 8 * SQRT(DOT(t, t) - t[0] * t[0]));
-    max_omg = 2 * bandw;
+    max_omg = unit_omg * 8193 * 2;
 
     num_omg = Int_ROUND(max_omg / unit_omg / 2);
     Im_z.reset(num_omg);

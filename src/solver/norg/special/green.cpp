@@ -161,7 +161,7 @@ void Green::write(const Str& green_name, const Str& rowname, Int iter_cnt) const
 }
 
 
-void Green::write_zen(const Str& green_name, Int iter_cnt) const
+void Green::write_zen(const Str& green_name, Int nspin, Int iter_cnt) const
 {
     OFS ofs;
     // if (iter_cnt == 999) { ofs.open(iox + green_name + ".txt"); }
@@ -170,62 +170,46 @@ void Green::write_zen(const Str& green_name, Int iter_cnt) const
     Str iter_str = iter_cnt == 999 ? "" : STR(iter_cnt)+"_";
     // OFS ofs(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + ".txt");
     ofs << iofmt("sci");
-    // real part of green
-    ofs << setw(w_Real) << "w";
-    for_Int(m, 0, norbs) {
-        for_Int(n, 0, norbs) {
-            ofs << "  " << setw(w_Real) << iter_str + "Re" + STR(m + 1) + STR(n + 1);
-        }
-    }
-    // imag part of green
-    ofs << "  " << setw(w_Real) << "w";
-    for_Int(m, 0, norbs) {
-        for_Int(n, 0, norbs) {
-            ofs << "  " << setw(w_Real) << iter_str + "Im" + STR(m + 1) + STR(n + 1);
-        }
-    }
-    ofs << endl;
-    for_Int(i, 0, nomgs) {
+    for_Int(nspin_i, 0, nspin){
         // real part of green
-        ofs << setw(w_Real) << omg(i);
+        ofs << setw(w_Real) << "w";
         for_Int(m, 0, norbs) {
             for_Int(n, 0, norbs) {
-                ofs << "  " << setw(w_Real) << real(g[i][m][n]);
+                ofs << "  " << setw(w_Real) << iter_str + "Re" + STR(m + 1) + STR(n + 1);
             }
         }
         // imag part of green
-        ofs << "  " << setw(w_Real) << omg(i);
+        ofs << "  " << setw(w_Real) << "w";
         for_Int(m, 0, norbs) {
             for_Int(n, 0, norbs) {
-                ofs << "  " << setw(w_Real) << imag(g[i][m][n]);
+                ofs << "  " << setw(w_Real) << iter_str + "Im" + STR(m + 1) + STR(n + 1);
             }
         }
         ofs << endl;
-    }
-    ofs << endl;						// blank line
-    ofs << endl;						// blank line
-    for_Int(i, 0, nomgs) {
-        // real part of green
-        ofs << setw(w_Real) << omg(i);
-        for_Int(m, 0, norbs) {
-            for_Int(n, 0, norbs) {
-                ofs << "  " << setw(w_Real) << real(g[i][m][n]);
+        for_Int(i, 0, nomgs) {
+            // real part of green
+            ofs << setw(w_Real) << omg(i);
+            for_Int(m, 0, norbs) {
+                for_Int(n, 0, norbs) {
+                    ofs << "  " << setw(w_Real) << real(g[i][m][n]);
+                }
             }
-        }
-        // imag part of green
-        ofs << "  " << setw(w_Real) << omg(i);
-        for_Int(m, 0, norbs) {
-            for_Int(n, 0, norbs) {
-                ofs << "  " << setw(w_Real) << imag(g[i][m][n]);
+            // imag part of green
+            ofs << "  " << setw(w_Real) << omg(i);
+            for_Int(m, 0, norbs) {
+                for_Int(n, 0, norbs) {
+                    ofs << "  " << setw(w_Real) << imag(g[i][m][n]);
+                }
             }
+            ofs << endl;
         }
-        ofs << endl;
+        ofs << endl;						// blank line
+        ofs << endl;						// blank line
     }
-    ofs << endl;						// blank line
 }
 
 
-void Green::write_zen(const Str& green_name, const Str& rowname, Int iter_cnt) const
+void Green::write_zen(const Str& green_name, const Str& rowname, Int nspin, Int iter_cnt) const
 {
     OFS ofs;
     // if (iter_cnt == 999) { ofs.open(iox + green_name + rowname + ".txt"); }
@@ -234,58 +218,42 @@ void Green::write_zen(const Str& green_name, const Str& rowname, Int iter_cnt) c
     Str iter_str = iter_cnt == 999 ? STR(rowname)+"_" : STR(rowname)+STR(iter_cnt)+"_";
     // OFS ofs(iox + "zic" + prefill0(iter_cnt, 3) + ".mb." + green_name + ".txt");
     ofs << iofmt("sci");
-    // real part of green
-    ofs << setw(w_Real) << "w";
-    for_Int(m, 0, norbs) {
-        for_Int(n, 0, norbs) {
-            ofs << "  " << setw(w_Real) << iter_str + "Re" + STR(m + 1) + STR(n + 1);
-        }
-    }
-    // imag part of green
-    ofs << "  " << setw(w_Real) << "w";
-    for_Int(m, 0, norbs) {
-        for_Int(n, 0, norbs) {
-            ofs << "  " << setw(w_Real) << iter_str + "Im" + STR(m + 1) + STR(n + 1);
-        }
-    }
-    ofs << endl;
-    for_Int(i, 0, nomgs) {
+    for_Int(nspin_i, 0, nspin){
         // real part of green
-        ofs << setw(w_Real) << omg(i);
+        ofs << setw(w_Real) << "w";
         for_Int(m, 0, norbs) {
             for_Int(n, 0, norbs) {
-                ofs << "  " << setw(w_Real) << real(g[i][m][n]);
+                ofs << "  " << setw(w_Real) << iter_str + "Re" + STR(m + 1) + STR(n + 1);
             }
         }
         // imag part of green
-        ofs << "  " << setw(w_Real) << omg(i);
+        ofs << "  " << setw(w_Real) << "w";
         for_Int(m, 0, norbs) {
             for_Int(n, 0, norbs) {
-                ofs << "  " << setw(w_Real) << imag(g[i][m][n]);
+                ofs << "  " << setw(w_Real) << iter_str + "Im" + STR(m + 1) + STR(n + 1);
             }
         }
         ofs << endl;
-    }
-    ofs << endl;						// blank line
-    ofs << endl;						// blank line
-    for_Int(i, 0, nomgs) {
-        // real part of green
-        ofs << setw(w_Real) << omg(i);
-        for_Int(m, 0, norbs) {
-            for_Int(n, 0, norbs) {
-                ofs << "  " << setw(w_Real) << real(g[i][m][n]);
+        for_Int(i, 0, nomgs) {
+            // real part of green
+            ofs << setw(w_Real) << omg(i);
+            for_Int(m, 0, norbs) {
+                for_Int(n, 0, norbs) {
+                    ofs << "  " << setw(w_Real) << real(g[i][m][n]);
+                }
             }
-        }
-        // imag part of green
-        ofs << "  " << setw(w_Real) << omg(i);
-        for_Int(m, 0, norbs) {
-            for_Int(n, 0, norbs) {
-                ofs << "  " << setw(w_Real) << imag(g[i][m][n]);
+            // imag part of green
+            ofs << "  " << setw(w_Real) << omg(i);
+            for_Int(m, 0, norbs) {
+                for_Int(n, 0, norbs) {
+                    ofs << "  " << setw(w_Real) << imag(g[i][m][n]);
+                }
             }
+            ofs << endl;
         }
-        ofs << endl;
+        ofs << endl;						// blank line
+        ofs << endl;						// blank line
     }
-    ofs << endl;						// blank line
 }
 
 

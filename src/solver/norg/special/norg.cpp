@@ -318,7 +318,7 @@ void NORG::write_occupation_info() const {
 	ofs << "#   < n_i >   data:"<< endl;
 	for_Int(orb_i, 0, p.norbs)	{
 		ofs << iofmt();
-		std::string temp = (orb_i % 2) == 0 ? STR(Int(orb_i / 2) + 1) + "up" : STR(Int(orb_i / 2) + 1) + "dw";
+		std::string temp = (orb_i % 2) == 0 ? STR(Int(orb_i / 2) + 1) + "up" : STR(Int(orb_i / 2) + 1) + "dn";
 		ofs << setw(6) << temp << setw(p_Real) << dmtemp[orb_i][0][0] << endl;
 		(orb_i % 2) == 0 ? counter[0] += dmtemp[orb_i][0][0] : counter[1] += dmtemp[orb_i][0][0];
 	}
