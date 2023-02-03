@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/21
+# Last modified: 2023/02/01
 #
 
 #=
@@ -47,6 +47,7 @@ end
     renew()
 
 Read parameters from configuration file, and then renew the related dicts.
+Noted that only parts of the parameters in the dicts are updated.
 
 See also: [`inp_toml`](@ref), [`rev_dict`](@ref), [`chk_dict`](@ref).
 """
@@ -57,7 +58,7 @@ function renew()
     # R2: Renew the configuration dictionaries
     rev_dict(cfg)
 
-    # R3: Validate the configuration parameters    
+    # R3: Validate the configuration parameters
     chk_dict()
 
     # Print the footer
@@ -282,7 +283,7 @@ function chk_dict()
     if get_s("engine") in ("ct_hyb1", "ct_hyb2", "hia")
         @assert get_m("axis") == 1 # Imaginary axis
     elseif get_s("engine") in ("norg",)
-        @assert get_m("axis") == 2 # Real axis
+        @assert get_m("axis") == 1 # Imaginary axis as well
     end
     #
     # Please add more assertion statements here

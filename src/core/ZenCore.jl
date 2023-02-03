@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/19
+# Last modified: 2023/01/23
 #
 
 """
@@ -28,17 +28,18 @@ Zen supports the following schemes for defining local orbitals:
 Zen supports the following quantum impurity solvers:
 
 * `CTHYB`
-* `HIA`
-* `NORG`
+* `HIA` (Unavailable)
+* `NORG` (Experimental)
 
 Zen consists of several components, including:
 
 * `ZenCore` (Core library)
 * `ZenApps` (Major applications)
 * `ZenTools` (Auxiliary tools and plugins)
-* `Dyson` (A dynamical mean-field theory engine)
+* `Dyson` (A density functional theory + dynamical mean-field theory engine)
 * `iQIST` (An interacting quantum impurity solver toolkit)
-* `Flink` (A reusable fortran library)
+* `Flink` (A reusable fortran numerical library)
+* `ACFlow` (A modern toolkit for analytical continuation problems)
 
 `ZenCore` implements the core library of the Zen DFT + DMFT computation
 framework. It connects various components of Zen, and drive them to work

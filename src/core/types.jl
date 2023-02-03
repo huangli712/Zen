@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/20
+# Last modified: 2023/02/01
 #
 
 #=
@@ -98,7 +98,7 @@ const PDMFT  = Dict{String,ADT}(
 
 Dictionary for configuration parameters: quantum impurity problems. Be
 careful, its entries (such as `ising`, `occup`, `upara`, `jpara`, and
-`lpara`) can be updated during the iteration. 
+`lpara`) can be updated during the iteration.
 
 See also: [`PCASE`](@ref), [`PDFT`](@ref), [`PDMFT`](@ref), [`PSOLVER`](@ref).
 """
