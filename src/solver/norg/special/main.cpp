@@ -33,6 +33,7 @@ int main(int argc, char* argv[])
 	// DMFT dmft(mm, prmtr, mdl);
     // Phy phy(mm, prmtr, mdl);
 	APIzen norg(mm, prmtr, "solver", 0);
+	// ImGreen gfimp(prmtr.nband, prmtr, "gfimp.txt");	if(mm) WRN(NAV(gfimp.particle_number().diagonal()));
 
     if (mm)	TIME_END("program", t_program_bgn);
     MPI_Finalize();

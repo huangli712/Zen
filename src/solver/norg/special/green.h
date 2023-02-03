@@ -64,6 +64,7 @@ public:
 	Cmplx z(Int n) const { return  z_omg[n]; }
 	//calculate <c_i^+ c_j> from <<c_j c_i^+>>_(iw_n)
 	MatReal particle_number() const;
+	void write_occupation_info() const;
 	Str type_info() const {return STR("ImGreen");}
 };
 

@@ -72,6 +72,27 @@ Green::Green(const Prmtr& p, Int orb0, Int orb1, const Green& a) :
 	}
 }
 
+void ImGreen::write_occupation_info() const {
+	using namespace std;
+	OFS ofs; ofs.open("nmat.txt");
+	VecReal counter(3);
+    VecReal particals(particle_number().diagonal());
+
+    ofs << "#   < n_i >   data:"<< endl;
+    for_Int(orb_i, 0, norbs*2){
+        ofs << iofmt();
+        std::string temp = (orb_i % 2) == 0 ? STR(Int(orb_i / 2) + 1) + "up" : STR(Int(orb_i / 2) + 1) + "dn";
+        ofs << setw(6) << temp << setw(p_Real) << particals[Int(orb_i / 2)] << endl;
+    }
+    counter[0] = SUM(particals);
+    counter[1] = SUM(particals);
+
+	counter[2] = counter[0] + counter[1];
+	ofs << setw(6) << "sup" << setw(p_Real) << counter[0] << endl;
+	ofs << setw(6) << "sdn" << setw(p_Real) << counter[1] << endl;
+	ofs << setw(6) << "sum" << setw(p_Real) << counter[2];
+	ofs.close();
+}
 
 void Green::write(const Str& green_name, Int iter_cnt) const
 {
@@ -297,7 +318,7 @@ Real ImGreen::error(const ImGreen& b, Real omg_rsd) const
 Real ImGreen::sum(const VecCmplx& gf) const
 {
 	Real electron_density = real(SUM(gf));
-	
+	/* 
     VecReal w = imag(z_omg.truncate(nomgs - 4, nomgs));
     VecReal g = real(gf.truncate(nomgs - 4, nomgs));
     if (ABS(real(gf[0])) < 1.E-5) 	return 0.;					//if gf is 0, insensitive with omg, return 0
@@ -335,7 +356,7 @@ Real ImGreen::sum(const VecCmplx& gf) const
         electron_density -= b2 / (SQR(omg(n)) + a2);
     }
 	// WRN(NAV6(a1,a2,b1,b2,w,g))	
-
+ */
     const Real temp = unit_omg / pi_Real;
 	return 2 * temp * electron_density;
 }
