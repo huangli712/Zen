@@ -349,17 +349,19 @@ end
     amix(it::IterInfo)
 
 Return the mixing factor for mixer component. It should depend on the
-current iteration number, instead of a constant.
+current iteration number, instead of being a constant.
 
 See also: [`IterInfo`](@ref).
 """
 function amix(it::IterInfo)
     factor = 1.0
+    #
     if it.sc == 1
         factor = exp(-(it.I₁ - 1) * get_m("mixer"))
     else
         factor = exp(-(it.I₃ - 1) * get_m("mixer"))
     end
+    #
     return factor
 end
 

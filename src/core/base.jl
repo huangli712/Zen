@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/18
+# Last modified: 2021/11/20
 #
 
 #=
@@ -181,6 +181,9 @@ function cycle1()
         prompt(lr.log, "")
         prompt(lr.log, "< dft_dmft_cycle >")
 
+        # Update configuration parameters
+        refresh(ai)
+
         # Update IterInfo struct
         incr_it(it)
 
@@ -294,7 +297,10 @@ function cycle2()
         prompt(lr.log, "")
         prompt(lr.log, "< dft_dmft_cycle >")
 
-        # Update IterInfo struct, fix it.I₃
+        # Update configuration parameters
+        refresh(ai)
+
+        # Update IterInfo struct, fix it.I₃.
         incr_it(it, 3, iter)
 
         # Inner: Adaptor BLOCK
@@ -310,7 +316,7 @@ function cycle2()
         # Try to solve the quantum impurity problems
         for iter1 = 1:it.M₁
 
-            # Update IterInfo struct, fix it.I₁
+            # Update IterInfo struct, fix it.I₁.
             incr_it(it, 1, iter1)
 
             # C07: Tackle with the double counting term
@@ -347,7 +353,7 @@ function cycle2()
         # Try to generate update for density matrix
         begin
 
-            # Update IterInfo struct, fix it.I₂
+            # Update IterInfo struct, fix it.I₂.
             incr_it(it, 2, 1)
 
             # C15: Perform DMFT calculation with `task` = 2
@@ -365,7 +371,7 @@ function cycle2()
         # Try DFT engine with a fixed charge density update
         for iter2 = 1:it.M₂
 
-            # Update IterInfo struct, fix it.I₂
+            # Update IterInfo struct, fix it.I₂.
             incr_it(it, 2, iter2)
 
             # C17: Reactivate the DFT engine
@@ -377,7 +383,7 @@ function cycle2()
 
         end # END OF ITER2 LOOP
         #
-        # Reset the counter in IterInfo: I₁, I₂
+        # Reset the counter in IterInfo: I₁, I₂.
         zero_it(it)
 
         # C18: Check the convergence for total energy
@@ -622,6 +628,22 @@ end
 #=
 ### *Service Functions* : *Layer 1*
 =#
+
+"""
+    refresh(ai::Array{Impurity,1})
+
+Update the configuration parameters dynamically during the
+DFT + DMFT iterations.
+
+See also: [`renew`](@ref), [`FixImpurity`](@ref).
+"""
+function refresh(ai::Array{Impurity,1})
+    # Renew internal dicts which encapsulate configuration parameters
+    renew()
+
+    # Renew quantum impurity problems
+    FixImpurity(ai)
+end
 
 #=
 *Remarks* :

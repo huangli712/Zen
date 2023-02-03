@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/17
+# Last modified: 2023/02/02
 #
 
 #=
@@ -53,9 +53,9 @@ end
 #
 function solver_call(::NORGSolver, it::IterInfo, imp::Impurity)
     # For NORG quantum impurity solver
-    s_norg_init(it)
+    s_norg_init(it, imp)
     s_norg_exec(it)
-    s_norg_save(it)
+    s_norg_save(it, imp)
 end
 #
 function solver_call(::ATOMSolver, it::IterInfo, imp::Impurity)
@@ -116,7 +116,7 @@ solver_sigma(::NULLSolver, imp::Impurity) = sorry()
 solver_sigma(::CTHYB₁Solver, imp::Impurity) = ctqmc_sigma(imp)
 solver_sigma(::CTHYB₂Solver, imp::Impurity) = ctqmc_sigma(imp)
 solver_sigma(::HIASolver, imp::Impurity) = sorry()
-solver_sigma(::NORGSolver, imp::Impurity) = sorry()
+solver_sigma(::NORGSolver, imp::Impurity) = norg_sigma(imp)
 solver_sigma(::ATOMSolver, imp::Impurity) = sorry()
 
 """
@@ -136,7 +136,7 @@ solver_nimpx(::NULLSolver, imp::Impurity) = sorry()
 solver_nimpx(::CTHYB₁Solver, imp::Impurity) = ctqmc_nimpx(imp)
 solver_nimpx(::CTHYB₂Solver, imp::Impurity) = ctqmc_nimpx(imp)
 solver_nimpx(::HIASolver, imp::Impurity) = sorry()
-solver_nimpx(::NORGSolver, imp::Impurity) = sorry()
+solver_nimpx(::NORGSolver, imp::Impurity) = norg_nimpx(imp)
 solver_nimpx(::ATOMSolver, imp::Impurity) = sorry()
 
 """
@@ -156,7 +156,7 @@ solver_edmft(::NULLSolver) = sorry()
 solver_edmft(::CTHYB₁Solver) = ctqmc_edmft()
 solver_edmft(::CTHYB₂Solver) = ctqmc_edmft()
 solver_edmft(::HIASolver) = sorry()
-solver_edmft(::NORGSolver) = sorry()
+solver_edmft(::NORGSolver) = norg_edmft()
 solver_edmft(::ATOMSolver) = sorry()
 
 #=
@@ -254,7 +254,7 @@ function s_qmc1_exec(it::IterInfo)
     println("  > Add the task to the scheduler's queue")
     println("  > Waiting ...")
 
-    # To ensure that the task is executed
+    # To ensure that the task is being executed
     while true
         sleep(2)
         istaskstarted(t) && break
@@ -277,7 +277,7 @@ function s_qmc1_exec(it::IterInfo)
         lines = readlines("solver.out")
         filter!(x -> contains(x, "iter:"), lines)
 
-        # Figure out the task that is doing
+        # Figure out the number of monte carlo sweeps
         if length(lines) > 0
             arr = line_to_array(lines[end])
             c_sweep = parse(I64, arr[5])
@@ -298,7 +298,7 @@ function s_qmc1_exec(it::IterInfo)
     # Keep the last output
     println()
 
-    # Wait for the dmft task to finish
+    # Wait for the solver task to finish
     wait(t)
 
     # Extract how many monte carlo sampling blocks are executed
@@ -534,15 +534,43 @@ end
 =#
 
 """
-    s_norg_init(it::IterInfo)
+    s_norg_init(it::IterInfo, imp::Impurity)
 
 Check runtime environment of the NORG quantum impurity solver. Prepare
 the necessary input files.
 
+This quantum impurity solver is from the RUC Team.
+
 See also: [`s_norg_exec`](@ref), [`s_norg_save`](@ref).
 """
-function s_norg_init(it::IterInfo)
-    sorry()
+function s_norg_init(it::IterInfo, imp::Impurity)
+    # Print the header
+    println("Engine : NORG")
+    println("Try to solve the quantum impurity problem: [$(imp.index)]")
+    println("Current directory: ", pwd())
+    println("Prepare necessary input files for solver")
+
+    # Generate configuration file for quantum impurity solver
+    norg_setup(imp)
+    println("  > File solver.norg.in is ready")
+
+    # Prepare hybridization functions
+    #
+    # Extract frequency mesh and hybridization function from `dmft.delta`
+    fmesh, Delta = read_delta(imp)
+    #
+    # Write frequency mesh and hybridization function to `solver.hyb.in`
+    norg_delta(fmesh, Delta)
+    println("  > File solver.hyb.in is ready")
+
+    # Prepare local impurity levels
+    #
+    # Extract local impurity levels from `dmft.eimpx`
+    Eimpx = read_eimpx(imp)
+    #
+    # Write local impurity levels to `solver.eimp.in`
+    norg_eimpx(Eimpx)
+    println("  > File solver.eimp.in is ready")
 end
 
 """
@@ -550,21 +578,162 @@ end
 
 Launch the NORG quantum impurity solver.
 
+This quantum impurity solver is from the RUC Team.
+
 See also: [`s_norg_init`](@ref), [`s_norg_save`](@ref).
 """
 function s_norg_exec(it::IterInfo)
-    sorry()
+    # Print the header
+    println("Detect the runtime environment for solver")
+
+    # Determine mpi prefix (whether the solver is executed sequentially)
+    mpi_prefix = inp_toml("../MPI.toml", "solver", false)
+    numproc = parse(I64, line_to_array(mpi_prefix)[3])
+    println("  > Using $numproc processors (MPI)")
+
+    # Get the home directory of quantum impurity solver
+    solver_home = query_solver(_solver_)
+    println("  > Home directory for solver: ", solver_home)
+
+    # Select suitable solver program
+    solver_exe = "$solver_home/norg"
+    @assert isfile(solver_exe)
+    println("  > Executable program is available: ", basename(solver_exe))
+
+    # Assemble command
+    if isnothing(mpi_prefix)
+        solver_cmd = solver_exe
+    else
+        solver_cmd = split("$mpi_prefix $solver_exe", " ")
+    end
+    println("  > Assemble command: $(prod(x -> x * ' ', solver_cmd))")
+
+    # Print the header
+    println("Launch the computational engine (quantum impurity solver)")
+
+    # Create a task, but do not run it immediately
+    t = @task begin
+        run(pipeline(`$solver_cmd`, stdout = "solver.out"))
+    end
+    println("  > Create a task")
+
+    # Launch it, the terminal output is redirected to solver.out.
+    # Note that the task runs asynchronously. It will not block
+    # the execution.
+    schedule(t)
+    println("  > Add the task to the scheduler's queue")
+    println("  > Waiting ...")
+
+    # To ensure that the task is being executed
+    while true
+        sleep(2)
+        istaskstarted(t) && break
+    end
+
+    # Analyze the solver.out file during the calculation
+    #
+    # `c` is a time counter
+    c = 0
+    #
+    # Enter infinite loop
+    while true
+        # Sleep five seconds
+        sleep(5)
+
+        # Increase the counter
+        c = c + 1
+
+        # Parse solver.out file
+        lines = readlines("solver.out")
+        filter!(x -> contains(x, "NORG begin"), lines)
+
+        # Figure out the number of norg runs
+        if length(lines) > 0
+            nrun = length(lines)
+        else # Nothing
+            nrun = 0
+        end
+
+        # Print the log to screen
+        @printf("  > Elapsed %4i seconds, current norg runs: %4i \r", 5*c, nrun)
+
+        # Break the loop
+        istaskdone(t) && break
+    end
+    #
+    # Keep the last output
+    println()
+
+    # Wait for the solver task to finish
+    wait(t)
+
+    # Extract how many norg blocks are executed
+    lines = readlines("solver.out")
+    filter!(x -> contains(x, "NORG begin"), lines)
+    nrun = length(lines)
+    #
+    lines = readlines("solver.out")
+    filter!(x -> contains(x, "iter_norg_cnt"), lines)
+    niter_norg = length(lines)
+    println("  > Finished after $nrun norg runs ($niter_norg iterations)")
+
+    # Extract impurity occupation information
+    println("Report From NORG Quantum Impurity Solver")
+    lines = readlines("solver.out")
+    start = findlast(x -> contains(x, "iter_norg_cnt"), lines) + 1
+    finish = findlast(x -> contains(x, "groundE_pre"), lines) - 1
+    println("  [")
+    foreach(x -> println(x), lines[start:finish])
+    println("  ]")
 end
 
 """
-    s_norg_save(it::IterInfo)
+    s_norg_save(it::IterInfo, imp::Impurity)
 
 Backup output files of the NORG quantum impurity solver.
 
+This quantum impurity solver is from the RUC Team.
+
 See also: [`s_norg_init`](@ref), [`s_norg_exec`](@ref).
 """
-function s_norg_save(it::IterInfo)
-    sorry()
+function s_norg_save(it::IterInfo, imp::Impurity)
+    # Print the header
+    println("Finalize the computational task")
+
+    # Determine which files are important
+    #
+    # Major output
+    fout = ["solver.out"]
+    #
+    # Green's functions
+    fgrn = ["gfimp.txt"]
+    #
+    # Bath Green's functions
+    fhyb = ["g0imp.txt"]
+    #
+    # Self-energy functions
+    fsgm = ["seimp.txt"]
+    #
+    # Auxiliary output files
+    faux = ["hop.txt", "ose.txt", "nmat.txt"]
+
+    # Next, we have to backup the above files.
+    foreach( x ->
+        begin
+            file_src = x
+            file_dst = "$x.$(it.I₃).$(it.I₁)"
+            cp(file_src, file_dst, force = true)
+        end,
+        union(fout, fgrn, fhyb, fsgm, faux)
+    )
+    println("  > Save the key output files")
+
+    # Update the `occup` field in `imp` (Impurity struct)
+    norg_nimpx(imp)
+    println("  > Extract the impurity occupancy from nmat.txt: $(imp.occup)")
+
+    # Update the `it` (IterInfo) struct
+    it.nf[imp.index] = imp.occup
 end
 
 """
@@ -574,10 +743,51 @@ Duplicate output files of the NORG quantum impurity solver. We just copy
 selected output files from impurity.1 to impurity.2. Be careful, now we
 are already in directory `impurity.2`.
 
+This quantum impurity solver is from the RUC Team.
+
 See also: [`s_norg_init`](@ref), [`s_norg_exec`](@ref).
 """
 function s_norg_copy(it::IterInfo, imp₁::Impurity, imp₂::Impurity)
-    sorry()
+    # Print the header
+    println("Transfer results from impurity $(imp₁.index) to $(imp₂.index)")
+
+    # Determine which files are important
+    #
+    # Major output
+    fout = ["solver.out"]
+    #
+    # Green's functions
+    fgrn = ["gfimp.txt"]
+    #
+    # Bath Green's functions
+    fhyb = ["g0imp.txt"]
+    #
+    # Self-energy functions
+    fsgm = ["seimp.txt"]
+    #
+    # Auxiliary output files
+    faux = ["hop.txt", "ose.txt", "nmat.txt"]
+
+    # Determine the index for imp₁
+    index = imp₁.index
+
+    # Next, we have to backup the above files.
+    foreach( x ->
+        begin
+            file_src = "../impurity.$index/$x"
+            file_dst = "$x"
+            cp(file_src, file_dst, force = true)
+        end,
+        union(fout, fgrn, fhyb, fsgm, faux)
+    )
+    println("  > Copy the key output files")
+
+    # Update the `occup` field in `imp` (Impurity struct)
+    norg_nimpx(imp₂)
+    println("  > Extract the impurity occupancy from nmat.txt: $(imp₂.occup)")
+
+    # Update the `it` (IterInfo) struct
+    it.nf[imp₂.index] = imp₂.occup
 end
 
 #=
@@ -609,6 +819,9 @@ function ctqmc_setup(imp::Impurity)
     mune  = 0.0
     beta  = imp.beta
 
+    # Get number of Matsubara frequency points
+    nmesh = get_m("nmesh")    
+
     # Create the configuration file
     open(fctqmc, "w") do fout
         # Print some warning message
@@ -635,6 +848,7 @@ function ctqmc_setup(imp::Impurity)
         println(fout, "# Standard parameters: Others")
         println(fout, "mune  = $mune")
         println(fout, "beta  = $beta")
+        println(fout, "mfreq = $nmesh")
         println(fout)
 
         # Print the user-supplied parameters
@@ -655,6 +869,70 @@ See also: [`Impurity`](@ref), [`ctqmc_setup`](@ref).
 """
 function ctqmc_atomx(imp::Impurity)
     sorry()
+end
+
+"""
+    norg_setup(imp::Impurity)
+
+Generate default configuration file (`solver.norg.in`) for the NORG
+quantum impurity solvers automatically (according to the information
+encoded in the `Impurity` struct).
+
+See also: [`Impurity`](@ref), [`ctqmc_atomx`](@ref).
+"""
+function norg_setup(imp::Impurity)
+    # Filename of configuration file
+    fnorg = "solver.norg.in"
+
+    # Extract parameters from `Impurity` struct
+    #
+    # mune is fixed to zero, because the chemical potential is adsorbed
+    # in the local impurity level.
+    nband = imp.nband
+    norbs = 2 * nband
+    Uc    = imp.upara
+    Jz    = imp.jpara
+    mune  = 0.0
+    beta  = imp.beta
+
+    # Get number of Matsubara frequency points
+    nmesh = get_m("nmesh")
+
+    # Create the configuration file
+    open(fnorg, "w") do fout
+        # Print some warning message
+        println(fout, "# Generated by $__LIBNAME__ at ", Dates.format(now(), "yyyy-mm-dd / HH:MM:SS"))
+        println(fout, "# PLEASE DO NOT MODIFY IT MANUALLY!")
+        println(fout)
+
+        # Print the standard parameters
+        println(fout, "# Standard parameters: Running mode")
+        println(fout, "mode = norm")
+        println(fout)
+        #
+        println(fout, "# Standard parameters: System's size")
+        println(fout, "nband = $nband")
+        println(fout, "norbs = $norbs")
+        println(fout)
+        #
+        println(fout, "# Standard parameters: Interaction")
+        println(fout, "Uc    = $Uc")
+        println(fout, "Jz    = $Jz")
+        println(fout)
+        #
+        println(fout, "# Standard parameters: Others")
+        println(fout, "mune  = $mune")
+        println(fout, "beta  = $beta")
+        println(fout, "nmesh = $nmesh")
+        println(fout)
+
+        # Print the user-supplied parameters
+        #
+        # The correctness of these auxiliary parameters should be checked
+        # in `config.jl/chk_dict()`.
+        println(fout, "# Auxiliary parameters: By users")
+        foreach(x -> println(fout, x), get_s("params"))
+    end # END OF IOSTREAM
 end
 
 #=
@@ -710,6 +988,16 @@ function ctqmc_delta(fmesh::Array{F64,1}, Delta::Array{C64,4})
 end
 
 """
+    norg_delta(fmesh::Array{F64,1}, Delta::Array{C64,4})
+
+Write the hybridization functions to the `solver.hyb.in` file, which is
+suitable for the NORG quantum impurity solver.
+
+See also: [`norg_eimpx`](@ref).
+"""
+norg_delta(fmesh::Array{F64,1}, Delta::Array{C64,4}) = ctqmc_delta(fmesh, Delta)
+
+"""
     ctqmc_eimpx(Eimpx::Array{C64,3})
 
 Write the local impurity levels to the `solver.eimp.in` file, which is
@@ -749,6 +1037,16 @@ function ctqmc_eimpx(Eimpx::Array{C64,3})
         end
     end # END OF IOSTREAM
 end
+
+"""
+    norg_eimpx(Eimpx::Array{C64,3})
+
+Write the local impurity levels to the `solver.eimp.in` file, which is
+suitable for the NORG quantum impurity solver.
+
+See also: [`norg_delta`](@ref).
+"""
+norg_eimpx(Eimpx::Array{C64,3}) = ctqmc_eimpx(Eimpx)
 
 #=
 ### *Service Functions* : *Files I/O Operations*
@@ -822,6 +1120,93 @@ function ctqmc_sigma(imp::Impurity)
 end
 
 """
+    norg_sigma(imp::Impurity)
+
+Parse the `seimp.txt` file, which is generated by the NORG quantum
+impurity solver, to extract the bare self-energy functions.
+
+In the `sigma_gather()` function, these data will be combined to generate
+the `sigma.bare` file, which is essential for the DMFT engine.
+
+See also: [`GetSigma`](@ref), [`solver_sigma`](@ref).
+"""
+function norg_sigma(imp::Impurity)
+    # File name for self-energy functions
+    fsgm = "seimp.txt"
+
+    # To make sure the data file is present
+    @assert isfile(fsgm)
+
+    # Extract parameters from Impurity struct
+    nband = imp.nband
+
+    # Determine number of spin orientations
+    lines = readlines(fsgm)
+    filter!(x -> contains(x, "Re11"), lines)
+    nspin = length(lines)
+
+    # We don't know how many frequency points are used a priori.
+    # Here, we used a trick to determine `nmesh`.
+    nline = countlines(fsgm)
+    if nspin == 1
+        nmesh = nline - 3
+    else
+        nmesh = convert(I64, nline / 2 - 3)
+    end
+
+    # Create an array for frequency mesh
+    fmesh = zeros(F64, nmesh)
+
+    # Create an array for self-energy functions
+    Σ = zeros(C64, nband, nband, nmesh, nspin)
+
+    # Parse the data file for the self-energy functions
+    open(fsgm, "r") do fin
+
+        # Go through each spin orientation
+        for s = 1:nspin
+            # Skip one line
+            readline(fin)
+
+            # Go through each frequency point
+            for m = 1:nmesh
+                # Split the line
+                arr = line_to_array(fin)
+                val = parse.(F64, arr)
+
+                # Extract frequency
+                fmesh[m] = val[1]
+
+                # Extract self-energy functions
+                # Starting positions for real and imaginary parts
+                rshift = 1
+                ishift = convert(I64, nband * nband + 2)
+                #
+                # Go through each band
+                for p = 1:nband
+                    # Go through each band
+                    for q = 1:nband
+                        rshift = rshift + 1
+                        ishift = ishift + 1
+                        _re = val[rshift]
+                        _im = val[ishift]
+                        Σ[p,q,m,s] = _re + _im * im
+                    end # END OF Q LOOP
+                end # END OF P LOOP
+            end # END OF M LOOP
+
+            # Skip two lines
+            readline(fin)
+            readline(fin)
+        end # END OF S LOOP
+
+    end # END OF IOSTREAM
+
+    # Return the desired arrays
+    return fmesh, Σ
+end
+
+"""
     ctqmc_nimpx(imp::Impurity)
 
 Parse the `solver.nmat.dat` file, which is generated by the CTHYB
@@ -862,6 +1247,46 @@ function ctqmc_nimpx(imp::Impurity)
 end
 
 """
+    norg_nimpx(imp::Impurity)
+
+Parse the `nmat.txt` file, which is generated by the NORG
+quantum impurity solver, to extract the impurity occupancy. Then the
+fields `nup`, `ndown`, and `occup` in Impurity struct will be updated.
+
+See also: [`GetNimpx`](@ref), [`solver_nimpx`](@ref).
+"""
+function norg_nimpx(imp::Impurity)
+    # File name for impurity occupancy
+    fnmat = "nmat.txt"
+
+    # To make sure the data file is present
+    if !isfile(fnmat)
+        return
+    end
+
+    # Open the nmat.txt file for reading
+    fin = open(fnmat, "r")
+
+    # Parse the data file to extract total impurity occupancy
+    readuntil(fin, "sup")
+    nup   = parse(F64, line_to_array(fin)[1])
+    #
+    readuntil(fin, "sdn")
+    ndown = parse(F64, line_to_array(fin)[1])
+    #
+    readuntil(fin, "sum")
+    occup = parse(F64, line_to_array(fin)[1])
+
+    # Close the nmat.txt file
+    close(fin)
+
+    # Update the Impurity struct
+    imp.nup = nup
+    imp.ndown = ndown
+    imp.occup = occup
+end
+
+"""
     ctqmc_edmft()
 
 Parse the `solver.paux.dat` file, which is generated by the CTHYB quantum
@@ -883,6 +1308,33 @@ function ctqmc_edmft()
     filter!(x -> contains(x, "epot:"), lines)
     @assert length(lines) == 1
     epot = parse(F64, line_to_array(lines[1])[2])
+
+    # Return the desired value
+    return epot
+end
+
+"""
+    norg_edmft()
+
+Parse the `solver.out` file, which is generated by the NORG quantum
+impurity solver, to extract the interaction energy.
+
+See also: [`GetEdmft`](@ref), [`solver_edmft`](@ref).
+"""
+function norg_edmft()
+    # File name for DMFT energy
+    fene = "solver.out"
+
+    # To make sure the data file is present
+    if !isfile(fene)
+        return 0.0
+    end
+
+    # Parse the data file to extract potential energy
+    lines = readlines(fene)
+    filter!(x -> contains(x, "norg ground state"), lines)
+    @assert length(lines) == 1
+    epot = parse(F64, line_to_array(lines[1])[5])
 
     # Return the desired value
     return epot
@@ -1075,6 +1527,28 @@ function GetImpurity()
 
     # Return the desired array
     return AI
+end
+
+"""
+    FixImpurity(ai::Array{Impurity,1})
+
+Update the quantum impurity problems encapsulated in `ai` according
+to the configuration parameters.
+
+See also: [`Impurity`](@ref).
+"""
+function FixImpurity(ai::Array{Impurity,1})
+    # Sanity check
+    @assert length(ai) == get_i("nsite")
+
+    # Go through each quantum impurity problem
+    for i = 1:get_i("nsite")
+        ai[i].ising = get_i("ising")[i]
+        ai[i].occup = get_i("occup")[i]
+        ai[i].upara = get_i("upara")[i]
+        ai[i].jpara = get_i("jpara")[i]
+        ai[i].lpara = get_i("lpara")[i]
+    end # END OF I LOOP
 end
 
 """

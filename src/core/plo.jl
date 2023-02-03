@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/16
+# Last modified: 2023/01/23
 #
 
 #=
@@ -12,7 +12,7 @@
 =#
 
 """
-    adaptor_call(::WANNIERAdaptor,
+    adaptor_call(::PLOAdaptor,
                  D::Dict{Symbol,Any},
                  ai::Array{Impurity,1})
 

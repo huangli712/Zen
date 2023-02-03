@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/11/16
+# Last modified: 2023/01/23
 #
 
 """
@@ -28,17 +28,18 @@ Zen supports the following schemes for defining local orbitals:
 Zen supports the following quantum impurity solvers:
 
 * `CTHYB`
-* `HIA`
-* `NORG`
+* `HIA` (Unavailable)
+* `NORG` (Experimental)
 
 Zen consists of several components, including:
 
 * `ZenCore` (Core library)
 * `ZenApps` (Major applications)
 * `ZenTools` (Auxiliary tools and plugins)
-* `Dyson` (A dynamical mean-field theory engine)
+* `Dyson` (A density functional theory + dynamical mean-field theory engine)
 * `iQIST` (An interacting quantum impurity solver toolkit)
-* `Flink` (A reusable fortran library)
+* `Flink` (A reusable fortran numerical library)
+* `ACFlow` (A modern toolkit for analytical continuation problems)
 
 `ZenCore` implements the core library of the Zen DFT + DMFT computation
 framework. It connects various components of Zen, and drive them to work
@@ -142,6 +143,7 @@ parameters or represent some essential data structures.
 
 ```text
 DType           -> Customized type.
+ADT             -> Customized type.
 PCASE           -> Dict for case.
 PDFT            -> Dict for DFT engine.
 PDMFT           -> Dict for DMFT engine.
@@ -150,9 +152,9 @@ PSOLVER         -> Dict for quantum impurity solvers.
 #
 AbstractEngine  -> Abstract DFT engine.
 NULLEngine      -> Null DFT engine.
-VASPEngine      -> vasp.
-QEEngine        -> quantum espresso.
-WANNIEREngine   -> wannier90.
+VASPEngine      -> Vasp code.
+QEEngine        -> Quantum espresso code.
+WANNIEREngine   -> Wannier90 code.
 _engine_        -> The present DFT engine.
 #
 AbstractSolver  -> Abstract quantum impurity solver.
@@ -161,7 +163,7 @@ CTHYB₁Solver    -> CT-HYB₁ quantum impurity solver.
 CTHYB₂Solver    -> CT-HYB₂ quantum impurity solver.
 HIASolver       -> HIA quantum impurity solver.
 NORGSolver      -> NORG quantum impurity solver.
-ATOMSolver      -> atomic eigenvalue problem solver.
+ATOMSolver      -> Atomic eigenvalue problem solver.
 _solver_        -> The present quantum impurity solver.
 #
 AbstractAdaptor -> Abstract DFT-DMFT adaptor.
@@ -202,6 +204,7 @@ PrWindow        -> Struct for band window.
 include("types.jl")
 #
 export DType
+export ADT
 export PCASE
 export PDFT
 export PDMFT
@@ -388,7 +391,9 @@ They are stored in external files (case.toml) or dictionaries.
 
 ```text
 setup    -> Setup parameters.
+renew    -> Renew some parameters dynamically.
 inp_toml -> Parse case.toml, return raw configuration information.
+fil_dict -> Fill dicts for configuration parameters.
 rev_dict -> Update dicts for configuration parameters.
 chk_dict -> Check dicts for configuration parameters.
 exhibit  -> Display parameters for reference.
@@ -415,7 +420,9 @@ str_s    -> Extract value from dict (PSOLVER dict), return string.
 include("config.jl")
 #
 export setup
+export renew
 export inp_toml
+export fil_dict
 export rev_dict
 export chk_dict
 export exhibit
@@ -463,6 +470,7 @@ try_solver   -> Execute quantum impurity solvers only (for testing purpose).
 try_adaptor  -> Execute Kohn-Sham adaptor only (for testing purpose).
 try_sigma    -> Execute self-energy engine only (for testing purpose).
 try_mixer    -> Execute mixer engine only (for testing purpose).
+refresh      -> Refresh some special configuration parameters.
 monitor      -> Monitor the DFT + DMFT calculations.
 suspend      -> Suspend the DFT engine.
 suicide      -> Kill the DFT engine.
@@ -498,6 +506,7 @@ export try_solver
 export try_adaptor
 export try_sigma
 export try_mixer
+export refresh
 export monitor
 export suspend
 export suicide
@@ -631,7 +640,7 @@ qeq_files           -> Check essential output files.
 #
 qeio_energy         -> Read DFT total energy.
 qeio_lattice        -> Read lattice information.
-qeio_kmesh          -> Read kmesh.
+qeio_kmesh          -> Read 𝑘-mesh.
 qeio_eigen          -> Read eigenvalues (general).
 qeio_band           -> Read eigenvalues (band structures).
 qeio_fermi          -> Read fermi level.
@@ -723,14 +732,14 @@ try_blk2     -> Orthogonalize / normalize the projectors with each other.
 try_diag     -> Orthogonalizes a projector defined by a rectangular matrix.
 calc_ovlp    -> Calculate overlap matrix.
 calc_dm      -> Calculate density matrix.
-calc_level   -> Calculate effective atomic level.
+calc_level   -> Calculate effective band level.
 calc_hamk    -> Calculate local hamiltonian or full hamiltonian.
 calc_dos     -> Calculate density of states.
-view_ovlp    -> Show overlap matrix for debug.
-view_dm      -> Show density matrix for debug.
-view_level   -> Show effective atomic level for debug.
-view_hamk    -> Show local hamiltonian for debug.
-view_dos     -> Show density of states for debug.
+view_ovlp    -> Output overlap matrix for debug.
+view_dm      -> Output density matrix for debug.
+view_level   -> Output effective band level for debug.
+view_hamk    -> Output local hamiltonian for debug.
+view_dos     -> Output density of states for debug.
 ```
 =#
 
@@ -974,6 +983,7 @@ GetNimpx     -> Return the impurity occupancy.
 GetEdmft     -> Return the interaction energy (potential energy).
 GetSymmetry  -> Analyze orbital degeneracy via local impurity levels.
 GetImpurity  -> Build Impurity struct according to configuration file.
+FixImpurity  -> Renew Impurity struct according to configuration file.
 CatImpurity  -> Display Impurity struct that need to be solved.
 ```
 =#
@@ -1014,6 +1024,7 @@ export GetNimpx
 export GetEdmft
 export GetSymmetry
 export GetImpurity
+export FixImpurity
 export CatImpurity
 
 #=
@@ -1086,7 +1097,7 @@ mixer_delta -> Mix hybridization functions.
 mixer_eimpx -> Mix local impurity levels.
 mixer_gcorr -> Mix correction of density matrix Γ.
 amix        -> Return the mixing parameter.
-distance    -> Calculate the difference / distance between two arrays.
+distance    -> Calculate difference / distance between two given arrays.
 ```
 =#
 

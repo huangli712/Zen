@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2021/10/16
+# Last modified: 2023/01/27
 #
 
 #=
@@ -16,7 +16,7 @@
 
 Read parameters from configuration file, and then setup the related dicts.
 
-See also: [`inp_toml`](@ref), [`rev_dict`](@ref), [`chk_dict`](@ref).
+See also: [`inp_toml`](@ref), [`fil_dict`](@ref), [`chk_dict`](@ref).
 """
 function setup()
     # Print the header
@@ -26,9 +26,9 @@ function setup()
     println("Parse the configuration file (case.toml)")
     cfg = inp_toml(query_args(), true)
 
-    # S2: Revise the configuration dictionaries
+    # S2: Fill the configuration dictionaries
     println("Encapsulate the parameters into dictionaries")
-    rev_dict(cfg)
+    fil_dict(cfg)
 
     # S3: Validate the configuration parameters
     println("Validate the dictionaries (configuration parameters)")
@@ -40,6 +40,29 @@ function setup()
 
     # Print the footer
     println()
+    flush(stdout)
+end
+
+"""
+    renew()
+
+Read parameters from configuration file, and then renew the related dicts.
+Noted that only parts of the parameters in the dicts are updated.
+
+See also: [`inp_toml`](@ref), [`rev_dict`](@ref), [`chk_dict`](@ref).
+"""
+function renew()
+    # R1: Parse the case.toml file to extract configuration parameters
+    cfg = inp_toml(query_args(), true)
+
+    # R2: Renew the configuration dictionaries
+    rev_dict(cfg)
+
+    # R3: Validate the configuration parameters    
+    chk_dict()
+
+    # Print the footer
+    println("\n[ Refresh configuration parameters ]\n")
     flush(stdout)
 end
 
@@ -94,14 +117,14 @@ function inp_toml(f::String, necessary::Bool)
 end
 
 """
-    rev_dict(cfg::Dict{String,Any})
+    fil_dict(cfg::Dict{String,Any})
 
 Transfer configurations from dict `cfg` to internal dicts (including
 `PCASE`, `PDFT`, `PDMFT`, `PIMP`, and `PSOLVER`).
 
 See also: [`chk_dict`](@ref).
 """
-function rev_dict(cfg::Dict{String,Any})
+function fil_dict(cfg::Dict{String,Any})
     # For case block
     #
     # Pay attention to that the case block only includes one child element
@@ -148,6 +171,47 @@ function rev_dict(cfg::Dict{String,Any})
     end
 end
 
+"""
+    rev_dict(cfg::Dict{String,Any})
+
+Transfer configurations from dict `cfg` to internal dicts (including
+`PDMFT`, `PIMP`, and `PSOLVER`). This function is used to update some
+special configuration parameters dynamically.
+
+See also: [`chk_dict`](@ref).
+"""
+function rev_dict(cfg::Dict{String,Any})
+    # For dmft block
+    dmft = cfg["dmft"]
+    for key in ["dcount", "mixer", "mc", "cc", "ec", "sc", "lfermi"]
+        if haskey(dmft, key) && haskey(PDMFT, key)
+            if PDMFT[key][1] != dmft[key]
+                PDMFT[key][1] = dmft[key]
+            end
+        end
+    end
+
+    # For impurity block
+    impurity = cfg["impurity"]
+    for key in ["ising", "occup", "upara", "jpara", "lpara"]
+        if haskey(impurity, key) && haskey(PIMP, key)
+            if PIMP[key][1] != impurity[key]
+                PIMP[key][1] = impurity[key]
+            end
+        end
+    end
+
+    # For solver block
+    solver = cfg["solver"]
+    for key in ["params"]
+        if haskey(solver, key) && haskey(PSOLVER, key)
+            if PSOLVER[key][1] != solver[key]
+                PSOLVER[key][1] = solver[key]
+            end
+        end
+    end
+end
+
 #=
 *Remarks* :
 
@@ -160,7 +224,7 @@ to insert more constraints here, both physically and numerically.
 
 Validate the correctness and consistency of configurations.
 
-See also: [`rev_dict`](@ref), [`_v`](@ref).
+See also: [`fil_dict`](@ref), [`_v`](@ref).
 """
 function chk_dict()
     # C1. Check types and existences
@@ -219,7 +283,7 @@ function chk_dict()
     if get_s("engine") in ("ct_hyb1", "ct_hyb2", "hia")
         @assert get_m("axis") == 1 # Imaginary axis
     elseif get_s("engine") in ("norg",)
-        @assert get_m("axis") == 2 # Real axis
+        @assert get_m("axis") == 1 # Imaginary axis as well
     end
     #
     # Please add more assertion statements here
