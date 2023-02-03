@@ -4,10 +4,11 @@ Zen is a modern DFT + DMFT (namely, density functional theory plus dynamical mea
 
 * **ZenApps** (v0.9.1-devel.210622)
 * **ZenTools** (v0.0.6-devel.211116)
-* **ZenCore** (0.7.52-devel.211116)
+* **ZenCore** (0.8.3-devel.230202)
 * **Dyson** (v0.7.4-devel.210922)
 * **iQIST** (v0.8.1-devel.210509)
 * **Flink** (v1.0.5-devel.210802)
+* **ACFlow** (v1.3.6-devel.230129)
 
 Now this package is currently under developement. **IT DOESN'T WORK NOW!**
 
