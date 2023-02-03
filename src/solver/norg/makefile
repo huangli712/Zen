@@ -1,5 +1,5 @@
 PRES_DIR = .
-WORK_DIR = ./console
+WORK_DIR = ./bi
 DIRG = ${PRES_DIR}/general
 DIRR = ${PRES_DIR}/randomc
 DIRS = ${PRES_DIR}/special
