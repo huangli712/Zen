@@ -32,8 +32,10 @@ public:
     VecCmplx Re_z;		
 
 	//ImGreen		
-	Real unit_omg;					// unit imaginary frequency, omg_n = (2 n + 1) unit_omg, 0.01 or 0.02 suggested
+	Real beta;						// unit_omg = PI/beta;
+	Real unit_omg;					// unit imaginary frequency, omg_n = (2 n + 1) unit_omg, 0.01 or 0.02 suggested for zero temperature
 	Real max_omg;					// imaginary frequency cutoff, 4 * (half bandwidth) suggested
+	Real nmesh;						// imaginary frequency number form Zen.
 	Int num_omg;					// number of positive imaginary frequencies
     VecCmplx Im_z;		
 
@@ -74,7 +76,6 @@ public:
 private:
 	void set_inert_values();
 	void set_values();
-	void derive();
 	void print(std::ostream &os, const Str &var, const Str &val, const Str &comment) const {
 		using namespace std;
 		Str true_var = var == "\"\"" ? "" : var;
@@ -82,6 +83,7 @@ private:
 			<< "    # " + comment << endl;
 	}
 public:
+	void derive();
 	Prmtr(const MyMpi& mm);
 	void after_modify_prmtr() const;
 	void print(std::ostream &os = std::cout) const;

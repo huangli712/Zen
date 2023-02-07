@@ -318,7 +318,7 @@ Real ImGreen::error(const ImGreen& b, Real omg_rsd) const
 Real ImGreen::sum(const VecCmplx& gf) const
 {
 	Real electron_density = real(SUM(gf));
-	/* 
+	
     VecReal w = imag(z_omg.truncate(nomgs - 4, nomgs));
     VecReal g = real(gf.truncate(nomgs - 4, nomgs));
     if (ABS(real(gf[0])) < 1.E-5) 	return 0.;					//if gf is 0, insensitive with omg, return 0
@@ -356,7 +356,7 @@ Real ImGreen::sum(const VecCmplx& gf) const
         electron_density -= b2 / (SQR(omg(n)) + a2);
     }
 	// WRN(NAV6(a1,a2,b1,b2,w,g))	
- */
+
     const Real temp = unit_omg / pi_Real;
 	return 2 * temp * electron_density;
 }

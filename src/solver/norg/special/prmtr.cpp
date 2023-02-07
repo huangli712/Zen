@@ -29,8 +29,10 @@ void Prmtr::set_inert_values()
     freq_upp = 5.;                      
     freq_low = -5.;
 
+    beta = pi_Real*100;
+    unit_omg = pi_Real/beta;
+    nmesh = 8193;
     // unit_omg = 0.01;
-    unit_omg = 0.07853982;
 }
 
 void Prmtr::set_values() {
