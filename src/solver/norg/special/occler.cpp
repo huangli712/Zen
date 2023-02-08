@@ -31,7 +31,14 @@ NORG Occler::find_ground_state_partical(const MatReal& h0_i){
         NORG a_p(mm, p, np_p);
         a_p.up_date_h0_to_solve(h0_i);          np_energy_p = a_p.groune_lst;
         p.templet_control[1]--;     p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr();
-        if (if_ground_state() == 0) return a;
+        Int check = if_ground_state();
+        if (check == 0) return a;
+        if (check == 1 && counter == 6) return a_p;
+        if (check == 2 && counter == 6) return a_m;
+        if (check == 3) {
+            if(mm) WRN("the occler is not converged.");
+            return a;
+        }
         // switch (if_ground_state())
         // {
         // case 0:
@@ -50,6 +57,7 @@ NORG Occler::find_ground_state_partical(const MatReal& h0_i){
         //     break;
         // }
     }
+    ERR("There some thing wrong in Occler.cpp!")
 }
 
 

@@ -86,6 +86,7 @@ public:
 	void derive();
 	Prmtr(const MyMpi& mm);
 	void after_modify_prmtr() const;
+	void recalc_partical_number() const;
 	void print(std::ostream &os = std::cout) const;
 	void change_the_norg_restrain_and_div(VecInt new_restrain, VecInt new_control) const;
 

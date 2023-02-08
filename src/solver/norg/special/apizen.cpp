@@ -10,7 +10,7 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 {
 	read_ZEN(file);	p.hubbU = Uc; p.mu = mu; p.jz = Jz;
 	p.templet_restrain = restrain; p.templet_control = distribute;
-	p.after_modify_prmtr();
+	p.after_modify_prmtr();p.recalc_partical_number();
 	if(mm) p.print();
 	ImGreen hb(nband, p);
 	for_Int(j, 0, hb.nomgs) for_Int(i, 0, nband)  hb.g[j][i][i] = - imfrq_hybrid_function[i][j];
@@ -33,10 +33,10 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 		imp.update();
 		// if(mm) WRN(NAV(imp.h0))
 		ImGreen g0(p.norbit, p);	imp.find_all_g0(g0);		// if(mm)WRN(NAV(g0.particle_number().diagonal()));
-		NORG norg(mm, p);
-		norg.up_date_h0_to_solve(imp.h0);
-		// Occler opcler(mm,p);
-		// NORG norg(opcler.find_ground_state_partical(imp.h0));
+		// NORG norg(mm, p);
+		// norg.up_date_h0_to_solve(imp.h0);
+		Occler opcler(mm,p);
+		NORG norg(opcler.find_ground_state_partical(imp.h0));
 		if (mm)	{
 			norg.write_occupation_info();
 			std::cout << "norg ground state energy: " << norg.groune_lst  << "  " << present() << std::endl;

@@ -59,8 +59,8 @@ void Prmtr::set_values() {
     // nooc_mode = STR("cpnooc");
     nooc_mode = STR("cnooc");
     after_modify_prmtr();
-    npartical.reset(norg_sets, 0);
-    for_Int(i, 0, norg_sets) npartical[i] = SUM(control_divs[i + 1])/2 - 1;
+    // npartical.reset(norg_sets, 0);
+    // for_Int(i, 0, norg_sets) npartical[i] = SUM(control_divs[i + 1])/2 - 1;
     // stage2_restrain = {0, -0, -3,  0,  3,  0};
     // stage2_control =  {8, 20,  8,  8,  8, 20};
 }
@@ -78,6 +78,14 @@ void Prmtr::after_modify_prmtr() const
     // npartical.reset(norg_sets, 0);
     // for_Int(i, 0, norg_sets) npartical[i] = SUM(control_divs[i + 1])/2;
     uprime = hubbU - 2 * jz;
+}
+
+// according the control_divs set the number of partical.
+void Prmtr::recalc_partical_number() const
+{
+    npartical.reset(norg_sets, 0);
+    for_Int(i, 0, norg_sets) npartical[i] = SUM(control_divs[i + 1].truncate(1, Int(ndiv / 2))) + \
+    (control_divs[i + 1][0] + control_divs[i + 1][ndiv / 2]) / 2;
 }
 
 void Prmtr::change_the_norg_restrain_and_div(VecInt new_restrain, VecInt new_control) const {
