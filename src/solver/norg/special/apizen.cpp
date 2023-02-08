@@ -13,6 +13,12 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	p.after_modify_prmtr();p.recalc_partical_number();
 	if(mm) p.print();
 	ImGreen hb(nband, p);
+	{// add the symmetry
+		VecCmplx temp_hyb(imfrq_hybrid_function.ncols());
+		for_Int(i, 0, hb.nomgs) temp_hyb[i] = SUM(imfrq_hybrid_function.tr()[i])/Real(nband);
+		for_Int(j, 0, hb.nomgs) for_Int(i, 0, nband) imfrq_hybrid_function[i][j] = temp_hyb[j];
+		p.eimp = AVG(p.eimp);
+	}
 	for_Int(j, 0, hb.nomgs) for_Int(i, 0, nband)  hb.g[j][i][i] = - imfrq_hybrid_function[i][j];
 	hb.write_zen("hb_zen", "Read");
 	Bath bth(mm, p);
