@@ -158,9 +158,9 @@ MatReal Bath::find_hop() const
 void Bath::write_ose_hop(Int iter_cnt) const {
 	using namespace std;
 	// OFS ofs_app_ose(p.ofx + ".ose.txt", std::ios::app);
-	OFS ofs_app_ose("ose.txt", std::ios::app);
+	OFS ofs_app_ose;ofs_app_ose.open("ose.txt");
 	// OFS ofs_app_hop(p.ofx + ".hop.txt", std::ios::app);
-	OFS ofs_app_hop("hop.txt", std::ios::app);
+	OFS ofs_app_hop;ofs_app_hop.open("hop.txt");
 	for_Int(band_i, 0, p.nband)	{
 		ofs_app_ose << iofmt("sci");
 		ofs_app_ose << setw(4) << iter_cnt << setw(4) << band_i;
