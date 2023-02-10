@@ -7,8 +7,8 @@ coded by Jia-Ming Wang (jmw@ruc.edu.cn, RUC, China) date 2022
 #define i2b p.nI2B
 #define nob p.norbit
 // the NocSpace, is start frome the shortcutspace.
-NocSpace::NocSpace(const Prmtr& prmtr_i, const Int& NumberSpa) :
-	p(prmtr_i), ndivs(prmtr_i.ndiv), nspa(NumberSpa), sit_mat(p.norg_sets, prmtr_i.ndiv, 0),
+NocSpace::NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const Int& NumberSpa) :
+	mm(mm_i), p(prmtr_i), ndivs(prmtr_i.ndiv), nspa(NumberSpa), sit_mat(p.norg_sets, prmtr_i.ndiv, 0),
 	hopint(nob, nob, 0.), coefficient((p.norbit * p.norbit) + 5, 0.),
 	control_divs(p.norg_sets + 1, prmtr_i.ndiv, 0), shortcut_countvec(prmtr_i.ndiv, 0), dim(0)
 {
@@ -17,8 +17,8 @@ NocSpace::NocSpace(const Prmtr& prmtr_i, const Int& NumberSpa) :
 	//WRN("Finish finding the subspace and the Dim is:" + NAV(dim));
 }
 
-NocSpace::NocSpace(const Prmtr& prmtr_i, const MatReal& imp_i_h0, const Int& NumberSpa) :
- 	p(prmtr_i), ndivs(prmtr_i.ndiv), nspa(NumberSpa), sit_mat(p.norg_sets, prmtr_i.ndiv, 0),
+NocSpace::NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const MatReal& imp_i_h0, const Int& NumberSpa) :
+ 	mm(mm_i), p(prmtr_i), ndivs(prmtr_i.ndiv), nspa(NumberSpa), sit_mat(p.norg_sets, prmtr_i.ndiv, 0),
  	hopint(imp_i_h0), coefficient((p.norbit * p.norbit) + 5, 0.),
  	control_divs(p.norg_sets + 1, prmtr_i.ndiv, 0), shortcut_countvec(prmtr_i.ndiv, 0), dim(0)
 {
@@ -27,8 +27,8 @@ NocSpace::NocSpace(const Prmtr& prmtr_i, const MatReal& imp_i_h0, const Int& Num
 }
 
 // nppso mean: number of partical per spin orbital.
-NocSpace::NocSpace(const Prmtr& prmtr_i, const MatReal& imp_i_h0, const VecInt& nppso_i) :
-	p(prmtr_i), ndivs(prmtr_i.ndiv), nspa(SUM(nppso_i)), sit_mat(p.norg_sets, prmtr_i.ndiv, 0),
+NocSpace::NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const MatReal& imp_i_h0, const VecInt& nppso_i) :
+	mm(mm_i), p(prmtr_i), ndivs(prmtr_i.ndiv), nspa(SUM(nppso_i)), sit_mat(p.norg_sets, prmtr_i.ndiv, 0),
 	hopint(imp_i_h0), coefficient((p.norbit * p.norbit) + 5, 0.), nppso(nppso_i),
 	control_divs(p.norg_sets + 1, prmtr_i.ndiv, 0), shortcut_countvec(prmtr_i.ndiv, 0), dim(0)
 {
@@ -127,8 +127,11 @@ void NocSpace::find_all_noc_subspaces()
 	VEC<VEC<Int> > s;
 
 	find_all_possible_state(a, s);
-	for (const auto &x : s)
-	{
+	// if(mm) WRN(NAV2(s.size(), present()));
+	VecInt judger_out(multi_judger(s, a));
+	// for (const auto &x : out)
+	for_Int(i, 0, s.size()) if(judger_out[i]) {
+		VEC<Int>& x = s[i];
 		VecInt spilss_div_v(read_from_col_lable(x,a));
 		MatInt spilss_div_tr(spilss_div_v.mat(control_divs.ncols(), control_divs.nrows() - 1));
 		MatInt spilss_div(spilss_div_tr.tr());
@@ -141,6 +144,23 @@ void NocSpace::find_all_noc_subspaces()
 			idx_div.push_back(dim);
 		}
 	}
+}
+
+VecInt NocSpace::multi_judger(const VEC<VEC<int> >& s, const VEC<VEC<int> >& a) const{
+	VecPartition div_dim(mm.np(), mm.id(), s.size());
+	// MatInt div_dim()
+	VecInt splited_out(div_dim.len(), 0);
+	// VecInt temp_splited_out()
+	for_Int(i, div_dim.bgn(), div_dim.end()){
+		VEC<Int> x(s[i]);
+		VecInt spilss_div_v(read_from_col_lable(x,a));
+		MatInt spilss_div_tr(spilss_div_v.mat(control_divs.ncols(), control_divs.nrows() - 1));
+		MatInt spilss_div(spilss_div_tr.tr());
+		if (ifin_NocSpace(spilss_div, nppso)) splited_out[i-div_dim.bgn()] = 1;
+	}
+	VecInt out(s.size());
+	out = mm.Allgatherv(splited_out, div_dim);
+	return out;
 }
 
 VecInt NocSpace::read_from_col_lable(const VEC<Int> x, const VEC<VEC<Int> > a) const{
@@ -186,7 +206,7 @@ void NocSpace::find_all_possible_state(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) con
 		//  WRN(NAV2( col,a.size()));
 	}
 
-	s = cart_product(a_lable);
+	s = cart_product_monitor(a_lable, a);
 }
 
 bool NocSpace::ifin_NocSpace(MatInt& spilss_div) const
@@ -349,6 +369,30 @@ VEC<VEC<Int> > NocSpace::cart_product (const VEC<VEC<Int> >& v)const
             }
         }
         s = move(r);
+    }
+    return s;
+}
+
+VEC<VEC<Int> > NocSpace::cart_product_monitor (const VEC<VEC<Int> >& v, const VEC<VEC<Int> >& a)const
+{
+    VEC<VEC<Int> > s = {{}};
+    for (const auto& u : v) {
+		VEC<VEC<Int> > r;
+		for (const auto& x : s) {
+			// Int sum(0);
+			// for (const auto x_i : x) sum += SUM(VecInt(a[x_i]));
+			// if (sum <= nspa) {
+			VecInt sum(ndivs,0); bool judge(true);
+			for (const auto x_i : x) sum += VecInt(a[x_i]);
+			for_Int(i, 0, ndivs)	if(sum[i] > nppso[i]) judge = false;
+			if (judge) {
+				for (const auto y : u) {
+					r.push_back(x);
+					r.back().push_back(y);
+				}
+			}
+		}
+		s = move(r);
     }
     return s;
 }

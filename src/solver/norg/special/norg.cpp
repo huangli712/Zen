@@ -9,7 +9,7 @@ NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i) :
 	mm(mm_i), p(prmtr_i), impgreen(prmtr_i.norbs, prmtr_i), uormat(uormat_initialize()),
 	occupation_err(1.), energy_err(1.), correctionerr(1.), h0(prmtr_i.norbit, prmtr_i.norbit, 0.), occnum_pre(SUM(prmtr_i.nI2B), 0.),
 	iter_norg_cnt(0), groune_pre(1.e99), groune_lst(0.), occnum_lst(SUM(prmtr_i.nI2B), 0.),
-	scsp(prmtr_i, h0, prmtr_i.npartical), oneedm(mm, prmtr_i, scsp),norg_stable_count(0)
+	scsp(mm_i, prmtr_i, h0, prmtr_i.npartical), oneedm(mm, prmtr_i, scsp),norg_stable_count(0)
 {
 	show_the_nozero_number_of_tabel();
 }
@@ -18,7 +18,7 @@ NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals) :
 	mm(mm_i), p(prmtr_i), impgreen(prmtr_i.norbs, prmtr_i), uormat(uormat_initialize()),
 	occupation_err(1.), energy_err(1.), correctionerr(1.), h0(prmtr_i.norbit, prmtr_i.norbit, 0.), occnum_pre(SUM(prmtr_i.nI2B), 0.),
 	iter_norg_cnt(0), groune_pre(1.e99), groune_lst(0.), occnum_lst(SUM(prmtr_i.nI2B), 0.),
-	scsp(prmtr_i, h0, nparticals), oneedm(mm, prmtr_i, scsp),norg_stable_count(0)
+	scsp(mm_i, prmtr_i, h0, nparticals), oneedm(mm, prmtr_i, scsp),norg_stable_count(0)
 {
 	show_the_nozero_number_of_tabel();
 }
@@ -82,8 +82,8 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 
 void NORG::get_g_by_KCV(Green& imp_i)
 {
-	NocSpace scsp_1pone(p, h0, nppso(p.npartical, 1));
-	NocSpace scsp_1mone(p, h0, nppso(p.npartical, -1));
+	NocSpace scsp_1pone(mm, p, h0, nppso(p.npartical, 1));
+	NocSpace scsp_1mone(mm, p, h0, nppso(p.npartical, -1));
 	Operator n1pone(mm, p, scsp_1pone);
 	Operator n1mone(mm, p, scsp_1mone);
 	for_Int(i, 0, imp_i.g[0].nrows()) {
@@ -119,13 +119,13 @@ void NORG::get_g_by_KCV_spup(Green& imp_i)
 	StdVecInt difference = {1, -1};
 	for(const auto ii: difference)
 	{
-		NocSpace scsp_1(p, h0, nppso(p.npartical, ii));
+		NocSpace scsp_1(mm, p, h0, nppso(p.npartical, ii));
 		Operator opr_sub(mm, p, scsp_1);
 		scsp_1.coefficient = scsp_1.set_row_primeter_by_gived_mat(uormat, h0);
 		Crrvec greaer(scsp, opr_sub, final_ground_state, groune_lst, imp_i);
 	}
 	// {
-	// 	NocSpace scsp_1mone(p, h0, nppso(p.npartical, -1));
+	// 	NocSpace scsp_1mone(mm, p, h0, nppso(p.npartical, -1));
 	// 	Operator n1mone(mm, p, scsp_1mone);
 	// 	scsp_1mone.coefficient = scsp_1mone.set_row_primeter_by_gived_mat(uormat, h0);
 	// 	Crrvec lesser(scsp, n1mone, final_ground_state, groune_lst, imp_i);
@@ -140,7 +140,7 @@ void NORG::get_gimp(Green& imp_i)
 		StdVecInt difference = {(i+1), -(i+1)};
 		for(const auto ii: difference)
 		{
-			NocSpace scsp_sub(p, h0, nppso(p.npartical, ii));
+			NocSpace scsp_sub(mm, p, h0, nppso(p.npartical, ii));
 			Operator opr_sub(mm, p, scsp_sub);
 			scsp_sub.coefficient = scsp_sub.set_row_primeter_by_gived_mat(uormat, h0);
 			CrrltFun temp_green(mm, p, scsp, scsp_sub, opr_sub.table, final_ground_state, i * 2);
@@ -165,7 +165,7 @@ void NORG::find_g0(Green& imp_i)
 		StdVecInt difference = {(i+1), -(i+1)};
 		for(const auto ii: difference)
 		{
-			NocSpace scsp_sub(p, h0, nppso(p.npartical, ii));
+			NocSpace scsp_sub(mm, p, h0, nppso(p.npartical, ii));
 			Operator opr_sub(mm, p, scsp_sub);
 			scsp_sub.coefficient = scsp_sub.set_row_primeter_by_gived_mat(uormat, h0);
 			CrrltFun temp_green(mm, p, scsp, scsp_sub, opr_sub.table, nointeraction_state, i * 2);
@@ -195,8 +195,8 @@ void NORG::readmatrix(MatReal& m, const Str& file)
 
 void NORG::get_g_by_CF(Green& imp_i)
 {
-	NocSpace scsp_1pone(p, h0, nppso(p.npartical, 1));
-	NocSpace scsp_1mone(p, h0, nppso(p.npartical, -1));
+	NocSpace scsp_1pone(mm, p, h0, nppso(p.npartical, 1));
+	NocSpace scsp_1mone(mm, p, h0, nppso(p.npartical, -1));
 	Operator n1pone(mm, p, scsp_1pone);
 	Operator n1mone(mm, p, scsp_1mone);
 

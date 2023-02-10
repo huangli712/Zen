@@ -15,6 +15,7 @@ class NocSpace {
 private:
 	const BnmlFast bf;
 public:
+	const MyMpi &mm;				// parameters
 	const Prmtr& p;					// parameters
 	Idx ndivs;						// The amount of divisons's number. 
 	MatInt control_divs;			// to set the number of division and the shortcut restratin.
@@ -59,6 +60,8 @@ private:
 
 	bool ifin_NocSpace_judge_by_nppso(const MatInt& spilss_div, const VecInt& nppso) const;
 
+	VecInt multi_judger(const VEC<VEC<int> >& s, const VEC<VEC<int> >& a) const;
+
 	bool check_each_column(const Int& col_pos, const VecInt& div_colsum) const {
 		if (col_pos == div_colsum.size() / 2) return true;
 		if (col_pos < div_colsum.size() / 2 && div_colsum[col_pos] >= shortcut_countvec[col_pos] + control_divs[0][col_pos] && div_colsum[col_pos] <= shortcut_countvec[col_pos]) return true;
@@ -75,13 +78,17 @@ private:
 	VecInt read_from_col_lable(const VEC<Int> x, const VEC<VEC<Int> > a) const;
 
 	void find_all_possible_state(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) const;
+
+	VEC<VEC<Int> > cart_product(const VEC<VEC<int> >& v)const;
+
+	VEC<VEC<Int> > cart_product_monitor(const VEC<VEC<int> >& v, const VEC<VEC<Int> >& a)const;
 public:
 	// It assume that we already have the hopint from the Impurity class, but still have not rotated it yet.
 	VecReal set_row_primeter_by_gived_mat(const VEC<MatReal>& uormat_i, const MatReal& h0);
 	// Expand the Shortcut space under Number of particles(NumberSpa).
-	NocSpace(const Prmtr& prmtr_i, const Int& NumberSpa);
-	NocSpace(const Prmtr& prmtr_i, const MatReal& imp_i_h0, const Int& NumberSpa);
-	NocSpace(const Prmtr& prmtr_i, const MatReal& imp_i_h0, const VecInt& nppso_i);
+	NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const Int& NumberSpa);
+	NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const MatReal& imp_i_h0, const Int& NumberSpa);
+	NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const MatReal& imp_i_h0, const VecInt& nppso_i);
 	
 	// bool ifin_NocSpace(VecInt& ud) const;
 	bool ifin_NocSpace(MatInt& ud) const;
@@ -94,7 +101,6 @@ public:
 
 	void print(std::ostream& os = std::cout) const;
 
-	VEC<VEC<Int> > cart_product(const VEC<VEC<int> >& v)const;
 
 	VecInt free_div_base_decode(Int idx, VEC<VEC<Int> > v) const;
 };
