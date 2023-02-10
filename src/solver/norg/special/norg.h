@@ -127,6 +127,7 @@ public:
 
 	void get_gimp(Green& imp_i);
 	
+	void find_g0(Green& imp_i);
 //--------------------------------------- for the print out---------------------------------
 	void write_norg_info(Int iter_cnt) const;
 	
