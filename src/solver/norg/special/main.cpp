@@ -34,9 +34,11 @@ int main(int argc, char* argv[])
 	// DMFT dmft(mm, prmtr, mdl);
     // Phy phy(mm, prmtr, mdl);
 	APIzen norg(mm, prmtr, "solver", 0);
-	// ImGreen gfimp(prmtr.nband, prmtr, "gfimp.txt");	if(mm) WRN(NAV(gfimp.particle_number().diagonal()));
-
-    if (mm)	TIME_END("program", t_program_bgn);
+	
+	// ImGreen gfimp(prmtr.nband, prmtr, "gfimp.txt");		if(mm) WRN(NAV(gfimp.particle_number().diagonal()));
+	// ImGreen g0imp(prmtr.nband, prmtr, "gfimp0.txt");	if(mm) WRN(NAV(g0imp.particle_number().diagonal()));
+	// ImGreen seimp(prmtr.nband, prmtr);	seimp = g0imp.inverse() - gfimp.inverse();	if (mm) seimp.write_zen("seimp");
+    // if (mm)	TIME_END("program", t_program_bgn);
     MPI_Finalize();
 	return 0;
 }

@@ -13,23 +13,23 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	p.after_modify_prmtr();p.recalc_partical_number();
 	if(mm) p.print();
 	ImGreen hb(nband, p);
-	{// add the symmetry (part 1/2)
-		VecCmplx temp_hyb(imfrq_hybrid_function.ncols());
-		for_Int(i, 0, hb.nomgs) temp_hyb[i] = SUM(imfrq_hybrid_function.tr()[i])/Real(nband);
-		for_Int(j, 0, hb.nomgs) for_Int(i, 0, nband) imfrq_hybrid_function[i][j] = temp_hyb[j];
-		p.eimp = AVG(p.eimp);
-	}
+	// {// add the symmetry (part 1/2)
+	// 	VecCmplx temp_hyb(imfrq_hybrid_function.ncols());
+	// 	for_Int(i, 0, hb.nomgs) temp_hyb[i] = SUM(imfrq_hybrid_function.tr()[i])/Real(nband);
+	// 	for_Int(j, 0, hb.nomgs) for_Int(i, 0, nband) imfrq_hybrid_function[i][j] = temp_hyb[j];
+	// 	p.eimp = AVG(p.eimp);
+	// }
 	for_Int(j, 0, hb.nomgs) for_Int(i, 0, nband)  hb.g[j][i][i] = - imfrq_hybrid_function[i][j];
 	hb.write_zen("hb_zen", "Read");
 	Bath bth(mm, p);
 	bth.bath_fit(hb, dmft_cnt);					if(mm)	bth.write_ose_hop(dmft_cnt);
-	{// add the symmetry (part 2/2)
-		Int temp_size(bth.vec_ose[0].size());
-		VecReal ose(temp_size, 0.), hop(temp_size, 0.);
-		for_Int(i, 0, temp_size) for_Int(j,0,nband) {ose[i] += bth.vec_ose[j][i];hop[i] += bth.vec_hop[j][i];}
-		for_Int(i, 0, temp_size) for_Int(j,0,nband) {bth.vec_ose[j][i] = ose[i]/Real(nband);bth.vec_hop[j][i] = hop[i]/Real(nband);}
-		if(mm)	bth.write_ose_hop(dmft_cnt);
-	}
+	// {// add the symmetry (part 2/2)
+	// 	Int temp_size(bth.vec_ose[0].size());
+	// 	VecReal ose(temp_size, 0.), hop(temp_size, 0.);
+	// 	for_Int(i, 0, temp_size) for_Int(j,0,nband) {ose[i] += bth.vec_ose[j][i];hop[i] += bth.vec_hop[j][i];}
+	// 	for_Int(i, 0, temp_size) for_Int(j,0,nband) {bth.vec_ose[j][i] = ose[i]/Real(nband);bth.vec_hop[j][i] = hop[i]/Real(nband);}
+	// 	if(mm)	bth.write_ose_hop(dmft_cnt);
+	// }
 	if(mm) std::cout << std::endl;						// blank line
 	
 
@@ -40,27 +40,27 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	// }
 	
 
-	{
-		Impurity imp(mm, p, bth);
-		ImGreen hb_imp(p.nband, p);   	imp.find_hb(hb_imp); 	if (mm) hb_imp.write_zen("hb_imp", "Fit");
-		imp.update();
-		// if(mm) WRN(NAV(imp.h0))
-		ImGreen g0(p.norbit, p);	imp.find_all_g0(g0);		// if(mm)WRN(NAV(g0.particle_number().diagonal()));
-		// NORG norg(mm, p);
-		// norg.up_date_h0_to_solve(imp.h0);
-		Occler opcler(mm,p);
-		NORG norg(opcler.find_ground_state_partical(imp.h0));
-		if (mm)	{
-			norg.write_occupation_info();
-			std::cout << "norg ground state energy: " << norg.groune_lst  << "  " << present() << std::endl;
-			std::cout << std::endl;								// blank line
-		}
-		ImGreen g0imp(p.nband, p);	imp.find_g0(g0imp);			if (mm)	g0imp.write_zen("g0imp");
-		ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp);		if (mm) gfimp.write_zen("gfimp");
-		// if(mm) gfimp.write_occupation_info();
-		// if(mm) WRN(NAV(gfimp.particle_number().diagonal()));
-		ImGreen seimp(p.nband, p);	seimp = g0imp.inverse() - gfimp.inverse();	if (mm) seimp.write_zen("seimp");
+
+	Impurity imp(mm, p, bth);
+	ImGreen hb_imp(p.nband, p);   	imp.find_hb(hb_imp); 	if (mm) hb_imp.write_zen("hb_imp", "Fit");
+	imp.update();											if (mm) imp.write_H0info(bth);
+	// if(mm) WRN(NAV(imp.h0))
+	ImGreen g0(p.norbit, p);	imp.find_all_g0(g0);		// if(mm)WRN(NAV(g0.particle_number().diagonal()));
+	// NORG norg(mm, p);
+	// norg.up_date_h0_to_solve(imp.h0);
+	Occler opcler(mm,p);
+	NORG norg(opcler.find_ground_state_partical(imp.h0));
+	if (mm)	{
+		norg.write_occupation_info();
+		std::cout << "norg ground state energy: " << norg.groune_lst  << "  " << present() << std::endl;
+		std::cout << std::endl;								// blank line
 	}
+	ImGreen g0imp(p.nband, p);	imp.find_g0(g0imp);			if (mm)	g0imp.write_zen("g0imp");
+	ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp);		if (mm) gfimp.write_zen("gfimp");
+	// if(mm) gfimp.write_occupation_info();
+	// if(mm) WRN(NAV(gfimp.particle_number().diagonal()));
+	ImGreen seimp(p.nband, p);	seimp = g0imp.inverse() - gfimp.inverse();	if (mm) seimp.write_zen("seimp");
+
 }
 
 void APIzen::test_for_fitting(const Bath& bth, const ImGreen& hby_i, Int num)

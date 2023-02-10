@@ -36,10 +36,10 @@ HybErr::HybErr(const Prmtr& p_i, const ImGreen& hb_i, const Int nb_i) :
 		x[2 * nw + 0]	= 2 * nw + 1;
 		y[2 * nw + 0]	= 0.;
 		// // old
-		// sig[2 * nw + 0] = nb * std::pow(8 * p.fit_max_omg, 5);
+		sig[2 * nw + 0] = nb * std::pow(8 * p.fit_max_omg, 5);
 		// x*e^(0.5*(x/bw)^2)
-		// V.1	sig[2 * nw + 0] = nb * 1E3 * p.fit_max_omg * EXP(0.5 * SQR(p.fit_max_omg / p.bandw));
-		sig[2 * nw + 0] = std::pow(10,(nb-1)/2) * p.fit_max_omg * EXP(0.8*SQR(p.fit_max_omg / p.bandw));// V.1	
+		// sig[2 * nw + 0] = nb * 1E3 * p.fit_max_omg * EXP(0.5 * SQR(p.fit_max_omg / p.bandw)); // V.1	
+		// sig[2 * nw + 0] = std::pow(10,(nb-1)/2) * p.fit_max_omg * EXP(0.8*SQR(p.fit_max_omg / p.bandw));
 	}
 	// // the part of bath sum rule
 	// if (x.size() >= 2 * nw + 2) {
