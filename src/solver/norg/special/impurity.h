@@ -44,6 +44,8 @@ public:
 
 	void update();
 
+	void write_H0info(const Bath &b) const;
+
 	// void save() const;
 
 	// void read(const Str& file) const;

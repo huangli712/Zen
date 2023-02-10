@@ -295,6 +295,15 @@ Real NORG::sz_imp_sz_bath(const Int imp_postition, const VecReal& vgs_i)
 }
 
 //------------------------------------------------------------------ print out ------------------------------------------------------------------
+void NORG::write_H0info() const {
+	OFS ofs;ofs.open("h0.txt");
+	using namespace std;
+	for_Int(i, 0, p.norbs)	{
+		Int begin(i * (p.nI2B[i] + 1)), end((i + 1) * (p.nI2B[i] + 1));
+		ofs << iofmt("sci") << h0.truncate(begin, begin, end, end) << endl;
+	}
+}
+
 
 void NORG::write_norg_info(Int iter_cnt) const {
 	using namespace std;

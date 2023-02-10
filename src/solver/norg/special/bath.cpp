@@ -1,7 +1,7 @@
 #include "bath.h"
 
 Bath::Bath(const MyMpi& mm_i, const Prmtr& prmtr_i) :
-	mm(mm_i), p(prmtr_i), nb(p.nI2B[0]), hb(1, p), uur(mm.id()), ose(p.nI2B[0]), hop(p.nI2B[0])
+	mm(mm_i), p(prmtr_i), nb(p.nI2B[0]), hb(1, p), uur(mm.id()), ose(p.nI2B[0]), hop(p.nI2B[0]), info(p.nband,5)
 {
 	// make random seed output together
 	{ SLEEP(1); mm.barrier(); }
@@ -33,7 +33,8 @@ void Bath::bath_fit(const ImGreen& hb_i, Int iter)
 			//Real err_bsr = hyberr.err_bsr(a);
 			Real a_norm = a.norm();
 			using namespace std;
-			cout << setw(4) << iter << "  " << NAV6(band_i,nmin, err, err_crv, err_reg, /*err_bsr,*/ a_norm) << "  " << present() << endl;
+			cout << setw(4) << iter << "  " << NAV5(nmin, err, err_crv, err_reg,/* err_bsr,*/ a_norm) << "  " << present() << endl;
+			NAV5(Int(info[band_i][0]=Real(nmin)), info[band_i][1]=err, info[band_i][2]=err_crv, info[band_i][3]=err_reg, /*err_bsr,*/ info[band_i][4]=a_norm);
 		}
 	}
 }
@@ -69,7 +70,7 @@ std::tuple<Real, VecReal, Int> Bath::bath_fit_contest(const VecReal& a0)
 	const Int np = a0.size();
 	const Int ntry_fine = MAX(16, mm.np());
 	const Int ntry = MAX(8 * ntry_fine, 2000);
-	const Real tol = 1.e-10;
+	const Real tol = 1.e-16;
 	Int nmin = 0;		// number of fittings reaching the minimum
 	MPI_Status status;
 	VecReal a(np);

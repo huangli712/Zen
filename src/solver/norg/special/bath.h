@@ -20,6 +20,7 @@ public:
 	VecReal ose;			// on-site energies for bath sites
 	VecReal hop;			// hopping coefficients between impurity site and bath sites
 	VEC<VecReal> vec_ose,vec_hop;
+	MatReal info;		// print out the NAV5(nmin, err, err_crv, err_reg, /*err_bsr,*/ a_norm)
 private:
 	void regularize_ose_hop() {
 		slctsort(ose, hop);

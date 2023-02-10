@@ -135,6 +135,9 @@ public:
 
 	void write_state_info(Int iter_cnt) const;
 	
+	// write the H0 info for all orbitals.
+	void write_H0info() const;
+
 	// (Deprecated)
 	MatReal save_transform_uormat();
 };

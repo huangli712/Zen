@@ -72,6 +72,15 @@ void Impurity::update() {
     set_factor();
 }
 
+void Impurity::write_H0info(const Bath &b) const {
+    OFS ofs;    ofs.open("h0.txt");
+    using namespace std;
+    for_Int(i, 0, p.nband)	{
+        ofs << "The impurity for "<< i+1 << "-th band: " << "nmin: " << b.info[i][0] << " err: " << b.info[i][1] << " err_crv: " << b.info[i][2] << " err_reg: " << b.info[i][3] << " norm: " << b.info[i][4]<< "  " << endl;;
+        Int begin(i*2 * (p.nI2B[i*2] + 1)), end((i*2 + 1) * (p.nI2B[i*2] + 1));
+        ofs << iofmt() << h0.truncate(begin, begin, end, end) << endl;
+    }
+}
 
 //---------------------------------------------Private function---------------------------------------------
 
