@@ -407,7 +407,7 @@ void NORG::show_the_nozero_number_of_tabel()
 	// if(mm) PIO(NAV3(size_of_main_t, size_of_main_n1mt, size_of_main_n1pt));
 	Real size_one(oneedm.table[2].size());
 	LLInt size_of_main_t(mm.Allreduce(size_one));
-	if(mm) PIO(NAV2(size_of_main_t, scsp.dim));
+	if(mm) PIO(NAV2(size_of_main_t, scsp.dim)+"   "+present());
 }
 
 MatReal NORG::save_transform_uormat(){

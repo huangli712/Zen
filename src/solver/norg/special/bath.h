@@ -27,6 +27,7 @@ private:
 		// after a unitary transformation, hop can always be 
 		// non-negative when there is only one impurity site
 		hop = ABS(hop);
+		for_Int(i, 0, ose.size()) if (ABS(ose[i]) > p.hubbU * 8) hop[i] = ose[i] = 0.;
 	}
 	void init_ose_hop() {
 		uur(ose);

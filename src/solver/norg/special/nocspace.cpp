@@ -127,7 +127,7 @@ void NocSpace::find_all_noc_subspaces()
 	VEC<VEC<Int> > s;
 
 	find_all_possible_state(a, s);
-	// if(mm) WRN(NAV2(s.size(), present()));
+	if(mm) PIO(NAV(s.size())+"   "+present());
 	VecInt judger_out(multi_judger(s, a));
 	// for (const auto &x : out)
 	for_Int(i, 0, s.size()) if(judger_out[i]) {
