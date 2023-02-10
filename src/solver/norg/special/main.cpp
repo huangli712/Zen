@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 	// ImGreen gfimp(prmtr.nband, prmtr, "gfimp.txt");		if(mm) WRN(NAV(gfimp.particle_number().diagonal()));
 	// ImGreen g0imp(prmtr.nband, prmtr, "gfimp0.txt");	if(mm) WRN(NAV(g0imp.particle_number().diagonal()));
 	// ImGreen seimp(prmtr.nband, prmtr);	seimp = g0imp.inverse() - gfimp.inverse();	if (mm) seimp.write_zen("seimp");
-    // if (mm)	TIME_END("program", t_program_bgn);
+    if (mm)	TIME_END("program", t_program_bgn);
     MPI_Finalize();
 	return 0;
 }
