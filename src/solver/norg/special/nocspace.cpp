@@ -130,19 +130,18 @@ void NocSpace::find_all_noc_subspaces()
 	if(mm) PIO(NAV(s.size())+"   "+present());
 	VecInt judger_out(multi_judger(s, a));
 	// for (const auto &x : out)
-	for_Int(i, 0, s.size()) if(judger_out[i]) {
-		VEC<Int>& x = s[i];
+	for_Int(ii, 0, s.size()) if(judger_out[ii]) {
+		VEC<Int>& x = s[ii];
 		VecInt spilss_div_v(read_from_col_lable(x,a));
 		MatInt spilss_div_tr(spilss_div_v.mat(control_divs.ncols(), control_divs.nrows() - 1));
 		MatInt spilss_div(spilss_div_tr.tr());
-		if (ifin_NocSpace(spilss_div, nppso)) {
-			div.push_back(spilss_div);
-			divs_to_idx.insert(std::pair<std::string, Int>(spilss_div.vec().string(), dim));
-			length_ECNS = 1;
-			for_Int(i, 1, control_divs.nrows()) for_Int(j, 0, ndivs) length_ECNS = length_ECNS * bf(control_divs[i][j], spilss_div[i - 1][j]);
-			dim += length_ECNS;
-			idx_div.push_back(dim);
-		}
+		// if (ifin_NocSpace(spilss_div, nppso)) 
+		div.push_back(spilss_div);
+		divs_to_idx.insert(std::pair<std::string, Int>(spilss_div.vec().string(), dim));
+		length_ECNS = 1;
+		for_Int(i, 1, control_divs.nrows()) for_Int(j, 0, ndivs) length_ECNS = length_ECNS * bf(control_divs[i][j], spilss_div[i - 1][j]);
+		dim += length_ECNS;
+		idx_div.push_back(dim);
 	}
 }
 
