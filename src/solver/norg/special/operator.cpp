@@ -254,10 +254,15 @@ SparseMatReal Operator::find_hmlt(const Tab h_idx) const
 	// TIME_BGN("find_hmlt" + NAV(mm.id()), t_find_hmlt);
 	VecPartition row_H(mm.np(), mm.id(), scsp.dim);
 	SparseMatReal hmlt_splited(row_H.len(), scsp.dim, mm);
+	Real dianago(0.);	Bool flag(false);
 	for_Idx(pos, 0, h_idx[2].size())
 	{
 		Int coefficient_comm = h_idx[2][pos] >= 0 ? 1 : -1;
-		hmlt_splited.addelement(coefficient_comm * scsp.coefficient[abs(h_idx[2][pos])], h_idx[1][pos], h_idx[0][pos]);
+		if (h_idx[1][pos] == h_idx[0][pos] + row_H.bgn()) {dianago += coefficient_comm * scsp.coefficient[abs(h_idx[2][pos])];flag=true;}
+		else {
+			if (flag) {hmlt_splited.addelement(dianago, h_idx[1][pos-1], h_idx[0][pos-1]); dianago = 0.;flag=false;}
+			hmlt_splited.addelement(coefficient_comm * scsp.coefficient[abs(h_idx[2][pos])], h_idx[1][pos], h_idx[0][pos]);
+		}
 	}
 	// TIME_END("find_hmlt" + NAV(mm.id()), t_find_hmlt);
 	hmlt_splited.shrink_to_fit();

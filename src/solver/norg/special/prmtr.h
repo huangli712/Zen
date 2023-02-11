@@ -32,18 +32,18 @@ public:
     VecCmplx Re_z;		
 
 	//ImGreen		
-	Real beta;						// unit_omg = PI/beta;
-	Real unit_omg;					// unit imaginary frequency, omg_n = (2 n + 1) unit_omg, 0.01 or 0.02 suggested for zero temperature
-	Real max_omg;					// imaginary frequency cutoff, 4 * (half bandwidth) suggested
-	Real nmesh;						// imaginary frequency number form Zen.
-	Int num_omg;					// number of positive imaginary frequencies
-    VecCmplx Im_z;		
+	mutable Real beta;						// unit_omg = PI/beta;
+	mutable Real unit_omg;					// unit imaginary frequency, omg_n = (2 n + 1) unit_omg, 0.01 or 0.02 suggested for zero temperature
+	mutable Real max_omg;					// imaginary frequency cutoff, 4 * (half bandwidth) suggested
+	mutable Real nmesh;						// imaginary frequency number form Zen.
+	mutable Int num_omg;					// number of positive imaginary frequencies
+	mutable VecCmplx Im_z;		
 
 	//fitting related		
-	Real fit_max_omg;				// imaginary frequency upper bound used for bath fitting
-	Int fit_num_omg;				// number of positive imaginary frequencies used for bath fitting
-	Real fit_pow;					// 1 / (omg_n + fit_rsd) ^ fit_pow is the weight used in bath fitting
-	Real fit_rsd;					// 1 / (omg_n + fit_rsd) ^ fit_pow is the weight used in bath fitting
+	mutable Real fit_max_omg;				// imaginary frequency upper bound used for bath fitting
+	mutable Int fit_num_omg;				// number of positive imaginary frequencies used for bath fitting
+	mutable Real fit_pow;					// 1 / (omg_n + fit_rsd) ^ fit_pow is the weight used in bath fitting
+	mutable Real fit_rsd;					// 1 / (omg_n + fit_rsd) ^ fit_pow is the weight used in bath fitting
 
 	//iter related
 	bool imp_backup;				// imp backup
@@ -82,10 +82,11 @@ private:
 		os << rght_justify(true_var, 16) << (true_var == "" ? "   " : " = ") << left_justify(val, w_Real)
 			<< "    # " + comment << endl;
 	}
-public:
 	void derive();
+public:
 	Prmtr(const MyMpi& mm);
 	void after_modify_prmtr() const;
+	void derive_ImGreen() const;
 	void recalc_partical_number() const;
 	void print(std::ostream &os = std::cout) const;
 	void change_the_norg_restrain_and_div(VecInt new_restrain, VecInt new_control) const;
