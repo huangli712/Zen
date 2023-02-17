@@ -35,7 +35,7 @@ NocSpace::NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const MatReal& imp_i
 	set_control();
 	// find_combined_number_subspaces(1);
 	find_all_noc_subspaces();
-	// WRN("Begin find_combined_number_subspaces()"+ NAV(dim));
+	if(mm) WRN("Begin find_combined_number_subspaces()"+ NAV(dim));
 }
 
 void NocSpace::set_control()
