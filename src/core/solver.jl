@@ -715,7 +715,7 @@ function s_norg_save(it::IterInfo, imp::Impurity)
     fsgm = ["seimp.txt"]
     #
     # Auxiliary output files
-    faux = ["hop.txt", "ose.txt", "nmat.txt"]
+    faux = ["hop.txt", "ose.txt", "h0.txt", "nmat.txt"]
 
     # Next, we have to backup the above files.
     foreach( x ->

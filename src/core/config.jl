@@ -4,7 +4,7 @@
 # Author  : Li Huang (lihuang.dmft@gmail.com)
 # Status  : Unstable
 #
-# Last modified: 2023/01/27
+# Last modified: 2023/02/01
 #
 
 #=
@@ -58,7 +58,7 @@ function renew()
     # R2: Renew the configuration dictionaries
     rev_dict(cfg)
 
-    # R3: Validate the configuration parameters    
+    # R3: Validate the configuration parameters
     chk_dict()
 
     # Print the footer

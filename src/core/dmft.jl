@@ -167,7 +167,7 @@ function dmft_exec(it::IterInfo, task::I64)
         lines = readlines("dmft.out")
         filter!(x -> contains(x, "Task"), lines)
 
-        # Figure out which task is being executing
+        # Figure out which task is being executed
         if length(lines) > 0
             arr = line_to_array(lines[end])
             job = arr[5]
