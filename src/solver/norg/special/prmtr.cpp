@@ -16,9 +16,9 @@ Prmtr::Prmtr(const MyMpi &mm) : np(mm.np())
 
 void Prmtr::set_inert_values()
 {
-    project = "3band-SrVO3";
-    nband = 3;                 
+    nband = 5;         
     norbs = nband * 2;
+    project = NAV(nband)+"SrVO3";
     
 	gauss_n_max = 512;		        // default value: 2048
 	gauss_n_min = 64;		        // default value: 64

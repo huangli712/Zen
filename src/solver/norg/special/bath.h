@@ -1,8 +1,8 @@
 #pragma once
 
 /*
-coded by Rong-Qiang He (rqhe@ruc.edu.cn, RUC, China)
-date 2021-02-19
+coded by Rong-Qiang He (rqhe@ruc.edu.cn, RUC, China) date 2021-02-19
+coded by Jia-Ming Wang (jmw@ruc.edu.cn, RUC, China) date 2023
 */
 
 #include "specs.h"
@@ -44,6 +44,7 @@ private:
 public:
 	Bath(const MyMpi& mm_i, const Prmtr& prmtr_i);
 	void bath_fit(const ImGreen& hb_i, Int iter);
+	void bath_TRfit(const ImGreen& hb_i, Int iter);// not finished.
 	MatReal find_hop() const;
 
 void write_ose_hop(Int iter_cnt) const;
