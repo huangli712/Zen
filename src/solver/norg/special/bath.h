@@ -22,13 +22,7 @@ public:
 	VEC<VecReal> vec_ose,vec_hop;
 	MatReal info;		// print out the NAV5(nmin, err, err_crv, err_reg, /*err_bsr,*/ a_norm)
 private:
-	void regularize_ose_hop() {
-		slctsort(ose, hop);
-		// after a unitary transformation, hop can always be 
-		// non-negative when there is only one impurity site
-		hop = ABS(hop);
-		for_Int(i, 0, ose.size()) if (ABS(ose[i]) > p.hubbU * 8) hop[i] = ose[i] = 0.;
-	}
+	void regularize_ose_hop();
 	void init_ose_hop() {
 		uur(ose);
 		ose -= 0.5;
