@@ -126,6 +126,7 @@ public:
 	void get_g_by_CF(Green& imp_i);
 
 	void get_gimp(Green& imp_i);
+	void get_gimp(Green& imp_i, VecInt or_deg);
 	
 	void find_g0(Green& imp_i);
 //--------------------------------------- for the print out---------------------------------

@@ -19,4 +19,4 @@ nmesh = 8193
 
 # Auxiliary parameters: By users
 restrain = * -1 -1 * 1 1
-distribute = 1 1 0 1 0 5
+distribute = 1 1 0 1 0 3

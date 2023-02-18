@@ -28,7 +28,7 @@ class APIzen{
 	Int num_nondegenerate;				// The number of nondegenerate orbiatal.
 	Real num_omg;						// Number of positive imaginary frequencies used for bath fitting.
 	MatCmplx imfrq_hybrid_function;		// Imaginary frequencies hybrid function, nrows():number of nondegenerate orbiatal.
-	VecInt orbitdegenerate_idx;			// orbitals  degenerate idx.
+	VecInt or_deg_idx;			// orbitals  degenerate idx.
 	VecReal solver_eimp_data;			// Impurity energy level for orbitals, correspondingly mean Impurity energy.
 	// ctqmcdata solver_ctqmc_data;
 	Real Uc, Jz, mu;

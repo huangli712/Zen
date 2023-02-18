@@ -154,6 +154,30 @@ void NORG::get_gimp(Green& imp_i)
 	}
 }
 
+void NORG::get_gimp(Green& imp_i, VecInt or_deg)
+{
+	VecInt idx(MAX(or_deg),0); Int cter(0);
+	for_Int(i, 0, or_deg.size()) if(cter < or_deg[i]) idx[cter++] = i; 
+	for (int &i : idx) {
+	// for_Int(i, 0, p.nband) {
+		StdVecInt difference = {(i+1), -(i+1)};
+		for(const auto ii: difference)
+		{
+			NocSpace scsp_sub(mm, p, h0, nppso(p.npartical, ii));
+			Operator opr_sub(mm, p, scsp_sub);
+			scsp_sub.coefficient = scsp_sub.set_row_primeter_by_gived_mat(uormat, h0);
+			CrrltFun temp_green(mm, p, scsp, scsp_sub, opr_sub.table, final_ground_state, i * 2);
+			ImGreen green_function(1, p);
+			if(ii > 0) temp_green.find_gf_greater(groune_lst, green_function);
+			if(ii < 0) temp_green.find_gf_lesser(groune_lst, green_function);
+			// green_function.write("continued_fraction-imp_green_function", 2 * i + 1);
+			for_Int(n, 0, green_function.nomgs) imp_i[n][i][i] += green_function[n][0][0];
+		}
+		if (mm) PIO("finished the " + STR(i) + " find_g_norg   " + present());
+	}
+	for_Int(i, 0, or_deg.size()) for_Int(n, 0, imp_i.nomgs) imp_i[n][i][i] = imp_i[n][idx[or_deg[i] - 1]][idx[or_deg[i] - 1]];
+}
+
 void NORG::find_g0(Green& imp_i)
 {
 	VecReal nointeraction_state;

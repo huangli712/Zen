@@ -55,8 +55,9 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 		std::cout << "norg ground state energy: " << norg.groune_lst  << "  " << present() << std::endl;
 		std::cout << std::endl;								// blank line
 	}
-	ImGreen g0imp(p.nband, p);	imp.find_g0(g0imp);			if (mm)	g0imp.write_zen("g0imp");
-	ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp);		if (mm) gfimp.write_zen("gfimp");
+	// if(mm) WRN(NAV(or_deg_idx))
+	ImGreen g0imp(p.nband, p);	imp.find_g0(g0imp);					if (mm)	g0imp.write_zen("g0imp");
+	ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp, or_deg_idx.truncate(0,nband));	if (mm) gfimp.write_zen("gfimp");
 	// if(mm) gfimp.write_occupation_info();
 	// if(mm) WRN(NAV(gfimp.particle_number().diagonal()));
 	ImGreen seimp(p.nband, p);	seimp = g0imp.inverse() - gfimp.inverse();	if (mm) seimp.write_zen("seimp");
@@ -152,7 +153,7 @@ void APIzen::read_ZEN(const Str& file)
 
 	imfrq_hybrid_function.reset(norbs,num_omg,0.);
 	solver_eimp_data.reset(norbs,0.);
-	orbitdegenerate_idx.reset(norbs, 0);
+	or_deg_idx.reset(norbs, 0);
 
 	{// hyb.in
 		Str hybdata(file + ".hyb.in");
@@ -206,12 +207,12 @@ void APIzen::read_ZEN(const Str& file)
 			VecReal temp_emps(norbs, 0.);
 			for_Int(i, 0, norbs) {
 				ifs >> drop_Int;
-				ifs >> temp_emps[i]; ifs >> orbitdegenerate_idx[i];
+				ifs >> temp_emps[i]; ifs >> or_deg_idx[i];
 				if (!ifs) ERR(STR("read_ZEN-in error with ") + NAV(eimpdata));
 			}
 			for_Int(j, 0, nband) for_Int(i, 0, 2) p.eimp[c++] = temp_emps[j+nband*i];
 			// if (test_mode) num_nondegenerate = 1;
-			num_nondegenerate = MAX(orbitdegenerate_idx);
+			num_nondegenerate = MAX(or_deg_idx);
 		}
 		if (num_nondegenerate <= 0)ERR(STR("read_ZEN-in error with ") + NAV2(eimpdata, num_nondegenerate));
 		ifs.close();
