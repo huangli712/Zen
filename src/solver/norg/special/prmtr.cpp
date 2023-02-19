@@ -41,12 +41,12 @@ void Prmtr::set_values() {
     jz = 0.7;
     uprime = hubbU - 2 * jz;
     mu = 0.;
-    bandw = 5.;
+    hbw = 2.5;
 
 
     // fitting related
     fit_pow = 2.; // default value: 2.
-    fit_rsd = bandw/8.; // default value: 2.
+    fit_rsd = hbw/4.; // default value: 2.
 
     // NORG parameter.
     templet_restrain = {0, -1, -2,  0,  2,  1};
@@ -111,7 +111,7 @@ void Prmtr::derive() {
     Im_z.reset(num_omg);
 	for_Int(n, 0, num_omg) Im_z[n] = Cmplx(0., (2 * n + 1) * unit_omg);
 
-    fit_max_omg = bandw/ 2. ;
+    fit_max_omg = hbw;
     fit_num_omg = Int_ROUND(fit_max_omg / unit_omg / 2); // The default value: Int_ROUND(fit_max_omg / unit_omg / 2) change for speed reason.
 
     Str key_prmtr_val = STR("prmtr");
@@ -119,13 +119,14 @@ void Prmtr::derive() {
 }
 
 void Prmtr::derive_ImGreen() const {
-    max_omg = unit_omg * 8193 * 2;
+    unit_omg = pi_Real/beta;
 
+    max_omg = unit_omg * 8193 * 2;
     num_omg = Int_ROUND(max_omg / unit_omg / 2);
     Im_z.reset(num_omg);
 	for_Int(n, 0, num_omg) Im_z[n] = Cmplx(0., (2 * n + 1) * unit_omg);
 
-    fit_max_omg = bandw/ 2. ;
+    fit_max_omg = hbw;
     fit_num_omg = Int_ROUND(fit_max_omg / unit_omg / 2); // The default value: Int_ROUND(fit_max_omg / unit_omg / 2) change for speed reason.
 }
 

@@ -74,13 +74,13 @@ public:
 		Real relative_dev = (fx - y[i]) * INV(sig[i]);
 		return SQRT(relative_dev * relative_dev);
 	}
-	// return relative_err = SQRT(the part of bath sum rule)
-	Real err_bsr(const VecReal& a) const {
-		const Int i = 2 * nw + 1;
-		Real fx = (*this)(x[i], a);
-		Real relative_dev = (fx - y[i]) * INV(sig[i]);
-		return SQRT(relative_dev * relative_dev);
-	}
+	// // return relative_err = SQRT(the part of bath sum rule)
+	// Real err_bsr(const VecReal& a) const {
+	// 	const Int i = 2 * nw + 1;
+	// 	Real fx = (*this)(x[i], a);
+	// 	Real relative_dev = (fx - y[i]) * INV(sig[i]);
+	// 	return SQRT(relative_dev * relative_dev);
+	// }
 	void write_xysig(Int iter_cnt) const {
 		OFS ofs(iox + "zic" + prefill0(iter_cnt, 3) + ".xysig.txt");
 		using namespace std;
