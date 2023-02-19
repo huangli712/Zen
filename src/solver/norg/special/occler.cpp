@@ -20,17 +20,17 @@ NORG Occler::find_ground_state_partical(const MatReal& h0_i){
         if(mm) std::cout << "The " << ++counter << "-th NORG begin" << std::endl;	// norg counter
         NORG a(mm, p);
         a.up_date_h0_to_solve(h0_i);            np_energy_b = a.groune_lst;
-        VecInt np_m(p.npartical), np_p(p.npartical); np_m -= 1; np_p += 1;
+        // VecInt np_m(p.npartical), np_p(p.npartical); np_m -= 1; np_p += 1;
         if(mm) std::cout << "The " << ++counter << "-th NORG begin" << std::endl;	// norg counter
-        p.templet_control[1]--;     p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr();
-        NORG a_m(mm, p, np_m);
+        p.templet_control[1]--;     p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr(); p.recalc_partical_number();
+        NORG a_m(mm, p);
         a_m.up_date_h0_to_solve(h0_i);          np_energy_m = a_m.groune_lst;
-        p.templet_control[1]++;     p.templet_control[p.ndiv-1]--;  p.after_modify_prmtr();
+        p.templet_control[1]++;     p.templet_control[p.ndiv-1]--;  p.after_modify_prmtr(); p.recalc_partical_number();
         if(mm) std::cout << "The " << ++counter << "-th NORG begin" << std::endl;	// norg counter
-        p.templet_control[1]++;     p.templet_control[p.ndiv-1]--;  p.after_modify_prmtr();
-        NORG a_p(mm, p, np_p);
+        p.templet_control[1]++;     p.templet_control[p.ndiv-1]--;  p.after_modify_prmtr(); p.recalc_partical_number();
+        NORG a_p(mm, p);
         a_p.up_date_h0_to_solve(h0_i);          np_energy_p = a_p.groune_lst;
-        p.templet_control[1]--;     p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr();
+        p.templet_control[1]--;     p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr(); p.recalc_partical_number();
         Int check = if_ground_state();
         if (check == 0) return a;
         if (check == 1 && counter == 3) return a_p;
@@ -39,23 +39,6 @@ NORG Occler::find_ground_state_partical(const MatReal& h0_i){
             if(mm) WRN("the occler is not converged.");
             return a;
         }
-        // switch (if_ground_state())
-        // {
-        // case 0:
-        //     return a;
-        //     break;
-        // case 1:
-        //     // VecInt np_m(p.npartical), np_p(p.npartical); np_m -= 1; np_p += 1;
-        //     // NORG a_pp(mm, p, np_p); a_pp.up_date_h0_to_solve(h0_i);
-        //     // return a_pp.groune_lst < np_energy_p ? a_pp: NORG a_p(mm, p)
-        //     return a_p;
-        //     break;
-        // case 2:
-        //     return a_m;
-        //     break;
-        // default:
-        //     break;
-        // }
     }
     ERR("There some thing wrong in Occler.cpp!")
 }
@@ -83,21 +66,15 @@ Int Occler::if_ground_state(){
     if(np_energy_b <= np_energy_m && np_energy_b <= np_energy_p) return 0;
     else
     {
-        if (np_energy_b <= np_energy_m && np_energy_b > np_energy_p) {
-            p.templet_control[1]++;
-            p.templet_control[p.ndiv-1]--;
-            p.after_modify_prmtr();
-            nparticals += 1;
+        if (np_energy_m >= np_energy_b && np_energy_b > np_energy_p) {
+            p.templet_control[1]++;     p.templet_control[p.ndiv-1]--;  p.after_modify_prmtr(); p.recalc_partical_number();
             return 1;
         }
-        if (np_energy_b > np_energy_m && np_energy_b <= np_energy_p) {
-            p.templet_control[1]--;
-            p.templet_control[p.ndiv-1]++;
-            p.after_modify_prmtr();
-            nparticals -= 1;
+        if ( np_energy_m < np_energy_b && np_energy_b <= np_energy_p) {
+            p.templet_control[1]--;     p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr(); p.recalc_partical_number();
             return 2;
         };
-        if (np_energy_b > np_energy_m && np_energy_b > np_energy_p)
+        if ( np_energy_m > np_energy_b && np_energy_b > np_energy_p)
             ERR("The form of energy is no longer dominated by the quadratic form, and the Occler class needs to be changed.");
     }
     return 3;

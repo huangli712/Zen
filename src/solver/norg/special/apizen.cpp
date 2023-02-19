@@ -10,7 +10,7 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 {
 	read_ZEN(file);	p.hubbU = Uc; p.mu = mu; p.jz = Jz; p.nband = nband; p.norg_sets = p.norbs = norbs;
 	p.templet_restrain = restrain; p.templet_control = distribute;
-	p.after_modify_prmtr();p.recalc_partical_number();
+	p.after_modify_prmtr(); p.recalc_partical_number();
 	if(mm) p.print();
 	ImGreen hb(nband, p);
 	// {// add the symmetry (part 1/2)
