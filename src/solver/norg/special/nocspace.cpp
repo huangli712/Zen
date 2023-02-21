@@ -37,7 +37,7 @@ NocSpace::NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const MatReal& imp_i
 	// find_all_noc_subspaces();
 	find_all_noc_subspaces_by_row();
 
-	if(mm) WRN("Begin find_combined_number_subspaces()"+ NAV(dim));
+	if(mm) PIO("Begin find_combined_number_subspaces()"+ NAV(dim)+"   "+present());
 }
 
 // nppso mean: number of partical per spin orbital.

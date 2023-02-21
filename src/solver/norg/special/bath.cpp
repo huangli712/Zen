@@ -10,11 +10,13 @@ Bath::Bath(const MyMpi& mm_i, const Prmtr& prmtr_i) :
 
 void Bath::bath_fit(const ImGreen& hb_i, Int iter)
 {
+	read_ose_hop();IFS ifs("ose_hop.txt");
 	for_Int(band_i, 0, p.nband){
 		if(p.nband != hb_i[0].nrows()) ERR("some thing wrong with the hybrid function.")
 		for_Int(i, 0, hb_i.nomgs) hb[i] = hb_i[i][band_i][band_i];
 		ose.reset(p.nI2B[band_i]); hop.reset(p.nI2B[band_i]); nb = p.nI2B[band_i];
-		init_ose_hop();
+		if(ifs) {ose = vec_ose[band_i]; hop = vec_hop[band_i];} 
+		else init_ose_hop();
 		const VecReal a0 = concat(ose, hop);
 		Real err;
 		VecReal a;
@@ -23,7 +25,9 @@ void Bath::bath_fit(const ImGreen& hb_i, Int iter)
 		ose = a.truncate(0, nb);
 		hop = a.truncate(nb, nb + nb);
 		regularize_ose_hop();
-		vec_ose.push_back(ose);vec_hop.push_back(hop);
+		if(!ifs) {vec_ose.push_back(ose);vec_hop.push_back(hop);}
+		else {vec_ose[band_i] = ose; vec_hop[band_i] = hop;}
+		// if(mm) WRN(NAV2(vec_ose.size(),vec_hop.size()));
 		if (mm) {
 			const HybErr hyberr(p, hb, nb);
 			const VecReal a = concat(ose, hop);
@@ -68,8 +72,8 @@ std::tuple<Real, VecReal, Int> Bath::bath_fit_contest(const VecReal& a0)
 {
 	const HybErr hyberr(p, hb, nb);
 	const Int np = a0.size();
-	const Int ntry_fine = MAX(16, mm.np());
-	const Int ntry = MAX(8 * ntry_fine, 2000);
+	const Int ntry_fine = MAX(16, mm.np() - 1);
+	const Int ntry = MAX(128 * ntry_fine, 2000);
 	const Real tol = 1.e-12;
 	Int nmin = 0;		// number of fittings reaching the minimum
 	MPI_Status status;
@@ -159,21 +163,42 @@ MatReal Bath::find_hop() const
 void Bath::write_ose_hop(Int iter_cnt) const {
 	using namespace std;
 	// OFS ofs_app_ose(p.ofx + ".ose.txt", std::ios::app);
-	OFS ofs_app_ose;ofs_app_ose.open("ose.txt");
-	// OFS ofs_app_hop(p.ofx + ".hop.txt", std::ios::app);
-	OFS ofs_app_hop;ofs_app_hop.open("hop.txt");
+	// OFS ofs_ose;ofs_ose.open("ose.txt");
+	OFS ofs;ofs.open("ose_hop.txt");
 	for_Int(band_i, 0, p.nband)	{
-		ofs_app_ose << iofmt("sci");
-		ofs_app_ose << setw(4) << iter_cnt << setw(4) << band_i;
-		for_Int(i, 0, p.nI2B[2 * band_i]) { ofs_app_ose << "\t" << setw(w_Real) << vec_ose[band_i][i]; }
-		ofs_app_ose << endl;
-
-		ofs_app_hop << iofmt("sci");
-		ofs_app_hop << setw(4) << iter_cnt << setw(4) << band_i;
-		for_Int(i, 0, p.nI2B[2 * band_i]) { ofs_app_hop << "\t" << setw(w_Real) << vec_hop[band_i][i]; }
-		ofs_app_hop << endl;
+		ofs << iofmt("sci");
+		ofs << setw(4) << iter_cnt << setw(4) << band_i;
+		for_Int(i, 0, p.nI2B[2 * band_i]) { ofs << "\t" << setw(w_Real) << vec_ose[band_i][i]; }
+		ofs << endl;
 	}
-	ofs_app_ose << endl;ofs_app_hop << endl;
+	for_Int(band_i, 0, p.nband)	{
+		ofs << iofmt("sci");
+		ofs << setw(4) << iter_cnt << setw(4) << band_i;
+		for_Int(i, 0, p.nI2B[2 * band_i]) { ofs << "\t" << setw(w_Real) << vec_hop[band_i][i]; }
+		ofs << endl;
+	}
+	ofs << endl;ofs << endl;
+}
+
+void Bath::read_ose_hop(Int iter_cnt) {
+	using namespace std;
+	// IFS ifs_ose;ifs_ose.open("ose.txt");
+	IFS ifs("ose_hop.txt");
+	Str strr;
+	if(ifs)for_Int(band_i, 0, p.nband)	{
+		ifs >> strr; ifs >> strr;
+		VecReal ose_t(p.nI2B[2 * band_i], 0);
+		for_Int(i, 0, p.nI2B[2 * band_i]) { ifs >> ose_t[i]; }
+		vec_ose.push_back(ose_t);
+		if(mm) WRN(NAV(ose_t));
+	}		
+	if(ifs)for_Int(band_i, 0, p.nband)	{
+		ifs >> strr; ifs >> strr;
+		VecReal hop_t(p.nI2B[2 * band_i], 0);
+		for_Int(i, 0, p.nI2B[2 * band_i]) { ifs >> hop_t[i]; }
+		vec_hop.push_back(hop_t);
+		if(mm) WRN(NAV(hop_t));
+	}
 }
 
 //------------------------------------------------------------------ print out ------------------------------------------------------------------
