@@ -34,7 +34,19 @@ NocSpace::NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const MatReal& imp_i
 {
 	set_control();
 	// find_combined_number_subspaces(1);
-	find_all_noc_subspaces();
+	// find_all_noc_subspaces();
+	find_all_noc_subspaces_by_row();
+
+	if(mm) WRN("Begin find_combined_number_subspaces()"+ NAV(dim));
+}
+
+// nppso mean: number of partical per spin orbital.
+NocSpace::NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const MatReal& imp_i_h0, const VecInt& nppso_i, Str tab_name) :
+	mm(mm_i), p(prmtr_i), ndivs(prmtr_i.ndiv), nspa(SUM(nppso_i)), sit_mat(p.norg_sets, prmtr_i.ndiv, 0),
+	hopint(imp_i_h0), coefficient((p.norbit * p.norbit) + 5, 0.), nppso(nppso_i),
+	control_divs(p.norg_sets + 1, prmtr_i.ndiv, 0), shortcut_countvec(prmtr_i.ndiv, 0), dim(read_the_Tab(tab_name))
+{
+	set_control();
 	if(mm) WRN("Begin find_combined_number_subspaces()"+ NAV(dim));
 }
 
@@ -128,7 +140,10 @@ void NocSpace::find_all_noc_subspaces()
 
 	find_all_possible_state(a, s);
 	if(mm) PIO(NAV(s.size())+"   "+present());
-	VecInt judger_out(multi_judger(s, a));
+	IFS ifs(STR("judger"+list_nppso(nppso)+ ".bdat"));
+	VecInt judger_out(s.size());
+	if(!ifs) judger_out = multi_judger(s, a);
+	else biread(ifs, CharP(judger_out.p()), judger_out.szof());
 	// for (const auto &x : out)
 	for_Int(ii, 0, s.size()) if(judger_out[ii]) {
 		VEC<Int>& x = s[ii];
@@ -143,6 +158,41 @@ void NocSpace::find_all_noc_subspaces()
 		dim += length_ECNS;
 		idx_div.push_back(dim);
 	}
+	if(mm) {
+		OFS ofs;	ofs.open("judger"+list_nppso(nppso)+ ".bdat");
+		biwrite(ofs, CharP(judger_out.p()), judger_out.szof());
+		ofs.close();
+	}
+}
+
+void NocSpace::find_all_noc_subspaces_by_row()
+{
+	Idx length_ECNS;						// length for each combined number subspaces(ECNS).
+	idx_div.push_back(dim);
+	VEC<VEC<Int> > a;
+	VEC<VEC<Int> > s;
+
+	find_all_possible_state_by_row(a, s);
+	if(mm) PIO(NAV(s.size())+"   "+present());
+	IFS ifs(STR("judger"+list_nppso(nppso)+ ".bdat"));
+	VecInt judger_out(s.size());
+	if(!ifs) judger_out = multi_judger_by_row(s, a);
+	else biread(ifs, CharP(judger_out.p()), judger_out.szof());
+	// for (const auto &x : out)
+	for_Int(ii, 0, s.size()) if(judger_out[ii]) {
+		MatInt spilss_div(read_from_col_lable(s[ii],a).mat( control_divs.nrows() - 1, control_divs.ncols()));
+		div.push_back(spilss_div);
+		divs_to_idx.insert(std::pair<std::string, Int>(spilss_div.vec().string(), dim));
+		length_ECNS = 1;
+		for_Int(i, 1, control_divs.nrows()) for_Int(j, 0, ndivs) length_ECNS = length_ECNS * bf(control_divs[i][j], spilss_div[i - 1][j]);
+		dim += length_ECNS;
+		idx_div.push_back(dim);
+	}
+	// if(mm) {
+	// 	OFS ofs;	ofs.open("judger"+list_nppso(nppso)+ ".bdat");
+	// 	biwrite(ofs, CharP(judger_out.p()), judger_out.szof());
+	// 	ofs.close();
+	// }
 }
 
 VecInt NocSpace::multi_judger(const VEC<VEC<int> >& s, const VEC<VEC<int> >& a) const{
@@ -151,10 +201,24 @@ VecInt NocSpace::multi_judger(const VEC<VEC<int> >& s, const VEC<VEC<int> >& a) 
 	VecInt splited_out(div_dim.len(), 0);
 	// VecInt temp_splited_out()
 	for_Int(i, div_dim.bgn(), div_dim.end()){
-		VEC<Int> x(s[i]);
-		VecInt spilss_div_v(read_from_col_lable(x,a));
-		MatInt spilss_div_tr(spilss_div_v.mat(control_divs.ncols(), control_divs.nrows() - 1));
-		MatInt spilss_div(spilss_div_tr.tr());
+		// VEC<Int> x(s[i]);
+		// VecInt spilss_div_v(read_from_col_lable(x,a));
+		// MatInt spilss_div_tr(spilss_div_v.mat(control_divs.ncols(), control_divs.nrows() - 1));
+		// MatInt spilss_div(spilss_div_tr.tr());
+		MatInt spilss_div(read_from_col_lable(s[i],a).mat(control_divs.ncols(), control_divs.nrows() - 1).tr());
+		if (ifin_NocSpace(spilss_div, nppso)) splited_out[i-div_dim.bgn()] = 1;
+		// if (ifin_NocSpace_judge_by_nppso(spilss_div, nppso)) splited_out[i-div_dim.bgn()] = 1;
+	}
+	VecInt out(s.size());
+	out = mm.Allgatherv(splited_out, div_dim);
+	return out;
+}
+
+VecInt NocSpace::multi_judger_by_row(const VEC<VEC<int> >& s, const VEC<VEC<int> >& a) const{
+	VecPartition div_dim(mm.np(), mm.id(), s.size());
+	VecInt splited_out(div_dim.len(), 0);
+	for_Int(i, div_dim.bgn(), div_dim.end()){
+		MatInt spilss_div(read_from_col_lable(s[i],a).mat( control_divs.nrows() - 1, control_divs.ncols()));
 		if (ifin_NocSpace(spilss_div, nppso)) splited_out[i-div_dim.bgn()] = 1;
 	}
 	VecInt out(s.size());
@@ -202,10 +266,47 @@ void NocSpace::find_all_possible_state(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) con
 			counter++;
 		}
 		a_lable.push_back(a_lable_i);
-		//  WRN(NAV2( col,a.size()));
+		if(mm) WRN(NAV2( col,a.size()));
 	}
 
-	s = cart_product_monitor(a_lable, a);
+	s = cart_product_monitor_col(a_lable, a);
+	// s = cart_product(a_lable);
+}
+
+
+void NocSpace::find_all_possible_state_by_row(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) const
+{
+	VEC<VEC<Int> > a_lable;
+	Int counter(0);
+	for_Int(row, 1, control_divs.nrows())
+	{
+		VEC<VEC<Int>> temp_a;
+		VEC<VEC<Int> > a_row_temp;
+		for_Int(col, 0, control_divs.ncols())
+		{
+			VEC<Int> one_div;
+			for_Int(spl, 0, control_divs[row][col] + 1)
+			{
+				if (if_div_in_restraint(control_divs[0], col, control_divs[row][col], spl))
+					one_div.push_back(spl);
+			}
+			a_row_temp.push_back(one_div);
+		}
+		temp_a = cart_product(a_row_temp);
+		for (const auto &one_divs : temp_a)	{
+			if (if_row_divs_in_restraint(nppso[row-1], one_divs, sit_mat[row-1])) a.push_back(one_divs);
+		}
+		VEC<Int> a_lable_i;
+		for_Int(i, counter, a.size()){
+			a_lable_i.push_back(i);
+			counter++;
+		}
+		a_lable.push_back(a_lable_i);
+		// if(mm) WRN(NAV2( row,a.size()));
+	}
+
+	s = cart_product_monitor_row(a_lable, a);
+	// s = cart_product(a_lable);
 }
 
 bool NocSpace::ifin_NocSpace(MatInt& spilss_div) const
@@ -314,6 +415,20 @@ bool NocSpace::if_col_divs_in_restraint(const Int& restraint, const VEC<Int>& di
 	return false;
 }
 
+bool NocSpace::if_row_divs_in_restraint(const Int& restraint, const VEC<Int>& divrow_i, VecInt count_sit_mat) const
+{
+	if(SUM(Vec(divrow_i)) != restraint) return false;
+	// VecInt countvec(sit_mat.ncols(), 0);
+	for_Int(col_idx, 1, divrow_i.size()){
+		// if(!(col_idx < ndivs / 2 && col_idx >= (divrow_i[col_idx] + control_divs[0][col_idx]))) return false;
+		// if(!(col_idx > ndivs / 2 && col_idx <= control_divs[0][col_idx] )) return false;
+		// if (col_pos == ndivs / 2) return true;
+		if (col_idx < ndivs / 2 && divrow_i[col_idx] < count_sit_mat[col_idx] + control_divs[0][col_idx] ) return false;
+		if (col_idx > ndivs / 2 && divrow_i[col_idx] > control_divs[0][col_idx]) return false;
+	}
+	return true;
+}
+
 Int NocSpace::wherein_NocSpace(const Int& h_i)const
 {
 	Int comdiv_idx(0);
@@ -372,7 +487,7 @@ VEC<VEC<Int> > NocSpace::cart_product (const VEC<VEC<Int> >& v)const
     return s;
 }
 
-VEC<VEC<Int> > NocSpace::cart_product_monitor (const VEC<VEC<Int> >& v, const VEC<VEC<Int> >& a)const
+VEC<VEC<Int> > NocSpace::cart_product_monitor_col (const VEC<VEC<Int> >& v, const VEC<VEC<Int> >& a)const
 {
     VEC<VEC<Int> > s = {{}};
     for (const auto& u : v) {
@@ -384,6 +499,7 @@ VEC<VEC<Int> > NocSpace::cart_product_monitor (const VEC<VEC<Int> >& v, const VE
 			VecInt sum(ndivs,0); bool judge(true);
 			for (const auto x_i : x) sum += VecInt(a[x_i]);
 			for_Int(i, 0, ndivs)	if(sum[i] > nppso[i]) judge = false;
+			// if (s[0].size() == sit_mat.size()) for_Int(i, 0, ndivs)	if(sum[i] != nppso[i]) judge = false;
 			if (judge) {
 				for (const auto y : u) {
 					r.push_back(x);
@@ -392,6 +508,26 @@ VEC<VEC<Int> > NocSpace::cart_product_monitor (const VEC<VEC<Int> >& v, const VE
 			}
 		}
 		s = move(r);
+    }
+    return s;
+}
+
+VEC<VEC<Int> > NocSpace::cart_product_monitor_row (const VEC<VEC<Int> >& v, const VEC<VEC<Int> >& a)const
+{
+    VEC<VEC<Int> > s = {{}};
+    for (const auto& u : v) {
+        VEC<VEC<Int> > r;
+        for (const auto& x : s) {
+			bool judge(true); 
+			VecInt m_row(ndivs, 0), count_sit_mat(ndivs, 0);
+			for_Int(i, 0, x.size()) {count_sit_mat += sit_mat[i]; m_row += Vec(a[x[i]]);}
+			if (if_row_divs_in_restraint(SUM(nppso.truncate(0, x.size())), m_row.stdvec(), count_sit_mat))
+				for (const auto y : u) {
+					r.push_back(x);
+					r.back().push_back(y);
+				}
+		}
+        s = move(r);
     }
     return s;
 }

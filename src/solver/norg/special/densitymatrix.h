@@ -43,6 +43,7 @@ private:
 
 public:
 	DensityMat(const MyMpi& mm_i, const Prmtr& prmtr_i, NocSpace& scsp_i);
+	DensityMat(const MyMpi& mm_i, const Prmtr& prmtr_i, NocSpace& scsp_i, Str tab_name);
 
 	// Only diagonalize the bath orbital, but reture the whole orbital unitary orbital rotation matrix U
 	VEC<MatReal> find_unitary_orbital_rotation_matrix();

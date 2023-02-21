@@ -39,8 +39,8 @@ HybErr::HybErr(const Prmtr& p_i, const ImGreen& hb_i, const Int nb_i) :
 		// sig[2 * nw + 0] = nb * std::pow(8 * p.fit_max_omg, 5);
 		// x*e^(0.5*(x/bw)^2)		// old
 		// x*e^(0.5*(x/(bw/8.))^2) 	// new
-		// sig[2 * nw + 0] = nb * 1E3 * p.fit_max_omg * EXP(0.5 * SQR(p.fit_max_omg / p.hbw)); // V.1
-		sig[2 * nw + 0] = p.fit_max_omg * EXP(0.5 * SQR(p.fit_max_omg / (p.hbw)));
+		// sig[2 * nw + 0] = nb * 1E3 * p.fit_max_omg * EXP(0.5 * SQR(p.fit_max_omg / p.bandw)); // V.1
+		sig[2 * nw + 0] = p.fit_max_omg * EXP(0.5 * SQR(p.fit_max_omg / (p.bandw/8.)));
 	}
 	// // the part of bath sum rule
 	// if (x.size() >= 2 * nw + 2) {
@@ -80,8 +80,8 @@ void HybErr::operator()(const Int x, const VecReal& a, Real& y, VecReal& dyda) c
 		VecCmplx D = concat(D_E, D_V);
 		dyda = x < nw ? real(D) : imag(D);
 	}
-	// x*e^(0.5*(x/hbw)^2)
-	// d/dx(x e^(0.5 (x/hbw)^2)) = (e^((0.5 x^2)/hbw^2) (hbw^2 + x^2))/hbw^2
+	// x*e^(0.5*(x/bw)^2)
+	// (e^((0.5 x^2)/bw^2) * (bw^2 + x^2))/bw^2
 	else if (x == 2 * nw + 0) { // the part of ose regularization
 		// // const VecReal E = temp.sm(nb, a.p());
 		// // const VecReal E2 = E * E;
@@ -91,24 +91,24 @@ void HybErr::operator()(const Int x, const VecReal& a, Real& y, VecReal& dyda) c
 		// // VecReal D = concat(D_E, D_V);
 		// // dyda = D;
 		const VecReal E = temp.sm(nb, a.p());
-		const VecReal E2 = EXP(0.5 * (E * (1. / p.hbw)) * (E * (1. / p.hbw)));
+		const VecReal E2 = EXP(0.5 * (E * (1. / p.bandw)) * (E * (1. / p.bandw)));
 		y = DOT(E, E2);
-		VecReal BW(nb, p.hbw);
-		VecReal D_E = E2 * (BW * BW + E * E) * (1. / (p.hbw * p.hbw));
+		VecReal BW(nb, p.bandw);
+		VecReal D_E = E2 * (BW * BW + E * E) * (1. / (p.bandw * p.bandw));
 		VecReal D_V = VecReal(nb, 0.);
 		VecReal D = concat(D_E, D_V);
 		dyda = D;
 	}
-	// else if (x == 2 * nw + 1) { // the part of bath sum rule
-	// 	// const VecReal V = temp.sm(nb, a.p() + nb);
-	// 	// const VecReal Vco = V.co();
-	// 	// Real hyb = DOT(Vco, Vco);
-	// 	// y = hyb;
-	// 	// VecReal D_E = VecReal(nb, 0.);
-	// 	// VecReal D_V = V + Vco;
-	// 	// VecReal D = concat(D_E, D_V);
-	// 	// dyda = D;
-	// }
+	else if (x == 2 * nw + 1) { // the part of bath sum rule
+		const VecReal V = temp.sm(nb, a.p() + nb);
+		const VecReal Vco = V.co();
+		Real hyb = DOT(Vco, Vco);
+		y = hyb;
+		VecReal D_E = VecReal(nb, 0.);
+		VecReal D_V = V + Vco;
+		VecReal D = concat(D_E, D_V);
+		dyda = D;
+	}
 	else {
 		ERR(NAV(x));
 	}

@@ -46,6 +46,7 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	imp.update();											if (mm) imp.write_H0info(bth);
 	// if(mm) WRN(NAV(imp.h0))
 	ImGreen g0(p.norbit, p);	imp.find_all_g0(g0);		// if(mm)WRN(NAV(g0.particle_number().diagonal()));
+	// NORG norg(mm, p, "mainspace");
 	// NORG norg(mm, p);
 	// norg.up_date_h0_to_solve(imp.h0);
 	Occler opcler(mm,p);
@@ -57,7 +58,8 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	}
 	// if(mm) WRN(NAV(or_deg_idx))
 	ImGreen g0imp(p.nband, p);	imp.find_g0(g0imp);					if (mm)	g0imp.write_zen("g0imp");
-	ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp, or_deg_idx.truncate(0,nband));	if (mm) gfimp.write_zen("gfimp");
+	// ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp, or_deg_idx.truncate(0,nband));	if (mm) gfimp.write_zen("gfimp");
+	ImGreen gfimp(p.nband, p);	norg.get_gimp(gfimp);				if (mm) gfimp.write_zen("gfimp");
 	// if(mm) gfimp.write_occupation_info();
 	// if(mm) WRN(NAV(gfimp.particle_number().diagonal()));
 	ImGreen seimp(p.nband, p);	seimp = g0imp.inverse() - gfimp.inverse();	if (mm) seimp.write_zen("seimp");

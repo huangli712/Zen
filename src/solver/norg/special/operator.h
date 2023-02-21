@@ -28,7 +28,8 @@ private:
 public:
 	// Expand the Shortcut space under Number of particles(NumberSpa).
 	Operator(const MyMpi& mm_i, const Prmtr& prmtr_i, const NocSpace& s_i);
-	Operator(const MyMpi& mm_i, const Prmtr& prmtr_i, const NocSpace& s_i,const Tab &per_table);
+	Operator(const MyMpi& mm_i, const Prmtr& prmtr_i, const NocSpace& s_i, const Tab &per_table);
+	Operator(const MyMpi& mm_i, const Prmtr& prmtr_i, const NocSpace& s_i, Str tab_name);
 	
 	// Operator::Operator(const Operator &per):
 	// mm(per.mm), p(per.p), scsp(per.scsp), table(per.table) , 
@@ -54,5 +55,8 @@ public:
 	VecReal sn_prtcl_ex_state(const Int ex_orbital_position, const VecReal ground_state, const Int crtann)const;
 
 	//(deprecated)
-	VecReal particle_number_Inner_product(const Int position, const Int crtann)const;
+	VecReal particle_number_Inner_product(const Int position, const Int crtann)const;	
+
+	void save_the_Tab(Tab& tab, Str name) const;
+	Tab read_the_Tab(Str name) const;
 };

@@ -33,8 +33,8 @@ NORG Occler::find_ground_state_partical(const MatReal& h0_i){
         p.templet_control[1]--;     p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr(); p.recalc_partical_number();
         Int check = if_ground_state();
         if (check == 0) return a;
-        if (check == 1 && counter == 3) return a_p;
-        if (check == 2 && counter == 3) return a_m;
+        // if (check == 1 && counter == 3) return a_p;
+        // if (check == 2 && counter == 3) return a_m;
         if (check == 3) {
             if(mm) WRN("the occler is not converged.");
             return a;

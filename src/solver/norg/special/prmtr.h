@@ -14,7 +14,7 @@ public:
 	Str project;					// project name
 	Int nband;						// number of band in lattice model.
 	Int norbs;						// number of spin-orbitals in lattice model.
-	Real hbw;						// The bandwidth of this model.
+	Real bandw;						// The bandwidth of this model.
 	
 	// square lattice, model parameters
 	Real hubbU;						// Hubbard interaction U

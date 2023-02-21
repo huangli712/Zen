@@ -11,8 +11,14 @@ Operator::Operator(const MyMpi& mm_i, const Prmtr& prmtr_i, const NocSpace& s_i)
 	mm(mm_i), p(prmtr_i), scsp(s_i), table(find_h_idx())
 {
 }
+
 Operator::Operator(const MyMpi& mm_i, const Prmtr& prmtr_i, const NocSpace& s_i,const Tab &per_table):
 	mm(mm_i), p(prmtr_i), scsp(s_i), table(per_table)
+{
+}
+
+Operator::Operator(const MyMpi& mm_i, const Prmtr& prmtr_i, const NocSpace& s_i, Str tab_name):
+	mm(mm_i), p(prmtr_i), scsp(s_i), table(read_the_Tab(tab_name))
 {
 }
 
@@ -284,6 +290,7 @@ MatReal Operator::lowest_eigpairs(const Idx n, bool if_need_fast, Int wish_nev)
 	VecInt ev_dgcy(wish_nev, 0.);			// cotain all the degeneracy eigenvector's number for each eigenvalue.
 	// if (mm)PIO("find_hmlt BEGIN :::");
 	SparseMatReal sep_hmltoperator = find_hmlt(table);
+	// if(mm) WRN("finished fiding the hmlt")
 //#ifdef _ASSERTION_
 //	if (mm.np() == 1) {
 //		WRN("test begin:::");
@@ -299,6 +306,7 @@ MatReal Operator::lowest_eigpairs(const Idx n, bool if_need_fast, Int wish_nev)
 	// MatReal eigenvec(eigenvec_i.size(),n);
 	// for_Int(i, 0, eigenvec_i.size()) eigenvec[i] = eigenvec_i[i];
 	ground_state = eigenvec_i[0];
+	// if(mm) WRN("finished lanczos.")
 #ifdef _ASSERTION_
 	//WRN("TEST_Lanczos is right:::" + NAV(mm.np()));
 	//VecReal test_a(eigenvec[0]);
@@ -342,4 +350,64 @@ VecReal Operator::particle_number_Inner_product(const Int imp_div, const Int crt
 	VecReal ex_state(scsp.dim, 0.);
 	ex_state = mm.Allgatherv(ex_state_part, row_H);
 	return ex_state;
+}
+
+//------------------------------------------------------------------ io ------------------------------------------------------------------
+
+void Operator::save_the_Tab(Tab& tab, Str name) const{
+	Int size_temp(tab[0].size());
+	Int size = mm.Allreduce(size_temp);
+	VecInt v_size_i(1); v_size_i[0] = tab[0].size();
+	VecPartition split_v_size(mm.np(), mm.id(), mm.np());
+	VecInt v_size = mm.Allgatherv(v_size_i, split_v_size);
+	if(mm) {// write the Tab's size's info
+		OFS ofs;	ofs.open(name + ".inf");
+		ofs << setw(9) << "dim" << setw(p_Real) << scsp.dim << endl;
+		ofs << setw(9) << "size" << setw(p_Real) << size << endl;
+		for_Int(i, 0, mm.np())	{
+			ofs << setw(9) << "size_np"+STR(i) << setw(p_Real) << v_size[i] << endl;
+		}
+		ofs.close();
+	}
+
+	OFS ofs;	ofs.open(name + ".bdat");
+	for_Int(i, 0, tab.size()) {
+		VecPartition split_table(mm.np(), mm.id(), size, v_size);
+		VecInt temp_tabi = mm.Gatherv(Vec(tab[i]), split_table);
+		if(mm) {
+			biwrite(ofs, CharP(temp_tabi.p()), temp_tabi.szof());
+			
+			// if(mm) WRN(NAV2(temp_tabi.size(),temp_tabi.truncate(size-100,size)));
+		}		
+	}
+	ofs.close();
+}
+
+Tab Operator::read_the_Tab(Str name) const{
+	
+	// WRN("Here is fine"+NAV(name));
+	VecInt v_size(mm.np(), 0);
+	Int size(-1);	Tab tab(3);
+	{
+		IFS ifs(STR(name + ".inf"));	Str strr;
+		while(1) {// read the Tab's size's info
+			ifs >> strr;
+			if(strr == "size")	ifs >> size;
+			for_Int(i, 0, mm.np()) if(strr == "size_np"+STR(i))	ifs >> v_size[i];
+			if (!ifs) break;
+		}
+	}
+	// if(mm) WRN("Here is fine"+NAV(size));
+	{
+		IFS ifs(STR(name + ".bdat"));
+		// VecPartition split_tab(mm.np(), mm.id(), size);		
+		VecPartition split_tab(mm.np(), mm.id(), size, v_size);
+		for_Int(i, 0, tab.size()) {
+			VecInt temp(size); biread(ifs, CharP(temp.p()), temp.szof());
+			// if(mm) WRN(NAV(temp.truncate(size-100,size)));
+			tab[i] = temp.truncate(split_tab.bgn(),split_tab.end()).stdvec();
+			// SWAP(tab[i], temp.truncate(split_tab.bgn(),split_tab.end()).stdvec());
+		}
+	}
+	return tab;
 }

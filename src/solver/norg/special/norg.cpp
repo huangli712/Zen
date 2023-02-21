@@ -14,24 +14,23 @@ NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i) :
 	show_the_nozero_number_of_tabel();
 }
 
-NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals) :
+// NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals) :
+// 	mm(mm_i), p(prmtr_i), impgreen(prmtr_i.norbs, prmtr_i), uormat(uormat_initialize()),
+// 	occupation_err(1.), energy_err(1.), correctionerr(1.), h0(prmtr_i.norbit, prmtr_i.norbit, 0.), occnum_pre(SUM(prmtr_i.nI2B), 0.),
+// 	iter_norg_cnt(0), groune_pre(1.e99), groune_lst(0.), occnum_lst(SUM(prmtr_i.nI2B), 0.),
+// 	scsp(mm_i, prmtr_i, h0, nparticals), oneedm(mm, prmtr_i, scsp),norg_stable_count(0)
+// {
+// 	show_the_nozero_number_of_tabel();
+// }
+
+NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, Str tab_name) :
 	mm(mm_i), p(prmtr_i), impgreen(prmtr_i.norbs, prmtr_i), uormat(uormat_initialize()),
 	occupation_err(1.), energy_err(1.), correctionerr(1.), h0(prmtr_i.norbit, prmtr_i.norbit, 0.), occnum_pre(SUM(prmtr_i.nI2B), 0.),
 	iter_norg_cnt(0), groune_pre(1.e99), groune_lst(0.), occnum_lst(SUM(prmtr_i.nI2B), 0.),
-	scsp(mm_i, prmtr_i, h0, nparticals), oneedm(mm, prmtr_i, scsp),norg_stable_count(0)
+	scsp(mm_i, prmtr_i, h0, prmtr_i.npartical, tab_name), oneedm(mm, prmtr_i, scsp, tab_name),norg_stable_count(0)
 {
 	show_the_nozero_number_of_tabel();
 }
-
-// NORG::NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i) :
-// 	mm(mm_i), p(prmtr_i), impgreen(prmtr_i.norbs, prmtr_i), uormat(uormat_initialize()),
-// 	occupation_err(1.), energy_err(1.), correctionerr(1.), h0(imp_i.h0), occnum_pre(SUM(prmtr_i.nI2B), 0.),
-// 	iter_norg_cnt(0), groune_pre(1.e99), groune_lst(0.), occnum_lst(SUM(prmtr_i.nI2B), 0.),
-// 	scsp(prmtr_i, imp_i.h0, prmtr_i.npartical), oneedm(mm, prmtr_i, scsp), norg_stable_count(0)
-// {
-// 	// up_date_h0_to_solve(h0);
-// 	// get_gimp(impgreen);
-// }
 
 void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 	if(mm) std::cout << std::endl;						// blank line
@@ -76,8 +75,9 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 	}
 	iter_norg_cnt = 0;		occupation_err = 1.;		energy_err = 1.;
 	final_ground_state = oneedm.ground_state;	norg_stable_count = 0.;
-	
+
 	// Finish the NORGiteration.
+	// oneedm.save_the_Tab(oneedm.table, "mainspace");
 }
 
 void NORG::get_g_by_KCV(Green& imp_i)
@@ -318,7 +318,7 @@ Real NORG::sz_imp_sz_bath(const Int imp_postition, const VecReal& vgs_i)
 	return sz_imp_sz_bath;
 }
 
-//------------------------------------------------------------------ print out ------------------------------------------------------------------
+//------------------------------------------------------------------ io ------------------------------------------------------------------
 void NORG::write_H0info() const {
 	OFS ofs;ofs.open("h0.txt");
 	using namespace std;

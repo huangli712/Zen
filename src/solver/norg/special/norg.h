@@ -81,7 +81,9 @@ private:
 */
 public:
 	NORG(const MyMpi& mm_i, const Prmtr& prmtr_i);
-	NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals);
+	// NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals);
+	NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, Str tab_name);
+
 	// NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i);
 
 	void up_date_h0_to_solve(const MatReal& h0_i);
@@ -129,7 +131,7 @@ public:
 	void get_gimp(Green& imp_i, VecInt or_deg);
 	
 	void find_g0(Green& imp_i);
-//--------------------------------------- for the print out---------------------------------
+//--------------------------------------- for the io---------------------------------
 	void write_norg_info(Int iter_cnt) const;
 	
 	void write_occupation_info() const;

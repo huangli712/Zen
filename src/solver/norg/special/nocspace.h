@@ -47,6 +47,7 @@ private:
 
 	// Find all the combined number subspaces, with speed up.
 	void find_all_noc_subspaces();
+	void find_all_noc_subspaces_by_row();
 
 	void print(std::ostream& os, const Str& var, const Str& val, const Str& comment) const {
 		using namespace std;
@@ -57,10 +58,12 @@ private:
 	bool if_div_in_restraint(const VecInt& restraint, const Int position, const Int max, const Int now) const;
 	
 	bool if_col_divs_in_restraint(const Int& restraint, const VEC<Int>& divcol_i, Int col_idx) const;
+	bool if_row_divs_in_restraint(const Int& restraint, const VEC<Int>& divrow_i, VecInt count_sit_mat) const;
 
 	bool ifin_NocSpace_judge_by_nppso(const MatInt& spilss_div, const VecInt& nppso) const;
 
 	VecInt multi_judger(const VEC<VEC<int> >& s, const VEC<VEC<int> >& a) const;
+	VecInt multi_judger_by_row(const VEC<VEC<int> >& s, const VEC<VEC<int> >& a) const;
 
 	bool check_each_column(const Int& col_pos, const VecInt& div_colsum) const {
 		if (col_pos == div_colsum.size() / 2) return true;
@@ -78,10 +81,30 @@ private:
 	VecInt read_from_col_lable(const VEC<Int> x, const VEC<VEC<Int> > a) const;
 
 	void find_all_possible_state(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) const;
+	void find_all_possible_state_by_row(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) const;
 
 	VEC<VEC<Int> > cart_product(const VEC<VEC<int> >& v)const;
 
-	VEC<VEC<Int> > cart_product_monitor(const VEC<VEC<int> >& v, const VEC<VEC<Int> >& a)const;
+	VEC<VEC<Int> > cart_product_monitor_col(const VEC<VEC<int> >& v, const VEC<VEC<Int> >& a)const;
+	VEC<VEC<Int> > cart_product_monitor_row(const VEC<VEC<int> >& v, const VEC<VEC<int> >& a) const;
+
+	Str list_nppso(const VecInt& nppso_i) const{
+		Str temp;
+		for (const auto& i : nppso_i) temp += STR(i);
+		return temp;
+	}
+
+	Idx read_the_Tab(Str name) const{
+		Idx temp_dim(-1);	
+		IFS ifs(STR(name + ".inf"));	Str strr;
+		while(1) {// read the Tab's size's info
+			ifs >> strr;
+			if(strr == "dim")	ifs >> temp_dim;
+			if (!ifs) break;
+		}
+		// WRN(NAV(temp_dim))
+		return temp_dim;
+	}
 public:
 	// It assume that we already have the hopint from the Impurity class, but still have not rotated it yet.
 	VecReal set_row_primeter_by_gived_mat(const VEC<MatReal>& uormat_i, const MatReal& h0);
@@ -89,6 +112,7 @@ public:
 	NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const Int& NumberSpa);
 	NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const MatReal& imp_i_h0, const Int& NumberSpa);
 	NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const MatReal& imp_i_h0, const VecInt& nppso_i);
+	NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const MatReal& imp_i_h0, const VecInt& nppso_i, Str tab_name);
 	
 	// bool ifin_NocSpace(VecInt& ud) const;
 	bool ifin_NocSpace(MatInt& ud) const;
