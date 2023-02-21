@@ -25,6 +25,12 @@ public:
 private:
     // void initial_uormat();
     Int if_ground_state();
+
+    Str list_nppso(const VecInt& nppso_i) const{
+		Str temp;
+		for (const auto& i : nppso_i.truncate(0,nppso_i.size()/2)) temp += STR(i)+"-";
+		return temp;
+	}
 public:
 	Occler(const MyMpi& mm_i, Prmtr& prmtr_i);
     NORG find_ground_state_partical(const MatReal& h0_i);
