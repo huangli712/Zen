@@ -20,7 +20,7 @@ template<typename F>
 class FitMrq {
 public:
 	static const Int NDONE = 32;			// default value: 4
-	static const Int ITMAX = 9990; 			// default value: 1000
+	static const Int ITMAX = 9990;		// default value: 1000
 	Int ndat;				// number of data points
 	Int ma;					// number of free and fixed fitting parameters to be determined
 	Int mfit;				// number of free fitting perameters to be determined

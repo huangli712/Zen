@@ -37,6 +37,20 @@ public:
 		if (m != n) ERR(NAV3(np, n, m));
 		_dsp = _bgn;
 	}
+
+	VecPartition(Int np_i, Int id_i, Int n_i, VecInt v_size): np(np_i), id(id_i), n(n_i), _bgn(np), _end(np), _len(np) {
+		if (np < 1) ERR(NAV2(np, n));
+		Int m = 0;
+		for_Int (i, 0, np) {
+			_bgn[i] = m;
+			m += v_size[i];
+			_len[i] = m - _bgn[i];
+			_end[i] = m;
+		}
+		if (m != n) ERR(NAV4(id, np, n, m));
+		_dsp = _bgn;
+	}
+
 	Int total_size() const { return n; }
 	Int bgn() const { return _bgn[id]; }
 	Int end() const { return _end[id]; }
@@ -120,6 +134,9 @@ private:
 	}
 	int Allreduce(const _Cmplx *sendbuf, _Cmplx *recvbuf, int sendcount) const {
 		return MPI_Allreduce(sendbuf, recvbuf, sendcount, MPI_DOUBLE_COMPLEX, MPI_SUM, comm);
+	}
+	int Gatherv(const Int *sendbuf, int sendcount, Int *recvbuf, const int *recvcount, const int *displs) const {
+		return MPI_Gatherv(sendbuf, sendcount, MPI_INT, recvbuf, recvcount, displs, MPI_INT, mstr, comm);
 	}
 	int Gatherv(const double *sendbuf, int sendcount, double *recvbuf, const int *recvcount, const int *displs) const {
 		return MPI_Gatherv(sendbuf, sendcount, MPI_DOUBLE, recvbuf, recvcount, displs, MPI_DOUBLE, mstr, comm);
