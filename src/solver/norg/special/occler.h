@@ -28,7 +28,7 @@ private:
 
     Str list_nppso(const VecInt& nppso_i) const{
 		Str temp;
-		for (const auto& i : nppso_i.truncate(0,nppso_i.size()/2)) temp += STR(i)+"-";
+		for (const auto& i : nppso_i.truncate(0,nppso_i.size()/2)) temp += "-" + STR(i);
 		return temp;
 	}
 public:
