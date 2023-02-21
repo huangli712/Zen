@@ -64,6 +64,8 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	// if(mm) WRN(NAV(gfimp.particle_number().diagonal()));
 	ImGreen seimp(p.nband, p);	seimp = g0imp.inverse() - gfimp.inverse();	if (mm) seimp.write_zen("seimp");
 
+	OFS ofs; ofs.open("rotuation_u.bi");
+	for_Int(i, 0, norg.uormat.size()) biwrite(ofs, CharP(norg.uormat[i].p()), norg.uormat[i].szof());
 }
 
 void APIzen::test_for_fitting(const Bath& bth, const ImGreen& hby_i, Int num)

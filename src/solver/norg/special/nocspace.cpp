@@ -158,11 +158,11 @@ void NocSpace::find_all_noc_subspaces()
 		dim += length_ECNS;
 		idx_div.push_back(dim);
 	}
-	if(mm) {
-		OFS ofs;	ofs.open("judger"+list_nppso(nppso)+ ".bdat");
-		biwrite(ofs, CharP(judger_out.p()), judger_out.szof());
-		ofs.close();
-	}
+	// if(mm) {
+	// 	OFS ofs;	ofs.open("judger"+list_nppso(nppso)+ ".bdat");
+	// 	biwrite(ofs, CharP(judger_out.p()), judger_out.szof());
+	// 	ofs.close();
+	// }
 }
 
 void NocSpace::find_all_noc_subspaces_by_row()

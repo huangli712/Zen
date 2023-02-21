@@ -18,17 +18,18 @@ NORG Occler::find_ground_state_partical(const MatReal& h0_i){
     Int counter(0);
     while(1){
         if(mm) std::cout << "The " << ++counter << "-th NORG begin" << std::endl;	// norg counter
-        NORG a(mm, p);
+        NORG a(mm, p);              IFS ifs(STR("rotuation_u.bi")); 
+        if(!ifs) for_Int(i, 0, a.uormat.size()) biread(ifs, CharP(a.uormat[i].p()), a.uormat[i].szof());
         a.up_date_h0_to_solve(h0_i);            np_energy_b = a.groune_lst;
         // VecInt np_m(p.npartical), np_p(p.npartical); np_m -= 1; np_p += 1;
         if(mm) std::cout << "The " << ++counter << "-th NORG begin" << std::endl;	// norg counter
         p.templet_control[1]--;     p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr(); p.recalc_partical_number();
-        NORG a_m(mm, p);
+        NORG a_m(mm, p);                        a_m.uormat = a.uormat;
         a_m.up_date_h0_to_solve(h0_i);          np_energy_m = a_m.groune_lst;
         p.templet_control[1]++;     p.templet_control[p.ndiv-1]--;  p.after_modify_prmtr(); p.recalc_partical_number();
         if(mm) std::cout << "The " << ++counter << "-th NORG begin" << std::endl;	// norg counter
         p.templet_control[1]++;     p.templet_control[p.ndiv-1]--;  p.after_modify_prmtr(); p.recalc_partical_number();
-        NORG a_p(mm, p);
+        NORG a_p(mm, p);                        a_p.uormat = a.uormat;
         a_p.up_date_h0_to_solve(h0_i);          np_energy_p = a_p.groune_lst;
         p.templet_control[1]--;     p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr(); p.recalc_partical_number();
         Int check = if_ground_state();
