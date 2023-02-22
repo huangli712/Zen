@@ -92,7 +92,7 @@ NORG Occler::find_ground_state_partical(const MatReal &h0_i, const VecInt& or_de
             counter++;
             if(counter == nppsos.size()) {
                 if(sub_energy.idx_min() == 0) {
-		            if(mm) {std::cout << "norg ground state' NOOC: " << std::endl; a.scsp.print();}
+		            if(mm) {std::cout << "The ground state's NOOC: " << std::endl; a.scsp.print();}
                     return a;}
                 else {
                     // nppsos.clear();
