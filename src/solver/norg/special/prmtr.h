@@ -86,6 +86,7 @@ private:
 public:
 	Prmtr(const MyMpi& mm);
 	void after_modify_prmtr() const;
+	void according_nppso(const VecInt& nppsos) const;
 	void derive_ImGreen() const;
 	void recalc_partical_number() const;
 	void print(std::ostream &os = std::cout) const;

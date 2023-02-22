@@ -81,6 +81,17 @@ void Prmtr::after_modify_prmtr() const
     derive_ImGreen();
 }
 
+// we set first divison as impurity. The maximum number of cavity("-"); mean electron("+").
+void Prmtr::according_nppso(const VecInt& nppsos) const
+{
+    control_divs[0] = templet_restrain;
+    for_Int(i, 0, norg_sets) {
+        control_divs[i + 1] = templet_control;
+        control_divs[i + 1][1] = nppsos[i] - ((control_divs[i + 1][0] + control_divs[i + 1][ndiv / 2]) / 2) ;
+        control_divs[i + 1][ndiv-1] = (nI2B[i]+control_divs[i + 1][0] - nppsos[i]) - ((control_divs[i + 1][0] + control_divs[i + 1][ndiv / 2]) / 2) ;
+    }
+}
+
 // according the control_divs set the number of partical.
 void Prmtr::recalc_partical_number() const
 {

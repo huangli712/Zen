@@ -50,7 +50,7 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	// NORG norg(mm, p);
 	// norg.up_date_h0_to_solve(imp.h0);
 	Occler opcler(mm,p);
-	NORG norg(opcler.find_ground_state_partical(imp.h0));
+	NORG norg(opcler.find_ground_state_partical(imp.h0, or_deg_idx.truncate(0,nband)));
 	if (mm)	{
 		norg.write_occupation_info();
 		std::cout << "norg ground state energy: " << norg.groune_lst  << "  " << present() << std::endl;

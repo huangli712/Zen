@@ -135,12 +135,11 @@ void NocSpace::find_all_noc_subspaces()
 {
 	Idx length_ECNS;						// length for each combined number subspaces(ECNS).
 	idx_div.push_back(dim);
-	VEC<VEC<Int> > a;
-	VEC<VEC<Int> > s;
+	VEC<VEC<Int> > a, s;
 
 	find_all_possible_state(a, s);
 	if(mm) PIO(NAV(s.size())+"   "+present());
-	IFS ifs(STR("judger"+list_nppso(nppso)+ ".bdat"));
+	IFS ifs(STR("judger"+nppso_str(nppso)+ ".bdat"));
 	VecInt judger_out(s.size());
 	if(!ifs) judger_out = multi_judger(s, a);
 	else biread(ifs, CharP(judger_out.p()), judger_out.szof());
@@ -159,7 +158,7 @@ void NocSpace::find_all_noc_subspaces()
 		idx_div.push_back(dim);
 	}
 	// if(mm) {
-	// 	OFS ofs;	ofs.open("judger"+list_nppso(nppso)+ ".bdat");
+	// 	OFS ofs;	ofs.open("judger"+nppso_str(nppso)+ ".bdat");
 	// 	biwrite(ofs, CharP(judger_out.p()), judger_out.szof());
 	// 	ofs.close();
 	// }
@@ -169,12 +168,11 @@ void NocSpace::find_all_noc_subspaces_by_row()
 {
 	Idx length_ECNS;						// length for each combined number subspaces(ECNS).
 	idx_div.push_back(dim);
-	VEC<VEC<Int> > a;
-	VEC<VEC<Int> > s;
+	VEC<VEC<Int> > a, s;
 
 	find_all_possible_state_by_row(a, s);
 	if(mm) PIO(NAV(s.size())+"   "+present());
-	IFS ifs(STR("judger"+list_nppso(nppso)+ ".bdat"));
+	IFS ifs(STR("judger"+nppso_str(nppso)+ ".bdat"));
 	VecInt judger_out(s.size());
 	if(!ifs) judger_out = multi_judger_by_row(s, a);
 	else biread(ifs, CharP(judger_out.p()), judger_out.szof());
@@ -189,7 +187,7 @@ void NocSpace::find_all_noc_subspaces_by_row()
 		idx_div.push_back(dim);
 	}
 	// if(mm) {
-	// 	OFS ofs;	ofs.open("judger"+list_nppso(nppso)+ ".bdat");
+	// 	OFS ofs;	ofs.open("judger"+nppso_str(nppso)+ ".bdat");
 	// 	biwrite(ofs, CharP(judger_out.p()), judger_out.szof());
 	// 	ofs.close();
 	// }
@@ -243,8 +241,7 @@ void NocSpace::find_all_possible_state(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) con
 	Int counter(0);
 	for_Int(col, 0, control_divs.ncols())
 	{
-		VEC<VEC<Int>> temp_a;
-		VEC<VEC<Int> > a_rol_temp;
+		VEC<VEC<Int>> temp_a, a_rol_temp;
 		for_Int(row, 1, control_divs.nrows())
 		{
 			VEC<Int> one_div;
@@ -280,8 +277,7 @@ void NocSpace::find_all_possible_state_by_row(VEC<VEC<Int> >& a, VEC<VEC<Int> >&
 	Int counter(0);
 	for_Int(row, 1, control_divs.nrows())
 	{
-		VEC<VEC<Int>> temp_a;
-		VEC<VEC<Int> > a_row_temp;
+		VEC<VEC<Int>> temp_a, a_row_temp;
 		for_Int(col, 0, control_divs.ncols())
 		{
 			VEC<Int> one_div;

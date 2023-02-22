@@ -88,7 +88,7 @@ private:
 	VEC<VEC<Int> > cart_product_monitor_col(const VEC<VEC<int> >& v, const VEC<VEC<Int> >& a)const;
 	VEC<VEC<Int> > cart_product_monitor_row(const VEC<VEC<int> >& v, const VEC<VEC<int> >& a) const;
 
-	Str list_nppso(const VecInt& nppso_i) const{
+	Str nppso_str(const VecInt& nppso_i) const{
 		Str temp;
 		for (const auto& i : nppso_i) temp += STR(i);
 		return temp;
