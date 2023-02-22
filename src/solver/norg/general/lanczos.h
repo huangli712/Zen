@@ -21,8 +21,8 @@ bool residual_method_for_b(VEC<T> ltd, VEC<T> lt_sd, Real b, Int k, bool fast_mo
     Vec<T> va(ltd);
     Vec<T> vb(lt_sd);
     Int info = trd_heevr_qr(va, vb, ev); if (info != 0)ERR("the i-th parameter had an illegal value." + NAV3(info, va, vb));
-    if ((fast_mode) && ABS(b * ev[k][0]) < 1.E-10) return true;
-    if (!(fast_mode) && ABS(b * ev[k][0]) < 1.E-12) return true;
+    if ((fast_mode) && ABS(b * ev[k][0]) < 1.E-8) return true;
+    if (!(fast_mode) && ABS(b * ev[k][0]) < 1.E-10) return true;
     return false;
 }
 template<typename T>

@@ -34,4 +34,5 @@ private:
 public:
 	Occler(const MyMpi& mm_i, Prmtr& prmtr_i);
     NORG find_ground_state_partical(const MatReal& h0_i);
+    NORG find_ground_state_partical(const MatReal& h0_i, VecInt or_deg);
 };

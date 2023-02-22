@@ -21,6 +21,9 @@ NORG Occler::find_ground_state_partical(const MatReal& h0_i){
         NORG a(mm, p);                          IFS ifs_a("ru"+list_nppso(a.scsp.nppso)+".bi"); 
         if(ifs_a) {for_Int(i, 0, a.uormat.size()) biread(ifs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());}
         a.up_date_h0_to_solve(h0_i);            np_energy_a = a.groune_lst;
+        if(mm){
+            OFS ofs_a; ofs_a.open("ru"+list_nppso(a.scsp.nppso)+".bi"); 
+            for_Int(i, 0, a.uormat.size()) biwrite(ofs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());}
         // VecInt np_m(p.npartical), np_p(p.npartical); np_m -= 1; np_p += 1;
 
         p.templet_control[1]--;                 p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr(); p.recalc_partical_number();
@@ -28,6 +31,10 @@ NORG Occler::find_ground_state_partical(const MatReal& h0_i){
             NORG a_m(mm, p);                    IFS ifs_m("ru"+list_nppso(a_m.scsp.nppso)+".bi"); 
             if(ifs_m) {for_Int(i, 0, a_m.uormat.size()) biread(ifs_m, CharP(a_m.uormat[i].p()), a_m.uormat[i].szof());}
             a_m.up_date_h0_to_solve(h0_i);      np_energy_m = a_m.groune_lst;
+        if(mm){
+            OFS ofs_m; ofs_m.open("ru"+list_nppso(a_m.scsp.nppso)+".bi"); 
+            for_Int(i, 0, a_m.uormat.size()) biwrite(ofs_m, CharP(a_m.uormat[i].p()), a_m.uormat[i].szof());}
+            
             if(p.templet_control[1] == 0 && np_energy_m < np_energy_a)  return a_m;
             p.templet_control[1]++;             p.templet_control[p.ndiv-1]--;  p.after_modify_prmtr(); p.recalc_partical_number();
 
@@ -36,17 +43,21 @@ NORG Occler::find_ground_state_partical(const MatReal& h0_i){
             NORG a_p(mm, p);                    IFS ifs_p("ru"+list_nppso(a_p.scsp.nppso)+".bi"); 
             if(ifs_p) {for_Int(i, 0, a_p.uormat.size()) biread(ifs_p, CharP(a_p.uormat[i].p()), a_p.uormat[i].szof());}
             a_p.up_date_h0_to_solve(h0_i);          np_energy_p = a_p.groune_lst;
+        if(mm){
+            OFS ofs_p; ofs_p.open("ru"+list_nppso(a_p.scsp.nppso)+".bi"); 
+            for_Int(i, 0, a_p.uormat.size()) biwrite(ofs_p, CharP(a_p.uormat[i].p()), a_p.uormat[i].szof());}
+
             if(p.templet_control[p.ndiv-1] == 0 && np_energy_p < np_energy_a)  return a_p;
             p.templet_control[1]--;     p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr(); p.recalc_partical_number();
 
-        if(mm){
-            OFS ofs_a; ofs_a.open("ru"+list_nppso(a.scsp.nppso)+".bi"); 
-            for_Int(i, 0, a.uormat.size()) biwrite(ofs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());
-            OFS ofs_m; ofs_m.open("ru"+list_nppso(a_m.scsp.nppso)+".bi"); 
-            for_Int(i, 0, a_m.uormat.size()) biwrite(ofs_m, CharP(a_m.uormat[i].p()), a_m.uormat[i].szof());
-            OFS ofs_p; ofs_p.open("ru"+list_nppso(a_p.scsp.nppso)+".bi"); 
-            for_Int(i, 0, a_p.uormat.size()) biwrite(ofs_p, CharP(a_p.uormat[i].p()), a_p.uormat[i].szof());
-        }
+        // if(mm){
+        //     OFS ofs_a; ofs_a.open("ru"+list_nppso(a.scsp.nppso)+".bi"); 
+        //     for_Int(i, 0, a.uormat.size()) biwrite(ofs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());
+        //     OFS ofs_m; ofs_m.open("ru"+list_nppso(a_m.scsp.nppso)+".bi"); 
+        //     for_Int(i, 0, a_m.uormat.size()) biwrite(ofs_m, CharP(a_m.uormat[i].p()), a_m.uormat[i].szof());
+        //     OFS ofs_p; ofs_p.open("ru"+list_nppso(a_p.scsp.nppso)+".bi"); 
+        //     for_Int(i, 0, a_p.uormat.size()) biwrite(ofs_p, CharP(a_p.uormat[i].p()), a_p.uormat[i].szof());
+        // }
 
         Int check = if_ground_state();
         if (check == 0) return a;
@@ -59,6 +70,53 @@ NORG Occler::find_ground_state_partical(const MatReal& h0_i){
     }
     ERR("There some thing wrong in Occler.cpp!")
 }
+
+// ! not finished.
+// NORG Occler::find_ground_state_partical(const MatReal& h0_i, VecInt or_deg){
+//     Int counter(0);
+//     while(1){
+//         if(mm) std::cout << "The " << ++counter << "-th NORG begin" << std::endl;	// norg counter
+//         NORG a(mm, p);                          IFS ifs_a("ru"+list_nppso(a.scsp.nppso)+".bi"); 
+//         if(ifs_a) {for_Int(i, 0, a.uormat.size()) biread(ifs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());}
+//         a.up_date_h0_to_solve(h0_i);            np_energy_a = a.groune_lst;
+//         // VecInt np_m(p.npartical), np_p(p.npartical); np_m -= 1; np_p += 1;
+
+//         p.templet_control[1]--;                 p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr(); p.recalc_partical_number();
+//             if(mm) std::cout << "The " << ++counter << "-th NORG begin" << std::endl;	// norg counter
+//             NORG a_m(mm, p);                    IFS ifs_m("ru"+list_nppso(a_m.scsp.nppso)+".bi"); 
+//             if(ifs_m) {for_Int(i, 0, a_m.uormat.size()) biread(ifs_m, CharP(a_m.uormat[i].p()), a_m.uormat[i].szof());}
+//             a_m.up_date_h0_to_solve(h0_i);      np_energy_m = a_m.groune_lst;
+//             if(p.templet_control[1] == 0 && np_energy_m < np_energy_a)  return a_m;
+//             p.templet_control[1]++;             p.templet_control[p.ndiv-1]--;  p.after_modify_prmtr(); p.recalc_partical_number();
+
+//         p.templet_control[1]++;     p.templet_control[p.ndiv-1]--;  p.after_modify_prmtr(); p.recalc_partical_number();
+//             if(mm) std::cout << "The " << ++counter << "-th NORG begin" << std::endl;	// norg counter
+//             NORG a_p(mm, p);                    IFS ifs_p("ru"+list_nppso(a_p.scsp.nppso)+".bi"); 
+//             if(ifs_p) {for_Int(i, 0, a_p.uormat.size()) biread(ifs_p, CharP(a_p.uormat[i].p()), a_p.uormat[i].szof());}
+//             a_p.up_date_h0_to_solve(h0_i);          np_energy_p = a_p.groune_lst;
+//             if(p.templet_control[p.ndiv-1] == 0 && np_energy_p < np_energy_a)  return a_p;
+//             p.templet_control[1]--;     p.templet_control[p.ndiv-1]++;  p.after_modify_prmtr(); p.recalc_partical_number();
+
+//         if(mm){
+//             OFS ofs_a; ofs_a.open("ru"+list_nppso(a.scsp.nppso)+".bi"); 
+//             for_Int(i, 0, a.uormat.size()) biwrite(ofs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());
+//             OFS ofs_m; ofs_m.open("ru"+list_nppso(a_m.scsp.nppso)+".bi"); 
+//             for_Int(i, 0, a_m.uormat.size()) biwrite(ofs_m, CharP(a_m.uormat[i].p()), a_m.uormat[i].szof());
+//             OFS ofs_p; ofs_p.open("ru"+list_nppso(a_p.scsp.nppso)+".bi"); 
+//             for_Int(i, 0, a_p.uormat.size()) biwrite(ofs_p, CharP(a_p.uormat[i].p()), a_p.uormat[i].szof());
+//         }
+
+//         Int check = if_ground_state();
+//         if (check == 0) return a;
+//         // if (check == 1 && counter == 3) return a_p;
+//         // if (check == 2 && counter == 3) return a_m;
+//         if (check == 3) {
+//             if(mm) WRN("the occler is not converged.");
+//             return a;
+//         }
+//     }
+//     ERR("There some thing wrong in Occler.cpp!")
+// }
 
 
 
