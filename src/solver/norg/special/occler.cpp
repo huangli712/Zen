@@ -90,22 +90,25 @@ NORG Occler::find_ground_state_partical(const MatReal &h0_i, const VecInt& or_de
             }
             // if(mm) WRN(NAV4(counter_norg, counter, a.groune_lst, a.scsp.nppso.mat(1,nppsos[0].size())));
             counter++;
-            if(counter == nppsos.size()) {
-                if(sub_energy.idx_min() == 0) {
-		            if(mm) {std::cout << "The ground state's NOOC: " << std::endl; a.scsp.print();}
-                    return a;}
-                else {
-                    // nppsos.clear();
-                    // nppsos = list_all_posible_nppsos(nppsos[sub_energy.idx_min()], or_deg);
-                    // if(mm) WRN(NAV(sub_energy.stdvec().at(MIN(sub_energy))));
-                    // nparticals = nppsos[sub_energy.stdvec().at(MIN(sub_energy))];
-                    // if(mm) WRN(NAV2(sub_energy.idx_min(),nppsos[sub_energy.idx_min()].mat(1,10)));
-                    nparticals = nppsos[sub_energy.idx_min()];
-                    // break;
-                }
+        }
+
+        if(counter == nppsos.size()) {
+            if(sub_energy.idx_min() == 0) {
+                p.according_nppso(nparticals = nppsos[0]);
+                NORG a(mm, p);
+                if(mm) {std::cout << "The ground state's NOOC: " << std::endl; a.scsp.print();}
+                return a;}
+            else {
+                // nppsos.clear();
+                // nppsos = list_all_posible_nppsos(nppsos[sub_energy.idx_min()], or_deg);
+                // if(mm) WRN(NAV(sub_energy.stdvec().at(MIN(sub_energy))));
+                // nparticals = nppsos[sub_energy.stdvec().at(MIN(sub_energy))];
+                // if(mm) WRN(NAV2(sub_energy.idx_min(),nppsos[sub_energy.idx_min()].mat(1,10)));
+                nparticals = nppsos[sub_energy.idx_min()];
+                // break;
             }
         }
-        if(counter > 27) ERR("There some thing wrong in Occler.cpp!");
+        // if(counter > 27) ERR("There some thing wrong in Occler.cpp!");
     }
 }
 
