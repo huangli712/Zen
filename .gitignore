@@ -34,3 +34,4 @@ src/solver/norg/*.txt
 src/solver/norg/*/*.txt
 src/solver/norg/.vscode
 src/solver/norg/archive
+!ose_hop.txt

@@ -17,7 +17,7 @@ class Occler{
 	const MyMpi &mm;						// parameters
 	Prmtr &p;							    // parameters
     VecInt &nparticals;                     // temporyly storge the partical number
-    Real np_energy_b, np_energy_p, np_energy_m;
+    Real np_energy_a, np_energy_p, np_energy_m;
 
 public:
 	// VEC<MatReal> uormat;					// unitary_orbital_rotation_matrix

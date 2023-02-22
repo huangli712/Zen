@@ -190,14 +190,14 @@ void Bath::read_ose_hop(Int iter_cnt) {
 		VecReal ose_t(p.nI2B[2 * band_i], 0);
 		for_Int(i, 0, p.nI2B[2 * band_i]) { ifs >> ose_t[i]; }
 		vec_ose.push_back(ose_t);
-		if(mm) WRN(NAV(ose_t));
+		// if(mm) WRN(NAV(ose_t));
 	}		
 	if(ifs)for_Int(band_i, 0, p.nband)	{
 		ifs >> strr; ifs >> strr;
 		VecReal hop_t(p.nI2B[2 * band_i], 0);
 		for_Int(i, 0, p.nI2B[2 * band_i]) { ifs >> hop_t[i]; }
 		vec_hop.push_back(hop_t);
-		if(mm) WRN(NAV(hop_t));
+		// if(mm) WRN(NAV(hop_t));
 	}
 }
 
