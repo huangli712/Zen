@@ -445,16 +445,18 @@ void NocSpace::print(std::ostream& os) const
 
 	using namespace std;
 	Str cnooc = p.nooc_mode;
+	MatInt nppsos = nppso.mat(1,control_divs.nrows()-1);
 
 
 	os << "// NORG setting" << endl;
 
 	// nocspace_print(ndivs, "The amount of divisons's number. ");
-	nocspace_print(ndivs, "The amount of divisons's number. ");
-	nocspace_print(cnooc, "Correlation nature orbital occupation constraint.");
-	nocspace_print(control_divs, "to set the number of division and the shortcut restratin.");
+	nocspace_print(nppsos, "The number of partical per spin orbital number. ");
 	nocspace_print(nspa, "The amount of partical's number.");
 	nocspace_print(dim, "the dimension of the Shortcut space.");
+	// nocspace_print(ndivs, "The amount of divisons's number. ");
+	nocspace_print(cnooc, "Correlation nature orbital occupation constraint.");
+	nocspace_print(control_divs, "to set the number of division and the shortcut restratin.");
 	// nocspace_print(h0, "transformed hopping integral");
 	// nocspace_print(mu, "-mu");
 	nocspace_print(p.hubbU, " The Hubbard term U.");

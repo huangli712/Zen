@@ -32,7 +32,7 @@ NORG::NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, Str tab_name) :
 	show_the_nozero_number_of_tabel();
 }
 
-void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
+void NORG::up_date_h0_to_solve(const MatReal& h0_i, const VecReal sub_energy) {
 	if(mm) std::cout << std::endl;						// blank line
 	h0 = h0_i;
 	// if (mm) PIO(NAV2(h0,scsp.dim));
@@ -45,6 +45,9 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i) {
 		// write_norg_info(iter_norg_cnt);
 		// write_state_info(iter_norg_cnt);
 	}
+	
+	if(sub_energy.size() != 0 && MIN(sub_energy) < groune_lst * 2 )  return ;
+	
 	while (iter_norg_cnt < p.iter_max_norg && !converged()) {
 		iter_norg_cnt++;
 		if(mm) PIO("The iteration counting: " + NAV(iter_norg_cnt));

@@ -86,7 +86,7 @@ public:
 
 	// NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i);
 
-	void up_date_h0_to_solve(const MatReal& h0_i);
+	void up_date_h0_to_solve(const MatReal& h0_i, const VecReal sub_energy = Vec<Real>());
 	
 /*
 	// In this method we calculate the correction vector using the Krylov-space approach to modify the U.

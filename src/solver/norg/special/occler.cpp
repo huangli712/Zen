@@ -81,7 +81,7 @@ NORG Occler::find_ground_state_partical(const MatReal &h0_i, const VecInt& or_de
             NORG a(mm, p);
             IFS ifs_a("ru" + nppso_str(a.scsp.nppso) + ".bi");
             if (ifs_a) for_Int(i, 0, a.uormat.size()) biread(ifs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());
-            a.up_date_h0_to_solve(h0_i); sub_energy[counter] = a.groune_lst;
+            a.up_date_h0_to_solve(h0_i, sub_energy.truncate(0, counter)); sub_energy[counter] = a.groune_lst;
 
             if (mm) {
                 OFS ofs_a;
