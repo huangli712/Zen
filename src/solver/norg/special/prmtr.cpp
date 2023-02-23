@@ -49,8 +49,8 @@ void Prmtr::set_values() {
     fit_rsd = bandw/8.; // default value: 2.
 
     // NORG parameter.
-    templet_restrain = {0, -1, -2,  0,  2,  1};
-    templet_control =  {1,  2,  0,  1,  0,  2};
+    templet_restrain = {0, -1, -1,  0,  1,  1};
+    templet_control =  {1,  3,  0,  1,  0,  3};
     ndiv = templet_control.size();
     norg_sets = norbs;                                  // default value: 1
     nI2B = SUM(templet_control);                        // default value:
@@ -82,13 +82,20 @@ void Prmtr::after_modify_prmtr() const
 }
 
 // we set first divison as impurity. The maximum number of cavity("-"); mean electron("+").
+// new this version only support for the 6 ndivs.
 void Prmtr::according_nppso(const VecInt& nppsos) const
 {
     control_divs[0] = templet_restrain;
     for_Int(i, 0, norg_sets) {
         control_divs[i + 1] = templet_control;
-        control_divs[i + 1][1] = nppsos[i] - ((control_divs[i + 1][0] + control_divs[i + 1][ndiv / 2]) / 2) ;
-        control_divs[i + 1][ndiv-1] = (nI2B[i]+control_divs[i + 1][0] - nppsos[i]) - ((control_divs[i + 1][0] + control_divs[i + 1][ndiv / 2]) / 2) ;
+        control_divs[i + 1][1] = nppsos[i] - ((control_divs[i + 1][0] + control_divs[i + 1][ndiv / 2]) / 2) \
+        - SUM(control_divs[i + 1].truncate(2, Int(ndiv / 2)));
+        control_divs[i + 1][ndiv-1] = (nI2B[i]+control_divs[i + 1][0] - nppsos[i])\
+        - ((control_divs[i + 1][0] + control_divs[i + 1][ndiv / 2]) / 2) - SUM(control_divs[i + 1].truncate(2, Int(ndiv / 2)));
+        if (control_divs[i + 1][1] < 0 && control_divs[i + 1][2] > 0) {
+            control_divs[i + 1][2] -= control_divs[i + 1][1]; control_divs[i + 1][ndiv-2] += control_divs[i + 1][1]; 
+            control_divs[i + 1][1] = 0; control_divs[i + 1][ndiv-1] = 0;
+        }
     }
 }
 

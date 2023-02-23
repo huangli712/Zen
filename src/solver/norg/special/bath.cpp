@@ -37,7 +37,7 @@ void Bath::bath_fit(const ImGreen& hb_i, Int iter)
 			//Real err_bsr = hyberr.err_bsr(a);
 			Real a_norm = a.norm();
 			using namespace std;
-			cout << setw(4) << iter << "  " << NAV5(nmin, err, err_crv, err_reg,/* err_bsr,*/ a_norm) << "  " << present() << endl;
+			cout << setw(4) << band_i+1 << "  " << NAV5(nmin, err, err_crv, err_reg,/* err_bsr,*/ a_norm) << "  " << present() << endl;
 			NAV5(Int(info[band_i][0]=Real(nmin)), info[band_i][1]=err, info[band_i][2]=err_crv, info[band_i][3]=err_reg, /*err_bsr,*/ info[band_i][4]=a_norm);
 		}
 	}

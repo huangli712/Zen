@@ -62,10 +62,11 @@ NORG Occler::find_ground_state_partical(const MatReal& h0_i){
     ERR("There some thing wrong in Occler.cpp!")
 }
 
-// ! not tested.
+// ! tested.
 NORG Occler::find_ground_state_partical(const MatReal &h0_i, const VecInt& or_deg)
 {
     Int counter_norg(0);
+    VEC<MatReal> u_temp;
     while(1){
             Int counter(0);
             // if(mm) WRN(NAV(nparticals.mat(1,10)));
@@ -76,16 +77,16 @@ NORG Occler::find_ground_state_partical(const MatReal &h0_i, const VecInt& or_de
             if (mm) std::cout << "The " << ++counter_norg << "-th NORG begin" << std::endl; // norg counter
             
             p.according_nppso(nparticals = nppso);
-            // if(mm) WRN(NAV(nparticals.mat(1,10)));
-            // if(mm) WRN(NAV2(nppsos.size(), p.control_divs));
+            // if(mm) WRN(NAV3(nparticals.mat(1,10),nppsos.size(), p.control_divs));
             NORG a(mm, p);
             IFS ifs_a("ru" + nppso_str(a.scsp.nppso) + ".bi");
             if (ifs_a) for_Int(i, 0, a.uormat.size()) biread(ifs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());
+            else if(counter_norg > 0) a.uormat = u_temp;
             a.up_date_h0_to_solve(h0_i, sub_energy.truncate(0, counter)); sub_energy[counter] = a.groune_lst;
-
+            if(counter%3 == 0) u_temp = a.uormat;
             if (mm) {
                 OFS ofs_a;
-                ofs_a.open("ru" + nppso_str(a.scsp.nppso) + ".bi");
+                ofs_a.open("ru" + nppso_str(a.scsp.nppso) + ".bi"); 
                 for_Int(i, 0, a.uormat.size()) biwrite(ofs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());
             }
             // if(mm) WRN(NAV4(counter_norg, counter, a.groune_lst, a.scsp.nppso.mat(1,nppsos[0].size())));

@@ -88,12 +88,6 @@ private:
 	VEC<VEC<Int> > cart_product_monitor_col(const VEC<VEC<int> >& v, const VEC<VEC<Int> >& a)const;
 	VEC<VEC<Int> > cart_product_monitor_row(const VEC<VEC<int> >& v, const VEC<VEC<int> >& a) const;
 
-	Str nppso_str(const VecInt& nppso_i) const{
-		Str temp;
-		for (const auto& i : nppso_i) temp += STR(i);
-		return temp;
-	}
-
 	Idx read_the_Tab(Str name) const{
 		Idx temp_dim(-1);	
 		IFS ifs(STR(name + ".inf"));	Str strr;
@@ -104,6 +98,10 @@ private:
 		}
 		// WRN(NAV(temp_dim))
 		return temp_dim;
+	}
+	
+	Str nppso_str(const VecInt &nppso_i) const	{
+		Str temp; for_Int(i, 0, nppso_i.size()) if (i % 2 == 0) temp += "-" + STR(nppso_i[i]);	return temp;
 	}
 public:
 	// It assume that we already have the hopint from the Impurity class, but still have not rotated it yet.
