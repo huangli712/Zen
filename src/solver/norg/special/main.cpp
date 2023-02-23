@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 	clock_t t_program_bgn;
 	if (mm) TIME_BGN("program", t_program_bgn);
 	Prmtr prmtr(mm);
-
+ 
 	// Model mdl(mm,prmtr);
 	{// For test NORG only.
 		// Bath bth(mm, prmtr);
