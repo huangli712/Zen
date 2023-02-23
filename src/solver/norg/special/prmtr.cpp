@@ -92,9 +92,11 @@ void Prmtr::according_nppso(const VecInt& nppsos) const
         - SUM(control_divs[i + 1].truncate(2, Int(ndiv / 2)));
         control_divs[i + 1][ndiv-1] = (nI2B[i]+control_divs[i + 1][0] - nppsos[i])\
         - ((control_divs[i + 1][0] + control_divs[i + 1][ndiv / 2]) / 2) - SUM(control_divs[i + 1].truncate(2, Int(ndiv / 2)));
+
         if (control_divs[i + 1][1] < 0 && control_divs[i + 1][2] > 0) {
-            control_divs[i + 1][2] -= control_divs[i + 1][1]; control_divs[i + 1][ndiv-2] += control_divs[i + 1][1]; 
-            control_divs[i + 1][1] = 0; control_divs[i + 1][ndiv-1] = 0;
+            int t = -control_divs[i + 1][1];
+            control_divs[i + 1][2] -= t; control_divs[i + 1][ndiv-2] += t; 
+            control_divs[i + 1][ndiv-1] += -t; control_divs[i + 1][1] = 0; 
         }
     }
 }
