@@ -67,9 +67,9 @@ NORG Occler::find_ground_state_partical(const MatReal &h0_i, const VecInt& or_de
 {
     Int counter_norg(0);
     VEC<MatReal> u_temp;
+    nparticals = {5, 5, 5, 5, 1, 1, 5, 5, 1, 1};
     while(1){
             Int counter(0);
-            nparticals = {5, 5, 5, 5, 1, 1, 5, 5, 1, 1};
             // if(mm) WRN(NAV(nparticals.mat(1,10)));
             VEC<VecInt> nppsos = list_all_posible_nppsos(nparticals, or_deg);
             sub_energy.reset(nppsos.size(),0.); sub_energy = 0.;
