@@ -46,7 +46,10 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i, const VecReal sub_energy) {
 		// write_state_info(iter_norg_cnt);
 	}
 	
-	if(sub_energy.size() != 0 && MIN(sub_energy) < groune_lst * 1.125 )  return ;
+	if(sub_energy.size() != 0 && MIN(sub_energy) < groune_lst * 1.025 )  {
+		if(mm) std::cout <<  iofmt("def")<< "The energy so hight \""<< groune_lst \
+		<<"\", SO, The Ground state must not in this sub-space, calc. will shotdown." <<"\n"<< std::endl;
+		return ;}
 	
 	while (iter_norg_cnt < p.iter_max_norg && !converged()) {
 		iter_norg_cnt++;
