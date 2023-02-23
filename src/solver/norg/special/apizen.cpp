@@ -45,12 +45,13 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	ImGreen hb_imp(p.nband, p);   	imp.find_hb(hb_imp); 	if (mm) hb_imp.write_zen("hb_imp", "Fit");
 	imp.update();											if (mm) imp.write_H0info(bth);
 	// if(mm) WRN(NAV(imp.h0))
-	ImGreen g0(p.norbit, p);	imp.find_all_g0(g0);		// if(mm)WRN(NAV(g0.particle_number().diagonal()));
+	// ImGreen g0(p.norbit, p);	imp.find_all_g0(g0);		// if(mm)WRN(NAV(g0.particle_number().diagonal()));
 	// NORG norg(mm, p, "mainspace");
 	// NORG norg(mm, p);
 	// norg.up_date_h0_to_solve(imp.h0);
 	Occler opcler(mm,p);
 	NORG norg(opcler.find_ground_state_partical(imp.h0, or_deg_idx.truncate(0,nband)));
+	// NORG norg(opcler.find_ground_state_partical(imp.h0));
 	if (mm)	{
 		norg.write_occupation_info();
 		std::cout << "norg ground state energy: " << norg.groune_lst  << "  " << present() << std::endl;

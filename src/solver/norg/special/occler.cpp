@@ -92,28 +92,25 @@ NORG Occler::find_ground_state_partical(const MatReal &h0_i, const VecInt& or_de
             counter++;
         }
 
-        if(counter == nppsos.size()) {
-            if(sub_energy.idx_min() == 0) {
-                p.according_nppso(nparticals = nppsos[0]);
-                NORG a(mm, p);
-                
-                IFS ifs_a("ru" + nppso_str(a.scsp.nppso) + ".bi");
-                if (ifs_a) for_Int(i, 0, a.uormat.size()) biread(ifs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());
-                a.up_date_h0_to_solve(h0_i); sub_energy[counter] = a.groune_lst;
+        if(sub_energy.idx_min() == 0) {
+            p.according_nppso(nparticals = nppsos[0]);
+            NORG a(mm, p);
+            
+            IFS ifs_a("ru" + nppso_str(a.scsp.nppso) + ".bi");
+            if (ifs_a) for_Int(i, 0, a.uormat.size()) biread(ifs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());
+            a.up_date_h0_to_solve(h0_i);
 
-                if(mm) {std::cout << "The ground state's NOOC: " << std::endl; a.scsp.print();}
-                return a;}
-            else {
-                // nppsos.clear();
-                // nppsos = list_all_posible_nppsos(nppsos[sub_energy.idx_min()], or_deg);
-                // if(mm) WRN(NAV(sub_energy.stdvec().at(MIN(sub_energy))));
-                // nparticals = nppsos[sub_energy.stdvec().at(MIN(sub_energy))];
-                // if(mm) WRN(NAV2(sub_energy.idx_min(),nppsos[sub_energy.idx_min()].mat(1,10)));
-                nparticals = nppsos[sub_energy.idx_min()];
-                // break;
-            }
+            if(mm) {std::cout << "The ground state's NOOC: " << std::endl; a.scsp.print();}
+            return a;}
+        else {
+            // nppsos.clear();
+            // nppsos = list_all_posible_nppsos(nppsos[sub_energy.idx_min()], or_deg);
+            // if(mm) WRN(NAV(sub_energy.stdvec().at(MIN(sub_energy))));
+            // nparticals = nppsos[sub_energy.stdvec().at(MIN(sub_energy))];
+            // if(mm) WRN(NAV2(sub_energy.idx_min(),nppsos[sub_energy.idx_min()].mat(1,10)));
+            nparticals = nppsos[sub_energy.idx_min()];
+            // break;
         }
-        // if(counter > 27) ERR("There some thing wrong in Occler.cpp!");
     }
 }
 
