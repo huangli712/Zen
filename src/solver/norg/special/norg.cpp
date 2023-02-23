@@ -46,7 +46,7 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i, const VecReal sub_energy) {
 		// write_state_info(iter_norg_cnt);
 	}
 	
-	if(sub_energy.size() != 0 && MIN(sub_energy) < groune_lst * 2 )  return ;
+	if(sub_energy.size() != 0 && MIN(sub_energy) < groune_lst * 1.125 )  return ;
 	
 	while (iter_norg_cnt < p.iter_max_norg && !converged()) {
 		iter_norg_cnt++;
