@@ -1,7 +1,8 @@
 #include "bath.h"
 
 Bath::Bath(const MyMpi& mm_i, const Prmtr& prmtr_i) :
-	mm(mm_i), p(prmtr_i), nb(p.nI2B[0]), hb(1, p), uur(mm.id()), ose(p.nI2B[0]), hop(p.nI2B[0]), info(p.nband,5)
+	mm(mm_i), p(prmtr_i), nb(p.nI2B[0]), hb(1, p), uur(mm.id()), ose(p.nI2B[0]), hop(p.nI2B[0]), info(p.nband,5),
+	vec_ose(p.nband), vec_hop(p.nband)
 {
 	// make random seed output together
 	{ SLEEP(1); mm.barrier(); }
@@ -10,7 +11,7 @@ Bath::Bath(const MyMpi& mm_i, const Prmtr& prmtr_i) :
 
 void Bath::bath_fit(const ImGreen& hb_i, Int iter)
 {
-	read_ose_hop();IFS ifs("ose_hop.txt");
+	read_ose_hop(); IFS ifs("ose_hop.txt");
 	for_Int(band_i, 0, p.nband){
 		if(p.nband != hb_i[0].nrows()) ERR("some thing wrong with the hybrid function.")
 		for_Int(i, 0, hb_i.nomgs) hb[i] = hb_i[i][band_i][band_i];
@@ -42,6 +43,48 @@ void Bath::bath_fit(const ImGreen& hb_i, Int iter)
 		}
 	}
 }
+
+void Bath::bath_fit(const ImGreen& hb_i, VecInt or_deg)
+{
+	read_ose_hop();IFS ifs("ose_hop.txt");
+	for_Int(degi, 0, MAX(or_deg)) {
+		Int count(0);
+		VecCmplx hb_fit(hb.nomgs); 
+		for_Int(i, 0, hb_i.norbs) {
+			count++;
+			if(or_deg[i] - 1 == degi) for_Int(n, 0, hb.nomgs) hb_fit[n] += hb_i.g[n][i][i];
+		}
+		if(p.nband != hb_i[0].nrows()) ERR("some thing wrong with the hybrid function.")
+		for_Int(i, 0, hb.nomgs) hb[i] = hb_fit[i] / count;
+		ose.reset(p.nI2B[or_deg[degi]]); hop.reset(p.nI2B[or_deg[degi]]); nb = p.nI2B[or_deg[degi]];
+		if(ifs) {ose = vec_ose[or_deg[degi]]; hop = vec_hop[or_deg[degi]];} 
+		else init_ose_hop();
+		const VecReal a0 = concat(ose, hop);
+		Real err;
+		VecReal a;
+		Int nmin;
+		std::tie(err, a, nmin) = bath_fit_contest(a0);
+		ose = a.truncate(0, nb);
+		hop = a.truncate(nb, nb + nb);
+		regularize_ose_hop();
+		for_Int(i, 0, p.nband) if(or_deg[i]-1 == degi) vec_ose[i] = ose;
+		for_Int(i, 0, p.nband) if(or_deg[i]-1 == degi) vec_hop[i] = hop;
+		// if(mm) WRN(NAV2(vec_ose.size(),vec_hop.size()));
+		if (mm) {
+			const HybErr hyberr(p, hb, nb);
+			const VecReal a = concat(ose, hop);
+			Real err = hyberr(a);
+			Real err_crv = hyberr.err_curve(a);
+			Real err_reg = hyberr.err_reg(a);
+			//Real err_bsr = hyberr.err_bsr(a);
+			Real a_norm = a.norm();
+			using namespace std;
+			cout << setw(4) << degi << "  " << NAV5(nmin, err, err_crv, err_reg,/* err_bsr,*/ a_norm) << "  " << present() << endl;
+			NAV5(Int(info[degi][0]=Real(nmin)), info[degi][1]=err, info[degi][2]=err_crv, info[degi][3]=err_reg, /*err_bsr,*/ info[degi][4]=a_norm);
+		}
+	}
+}
+
 
 VecReal Bath::next_initial_fitting_parameters(const VecReal& a0, const Int& ntry_fine, Int& itry)
 {

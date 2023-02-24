@@ -22,7 +22,7 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	for_Int(j, 0, hb.nomgs) for_Int(i, 0, nband)  hb.g[j][i][i] = - imfrq_hybrid_function[i][j];
 	hb.write_zen("hb_zen", "Read");
 	Bath bth(mm, p);
-	bth.bath_fit(hb, dmft_cnt);					if(mm)	bth.write_ose_hop(dmft_cnt);
+	bth.bath_fit(hb, or_deg_idx.truncate(0,nband));					if(mm)	bth.write_ose_hop(dmft_cnt);
 	// {// add the symmetry (part 2/2)
 	// 	Int temp_size(bth.vec_ose[0].size());
 	// 	VecReal ose(temp_size, 0.), hop(temp_size, 0.);

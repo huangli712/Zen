@@ -19,7 +19,7 @@ public:
 	UURandomSFMT uur;
 	VecReal ose;			// on-site energies for bath sites
 	VecReal hop;			// hopping coefficients between impurity site and bath sites
-	VEC<VecReal> vec_ose,vec_hop;
+	VEC<VecReal> vec_ose, vec_hop;
 	MatReal info;		// print out the NAV5(nmin, err, err_crv, err_reg, /*err_bsr,*/ a_norm)
 private:
 	void regularize_ose_hop();
@@ -44,6 +44,9 @@ private:
 public:
 	Bath(const MyMpi& mm_i, const Prmtr& prmtr_i);
 	void bath_fit(const ImGreen& hb_i, Int iter);
+	void bath_fit(const ImGreen& hb_i, VecInt or_deg);
+
+
 	void bath_TRfit(const ImGreen& hb_i, Int iter);// not finished.
 	MatReal find_hop() const;
 
