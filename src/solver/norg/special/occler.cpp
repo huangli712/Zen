@@ -67,7 +67,7 @@ NORG Occler::find_ground_state_partical(const MatReal &h0_i, const VecInt& or_de
 {
     Int counter_norg(0);
     VEC<MatReal> u_temp;
-    // nparticals = {5, 5, 5, 5, 1, 1, 5, 5, 1, 1};
+    nparticals = {5, 5, 5, 5, 2, 2, 5, 5, 2, 2};
     while(1){
             Int counter(0);
             // if(mm) WRN(NAV(nparticals.mat(1,10)));
@@ -82,9 +82,9 @@ NORG Occler::find_ground_state_partical(const MatReal &h0_i, const VecInt& or_de
             NORG a(mm, p);
             IFS ifs_a("ru" + nppso_str(a.scsp.nppso) + ".bi");
             if (ifs_a) for_Int(i, 0, a.uormat.size()) biread(ifs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());
-            else if(counter_norg > 0) a.uormat = u_temp;
+            // else if(counter_norg > 1) a.uormat = u_temp;
             a.up_date_h0_to_solve(h0_i, sub_energy.truncate(0, counter)); sub_energy[counter] = a.groune_lst;
-            if(counter%3 == 0) u_temp = a.uormat;
+            // if(counter%3 == 0) u_temp = a.uormat;
             if (mm) {
                 OFS ofs_a;
                 ofs_a.open("ru" + nppso_str(a.scsp.nppso) + ".bi"); 
