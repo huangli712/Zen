@@ -43,7 +43,7 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 
 	Impurity imp(mm, p, bth);
 	ImGreen hb_imp(p.nband, p);   	imp.find_hb(hb_imp); 	if (mm) hb_imp.write_zen("hb_imp", "Fit");
-	imp.update();											if (mm) imp.write_H0info(bth);
+	imp.update();											if (mm) imp.write_H0info(bth, MAX(or_deg_idx));
 	// if(mm) WRN(NAV(imp.h0))
 	// ImGreen g0(p.norbit, p);	imp.find_all_g0(g0);		// if(mm)WRN(NAV(g0.particle_number().diagonal()));
 	// NORG norg(mm, p, "mainspace");
