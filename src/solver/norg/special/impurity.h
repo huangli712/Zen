@@ -43,6 +43,7 @@ public:
 	MatReal find_hop_for_test() const;
 
 	void update();
+	void update(VecInt or_deg);
 
 	// void write_H0info(const Bath &b) const;
 	void write_H0info(const Bath &b, Int ndeg = -1) const;

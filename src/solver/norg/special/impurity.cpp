@@ -72,6 +72,13 @@ void Impurity::update() {
     set_factor();
 }
 
+// ! not finished.
+// void Impurity::update(VecInt or_deg) {
+//     for_Int()
+
+//     set_factor();
+// }
+
 void Impurity::write_H0info(const Bath &b, Int ndeg) const {
     OFS ofs;    ofs.open("h0.txt");
     using namespace std;
