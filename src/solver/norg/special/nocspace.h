@@ -48,6 +48,7 @@ private:
 	// Find all the combined number subspaces, with speed up.
 	void find_all_noc_subspaces();
 	void find_all_noc_subspaces_by_row();
+	void find_thought_noc_subspaces();
 
 	void print(std::ostream& os, const Str& var, const Str& val, const Str& comment) const {
 		using namespace std;
@@ -64,6 +65,7 @@ private:
 
 	VecInt multi_judger(const VEC<VEC<int> >& s, const VEC<VEC<int> >& a) const;
 	VecInt multi_judger_by_row(const VEC<VEC<int> >& s, const VEC<VEC<int> >& a) const;
+	Vec<MatInt> multi_judger_with_return(VEC<VEC<int> >& s, const VEC<VEC<int> >& a) const;
 
 	bool check_each_column(const Int& col_pos, const VecInt& div_colsum) const {
 		if (col_pos == div_colsum.size() / 2) return true;
@@ -80,10 +82,29 @@ private:
 
 	VecInt read_from_col_lable(const VEC<Int> x, const VEC<VEC<Int> > a) const;
 
-	void find_all_possible_state(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) const;
+	void find_all_possible_state_by_col(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) const;
 	void find_all_possible_state_by_row(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) const;
+	void find_all_possible_state_by_nooc(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) const;
 
-	VEC<VEC<Int> > cart_product(const VEC<VEC<int> >& v)const;
+	template<typename T>
+	VEC<VEC<T>> cart_product(const VEC<VEC<T>> &v) const
+	{
+		VEC<VEC<T>> s = {{}};
+		for (const auto &u : v)
+		{
+			VEC<VEC<T>> r;
+			for (const auto &x : s)
+			{
+				for (const auto y : u)
+				{
+					r.push_back(x);
+					r.back().push_back(y);
+				}
+			}
+			s = move(r);
+		}
+		return s;
+	};
 
 	VEC<VEC<Int> > cart_product_monitor_col(const VEC<VEC<int> >& v, const VEC<VEC<Int> >& a)const;
 	VEC<VEC<Int> > cart_product_monitor_row(const VEC<VEC<int> >& v, const VEC<VEC<int> >& a) const;
@@ -116,6 +137,7 @@ public:
 	bool ifin_NocSpace(MatInt& ud) const;
 	// bool ifin_NocSpace_for_green(MatInt& spilss_div, const VecInt& nppso, const Int& crtorann) const;
 	bool ifin_NocSpace(MatInt& spilss_div, const VecInt& nppso) const;
+	bool suit_NOOC(MatInt& spilss_div, const VecInt& nppso) const;
 	
 	bool ifin_NocSpace_more_strict(MatInt& spilss_div, const VecInt& nppso) const;
 

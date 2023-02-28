@@ -35,7 +35,8 @@ NocSpace::NocSpace(const MyMpi& mm_i, const Prmtr& prmtr_i, const MatReal& imp_i
 	set_control();
 	// find_combined_number_subspaces(1);
 	// find_all_noc_subspaces();
-	find_all_noc_subspaces_by_row();
+	// find_all_noc_subspaces_by_row();
+	find_thought_noc_subspaces();
 
 	if(mm) PIO("Begin find_combined_number_subspaces()"+ NAV(dim)+"   "+present());
 }
@@ -137,7 +138,7 @@ void NocSpace::find_all_noc_subspaces()
 	idx_div.push_back(dim);
 	VEC<VEC<Int> > a, s;
 
-	find_all_possible_state(a, s);
+	find_all_possible_state_by_col(a, s);
 	if(mm) PIO(NAV(s.size())+"   "+present());
 	IFS ifs(STR("judger"+nppso_str(nppso)+ ".bdat"));
 	VecInt judger_out(s.size());
@@ -162,6 +163,26 @@ void NocSpace::find_all_noc_subspaces()
 	// 	biwrite(ofs, CharP(judger_out.p()), judger_out.szof());
 	// 	ofs.close();
 	// }
+}
+
+void NocSpace::find_thought_noc_subspaces()
+{
+	Idx length_ECNS;						// length for each combined number subspaces(ECNS).
+	idx_div.push_back(dim);
+	VEC<VEC<Int> > a, s;
+
+	find_all_possible_state_by_nooc(a, s);
+	Vec<MatInt> spilss_divs = multi_judger_with_return(s, a);
+	if(mm) WRN(NAV(spilss_divs.size()));
+	for_Int(k, 0, spilss_divs.size()) {
+		const MatInt & spilss_div(spilss_divs[k]);
+		div.push_back(spilss_div);
+		divs_to_idx.insert(std::pair<std::string, Int>(spilss_div.vec().string(), dim));
+		length_ECNS = 1;
+		for_Int(i, 1, control_divs.nrows()) for_Int(j, 0, ndivs) length_ECNS = length_ECNS * bf(control_divs[i][j], spilss_div[i - 1][j]);
+		dim += length_ECNS;
+		idx_div.push_back(dim);
+	}
 }
 
 void NocSpace::find_all_noc_subspaces_by_row()
@@ -224,6 +245,52 @@ VecInt NocSpace::multi_judger_by_row(const VEC<VEC<int> >& s, const VEC<VEC<int>
 	return out;
 }
 
+Vec<MatInt> NocSpace::multi_judger_with_return(VEC<VEC<int> >& s, const VEC<VEC<int> >& a) const {
+	VecPartition div_dim(mm.np(), mm.id(), s.size());
+	VecInt v_size_i(1); 
+	// Int counter(0);
+	VEC<MatInt> split_spilss_divs;
+	for_Int(i, div_dim.bgn(), div_dim.end()){
+		MatInt spilss_div(read_from_col_lable(s[i], a).mat(control_divs.ncols() - 2, control_divs.nrows() - 1).tr());
+		if (suit_NOOC(spilss_div, nppso)) {
+			VecInt left_div_size(spilss_div.nrows());
+			// MatInt unnooc_sit = concat(sit_mat.tr()[0], sit_mat.tr()[ndivs/2]).mat(2, sit_mat.nrows()).tr();
+			// MatInt unnooc_ele = concat(spilss_div.tr()[0], spilss_div.tr()[ndivs/2]).mat(2, spilss_div.nrows()).tr();
+			// for_Int(j, 0, spilss_div.nrows()) left_div_size *= bf(sit_mat[j][0] + sit_mat[j][ndivs / 2], nppso[j] - SUM(spilss_div[j]));
+			VecInt left_n;
+			VEC<VEC<VecInt>> left_ii, left_unnooc;
+			for_Int(j, 0, spilss_div.nrows()) {
+				Int n(nppso[j] - SUM(spilss_div[j])), sit_i(sit_mat[j][0]), sit_b(sit_mat[j][ndivs / 2]); left_n[j] = n;
+				Int possible = n < MIN(sit_i, sit_b) ? n : n - MAX(n-sit_b,0) - MAX(n-sit_i,0);	left_div_size[j] =  possible;
+				VecInt a_beg(2);
+				// if(possible == n) a_beg = Vec{0, n};
+				// else a_beg = sit_i > sit_b ? Vec{n - sit_b, sit_b}: Vec{n - sit_i, sit_i}
+				a_beg = possible == n ? Vec{0, n}:  Vec{n - sit_b, sit_b};
+				for_Int(k, 0, possible) {left_ii[j].push_back(a_beg); a_beg[0]++; a_beg[1]--;}
+			}
+			left_unnooc = cart_product(left_ii);
+			// for_Int(j, 0, spilss_div.nrows()) 
+			// for_Int(j, 0, left_div_size) 
+			for (const auto &x : left_unnooc)
+			{
+				MatInt unnooc(spilss_div.nrows(), 2);
+				for_Int(j, 0, x.size()) unnooc[j] = x[j];
+				MatInt div(concat(concat(unnooc.tr()[0],spilss_div.tr().truncate_row(0,spilss_div.ncols()/2).vec()), \
+						   concat(unnooc.tr()[1],spilss_div.tr().truncate_row(spilss_div.ncols()/2,spilss_div.ncols()).vec())).\
+						   mat(sit_mat.ncols(),sit_mat.nrows()).tr());				
+				split_spilss_divs.push_back(div);
+			}
+		}
+	}
+	v_size_i[0] = split_spilss_divs.size();
+	Int size = mm.Allreduce(v_size_i[0]);
+	VecPartition split_v_size(mm.np(), mm.id(), mm.np());
+	VecInt v_size = mm.Allgatherv(v_size_i, split_v_size);
+	VecPartition split(mm.np(), mm.id(), size, v_size);
+	Vec<MatInt> out = mm.Gatherv(Vec(split_spilss_divs), sit_mat.nrows(), sit_mat.ncols(), split);
+	return out;
+}
+
 VecInt NocSpace::read_from_col_lable(const VEC<Int> x, const VEC<VEC<Int> > a) const{
 	VecInt ren;
 	for (const auto &lable : x)
@@ -235,7 +302,7 @@ VecInt NocSpace::read_from_col_lable(const VEC<Int> x, const VEC<VEC<Int> > a) c
 	return ren;
 }
 
-void NocSpace::find_all_possible_state(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) const
+void NocSpace::find_all_possible_state_by_col(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) const
 {
 	VEC<VEC<Int> > a_lable;
 	Int counter(0);
@@ -305,6 +372,41 @@ void NocSpace::find_all_possible_state_by_row(VEC<VEC<Int> >& a, VEC<VEC<Int> >&
 	// s = cart_product(a_lable);
 }
 
+void NocSpace::find_all_possible_state_by_nooc(VEC<VEC<Int> >& a, VEC<VEC<Int> >& s) const
+{
+	VEC<VEC<Int> > a_lable;
+	Int counter(0);
+	for_Int(col, 0, control_divs.ncols()) if(col != 0 && col != ndivs/2)
+	{
+		VEC<VEC<Int>> temp_a, a_rol_temp;
+		for_Int(row, 1, control_divs.nrows())
+		{
+			VEC<Int> one_div;
+			for_Int(spl, 0, control_divs[row][col] + 1)
+			{
+				if (if_div_in_restraint(control_divs[0], col, control_divs[row][col], spl))
+					one_div.push_back(spl);
+			}
+			a_rol_temp.push_back(one_div);
+		}
+		temp_a = cart_product(a_rol_temp);
+		for (const auto &one_divs : temp_a)	{
+			if (if_col_divs_in_restraint(control_divs[0][col], one_divs, col))
+				a.push_back(one_divs);
+		}
+		VEC<Int> a_lable_i;
+		for_Int(i, counter, a.size()){
+			a_lable_i.push_back(i);
+			counter++;
+		}
+		a_lable.push_back(a_lable_i);
+		if(mm) WRN(NAV2( col,a.size()));
+	}
+
+	s = cart_product_monitor_col(a_lable, a);
+	// s = cart_product(a_lable);
+}
+
 bool NocSpace::ifin_NocSpace(MatInt& spilss_div) const
 {
 	if (SUM(spilss_div) == nspa) {
@@ -357,6 +459,22 @@ bool NocSpace::ifin_NocSpace(MatInt& spilss_div, const VecInt& nppso) const
 		return true;
 	}
 	else return false;
+}
+
+bool NocSpace::suit_NOOC(MatInt& spilss_div, const VecInt& nppso) const
+{
+	if(ndivs%2) ERR("ndivs is not a even number!");
+	for_Int(i, 0, p.norg_sets)	if(SUM(spilss_div[i]) != nppso[i] - sit_mat[i][0] - sit_mat[i][ndivs/2]) return false;
+	for_Int(i, 1, control_divs.nrows()) for_Int(j, 0, ndivs) if (spilss_div[i - 1][j] < 0 || spilss_div[i - 1][j] > control_divs[i][j]) return false;
+	VecInt spils_c(spilss_div.ncols(), 0), zero(1,0);
+	for_Int(j, 0, spilss_div.ncols()) for_Int(i, 0, spilss_div.nrows()) spils_c[j] += spilss_div[i][j];
+	VecInt countvec = concat(concat(zero,spils_c.truncate(0, spils_c.size()/2)),concat(zero,spils_c.truncate(spils_c.size()/2, spils_c.size())));
+	for_Int(i, 1, ndivs) if(!check_each_column(i, countvec)) return false;
+	if(p.nooc_mode == STR("nooc")) return true;
+	else if(p.nooc_mode == STR("cpnooc")) {for_Int(i, 1, ndivs/2 - 1) if(check_correlated_column(i, countvec)) return false;}
+	else if(p.nooc_mode == STR("cnooc")) {for_Int(i, 1, ndivs/2) if(check_correlated_column(i, countvec)) return false;}
+	else ERR("nooc_mode in put was wrong!");
+	return false;
 }
 
 bool NocSpace::ifin_NocSpace_more_strict(MatInt& spilss_div, const VecInt& nppso) const
@@ -469,21 +587,21 @@ void NocSpace::print(std::ostream& os) const
 #undef nocspace_print
 }
 
-VEC<VEC<Int> > NocSpace::cart_product (const VEC<VEC<Int> >& v)const
-{
-    VEC<VEC<Int> > s = {{}};
-    for (const auto& u : v) {
-        VEC<VEC<Int> > r;
-        for (const auto& x : s) {
-            for (const auto y : u) {
-                r.push_back(x);
-                r.back().push_back(y);
-            }
-        }
-        s = move(r);
-    }
-    return s;
-}
+// VEC<VEC<Int> > NocSpace::cart_product (const VEC<VEC<Int> >& v)const
+// {
+//     VEC<VEC<Int> > s = {{}};
+//     for (const auto& u : v) {
+//         VEC<VEC<Int> > r;
+//         for (const auto& x : s) {
+//             for (const auto y : u) {
+//                 r.push_back(x);
+//                 r.back().push_back(y);
+//             }
+//         }
+//         s = move(r);
+//     }
+//     return s;
+// }
 
 VEC<VEC<Int> > NocSpace::cart_product_monitor_col (const VEC<VEC<Int> >& v, const VEC<VEC<Int> >& a)const
 {
