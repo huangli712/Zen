@@ -41,15 +41,16 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	
 
 
-	Impurity imp(mm, p, bth);
+	Impurity imp(mm, p, bth, or_deg_idx.truncate(0,nband));
 	ImGreen hb_imp(p.nband, p);   	imp.find_hb(hb_imp); 	if (mm) hb_imp.write_zen("hb_imp", "Fit");
 	imp.update();											if (mm) imp.write_H0info(bth, MAX(or_deg_idx));
 	// if(mm) WRN(NAV(imp.h0))
 	// ImGreen g0(p.norbit, p);	imp.find_all_g0(g0);		// if(mm)WRN(NAV(g0.particle_number().diagonal()));
 	// NORG norg(mm, p, "mainspace");
 	
-	// test for only one space.		
-    	p.npartical = {6, 6, 6, 6, 4, 4, 6, 6, 4, 4};
+	// test for only one space.
+		Int band1(p.npartical[0]), band2(p.npartical[0]-2);
+		p.npartical = {band1, band1, band1, band1, band2, band2, band1, band1, band2, band2};
 		p.according_nppso(p.npartical);
 		NORG norg(mm, p);
 		norg.up_date_h0_to_solve(imp.h0);

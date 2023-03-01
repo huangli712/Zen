@@ -27,14 +27,16 @@ public:
 	const Int ns;				// number of sites,ns=ni+nb
 	const Int nb;				// number of bath sites
 
-	MatReal h0;					//hopping factors
-	VecReal pos_imp;   			//position of imp site
+	MatReal h0;					// hopping factors
+	VecReal pos_imp;   			// position of imp site
+	VecReal imp_lvl;			// impurity energy level
 
 private:
 	//hopping  factors;when bath parameters is unusual,we just need to modify bath.hop() 
 	void set_factor();
 public:
 	Impurity(const MyMpi& mm_i, const Prmtr& prmtr_i, const Bath& bth_i, const Str& file = empty_str);
+	Impurity(const MyMpi& mm_i, const Prmtr& prmtr_i, const Bath& bth_i, const VecInt or_deg);
 	void find_g0(Green& g0) const;
 	void find_all_g0(Green& g0) const;
 	
@@ -43,7 +45,7 @@ public:
 	MatReal find_hop_for_test() const;
 
 	void update();
-	void update(VecInt or_deg);
+	
 
 	// void write_H0info(const Bath &b) const;
 	void write_H0info(const Bath &b, Int ndeg = -1) const;

@@ -1,9 +1,25 @@
 #include "impurity.h"
 
 Impurity::Impurity(const MyMpi &mm_i, const Prmtr &prmtr_i, const Bath &bth_i, const Str& file)
-    : mm(mm_i), p(prmtr_i), bth(bth_i), nb(p.nbath), ni(p.norbs), ns(p.norbit), pos_imp(p.norbs), h0(p.norbit, p.norbit, 0.)
+    : mm(mm_i), p(prmtr_i), bth(bth_i), nb(p.nbath), ni(p.norbs), ns(p.norbit), pos_imp(p.norbs), h0(p.norbit, p.norbit, 0.), imp_lvl(p.norbs)
 {
     // if (!file.empty()) read(file);
+    for_Int(i, 0, ni) imp_lvl[i] = p.eimp[i] - p.mu;
+    set_factor();
+}
+
+Impurity::Impurity(const MyMpi &mm_i, const Prmtr &prmtr_i, const Bath &bth_i, const VecInt or_deg)
+    : mm(mm_i), p(prmtr_i), bth(bth_i), nb(p.nbath), ni(p.norbs), ns(p.norbit), pos_imp(p.norbs), h0(p.norbit, p.norbit, 0.), imp_lvl(p.norbs, 0.)
+{
+    // if (!file.empty()) read(file);
+    VecReal deg_lvl(MAX(or_deg), 0.);
+    for_Int(i, 0, or_deg.size()) deg_lvl[or_deg[i] - 1] += p.eimp[i] - p.mu;
+    for_Int(i, 0, MAX(or_deg)) {
+        Int cnt(0);
+        for_Int(j, 0, or_deg.size()) if(i == or_deg[j] - 1) cnt++;
+        deg_lvl[i] = deg_lvl[i] / cnt;
+    }
+    for_Int(i, 0, ni) imp_lvl[i] = deg_lvl[or_deg[i/2] - 1];
     set_factor();
 }
 
@@ -105,7 +121,7 @@ void Impurity::set_factor() {
     // // h0 = find_hop_for_test();
     // set imp part
     MatReal h0loc(ni,ni,0.);
-    for_Int(i, 0, ni) h0loc[i][i] = p.eimp[i] - p.mu;
+    for_Int(i, 0, ni) h0loc[i][i] = imp_lvl[i];
     
     // find i_th imp in which site
     Int site = 0;

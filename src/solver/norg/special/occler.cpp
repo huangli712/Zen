@@ -67,7 +67,8 @@ NORG Occler::find_ground_state_partical(const MatReal &h0_i, const VecInt& or_de
 {
     Int counter_norg(0);
     VEC<MatReal> u_temp;
-    nparticals = {5, 5, 5, 5, 2, 2, 5, 5, 2, 2};
+    Int band1(p.npartical[0]), band2(p.npartical[0]-2);
+    p.npartical = {band1, band1, band1, band1, band2, band2, band1, band1, band2, band2};
     while(1){
             Int counter(0);
             // if(mm) WRN(NAV(nparticals.mat(1,10)));
