@@ -81,6 +81,8 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i, const VecReal sub_energy) {
 	}
 	iter_norg_cnt = 0;		occupation_err = 1.;		energy_err = 1.;
 	final_ground_state = oneedm.ground_state;	norg_stable_count = 0.;
+	MatReal occnum = occnum_lst.mat(p.norg_sets, p.nbath/p.norg_sets);
+	if(mm) PIO(NAV(occnum));
 
 	// Finish the NORGiteration.
 	// oneedm.save_the_Tab(oneedm.table, "mainspace");
