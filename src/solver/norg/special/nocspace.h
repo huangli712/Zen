@@ -145,6 +145,9 @@ public:
 
 	void print(std::ostream& os = std::cout) const;
 
+	Str nppso_str() const	{
+		Str temp; for_Int(i, 0, nppso.size()) if (i % 2 == 0) temp += "-" + STR(nppso[i]);	return temp;
+	}
 
 	VecInt free_div_base_decode(Int idx, VEC<VEC<Int> > v) const;
 };
