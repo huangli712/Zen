@@ -52,6 +52,7 @@ public:
 private:
 	void read_ZEN(const Str& file);
 
+	NORG choose_cauculation_style(Str mode, Impurity &imp);
 	// void fitting();
 
 	void test_for_fitting(const Bath& bth, const ImGreen& hby_i, Int num = 666);

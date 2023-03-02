@@ -48,13 +48,26 @@ APIzen::APIzen(const MyMpi& mm_i, Prmtr& prmtr_i, const Str& file, const Int tes
 	// ImGreen g0(p.norbit, p);	imp.find_all_g0(g0);		// if(mm)WRN(NAV(g0.particle_number().diagonal()));
 	// NORG norg(mm, p, "mainspace");
 	
+
+
+
+	NORG norg(choose_cauculation_style("fast", imp));
+
+
 	// test for only one space.
-		Int band1(p.npartical[0]), band2(p.npartical[0]-2);
-		p.npartical = {band1, band1, band1, band1, band2, band2, band1, band1, band2, band2};
-		p.according_nppso(p.npartical);
-		NORG norg(mm, p);
-		norg.up_date_h0_to_solve(imp.h0);
-	
+		// Int band1(p.npartical[0]), band2(p.npartical[0]-2);
+		// p.npartical = {band1, band1, band1, band1, band2, band2, band1, band1, band2, band2};
+		// p.according_nppso(p.npartical);
+		// NORG norg(mm, p);
+		// IFS ifs_a("ru" + norg.scsp.nppso_str() + ".bi");
+		// if (ifs_a) for_Int(i, 0, norg.uormat.size()) biread(ifs_a, CharP(norg.uormat[i].p()), norg.uormat[i].szof());
+		// norg.up_date_h0_to_solve(imp.h0);
+		// if (mm)	{
+		// 	OFS ofs_a;
+		// 	ofs_a.open("ru" + norg.scsp.nppso_str() + ".bi");
+		// 	for_Int(i, 0, norg.uormat.size()) biwrite(ofs_a, CharP(norg.uormat[i].p()), norg.uormat[i].szof());
+		// }
+
 	// Occler opcler(mm,p);
 	// NORG norg(opcler.find_ground_state_partical(imp.h0, or_deg_idx.truncate(0,nband)));
 	// NORG norg(opcler.find_ground_state_partical(imp.h0));
@@ -224,5 +237,30 @@ void APIzen::read_ZEN(const Str& file)
 		}
 		if (num_nondegenerate <= 0)ERR(STR("read_ZEN-in error with ") + NAV2(eimpdata, num_nondegenerate));
 		ifs.close();
+	}
+}
+
+
+
+NORG APIzen::choose_cauculation_style(Str mode, Impurity &imp){
+	if(mode == "fast"){
+		Int band1(p.npartical[0]), band2(p.npartical[0]-2);
+		p.npartical = {band1, band1, band1, band1, band2, band2, band1, band1, band2, band2};
+		p.according_nppso(p.npartical);
+		NORG norg(mm, p);
+		IFS ifs_a("ru" + norg.scsp.nppso_str() + ".bi");
+		if (ifs_a) for_Int(i, 0, norg.uormat.size()) biread(ifs_a, CharP(norg.uormat[i].p()), norg.uormat[i].szof());
+		norg.up_date_h0_to_solve(imp.h0);
+		if (mm)	{
+			OFS ofs_a;
+			ofs_a.open("ru" + norg.scsp.nppso_str() + ".bi");
+			for_Int(i, 0, norg.uormat.size()) biwrite(ofs_a, CharP(norg.uormat[i].p()), norg.uormat[i].szof());
+		}
+		return norg;
+	}
+	if(mode == "stable"){
+		Occler opcler(mm,p);
+		NORG norg(opcler.find_ground_state_partical(imp.h0, or_deg_idx.truncate(0,nband)));
+		return norg;
 	}
 }
