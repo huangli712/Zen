@@ -172,7 +172,7 @@ void NocSpace::find_thought_noc_subspaces()
 	VEC<VEC<Int> > a, s;
 
 	find_all_possible_state_by_nooc(a, s);
-	if(mm) WRN(NAV(s.size()));
+	// if(mm) WRN(NAV(s.size()));
 	Vec<MatInt> spilss_divs = multi_judger_with_return(s, a);
 	// if(mm) WRN(NAV(spilss_divs.size()));
 	for_Int(k, 0, spilss_divs.size()) {

@@ -36,3 +36,4 @@ src/solver/norg/.vscode
 src/solver/norg/archive
 !ose_hop.txt
 src/solver/norg/bi/*bi
+src/solver/norg/tools/test*

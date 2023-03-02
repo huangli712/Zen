@@ -47,7 +47,7 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i, const VecReal sub_energy) {
 	}
 	
 	if(sub_energy.size() != 0 && MIN(sub_energy) < groune_lst * 1.005 )  {
-		if(mm) std::cout <<iofmt("def")<< "The energy level is so hight, "<< NAV(groune_lst) << ".\n Which reach to " \
+		if(mm) std::cout <<iofmt("def")<< "The energy level is so hight, "<< NAV(groune_lst) << ".\nWhich reach to " \
 		<<100*MIN(sub_energy)/groune_lst<<"%, so, the Ground state mustn't in this sub-space, and calc. will be stoped." <<"\n"<< std::endl;
 		return ;}
 	
@@ -80,11 +80,65 @@ void NORG::up_date_h0_to_solve(const MatReal& h0_i, const VecReal sub_energy) {
 		if(mm) std::cout << std::endl;						// blank line
 	}
 	iter_norg_cnt = 0;		occupation_err = 1.;		energy_err = 1.;
-	final_ground_state = oneedm.ground_state;	norg_stable_count = 0.;
-	MatReal occnum = occnum_lst.mat(p.norg_sets, p.nbath/p.norg_sets);
-	for_Int(i, 0, p.norg_sets) for_Int(j, 0, p.ndiv) if(occnum[i][j] > 0.5) occnum[i][j] = 1 - occnum[i][j];
+	final_ground_state = oneedm.ground_state;	norg_stable_count = 0.; occnum = occnum_lst;
+	MatReal occnum = occnum_lst.mat(p.norg_sets, p.nbath/p.norg_sets), occweight(occnum);
+	for_Int(i, 0, p.norg_sets) for_Int(j, 0, p.ndiv) if(occnum[i][j] > 0.5) occweight[i][j] = 1 - occnum[i][j];
 	Str nppso = scsp.nppso_str();
-	if(mm) PIO(NAV2(nppso, occnum));
+	if(mm) PIO(NAV3(nppso, occnum, occweight));
+
+	// Finish the NORGiteration.
+	// oneedm.save_the_Tab(oneedm.table, "mainspace");
+}
+
+void NORG::up_date_h0_to_solve(const MatReal& h0_i, const Int mode) {
+	if(mm) std::cout << std::endl;						// blank line
+	h0 = h0_i;
+	// if (mm) PIO(NAV2(h0,scsp.dim));
+	scsp.coefficient = scsp.set_row_primeter_by_gived_mat(uormat, h0_i);
+	oneedm.update(); final_ground_state = oneedm.ground_state;
+	// if(mm) PIO(NAV(oneedm.sum_off_diagonal()));
+	groune_lst = oneedm.groundstate_energy;
+	if (mm)	{
+		scsp.print();
+		// write_norg_info(iter_norg_cnt);
+		// write_state_info(iter_norg_cnt);
+	}
+	
+	while (iter_norg_cnt < p.iter_max_norg && !converged()) {
+		iter_norg_cnt++;
+		if(mm) PIO("The iteration counting: " + NAV(iter_norg_cnt));
+		if(mode) {
+			VEC<MatReal> uormat_new(oneedm.find_unitary_orbital_rotation_matrix());
+			for_Int(i, 0, uormat.size()) uormat[i] = uormat_new[i] * uormat[i];}
+		// if(mm) WRN(NAV(uormat[0]));
+		scsp.coefficient = scsp.set_row_primeter_by_gived_mat(uormat, h0_i);	//if (mm) scsp.print();
+		// if (mm)PIO("ground_state size" + NAV(oneedm.ground_state.size()));
+		groune_pre = groune_lst;	occnum_pre = occnum_lst;
+		oneedm.update(); final_ground_state = oneedm.ground_state;
+		// if(mm) PIO(NAV(oneedm.sum_off_diagonal()));
+		occnum_lst = VECVectoVec(oneedm.occupationnumber);
+		groune_lst = oneedm.groundstate_energy;
+		// if(mm) WRN(NAV(oneedm.dm[0]));
+		if (mm) {
+			// WRN(NAV(iter_norg_cnt));
+			// for_Int(i, 0, uormat.size()) WRN(NAV(uormat_new[i]));
+			// write_norg_info(iter_norg_cnt);
+			// write_state_info(iter_norg_cnt);
+		}
+		occupation_err = SQRT(SUM(SQR(occnum_pre - occnum_lst)) / p.norbit);
+		energy_err = 2 * (groune_pre - groune_lst) / (ABS(groune_pre) + ABS(groune_lst) + 1.);
+		if (mm) {
+			PIO(NAV2(energy_err, occupation_err));
+			std::cout << "groundE_pre " << iofmt("sci") << groune_pre << std::setw(4) << "   groundE_lst " << groune_lst  << "  " << present() << std::endl;
+		}
+		if(mm) std::cout << std::endl;						// blank line
+	}
+	iter_norg_cnt = 0;		occupation_err = 1.;		energy_err = 1.;
+	final_ground_state = oneedm.ground_state;	norg_stable_count = 0.; occnum = occnum_lst;
+	MatReal occnum = occnum_lst.mat(p.norg_sets, p.nbath/p.norg_sets), occweight(occnum);
+	for_Int(i, 0, p.norg_sets) for_Int(j, 0, p.ndiv) if(occnum[i][j] > 0.5) occweight[i][j] = 1 - occnum[i][j];
+	Str nppso = scsp.nppso_str();
+	if(mm) PIO(NAV3(nppso, occnum, occweight));
 
 	// Finish the NORGiteration.
 	// oneedm.save_the_Tab(oneedm.table, "mainspace");

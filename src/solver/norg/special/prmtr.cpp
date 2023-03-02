@@ -101,6 +101,14 @@ void Prmtr::according_nppso(const VecInt& nppsos) const
     }
 }
 
+// we set first divison as impurity. The maximum number of cavity("-"); mean electron("+").
+// new this version only support for the 6 ndivs.
+void Prmtr::according_controler(const Vec<VecInt>& controler, const VecInt& or_deg) const
+{
+    control_divs[0] = controler[0];
+    for_Int(i, 0, norg_sets) control_divs[i+1] = controler[or_deg[i]];
+}
+
 // according the control_divs set the number of partical.
 void Prmtr::recalc_partical_number() const
 {

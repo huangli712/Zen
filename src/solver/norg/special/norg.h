@@ -37,7 +37,7 @@ public:
 
 	MatReal h0;
 	Real	groune_lst;						// ground state energy record after one optimize iteration.
-	VecReal final_ground_state;
+	VecReal final_ground_state, occnum;
 	ImGreen impgreen;
 
 	mutable NocSpace scsp;					// The main space.
@@ -87,6 +87,7 @@ public:
 	// NORG(const MyMpi& mm_i, const Impurity& imp_i, const Prmtr& prmtr_i);
 
 	void up_date_h0_to_solve(const MatReal& h0_i, const VecReal sub_energy = Vec<Real>());
+	void up_date_h0_to_solve(const MatReal& h0_i, const Int mode);
 	
 /*
 	// In this method we calculate the correction vector using the Krylov-space approach to modify the U.
