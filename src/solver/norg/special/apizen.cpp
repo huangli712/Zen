@@ -269,7 +269,7 @@ NORG APIzen::choose_cauculation_style(Str mode, Impurity &imp){
 		VecInt ordeg(concat(or_deg_idx.truncate(0,nband),or_deg_idx.truncate(0,nband)).mat(2,nband).tr().vec()), nppso;
 		Vec<VecInt> controler(MAX(or_deg_idx) + 1, VecInt(p.ndiv, 0));
 		MatReal occnum, occweight;
-		controler[0] = {0, -0, -nband,  0,  nband,  0};
+		controler[0] = {0, -1, -MAX(ordeg),  0,  MAX(ordeg),  1};
 		{
 			NORG norg(opcler.find_ground_state_partical(imp.h0, or_deg_idx.truncate(0,nband)));
 			uormat = norg.uormat;
@@ -295,9 +295,14 @@ NORG APIzen::choose_cauculation_style(Str mode, Impurity &imp){
 		// 	if(mm) WRN(NAV3(ordeg,m_controler, p.control_divs));
 		// }
 		NORG frezeorb(mm, p);
-		frezeorb.uormat = uormat;
+		IFS ifs_a("ru" + frezeorb.scsp.nppso_str() + ".bi");
+		if (ifs_a) for_Int(i, 0, frezeorb.uormat.size()) biread(ifs_a, CharP(frezeorb.uormat[i].p()), frezeorb.uormat[i].szof());
 		frezeorb.up_date_h0_to_solve(imp.h0);
-
+		if (mm)	{
+			OFS ofs_a;
+			ofs_a.open("ru" + frezeorb.scsp.nppso_str() + ".bi");
+			for_Int(i, 0, frezeorb.uormat.size()) biwrite(ofs_a, CharP(frezeorb.uormat[i].p()), frezeorb.uormat[i].szof());
+		}
 		return frezeorb;
 	}
 	if(mode == "freze_test"){
@@ -345,8 +350,14 @@ NORG APIzen::choose_cauculation_style(Str mode, Impurity &imp){
 		// 	if(mm) WRN(NAV3(ordeg,m_controler, p.control_divs));
 		// }
 		NORG frezeorb(mm, p);
-		frezeorb.uormat = uormat;
+		IFS ifs_a("ru" + frezeorb.scsp.nppso_str() + ".bi");
+		if (ifs_a) for_Int(i, 0, frezeorb.uormat.size()) biread(ifs_a, CharP(frezeorb.uormat[i].p()), frezeorb.uormat[i].szof());
 		frezeorb.up_date_h0_to_solve(imp.h0, 0);
+		if (mm)	{
+			OFS ofs_a;
+			ofs_a.open("ru" + frezeorb.scsp.nppso_str() + ".bi");
+			for_Int(i, 0, frezeorb.uormat.size()) biwrite(ofs_a, CharP(frezeorb.uormat[i].p()), frezeorb.uormat[i].szof());
+		}
 
 		return frezeorb;
 	}
