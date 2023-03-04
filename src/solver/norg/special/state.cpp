@@ -196,7 +196,7 @@ VEC<MatInt> StateStatistics::interation_soc_hop(const Int& ComDiv)
 	// For the spinless orbits.
 	
 	MatInt occupy = space.div[ComDiv];
-
+	WRN(NAV(occupy));
 	for_Int(i, 0, space.p.nband) {
 		Int cnt(occupy[i*2][0] + occupy[i*2+1][0]);
 		if(cnt == 0) {
@@ -205,7 +205,8 @@ VEC<MatInt> StateStatistics::interation_soc_hop(const Int& ComDiv)
 				if(cnt == 2) {
 					occupy[i*2][0] = occupy[i*2+1][0] = 1;
 					occupy[j*2][0] = occupy[j*2+1][0] = 0;
-					if (space.ifin_NocSpace(occupy, space.nppso)) hop_soc.push_back(occupy);					
+					if (space.ifin_NocSpace(occupy, space.nppso)) hop_soc.push_back(occupy);
+					WRN(NAV(occupy));
 				}
 			}
 		}
@@ -216,7 +217,8 @@ VEC<MatInt> StateStatistics::interation_soc_hop(const Int& ComDiv)
 				if(cnt == 0) {
 					occupy[i*2][0] = occupy[i*2+1][0] = 0;
 					occupy[j*2][0] = occupy[j*2+1][0] = 1;
-					if (space.ifin_NocSpace(occupy, space.nppso)) hop_soc.push_back(occupy);					
+					if (space.ifin_NocSpace(occupy, space.nppso)) hop_soc.push_back(occupy);
+					WRN(NAV(occupy));
 				}
 			}
 		}
@@ -227,7 +229,8 @@ VEC<MatInt> StateStatistics::interation_soc_hop(const Int& ComDiv)
 				if(cnt == 1 && occupy[j*2][0] != occupy[i*2][0]) {
 					SWAP(occupy[i*2][0], occupy[i*2+1][0]);
 					SWAP(occupy[j*2][0], occupy[j*2+1][0]);
-					if (space.ifin_NocSpace(occupy, space.nppso)) hop_soc.push_back(occupy);					
+					if (space.ifin_NocSpace(occupy, space.nppso)) hop_soc.push_back(occupy);
+					WRN(NAV(occupy));
 				}
 			}
 		}

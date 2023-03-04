@@ -48,7 +48,7 @@ void Bath::bath_fit(const ImGreen& hb_i, VecInt or_deg)
 {
 	read_ose_hop();IFS ifs("ose_hop.txt");
 	for_Int(degi, 0, MAX(or_deg)) {
-		Int count(0);
+		Int count(0), orb_rep(-1);
 		VecCmplx hb_fit(hb.nomgs); 
 		for_Int(i, 0, hb_i.norbs) {
 			count++;
@@ -56,8 +56,10 @@ void Bath::bath_fit(const ImGreen& hb_i, VecInt or_deg)
 		}
 		if(p.nband != hb_i[0].nrows()) ERR("some thing wrong with the hybrid function.")
 		for_Int(i, 0, hb.nomgs) hb[i] = hb_fit[i] / count;
-		ose.reset(p.nI2B[or_deg[degi]]); hop.reset(p.nI2B[or_deg[degi]]); nb = p.nI2B[or_deg[degi]];
-		if(ifs) {ose = vec_ose[or_deg[degi]]; hop = vec_hop[or_deg[degi]];} 
+
+		for_Int(j, 0, p.norg_sets) {orb_rep = j; if(or_deg[j] == degi + 1) break;}
+		ose.reset(p.nI2B[2*orb_rep]); hop.reset(p.nI2B[2*orb_rep]); nb = p.nI2B[2*orb_rep];
+		if(ifs) {ose = vec_ose[2*orb_rep]; hop = vec_hop[2*orb_rep];} 
 		else init_ose_hop();
 		const VecReal a0 = concat(ose, hop);
 		Real err;
@@ -116,7 +118,7 @@ std::tuple<Real, VecReal, Int> Bath::bath_fit_contest(const VecReal& a0)
 	const HybErr hyberr(p, hb, nb);
 	const Int np = a0.size();
 	const Int ntry_fine = MAX(16, 3 * mm.np() - 1);
-	const Int ntry = MAX(128 * ntry_fine, 2000);
+	const Int ntry = MIN(128 * ntry_fine, 1);
 	const Real tol = 1.e-12;
 	Int nmin = 0;		// number of fittings reaching the minimum
 	MPI_Status status;

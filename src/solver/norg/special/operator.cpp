@@ -97,7 +97,7 @@ Tab Operator::find_h_idx()
 	Int h_orb_uu_idx(mat_hop_pos.size() + 3);
 	Int h_orb_dd_idx(mat_hop_pos.size() + 4);
 
-	Int h_orb_j_idx(mat_hop_pos.size() + 5);
+	// Int h_orb_j_idx(mat_hop_pos.size() + 5);
 	for_Int(h_i, row_H.bgn(), row_H.end()) {
 		// To save as sparse matrix, [0]: row number;[1]: colum number;[2]: idx.
 		VecInt h_idx(3, 0);
@@ -250,16 +250,16 @@ Tab Operator::find_h_idx()
 			}
 		}
 
-		// for_Int(idx_sets, 0, p.norg_sets)
-		{
-			// off_diagonal_term for SOC
-			// i[0]:annihilation orbit's position; i[1]:creation orbit's positon; i[2]:Colum idx(i); i[3]:sign(anticommutativity)
-			VEC<VecInt> off_d_interation(a.off_diagonal_soc_term(a.interation_soc_hop(a.div_idx)));
-			for (const auto &i : off_d_interation){
-				h_idx = {sparse_idx, i[2], i[3] * (h_orb_j_idx)};
-				for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
-			}
-		}
+		// ! The SOC term.(not finished.)
+		// {
+		// 	// off_diagonal_term for SOC
+		// 	// i[0]:annihilation orbit's position; i[1]:creation orbit's positon; i[2]:Colum idx(i); i[3]:sign(anticommutativity)
+		// 	VEC<VecInt> off_d_interation(a.off_diagonal_soc_term(a.interation_soc_hop(a.div_idx)));
+		// 	for (const auto &i : off_d_interation){
+		// 		h_idx = {sparse_idx, i[2], i[3] * (h_orb_j_idx)};
+		// 		for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
+		// 	}
+		// }
 	}
 	// TIME_END("t_find_hmlt_table" + NAV(mm.id()), t_find_hmlt_table);
 	for_Int(jj, 0, 3) h_idxs[jj].shrink_to_fit();
