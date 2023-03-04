@@ -30,28 +30,54 @@ vector<VecInt> StateStatistics::find_each_spiless_group_off_diagonal_term(const 
 					ODT_i[0] = (SUM_0toX(space.sit_mat, sets_n, get<0>(hopspi[i])) + cfg.div_orb_e[div_pst_ann][c]);
 					ODT_i[1] = (SUM_0toX(space.sit_mat, sets_n, get<1>(hopspi[i])) + cfg.div_orb_c[div_pst_crt][cp]);
 					VecOnb newcf(cfg.cf);
-#ifdef _ASSERTION_
-					if (newcf[div_pst_ann].isuno(cfg.div_orb_e[div_pst_ann][c]))ERR("This position can't ann");
-					if (newcf[div_pst_crt].isocc(cfg.div_orb_c[div_pst_crt][cp]))ERR("This position can't crt");
-#endif
+					#ifdef _ASSERTION_
+						if (newcf[div_pst_ann].isuno(cfg.div_orb_e[div_pst_ann][c]))ERR("This position can't ann");
+						if (newcf[div_pst_crt].isocc(cfg.div_orb_c[div_pst_crt][cp]))ERR("This position can't crt");
+					#endif
 					newcf[div_pst_ann] = newcf[div_pst_ann].ann(cfg.div_orb_e[div_pst_ann][c]);
 					newcf[div_pst_crt] = newcf[div_pst_crt].crt(cfg.div_orb_c[div_pst_crt][cp]);
-//#ifdef _ASSERTION_
-//	VecInt ne_b(occ_n);
-//	--ne_b[div_pst_ann];
-//	++ne_b[div_pst_crt];
-//	if (ne_b != get<2>(hopspi[i])) ERR("NOT equal" + NAV4(ne_b, div_pst_ann, div_pst_crt, get<2>(hopspi[i])));
-//#endif
+					
 					ComDivs b(newcf, (get<2>(hopspi[i])), (space.sit_mat));
 					ODT_i[2] = idx_div_i + b.idx;
 					if (ODT_i[2] > space.dim) ERR(STR("Hmlt Off-Diag Elements IHTL > IHM ") + NAV2(ODT_i[2], space.dim));
 					ODT_i[3] = cfg.sgn(ODT_i[0], ODT_i[1]);
-#ifdef _ASSERTION_
-					if (ODT_i[0] == ODT_i[1]) ERR("A impossible thing happened:ODT_i[0] == ODT_i[1]" + NAV(ODT_i[0]));
-#endif
+					#ifdef _ASSERTION_
+						if (ODT_i[0] == ODT_i[1]) ERR("A impossible thing happened:ODT_i[0] == ODT_i[1]" + NAV(ODT_i[0]));
+					#endif
 					off_diagonal_term.push_back(ODT_i);
 				}
 			}
+		}
+	}
+	return off_diagonal_term;
+}
+
+VEC<VecInt> StateStatistics::off_diagonal_soc_term(const VEC<MatInt> &hop_soc)
+{
+	VEC<VecInt> off_diagonal_term;
+	{
+		VecInt ODT_i(4, 0);// [0]\([1]):annihilation\(creation) orbit's position;[2]:Colum idx(i);[i][3]:sign.
+
+		//off-diagonal, SOC operator terms
+		for_Int(i, 0, hop_soc.size()) {
+			Idx idx_div_i(find_newdiv_idx(hop_soc[i]));
+			VecOnb newcf(cfg.cf);
+			
+			for_Int(orb, 0, occ_n.nrows()) {
+				Int a = occ_n[orb][0] - hop_soc[i][orb][0];
+				if(a = 1)			newcf[orb * occ_n.ncols()] = newcf[orb * occ_n.ncols()].ann(0);
+				else if(a = -1)		newcf[orb * occ_n.ncols()] = newcf[orb * occ_n.ncols()].crt(0);
+				else ERR("This position can't ann");
+			}
+			
+			ComDivs b(newcf, hop_soc[i], space.sit_mat);
+			ODT_i[2] = idx_div_i + b.idx;
+			if (ODT_i[2] > space.dim) ERR(STR("Hmlt Off-Diag Elements IHTL > IHM ") + NAV2(ODT_i[2], space.dim));
+			ODT_i[3] = cfg.sgn(ODT_i[0], ODT_i[1]);
+			#ifdef _ASSERTION_
+				if (ODT_i[0] == ODT_i[1]) ERR("A impossible thing happened:ODT_i[0] == ODT_i[1]" + NAV(ODT_i[0]));
+			#endif
+			off_diagonal_term.push_back(ODT_i);
 		}
 	}
 	return off_diagonal_term;
@@ -161,6 +187,53 @@ StateStatistics::hopdata StateStatistics::divocchop_ingroup(const Int& ComDiv, I
 		}
 	}
 	return hop;
+}
+
+VEC<MatInt> StateStatistics::interation_soc_hop(const Int& ComDiv)
+{
+	VEC<MatInt> hop_soc;
+	// "c": means annihilation, and "cp" mean creation. Which is act on all div.
+	// For the spinless orbits.
+	
+	MatInt occupy = space.div[ComDiv];
+
+	for_Int(i, 0, space.p.nband) {
+		Int cnt(occupy[i*2][0] + occupy[i*2+1][0]);
+		if(cnt == 0) {
+			for_Int(j, 0, space.p.nband) if(i != j) {
+				Int cnt_j(occupy[j*2][0] + occupy[j*2+1][0]);
+				if(cnt == 2) {
+					occupy[i*2][0] = occupy[i*2+1][0] = 1;
+					occupy[j*2][0] = occupy[j*2+1][0] = 0;
+					if (space.ifin_NocSpace(occupy, space.nppso)) hop_soc.push_back(occupy);					
+				}
+			}
+		}
+
+		if(cnt == 2) {
+			for_Int(j, 0, space.p.nband) if(i != j) {
+				Int cnt_j(occupy[j*2][0] + occupy[j*2+1][0]);
+				if(cnt == 0) {
+					occupy[i*2][0] = occupy[i*2+1][0] = 0;
+					occupy[j*2][0] = occupy[j*2+1][0] = 1;
+					if (space.ifin_NocSpace(occupy, space.nppso)) hop_soc.push_back(occupy);					
+				}
+			}
+		}
+
+		if(cnt == 1) {
+			for_Int(j, 0, space.p.nband) if(i != j) {
+				Int cnt_j(occupy[j*2][0] + occupy[j*2+1][0]);
+				if(cnt == 1 && occupy[j*2][0] != occupy[i*2][0]) {
+					SWAP(occupy[i*2][0], occupy[i*2+1][0]);
+					SWAP(occupy[j*2][0], occupy[j*2+1][0]);
+					if (space.ifin_NocSpace(occupy, space.nppso)) hop_soc.push_back(occupy);					
+				}
+			}
+		}
+	}
+
+	return hop_soc;
 }
 
 

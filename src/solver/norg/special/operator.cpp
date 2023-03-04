@@ -96,8 +96,9 @@ Tab Operator::find_h_idx()
 	Int h_orb_ud_idx(mat_hop_pos.size() + 2);
 	Int h_orb_uu_idx(mat_hop_pos.size() + 3);
 	Int h_orb_dd_idx(mat_hop_pos.size() + 4);
-	for_Int(h_i, row_H.bgn(), row_H.end())
-	{
+
+	Int h_orb_j_idx(mat_hop_pos.size() + 5);
+	for_Int(h_i, row_H.bgn(), row_H.end()) {
 		// To save as sparse matrix, [0]: row number;[1]: colum number;[2]: idx.
 		VecInt h_idx(3, 0);
 		Int sparse_idx(h_i - row_H.bgn());
@@ -184,7 +185,7 @@ Tab Operator::find_h_idx()
 		// 	for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
 		// }
 
-/* 
+	/* 
 		#define ndiv scsp.ndivs
 
 		for_Int(i, 0, p.norg_sets)
@@ -236,7 +237,7 @@ Tab Operator::find_h_idx()
 				}
 			}
 		}
- */
+ 	*/
 
 		for_Int(idx_sets, 0, p.norg_sets)
 		{
@@ -245,6 +246,17 @@ Tab Operator::find_h_idx()
 			VEC<VecInt> off_dt_next(a.find_each_spiless_group_off_diagonal_term(a.divocchop_ingroup(a.div_idx, idx_sets), idx_sets));
 			for (const auto &i : off_dt_next){
 				h_idx = {sparse_idx, i[2], i[3] * (mat_hop_pos[i[1]][i[0]] + 1)};
+				for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
+			}
+		}
+
+		// for_Int(idx_sets, 0, p.norg_sets)
+		{
+			// off_diagonal_term for SOC
+			// i[0]:annihilation orbit's position; i[1]:creation orbit's positon; i[2]:Colum idx(i); i[3]:sign(anticommutativity)
+			VEC<VecInt> off_d_interation(a.off_diagonal_soc_term(a.interation_soc_hop(a.div_idx)));
+			for (const auto &i : off_d_interation){
+				h_idx = {sparse_idx, i[2], i[3] * (h_orb_j_idx)};
 				for_Int(pos, 0, 3) h_idxs[pos].push_back(h_idx[pos]);
 			}
 		}

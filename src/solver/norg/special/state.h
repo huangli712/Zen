@@ -54,14 +54,23 @@ private:
 public:
 	//state(Int idxD, VecInt bases_i) :idx(idxD), bases(bases_i) {};
 	StateStatistics(const Int& h_i, const Int& comdiv_idx, const NocSpace& s_i);
+
 	// The out put<0>[i]: the annihilation divsion position; <1>[i]: the creation dision positon; <2>[i]: The new divs.
 	hopdata divocchop_ingroup(const Int& ComDiv, Idx sets_n);
+
+	// The out put<0>[i]: the annihilation divsion position; <1>[i]: the creation dision positon; <2>[i]: The new divs.
+	VEC<MatInt> interation_soc_hop(const Int& ComDiv);
+
 	// Output all off-diagonal H matrix term in one row.(For all sites hoping?)
 	// [i][0]:annihilation orbit's position; [i][1]:creation orbit's positon; [i][2]:Colum idx(i); [i][3]:sign(fermion anticommutativity)
 	// PS.:The matrix Max size: (N*N-(N-N_{imp})-N_{imp}*N_{imp},2), and it's spinless.
 	VEC<VecInt> find_off_diagonal_term(const hopdata &hopup, const hopdata &hopdw);
 
-	// Output all off-diagonal H matrix term with one spinless orbit.
+	// Output all off-diagonal H0 matrix term with one spinless orbit.
 	// [i][0]:annihilation orbit's position; [i][1]:creation orbit's positon; [i][2]:Colum idx(i); [i][3]:sign(fermion anticommutativity)
 	VEC<VecInt> find_each_spiless_group_off_diagonal_term(const hopdata &hopspi, const Int group);
+	
+	// Output all off-diagonal SOC spinless orb term.
+	// [i][0]:annihilation orbit's position; [i][1]:creation orbit's positon; [i][2]:Colum idx(i); [i][3]:sign(fermion anticommutativity)
+	VEC<VecInt> off_diagonal_soc_term(const VEC<MatInt> &hop_soc);
 };
