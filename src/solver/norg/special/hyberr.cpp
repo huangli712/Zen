@@ -36,11 +36,11 @@ HybErr::HybErr(const Prmtr& p_i, const ImGreen& hb_i, const Int nb_i) :
 		x[2 * nw + 0]	= 2 * nw;
 		y[2 * nw + 0]	= 0.;
 		// // old
-		// sig[2 * nw + 0] = nb * std::pow(8 * p.fit_max_omg, 5);
+		sig[2 * nw + 0] = nb * std::pow(8 * p.fit_max_omg, 4);
 		// x*e^(0.5*(x/bw)^2)		// old
 		// x*e^(0.5*(x/(bw/8.))^2) 	// new
 		// sig[2 * nw + 0] = nb * 1E3 * p.fit_max_omg * EXP(0.5 * SQR(p.fit_max_omg / p.bandw)); // V.1
-		sig[2 * nw + 0] = p.fit_max_omg * EXP(0.5 * SQR(p.fit_max_omg / (p.bandw/8.)));
+		// sig[2 * nw + 0] = p.fit_max_omg * EXP(0.5 * SQR(p.fit_max_omg / (p.bandw/8.)));
 	}
 	// // the part of bath sum rule
 	// if (x.size() >= 2 * nw + 2) {
@@ -83,21 +83,21 @@ void HybErr::operator()(const Int x, const VecReal& a, Real& y, VecReal& dyda) c
 	// x*e^(0.5*(x/bw)^2)
 	// (e^((0.5 x^2)/bw^2) * (bw^2 + x^2))/bw^2
 	else if (x == 2 * nw + 0) { // the part of ose regularization
-		// // const VecReal E = temp.sm(nb, a.p());
-		// // const VecReal E2 = E * E;
-		// // y = DOT(E2, E2);
-		// // VecReal D_E = 4. * E2 * E;
-		// // VecReal D_V = VecReal(nb, 0.);
-		// // VecReal D = concat(D_E, D_V);
-		// // dyda = D;
 		const VecReal E = temp.sm(nb, a.p());
-		const VecReal E2 = EXP(0.5 * (E * (1. / p.bandw)) * (E * (1. / p.bandw)));
-		y = DOT(E, E2);
-		VecReal BW(nb, p.bandw);
-		VecReal D_E = E2 * (BW * BW + E * E) * (1. / (p.bandw * p.bandw));
+		const VecReal E2 = E * E;
+		y = DOT(E2, E2);
+		VecReal D_E = 4. * E2 * E;
 		VecReal D_V = VecReal(nb, 0.);
 		VecReal D = concat(D_E, D_V);
 		dyda = D;
+		// const VecReal E = temp.sm(nb, a.p());
+		// const VecReal E2 = EXP(0.5 * (E * (1. / p.bandw)) * (E * (1. / p.bandw)));
+		// y = DOT(E, E2);
+		// VecReal BW(nb, p.bandw);
+		// VecReal D_E = E2 * (BW * BW + E * E) * (1. / (p.bandw * p.bandw));
+		// VecReal D_V = VecReal(nb, 0.);
+		// VecReal D = concat(D_E, D_V);
+		// dyda = D;
 	}
 	else if (x == 2 * nw + 1) { // the part of bath sum rule
 		const VecReal V = temp.sm(nb, a.p() + nb);

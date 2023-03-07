@@ -46,7 +46,7 @@ void Prmtr::set_values() {
 
     // fitting related
     fit_pow = 2.; // default value: 2.
-    fit_rsd = bandw/8.; // default value: 2.
+    fit_rsd = 2; // default value: 2.
 
     // NORG parameter.
     templet_restrain = {0, -1, -1,  0,  1,  1};

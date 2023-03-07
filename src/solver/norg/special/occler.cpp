@@ -87,9 +87,9 @@ NORG Occler::find_ground_state_partical(const MatReal &h0_i, const VecInt& or_de
             a.up_date_h0_to_solve(h0_i, sub_energy.truncate(0, counter)); sub_energy[counter] = a.groune_lst;
             // if(counter%3 == 0) u_temp = a.uormat;
             if (mm) {
-                OFS ofs_a;
-                ofs_a.open("ru" + nppso_str(a.scsp.nppso) + ".bi"); 
-                for_Int(i, 0, a.uormat.size()) biwrite(ofs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());
+                // OFS ofs_a;
+                // ofs_a.open("ru" + nppso_str(a.scsp.nppso) + ".bi"); 
+                // for_Int(i, 0, a.uormat.size()) biwrite(ofs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());
             }
             // if(mm) WRN(NAV4(counter_norg, counter, a.groune_lst, a.scsp.nppso.mat(1,nppsos[0].size())));
             counter++;
