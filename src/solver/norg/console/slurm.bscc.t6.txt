@@ -1,13 +1,15 @@
 #!/bin/bash
-#SBATCH -p v6_384
+#SBATCH -p G1Part_sce
 #SBATCH -o
 #SBATCH -e
-#SBATCH -N 1
-#SBATCH -n 96
+#SBATCH -N 2
+#SBATCH --ntasks-per-node 28
 #SBATCH -c 1
 #SBATCH -t 1440
 #SBATCH -J jmw
+#SBATCH --exclusive
 
 export OMP_NUM_THREADS=1
 export MKL_NUM_THREADS=1
-srun -n 48 ./console/exe
+cd bi/
+mpirun -n 56 ./console/exe

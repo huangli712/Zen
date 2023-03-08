@@ -1,5 +1,6 @@
 PRES_DIR = .
 WORK_DIR = ./bi
+console_DIR = ./console
 DIRG = ${PRES_DIR}/general
 DIRR = ${PRES_DIR}/randomc
 DIRS = ${PRES_DIR}/special
@@ -18,6 +19,13 @@ OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 DEPS := $(patsubst %.cpp,%.d,$(SRCS))
 
 default: manpower
+
+srun: ${EXE}
+	@echo '______________________________________________________________________________________________ sbatch _______'
+	@echo ''
+	@qsub ${console_DIR}/slurm.bscc.t6.txt
+	@echo '_____________________________________________________________________________________________________________'
+	@echo ''
 
 qsub: ${norg}
 	@echo '______________________________________________________________ qsub ______________________________________________________________'
