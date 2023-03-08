@@ -12,14 +12,16 @@ Impurity::Impurity(const MyMpi &mm_i, const Prmtr &prmtr_i, const Bath &bth_i, c
     : mm(mm_i), p(prmtr_i), bth(bth_i), nb(p.nbath), ni(p.norbs), ns(p.norbit), pos_imp(p.norbs), h0(p.norbit, p.norbit, 0.), imp_lvl(p.norbs, 0.)
 {
     // if (!file.empty()) read(file);
-    VecReal deg_lvl(MAX(or_deg), 0.);
-    for_Int(i, 0, or_deg.size()) deg_lvl[or_deg[i] - 1] += p.eimp[i] - p.mu;
-    for_Int(i, 0, MAX(or_deg)) {
+    VecInt ordeg(concat(or_deg,or_deg).mat(2, p.nband).tr().vec());
+    // if(mm) WRN(NAV(ordeg));
+    VecReal deg_lvl(MAX(ordeg), 0.);
+    for_Int(i, 0, ni) deg_lvl[ordeg[i] - 1] += p.eimp[i] - p.mu;
+    for_Int(i, 0, MAX(ordeg)) {
         Int cnt(0);
-        for_Int(j, 0, or_deg.size()) if(i == or_deg[j] - 1) cnt++;
-        deg_lvl[i] = deg_lvl[i] / cnt;
+        for_Int(j, 0, ni) if(i == ordeg[j] - 1) cnt++;
+        deg_lvl[i] = deg_lvl[i] / Real(cnt);
     }
-    for_Int(i, 0, ni) imp_lvl[i] = deg_lvl[or_deg[i/2] - 1];
+    for_Int(i, 0, ni) imp_lvl[i] = deg_lvl[ordeg[i] - 1];
     set_factor();
 }
 
