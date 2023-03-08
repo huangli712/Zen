@@ -103,7 +103,7 @@ NORG Occler::find_ground_state_partical(const MatReal &h0_i, const VecInt& or_de
             if (ifs_a) for_Int(i, 0, a.uormat.size()) biread(ifs_a, CharP(a.uormat[i].p()), a.uormat[i].szof());
             a.up_date_h0_to_solve(h0_i);
 
-            if(mm) {std::cout << "The ground state's NOOC: " << std::endl; a.scsp.print();}
+            if(mm) {std::cout << "The ground state's NOOC: " << std::endl; /* a.scsp.print();*/}
             return a;}
         else {
             // nppsos.clear();

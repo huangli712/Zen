@@ -51,15 +51,17 @@ void Bath::bath_fit(const ImGreen& hb_i, VecInt or_deg)
 		Int count(0), orb_rep(-1);
 		VecCmplx hb_fit(hb.nomgs); 
 		for_Int(i, 0, hb_i.norbs) {
-			count++;
-			if(or_deg[i] - 1 == degi) for_Int(n, 0, hb.nomgs) hb_fit[n] += hb_i.g[n][i][i];
+			if(or_deg[i] - 1 == degi) {
+				for_Int(n, 0, hb.nomgs) hb_fit[n] += hb_i.g[n][i][i];
+				count++;
+			}
 		}
 		if(p.nband != hb_i[0].nrows()) ERR("some thing wrong with the hybrid function.")
-		for_Int(i, 0, hb.nomgs) hb[i] = hb_fit[i] / count;
+		for_Int(i, 0, hb.nomgs) hb[i] = hb_fit[i] / Real(count);
 
-		for_Int(j, 0, p.norg_sets) {orb_rep = j; if(or_deg[j] == degi + 1) break;}
-		ose.reset(p.nI2B[2*orb_rep]); hop.reset(p.nI2B[2*orb_rep]); nb = p.nI2B[2*orb_rep];
-		if(ifs) {ose = vec_ose[2*orb_rep]; hop = vec_hop[2*orb_rep];} 
+		for_Int(j, 0, p.nband) {orb_rep = j; if(or_deg[j] == degi + 1) break;}
+		ose.reset(p.nI2B[orb_rep]); hop.reset(p.nI2B[orb_rep]); nb = p.nI2B[orb_rep];
+		if(ifs) {ose = vec_ose[orb_rep]; hop = vec_hop[orb_rep];} 
 		else init_ose_hop();
 		const VecReal a0 = concat(ose, hop);
 		Real err;
