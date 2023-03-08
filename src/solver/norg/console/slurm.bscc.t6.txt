@@ -12,4 +12,4 @@
 export OMP_NUM_THREADS=1
 export MKL_NUM_THREADS=1
 cd bi/
-mpirun -n 56 ./console/exe
+mpirun -n 56 ./norg
