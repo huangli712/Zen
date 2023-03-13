@@ -73,4 +73,8 @@ public:
 	// Output all off-diagonal SOC spinless orb term.
 	// [i][0]:annihilation orbit's position; [i][1]:creation orbit's positon; [i][2]:Colum idx(i); [i][3]:sign(fermion anticommutativity)
 	VEC<VecInt> off_diagonal_soc_term(const VEC<MatInt> &hop_soc);
+
+	Str string();
+
+	UInt* cfg2nums();
 };

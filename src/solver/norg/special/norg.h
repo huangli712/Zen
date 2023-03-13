@@ -81,6 +81,7 @@ private:
 */
 public:
 	NORG(const MyMpi& mm_i, const Prmtr& prmtr_i);
+	NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, const Tab& table);
 	// NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, VecInt nparticals);
 	NORG(const MyMpi& mm_i, const Prmtr& prmtr_i, Str tab_name);
 

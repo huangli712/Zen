@@ -239,6 +239,29 @@ VEC<MatInt> StateStatistics::interation_soc_hop(const Int& ComDiv)
 	return hop_soc;
 }
 
+Str StateStatistics::string() {
+	Str cfig;
+	const VecOnb& cf(cfg.cf);
+	for_Int(i, 0, cf.size()){
+		for_Int(j, 0, cf[i].get_ns()){
+			cfig += cf[i][j];
+		}
+	}
+	return cfig;
+}
+
+UInt* StateStatistics::cfg2nums() {
+	UInt nums[occ_n.nrows()/2];
+	const VecOnb& cf(cfg.cf);
+	for_Idx(i, 0, cf.size()/2){
+		Str cfig;
+		for_Int(j, 0, cf[i * 2].get_ns()) cfig += cf[i * 2][j];
+		for_Int(j, 0, cf[i * 2 + 1].get_ns()) cfig += cf[i * 2 + 1][j];
+		const UInt num {std::stoul(cfig, nullptr, 2)};
+		nums[i] = num;
+	}
+	return nums;
+}
 
 //---------------------------------------------Private function---------------------------------------------
 
