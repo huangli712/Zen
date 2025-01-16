@@ -11,9 +11,9 @@
 !!!           s_b_kernel
 !!! source  : s_function.f90
 !!! type    : subroutines & functions
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 07/10/2014 by li huang (created)
-!!!           07/29/2021 by li huang (last modified)
+!!!           06/24/2024 by li huang (last modified)
 !!! purpose : these subroutines / functions are used to generate some
 !!!           special functions, such as the Legendre and Chebyshev
 !!!           orthogonal polynomials, Bessel function, etc.
@@ -55,6 +55,9 @@
      integer :: j
      integer :: k
 
+     ! real(dp) dummy variable
+     real(dp) :: r1, r2
+
 !! [body
 
      ! check lemax
@@ -80,7 +83,9 @@
          rep_l(i,2) = lmesh(i)
          do j=3,lemax
              k = j - 1
-             rep_l(i,j) = ( real(2*k-1) * lmesh(i) * rep_l(i,j-1) - real(k-1) * rep_l(i,j-2) ) / real(k)
+             r1 = real(2*k-1) * lmesh(i) * rep_l(i,j-1)
+             r2 = real(k-1) * rep_l(i,j-2)
+             rep_l(i,j) = (r1 - r2) / real(k)
          enddo ! over j={3,lemax} loop
      enddo ! over i={1,legrd} loop
 
@@ -267,10 +272,11 @@
      ! build the fermionic or bosonic kernel function
      do i=1,wsize
          do j=1,svgrd
+             t = wmesh(j)
              if ( bose .eqv. .true. ) then
-                 fker(j,i) = wmesh(j) * s_b_kernel(tmesh(j), fmesh(i), beta)
+                 fker(j,i) = t * s_b_kernel(tmesh(j), fmesh(i), beta)
              else
-                 fker(j,i) = wmesh(j) * s_f_kernel(tmesh(j), fmesh(i), beta)
+                 fker(j,i) = t * s_f_kernel(tmesh(j), fmesh(i), beta)
              endif ! back if ( bose .eqv. .true. ) block
          enddo ! over j={1,svgrd} loop
      enddo ! over i={1,wsize} loop
@@ -289,7 +295,8 @@
      enddo ! over i={1,svgrd} loop
      !
      do i=1,svmax
-         t = ( two * limit / float(svgrd) ) * sum( ( umat(:,i) * wmesh(:) )**2 )
+         t = two * limit / float(svgrd)
+         t = t * sum( ( umat(:,i) * wmesh(:) )**2 )
          umat(:,i) = umat(:,i) / sqrt(t)
      enddo ! over i={1,svmax} loop
 

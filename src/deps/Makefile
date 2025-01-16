@@ -15,13 +15,13 @@
 ##
 ## This building system is designed, created, and maintained by
 ##
-## Li Huang // email: lihuang.dmft@gmail.com
+## Li Huang // email: huangli@caep.cn
 ##
 ## History
 ## =======
 ##
 ## 09/18/2014 by li huang (created)
-## 08/06/2021 by li huang (last modified)
+## 12/30/2024 by li huang (last modified)
 ##
 ##
 
@@ -29,9 +29,13 @@
 
 include ../../build/make.inc
 
-mods = m_constants.o m_linkedlist.o m_mpi.o m_parser.o m_sparse.o m_spring.o m_stack.o m_tetra.o
-subs = s_error.o s_fourier.o s_function.o s_integrator.o s_matrix.o s_spline.o s_util.o s_vector.o
-objects = $(mods) $(subs)
+mods1 = m_constants.o
+mods2 = m_linkedlist.o m_stack.o
+mods3 = m_face.o m_mpi.o m_parser.o m_sparse.o m_spring.o m_tetra.o
+subs1 = s_error.o s_util.o
+subs2 = s_fourier.o s_function.o s_integrator.o s_spline.o
+subs3 = s_matrix.o s_vector.o
+objects = $(mods1) $(mods2) $(mods3) $(subs1) $(subs2) $(subs3)
 
 default: all
 

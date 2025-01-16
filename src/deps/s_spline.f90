@@ -5,7 +5,7 @@
 !!!           s_spl_funct
 !!! source  : s_spline.f90
 !!! type    : subroutines
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 07/10/2014 by li huang (created)
 !!!           07/29/2021 by li huang (last modified)
 !!! purpose : these subroutines are used to do cubic spline interpolation.

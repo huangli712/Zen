@@ -3,9 +3,9 @@
 !!! program : spring
 !!! source  : m_spring.f90
 !!! type    : module
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 01/03/2008 by li huang (created)
-!!!           07/30/2019 by li huang (last modified)
+!!!           01/07/2025 by li huang (last modified)
 !!! purpose : the purpose of this module is to define several modern, fast
 !!!           highly reliable, ease-to-use, and state-of-the-art pseudo-
 !!!           random number generators, which are essential in massively
@@ -18,7 +18,7 @@
      implicit none
 
 !!========================================================================
-!!>>> declare global parameters                                        <<<
+!!>>> declare local parameters                                         <<<
 !!========================================================================
 
 !! module parameters

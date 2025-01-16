@@ -8,9 +8,9 @@
 !!!           s_write_message
 !!! source  : s_error.f90
 !!! type    : subroutines
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 09/15/2009 by li huang (created)
-!!!           07/29/2021 by li huang (last modified)
+!!!           06/24/2021 by li huang (last modified)
 !!! purpose : these subroutines are used to display the (error/exception/
 !!!           normal) messages in the terminal, and then STOP or CONTINUE
 !!!           the code according to the error level.
@@ -36,7 +36,8 @@
 !! [body
 
      ! print error information
-     write(*,'(2X,4a)') 'fatal error occurred in ', sub, ': ', msg
+     write(*,'(2X,4a)') '[fatal] error occurred in ', &
+                        & sub, ': ', msg
 
      ! TERMINATE THE PROGRAM
      STOP
@@ -67,7 +68,8 @@
 !! [body
 
      ! print error information
-     write(file_unit,'(2X,4a)') 'fatal error occurred in ', sub, ': ', msg
+     write(file_unit,'(2X,4a)') '[fatal] error occurred in ', &
+                                & sub, ': ', msg
 
      ! TERMINATE THE PROGRAM
      STOP
@@ -95,7 +97,8 @@
 !! [body
 
      ! print exception information
-     write(*,'(2X,4a)') 'runtime exception occurred in ', sub, ': ', msg
+     write(*,'(2X,4a)') '[warning] exception occurred in ', &
+                        & sub, ': ', msg
 
      ! CONTINUE/PAUSE THE PROGRAM
      CONTINUE ! OR PAUSE
@@ -126,7 +129,8 @@
 !! [body
 
      ! print exception information
-     write(file_unit,'(2X,4a)') 'runtime exception occurred in ', sub, ': ', msg
+     write(file_unit,'(2X,4a)') '[warning] exception occurred in ', &
+                                & sub, ': ', msg
 
      ! CONTINUE/PAUSE THE PROGRAM
      CONTINUE ! OR PAUSE
@@ -154,7 +158,8 @@
 !! [body
 
      ! print normal information
-     write(*,'(2X,4a)') 'instant message from ', sub, ': ', msg
+     write(*,'(2X,4a)') '[normal] message from ', &
+                        & sub, ': ', msg
 
 !! body]
 
@@ -182,7 +187,8 @@
 !! [body
 
      ! print normal information
-     write(file_unit,'(2X,4a)') 'instant message from ', sub, ': ', msg
+     write(file_unit,'(2X,4a)') '[normal] message from ', &
+                                & sub, ': ', msg
 
 !! body]
 

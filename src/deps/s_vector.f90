@@ -20,9 +20,9 @@
 !!!           s_vecadd_z
 !!! source  : s_vector.f90
 !!! type    : subroutines
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 07/10/2014 by li huang (created)
-!!!           07/29/2021 by li huang (last modified)
+!!!           12/30/2024 by li huang (last modified)
 !!! purpose : these subroutines are designed for vectors or arrays. they
 !!!           can be used to manipulate grid and mesh.
 !!! status  : unstable
@@ -154,7 +154,7 @@
 !!
 !! @sub s_cumsum_i
 !!
-!! return the cumsum of an integer array.
+!! return the cumulative sum of an integer array.
 !!
   subroutine s_cumsum_i(n, v, vsum)
      implicit none
@@ -166,7 +166,7 @@
      ! input integer array
      integer, intent(in)  :: v(n)
 
-     ! cumsum of array v
+     ! cumulative sum of array v
      integer, intent(out) :: vsum(n)
 
 !! local variables
@@ -189,7 +189,7 @@
 !!
 !! @sub s_cumsum_d
 !!
-!! return the cumsum of a real(dp) array.
+!! return the cumulative sum of a real(dp) array.
 !!
   subroutine s_cumsum_d(n, v, vsum)
      use constants, only : dp
@@ -203,7 +203,7 @@
      ! input real(dp) array
      real(dp), intent(in)  :: v(n)
 
-     ! cumsum of array v
+     ! cumulative sum of array v
      real(dp), intent(out) :: vsum(n)
 
 !! local variables
@@ -226,7 +226,7 @@
 !!
 !! @sub s_cumsum_z
 !!
-!! return the cumsum of a complex(dp) array.
+!! return the cumulative sum of a complex(dp) array.
 !!
   subroutine s_cumsum_z(n, v, vsum)
      use constants, only : dp
@@ -240,7 +240,7 @@
      ! input complex(dp) array
      complex(dp), intent(in)  :: v(n)
 
-     ! cumsum of array v
+     ! cumulative sum of array v
      complex(dp), intent(out) :: vsum(n)
 
 !! local variables
@@ -267,7 +267,7 @@
 !!
 !! @sub s_cumprod_i
 !!
-!! return the cumproduct of an integer array.
+!! return the cumulative product of an integer array.
 !!
   subroutine s_cumprod_i(n, v, vprod)
      implicit none
@@ -279,7 +279,7 @@
      ! input integer array
      integer, intent(in)  :: v(n)
 
-     ! cumproduct of array v
+     ! cumulative product of array v
      integer, intent(out) :: vprod(n)
 
 !! local variables
@@ -302,7 +302,7 @@
 !!
 !! @sub s_cumprod_d
 !!
-!! return the cumproduct of a real(dp) array.
+!! return the cumulative product of a real(dp) array.
 !!
   subroutine s_cumprod_d(n, v, vprod)
      use constants, only : dp
@@ -316,7 +316,7 @@
      ! input real(dp) array
      real(dp), intent(in)  :: v(n)
 
-     ! cumproduct of array v
+     ! cumulative product of array v
      real(dp), intent(out) :: vprod(n)
 
 !! local variables
@@ -339,7 +339,7 @@
 !!
 !! @sub s_cumprod_z
 !!
-!! return the cumproduct of a complex(dp) array.
+!! return the cumulative product of a complex(dp) array.
 !!
   subroutine s_cumprod_z(n, v, vprod)
      use constants, only : dp
@@ -353,7 +353,7 @@
      ! input complex(dp) array
      complex(dp), intent(in)  :: v(n)
 
-     ! cumproduct of array v
+     ! cumulative product of array v
      complex(dp), intent(out) :: vprod(n)
 
 !! local variables

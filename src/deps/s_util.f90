@@ -2,8 +2,15 @@
 !!! project : flink @ sakura
 !!! program : s_assert
 !!!           s_assert2
-!!!           s_sorter
-!!!           s_sorter2
+!!!           s_equal_approx
+!!!           s_sorter1_i
+!!!           s_sorter1_d
+!!!           s_sorter2_i
+!!!           s_sorter2_d
+!!!           s_sorter3_i
+!!!           s_sorter3_d
+!!!           s_sorter4_i
+!!!           s_sorter4_d
 !!!           s_qsorter
 !!!           s_qscorer
 !!!           s_combination
@@ -15,9 +22,9 @@
 !!!           s_time_analyzer
 !!! source  : s_util.f90
 !!! type    : subroutines
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 07/10/2014 by li huang (created)
-!!!           07/29/2021 by li huang (last modified)
+!!!           01/16/2025 by li huang (last modified)
 !!! purpose : these subroutines are used to provide some useful features,
 !!!           including string manipulation, date time information, etc.
 !!! status  : unstable
@@ -31,7 +38,7 @@
 !!
 !! @sub s_assert
 !!
-!! fortran version of assert.
+!! fortran version of assertion.
 !!
   subroutine s_assert(condition)
      implicit none
@@ -44,7 +51,7 @@
 
      ! if condition == .false., it aborts the program.
      if ( .not. condition ) then
-         call s_print_error('s_assert','assert failed.')
+         call s_print_error('s_assert','assertion failed.')
      endif ! back if ( .not. condition ) block
 
 !! body]
@@ -55,7 +62,7 @@
 !!
 !! @sub s_assert2
 !!
-!! fortran version of assert. additional message will be printed
+!! fortran version of assertion. additional message will be printed
 !! for further analysis.
 !!
   subroutine s_assert2(condition, message)
@@ -72,7 +79,7 @@
 
      ! if condition == .false., it aborts the program.
      if ( .not. condition ) then
-         call s_print_error('s_assert2','assert failed -> '//message)
+         call s_print_error('s_assert2','assertion failed -> '//message)
      endif ! back if ( .not. condition ) block
 
 !! body]
@@ -81,15 +88,107 @@
   end subroutine s_assert2
 
 !!========================================================================
+!!>>> comparison                                                       <<<
+!!========================================================================
+
+!!
+!! @fun s_equal_approx
+!!
+!! is a approximately equal b?
+!!
+  function s_equal_approx(a, b) result(val)
+     use constants, only : dp
+     use constants, only : one
+
+     implicit none
+
+!! external arguments
+     ! values to be compared
+     real(dp), intent(in) :: a
+     real(dp), intent(in) :: b
+
+!! local variables
+     ! return value
+     logical  :: val
+
+     ! relative and absolute error thresholds.
+     ! defaults: epsilon, smallest non-denormal number
+     real(dp) :: rt
+     real(dp) :: at
+
+!! [body
+
+     rt = epsilon(one)
+     at = tiny(one)
+     val = abs(a - b) <= max(rt * max(abs(a), abs(b)), at)
+
+!! body]
+
+    return
+  end function s_equal_approx
+
+!!========================================================================
 !!>>> sort algorithm                                                   <<<
 !!========================================================================
 
 !!
-!! @sub s_sorter
+!! @sub s_sorter1_i
+!!
+!! using bubble algorithm to sort an integer dataset. it is the slowest.
+!!
+  subroutine s_sorter1_i(nsize, list)
+     implicit none
+
+!! external arguments
+     ! grab the number of values from the calling code
+     integer, intent(in)    :: nsize
+
+     ! dataset to be sorted
+     integer, intent(inout) :: list(nsize)
+
+!! local variables
+     ! dataset index
+     integer :: i = 0
+     integer :: j = 0
+
+     ! dummy variables
+     integer :: swap
+
+!! [body
+
+     !
+     ! remarks:
+     !
+     ! basically we just loop through every element to compare it
+     ! against every other element.
+     !
+
+     ! this loop increments i which is our starting point for the
+     ! comparison
+     sort_loop1: do i=nsize,1,-1
+         ! this loop increments j which is the ending point for
+         ! the comparison
+         sort_loop2: do j=1,i-1
+             ! swap the two elements here
+             exchange: if ( list(j) > list(j+1) ) then
+                 swap = list(j)
+                 list(j) = list(j+1)
+                 list(j+1) = swap
+             endif exchange ! back if ( list(j) > list(j+1) ) block
+         enddo sort_loop2 ! over j={1,i-1} loop
+     enddo sort_loop1 ! over i={nsize,1,-1} loop
+
+!! body]
+
+     return
+  end subroutine s_sorter1_i
+
+!!
+!! @sub s_sorter1_d
 !!
 !! using bubble algorithm to sort a real dataset. it is the slowest.
 !!
-  subroutine s_sorter(nsize, list)
+  subroutine s_sorter1_d(nsize, list)
      use constants, only : dp
 
      implicit none
@@ -136,15 +235,67 @@
 !! body]
 
      return
-  end subroutine s_sorter
+  end subroutine s_sorter1_d
 
 !!
-!! @sub s_sorter2
+!! @sub s_sorter2_i
+!!
+!! using bubble algorithm to sort an integer list and its index according
+!! to the descending order of the list.
+!!
+  subroutine s_sorter2_i(nsize, list, indx)
+     implicit none
+
+!! external arguments
+     ! size of the list
+     integer, intent(in)    :: nsize
+
+     ! in: index of original list
+     ! out: original index of the sorted list
+     integer, intent(inout) :: indx(nsize)
+
+     ! the list to be sorted
+     integer, intent(inout) :: list(nsize)
+
+!! local variables
+     ! loop index
+     integer :: i
+     integer :: j
+
+     ! used to exchange index
+     integer :: int_tmp
+
+     ! used to exchange list element
+     integer :: int_aux
+
+!! [body
+
+     do i=1,nsize-1
+         do j=1,nsize-i
+             if ( list(j) < list(j+1) ) then
+                 int_aux = list(j)
+                 list(j) = list(j+1)
+                 list(j+1) = int_aux
+                 !
+                 int_tmp = indx(j)
+                 indx(j) = indx(j+1)
+                 indx(j+1) = int_tmp
+             endif ! back if ( list(j) < list(j+1) ) block
+         enddo ! over j={1,nsize-i} loop
+     enddo ! over i={1,nsize-1} loop
+
+!! body]
+
+     return
+  end subroutine s_sorter2_i
+
+!!
+!! @sub s_sorter2_d
 !!
 !! using bubble algorithm to sort a real list and its index according to
 !! the descending order of the list.
 !!
-  subroutine s_sorter2(nsize, list, indx)
+  subroutine s_sorter2_d(nsize, list, indx)
      use constants, only : dp
 
      implicit none
@@ -179,6 +330,7 @@
                  real_tmp = list(j)
                  list(j) = list(j+1)
                  list(j+1) = real_tmp
+                 !
                  int_tmp = indx(j)
                  indx(j) = indx(j+1)
                  indx(j+1) = int_tmp
@@ -189,7 +341,291 @@
 !! body]
 
      return
-  end subroutine s_sorter2
+  end subroutine s_sorter2_d
+
+!!
+!! @sub s_sorter3_i
+!!
+!! using heap algorithm to sort an integer dataset.
+!!
+  subroutine s_sorter3_i(nsize, list)
+     implicit none
+
+!! external arguments
+     ! grab the number of values from the calling code
+     integer, intent(in)    :: nsize
+
+     ! dataset to be sorted
+     integer, intent(inout) :: list(nsize)
+
+!! local variables
+     ! dataset index
+     integer :: i, j, k
+
+     ! dummy variables
+     integer :: swap
+
+!! [body
+
+     do i = 1, nsize
+         j = i
+         do while ( j > 1 )
+             k = j/2
+             if ( list(j) > list(k) ) then
+                 swap = list(j)
+                 list(j) = list(k)
+                 list(k) = swap
+             endif
+             j = k
+         enddo
+     enddo ! over i={1,nsize} loop
+
+     do i = nsize, 1, -1
+         swap = list(i)
+         list(i) = list(1)
+         list(1) = swap
+
+         j = 1
+         do while ( 2*j < i )
+             k = 2*j
+             if ( ( k < i-1 ) .and. ( list(k+1) > list(k) ) ) k = k + 1
+             if ( list(j) < list(k) ) then
+                 swap = list(j)
+                 list(j) = list(k)
+                 list(k) = swap
+             endif
+             j = k
+         enddo
+     enddo ! over i={nsize,1} loop
+
+!! body]
+
+     return
+  end subroutine s_sorter3_i
+
+!!
+!! @sub s_sorter3_d
+!!
+!! using heap algorithm to sort a real dataset.
+!!
+  subroutine s_sorter3_d(nsize, list)
+     use constants, only : dp
+
+     implicit none
+
+!! external arguments
+     ! grab the number of values from the calling code
+     integer, intent(in)     :: nsize
+
+     ! dataset to be sorted
+     real(dp), intent(inout) :: list(nsize)
+
+!! local variables
+     ! dataset index
+     integer  :: i, j, k
+
+     ! dummy variables
+     real(dp) :: swap
+
+!! [body
+
+     do i = 1, nsize
+         j = i
+         do while ( j > 1 )
+             k = j/2
+             if ( list(j) > list(k) ) then
+                 swap = list(j)
+                 list(j) = list(k)
+                 list(k) = swap
+             endif
+             j = k
+         enddo
+     enddo ! over i={1,nsize} loop
+
+     do i = nsize, 1, -1
+         swap = list(i)
+         list(i) = list(1)
+         list(1) = swap
+
+         j = 1
+         do while ( 2*j < i )
+             k = 2*j
+             if ( ( k < i-1 ) .and. ( list(k+1) > list(k) ) ) k = k + 1
+             if ( list(j) < list(k) ) then
+                 swap = list(j)
+                 list(j) = list(k)
+                 list(k) = swap
+             endif
+             j = k
+         enddo
+     enddo ! over i={nsize,1} loop
+
+!! body]
+
+     return
+  end subroutine s_sorter3_d
+
+!!
+!! @sub s_sorter4_i
+!!
+!! using heap algorithm to sort an integer list and its index according
+!! to the ascending order of the list.
+!!
+  subroutine s_sorter4_i(nsize, list, indx)
+     implicit none
+
+!! external arguments
+     ! size of the list
+     integer, intent(in)    :: nsize
+
+     ! in: index of original list
+     ! out: original index of the sorted list
+     integer, intent(inout) :: indx(nsize)
+
+     ! the list to be sorted
+     integer, intent(inout) :: list(nsize)
+
+!! local variables
+     ! loop index
+     integer :: i, j, k
+
+     ! used to exchange index
+     integer :: int_tmp
+
+     ! used to exchange list element
+     integer :: int_aux
+
+!! [body
+
+     do i = 1, nsize
+         j = i
+         do while ( j > 1 )
+             k = j/2
+             if ( list(j) > list(k) ) then
+                 int_aux = list(j)
+                 list(j) = list(k)
+                 list(k) = int_aux
+                 !
+                 int_tmp = indx(j)
+                 indx(j) = indx(k)
+                 indx(k) = int_tmp
+             endif
+             j = k
+         enddo
+     enddo ! over i={1,nsize} loop
+
+     do i = nsize, 1, -1
+         int_aux = list(i)
+         list(i) = list(1)
+         list(1) = int_aux
+         !
+         int_tmp = indx(i)
+         indx(i) = indx(1)
+         indx(1) = int_tmp
+
+         j = 1
+         do while ( 2*j < i )
+             k = 2*j
+             if ( ( k < i-1 ) .and. ( list(k+1) > list(k) ) ) k = k + 1
+             if ( list(j) < list(k) ) then
+                 int_aux = list(j)
+                 list(j) = list(k)
+                 list(k) = int_aux
+                 !
+                 int_tmp = indx(j)
+                 indx(j) = indx(k)
+                 indx(k) = int_tmp
+             endif
+             j = k
+         enddo
+     enddo ! over i={nsize,1} loop
+
+!! body]
+
+     return
+  end subroutine s_sorter4_i
+
+!!
+!! @sub s_sorter4_d
+!!
+!! using heap algorithm to sort a real list and its index according to
+!! the ascending order of the list.
+!!
+  subroutine s_sorter4_d(nsize, list, indx)
+     use constants, only : dp
+
+     implicit none
+
+!! external arguments
+     ! size of the list
+     integer, intent(in)     :: nsize
+
+     ! in: index of original list
+     ! out: original index of the sorted list
+     integer, intent(inout)  :: indx(nsize)
+
+     ! the list to be sorted
+     real(dp), intent(inout) :: list(nsize)
+
+!! local variables
+     ! loop index
+     integer  :: i, j, k
+
+     ! used to exchange index
+     integer  :: int_tmp
+
+     ! used to exchange list element
+     real(dp) :: real_aux
+
+!! [body
+
+     do i = 1, nsize
+         j = i
+         do while ( j > 1 )
+             k = j/2
+             if ( list(j) > list(k) ) then
+                 real_aux = list(j)
+                 list(j) = list(k)
+                 list(k) = real_aux
+                 !
+                 int_tmp = indx(j)
+                 indx(j) = indx(k)
+                 indx(k) = int_tmp
+             endif
+             j = k
+         enddo
+     enddo ! over i={1,nsize} loop
+
+     do i = nsize, 1, -1
+         real_aux = list(i)
+         list(i) = list(1)
+         list(1) = real_aux
+         !
+         int_tmp = indx(i)
+         indx(i) = indx(1)
+         indx(1) = int_tmp
+
+         j = 1
+         do while ( 2*j < i )
+             k = 2*j
+             if ( ( k < i-1 ) .and. ( list(k+1) > list(k) ) ) k = k + 1
+             if ( list(j) < list(k) ) then
+                 real_aux = list(j)
+                 list(j) = list(k)
+                 list(k) = real_aux
+                 !
+                 int_tmp = indx(j)
+                 indx(j) = indx(k)
+                 indx(k) = int_tmp
+             endif
+             j = k
+         enddo
+     enddo ! over i={nsize,1} loop
+
+!! body]
+
+     return
+  end subroutine s_sorter4_d
 
 !!
 !! @sub s_qsorter
@@ -325,7 +761,7 @@
 
      implicit none
 
-!! external variables
+!! external arguments
      ! the small number
      integer, intent(in)  :: ntiny
 
@@ -402,7 +838,8 @@
 
      ! if lowercase, make uppercase
      do i=1,len(s)
-         if ( ichar(s(i:i)) >= ichar('a') .and. ichar(s(i:i)) <= ichar('z') ) then
+         if ( ichar(s(i:i)) >= ichar('a') .and. &
+            & ichar(s(i:i)) <= ichar('z') ) then
              s(i:i) = char(ichar(s(i:i)) + diff)
          endif ! back if block
      enddo ! over i={1,len(s)} loop
@@ -437,7 +874,8 @@
 
      ! if uppercase, make lowercase
      do i=1,len(s)
-         if ( ichar(s(i:i)) >= ichar('A') .and. ichar(s(i:i)) <= ichar('Z') ) then
+         if ( ichar(s(i:i)) >= ichar('A') .and. &
+            & ichar(s(i:i)) <= ichar('Z') ) then
              s(i:i) = char(ichar(s(i:i)) - diff)
          endif ! back if block
      enddo ! over i={1,len(s)} loop
@@ -551,7 +989,9 @@
          !
          ! if the character is NOT a space ' ' or a tab '->|', copy
          ! it to the output string.
-         if ( curr_char /= SPACE .and. curr_char /= TAB .and. curr_char /= NUL ) then
+         if ( curr_char /= SPACE .and. &
+            & curr_char /= TAB   .and. &
+            & curr_char /= NUL ) then
              j = j + 1
              output(j:j) = string(i:i)
          endif ! back if block
@@ -606,8 +1046,12 @@
      call date_and_time(values = date_time)
 
      ! convert date and time from integer to string
-     write(cdate,'(1X,a3,1X,i2,1X,i4)') months(date_time(2)), date_time(3), date_time(1)
-     write(ctime,'(i2,":",i2,":",i2)') date_time(5), date_time(6), date_time(7)
+     write(cdate,'(1X,a3,1X,i2,1X,i4)') months(date_time(2)), &
+                                      & date_time(3), &
+                                      & date_time(1)
+     write(ctime,'(i2,":",i2,":",i2)') date_time(5), &
+                                     & date_time(6), &
+                                     & date_time(7)
 
      ! build final output string by concating them
      date_time_string = ctime // cdate

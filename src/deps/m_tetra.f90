@@ -3,9 +3,9 @@
 !!! program : mtetra
 !!! source  : m_tetra.f90
 !!! type    : module
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 06/07/2006 by li huang (created)
-!!!           07/29/2021 by li huang (last modified)
+!!!           01/16/2025 by li huang (last modified)
 !!! purpose : this module is devoted to compute the analytical integration
 !!!           weights for brillouin zone sampling.
 !!! status  : unstable
@@ -16,7 +16,7 @@
      implicit none
 
 !!========================================================================
-!!>>> declare global parameters                                        <<<
+!!>>> declare local parameters                                         <<<
 !!========================================================================
 
 !! module parameters
@@ -36,7 +36,7 @@
      real(dp), private, parameter :: gamm = 0.15_dp
 
 !!========================================================================
-!!>>> declare common variables                                         <<<
+!!>>> declare local variables                                          <<<
 !!========================================================================
 
 !! module variables
@@ -54,26 +54,26 @@
 !!========================================================================
 
      ! Blochl algorithm for (integrated) density of states
-     public  :: tetra_blochl_weight1
-     public  :: tetra_blochl_weight2
+     private :: tetra_blochl_weight1
+     private :: tetra_blochl_weight2
 
-     ! Labmbin-Vigneron algorithm for crystal Green's function
-     public  :: tetra_lambin_weight
+     ! Lambin-Vigneron algorithm for crystal Green's function
+     private :: tetra_lambin_weight
 
      ! Gaussian broadening algorithm for (integrated) density of states
-     public  :: smearing_gauss_weight1
-     public  :: smearing_gauss_weight2
-     public  :: smearing_gauss_weight3
+     private :: smearing_gauss_weight1
+     private :: smearing_gauss_weight2
+     private :: smearing_gauss_weight3
 
      ! Fermi-Dirac broadening algorithm for (integrated) density of states
-     public  :: smearing_fermi_weight1
-     public  :: smearing_fermi_weight2
-     public  :: smearing_fermi_weight3
+     private :: smearing_fermi_weight1
+     private :: smearing_fermi_weight2
+     private :: smearing_fermi_weight3
 
      ! Marzari-Vanderbilt broadening algorithm for (integrated) density of states
-     public  :: smearing_marzari_weight1
-     public  :: smearing_marzari_weight2
-     public  :: smearing_marzari_weight3
+     private :: smearing_marzari_weight1
+     private :: smearing_marzari_weight2
+     private :: smearing_marzari_weight3
 
      ! private procedures invoked by tetra_blochl_weightX() subroutine
      private :: tetra_p_ek1
@@ -92,6 +92,38 @@
      private :: tetra_lv_creorder
      private :: tetra_lv_prime
      private :: tetra_lv_setmap
+
+!!========================================================================
+!!>>> declare interface and module procedure                           <<<
+!!========================================================================
+
+     public :: tetra_weight
+     interface tetra_weight
+         module procedure tetra_blochl_weight1
+         module procedure tetra_blochl_weight2
+         module procedure tetra_lambin_weight
+     end interface tetra_weight
+
+     public :: smearing_gauss
+     interface smearing_gauss
+         module procedure smearing_gauss_weight1
+         module procedure smearing_gauss_weight2
+         module procedure smearing_gauss_weight3
+     end interface smearing_gauss
+
+     public :: smearing_fermi
+     interface smearing_fermi
+         module procedure smearing_fermi_weight1
+         module procedure smearing_fermi_weight2
+         module procedure smearing_fermi_weight3
+     end interface smearing_fermi
+
+     public :: smearing_marzari
+     interface smearing_marzari
+         module procedure smearing_marzari_weight1
+         module procedure smearing_marzari_weight2
+         module procedure smearing_marzari_weight3
+     end interface smearing_marzari
 
   contains ! encapsulated functionality
 

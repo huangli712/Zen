@@ -6,9 +6,9 @@
 !!!           s_fft_density
 !!! source  : s_fourier.f90
 !!! type    : subroutines
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 07/10/2014 by li huang (created)
-!!!           07/29/2021 by li huang (last modified)
+!!!           12/30/2024 by li huang (last modified)
 !!! purpose : these subroutines are used to do fast fourier transformation
 !!!           for green's or hybridization functions.
 !!! status  : unstable
@@ -259,11 +259,13 @@
      ! calculate high frequency tails need to be subtracted
      call s_fft_tails(tail, mfreq, rmesh, fmat)
 
-     ! perform infourier transformation
+     ! perform inverted fourier transformation
      raux = zero
+     !
      do j=1,mfreq
          raux = raux + real( fmat(j) )
      enddo ! over j={1,mfreq} loop
+     !
      density = two * raux / beta - half * tail
 
      ! corrections for the boundary point

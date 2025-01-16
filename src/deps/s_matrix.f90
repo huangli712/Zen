@@ -40,9 +40,9 @@
 !!!           s_svd_zg
 !!! source  : s_matrix.f90
 !!! type    : subroutines
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 07/10/2014 by li huang (created)
-!!!           07/29/2021 by li huang (last modified)
+!!!           06/24/2024 by li huang (last modified)
 !!! purpose : these subroutines are used to encapsulate some important and
 !!!           frequently used linear algebra operations.
 !!! status  : unstable
@@ -212,7 +212,7 @@
 !!
 !! @sub s_any_i
 !!
-!! build an integer matrix with all elements are given by i
+!! build an integer matrix with all elements are given by i.
 !!
   subroutine s_any_i(n, i, A)
      implicit none
@@ -310,7 +310,7 @@
      ! size of matrix
      integer, intent(in)  :: n
 
-     ! index of the diagonal.
+     ! index of the diagonal, here:
      ! 0 refers to the main diagonal;
      ! a positive value refers to an upper diagonal;
      ! and a negative value to a lower diagonal.
@@ -352,7 +352,7 @@
      ! size of matrix
      integer, intent(in)   :: n
 
-     ! index of the diagonal.
+     ! index of the diagonal, here:
      ! 0 refers to the main diagonal;
      ! a positive value refers to an upper diagonal;
      ! and a negative value to a lower diagonal.
@@ -394,7 +394,7 @@
      ! size of matrix
      integer, intent(in)      :: n
 
-     ! index of the diagonal.
+     ! index of the diagonal, here:
      ! 0 refers to the main diagonal;
      ! a positive value refers to an upper diagonal;
      ! and a negative value to a lower diagonal.
@@ -819,7 +819,8 @@
 !-------------------------------------------------------------------------
 
      ! diagonalize amat to obtain its eigenvalues: wr and wi.
-     call DGEEV('N', 'N', ndim, amat, ndim, wr, wi, vl, ndim, vr, ndim, work, lwork, ierror)
+     call DGEEV('N', 'N', ndim, amat, ndim, wr, wi, vl, ndim, vr, &
+         & ndim, work, lwork, ierror)
      !
      if ( ierror /= 0 ) then
          call s_print_error('s_det_d','error in lapack subroutine dgeev')
@@ -941,7 +942,7 @@
 
 !! local variables
      ! error flag
-     integer  :: ierror
+     integer :: ierror
 
      ! working arrays for lapack subroutines
      integer, allocatable  :: ipiv(:)
@@ -1003,7 +1004,7 @@
 
 !! local variables
      ! error flag
-     integer     :: ierror
+     integer :: ierror
 
      ! working arrays for lapack subroutines
      integer, allocatable     :: ipiv(:)
@@ -1120,7 +1121,8 @@
      evec = amat
 
      ! call the computational subroutine: dgeev
-     call DGEEV('N', 'V', ndim, evec, ldim, wr, wi, vl, ndim, vr, ndim, work, lwork, info)
+     call DGEEV('N', 'V', ndim, evec, ldim, wr, wi, vl, ndim, vr, &
+         & ndim, work, lwork, info)
 
      ! check the status
      if ( info /= 0 ) then
@@ -1213,7 +1215,8 @@
      zvec = zmat
 
      ! call the computational subroutine: zgeev
-     call ZGEEV('N', 'V', ndim, zvec, ldim, zeig, vl, ndim, vr, ndim, work, lwork, rwork, info)
+     call ZGEEV('N', 'V', ndim, zvec, ldim, zeig, vl, ndim, vr, &
+         & ndim, work, lwork, rwork, info)
 
      ! check the status
      if ( info /= 0 ) then
@@ -1305,7 +1308,8 @@
      evec = amat
 
      ! call the computational subroutine: dgeev
-     call DGEEV('N', 'N', ndim, evec, ldim, wr, wi, vl, ndim, vr, ndim, work, lwork, info)
+     call DGEEV('N', 'N', ndim, evec, ldim, wr, wi, vl, ndim, vr, &
+         & ndim, work, lwork, info)
 
      ! check the status
      if ( info /= 0 ) then
@@ -1397,7 +1401,8 @@
      zvec = zmat
 
      ! call the computational subroutine: zgeev
-     call ZGEEV('N', 'N', ndim, zvec, ldim, zeig, vl, ndim, vr, ndim, work, lwork, rwork, info)
+     call ZGEEV('N', 'N', ndim, zvec, ldim, zeig, vl, ndim, vr, &
+         & ndim, work, lwork, rwork, info)
 
      ! check the status
      if ( info /= 0 ) then
@@ -2047,7 +2052,8 @@
      endif ! back if ( istat /= 0 ) block
 
      ! call the computational subroutine: dgesvd
-     call DGESVD('S', 'S', m, n, amat, m, svec, umat, m, vmat, min_mn, work, lwork, info)
+     call DGESVD('S', 'S', m, n, amat, m, svec, umat, m, vmat, &
+         & min_mn, work, lwork, info)
 
      ! check the status
      if ( info /= 0 ) then
@@ -2125,7 +2131,8 @@
      endif ! back if ( istat /= 0 ) block
 
      ! call the computational subroutine: zgesvd
-     call ZGESVD('S', 'S', m, n, amat, m, svec, umat, m, vmat, min_mn, work, lwork, rwork, info)
+     call ZGESVD('S', 'S', m, n, amat, m, svec, umat, m, vmat, &
+         & min_mn, work, lwork, rwork, info)
 
      ! check the status
      if ( info /= 0 ) then

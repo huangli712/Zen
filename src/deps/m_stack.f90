@@ -3,9 +3,9 @@
 !!! program : stack
 !!! source  : m_stack.f90
 !!! type    : module
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 09/14/2009 by li huang (created)
-!!!           07/30/2021 by li huang (last modified)
+!!!           01/07/2025 by li huang (last modified)
 !!! purpose : the purpose of this module is to define a stack-type (LIFO)
 !!!           data structure in fortran version.
 !!! status  : unstable
@@ -16,7 +16,7 @@
      implicit none
 
 !!========================================================================
-!!>>> declare global parameters                                        <<<
+!!>>> declare local parameters                                         <<<
 !!========================================================================
 
 !! module parameters
@@ -571,7 +571,8 @@
 !! [body
 
      if ( s%top == s%nsize ) then
-         write(mystd,'(a)') 'istack: the stack is full, can not push any item on it'
+         write(mystd,'(a)') 'istack: the stack is full, &
+                            & can not push any item on it'
          STOP
      else
          s%top = s%top + 1
@@ -601,7 +602,8 @@
 !! [body
 
      if ( s%top == s%nsize ) then
-         write(mystd,'(a)') 'gstack: the stack is full, can not push any item on it'
+         write(mystd,'(a)') 'gstack: the stack is full, &
+                            & can not push any item on it'
          STOP
      else
          s%top = s%top + 1
@@ -655,7 +657,8 @@
 !! [body
 
      if ( s%top == 0 ) then
-         write(mystd,'(a)') 'istack: the stack is empty, can not pop off any item from it'
+         write(mystd,'(a)') 'istack: the stack is empty, &
+                            & can not pop off any item from it'
          STOP
      else
          item = s%item(s%top)
@@ -685,7 +688,8 @@
 !! [body
 
      if ( s%top == 0 ) then
-         write(mystd,'(a)') 'gstack: the stack is empty, can not pop off any item from it'
+         write(mystd,'(a)') 'gstack: the stack is empty, &
+                            & can not pop off any item from it'
          STOP
      else
          select type (v => s%item)
@@ -739,7 +743,8 @@
 !! [body
 
      if ( s%top == 0 ) then
-         write(mystd,'(a)') 'istack: the stack is empty, can not return the top item of it'
+         write(mystd,'(a)') 'istack: the stack is empty, &
+                            & can not return the top item of it'
          STOP
      else
          item = s%item(s%top)
@@ -768,7 +773,8 @@
 !! [body
 
      if ( s%top == 0 ) then
-         write(mystd,'(a)') 'gstack: the stack is empty, can not return the top item of it'
+         write(mystd,'(a)') 'gstack: the stack is empty, &
+                            & can not return the top item of it'
          STOP
      else
          select type (v => s%item)
