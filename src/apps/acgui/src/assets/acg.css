@@ -1,0 +1,73 @@
+h1, h2 {
+	color: hotpink;
+}
+
+body {
+    font-family: sans-serif;
+}
+
+table {
+    border: 1px solid;
+    border-collapse: collapse;
+	width: 100%;
+}
+
+thead, tfoot {
+    background-color: lightpink;
+}
+
+thead th {
+    border: 1px solid;
+    text-align: left;
+    font-weight: bold;
+}
+
+th, td {
+    border: 1px solid;
+    text-align: left;
+	height: 2em;
+    font-weight: normal;
+}
+
+tbody > tr:nth-of-type(even) {
+    background-color: #f2f2f2;
+}
+
+input[type=text] {
+	border: .1em solid;
+	border-radius: .2em .2em 0 0;
+	height: 2em;
+    width: 96%;
+}
+
+.custom-tab {
+    font-weight: bold;
+}
+
+.custom-upload {
+    font-weight: bold;
+    width: 50%;
+    height: 60px;
+    line-height: 60px;
+    border: 1px dashed;
+    border-radius: 5px;
+    text-align: center;
+    background-color: pink;
+}
+
+button {
+    font-weight: bold;
+	appearance: none;
+	border: .2em solid #E91E63;
+	background: hsl(0 0 0/0);
+	padding: .85em 1.5em;
+	color: #E91E63;
+	border-radius: 0.1em;
+	transition: 1s;
+	width: 40%;
+	margin: 0em 1em 0em 0em;
+	&:hover, &:focus, &:active {
+		background: #E91E63;
+		color: #fff;
+	}
+}
