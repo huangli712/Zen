@@ -3,7 +3,7 @@
 ## Introduction
 ## ============
 ##
-## Makefile for zen/src/solver/ct_hyb1 directory.
+## Makefile for iqist/src/ctseg directory.
 ##
 ## Usage
 ## =====
@@ -15,19 +15,19 @@
 ##
 ## This building system is designed, created, and maintained by
 ##
-## Li Huang // email: lihuang.dmft@gmail.com
+## Li Huang // email: huangli@caep.cn
 ##
 ## History
 ## =======
 ##
 ## 02/28/2015 by li huang (created)
-## 08/06/2021 by li huang (last modified)
+## 01/25/2025 by li huang (last modified)
 ##
 ##
 
 .SUFFIXES: .f90
 
-include ../../../build/make.inc
+include ../../build/make.inc
 
 modc = ctqmc_control.o ctqmc_context.o
 dmft = ctqmc_dmft.o
@@ -52,6 +52,7 @@ flink_lib:
 flink_mod:
 	cp $(FLINK)/constants.mod .
 	cp $(FLINK)/mmpi.mod .
+	cp $(FLINK)/face.mod .
 	cp $(FLINK)/spring.mod .
 	cp $(FLINK)/stack.mod .
 	cp $(FLINK)/parser.mod .

@@ -1,20 +1,20 @@
 !!!-----------------------------------------------------------------------
-!!! project : narcissus
+!!! project : iqist @ narcissus
 !!! program : ctqmc_setup_param
-!!!           ctqmc_setup_model <<<---
+!!!           ctqmc_setup_model
 !!!           ctqmc_input_mesh_
 !!!           ctqmc_input_hybf_
 !!!           ctqmc_input_eimp_
 !!!           ctqmc_input_umat_
-!!!           ctqmc_input_ktau_ <<<---
+!!!           ctqmc_input_ktau_
 !!!           ctqmc_alloc_array
 !!!           ctqmc_reset_array
-!!!           ctqmc_final_array <<<---
+!!!           ctqmc_final_array
 !!! source  : ctqmc_stream.f90
 !!! type    : subroutines
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 09/16/2009 by li huang (created)
-!!!           07/21/2017 by li huang (last modified)
+!!!           07/06/2023 by li huang (last modified)
 !!! purpose : initialize and finalize the hybridization expansion version
 !!!           continuous time quantum Monte Carlo (CTQMC) quantum impurity
 !!!           solver and dynamical mean field theory (DMFT) self-consistent
@@ -46,12 +46,14 @@
 
      implicit none
 
-! local variables
-! used to check whether the input file (solver.ctqmc.in) exists
+!! local variables
+     ! used to check whether the input file (solver.ctqmc.in) exists
      logical :: exists
 
-! setup general control flags
-!-------------------------------------------------------------------------
+!! [body
+
+     ! setup general control flags
+     !--------------------------------------------------------------------
      isscf  = 1         ! self-consistent scheme
      isscr  = 1         ! dynamic interaction
      isbnd  = 1         ! symmetry (band part)
@@ -61,47 +63,47 @@
      isobs  = 1         ! various physical observables
      issus  = 1         ! charge/spin susceptibility
      isvrt  = 1         ! two-particle green's functions
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-! setup common variables for dynamical mean field theory
-!-------------------------------------------------------------------------
+     ! setup common variables for dynamical mean field theory
+     !--------------------------------------------------------------------
      niter  = 20        ! maximum number of self-consistent iterations
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
      alpha  = 0.70_dp   ! mixing parameter for self-consistent iterations
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-! setup common variables for quantum impurity model
-!-------------------------------------------------------------------------
+     ! setup common variables for quantum impurity model
+     !--------------------------------------------------------------------
      nband  = 1         ! number of correlated bands
      nspin  = 2         ! number of spin projections
      norbs  = 2         ! number of correlated orbitals
      ncfgs  = 4         ! number of atomic eigenstates
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
      Uc     = 4.00_dp   ! intra-orbital Coulomb interaction
      Jz     = 0.00_dp   ! Hund's exchange interaction in z axis
      lc     = 1.00_dp   ! screening strength
      wc     = 1.00_dp   ! screening frequency
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
      mune   = 2.00_dp   ! chemical potential or fermi level
      beta   = 8.00_dp   ! inversion of temperature
      part   = 0.50_dp   ! hopping parameter t for Hubbard model
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-! setup common variables for quantum impurity solver
-!-------------------------------------------------------------------------
+     ! setup common variables for quantum impurity solver
+     !--------------------------------------------------------------------
      lemax  = 32        ! maximum expansion order for legendre polynomial
      legrd  = 20001     ! number of mesh points for legendre polynomial
      svmax  = 32        ! maximum expansion order for svd polynomial
      svgrd  = 2001      ! number of mesh points for svd polynomial
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
      mkink  = 1024      ! maximum perturbation expansion order
      mfreq  = 8193      ! maximum number of matsubara frequency points
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
      nffrq  = 32        ! number of fermionic frequency
      nbfrq  = 8         ! number of bosonic frequncy
      nfreq  = 128       ! number of sampled matsubara frequency points
      ntime  = 1024      ! number of time slices
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
      nflip  = 20000     ! flip period for spin up and spin down states
      ntherm = 200000    ! number of thermalization steps
      nsweep = 20000000  ! number of Monte Carlo sweeping steps
@@ -109,24 +111,24 @@
      nclean = 100000    ! clean update period
      nmonte = 10        ! how often to sample the observables
      ncarlo = 10        ! how often to sample the observables
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-! read in input file if possible, only master node can do it
+     ! read in input file if possible, only master node can do it
      if ( myid == master ) then
          exists = .false.
 
-! inquire file status: solver.ctqmc.in
+         ! inquire file status: solver.ctqmc.in
          inquire (file = 'solver.ctqmc.in', exist = exists)
 
-! read in parameters, default setting should be overrided
+         ! read in parameters, default setting should be overrided
          if ( exists .eqv. .true. ) then
-! create the file parser
+             ! create the file parser
              call p_create()
 
-! parse the config file
+             ! parse the config file
              call p_parse('solver.ctqmc.in')
 
-! extract parameters
+             ! extract parameters
              call p_get('isscf' , isscf )
              call p_get('isscr' , isscr )
              call p_get('isbnd' , isbnd )
@@ -176,7 +178,7 @@
              call p_get('nmonte', nmonte)
              call p_get('ncarlo', ncarlo)
 
-! destroy the parser
+             ! destroy the parser
              call p_destroy()
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
@@ -246,6 +248,8 @@
 
 # endif  /* MPI */
 
+!! body]
+
      return
   end subroutine ctqmc_setup_param
 
@@ -258,20 +262,24 @@
   subroutine ctqmc_setup_model()
      implicit none
 
-! build various meshes (tmesh, rmesh, lmesh, and rep_l, etc)
+!! [body
+
+     ! build various meshes (tmesh, rmesh, lmesh, and rep_l, etc)
      call ctqmc_input_mesh_()
 
-! build initial hybridization function (hybf)
+     ! build initial hybridization function (hybf)
      call ctqmc_input_hybf_()
 
-! build symmetry vector and impurity level (symm and eimp)
+     ! build symmetry vector and impurity level (symm and eimp)
      call ctqmc_input_eimp_()
 
-! build Coulomb interaction matrix (umat)
+     ! build Coulomb interaction matrix (umat)
      call ctqmc_input_umat_()
 
-! build dynamic interaction if available (ktau and ptau)
+     ! build dynamic interaction if available (ktau and ptau)
      call ctqmc_input_ktau_()
+
+!! body]
 
      return
   end subroutine ctqmc_setup_model
@@ -301,32 +309,36 @@
 
      implicit none
 
-! build imaginary time mesh: tmesh
+!! [body
+
+     ! build imaginary time mesh: tmesh
      call s_linspace_d(zero, beta, ntime, tmesh)
 
-! build matsubara frequency mesh: rmesh
+     ! build matsubara frequency mesh: rmesh
      call s_linspace_d(pi / beta, (two * mfreq - one) * (pi / beta), mfreq, rmesh)
 
-! build mesh for legendre orthogonal polynomial in [-1,1]
+     ! build mesh for legendre orthogonal polynomial in [-1,1]
      if ( isort == 2 ) then
          call s_linspace_d(-one, one, legrd, lmesh)
      endif ! back if ( isort == 2 ) block
 
-! build mesh for svd orthogonal polynomial in [-1,1]
+     ! build mesh for svd orthogonal polynomial in [-1,1]
      if ( isort == 3 ) then
          call s_linspace_d(-one, one, svgrd, smesh)
      endif ! back if ( isort == 3 ) block
 
-! build legendre orthogonal polynomial in [-1,1]
+     ! build legendre orthogonal polynomial in [-1,1]
      if ( isort == 2 ) then
          call s_leg_basis(lemax, legrd, lmesh, rep_l)
      endif ! back if ( isort == 2 ) block
 
-! build svd orthogonal polynomial in [-1,1]
-! .false. means fermionic kernel, and .true. means bosonic kernel
+     ! build svd orthogonal polynomial in [-1,1]
+     ! .false. means fermionic kernel, and .true. means bosonic kernel
      if ( isort == 3 ) then
          call s_svd_basis(svmax, svgrd, smesh, rep_s, .false., beta)
      endif ! back if ( isort == 3 ) block
+
+!! body]
 
      return
   end subroutine ctqmc_input_mesh_
@@ -354,46 +366,48 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
      integer  :: k
 
-! used to check whether the input file (solver.hyb.in) exists
+     ! used to check whether the input file (solver.hyb.in) exists
      logical  :: exists
 
-! dummy real variables
+     ! dummy real variables
      real(dp) :: rtmp
      real(dp) :: r1, r2
      real(dp) :: i1, i2
 
-! build initial green's function using the analytical expression at
-! non-interaction limit:
-!     G = i * 2.0 * ( w - sqrt(w*w + 1) ),
-! and then build initial hybridization function using self-consistent
-! condition for bethe lattice:
-!     \Delta = t^2 * G
+!! [body
+
+     ! build initial green's function using the analytical expression at
+     ! non-interaction limit:
+     !     G = i * 2.0 * ( w - sqrt(w*w + 1) ),
+     ! and then build initial hybridization function using self-consistent
+     ! condition for bethe lattice:
+     !     \Delta = t^2 * G
      do i=1,mfreq
          call s_identity_z( norbs, hybf(i,:,:) )
          hybf(i,:,:) = hybf(i,:,:) * (part**2) * (czi*two)
          hybf(i,:,:) = hybf(i,:,:) * ( rmesh(i) - sqrt( rmesh(i)**2 + one ) )
      enddo ! over i={1,mfreq} loop
 
-! read in initial hybridization function if available
-!-------------------------------------------------------------------------
+     ! read in initial hybridization function if available
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'solver.hyb.in', exist = exists)
 
-! find input file: solver.hyb.in, read it
+         ! find input file: solver.hyb.in, read it
          if ( exists .eqv. .true. ) then
 
              hybf = czero ! reset it to zero
 
-! read in hybridization function from solver.hyb.in
+             ! read in hybridization function from solver.hyb.in
              open(mytmp, file='solver.hyb.in', form='formatted', status='unknown')
              do i=1,norbs
                  do j=1,mfreq
@@ -407,19 +421,21 @@
 
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! since the hybridization function may be updated in master node, it is
 ! important to broadcast it from root to all children processes
 # if defined (MPI)
 
-! broadcast data
+     ! broadcast data
      call mp_bcast(hybf, master)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
+
+!! body]
 
      return
   end subroutine ctqmc_input_hybf_
@@ -443,32 +459,34 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
 
-! used to check whether the input file (solver.eimp.in) exists
+     ! used to check whether the input file (solver.eimp.in) exists
      logical  :: exists
 
-! setup initial symm
+!! [body
+
+     ! setup initial symm
      symm = 1
 
-! setup initial eimp
+     ! setup initial eimp
      eimp = zero
 
-! read in impurity level and orbital symmetry if available
-!-------------------------------------------------------------------------
+     ! read in impurity level and orbital symmetry if available
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'solver.eimp.in', exist = exists)
 
-! find input file: solver.eimp.in, read it
+         ! find input file: solver.eimp.in, read it
          if ( exists .eqv. .true. ) then
 
-! read in impurity level from solver.eimp.in
+             ! read in impurity level from solver.eimp.in
              open(mytmp, file='solver.eimp.in', form='formatted', status='unknown')
              do i=1,norbs
                  read(mytmp,*) j, eimp(i), symm(i)
@@ -477,21 +495,23 @@
 
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! broadcast eimp and symm from master node to all children nodes
 # if defined (MPI)
 
-! broadcast data
+     ! broadcast data
      call mp_bcast(eimp, master)
 
-! broadcast data
+     ! broadcast data
      call mp_bcast(symm, master)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
+
+!! body]
 
      return
   end subroutine ctqmc_input_eimp_
@@ -515,34 +535,36 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
      integer  :: k
      integer  :: l
 
-! used to check whether the input file (solver.umat.in) exists
+     ! used to check whether the input file (solver.umat.in) exists
      logical  :: exists
 
-! dummy real variables
+     ! dummy real variables
      real(dp) :: rtmp
 
-! calculate two-index Coulomb interaction, umat
+!! [body
+
+     ! calculate two-index Coulomb interaction, umat
      call ctqmc_make_umat(umat)
 
-! read in two-index Coulomb interaction if available
-!-------------------------------------------------------------------------
+     ! read in two-index Coulomb interaction if available
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'solver.umat.in', exist = exists)
 
-! find input file: solver.umat.in, read it
+         ! find input file: solver.umat.in, read it
          if ( exists .eqv. .true. ) then
 
-! read in Coulomb interaction matrix from solver.umat.in
+             ! read in Coulomb interaction matrix from solver.umat.in
              open(mytmp, file='solver.umat.in', form='formatted', status='unknown')
              do i=1,norbs
                  do j=1,norbs
@@ -554,18 +576,20 @@
 
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! broadcast umat from master node to all children nodes
 # if defined (MPI)
 
-! broadcast data
+     ! broadcast data
      call mp_bcast(umat, master)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
+
+!! body]
 
      return
   end subroutine ctqmc_input_umat_
@@ -592,37 +616,39 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
 
-! used to check whether the input file (solver.ktau.in) exists
+     ! used to check whether the input file (solver.ktau.in) exists
      logical  :: exists
 
-! dummy real variables
+     ! dummy real variables
      real(dp) :: rtmp
 
-! setup initial ktau
+!! [body
+
+     ! setup initial ktau
      ktau = zero
 
-! setup initial ptau
+     ! setup initial ptau
      ptau = zero
 
-! check isscr, if the interaction is static, return directly
+     ! check isscr, if the interaction is static, return directly
      if ( isscr == 1 ) RETURN
 
-! read in initial screening function and its derivates if available
-!-------------------------------------------------------------------------
+     ! read in initial screening function and its derivates if available
+     !--------------------------------------------------------------------
      if ( myid == master ) then ! only master node can do it
          exists = .false.
 
-! inquire about file's existence
+         ! inquire about file's existence
          inquire (file = 'solver.ktau.in', exist = exists)
 
-! find input file: solver.ktau.in, read it
+         ! find input file: solver.ktau.in, read it
          if ( exists .eqv. .true. ) then
 
-! read in screening function and its derivates from solver.ktau.in
+             ! read in screening function and its derivates from solver.ktau.in
              open(mytmp, file='solver.ktau.in', form='formatted', status='unknown')
              read(mytmp,*) ! skip one line
              do i=1,ntime
@@ -636,26 +662,29 @@
              endif ! back if ( isscr == 4 ) block
          endif ! back if ( exists .eqv. .true. ) block
      endif ! back if ( myid == master ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ! since the screening function and its derivates may be updated in master
 ! node, it is important to broadcast them from root to all children processes
 # if defined (MPI)
 
-! broadcast data
+     ! broadcast data
      call mp_bcast(ktau, master)
 
-! broadcast data
+     ! broadcast data
      call mp_bcast(ptau, master)
 
-! block until all processes have reached here
+     ! block until all processes have reached here
      call mp_barrier()
 
 # endif  /* MPI */
 
-! shift the Coulomb interaction matrix and chemical potential if retarded
-! interaction or the so-called dynamic screening effect is considered
+     ! shift the Coulomb interaction matrix and chemical potential if
+     ! retarded interaction or the so-called dynamic screening effect
+     ! is considered
      call ctqmc_make_lift(umat, one)
+
+!! body]
 
      return
   end subroutine ctqmc_input_ktau_
@@ -674,17 +703,21 @@
 
      implicit none
 
-! allocate memory for context module
-     call cat_alloc_clur()
+!! [body
 
+     ! allocate memory for context module
+     call cat_alloc_clur()
+     !
      call cat_alloc_mesh()
      call cat_alloc_meat()
      call cat_alloc_umat()
      call cat_alloc_mmat()
-
+     !
      call cat_alloc_gmat()
      call cat_alloc_wmat()
      call cat_alloc_smat()
+
+!! body]
 
      return
   end subroutine ctqmc_alloc_array
@@ -709,50 +742,55 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
      integer :: j
 
-! system time since 1970, Jan 1, used to generate the random number seed
+     ! system time since 1970, Jan 1, used to generate the random
+     ! number seed
      integer :: system_time
 
-! random number seed for twist generator
+     ! random number seed for twist generator
      integer :: stream_seed
 
-! init random number generator
+!! [body
+
+     ! init random number generator
      call system_clock(system_time)
      stream_seed = abs( system_time - ( myid * 1981 + 2008 ) * 951049 )
      call spring_sfmt_init(stream_seed)
 
-!>>> ctqmc_core module
-!-------------------------------------------------------------------------
-! init global variables
+     !>>> ctqmc_core module
+     !--------------------------------------------------------------------
+
+     ! init global variables
      ckink = 0
      cstat = 0
 
-! init statistics variables
+     ! init statistics variables
      ins_t = zero; ins_a = zero; ins_r = zero
      rmv_t = zero; rmv_a = zero; rmv_r = zero
      lsh_t = zero; lsh_a = zero; lsh_r = zero
      rsh_t = zero; rsh_a = zero; rsh_r = zero
      rfl_t = zero; rfl_a = zero; rfl_r = zero
 
-!>>> ctqmc_clur module
-!-------------------------------------------------------------------------
-! init index
+     !>>> ctqmc_clur module
+     !--------------------------------------------------------------------
+
+     ! init index
      index_s = 0
      index_e = 0
 
-! init time
+     ! init time
      time_s  = zero
      time_e  = zero
 
-! init exponent
+     ! init exponent
      exp_s   = czero
      exp_e   = czero
 
-! init stack
+     ! init stack
      do i=1,norbs
          call istack_clean( empty_s(i) )
          call istack_clean( empty_e(i) )
@@ -765,151 +803,166 @@
          enddo ! over j={mkink,1} loop
      enddo ! over i={1,norbs} loop
 
-!>>> ctqmc_mesh module
-!-------------------------------------------------------------------------
-! the variables have been initialized at ctqmc_setup_model()
+     !>>> ctqmc_mesh module
+     !--------------------------------------------------------------------
 
-!>>> ctqmc_meat module
-!-------------------------------------------------------------------------
+     ! the variables have been initialized at ctqmc_setup_model()
 
-! init autocorrelation function
+     !>>> ctqmc_meat module
+     !--------------------------------------------------------------------
+
+     ! init autocorrelation function
      ac_v = zero
      ac_f = zero
 
-! init histogram
+     ! init histogram
      hist = zero
 
-! init probability for atomic eigenstates
+     ! init probability for atomic eigenstates
      prob = zero
 
-! init auxiliary physical observables
+     ! init auxiliary physical observables
      paux = zero
 
-! init occupation number
+     ! init occupation number
      nimp = zero
      nmat = zero
 
-! init kinetic energy fluctuation
+     ! init kinetic energy fluctuation
      knop = zero
      kmat = zero
 
-! init fidelity susceptibility
+     ! init fidelity susceptibility
      lnop = zero
      rnop = zero
      lrmm = zero
 
-! init powers of local magnetization
+     ! init powers of local magnetization
      szpw = zero
 
-! init spin-spin correlation function
+     ! init spin-spin correlation function
      schi = zero
      sp_t = zero
      sp_w = zero
 
-! init charge-charge correlation function
+     ! init charge-charge correlation function
      cchi = zero
      ch_t = zero
      ch_w = zero
 
-! init two-particle green's function
+     ! init two-particle green's function
      g2ph = czero
      g2pp = czero
 
-! init two-particle vertex function
+     ! init two-particle vertex function
      h2ph = czero
      h2pp = czero
 
-!>>> ctqmc_umat module
-!-------------------------------------------------------------------------
-! some variables have been initialized at ctqmc_setup_model()
+     !>>> ctqmc_umat module
+     !--------------------------------------------------------------------
 
-! init rank
+     ! some variables have been initialized at ctqmc_setup_model()
+
+     ! init rank
      rank = 0
 
-! init stts
+     ! init stts
      stts = 0
 
-! init prefactor for improved estimator
+     ! init prefactor for improved estimator
      pref = zero
 
-!>>> ctqmc_mmat module
-!-------------------------------------------------------------------------
-! init M-matrix related array
+     !>>> ctqmc_mmat module
+     !--------------------------------------------------------------------
+
+     ! init M-matrix related array
      mmat   = zero
      lspace = zero
      rspace = zero
 
-! init G-matrix related array
+     ! init G-matrix related array
      gmat   = czero
      lsaves = czero
      rsaves = czero
 
-!>>> ctqmc_gmat module
-!-------------------------------------------------------------------------
-! init imaginary time impurity green's function
+     !>>> ctqmc_gmat module
+     !--------------------------------------------------------------------
+
+     ! init imaginary time impurity green's function
      gtau = zero
      ftau = zero
 
-! init matsubara impurity green's function
+     ! init matsubara impurity green's function
      grnf = czero
      frnf = czero
 
-!>>> ctqmc_wmat module
-!-------------------------------------------------------------------------
-! some variables have been initialized at ctqmc_setup_model()
+     !>>> ctqmc_wmat module
+     !--------------------------------------------------------------------
 
-! init imaginary time bath weiss's function
+     ! some variables have been initialized at ctqmc_setup_model()
+
+     ! init imaginary time bath weiss's function
      wtau = zero
 
-! init matsubara bath weiss's function
+     ! init matsubara bath weiss's function
      wssf = czero
 
-!>>> ctqmc_smat module
-!-------------------------------------------------------------------------
-! sig1 should not be reinitialized here, since it is used to keep the
-! persistency of self-energy function
+     !>>> ctqmc_smat module
+     !--------------------------------------------------------------------
 
-! init self-energy function
-!<     sig1 = czero
+     ! sig1 should not be reinitialized here, since it is used to keep
+     ! the persistency of self-energy function
+
+     ! init self-energy function
+!<   sig1 = czero
      sig2 = czero
 
-!>>> postprocess hybridization function
-!-------------------------------------------------------------------------
-! fourier hybridization function from frequency space to time space
+     !>>> postprocess hybridization function
+     !--------------------------------------------------------------------
+
+     ! fourier hybridization function from frequency space to time space
      call ctqmc_four_hybf(hybf, htau)
 
-! symmetrize the hybridization function on imaginary time axis if needed
+     ! symmetrize the hybridization function on imaginary time
+     ! axis if needed
      call ctqmc_symm_gtau(symm, htau)
 
-! calculate the 2nd-derivates of htau, which is used in spline subroutines
+     ! calculate the 2nd-derivates of htau, which is used
+     ! in spline subroutines
      call ctqmc_eval_hsed(htau, hsed)
 
-!>>> postprocess dynamic interaction
-!-------------------------------------------------------------------------
-! calculate the 2nd-derivates of ktau, which is used in spline subroutines
+     !>>> postprocess dynamic interaction
+     !--------------------------------------------------------------------
+
+     ! calculate the 2nd-derivates of ktau, which is used
+     ! in spline subroutines
      call ctqmc_eval_ksed(ktau, ksed)
 
-! calculate the 2nd-derivates of ptau, which is used in spline subroutines
+     ! calculate the 2nd-derivates of ptau, which is used
+     ! in spline subroutines
      call ctqmc_eval_ksed(ptau, psed)
 
-!>>> dump the necessary files
-!-------------------------------------------------------------------------
-! write out the hybridization function
+     !>>> dump the necessary files
+     !--------------------------------------------------------------------
+
+     ! write out the hybridization function
      if ( myid == master ) then ! only master node can do it
          call ctqmc_dump_hybf(hybf)
          call ctqmc_dump_htau(htau)
      endif ! back if ( myid == master ) block
 
-! write out the screening function and its derivates
+     ! write out the screening function and its derivates
      if ( myid == master ) then ! only master node can do it
          call ctqmc_dump_ktau(ktau, ptau, ksed, psed)
      endif ! back if ( myid == master ) block
 
-! write out the seed for random number stream, it is useful to reproduce
-! the calculation process once fatal error occurs.
+     ! write out the seed for random number stream, it is useful to
+     ! reproduce the calculation process once fatal error occurs.
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a,i11)') 'seed:', stream_seed
      endif ! back if ( myid == master ) block
+
+!! body]
 
      return
   end subroutine ctqmc_reset_array
@@ -924,17 +977,21 @@
 
      implicit none
 
-! deallocate memory for context module
-     call cat_free_clur()
+!! [body
 
+     ! deallocate memory for context module
+     call cat_free_clur()
+     !
      call cat_free_mesh()
      call cat_free_meat()
      call cat_free_umat()
      call cat_free_mmat()
-
+     !
      call cat_free_gmat()
      call cat_free_wmat()
      call cat_free_smat()
+
+!! body]
 
      return
   end subroutine ctqmc_final_array

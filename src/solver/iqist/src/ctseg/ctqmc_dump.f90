@@ -1,35 +1,35 @@
 !!!-----------------------------------------------------------------------
-!!! project : narcissus
-!!! program : ctqmc_dump_ac_f <<<---
+!!! project : iqist @ narcissus
+!!! program : ctqmc_dump_ac_f
 !!!           ctqmc_dump_hist
 !!!           ctqmc_dump_prob
 !!!           ctqmc_dump_paux
-!!!           ctqmc_dump_nmat <<<---
+!!!           ctqmc_dump_nmat
 !!!           ctqmc_dump_gtau
 !!!           ctqmc_dump_ftau
 !!!           ctqmc_dump_htau
 !!!           ctqmc_dump_wtau
-!!!           ctqmc_dump_ktau <<<---
+!!!           ctqmc_dump_ktau
 !!!           ctqmc_dump_grnf
 !!!           ctqmc_dump_frnf
 !!!           ctqmc_dump_hybf
 !!!           ctqmc_dump_wssf
-!!!           ctqmc_dump_sig2 <<<---
+!!!           ctqmc_dump_sig2
 !!!           ctqmc_dump_kmat
 !!!           ctqmc_dump_lrmm
-!!!           ctqmc_dump_szpw <<<---
+!!!           ctqmc_dump_szpw
 !!!           ctqmc_dump_sp_t
 !!!           ctqmc_dump_sp_w
 !!!           ctqmc_dump_ch_t
-!!!           ctqmc_dump_ch_w <<<---
+!!!           ctqmc_dump_ch_w
 !!!           ctqmc_dump_g2ph
-!!!           ctqmc_dump_g2pp <<<---
-!!!           ctqmc_dump_diag <<<---
+!!!           ctqmc_dump_g2pp
+!!!           ctqmc_dump_diag
 !!! source  : ctqmc_dump.f90
 !!! type    : subroutines
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 09/16/2009 by li huang (created)
-!!!           08/15/2017 by li huang (last modified)
+!!!           07/02/2023 by li huang (last modified)
 !!! purpose : dump key observables produced by the hybridization expansion
 !!!           version continuous time quantum Monte Carlo (CTQMC) quantum
 !!!           impurity solver and dynamical mean field theory (DMFT) self
@@ -55,24 +55,28 @@
 
      implicit none
 
-! external arguments
-! autocorrelation function
+!! external arguments
+     ! autocorrelation function
      real(dp), intent(in) :: ac_f(ntime)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
 
-! open data file: solver.ac_f.dat
+!! [body
+
+     ! open data file: solver.ac_f.dat
      open(mytmp, file='solver.ac_f.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do i=1,ntime
          write(mytmp,'(i6,f12.6)') i, ac_f(i)
      enddo ! over i={1,ntime} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_ac_f
@@ -94,21 +98,23 @@
 
      implicit none
 
-! external arguments
-! histogram data
+!! external arguments
+     ! histogram data and its error bar
      real(dp), intent(in) :: hist(mkink)
      real(dp), intent(in) :: herr(mkink)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
 
-! scaled histogram data
+     ! scaled histogram data
      real(dp) :: hint(mkink)
      real(dp) :: haux(mkink)
      real(dp) :: htmp(mkink)
 
-! evaluate hint, haux, and htmp at first, and then transform them
+!! [body
+
+     ! evaluate hint, haux, and htmp at first, and then transform them
      hint = hist
      haux = hist / sum(hist)
      htmp = herr / sum(hist)
@@ -117,17 +123,19 @@
      haux = cshift(haux, -1)
      htmp = cshift(htmp, -1)
 
-! open data file: solver.hist.dat
+     ! open data file: solver.hist.dat
      open(mytmp, file='solver.hist.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      write(mytmp,'(a)') '# histogram: order | count | percent'
      do i=1,mkink
          write(mytmp,'(i6,i12,2f12.6)') i-1, int( hint(i) ), haux(i), htmp(i)
      enddo ! over i={1,mkink} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_hist
@@ -146,35 +154,37 @@
 
      implicit none
 
-! external arguments
-! probability data of eigenstates
+!! external arguments
+     ! probability data of eigenstates and its error bar
      real(dp), intent(in) :: prob(ncfgs)
      real(dp), intent(in) :: perr(ncfgs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
 
-! occupation number of eigenstates
+     ! occupation number of eigenstates
      real(dp) :: noccs(ncfgs)
 
-! net spin of eigenstates
+     ! net spin of eigenstates
      real(dp) :: soccs(ncfgs)
 
-! atomic basis sets
+     ! atomic basis sets
      real(dp) :: basis(ncfgs,norbs)
 
-! probability of occupation number distribution
+     ! probability of occupation number distribution
      real(dp) :: oprob(0:norbs)
      real(dp) :: operr(0:norbs) ! error bar
 
-! probability of net spin distribution
+     ! probability of net spin distribution
      real(dp) :: sprob(-nband:nband)
      real(dp) :: sperr(-nband:nband) ! error bar
 
-! build atomic basis set (or equivalently atomic eigenstates), we do not
-! order them according to their occupation numbers
+!! [body
+
+     ! build atomic basis set (or equivalently atomic eigenstates), we
+     ! do not order them according to their occupation numbers
      do i=1,ncfgs
          do j=1,norbs
              if ( btest(i-1,j-1) .eqv. .true. ) then
@@ -185,17 +195,17 @@
          enddo ! over j={1,norbs} loop
      enddo ! over i={1,ncfgs} loop
 
-! build occupation numbers for atomic eigenstates
+     ! build occupation numbers for atomic eigenstates
      do i=1,ncfgs
          noccs(i) = sum( basis(i,:) )
      enddo ! over i={1,ncfgs} loop
 
-! build net spin for atomic eigenstates
+     ! build net spin for atomic eigenstates
      do i=1,ncfgs
          soccs(i) = sum( basis(i,1:nband) ) - sum( basis(i,nband+1:norbs) )
      enddo ! over i={1,ncfgs} loop
 
-! evaluate oprob
+     ! evaluate oprob
      oprob = zero
      operr = zero
      do i=1,ncfgs
@@ -204,7 +214,7 @@
          operr(j) = operr(j) + perr(i)
      enddo ! over i={1,ncfgs} loop
 
-! evaluate sprob
+     ! evaluate sprob
      sprob = zero
      sperr = zero
      do i=1,ncfgs
@@ -213,10 +223,10 @@
          sperr(j) = sperr(j) + perr(i)
      enddo ! over i={1,ncfgs} loop
 
-! open data file: solver.prob.dat
+     ! open data file: solver.prob.dat
      open(mytmp, file='solver.prob.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      write(mytmp,'(a)') '# state probability: index | prob | occupy | spin'
      do i=1,ncfgs
          write(mytmp,'(i6,4f12.6)') i, prob(i), noccs(i), soccs(i) * half, perr(i)
@@ -234,8 +244,10 @@
      enddo ! over i={-nband,nband} loop
      write(mytmp,'(a6,12X,f12.6)') 'sum', sum(sprob)
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_prob
@@ -251,15 +263,17 @@
 
      implicit none
 
-! external arguments
-! auxiliary physical observables
+!! external arguments
+     ! auxiliary physical observables and its error bar
      real(dp), intent(in) :: paux(9)
      real(dp), intent(in) :: perr(9)
 
-! open data file: solver.paux.dat
+!! [body
+
+     ! open data file: solver.paux.dat
      open(mytmp, file='solver.paux.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      write(mytmp,'(a,2f12.6)') 'etot:', paux(1), perr(1)
      write(mytmp,'(a,2f12.6)') 'epot:', paux(2), perr(2)
      write(mytmp,'(a,2f12.6)') 'ekin:', paux(3), perr(3)
@@ -270,8 +284,10 @@
      write(mytmp,'(a,2e12.4)') '<K3>:', paux(8), perr(8)
      write(mytmp,'(a,2e12.4)') '<K4>:', paux(9), perr(9)
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_paux
@@ -289,24 +305,26 @@
 
      implicit none
 
-! external arguments
-! occupation number data
+!! external arguments
+     ! occupation number data and its error bar
      real(dp), intent(in) :: nimp(norbs)
      real(dp), intent(in) :: nerr(norbs)
 
-! double occupation matrix data
+     ! double occupation matrix data and its error bar
      real(dp), intent(in) :: nmat(norbs,norbs)
      real(dp), intent(in) :: nbar(norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
      integer :: j
 
-! open data file: solver.nmat.dat
+!! [body
+
+     ! open data file: solver.nmat.dat
      open(mytmp, file='solver.nmat.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      write(mytmp,'(a)') '#   < n_i >   data:'
      do i=1,norbs
          write(mytmp,'(i6,2f12.6)') i, nimp(i), nerr(i)
@@ -322,8 +340,10 @@
          enddo ! over j={1,norbs} loop
      enddo ! over i={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_nmat
@@ -348,20 +368,22 @@
 
      implicit none
 
-! external arguments
-! impurity green's function
+!! external arguments
+     ! impurity green's function and its error bar
      real(dp), intent(in) :: gtau(ntime,norbs,norbs)
      real(dp), intent(in) :: gerr(ntime,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
 
-! open data file: solver.green.dat
+!! [body
+
+     ! open data file: solver.green.dat
      open(mytmp, file='solver.green.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do i=1,norbs
          do j=1,ntime
              write(mytmp,'(2i6,3f12.6)') i, j, tmesh(j), gtau(j,i,i), gerr(j,i,i)
@@ -370,8 +392,10 @@
          write(mytmp,*)
      enddo ! over i={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_gtau
@@ -392,20 +416,22 @@
 
      implicit none
 
-! external arguments
-! auxiliary correlation function
+!! external arguments
+     ! auxiliary correlation function and its error bar
      real(dp), intent(in) :: ftau(ntime,norbs,norbs)
      real(dp), intent(in) :: ferr(ntime,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
 
-! open data file: solver.fcorr.dat
+!! [body
+
+     ! open data file: solver.fcorr.dat
      open(mytmp, file='solver.fcorr.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do i=1,norbs
          do j=1,ntime
              write(mytmp,'(2i6,3f12.6)') i, j, tmesh(j), ftau(j,i,i), ferr(j,i,i)
@@ -414,8 +440,10 @@
          write(mytmp,*)
      enddo ! over i={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_ftau
@@ -437,19 +465,21 @@
 
      implicit none
 
-! external arguments
-! hybridization function
+!! external arguments
+     ! hybridization function
      real(dp), intent(in) :: htau(ntime,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
      integer :: j
 
-! open data file: solver.hybri.dat
+!! [body
+
+     ! open data file: solver.hybri.dat
      open(mytmp, file='solver.hybri.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do i=1,norbs
          do j=1,ntime
              write(mytmp,'(2i6,3f12.6)') i, j, tmesh(j), htau(j,i,i), zero
@@ -458,8 +488,10 @@
          write(mytmp,*)
      enddo ! over i={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_htau
@@ -481,19 +513,21 @@
 
      implicit none
 
-! external arguments
-! bath weiss's function
+!! external arguments
+     ! bath weiss's function
      real(dp), intent(in) :: wtau(ntime,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
      integer :: j
 
-! open data file: solver.weiss.dat
+!! [body
+
+     ! open data file: solver.weiss.dat
      open(mytmp, file='solver.weiss.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do i=1,norbs
          do j=1,ntime
              write(mytmp,'(2i6,3f12.6)') i, j, tmesh(j), wtau(j,i,i), zero
@@ -502,8 +536,10 @@
          write(mytmp,*)
      enddo ! over i={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_wtau
@@ -524,33 +560,37 @@
 
      implicit none
 
-! external arguments
-! screening function, K(\tau)
+!! external arguments
+     ! screening function, K(\tau)
      real(dp), intent(in) :: ktau(ntime)
 
-! first order derivates for screening function, K'(\tau)
+     ! first order derivates for screening function, K'(\tau)
      real(dp), intent(in) :: ptau(ntime)
 
-! second order derivates for the screening function, K''(\tau)
+     ! second order derivates for the screening function, K''(\tau)
      real(dp), intent(in) :: ksed(ntime)
 
-! second order derivates for ptau, K'''(\tau)
+     ! second order derivates for ptau, K'''(\tau)
      real(dp), intent(in) :: psed(ntime)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
 
-! open data file: solver.kernel.dat
+!! [body
+
+     ! open data file: solver.kernel.dat
      open(mytmp, file='solver.kernel.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do i=1,ntime
          write(mytmp,'(i6,5f12.6)') i, tmesh(i), ktau(i), ptau(i), ksed(i), psed(i)
      enddo ! over i={1,ntime} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_ktau
@@ -575,20 +615,22 @@
 
      implicit none
 
-! external arguments
-! impurity green's function
+!! external arguments
+     ! impurity green's function and its error bar
      complex(dp), intent(in) :: grnf(mfreq,norbs,norbs)
      complex(dp), intent(in) :: gerr(mfreq,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
      integer :: j
 
-! open data file: solver.grn.dat
+!! [body
+
+     ! open data file: solver.grn.dat
      open(mytmp, file='solver.grn.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do i=1,norbs
          do j=1,mfreq
              write(mytmp,'(i6,5f16.8)') i, rmesh(j), grnf(j,i,i), gerr(j,i,i)
@@ -597,8 +639,10 @@
          write(mytmp,*)
      enddo ! over i={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_grnf
@@ -619,20 +663,22 @@
 
      implicit none
 
-! external arguments
-! auxiliary correlation function
+!! external arguments
+     ! auxiliary correlation function and its error bar
      complex(dp), intent(in) :: frnf(mfreq,norbs,norbs)
      complex(dp), intent(in) :: ferr(mfreq,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
      integer :: j
 
-! open data file: solver.frn.dat
+!! [body
+
+     ! open data file: solver.frn.dat
      open(mytmp, file='solver.frn.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do i=1,norbs
          do j=1,mfreq
              write(mytmp,'(i6,5f16.8)') i, rmesh(j), frnf(j,i,i), ferr(j,i,i)
@@ -641,8 +687,10 @@
          write(mytmp,*)
      enddo ! over i={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_frnf
@@ -664,19 +712,21 @@
 
      implicit none
 
-! external arguments
-! hybridization function
+!! external arguments
+     ! hybridization function
      complex(dp), intent(in) :: hybf(mfreq,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
      integer :: j
 
-! open data file: solver.hyb.dat
+!! [body
+
+     ! open data file: solver.hyb.dat
      open(mytmp, file='solver.hyb.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do i=1,norbs
          do j=1,mfreq
              write(mytmp,'(i6,5f16.8)') i, rmesh(j), hybf(j,i,i), czero
@@ -685,8 +735,10 @@
          write(mytmp,*)
      enddo ! over i={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_hybf
@@ -708,19 +760,21 @@
 
      implicit none
 
-! external arguments
-! bath weiss's function
+!! external arguments
+     ! bath weiss's function
      complex(dp), intent(in) :: wssf(mfreq,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
      integer :: j
 
-! open data file: solver.wss.dat
+!! [body
+
+     ! open data file: solver.wss.dat
      open(mytmp, file='solver.wss.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do i=1,norbs
          do j=1,mfreq
              write(mytmp,'(i6,5f16.8)') i, rmesh(j), wssf(j,i,i), czero
@@ -729,8 +783,10 @@
          write(mytmp,*)
      enddo ! over i={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_wssf
@@ -751,20 +807,22 @@
 
      implicit none
 
-! external arguments
-! self-energy function
+!! external arguments
+     ! self-energy function and its error bar
      complex(dp), intent(in) :: sig2(mfreq,norbs,norbs)
      complex(dp), intent(in) :: serr(mfreq,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
      integer :: j
 
-! open data file: solver.sgm.dat
+!! [body
+
+     ! open data file: solver.sgm.dat
      open(mytmp, file='solver.sgm.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do i=1,norbs
          do j=1,mfreq
              write(mytmp,'(i6,5f16.8)') i, rmesh(j), sig2(j,i,i), serr(j,i,i)
@@ -773,8 +831,10 @@
          write(mytmp,*)
      enddo ! over i={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_sig2
@@ -798,36 +858,38 @@
 
      implicit none
 
-! external arguments
-! number of operators, < k >
+!! external arguments
+     ! number of operators, < k >, and its error bar
      real(dp), intent(in) :: knop(norbs)
      real(dp), intent(in) :: kerr(norbs)
 
-! crossing product of k_i and k_j, < k_i k_j >
+     ! crossing product of k_i and k_j, < k_i k_j >, and its error bar
      real(dp), intent(in) :: kmat(norbs,norbs)
      real(dp), intent(in) :: kbar(norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
 
-! final value and corresponding error
+     ! final value and corresponding error
      real(dp) :: f_val
      real(dp) :: f_err
 
-! calculate f_val and f_err
+!! [body
+
+     ! calculate f_val and f_err
      f_val = sum( kmat ) - sum( knop ) * ( one * sum( knop ) + one )
      f_err = sum( kbar ) - sum( kerr ) * ( two * sum( knop ) + one )
 
-! check if we need to dump the < k > and < k^2 > data
-! to solver.kmat.dat
+     ! check if we need to dump the < k > and < k^2 > data
+     ! to solver.kmat.dat
      if ( .not. btest(isobs, 1) ) RETURN
 
-! open data file: solver.kmat.dat
+     ! open data file: solver.kmat.dat
      open(mytmp, file='solver.kmat.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      write(mytmp,'(a)') '# <  k  > data:'
      do i=1,norbs
          write(mytmp,'(i6,2f12.6)') i, knop(i), kerr(i)
@@ -843,8 +905,10 @@
      write(mytmp,'(a6,2f12.6)') 'kksum', sum( kmat ), sum( kbar )
      write(mytmp,'(a6,2f12.6)') 'final', f_val, f_err
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_kmat
@@ -863,40 +927,42 @@
 
      implicit none
 
-! external arguments
-! number of operators at left half axis, < k_l >
+!! external arguments
+     ! number of operators at left half axis, < k_l >, and its error bar
      real(dp), intent(in) :: lnop(norbs)
      real(dp), intent(in) :: lerr(norbs)
 
-! number of operators at right half axis, < k_r >
+     ! number of operators at right half axis, < k_r >, and its error bar
      real(dp), intent(in) :: rnop(norbs)
      real(dp), intent(in) :: rerr(norbs)
 
-! crossing product of k_l and k_r, < k_l k_r >
+     ! crossing product of k_l and k_r, < k_l k_r >, and its error bar
      real(dp), intent(in) :: lrmm(norbs,norbs)
      real(dp), intent(in) :: lree(norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
 
-! final value and corresponding error
+     ! final value and corresponding error
      real(dp) :: f_val
      real(dp) :: f_err
 
-! calculate f_val and f_err
+!! [body
+
+     ! calculate f_val and f_err
      f_val = sum( lrmm ) - sum( lnop ) * sum( rnop )
      f_err = sum( lree ) - sum( rnop ) * sum( lerr ) - sum( lnop ) * sum( rerr )
 
-! check if we need to dump the fidelity susceptibility data
-! to solver.lrmm.dat
+     ! check if we need to dump the fidelity susceptibility data
+     ! to solver.lrmm.dat
      if ( .not. btest(isobs, 2) ) RETURN
 
-! open data file: solver.lrmm.dat
+     ! open data file: solver.lrmm.dat
      open(mytmp, file='solver.lrmm.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      write(mytmp,'(a)') '# < k_l > < k_r > data:'
      do i=1,norbs
          write(mytmp,'(i6,4f12.6)') i, lnop(i), rnop(i), lerr(i), rerr(i)
@@ -913,8 +979,10 @@
      write(mytmp,'(a6,2f12.6)') 'lrsum', sum( lrmm ), sum( lree )
      write(mytmp,'(a6,2f12.6)') 'fidel', f_val, f_err
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_lrmm
@@ -934,24 +1002,26 @@
 
      implicit none
 
-! external arguments
-! powers of local magnetization
+!! external arguments
+     ! powers of local magnetization and its error bar
      real(dp), intent(in) :: szpw(4,norbs)
      real(dp), intent(in) :: serr(4,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
      integer :: j
 
-! check if we need to dump the powers of local magnetization data
-! to solver.szpw.dat
+!! [body
+
+     ! check if we need to dump the powers of local magnetization data
+     ! to solver.szpw.dat
      if ( .not. btest(isobs, 3) ) RETURN
 
-! open data file: solver.szpw.dat
+     ! open data file: solver.szpw.dat
      open(mytmp, file='solver.szpw.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do j=1,nband
          write(mytmp,'(a,i6)') '# flvr:', j
          do i=1,4
@@ -967,8 +1037,10 @@
      write(mytmp,*) ! write empty lines
      write(mytmp,*)
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_szpw
@@ -995,28 +1067,30 @@
 
      implicit none
 
-! external arguments
-! totally-averaged spin-spin correlation function data
+!! external arguments
+     ! totally-averaged spin-spin correlation function and its error bar
      real(dp), intent(in) :: schi(ntime)
      real(dp), intent(in) :: serr(ntime)
 
-! orbital-resolved spin-spin correlation function data
+     ! orbital-resolved spin-spin correlation function and its error bar
      real(dp), intent(in) :: sp_t(ntime,nband)
      real(dp), intent(in) :: sbar(ntime,nband)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
      integer :: j
 
-! check if we need to dump the spin-spin correlation function data
-! to solver.sp_t.dat
+!! [body
+
+     ! check if we need to dump the spin-spin correlation function data
+     ! to solver.sp_t.dat
      if ( .not. btest(issus, 1) ) RETURN
 
-! open data file: solver.sp_t.dat
+     ! open data file: solver.sp_t.dat
      open(mytmp, file='solver.sp_t.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do j=1,nband
          write(mytmp,'(a,i6)') '# flvr:', j
          do i=1,ntime
@@ -1040,8 +1114,10 @@
      write(mytmp,*) ! write empty lines
      write(mytmp,*)
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_sp_t
@@ -1064,32 +1140,34 @@
 
      implicit none
 
-! external arguments
-! orbital-resolved spin-spin correlation function
+!! external arguments
+     ! orbital-resolved spin-spin correlation function and its error bar
      real(dp), intent(in) :: sp_w(nbfrq,nband)
      real(dp), intent(in) :: serr(nbfrq,nband)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
 
-! bosonic frequency mesh
+     ! bosonic frequency mesh
      real(dp) :: bmesh(nbfrq)
 
-! build bmesh
+!! [body
+
+     ! build bmesh
      do i=1,nbfrq
          bmesh(i) = two * pi * float( i - 1 ) / beta
      enddo ! over i={1,nbfrq} loop
 
-! check if we need to dump the spin-spin correlation function data
-! to solver.sp_w.dat
+     ! check if we need to dump the spin-spin correlation function data
+     ! to solver.sp_w.dat
      if ( .not. btest(issus, 3) ) RETURN
 
-! open data file: solver.sp_w.dat
+     ! open data file: solver.sp_w.dat
      open(mytmp, file='solver.sp_w.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do j=1,nband
          write(mytmp,'(a,i6)') '# flvr:', j
          do i=1,nbfrq
@@ -1099,8 +1177,10 @@
          write(mytmp,*)
      enddo ! over j={1,nband} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_sp_w
@@ -1123,29 +1203,31 @@
 
      implicit none
 
-! external arguments
-! totally-averaged charge-charge correlation function data
+!! external arguments
+     ! totally-averaged charge-charge correlation function and its error bar
      real(dp), intent(in) :: cchi(ntime)
      real(dp), intent(in) :: cerr(ntime)
 
-! orbital-resolved charge-charge correlation function data
+     ! orbital-resolved charge-charge correlation function and its error bar
      real(dp), intent(in) :: ch_t(ntime,norbs,norbs)
      real(dp), intent(in) :: cbar(ntime,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
      integer :: j
      integer :: k
 
-! check if we need to dump the charge-charge correlation function data
-! to solver.ch_t.dat
+!! [body
+
+     ! check if we need to dump the charge-charge correlation function data
+     ! to solver.ch_t.dat
      if ( .not. btest(issus, 2) ) RETURN
 
-! open data file: solver.ch_t.dat
+     ! open data file: solver.ch_t.dat
      open(mytmp, file='solver.ch_t.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do k=1,norbs
          do j=1,norbs
              write(mytmp,'(2(a,i6))') '# flvr:', j, '  flvr:', k
@@ -1171,8 +1253,10 @@
      write(mytmp,*) ! write empty lines
      write(mytmp,*)
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_ch_t
@@ -1195,33 +1279,35 @@
 
      implicit none
 
-! external arguments
-! orbital-resolved charge-charge correlation function
+!! external arguments
+     ! orbital-resolved charge-charge correlation function and its error bar
      real(dp), intent(in) :: ch_w(nbfrq,norbs,norbs)
      real(dp), intent(in) :: cerr(nbfrq,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
      integer  :: k
 
-! bosonic frequency mesh
+     ! bosonic frequency mesh
      real(dp) :: bmesh(nbfrq)
 
-! build bmesh
+!! [body
+
+     ! build bmesh
      do i=1,nbfrq
          bmesh(i) = two * pi * float( i - 1 ) / beta
      enddo ! over i={1,nbfrq} loop
 
-! check if we need to dump the charge-charge correlation function data
-! to solver.ch_w.dat
+     ! check if we need to dump the charge-charge correlation function data
+     ! to solver.ch_w.dat
      if ( .not. btest(issus, 4) ) RETURN
 
-! open data file: solver.ch_w.dat
+     ! open data file: solver.ch_w.dat
      open(mytmp, file='solver.ch_w.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do k=1,norbs
          do j=1,norbs
              write(mytmp,'(2(a,i6))') '# flvr:', j, '  flvr:', k
@@ -1233,8 +1319,10 @@
          enddo ! over j={1,norbs} loop
      enddo ! over k={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_ch_w
@@ -1262,58 +1350,60 @@
 
      implicit none
 
-! external arguments
-! two-particle green's functions
+!! external arguments
+     ! two-particle green's function and its error bar
      complex(dp), intent(in) :: g2ph(nffrq,nffrq,nbfrq,norbs,norbs)
      complex(dp), intent(in) :: gerr(nffrq,nffrq,nbfrq,norbs,norbs)
 
-! two-particle vertex functions
+     ! two-particle vertex function and its error bar
      complex(dp), intent(in) :: h2ph(nffrq,nffrq,nbfrq,norbs,norbs)
      complex(dp), intent(in) :: herr(nffrq,nffrq,nbfrq,norbs,norbs)
 
-! local variables
-! loop index for frequencies
+!! local variables
+     ! loop index for frequencies
      integer :: i
      integer :: j
      integer :: k
      integer :: p
      integer :: q
 
-! loop index for orbitals
+     ! loop index for orbitals
      integer :: m
      integer :: n
 
-! dummy integer variables
-! jt: \nu, unit is \pi/\beta
-! it: \nu', unit is \pi/\beta
+     ! dummy integer variables
+     ! jt: \nu, unit is \pi/\beta
+     ! it: \nu', unit is \pi/\beta
      integer :: it
      integer :: jt
 
-! dummy complex(dp) variables
-! they are used to store the impurity green's function
+     ! dummy complex(dp) variables
+     ! they are used to store the impurity green's function
      complex(dp) :: fw
      complex(dp) :: g1
      complex(dp) :: g2
      complex(dp) :: g3
      complex(dp) :: g4
 
-! two-particle green's function, connected part, \chi_{irr}
+     ! two-particle green's function, connected part, \chi_{irr}
      complex(dp) :: chic
 
-! true two-particle vertex function, \gamma^{(4)}
+     ! true two-particle vertex function, \gamma^{(4)}
      complex(dp) :: chig
 
-! check whether we need to dump the two-particle green's function and
-! vertex function data to solver.g2ph.dat and solver.h2ph.dat
+!! [body
+
+     ! check whether we need to dump the two-particle green's function and
+     ! vertex function data to solver.g2ph.dat and solver.h2ph.dat
      if ( .not. ( btest(isvrt, 1) .or. btest(isvrt, 2) ) ) RETURN
 
-! task 1: dump two-particle green's function
-!-------------------------------------------------------------------------
+     ! task 1: dump two-particle green's function
+     !--------------------------------------------------------------------
 
-! open data file: solver.g2ph.dat
+     ! open data file: solver.g2ph.dat
      open(mytmp, file='solver.g2ph.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do m=1,norbs
          do n=1,m
              do k=1,nbfrq
@@ -1332,16 +1422,16 @@
          enddo ! over n={1,m} loop
      enddo ! over m={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
 
-! task 2: dump two-particle vertex function (auxiliary)
-!-------------------------------------------------------------------------
+     ! task 2: dump two-particle vertex function (auxiliary)
+     !--------------------------------------------------------------------
 
-! open data file: solver.h2ph.dat
+     ! open data file: solver.h2ph.dat
      open(mytmp, file='solver.h2ph.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do m=1,norbs
          do n=1,m
              do k=1,nbfrq
@@ -1360,16 +1450,16 @@
          enddo ! over n={1,m} loop
      enddo ! over m={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
 
-! task 3: dump two-particle vertex function (true)
-!-------------------------------------------------------------------------
+     ! task 3: dump two-particle vertex function (true)
+     !--------------------------------------------------------------------
 
-! open data file: solver.v4ph.dat
+     ! open data file: solver.v4ph.dat
      open(mytmp, file='solver.v4ph.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do m=1,norbs
          do n=1,m
              do k=1,nbfrq
@@ -1378,8 +1468,8 @@
                  write(mytmp,'(a,i6)') '# nbfrq:', k
                  do j=1,nffrq
 
-! evaluate g1: G(v+w)
-! evaluate fw: F(v+w)
+                     ! evaluate g1: G(v+w)
+                     ! evaluate fw: F(v+w)
                      p = j + k - 1
                      if ( p <= nffrq/2 ) then
                          g1 = dconjg( grnf(nffrq/2-p+1,m,m) )
@@ -1389,7 +1479,7 @@
                          fw = frnf(p-nffrq/2,m,m)
                      endif ! back if ( p <= nffrq/2 ) block
 
-! evaluate g2: G(v)
+                     ! evaluate g2: G(v)
                      if ( j <= nffrq/2 ) then
                          g2 = dconjg( grnf(nffrq/2-j+1,m,m) )
                      else
@@ -1398,14 +1488,14 @@
 
                      do i=1,nffrq
 
-! evaluate g3: G(v')
+                         ! evaluate g3: G(v')
                          if ( i <= nffrq/2 ) then
                              g3 = dconjg( grnf(nffrq/2-i+1,n,n) )
                          else
                              g3 = grnf(i-nffrq/2,n,n)
                          endif ! back if ( i <= nffrq/2 ) block
 
-! evaluate g4: G(v'+w)
+                         ! evaluate g4: G(v'+w)
                          q = i + k - 1
                          if ( q <= nffrq/2 ) then
                              g4 = dconjg( grnf(nffrq/2-q+1,n,n))
@@ -1413,10 +1503,10 @@
                              g4 = grnf(q-nffrq/2,n,n)
                          endif ! back if ( q <= nffrq/2 ) block
 
-! evaluate chic
+                         ! evaluate chic
                          chic = g1 * h2ph(i,j,k,n,m) - fw * g2ph(i,j,k,n,m)
 
-! evaluate chig
+                         ! evaluate chig
                          chig = chic / (g1 * g2 * g3 * g4)
 
                          it = 2*i - nffrq - 1; jt = 2*j - nffrq - 1
@@ -1429,8 +1519,10 @@
          enddo ! over n={1,m} loop
      enddo ! over m={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_g2ph
@@ -1454,58 +1546,60 @@
 
      implicit none
 
-! external arguments
-! two-particle green's functions
+!! external arguments
+     ! two-particle green's function and its error bar
      complex(dp), intent(in) :: g2pp(nffrq,nffrq,nbfrq,norbs,norbs)
      complex(dp), intent(in) :: gerr(nffrq,nffrq,nbfrq,norbs,norbs)
 
-! two-particle vertex functions
+     ! two-particle vertex function and its error bar
      complex(dp), intent(in) :: h2pp(nffrq,nffrq,nbfrq,norbs,norbs)
      complex(dp), intent(in) :: herr(nffrq,nffrq,nbfrq,norbs,norbs)
 
-! local variables
-! loop index for frequencies
+!! local variables
+     ! loop index for frequencies
      integer :: i
      integer :: j
      integer :: k
      integer :: p
      integer :: q
 
-! loop index for orbitals
+     ! loop index for orbitals
      integer :: m
      integer :: n
 
-! dummy integer variables
-! jt: \nu, unit is \pi/\beta
-! it: \nu', unit is \pi/\beta
+     ! dummy integer variables
+     ! jt: \nu, unit is \pi/\beta
+     ! it: \nu', unit is \pi/\beta
      integer :: it
      integer :: jt
 
-! dummy complex(dp) variables
-! they are used to store the impurity green's function
+     ! dummy complex(dp) variables
+     ! they are used to store the impurity green's function
      complex(dp) :: fw
      complex(dp) :: g1
      complex(dp) :: g2
      complex(dp) :: g3
      complex(dp) :: g4
 
-! two-particle green's function, connected part, \chi_{irr}
+     ! two-particle green's function, connected part, \chi_{irr}
      complex(dp) :: chic
 
-! true two-particle vertex function, \gamma^{(4)}
+     ! true two-particle vertex function, \gamma^{(4)}
      complex(dp) :: chig
 
-! check whether we need to dump the two-particle green's function and
-! vertex function data to solver.g2pp.dat and solver.h2pp.dat
+!! [body
+
+     ! check whether we need to dump the two-particle green's function and
+     ! vertex function data to solver.g2pp.dat and solver.h2pp.dat
      if ( .not. ( btest(isvrt, 3) .or. btest(isvrt, 4) ) ) RETURN
 
-! task 1: dump two-particle green's function
-!-------------------------------------------------------------------------
+     ! task 1: dump two-particle green's function
+     !--------------------------------------------------------------------
 
-! open data file: solver.g2pp.dat
+     ! open data file: solver.g2pp.dat
      open(mytmp, file='solver.g2pp.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do m=1,norbs
          do n=1,m
              do k=1,nbfrq
@@ -1524,16 +1618,16 @@
          enddo ! over n={1,m} loop
      enddo ! over m={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
 
-! task 2: dump two-particle vertex function (auxiliary)
-!-------------------------------------------------------------------------
+     ! task 2: dump two-particle vertex function (auxiliary)
+     !--------------------------------------------------------------------
 
-! open data file: solver.h2pp.dat
+     ! open data file: solver.h2pp.dat
      open(mytmp, file='solver.h2pp.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do m=1,norbs
          do n=1,m
              do k=1,nbfrq
@@ -1552,16 +1646,16 @@
          enddo ! over n={1,m} loop
      enddo ! over m={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
 
-! task 3: dump two-particle vertex function (true)
-!-------------------------------------------------------------------------
+     ! task 3: dump two-particle vertex function (true)
+     !--------------------------------------------------------------------
 
-! open data file: solver.v4pp.dat
+     ! open data file: solver.v4pp.dat
      open(mytmp, file='solver.v4pp.dat', form='formatted', status='unknown')
 
-! write it
+     ! write it
      do m=1,norbs
          do n=1,m
              do k=1,nbfrq
@@ -1570,14 +1664,14 @@
                  write(mytmp,'(a,i6)') '# nbfrq:', k
                  do j=1,nffrq
 
-! evaluate g2: G(v)
+                     ! evaluate g2: G(v)
                      if ( j <= nffrq/2 ) then
                          g2 = dconjg( grnf(nffrq/2-j+1,m,m) )
                      else
                          g2 = grnf(j-nffrq/2,m,m)
                      endif ! back if ( j <= nffrq/2 ) block
 
-! evaluate g4: G(w-v)
+                     ! evaluate g4: G(w-v)
                      q = k - j + nffrq
                      if ( q <= nffrq/2 ) then
                          g4 = dconjg( grnf(nffrq/2-q+1,n,n))
@@ -1587,8 +1681,8 @@
 
                      do i=1,nffrq
 
-! evaluate g1: G(w-v')
-! evaluate fw: F(w-v')
+                         ! evaluate g1: G(w-v')
+                         ! evaluate fw: F(w-v')
                          p = k - i + nffrq
                          if ( p <= nffrq/2 ) then
                              g1 = dconjg( grnf(nffrq/2-p+1,m,m) )
@@ -1598,17 +1692,17 @@
                              fw = frnf(p-nffrq/2,m,m)
                          endif ! back if ( p <= nffrq/2 ) block
 
-! evaluate g3: G(v')
+                         ! evaluate g3: G(v')
                          if ( i <= nffrq/2 ) then
                              g3 = dconjg( grnf(nffrq/2-i+1,n,n) )
                          else
                              g3 = grnf(i-nffrq/2,n,n)
                          endif ! back if ( i <= nffrq/2 ) block
 
-! evaluate chic
+                         ! evaluate chic
                          chic = g1 * h2pp(i,j,k,n,m) - fw * g2pp(i,j,k,n,m)
 
-! evaluate chig
+                         ! evaluate chig
                          chig = chic / (g1 * g2 * g3 * g4)
 
                          it = 2*i - nffrq - 1; jt = 2*j - nffrq - 1
@@ -1621,8 +1715,10 @@
          enddo ! over n={1,m} loop
      enddo ! over m={1,norbs} loop
 
-! close data file
+     ! close data file
      close(mytmp)
+
+!! body]
 
      return
   end subroutine ctqmc_dump_g2pp
@@ -1650,32 +1746,34 @@
 
      implicit none
 
-! external arguments
-! current self-consistent iteration number
+!! external arguments
+     ! current self-consistent iteration number
      integer, intent(in) :: iter
 
-! current QMC sweeping steps
+     ! current QMC sweeping steps
      integer, intent(in) :: cstep
 
-! local variables
-! loop index for the flavor
+!! local variables
+     ! loop index for the flavor
      integer :: i
 
-! loop index for the operator pair
+     ! loop index for the operator pair
      integer :: j
 
-! setup the internal criterion
+!! [body
+
+     ! setup the internal criterion
      if ( nsweep / nwrite < 100 ) RETURN
 
-! write the snapshot
-! open data file: solver.diag.dat
+     ! write the snapshot
+     ! open data file: solver.diag.dat
      open(mytmp, file='solver.diag.dat', form='formatted', status='unknown', position='append')
 
-! write diagram info
+     ! write diagram info
      write(mytmp,'(2(a,i4))') '>> cur_iter:', iter, ' tot_iter:', niter
      write(mytmp,'(2(a,i4))') '>> cur_diag:', cstep/nwrite, ' tot_diag:', nsweep/nwrite
 
-! write the position of operators
+     ! write the position of operators
      do i=1,norbs
          write(mytmp,'(2(a,i4))') '# flvr:', i, ' rank:', rank(i)
          do j=1,rank(i)
@@ -1683,15 +1781,17 @@
          enddo ! over j={1,rank(i)} loop
      enddo ! over i={1,norbs} loop
 
-! write two blank lines
+     ! write two blank lines
      write(mytmp,*)
      write(mytmp,*)
 
-! close data file
+     ! close data file
      close(mytmp)
 
-! write the message to the terminal
+     ! write the message to the terminal
      write(mystd,'(4X,a)') '>>> quantum impurity solver config: saving'
+
+!! body]
 
      return
   end subroutine ctqmc_dump_diag

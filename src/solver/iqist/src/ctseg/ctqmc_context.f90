@@ -1,5 +1,5 @@
 !!!-----------------------------------------------------------------------
-!!! project : narcissus
+!!! project : iqist @ narcissus
 !!! program : ctqmc_core module
 !!!           ctqmc_clur module
 !!!           ctqmc_mesh module
@@ -12,9 +12,9 @@
 !!!           context    module
 !!! source  : ctqmc_context.f90
 !!! type    : modules
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 09/16/2009 by li huang (created)
-!!!           08/06/2017 by li huang (last modified)
+!!!           06/20/2024 by li huang (last modified)
 !!! purpose : define the key data structure and global arrays/variables
 !!!           for hybridization expansion version continuous time quantum
 !!!           Monte Carlo (CTQMC) quantum impurity solver and dynamical
@@ -72,21 +72,21 @@
 !!
 !! @var ins_t
 !!
-!! insert kink (operators pair) statistics: total count
+!! insert kink (operators pair) statistics: total insert count
 !!
      real(dp), public, save :: ins_t = zero
 
 !!
 !! @var ins_a
 !!
-!! insert kink (operators pair) statistics: accepted count
+!! insert kink (operators pair) statistics: total accepted insert count
 !!
      real(dp), public, save :: ins_a = zero
 
 !!
 !! @var ins_r
 !!
-!! insert kink (operators pair) statistics: rejected count
+!! insert kink (operators pair) statistics: total rejected insert count
 !!
      real(dp), public, save :: ins_r = zero
 
@@ -97,21 +97,21 @@
 !!
 !! @var rmv_t
 !!
-!! remove kink (operators pair) statistics: total count
+!! remove kink (operators pair) statistics: total remove count
 !!
      real(dp), public, save :: rmv_t = zero
 
 !!
 !! @var rmv_a
 !!
-!! remove kink (operators pair) statistics: accepted count
+!! remove kink (operators pair) statistics: total accepted remove count
 !!
      real(dp), public, save :: rmv_a = zero
 
 !!
 !! @var rmv_r
 !!
-!! remove kink (operators pair) statistics: rejected count
+!! remove kink (operators pair) statistics: total rejected remove count
 !!
      real(dp), public, save :: rmv_r = zero
 
@@ -122,21 +122,21 @@
 !!
 !! @var lsh_t
 !!
-!! lshift kink (operators pair) statistics: total count
+!! lshift kink (operators pair) statistics: total lshift count
 !!
      real(dp), public, save :: lsh_t = zero
 
 !!
 !! @var lsh_a
 !!
-!! lshift kink (operators pair) statistics: accepted count
+!! lshift kink (operators pair) statistics: total accepted lshift count
 !!
      real(dp), public, save :: lsh_a = zero
 
 !!
 !! @var lsh_r
 !!
-!! lshift kink (operators pair) statistics: rejected count
+!! lshift kink (operators pair) statistics: total rejected lshift count
 !!
      real(dp), public, save :: lsh_r = zero
 
@@ -147,21 +147,21 @@
 !!
 !! @var rsh_t
 !!
-!! rshift kink (operators pair) statistics: total count
+!! rshift kink (operators pair) statistics: total rshift count
 !!
      real(dp), public, save :: rsh_t = zero
 
 !!
 !! @var rsh_a
 !!
-!! rshift kink (operators pair) statistics: accepted count
+!! rshift kink (operators pair) statistics: total accepted rshift count
 !!
      real(dp), public, save :: rsh_a = zero
 
 !!
 !! @var rsh_r
 !!
-!! rshift kink (operators pair) statistics: rejected count
+!! rshift kink (operators pair) statistics: total rejected rshift count
 !!
      real(dp), public, save :: rsh_r = zero
 
@@ -172,21 +172,21 @@
 !!
 !! @var rfl_t
 !!
-!! reflip kink (operators pair) statistics: total count
+!! reflip kink (operators pair) statistics: total reflip count
 !!
      real(dp), public, save :: rfl_t = zero
 
 !!
 !! @var rfl_a
 !!
-!! reflip kink (operators pair) statistics: accepted count
+!! reflip kink (operators pair) statistics: total accepted reflip count
 !!
      real(dp), public, save :: rfl_a = zero
 
 !!
 !! @var rfl_r
 !!
-!! reflip kink (operators pair) statistics: rejected count
+!! reflip kink (operators pair) statistics: total rejected reflip count
 !!
      real(dp), public, save :: rfl_r = zero
 
@@ -862,14 +862,14 @@
 !!>>> declare private variables                                        <<<
 !!========================================================================
 
-! status flag
+     ! status flag
      integer, private :: istat
 
 !!========================================================================
 !!>>> declare accessibility for module routines                        <<<
 !!========================================================================
 
-! declaration of module procedures: allocate memory
+     ! declaration of module procedures: allocate memory
      public :: cat_alloc_clur
      public :: cat_alloc_mesh
      public :: cat_alloc_meat
@@ -879,7 +879,7 @@
      public :: cat_alloc_wmat
      public :: cat_alloc_smat
 
-! declaration of module procedures: deallocate memory
+     ! declaration of module procedures: deallocate memory
      public :: cat_free_clur
      public :: cat_free_mesh
      public :: cat_free_meat
@@ -903,11 +903,13 @@
   subroutine cat_alloc_clur()
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
 
-! allocate memory
+!! [body
+
+     ! allocate memory
      allocate(index_s(mkink,norbs),     stat=istat)
      allocate(index_e(mkink,norbs),     stat=istat)
 
@@ -920,12 +922,12 @@
      allocate(empty_s(norbs),           stat=istat)
      allocate(empty_e(norbs),           stat=istat)
 
-! check the status
+     ! check the status
      if ( istat /= 0 ) then
          call s_print_error('cat_alloc_clur','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! initialize them
+     ! initialize them
      index_s = 0
      index_e = 0
 
@@ -940,6 +942,8 @@
          call istack_create(empty_e(i), mkink)
      enddo ! over i={1,norbs} loop
 
+!! body]
+
      return
   end subroutine cat_alloc_clur
 
@@ -951,7 +955,9 @@
   subroutine cat_alloc_mesh()
      implicit none
 
-! allocate memory
+!! [body
+
+     ! allocate memory
      allocate(tmesh(ntime),       stat=istat)
      allocate(rmesh(mfreq),       stat=istat)
 
@@ -960,12 +966,12 @@
      allocate(rep_l(legrd,lemax), stat=istat)
      allocate(rep_s(svgrd,svmax), stat=istat)
 
-! check the status
+     ! check the status
      if ( istat /= 0 ) then
          call s_print_error('cat_alloc_mesh','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! initialize them
+     ! initialize them
      tmesh = zero
      rmesh = zero
 
@@ -973,6 +979,8 @@
      smesh = zero
      rep_l = zero
      rep_s = zero
+
+!! body]
 
      return
   end subroutine cat_alloc_mesh
@@ -985,7 +993,9 @@
   subroutine cat_alloc_meat()
      implicit none
 
-! allocate memory
+!! [body
+
+     ! allocate memory
      allocate(ac_v(ntime + 2),   stat=istat)
      allocate(ac_f(ntime + 2),   stat=istat)
 
@@ -1014,12 +1024,12 @@
      allocate(g2pp(nffrq,nffrq,nbfrq,norbs,norbs), stat=istat)
      allocate(h2pp(nffrq,nffrq,nbfrq,norbs,norbs), stat=istat)
 
-! check the status
+     ! check the status
      if ( istat /= 0 ) then
          call s_print_error('cat_alloc_meat','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! initialize them
+     ! initialize them
      ac_v = zero
      ac_f = zero
 
@@ -1048,6 +1058,8 @@
      g2pp = czero
      h2pp = czero
 
+!! body]
+
      return
   end subroutine cat_alloc_meat
 
@@ -1059,7 +1071,9 @@
   subroutine cat_alloc_umat()
      implicit none
 
-! allocate memory
+!! [body
+
+     ! allocate memory
      allocate(rank(norbs),       stat=istat)
      allocate(stts(norbs),       stat=istat)
 
@@ -1074,12 +1088,12 @@
      allocate(psed(ntime),       stat=istat)
      allocate(umat(norbs,norbs), stat=istat)
 
-! check the status
+     ! check the status
      if ( istat /= 0 ) then
          call s_print_error('cat_alloc_umat','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! initialize them
+     ! initialize them
      rank = 0
      stts = 0
 
@@ -1094,6 +1108,8 @@
      psed = zero
      umat = zero
 
+!! body]
+
      return
   end subroutine cat_alloc_umat
 
@@ -1105,7 +1121,9 @@
   subroutine cat_alloc_mmat()
      implicit none
 
-! allocate memory
+!! [body
+
+     ! allocate memory
      allocate(lspace(mkink,norbs),     stat=istat)
      allocate(rspace(mkink,norbs),     stat=istat)
 
@@ -1116,12 +1134,12 @@
 
      allocate(gmat(nfreq,norbs,norbs), stat=istat)
 
-! check the status
+     ! check the status
      if ( istat /= 0 ) then
          call s_print_error('cat_alloc_mmat','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! initialize them
+     ! initialize them
      lspace = zero
      rspace = zero
 
@@ -1131,6 +1149,8 @@
      rsaves = czero
 
      gmat   = czero
+
+!! body]
 
      return
   end subroutine cat_alloc_mmat
@@ -1143,24 +1163,28 @@
   subroutine cat_alloc_gmat()
      implicit none
 
-! allocate memory
+!! [body
+
+     ! allocate memory
      allocate(gtau(ntime,norbs,norbs), stat=istat)
      allocate(ftau(ntime,norbs,norbs), stat=istat)
 
      allocate(grnf(mfreq,norbs,norbs), stat=istat)
      allocate(frnf(mfreq,norbs,norbs), stat=istat)
 
-! check the status
+     ! check the status
      if ( istat /= 0 ) then
          call s_print_error('cat_alloc_gmat','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! initialize them
+     ! initialize them
      gtau = zero
      ftau = zero
 
      grnf = czero
      frnf = czero
+
+!! body]
 
      return
   end subroutine cat_alloc_gmat
@@ -1173,7 +1197,9 @@
   subroutine cat_alloc_wmat()
      implicit none
 
-! allocate memory
+!! [body
+
+     ! allocate memory
      allocate(wtau(ntime,norbs,norbs), stat=istat)
      allocate(htau(ntime,norbs,norbs), stat=istat)
      allocate(hsed(ntime,norbs,norbs), stat=istat)
@@ -1181,18 +1207,20 @@
      allocate(wssf(mfreq,norbs,norbs), stat=istat)
      allocate(hybf(mfreq,norbs,norbs), stat=istat)
 
-! check the status
+     ! check the status
      if ( istat /= 0 ) then
          call s_print_error('cat_alloc_wmat','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! initialize them
+     ! initialize them
      wtau = zero
      htau = zero
      hsed = zero
 
      wssf = czero
      hybf = czero
+
+!! body]
 
      return
   end subroutine cat_alloc_wmat
@@ -1205,18 +1233,22 @@
   subroutine cat_alloc_smat()
      implicit none
 
-! allocate memory
+!! [body
+
+     ! allocate memory
      allocate(sig1(mfreq,norbs,norbs), stat=istat)
      allocate(sig2(mfreq,norbs,norbs), stat=istat)
 
-! check the status
+     ! check the status
      if ( istat /= 0 ) then
          call s_print_error('cat_alloc_smat','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! initialize them
+     ! initialize them
      sig1 = czero
      sig2 = czero
+
+!! body]
 
      return
   end subroutine cat_alloc_smat
@@ -1233,9 +1265,11 @@
   subroutine cat_free_clur()
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
+
+!! [body
 
      do i=1,norbs
          call istack_destroy(empty_s(i))
@@ -1254,6 +1288,8 @@
      if ( allocated(empty_s) ) deallocate(empty_s)
      if ( allocated(empty_e) ) deallocate(empty_e)
 
+!! body]
+
      return
   end subroutine cat_free_clur
 
@@ -1265,6 +1301,8 @@
   subroutine cat_free_mesh()
      implicit none
 
+!! [body
+
      if ( allocated(tmesh) )   deallocate(tmesh)
      if ( allocated(rmesh) )   deallocate(rmesh)
 
@@ -1272,6 +1310,8 @@
      if ( allocated(smesh) )   deallocate(smesh)
      if ( allocated(rep_l) )   deallocate(rep_l)
      if ( allocated(rep_s) )   deallocate(rep_s)
+
+!! body]
 
      return
   end subroutine cat_free_mesh
@@ -1283,6 +1323,8 @@
 !!
   subroutine cat_free_meat()
      implicit none
+
+!! [body
 
      if ( allocated(ac_v) )    deallocate(ac_v)
      if ( allocated(ac_f) )    deallocate(ac_f)
@@ -1312,6 +1354,8 @@
      if ( allocated(g2pp) )    deallocate(g2pp)
      if ( allocated(h2pp) )    deallocate(h2pp)
 
+!! body]
+
      return
   end subroutine cat_free_meat
 
@@ -1322,6 +1366,8 @@
 !!
   subroutine cat_free_umat()
      implicit none
+
+!! [body
 
      if ( allocated(rank) )    deallocate(rank)
      if ( allocated(stts) )    deallocate(stts)
@@ -1337,6 +1383,8 @@
      if ( allocated(psed) )    deallocate(psed)
      if ( allocated(umat) )    deallocate(umat)
 
+!! body]
+
      return
   end subroutine cat_free_umat
 
@@ -1348,6 +1396,8 @@
   subroutine cat_free_mmat()
      implicit none
 
+!! [body
+
      if ( allocated(lspace) )  deallocate(lspace)
      if ( allocated(rspace) )  deallocate(rspace)
 
@@ -1357,6 +1407,8 @@
      if ( allocated(rsaves) )  deallocate(rsaves)
 
      if ( allocated(gmat)   )  deallocate(gmat  )
+
+!! body]
 
      return
   end subroutine cat_free_mmat
@@ -1369,11 +1421,15 @@
   subroutine cat_free_gmat()
      implicit none
 
+!! [body
+
      if ( allocated(gtau) )    deallocate(gtau)
      if ( allocated(ftau) )    deallocate(ftau)
 
      if ( allocated(grnf) )    deallocate(grnf)
      if ( allocated(frnf) )    deallocate(frnf)
+
+!! body]
 
      return
   end subroutine cat_free_gmat
@@ -1386,12 +1442,16 @@
   subroutine cat_free_wmat()
      implicit none
 
+!! [body
+
      if ( allocated(wtau) )    deallocate(wtau)
      if ( allocated(htau) )    deallocate(htau)
      if ( allocated(hsed) )    deallocate(hsed)
 
      if ( allocated(wssf) )    deallocate(wssf)
      if ( allocated(hybf) )    deallocate(hybf)
+
+!! body]
 
      return
   end subroutine cat_free_wmat
@@ -1404,8 +1464,12 @@
   subroutine cat_free_smat()
      implicit none
 
+!! [body
+
      if ( allocated(sig1) )    deallocate(sig1)
      if ( allocated(sig2) )    deallocate(sig2)
+
+!! body]
 
      return
   end subroutine cat_free_smat

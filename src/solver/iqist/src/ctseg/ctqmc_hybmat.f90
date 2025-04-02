@@ -1,22 +1,22 @@
 !!!-----------------------------------------------------------------------
-!!! project : narcissus
+!!! project : iqist @ narcissus
 !!! program : cat_insert_matrix
 !!!           cat_remove_matrix
 !!!           cat_lshift_matrix
 !!!           cat_rshift_matrix
 !!!           cat_reflip_matrix
-!!!           cat_reload_matrix <<<---
+!!!           cat_reload_matrix
 !!!           cat_insert_detrat
 !!!           cat_remove_detrat
 !!!           cat_lshift_detrat
 !!!           cat_rshift_detrat
 !!!           cat_reflip_detrat
-!!!           cat_reload_detrat <<<---
+!!!           cat_reload_detrat
 !!! source  : ctqmc_hybmat.f90
 !!! type    : subroutines
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 09/16/2009 by li huang (created)
-!!!           06/15/2017 by li huang (last modified)
+!!!           07/03/2023 by li huang (last modified)
 !!! purpose : offer basic infrastructure (elementary updating subroutines)
 !!!           for hybridization expansion version continuous time quantum
 !!!           Monte Carlo (CTQMC) quantum impurity solver. the following
@@ -52,38 +52,40 @@
 
      implicit none
 
-! external arguments
-! current flavor channel
+!! external arguments
+     ! current flavor channel
      integer, intent(in)  :: flvr
 
-! index address to insert new creation and annihilation operators
+     ! index address to insert new creation and annihilation operators
      integer, intent(in)  :: is
      integer, intent(in)  :: ie
 
-! imaginary time \tau_s for new creation operator
+     ! imaginary time \tau_s for new creation operator
      real(dp), intent(in) :: tau_start
 
-! imaginary time \tau_e for new annihilation operator
+     ! imaginary time \tau_e for new annihilation operator
      real(dp), intent(in) :: tau_end
 
-! previous calculated determinant ratio
+     ! previous calculated determinant ratio
      real(dp), intent(in) :: deter_ratio
 
-! local variables
-! loop index over operators
+!! local variables
+     ! loop index over operators
      integer  :: i
      integer  :: j
 
-! loop index over frequencies
+     ! loop index over frequencies
      integer  :: k
 
-! real(dp) dummy variables
+     ! dummy real(dp) variables
      real(dp) :: p
 
-! evaluate p at first
+!! [body
+
+     ! evaluate p at first
      p = one / deter_ratio
 
-! shift lspace and rspace, and then supplement them with -1 at the end
+     ! shift lspace and rspace, and then supplement them with -1 at the end
      do i=ckink,ie,-1
          lspace(i+1, flvr) = lspace(i, flvr)
      enddo ! over i={ckink,ie,-1} loop
@@ -94,12 +96,12 @@
      enddo ! over j={ckink,is,-1} loop
      rspace(is, flvr) = -one
 
-! scale lspace with p
+     ! scale lspace with p
      do i=1,ckink+1
          lspace(i, flvr) = lspace(i, flvr) * p
      enddo ! over i={1,ckink+1} loop
 
-! shift mmat matrix
+     ! shift mmat matrix
      do j=ckink,is,-1
          do i=ckink,ie,-1
              mmat(i+1, j+1, flvr) = mmat(i, j, flvr)
@@ -118,7 +120,7 @@
          enddo ! over i={ckink,ie,-1} loop
      enddo ! over j={1,is-1} loop
 
-! supplement mmat matrix with zero
+     ! supplement mmat matrix with zero
      do i=1,ckink+1
          mmat(i, is, flvr) = zero
      enddo ! over i={1,ckink+1} loop
@@ -127,17 +129,17 @@
          mmat(ie, j, flvr) = zero
      enddo ! over j={1,ckink+1} loop
 
-! finally evaluate mmat matrix
+     ! finally evaluate mmat matrix
      do j=1,ckink+1
          do i=1,ckink+1
              mmat(i, j, flvr) = mmat(i, j, flvr) + lspace(i, flvr) * rspace(j, flvr)
          enddo ! over i={1,ckink+1} loop
      enddo ! over j={1,ckink+1} loop
 
-! update the perturbation expansion series
+     ! update the perturbation expansion series
      call cat_insert_colour(flvr, is, ie, tau_start, tau_end)
 
-! update gmat matrix
+     ! update gmat matrix
      lsaves(:, flvr) = czero
      rsaves(:, flvr) = czero
 
@@ -153,17 +155,19 @@
          gmat(k, flvr, flvr) = gmat(k, flvr, flvr) - lsaves(k, flvr) * rsaves(k, flvr) * p
      enddo ! over k={1,nfreq} loop
 
-! only for debug
-!<     do i=1,ckink+1
-!<         do j=1,ckink+1
-!<             print *, 'M:', i, j, mmat(i, j, flvr)
-!<         enddo ! over j={1,ckink+1} loop
-!<     enddo ! over i={1,ckink+1} loop
+!<   ! only for debug
+!<   do i=1,ckink+1
+!<       do j=1,ckink+1
+!<           print *, 'M:', i, j, mmat(i, j, flvr)
+!<       enddo ! over j={1,ckink+1} loop
+!<   enddo ! over i={1,ckink+1} loop
 !<
-!<     print *, 'G1:', flvr, gmat(1, flvr, flvr)
-!<     print *, 'G2:', flvr, gmat(2, flvr, flvr)
-!<     print *, 'G3:', flvr, gmat(3, flvr, flvr)
-!<     print *, 'Gn:', flvr, gmat(nfreq, flvr, flvr)
+!<   print *, 'G1:', flvr, gmat(1, flvr, flvr)
+!<   print *, 'G2:', flvr, gmat(2, flvr, flvr)
+!<   print *, 'G3:', flvr, gmat(3, flvr, flvr)
+!<   print *, 'Gn:', flvr, gmat(nfreq, flvr, flvr)
+
+!! body]
 
      return
   end subroutine cat_insert_matrix
@@ -189,26 +193,28 @@
 
      implicit none
 
-! external arguments
-! current flavor channel
+!! external arguments
+     ! current flavor channel
      integer, intent(in) :: flvr
 
-! index address to remove old creation and annihilation operators
+     ! index address to remove old creation and annihilation operators
      integer, intent(in) :: is
      integer, intent(in) :: ie
 
-! local variables
-! loop index over operators
+!! local variables
+     ! loop index over operators
      integer  :: i
      integer  :: j
 
-! loop index over frequencies
+     ! loop index over frequencies
      integer  :: k
 
-! real(dp) dummy variables
+     ! dummy real(dp) variables
      real(dp) :: p
 
-! update gmat matrix
+!! [body
+
+     ! update gmat matrix
      lsaves(:, flvr) = czero
      rsaves(:, flvr) = czero
 
@@ -224,7 +230,7 @@
          gmat(k, flvr, flvr) = gmat(k, flvr, flvr) + lsaves(k, flvr) * rsaves(k, flvr) * p
      enddo ! over k={1,nfreq} loop
 
-! update mmat matrix
+     ! update mmat matrix
      p = one / mmat(ie, is, flvr) ! we redefine p here
      do j=1,ckink
          do i=1,ckink
@@ -252,20 +258,22 @@
          enddo ! over i={ie,ckink-1} loop
      enddo ! over j={1,is-1} loop
 
-! update the perturbation expansion series
+     ! update the perturbation expansion series
      call cat_remove_colour(flvr, is, ie)
 
-! only for debug
-!<     do i=1,ckink
-!<         do j=1,ckink
-!<             print *, 'M:', i, j, mmat(i, j, flvr)
-!<         enddo ! over j={1,ckink} loop
-!<     enddo ! over i={1,ckink} loop
+!<   ! only for debug
+!<   do i=1,ckink
+!<       do j=1,ckink
+!<           print *, 'M:', i, j, mmat(i, j, flvr)
+!<       enddo ! over j={1,ckink} loop
+!<   enddo ! over i={1,ckink} loop
 !<
-!<     print *, 'G1:', flvr, gmat(1, flvr, flvr)
-!<     print *, 'G2:', flvr, gmat(2, flvr, flvr)
-!<     print *, 'G3:', flvr, gmat(3, flvr, flvr)
-!<     print *, 'Gn:', flvr, gmat(nfreq, flvr, flvr)
+!<   print *, 'G1:', flvr, gmat(1, flvr, flvr)
+!<   print *, 'G2:', flvr, gmat(2, flvr, flvr)
+!<   print *, 'G3:', flvr, gmat(3, flvr, flvr)
+!<   print *, 'Gn:', flvr, gmat(nfreq, flvr, flvr)
+
+!! body]
 
      return
   end subroutine cat_remove_matrix
@@ -294,53 +302,55 @@
 
      implicit none
 
-! external arguments
-! current flavor channel
+!! external arguments
+     ! current flavor channel
      integer, intent(in)  :: flvr
 
-! index address to shift creation operator
-! iso and isn are old and new indices, respectively
+     ! index address to shift creation operator
+     ! iso and isn are old and new indices, respectively
      integer, intent(in)  :: iso
      integer, intent(in)  :: isn
 
-! imaginary time \tau_s for creation operator (the old one)
+     ! imaginary time \tau_s for creation operator (the old one)
      real(dp), intent(in) :: tau_start1
 
-! imaginary time \tau_s for creation operator (the new one)
+     ! imaginary time \tau_s for creation operator (the new one)
      real(dp), intent(in) :: tau_start2
 
-! previous calculated determinant ratio
+     ! previous calculated determinant ratio
      real(dp), intent(in) :: deter_ratio
 
-! external arguments
-! used to interpolate the hybridization function
+!! external arguments
+     ! used to interpolate the hybridization function
      procedure( real(dp) ) :: ctqmc_eval_htau
 
-! local variables
-! loop index over operators
+!! local variables
+     ! loop index over operators
      integer  :: i
      integer  :: j
 
-! loop index over frequencies
+     ! loop index over frequencies
      integer  :: k
 
-! used to store matrix element of mmat
+     ! used to store matrix element of mmat
      real(dp) :: md
 
-! real(dp) dummy variables
+     ! dummy real(dp) variables
      real(dp) :: xs
      real(dp) :: rs
 
-! real(dp) dummy arrays, used to interpolate the hybridization function
+     ! dummy real(dp) arrays, used to interpolate the hybridization function
      real(dp) :: lvec(mkink)
      real(dp) :: rvec(mkink)
 
-! complex(dp) dummy arrays, used to calculate gmat matrix
+     ! dummy complex(dp) arrays, used to calculate gmat matrix
      complex(dp) :: lexp(nfreq)
      complex(dp) :: gsum(nfreq)
      complex(dp) :: gdel(nfreq)
 
-! evaluate lexp
+!! [body
+
+     ! evaluate lexp
      lexp = czero
      do k=1,nfreq
          xs = tau_start2 * rmesh(k)
@@ -348,7 +358,7 @@
      enddo ! over k={1,nfreq} loop
      lexp = lexp / beta
 
-! evaluate gsum
+     ! evaluate gsum
      gsum = czero
      do i=1,ckink
          md = mmat(i, iso, flvr)
@@ -357,13 +367,13 @@
          enddo ! over k={1,nfreq} loop
      enddo ! over i={1,ckink} loop
 
-! evaluate gdel, \delta G for gmat matrix
+     ! evaluate gdel, \delta G for gmat matrix
      gdel = czero
      do k=1,nfreq
          gdel(k) = gsum(k) * lexp(k)
      enddo ! over k={1,nfreq} loop
 
-! calculate rvec by cubic spline interpolation
+     ! calculate rvec by cubic spline interpolation
      do i=1,ckink
          if ( tau_start1 < time_e(index_e(i, flvr), flvr) ) then
              rvec(i) = -ctqmc_eval_htau(flvr, tau_start1 - time_e(index_e(i, flvr), flvr) + beta)
@@ -372,7 +382,7 @@
          endif ! back if ( tau_start1 < time_e(index_e(i, flvr), flvr) ) block
      enddo ! over i={1,ckink} loop
 
-! calculate lvec by cubic spline interpolation
+     ! calculate lvec by cubic spline interpolation
      do j=1,ckink
          if ( tau_start2 < time_e(index_e(j, flvr), flvr) ) then
              lvec(j) = -ctqmc_eval_htau(flvr, tau_start2 - time_e(index_e(j, flvr), flvr) + beta)
@@ -381,12 +391,12 @@
          endif ! back if ( tau_start2 < time_e(index_e(j, flvr), flvr) ) block
      enddo ! over j={1,ckink} loop
 
-! adjust rvec
+     ! adjust rvec
      do i=1,ckink
          rvec(i) = lvec(i) - rvec(i)
      enddo ! over i={1,ckink} loop
 
-! prepare rspace
+     ! prepare rspace
      do i=1,ckink
          rs = zero
          do j=1,ckink
@@ -395,19 +405,19 @@
          rspace(i, flvr) = rs / deter_ratio
      enddo ! over i={1,ckink} loop
 
-! prepare lspace
+     ! prepare lspace
      do i=1,ckink
          lspace(i, flvr) = -mmat(i, iso, flvr)
      enddo ! over i={1,ckink} loop
 
-! calculate mmat matrix
+     ! calculate mmat matrix
      do j=1,ckink
          do i=1,ckink
              mmat(i, j, flvr) = mmat(i, j, flvr) + lspace(i, flvr) * rspace(j, flvr)
          enddo ! over i={1,ckink} loop
      enddo ! over j={1,ckink} loop
 
-! shuffle rows if time order changed because of move
+     ! shuffle rows if time order changed because of move
      if ( isn /= iso ) then
          rs = rspace(iso, flvr)
          do i=1,ckink
@@ -439,10 +449,10 @@
          endif ! back if ( isn < iso ) block
      endif ! back if ( isn /= iso ) block
 
-! update the perturbation expansion series
+     ! update the perturbation expansion series
      call cat_lshift_colour(flvr, iso, isn, tau_start2)
 
-! update gmat matrix
+     ! update gmat matrix
      lsaves(:, flvr) = czero
      rsaves(:, flvr) = czero
 
@@ -457,17 +467,19 @@
          gmat(k, flvr, flvr) = gmat(k, flvr, flvr) - lsaves(k, flvr) * rsaves(k, flvr) / beta + gdel(k)
      enddo ! over k={1,nfreq} loop
 
-! only for debug
-!<     do i=1,ckink
-!<         do j=1,ckink
-!<             print *,'M:',i, j, mmat(i, j, flvr)
-!<         enddo ! over j={1,ckink} loop
-!<     enddo ! over i={1,ckink} loop
+!<   ! only for debug
+!<   do i=1,ckink
+!<       do j=1,ckink
+!<           print *,'M:',i, j, mmat(i, j, flvr)
+!<       enddo ! over j={1,ckink} loop
+!<   enddo ! over i={1,ckink} loop
 !<
-!<     print *, 'G1:', flvr, gmat(1, flvr, flvr)
-!<     print *, 'G2:', flvr, gmat(2, flvr, flvr)
-!<     print *, 'G3:', flvr, gmat(3, flvr, flvr)
-!<     print *, 'Gn:', flvr, gmat(nfreq, flvr, flvr)
+!<   print *, 'G1:', flvr, gmat(1, flvr, flvr)
+!<   print *, 'G2:', flvr, gmat(2, flvr, flvr)
+!<   print *, 'G3:', flvr, gmat(3, flvr, flvr)
+!<   print *, 'Gn:', flvr, gmat(nfreq, flvr, flvr)
+
+!! body]
 
      return
   end subroutine cat_lshift_matrix
@@ -496,53 +508,55 @@
 
      implicit none
 
-! external arguments
-! current flavor channel
+!! external arguments
+     ! current flavor channel
      integer, intent(in)  :: flvr
 
-! index address to shift annihilation operator
-! ieo and ien are old and new indices, respectively
+     ! index address to shift annihilation operator
+     ! ieo and ien are old and new indices, respectively
      integer, intent(in)  :: ieo
      integer, intent(in)  :: ien
 
-! imaginary time \tau_e for annihilation operator (the old one)
+     ! imaginary time \tau_e for annihilation operator (the old one)
      real(dp), intent(in) :: tau_end1
 
-! imaginary time \tau_e for annihilation operator (the new one)
+     ! imaginary time \tau_e for annihilation operator (the new one)
      real(dp), intent(in) :: tau_end2
 
-! previous calculated determinant ratio
+     ! previous calculated determinant ratio
      real(dp), intent(in) :: deter_ratio
 
-! external arguments
-! used to interpolate the hybridization function
+!! external arguments
+     ! used to interpolate the hybridization function
      procedure( real(dp) ) :: ctqmc_eval_htau
 
-! local variables
-! loop index over operators
+!! local variables
+     ! loop index over operators
      integer  :: i
      integer  :: j
 
-! loop index over frequencies
+     ! loop index over frequencies
      integer  :: k
 
-! used to store matrix element of mmat
+     ! used to store matrix element of mmat
      real(dp) :: md
 
-! real(dp) dummy variables
+     ! dummy real(dp) variables
      real(dp) :: xe
      real(dp) :: ls
 
-! real(dp) dummy arrays, used to interpolate the hybridization function
+     ! dummy real(dp) arrays, used to interpolate the hybridization function
      real(dp) :: lvec(mkink)
      real(dp) :: rvec(mkink)
 
-! complex(dp) dummy arrays, used to calculate gmat matrix
+     ! dummy complex(dp) arrays, used to calculate gmat matrix
      complex(dp) :: rexp(nfreq)
      complex(dp) :: gsum(nfreq)
      complex(dp) :: gdel(nfreq)
 
-! evaluate rexp
+!! [body
+
+     ! evaluate rexp
      rexp = czero
      do k=1,nfreq
          xe = tau_end2 * rmesh(k)
@@ -550,7 +564,7 @@
      enddo ! over k={1,nfreq} loop
      rexp = rexp / beta
 
-! evaluate gsum
+     ! evaluate gsum
      gsum = czero
      do i=1,ckink
          md = mmat(ieo, i, flvr)
@@ -559,13 +573,13 @@
          enddo ! over k={1,nfreq} loop
      enddo ! over i={1,ckink} loop
 
-! evaluate gdel, \delta G for gmat matrix
+     ! evaluate gdel, \delta G for gmat matrix
      gdel = czero
      do k=1,nfreq
          gdel(k) = gsum(k) * rexp(k)
      enddo ! over k={1,nfreq} loop
 
-! calculate lvec by cubic spline interpolation
+     ! calculate lvec by cubic spline interpolation
      do i=1,ckink
          if ( time_s(index_s(i, flvr), flvr) < tau_end1 ) then
              lvec(i) = -ctqmc_eval_htau(flvr, time_s(index_s(i, flvr), flvr) - tau_end1 + beta)
@@ -574,7 +588,7 @@
          endif ! back if ( time_s(index_s(i, flvr), flvr) < tau_end1 ) block
      enddo ! over i={1,ckink} loop
 
-! calculate rvec by cubic spline interpolation
+     ! calculate rvec by cubic spline interpolation
      do j=1,ckink
          if ( time_s(index_s(j, flvr), flvr) < tau_end2 ) then
              rvec(j) = -ctqmc_eval_htau(flvr, time_s(index_s(j, flvr), flvr) - tau_end2 + beta)
@@ -583,12 +597,12 @@
          endif ! back if ( time_s(index_s(j, flvr), flvr) < tau_end2 ) block
      enddo ! over j={1,ckink} loop
 
-! adjust lvec
+     ! adjust lvec
      do i=1,ckink
          lvec(i) = rvec(i) - lvec(i)
      enddo ! over i={1,ckink} loop
 
-! prepare lspace
+     ! prepare lspace
      do i=1,ckink
          ls = zero
          do j=1,ckink
@@ -597,19 +611,19 @@
          lspace(i, flvr) = ls / deter_ratio
      enddo ! over i={1,ckink} loop
 
-! prepare rspace
+     ! prepare rspace
      do i=1,ckink
          rspace(i, flvr) = -mmat(ieo, i, flvr)
      enddo ! over i={1,ckink} loop
 
-! calculate mmat matrix
+     ! calculate mmat matrix
      do j=1,ckink
          do i=1,ckink
              mmat(i, j, flvr) = mmat(i, j, flvr) + lspace(i, flvr) * rspace(j, flvr)
          enddo ! over i={1,ckink} loop
      enddo ! over j={1,ckink} loop
 
-! shuffle columns if time order changed because of move
+     ! shuffle columns if time order changed because of move
      if ( ien /= ieo ) then
          ls = lspace(ieo, flvr)
          do i=1,ckink
@@ -641,10 +655,10 @@
          endif ! back if ( ien < ieo ) block
      endif ! back if ( ien /= ieo ) block
 
-! update the perturbation expansion series
+     ! update the perturbation expansion series
      call cat_rshift_colour(flvr, ieo, ien, tau_end2)
 
-! update gmat matrix
+     ! update gmat matrix
      lsaves(:, flvr) = czero
      rsaves(:, flvr) = czero
 
@@ -659,17 +673,19 @@
          gmat(k, flvr, flvr) = gmat(k, flvr, flvr) - lsaves(k, flvr) * rsaves(k, flvr) / beta + gdel(k)
      enddo ! over k={1,nfreq} loop
 
-! only for debug
-!<     do i=1,ckink
-!<         do j=1,ckink
-!<             print *,'M:',i, j, mmat(i, j, flvr)
-!<         enddo ! over j={1,ckink} loop
-!<     enddo ! over i={1,ckink} loop
+!<   ! only for debug
+!<   do i=1,ckink
+!<       do j=1,ckink
+!<           print *,'M:',i, j, mmat(i, j, flvr)
+!<       enddo ! over j={1,ckink} loop
+!<   enddo ! over i={1,ckink} loop
 !<
-!<     print *, 'G1:', flvr, gmat(1, flvr, flvr)
-!<     print *, 'G2:', flvr, gmat(2, flvr, flvr)
-!<     print *, 'G3:', flvr, gmat(3, flvr, flvr)
-!<     print *, 'Gn:', flvr, gmat(nfreq, flvr, flvr)
+!<   print *, 'G1:', flvr, gmat(1, flvr, flvr)
+!<   print *, 'G2:', flvr, gmat(2, flvr, flvr)
+!<   print *, 'G3:', flvr, gmat(3, flvr, flvr)
+!<   print *, 'Gn:', flvr, gmat(nfreq, flvr, flvr)
+
+!! body]
 
      return
   end subroutine cat_rshift_matrix
@@ -699,32 +715,34 @@
 
      implicit none
 
-! external arguments
-! current flavor channel
+!! external arguments
+     ! current flavor channel
      integer, intent(in) :: fup
      integer, intent(in) :: fdn
 
-! maximum rank order for current flavor channel
+     ! maximum rank order for current flavor channel
      integer, intent(in) :: kmax
 
-! local variables
-! maximum memory index accessed by index_s and index_e
+!! local variables
+     ! maximum memory index accessed by index_s and index_e
      integer :: ismax
      integer :: iemax
 
-! dummy copy for rank and stts
+     ! dummy copy for rank and stts
      integer :: Trank
      integer :: Tstts
 
-! dummy copy for empty_s and empty_e
+     ! dummy copy for empty_s and empty_e
      type (istack) :: Tempty_s
      type (istack) :: Tempty_e
 
-! allocate memory for Tempty_s and Tempty_e
+!! [body
+
+     ! allocate memory for Tempty_s and Tempty_e
      call istack_create(Tempty_s, mkink)
      call istack_create(Tempty_e, mkink)
 
-! swap empty_s and empty_e
+     ! swap empty_s and empty_e
      call istack_copyer(empty_s(fup), Tempty_s)
      call istack_copyer(empty_e(fup), Tempty_e)
 
@@ -734,46 +752,48 @@
      call istack_copyer(Tempty_s, empty_s(fdn))
      call istack_copyer(Tempty_e, empty_e(fdn))
 
-! deallocate memory for Tempty_s and Tempty_e
+     ! deallocate memory for Tempty_s and Tempty_e
      call istack_destroy(Tempty_s)
      call istack_destroy(Tempty_e)
 
-! swap rank
+     ! swap rank
      Trank = rank(fup)
      rank(fup) = rank(fdn)
      rank(fdn) = Trank
 
-! swap stts
+     ! swap stts
      Tstts = stts(fup)
      stts(fup) = stts(fdn)
      stts(fdn) = Tstts
 
-! swap gmat matrix when needed
+     ! swap gmat matrix when needed
      call s_swap_z(nfreq, gmat(1:nfreq, fup, fup), gmat(1:nfreq, fdn, fdn))
 
      if ( kmax > 0 ) then
 
-! determine ismax and iemax
+         ! determine ismax and iemax
          ismax = max( maxval( index_s(1:kmax, fup) ), maxval( index_s(1:kmax, fdn) ) )
          iemax = max( maxval( index_e(1:kmax, fup) ), maxval( index_e(1:kmax, fdn) ) )
 
-! swap index_s and index_e
+         ! swap index_s and index_e
          call s_swap_i(kmax, index_s(1:kmax, fup), index_s(1:kmax, fdn))
          call s_swap_i(kmax, index_e(1:kmax, fup), index_e(1:kmax, fdn))
 
-! swap time_s and time_e
+         ! swap time_s and time_e
          call s_swap_d(ismax, time_s(1:ismax, fup), time_s(1:ismax, fdn))
          call s_swap_d(iemax, time_e(1:iemax, fup), time_e(1:iemax, fdn))
 
-! swap exp_s and exp_e
+         ! swap exp_s and exp_e
          call s_swap_z(nfreq*ismax, exp_s(1:nfreq, 1:ismax, fup), exp_s(1:nfreq, 1:ismax, fdn))
          call s_swap_z(nfreq*iemax, exp_e(1:nfreq, 1:iemax, fup), exp_e(1:nfreq, 1:iemax, fdn))
 
-! update mmat and gmat matrix when needed
+         ! update mmat and gmat matrix when needed
          if ( rank(fup) > 0 ) call cat_reload_matrix(fup)
          if ( rank(fdn) > 0 ) call cat_reload_matrix(fdn)
 
      endif ! back if ( kmax > 0 ) block
+
+!! body]
 
      return
   end subroutine cat_reflip_matrix
@@ -798,43 +818,45 @@
 
      implicit none
 
-! external arguments
-! current flavor channel
+!! external arguments
+     ! current flavor channel
      integer, intent(in) :: flvr
 
-! external functions
-! used to interpolate the hybridization function
+!! external functions
+     ! used to interpolate the hybridization function
      procedure( real(dp) ) :: ctqmc_eval_htau
 
-! local variables
-! loop index over operators
+!! local variables
+     ! loop index over operators
      integer  :: i
      integer  :: j
 
-! loop index over frequencies
+     ! loop index over frequencies
      integer  :: k
 
-! dummy perturbation expansion order
+     ! dummy perturbation expansion order
      integer  :: kaux
 
-! used to store matrix element of mmat
+     ! used to store matrix element of mmat
      real(dp) :: maux
 
-! imaginary time for creation and annihilation operators
+     ! imaginary time for creation and annihilation operators
      real(dp) :: tau_start
      real(dp) :: tau_end
 
-! complex(dp) dummy variables
+     ! dummy complex(dp) variables
      complex(dp) :: x_start
      complex(dp) :: x_end
 
-! evaluate kaux
+!! [body
+
+     ! evaluate kaux
      kaux = rank(flvr)
 
-! reset mmat matrix
+     ! reset mmat matrix
      mmat(1:kaux, 1:kaux, flvr) = zero
 
-! recalculate mmat from scratch
+     ! recalculate mmat from scratch
      do j=1,kaux
          tau_end = time_e(index_e(j, flvr), flvr)
          do i=1,kaux
@@ -847,13 +869,13 @@
          enddo ! over i={1,kaux} loop
      enddo ! over j={1,kaux} loop
 
-! now we obtain dmat matrix, while what we need is its inversion
+     ! now we obtain dmat matrix, while what we need is its inversion
      call s_inv_d(kaux, mmat(1:kaux, 1:kaux, flvr))
 
-! reset gmat matrix
+     ! reset gmat matrix
      gmat(:, flvr, flvr) = czero
 
-! recalculate gmat from scratch
+     ! recalculate gmat from scratch
      do j=1,kaux
          do i=1,kaux
              maux = -mmat(i, j, flvr) / beta
@@ -864,6 +886,8 @@
              enddo ! over k={1,nfreq} loop
          enddo ! over i={1,kaux} loop
      enddo ! over j={1,kaux} loop
+
+!! body]
 
      return
   end subroutine cat_reload_matrix
@@ -893,37 +917,39 @@
 
      implicit none
 
-! external arguments
-! current flavor channel
+!! external arguments
+     ! current flavor channel
      integer, intent(in)   :: flvr
 
-! imaginary time \tau_s for new creation operator
+     ! imaginary time \tau_s for new creation operator
      real(dp), intent(in)  :: tau_start
 
-! imaginary time \tau_e for new annihilation operator
+     ! imaginary time \tau_e for new annihilation operator
      real(dp), intent(in)  :: tau_end
 
-! the desired determinant ratio
+     ! the desired determinant ratio
      real(dp), intent(out) :: deter_ratio
 
-! external arguments
-! used to interpolate the hybridization function
+!! external arguments
+     ! used to interpolate the hybridization function
      procedure( real(dp) ) :: ctqmc_eval_htau
 
-! local variables
-! loop index over operators
+!! local variables
+     ! loop index over operators
      integer  :: i
      integer  :: j
 
-! real(dp) dummy variables
+     ! dummy real(dp) variables
      real(dp) :: sl
      real(dp) :: sr
 
-! real(dp) dummy arrays, used to interpolate the hybridization function
+     ! dummy real(dp) arrays, used to interpolate the hybridization function
      real(dp) :: lvec(mkink)
      real(dp) :: rvec(mkink)
 
-! calculate lvec by cubic spline interpolation
+!! [body
+
+     ! calculate lvec by cubic spline interpolation
      do i=1,ckink
          if ( time_s(index_s(i, flvr), flvr) < tau_end   ) then
              lvec(i) = -ctqmc_eval_htau(flvr, time_s(index_s(i, flvr), flvr) - tau_end + beta)
@@ -932,7 +958,7 @@
          endif ! back if ( time_s(index_s(i, flvr), flvr) < tau_end   ) block
      enddo ! over i={1,ckink} loop
 
-! calculate rvec by cubic spline interpolation
+     ! calculate rvec by cubic spline interpolation
      do j=1,ckink
          if ( tau_start < time_e(index_e(j, flvr), flvr) ) then
              rvec(j) = -ctqmc_eval_htau(flvr, tau_start - time_e(index_e(j, flvr), flvr) + beta)
@@ -941,14 +967,14 @@
          endif ! back if ( tau_start < time_e(index_e(j, flvr), flvr) ) block
      enddo ! over j={1,ckink} loop
 
-! calculate deter_ratio by cubic spline interpolation
+     ! calculate deter_ratio by cubic spline interpolation
      if ( tau_start > tau_end ) then
          deter_ratio =  ctqmc_eval_htau(flvr, tau_start - tau_end)
      else
          deter_ratio = -ctqmc_eval_htau(flvr, tau_start - tau_end + beta)
      endif ! back if ( tau_start > tau_end ) block
 
-! calculate lspace and rspace
+     ! calculate lspace and rspace
      do i=1,ckink
          sl = zero
          sr = zero
@@ -962,10 +988,12 @@
          rspace(i, flvr) = sr
      enddo ! over i={1,ckink} loop
 
-! calculate final determinant ratio
+     ! calculate final determinant ratio
      do i=1,ckink
          deter_ratio = deter_ratio - rvec(i) * lspace(i, flvr)
      enddo ! over i={1,ckink} loop
+
+!! body]
 
      return
   end subroutine cat_insert_detrat
@@ -983,19 +1011,23 @@
 
      implicit none
 
-! external arguments
-! current flavor channel
+!! external arguments
+     ! current flavor channel
      integer, intent(in)   :: flvr
 
-! index address to remove old creation and annihilation operators
-! is and ie are for creation and annihilation operators, respectively
+     ! index address to remove old creation and annihilation operators
+     ! is and ie are for creation and annihilation operators, respectively
      integer, intent(in)   :: is
      integer, intent(in)   :: ie
 
-! the desired determinant ratio
+     ! the desired determinant ratio
      real(dp), intent(out) :: deter_ratio
 
+!! [body
+
      deter_ratio = mmat(ie, is, flvr)
+
+!! body]
 
      return
   end subroutine cat_remove_detrat
@@ -1019,36 +1051,38 @@
 
      implicit none
 
-! external arguments
-! current flavor channel
+!! external arguments
+     ! current flavor channel
      integer, intent(in)   :: flvr
 
-! index address to shift creation operator (old index = iso)
+     ! index address to shift creation operator (old index = iso)
      integer, intent(in)   :: addr
 
-! imaginary time \tau_s for creation operator (the old one)
+     ! imaginary time \tau_s for creation operator (the old one)
      real(dp), intent(in)  :: tau_start1
 
-! imaginary time \tau_s for creation operator (the new one)
+     ! imaginary time \tau_s for creation operator (the new one)
      real(dp), intent(in)  :: tau_start2
 
-! the desired determinant ratio
+     ! the desired determinant ratio
      real(dp), intent(out) :: deter_ratio
 
-! external functions
-! used to interpolate the hybridization function
+!! external functions
+     ! used to interpolate the hybridization function
      procedure( real(dp) ) :: ctqmc_eval_htau
 
-! local variables
-! loop index over operators
+!! local variables
+     ! loop index over operators
      integer  :: i
      integer  :: j
 
-! real(dp) dummy arrays, used to interpolate the hybridization function
+     ! dummy real(dp) arrays, used to interpolate the hybridization function
      real(dp) :: lvec(mkink)
      real(dp) :: rvec(mkink)
 
-! calculate rvec by cubic spline interpolation
+!! [body
+
+     ! calculate rvec by cubic spline interpolation
      do i=1,ckink
          if ( tau_start1 < time_e(index_e(i, flvr), flvr) ) then
              rvec(i) = -ctqmc_eval_htau(flvr, tau_start1 - time_e(index_e(i, flvr), flvr) + beta)
@@ -1057,7 +1091,7 @@
          endif ! back if ( tau_start1 < time_e(index_e(i, flvr), flvr) ) block
      enddo ! over i={1,ckink} loop
 
-! calculate lvec by cubic spline interpolation
+     ! calculate lvec by cubic spline interpolation
      do j=1,ckink
          if ( tau_start2 < time_e(index_e(j, flvr), flvr) ) then
              lvec(j) = -ctqmc_eval_htau(flvr, tau_start2 - time_e(index_e(j, flvr), flvr) + beta)
@@ -1066,16 +1100,18 @@
          endif ! back if ( tau_start2 < time_e(index_e(j, flvr), flvr) ) block
      enddo ! over j={1,ckink} loop
 
-! adjust rvec
+     ! adjust rvec
      do i=1,ckink
          rvec(i) = lvec(i) - rvec(i)
      enddo ! over i={1,ckink} loop
 
-! calculate final determinant ratio
+     ! calculate final determinant ratio
      deter_ratio = one
      do i=1,ckink
          deter_ratio = deter_ratio + rvec(i) * mmat(i, addr, flvr)
      enddo ! over i={1,ckink} loop
+
+!! body]
 
      return
   end subroutine cat_lshift_detrat
@@ -1099,36 +1135,38 @@
 
      implicit none
 
-! external arguments
-! current flavor channel
+!! external arguments
+     ! current flavor channel
      integer, intent(in)   :: flvr
 
-! index address to shift annihilation operator (old index = ieo)
+     ! index address to shift annihilation operator (old index = ieo)
      integer, intent(in)   :: addr
 
-! imaginary time \tau_e for annihilation operator (the old one)
+     ! imaginary time \tau_e for annihilation operator (the old one)
      real(dp), intent(in)  :: tau_end1
 
-! imaginary time \tau_e for annihilation operator (the new one)
+     ! imaginary time \tau_e for annihilation operator (the new one)
      real(dp), intent(in)  :: tau_end2
 
-! the desired determinant ratio
+     ! the desired determinant ratio
      real(dp), intent(out) :: deter_ratio
 
-! external functions
-! used to interpolate the hybridization function
+!! external functions
+     ! used to interpolate the hybridization function
      procedure( real(dp) ) :: ctqmc_eval_htau
 
-! local variables
-! loop index over operators
+!! local variables
+     ! loop index over operators
      integer  :: i
      integer  :: j
 
-! real(dp) dummy arrays, used to interpolate the hybridization function
+     ! dummy real(dp) arrays, used to interpolate the hybridization function
      real(dp) :: lvec(mkink)
      real(dp) :: rvec(mkink)
 
-! calculate lvec by cubic spline interpolation
+!! [body
+
+     ! calculate lvec by cubic spline interpolation
      do i=1,ckink
          if ( time_s(index_s(i, flvr), flvr) < tau_end1 ) then
              lvec(i) = -ctqmc_eval_htau(flvr, time_s(index_s(i, flvr), flvr) - tau_end1 + beta)
@@ -1137,7 +1175,7 @@
          endif ! back if ( time_s(index_s(i, flvr), flvr) < tau_end1 ) block
      enddo ! over i={1,ckink} loop
 
-! calculate rvec by cubic spline interpolation
+     ! calculate rvec by cubic spline interpolation
      do j=1,ckink
          if ( time_s(index_s(j, flvr), flvr) < tau_end2 ) then
              rvec(j) = -ctqmc_eval_htau(flvr, time_s(index_s(j, flvr), flvr) - tau_end2 + beta)
@@ -1146,16 +1184,18 @@
          endif ! back if ( time_s(index_s(j, flvr), flvr) < tau_end2 ) block
      enddo ! over j={1,ckink} loop
 
-! adjust lvec
+     ! adjust lvec
      do i=1,ckink
          lvec(i) = rvec(i) - lvec(i)
      enddo ! over i={1,ckink} loop
 
-! calculate final determinant ratio
+     ! calculate final determinant ratio
      deter_ratio = one
      do i=1,ckink
          deter_ratio = deter_ratio + mmat(addr, i, flvr) * lvec(i)
      enddo ! over i={1,ckink} loop
+
+!! body]
 
      return
   end subroutine cat_rshift_detrat
@@ -1178,49 +1218,52 @@
 
      implicit none
 
-! external arguments
-! band index for spin up state
+!! external arguments
+     ! band index for spin up state
      integer, intent(in)   :: up
 
-! band index for spin dn state
+     ! band index for spin dn state
      integer, intent(in)   :: dn
 
-! the desired determinant ratio
+     ! the desired determinant ratio
      real(dp), intent(out) :: ratio
 
-! external functions
-! used to interpolate the hybridization function
+!! external functions
+     ! used to interpolate the hybridization function
      procedure( real(dp) ) :: ctqmc_eval_htau
 
-! local variables
-! loop index over operators
+!! local variables
+     ! loop index over operators
      integer  :: i
      integer  :: j
 
-! dummy perturbation expansion order
+     ! dummy perturbation expansion order
      integer  :: kaux
 
-! status flag
+     ! status flag
      integer  :: istat
 
-! imaginary time for creation and annihilation operators
+     ! imaginary time for creation and annihilation operators
      real(dp) :: tau_start
      real(dp) :: tau_end
 
-! dummy mmat matrix
+     ! dummy mmat matrix
      real(dp), allocatable :: Dmm(:,:)
      real(dp), allocatable :: Tmm(:,:)
 
-! evaluate kaux
+!! [body
+
+     ! evaluate kaux
      kaux = rank(up)
 
-! check the status of kaux, if there does not exist any operators in up
-! state ( kaux == 0 ), we need to return immediately and the ratio is one
+     ! check the status of kaux, if there does not exist any operators
+     ! in up state ( kaux == 0 ), we need to return immediately and the
+     ! ratio is one
      if ( kaux == 0 ) then
          ratio = one; RETURN
      endif ! back if ( kaux == 0 ) block
 
-! allocate memory
+     ! allocate memory
      allocate(Dmm(kaux,kaux), stat=istat)
      allocate(Tmm(kaux,kaux), stat=istat)
 
@@ -1228,11 +1271,11 @@
          call s_print_error('cat_reflip_detrat','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! init Dmm and Tmm matrix
+     ! init Dmm and Tmm matrix
      Dmm = zero
      Tmm = zero
 
-! recalculate Dmm from scratch
+     ! recalculate Dmm from scratch
      do j=1,kaux
          tau_end = time_e(index_e(j, up), up)
          do i=1,kaux
@@ -1245,15 +1288,17 @@
          enddo ! over i={1,kaux} loop
      enddo ! over j={1,kaux} loop
 
-! calculate Tmm: Tmm = Dmm . Mmat
+     ! calculate Tmm: Tmm = Dmm . Mmat
      call dgemm('N', 'N', kaux, kaux, kaux, one, Dmm, kaux, mmat(1:kaux, 1:kaux, up), kaux, zero, Tmm, kaux)
 
-! calculate the determinant of Tmm, it is the desired ratio
+     ! calculate the determinant of Tmm, it is the desired ratio
      call s_det_d(kaux, Tmm, ratio)
 
-! deallocate memory
+     ! deallocate memory
      deallocate(Dmm)
      deallocate(Tmm)
+
+!! body]
 
      return
   end subroutine cat_reflip_detrat
@@ -1266,7 +1311,11 @@
   subroutine cat_reload_detrat()
      implicit none
 
+!! [body
+
      CONTINUE
+
+!! body]
 
      return
   end subroutine cat_reload_detrat

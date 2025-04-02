@@ -1,5 +1,5 @@
 !!!-----------------------------------------------------------------------
-!!! project : narcissus
+!!! project : iqist @ narcissus
 !!! program : ctqmc_print_header
 !!!           ctqmc_print_footer
 !!!           ctqmc_print_summary
@@ -8,9 +8,9 @@
 !!!           ctqmc_print_it_info
 !!! source  : ctqmc_print.f90
 !!! type    : subroutines
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 09/15/2009 by li huang (created)
-!!!           05/09/2021 by li huang (last modified)
+!!!           01/25/2025 by li huang (last modified)
 !!! purpose : provide printing infrastructure for hybridization expansion
 !!!           version continuous time quantum Monte Carlo (CTQMC) quantum
 !!!           impurity solver and dynamical mean field theory (DMFT) self
@@ -27,6 +27,7 @@
 !!
   subroutine ctqmc_print_header()
      use constants, only : mystd
+     use face, only : pcs
 
      use version, only : V_FULL
      use version, only : V_AUTH
@@ -39,24 +40,26 @@
 
      implicit none
 
-! local variables
-! string for current date and time
+!! local variables
+     ! string for current date and time
      character (len = 20) :: date_time_string
 
-! obtain current date and time
+!! [body
+
+     ! obtain current date and time
      call s_time_builder(date_time_string)
 
 # if defined (MPI)
 
-     write(mystd,'(2X,a)') cname//' (Parallelized Edition)'
+     write(mystd,'(2X,a)') pcs(cname,'red')//pcs(' (Parallelized Edition)','magenta')
 
 # else   /* MPI */
 
-     write(mystd,'(2X,a)') cname//' (Sequential Edition)'
+     write(mystd,'(2X,a)') pcs(cname,'red')//pcs(' (Sequential Edition)','magenta')
 
 # endif  /* MPI */
 
-     write(mystd,'(2X,a)') 'A Modern Continuous Time Quantum Monte Carlo Impurity Solver'
+     write(mystd,'(2X,a)') pcs('A Modern Continuous Time Quantum Monte Carlo Impurity Solver','blue')
      write(mystd,*)
 
      write(mystd,'(2X,a)') 'Version: '//V_FULL//' (built at '//__TIME__//' '//__DATE__//')'
@@ -77,6 +80,10 @@
 
 # endif  /* MPI */
 
+!! body]
+
+     STOP
+
      return
   end subroutine ctqmc_print_header
 
@@ -94,17 +101,19 @@
 
      implicit none
 
-! local variables
-! string for current date and time
+!! local variables
+     ! string for current date and time
      character (len = 20) :: date_time_string
 
-! used to record the time usage information
+     ! used to record the time usage information
      real(dp) :: tot_time
 
-! obtain time usage information
+!! [body
+
+     ! obtain time usage information
      call cpu_time(tot_time)
 
-! obtain current date and time
+     ! obtain current date and time
      call s_time_builder(date_time_string)
 
      write(mystd,'(2X,a,f10.2,a)') cname//' >>> total time spent:', tot_time, 's'
@@ -112,6 +121,8 @@
 
      write(mystd,'(2X,a)') cname//' >>> I am tired and want to go to bed. Bye!'
      write(mystd,'(2X,a)') cname//' >>> happy ending at '//date_time_string
+
+!! body]
 
      return
   end subroutine ctqmc_print_footer
@@ -127,6 +138,8 @@
      use control ! ALL
 
      implicit none
+
+!! [body
 
      write(mystd,'(2X,a)') '[configuration parameters] -> core control'
      write(mystd,'(2X,a)') '-----------------------------------------------------'
@@ -181,6 +194,8 @@
 
      write(mystd,*)
 
+!! body]
+
      return
   end subroutine ctqmc_print_summary
 
@@ -202,11 +217,11 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
 
-! predefined strings for control parameters
+     ! predefined strings for control parameters
      character (len = 4) :: scf(2) = ['nscf', 'scf ']
      character (len = 7) :: scr(4) = ['static ', 'dyn_ppm', 'dyn_om ', 'dyn_rm ']
      character (len = 3) :: bnd(2) = ['no ', 'yes']
@@ -217,12 +232,14 @@
      character (len = 4) :: sus(5) = ['none', 'sp_t', 'ch_t', 'sp_w', 'ch_w']
      character (len = 9) :: vrt(5) = ['none     ', 'g2ph_aabb', 'g2ph_abba', 'g2pp_aabb', 'g2pp_abba']
 
-! predefined strings for control parameters
+     ! predefined strings for control parameters
      character (len = 99) :: str_obs
      character (len = 99) :: str_sus
      character (len = 99) :: str_vrt
 
-! build str_obs according to isobs
+!! [body
+
+     ! build str_obs according to isobs
      str_obs = ''
      do i=1,size(obs)
          if ( btest(isobs, i-1) ) then
@@ -231,7 +248,7 @@
      enddo ! over i={1,size(obs)} loop
      str_obs = adjustl(str_obs)
 
-! build str_sus according to issus
+     ! build str_sus according to issus
      str_sus = ''
      do i=1,size(sus)
          if ( btest(issus, i-1) ) then
@@ -240,7 +257,7 @@
      enddo ! over i={1,size(sus)} loop
      str_sus = adjustl(str_sus)
 
-! build str_vrt according to isvrt
+     ! build str_vrt according to isvrt
      str_vrt = ''
      do i=1,size(vrt)
          if ( btest(isvrt, i-1) ) then
@@ -249,7 +266,7 @@
      enddo ! over i={1,size(vrt)} loop
      str_vrt = adjustl(str_vrt)
 
-! write control parameters
+     ! write control parameters
      write(mystd,'(2X,a)') cname//' >>> CTQMC quantum impurity solver running'
 
      write(mystd,'(4X,2a)') 'self-consistent scheme   / ', scf(isscf)
@@ -264,6 +281,8 @@
      write(mystd,'(4X,2a)') 'two-particle quantities  / ', trim(str_vrt)
 
      write(mystd,*)
+
+!! body]
 
      return
   end subroutine ctqmc_print_control
@@ -290,21 +309,23 @@
 
      implicit none
 
-! external arguments
-! current self-consistent iteration number
+!! external arguments
+     ! current self-consistent iteration number
      integer, intent(in) :: iter
 
-! current QMC sweeping steps
+     ! current QMC sweeping steps
      integer, intent(in) :: cstep
 
-! local variables
-! integer dummy variables
+!! local variables
+     ! dummy integer variables
      integer :: iaux
 
-! about iteration number
+!! [body
+
+     ! about iteration number
      write(mystd,'(4X,a,i3,2(a,i10))') '>>> iter:', iter, ' sweep:', cstep, ' of ', nsweep
 
-! about auxiliary physical observables
+     ! about auxiliary physical observables
      iaux = cstep / nmonte
      write(mystd,'(4X,a)')        'auxiliary system observables:'
      write(mystd,'(2(4X,a,f10.5))') 'etot :', paux(1) / iaux, 'epot :', paux(2) / iaux
@@ -313,35 +334,37 @@
      write(mystd,'(2(4X,a,e10.3))') '<K2> :', paux(7) / iaux, '<K3> :', paux(8) / iaux
      write(mystd,'(1(4X,a,e10.3))') '<K4> :', paux(9) / iaux
 
-! about insert action
+     ! about insert action
      if ( ins_t <= half ) ins_t = -one ! if insert is disable
      write(mystd,'(4X,a)')        'C_Z SPACE / insert kink statistics:'
      write(mystd,'(4X,a,3i10)')   'count:', int( ins_t ), int( ins_a ), int( ins_r )
      write(mystd,'(4X,a,3f10.5)') 'ratio:', one, ins_a / ins_t, ins_r / ins_t
 
-! about remove action
+     ! about remove action
      if ( rmv_t <= half ) rmv_t = -one ! if remove is disable
      write(mystd,'(4X,a)')        'C_Z SPACE / remove kink statistics:'
      write(mystd,'(4X,a,3i10)')   'count:', int( rmv_t ), int( rmv_a ), int( rmv_r )
      write(mystd,'(4X,a,3f10.5)') 'ratio:', one, rmv_a / rmv_t, rmv_r / rmv_t
 
-! about lshift action
+     ! about lshift action
      if ( lsh_t <= half ) lsh_t = -one ! if lshift is disable
      write(mystd,'(4X,a)')        'C_Z SPACE / lshift kink statistics:'
      write(mystd,'(4X,a,3i10)')   'count:', int( lsh_t ), int( lsh_a ), int( lsh_r )
      write(mystd,'(4X,a,3f10.5)') 'ratio:', one, lsh_a / lsh_t, lsh_r / lsh_t
 
-! about rshift action
+     ! about rshift action
      if ( rsh_t <= half ) rsh_t = -one ! if rshift is disable
      write(mystd,'(4X,a)')        'C_Z SPACE / rshift kink statistics:'
      write(mystd,'(4X,a,3i10)')   'count:', int( rsh_t ), int( rsh_a ), int( rsh_r )
      write(mystd,'(4X,a,3f10.5)') 'ratio:', one, rsh_a / rsh_t, rsh_r / rsh_t
 
-! about reflip action
+     ! about reflip action
      if ( rfl_t <= half ) rfl_t = -one ! if reflip is disable
      write(mystd,'(4X,a)')        'C_Z SPACE / global flip statistics:'
      write(mystd,'(4X,a,3i10)')   'count:', int( rfl_t ), int( rfl_a ), int( rfl_r )
      write(mystd,'(4X,a,3f10.5)') 'ratio:', one, rfl_a / rfl_t, rfl_r / rfl_t
+
+!! body]
 
      return
   end subroutine ctqmc_print_runtime
@@ -359,17 +382,21 @@
 
      implicit none
 
-! external arguments
-! current iteration number
+!! external arguments
+     ! current iteration number
      integer, intent(in) :: iter
 
-! according to the value of isscf, we can judge the self-consistent scheme
-! of the current simulation
+!! [body
+
+     ! according to the value of isscf, we can judge the self-consistent
+     ! scheme of the current simulation
      if ( isscf /= 2 ) then
          write(mystd,'(2X,a,i3,a)') cname//' >>> SCF CYCLE:', iter, ' <<< ONESHOT'
      else
          write(mystd,'(2X,a,i3,a)') cname//' >>> SCF CYCLE:', iter, ' <<< LOOPING'
      endif ! back if ( isscf /= 2 ) block
+
+!! body]
 
      return
   end subroutine ctqmc_print_it_info

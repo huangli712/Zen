@@ -1,12 +1,12 @@
 !!!-----------------------------------------------------------------------
-!!! project : narcissus
+!!! project : iqist @ narcissus
 !!! program : ctqmc_impurity_solver
 !!!           ctqmc_impurity_tester
 !!! source  : ctqmc_solver.f90
 !!! type    : subroutines
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 09/16/2009 by li huang (created)
-!!!           04/16/2019 by li huang (last modified)
+!!!           07/01/2023 by li huang (last modified)
 !!! purpose : the main subroutines for the hybridization expansion version
 !!!           continuous time quantum Monte Carlo (CTQMC) quantum impurity
 !!!           solver. they implement the initialization, thermalization,
@@ -71,156 +71,158 @@
 
      implicit none
 
-! external arguments
-! current iteration number for self-consistent cycle
+!! external arguments
+     ! current iteration number for self-consistent cycle
      integer, intent(in) :: iter
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
 
-! status flag
+     ! status flag
      integer  :: istat
 
-! current QMC sweeping steps
+     ! current QMC sweeping steps
      integer  :: cstep
 
-! control flag, whether the solver should be checked periodically
-! cflag = 0 , do not check the quantum impurity solver
-! cflag = 1 , check the quantum impurity solver periodically
-! cflag = 99, the quantum impurity solver is out of control
+     ! control flag, whether the solver should be checked periodically
+     ! cflag = 0 , do not check the quantum impurity solver
+     ! cflag = 1 , check the quantum impurity solver periodically
+     ! cflag = 99, the quantum impurity solver is out of control
      integer  :: cflag
 
-! starting time
+     ! starting time
      real(dp) :: time_begin
 
-! ending time
+     ! ending time
      real(dp) :: time_end
 
-! time consuming by current iteration
+     ! time consuming by current iteration
      real(dp) :: time_cur
 
-! time consuming by total iteration
+     ! time consuming by total iteration
      real(dp) :: time_sum
 
-! the following observables are always measured: real(dp)
-!-------------------------------------------------------------------------
-! histogram for perturbation expansion series
+     ! the following observables are always measured: real(dp)
+     !--------------------------------------------------------------------
+     ! histogram for perturbation expansion series
      real(dp), allocatable :: hist_mpi(:)
      real(dp), allocatable :: hist_err(:)
 
-! probability of atomic eigenstates
+     ! probability of atomic eigenstates
      real(dp), allocatable :: prob_mpi(:)
      real(dp), allocatable :: prob_err(:)
 
-! auxiliary physical observables
+     ! auxiliary physical observables
      real(dp), allocatable :: paux_mpi(:)
      real(dp), allocatable :: paux_err(:)
 
-! impurity occupation number, < n_i >
+     ! impurity occupation number, < n_i >
      real(dp), allocatable :: nimp_mpi(:)
      real(dp), allocatable :: nimp_err(:)
 
-! impurity double occupation number matrix, < n_i n_j >
+     ! impurity double occupation number matrix, < n_i n_j >
      real(dp), allocatable :: nmat_mpi(:,:)
      real(dp), allocatable :: nmat_err(:,:)
 
-! impurity green's function in imaginary time axis
+     ! impurity green's function in imaginary time axis
      real(dp), allocatable :: gtau_mpi(:,:,:)
      real(dp), allocatable :: gtau_err(:,:,:)
 
-! auxiliary correlation function in imaginary time axis
+     ! auxiliary correlation function in imaginary time axis
      real(dp), allocatable :: ftau_mpi(:,:,:)
      real(dp), allocatable :: ftau_err(:,:,:)
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
 
-! the following observables are always measured: complex(dp)
-!-------------------------------------------------------------------------
-! impurity green's function in matsubara frequency axis
+     ! the following observables are always measured: complex(dp)
+     !--------------------------------------------------------------------
+     ! impurity green's function in matsubara frequency axis
      complex(dp), allocatable :: grnf_mpi(:,:,:)
      complex(dp), allocatable :: grnf_err(:,:,:)
 
-! auxiliary correlation function in matsubara frequency axis
+     ! auxiliary correlation function in matsubara frequency axis
      complex(dp), allocatable :: frnf_mpi(:,:,:)
      complex(dp), allocatable :: frnf_err(:,:,:)
 
-! self-energy function in matsubara frequency axis
+     ! self-energy function in matsubara frequency axis
      complex(dp), allocatable :: sig2_mpi(:,:,:)
      complex(dp), allocatable :: sig2_err(:,:,:)
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
 
-! the following observables are measured optionally: real(dp)
-!-------------------------------------------------------------------------
-! number of operators, < k >
+     ! the following observables are measured optionally: real(dp)
+     !--------------------------------------------------------------------
+     ! number of operators, < k >
      real(dp), allocatable :: knop_mpi(:)
      real(dp), allocatable :: knop_err(:)
 
-! crossing product of k_i and k_j, < k_i k_j >
+     ! crossing product of k_i and k_j, < k_i k_j >
      real(dp), allocatable :: kmat_mpi(:,:)
      real(dp), allocatable :: kmat_err(:,:)
 
-! number of operators at left half axis, < k_l >
+     ! number of operators at left half axis, < k_l >
      real(dp), allocatable :: lnop_mpi(:)
      real(dp), allocatable :: lnop_err(:)
 
-! number of operators at right half axis, < k_r >
+     ! number of operators at right half axis, < k_r >
      real(dp), allocatable :: rnop_mpi(:)
      real(dp), allocatable :: rnop_err(:)
 
-! crossing product of k_l and k_r, < k_l k_r >
+     ! crossing product of k_l and k_r, < k_l k_r >
      real(dp), allocatable :: lrmm_mpi(:,:)
      real(dp), allocatable :: lrmm_err(:,:)
 
-! powers of local magnetization, < S^n_z>
+     ! powers of local magnetization, < S^n_z>
      real(dp), allocatable :: szpw_mpi(:,:)
      real(dp), allocatable :: szpw_err(:,:)
 
-! totally-averaged spin-spin correlation function
+     ! totally-averaged spin-spin correlation function
      real(dp), allocatable :: schi_mpi(:)
      real(dp), allocatable :: schi_err(:)
 
-! orbital-resolved spin-spin correlation function
+     ! orbital-resolved spin-spin correlation function
      real(dp), allocatable :: sp_t_mpi(:,:)
      real(dp), allocatable :: sp_t_err(:,:)
 
-! orbital-resolved spin-spin correlation function
+     ! orbital-resolved spin-spin correlation function
      real(dp), allocatable :: sp_w_mpi(:,:)
      real(dp), allocatable :: sp_w_err(:,:)
 
-! totally-averaged charge-charge correlation function
+     ! totally-averaged charge-charge correlation function
      real(dp), allocatable :: cchi_mpi(:)
      real(dp), allocatable :: cchi_err(:)
 
-! orbital-resolved charge-charge correlation function
+     ! orbital-resolved charge-charge correlation function
      real(dp), allocatable :: ch_t_mpi(:,:,:)
      real(dp), allocatable :: ch_t_err(:,:,:)
 
-! orbital-resolved charge-charge correlation function
+     ! orbital-resolved charge-charge correlation function
      real(dp), allocatable :: ch_w_mpi(:,:,:)
      real(dp), allocatable :: ch_w_err(:,:,:)
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
 
-! the following observables are measured optionally: complex(dp)
-!-------------------------------------------------------------------------
-! two-particle green's function (ph channel)
+     ! the following observables are measured optionally: complex(dp)
+     !--------------------------------------------------------------------
+     ! two-particle green's function (ph channel)
      complex(dp), allocatable :: g2ph_mpi(:,:,:,:,:)
      complex(dp), allocatable :: g2ph_err(:,:,:,:,:)
 
-! two-particle vertex function (ph channel)
+     ! two-particle vertex function (ph channel)
      complex(dp), allocatable :: h2ph_mpi(:,:,:,:,:)
      complex(dp), allocatable :: h2ph_err(:,:,:,:,:)
 
-! two-particle green's function (pp channel)
+     ! two-particle green's function (pp channel)
      complex(dp), allocatable :: g2pp_mpi(:,:,:,:,:)
      complex(dp), allocatable :: g2pp_err(:,:,:,:,:)
 
-! two-particle vertex function (pp channel)
+     ! two-particle vertex function (pp channel)
      complex(dp), allocatable :: h2pp_mpi(:,:,:,:,:)
      complex(dp), allocatable :: h2pp_err(:,:,:,:,:)
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
 
-! allocate memory
+!! [body
+
+     ! allocate memory
      allocate(hist_mpi(mkink),             stat=istat)
      allocate(hist_err(mkink),             stat=istat)
      allocate(prob_mpi(ncfgs),             stat=istat)
@@ -282,13 +284,13 @@
          call s_print_error('ctqmc_impurity_solver','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! setup cstep
+     ! setup cstep
      cstep = 0
 
-! setup cflag, check the status of quantum impurity solver periodically
+     ! setup cflag, check the status of quantum impurity solver periodically
      cflag = 1
 
-! setup timer
+     ! setup timer
      time_cur = zero
      time_sum = zero
 
@@ -296,8 +298,9 @@
 !!>>> starting quantum impurity solver                                 <<<
 !!========================================================================
 
-! print the header of continuous time quantum Monte Carlo quantum impurity
-! solver. it contains important information about the control parameters
+     ! print the header of continuous time quantum Monte Carlo quantum
+     ! impurity solver. it contains important information about the
+     ! control parameters
      if ( myid == master ) then ! only master node can do it
          call ctqmc_print_control()
      endif ! back if ( myid == master ) block
@@ -306,8 +309,8 @@
 !!>>> initializing quantum impurity solver                             <<<
 !!========================================================================
 
-! init or reset the continuous time quantum Monte Carlo quantum impurity
-! solver, the key variables and arrays should be prepared here
+     ! init or reset the continuous time quantum Monte Carlo quantum
+     ! impurity solver, the key variables and arrays should be prepared here
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a)') 'quantum impurity solver initializing'
      endif ! back if ( myid == master ) block
@@ -316,7 +319,7 @@
      call ctqmc_reset_array()
      call cpu_time(time_end) ! record ending time
 
-! print the time information
+     ! print the time information
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a,f10.3,a)') 'time:', time_end - time_begin, 's'
          write(mystd,*)
@@ -326,8 +329,9 @@
 !!>>> retrieving quantum impurity solver                               <<<
 !!========================================================================
 
-! init the continuous time quantum Monte Carlo quantum impurity solver
-! further, retrieving the diagrammatic series produced by previous run
+     ! init the continuous time quantum Monte Carlo quantum impurity
+     ! solver further, retrieving the diagrammatic series produced by
+     ! previous run
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a)') 'quantum impurity solver retrieving'
      endif ! back if ( myid == master ) block
@@ -336,7 +340,7 @@
      call ctqmc_retrieve_status()
      call cpu_time(time_end) ! record ending time
 
-! print the time information
+     ! print the time information
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a,f10.3,a)') 'time:', time_end - time_begin, 's'
          write(mystd,*)
@@ -346,8 +350,8 @@
 !!>>> warming quantum impurity solver                                  <<<
 !!========================================================================
 
-! warmup the continuous time quantum Monte Carlo quantum impurity solver
-! in order to achieve equilibrium state
+     ! warmup the continuous time quantum Monte Carlo quantum impurity
+     ! solver in order to achieve equilibrium state
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a)') 'quantum impurity solver warmming'
      endif ! back if ( myid == master ) block
@@ -356,7 +360,7 @@
      call ctqmc_try_warming()
      call cpu_time(time_end) ! record ending time
 
-! print the time information
+     ! print the time information
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a,f10.3,a)') 'time:', time_end - time_begin, 's'
          write(mystd,*)
@@ -366,7 +370,7 @@
 !!>>> beginning main iteration                                         <<<
 !!========================================================================
 
-! start simulation
+     ! start simulation
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a)') 'quantum impurity solver sampling'
          write(mystd,'(4X,a)',advance='no') 'RANDOM WALKING BEGINS'
@@ -388,36 +392,36 @@
 
      MC_SWEEP: do i=1,nsweep,nwrite
 
-! record start time
+         ! record start time
          call cpu_time(time_begin)
 
          MC_WRITE: do j=1,nwrite
 
-! increase cstep by 1
+             ! increase cstep by 1
              cstep = cstep + 1
 
-! sampling the perturbation expansion feynman diagrams randomly
+             ! sampling the perturbation expansion feynman diagrams randomly
              call ctqmc_try_walking(cstep)
 
 !!========================================================================
 !!>>> sampling the physical observables 1 (always)                     <<<
 !!========================================================================
 
-! the following physical observables are always measured
-! record the histogram for perturbation expansion series
+             ! the following physical observables are always measured
+             ! record the histogram for perturbation expansion series
              call ctqmc_record_hist()
 
-! record the probability of atomic eigenstates
+             ! record the probability of atomic eigenstates
              if ( mod(cstep, nmonte) == 0 ) then
                  call ctqmc_record_prob()
              endif ! back if ( mod(cstep, nmonte) == 0 ) block
 
-! record the auxiliary physical observables
+             ! record the auxiliary physical observables
              if ( mod(cstep, nmonte) == 0 ) then
                  call ctqmc_record_paux()
              endif ! back if ( mod(cstep, nmonte) == 0 ) block
 
-! record the impurity (double) occupation number (matrix)
+             ! record the impurity (double) occupation number (matrix)
              if ( mod(cstep, nmonte) == 0 ) then
                  call ctqmc_record_nmat() ! AN EMPTY CALL
              endif ! back if ( mod(cstep, nmonte) == 0 ) block
@@ -426,28 +430,28 @@
 !!>>> sampling the physical observables 2 (always)                     <<<
 !!========================================================================
 
-! the following physical observables are always measured
-! record the impurity green's function in imaginary time space
+             ! the following physical observables are always measured
+             ! record the impurity green's function in imaginary time space
              if ( mod(cstep, nmonte) == 0 ) then
                  call ctqmc_record_gtau()
              endif ! back if ( mod(cstep, nmonte) == 0 ) block
 
-! record the auxiliary correlation function in imaginary time space
+             ! record the auxiliary correlation function in imaginary time space
              if ( mod(cstep, nmonte) == 0 ) then
                  call ctqmc_record_ftau()
              endif ! back if ( mod(cstep, nmonte) == 0 ) block
 
-! record the impurity green's function in matsubara frequency space
+             ! record the impurity green's function in matsubara frequency space
              if ( mod(cstep, nmonte) == 0 ) then
                  call ctqmc_record_grnf()
              endif ! back if ( mod(cstep, nmonte) == 0 ) block
 
-! record the auxiliary correlation function in matsubara frequency space
+             ! record the auxiliary correlation function in matsubara frequency space
              if ( mod(cstep, nmonte) == 0 ) then
                  call ctqmc_record_frnf() ! AN EMPTY CALL
              endif ! back if ( mod(cstep, nmonte) == 0 ) block
 
-! record the self-energy function in matsubara frequency space
+             ! record the self-energy function in matsubara frequency space
              if ( mod(cstep, nmonte) == 0 ) then
                  call ctqmc_record_sig2() ! AN EMPTY CALL
              endif ! back if ( mod(cstep, nmonte) == 0 ) block
@@ -456,18 +460,18 @@
 !!>>> sampling the physical observables 3 (optional)                   <<<
 !!========================================================================
 
-! the following physical observables are measured optionally (by isobs)
-! record the kinetic energy fluctuation
+             ! the following physical observables are measured optionally
+             ! (by isobs) record the kinetic energy fluctuation
              if ( mod(cstep, nmonte) == 0 .and. btest(isobs, 1) ) then
                  call ctqmc_record_kmat()
              endif ! back if ( mod(cstep, nmonte) == 0 .and. btest(isobs, 1) ) block
 
-! record the fidelity susceptibility
+             ! record the fidelity susceptibility
              if ( mod(cstep, nmonte) == 0 .and. btest(isobs, 2) ) then
                  call ctqmc_record_lrmm()
              endif ! back if ( mod(cstep, nmonte) == 0 .and. btest(isobs, 2) ) block
 
-! record the powers of local magnetization
+             ! record the powers of local magnetization
              if ( mod(cstep, nmonte) == 0 .and. btest(isobs, 3) ) then
                  call ctqmc_record_szpw()
              endif ! back if ( mod(cstep, nmonte) == 0 .and. btest(isobs, 3) ) block
@@ -476,23 +480,23 @@
 !!>>> sampling the physical observables 4 (optional)                   <<<
 !!========================================================================
 
-! the following physical observables are measured optionally (by issus)
-! record the spin-spin correlation function
+             ! the following physical observables are measured optionally
+             ! (by issus) record the spin-spin correlation function
              if ( mod(cstep, nmonte) == 0 .and. btest(issus, 1) ) then
                  call ctqmc_record_sp_t()
              endif ! back if ( mod(cstep, nmonte) == 0 .and. btest(issus, 1) ) block
 
-! record the charge-charge correlation function
+             ! record the charge-charge correlation function
              if ( mod(cstep, nmonte) == 0 .and. btest(issus, 2) ) then
                  call ctqmc_record_ch_t()
              endif ! back if ( mod(cstep, nmonte) == 0 .and. btest(issus, 2) ) block
 
-! record the spin-spin correlation function
+             ! record the spin-spin correlation function
              if ( mod(cstep, nmonte) == 0 .and. btest(issus, 3) ) then
                  call ctqmc_record_sp_w()
              endif ! back if ( mod(cstep, nmonte) == 0 .and. btest(issus, 3) ) block
 
-! record the charge-charge correlation function
+             ! record the charge-charge correlation function
              if ( mod(cstep, nmonte) == 0 .and. btest(issus, 4) ) then
                  call ctqmc_record_ch_w()
              endif ! back if ( mod(cstep, nmonte) == 0 .and. btest(issus, 4) ) block
@@ -501,23 +505,23 @@
 !!>>> sampling the physical observables 5 (optional)                   <<<
 !!========================================================================
 
-! the following physical observables are measured optionally (by isvrt)
-! record the two-particle green's function, particle-hole channel, AABB
+             ! the following physical observables are measured optionally (by isvrt)
+             ! record the two-particle green's function, particle-hole channel, AABB
              if ( mod(cstep, nmonte) == 0 .and. btest(isvrt, 1) ) then
                  call ctqmc_record_g2ph()
              endif ! back if ( mod(cstep, nmonte) == 0 .and. btest(isvrt, 1) ) block
 
-! record the two-particle green's function, particle-hole channel, ABBA
+             ! record the two-particle green's function, particle-hole channel, ABBA
              if ( mod(cstep, nmonte) == 0 .and. btest(isvrt, 2) ) then
                  call ctqmc_record_g2ph()
              endif ! back if ( mod(cstep, nmonte) == 0 .and. btest(isvrt, 2) ) block
 
-! record the two-particle green's function, particle-particle channel, AABB
+             ! record the two-particle green's function, particle-particle channel, AABB
              if ( mod(cstep, nmonte) == 0 .and. btest(isvrt, 3) ) then
                  call ctqmc_record_g2pp()
              endif ! back if ( mod(cstep, nmonte) == 0 .and. btest(isvrt, 3) ) block
 
-! record the two-particle green's function, particle-particle channel, ABBA
+             ! record the two-particle green's function, particle-particle channel, ABBA
              if ( mod(cstep, nmonte) == 0 .and. btest(isvrt, 4) ) then
                  call ctqmc_record_g2pp()
              endif ! back if ( mod(cstep, nmonte) == 0 .and. btest(isvrt, 4) ) block
@@ -528,12 +532,12 @@
 !!>>> reporting quantum impurity solver                                <<<
 !!========================================================================
 
-! it is time to write out the statistics results
+         ! it is time to write out the statistics results
          if ( myid == master ) then ! only master node can do it
              call ctqmc_print_runtime(iter, cstep)
          endif ! back if ( myid == master ) block
 
-! write out the snapshot for the current configuration if necessary
+         ! write out the snapshot for the current configuration if necessary
          if ( myid == master ) then ! only master node can do it
              call ctqmc_dump_diag(iter, cstep)
          endif ! back if ( myid == master ) block
@@ -542,14 +546,14 @@
 !!>>> reducing immediate results                                       <<<
 !!========================================================================
 
-! collect the histogram data from hist to hist_mpi
+         ! collect the histogram data from hist to hist_mpi
          call ctqmc_reduce_hist(hist_mpi, hist_err)
 
 !!========================================================================
 !!>>> writing immediate results                                        <<<
 !!========================================================================
 
-! write out the histogram data, hist_mpi
+         ! write out the histogram data, hist_mpi
          if ( myid == master ) then ! only master node can do it
              call ctqmc_dump_hist(hist_mpi, hist_err)
          endif ! back if ( myid == master ) block
@@ -558,24 +562,24 @@
 !!>>> checking quantum impurity solver                                 <<<
 !!========================================================================
 
-! check the status at first
+         ! check the status at first
          call ctqmc_try_warning(cflag)
 
 !!========================================================================
 !!>>> timing quantum impurity solver                                   <<<
 !!========================================================================
 
-! record ending time for this iteration
+         ! record ending time for this iteration
          call cpu_time(time_end)
 
-! calculate timing information
+         ! calculate timing information
          time_cur = time_end - time_begin
          time_sum = time_sum + time_cur
 
-! reset timer
+         ! reset timer
          time_begin = time_end
 
-! print out the timing result
+         ! print out the timing result
          if ( myid == master ) then ! only master node can do it
              call s_time_analyzer(time_cur, time_sum)
              write(mystd,*)
@@ -585,7 +589,7 @@
 !!>>> escaping quantum impurity solver                                 <<<
 !!========================================================================
 
-! if the quantum impurity solver is out of control
+         ! if the quantum impurity solver is out of control
          if ( cflag == 99 ) then
              EXIT MC_SWEEP ! jump out the iteration
          endif ! back if ( cflag == 99 ) block
@@ -596,7 +600,7 @@
 !!>>> ending main iteration                                            <<<
 !!========================================================================
 
-! end simulation
+     ! end simulation
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a)',advance='no') 'RANDOM WALKING STOPS'
          select case ( iswor )
@@ -615,14 +619,14 @@
 !!>>> reducing final results                                           <<<
 !!========================================================================
 
-! start to collect data
+     ! start to collect data
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a)') 'quantum impurity solver reducing'
      endif ! back if ( myid == master ) block
 
      call cpu_time(time_begin) ! record starting time
 
-! calculate the averaged values
+     ! calculate the averaged values
      AVERAGE_DATA: BLOCK
 
          hist = hist * one
@@ -658,23 +662,23 @@
 
      END BLOCK AVERAGE_DATA
 
-! calculate some essential observables which are not measured directly
+     ! calculate some essential observables which are not measured directly
      COMPUTE_DATA: BLOCK
 
-! try to evaluate the self-energy function
+         ! try to evaluate the self-energy function
          call ctqmc_make_hub2()
 
-! try to evaluate the imaginary time green's function
+         ! try to evaluate the imaginary time green's function
          call ctqmc_tran_gtau(gtau, gtau_mpi); gtau = gtau_mpi
          call ctqmc_tran_gtau(ftau, ftau_mpi); ftau = ftau_mpi
 
-! try to evaluate the two-particle green's function (ph channel)
+         ! try to evaluate the two-particle green's function (ph channel)
          if ( btest(isvrt, 1) .or. btest(isvrt, 2) ) then
              call ctqmc_tran_twop(g2ph, g2ph_mpi); g2ph = g2ph_mpi
              call ctqmc_tran_twop(h2ph, h2ph_mpi); h2ph = h2ph_mpi
          endif ! back if ( btest(isvrt, 1) .or. btest(isvrt, 2) ) block
 
-! try to evaluate the two-particle green's function (pp channel)
+         ! try to evaluate the two-particle green's function (pp channel)
          if ( btest(isvrt, 3) .or. btest(isvrt, 4) ) then
              call ctqmc_tran_twop(g2pp, g2pp_mpi); g2pp = g2pp_mpi
              call ctqmc_tran_twop(h2pp, h2pp_mpi); h2pp = h2pp_mpi
@@ -682,7 +686,7 @@
 
      END BLOCK COMPUTE_DATA
 
-! collect data from all children processes
+     ! collect data from all children processes
      COLLECT_DATA: BLOCK
 
          call ctqmc_reduce_hist(hist_mpi, hist_err)
@@ -710,7 +714,7 @@
 
      END BLOCK COLLECT_DATA
 
-! update original data
+     ! update original data
      REPLACE_DATA: BLOCK
 
          hist = hist_mpi
@@ -748,7 +752,7 @@
 
      call cpu_time(time_end) ! record ending time
 
-! print the time information
+     ! print the time information
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a,f10.3,a)') 'time:', time_end - time_begin, 's'
          write(mystd,*)
@@ -758,36 +762,36 @@
 !!>>> symmetrizing final results                                       <<<
 !!========================================================================
 
-! start to symmetrize data
+     ! start to symmetrize data
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a)') 'quantum impurity solver symmetrizing'
      endif ! back if ( myid == master ) block
 
      call cpu_time(time_begin) ! record starting time
 
-! symmetrize the occupation number matrix over spin or over bands
+     ! symmetrize the occupation number matrix over spin or over bands
      call ctqmc_symm_nimp(symm, nimp)
      call ctqmc_symm_nimp(symm, nimp_err)
 
-! symmetrize the impurity green's function over spin or over bands
+     ! symmetrize the impurity green's function over spin or over bands
      call ctqmc_symm_gtau(symm, gtau)
      call ctqmc_symm_gtau(symm, gtau_err)
      call ctqmc_symm_grnf(symm, grnf)
      call ctqmc_symm_grnf(symm, grnf_err)
 
-! symmetrize the auxiliary correlation function over spin or over bands
+     ! symmetrize the auxiliary correlation function over spin or over bands
      call ctqmc_symm_gtau(symm, ftau)
      call ctqmc_symm_gtau(symm, ftau_err)
      call ctqmc_symm_grnf(symm, frnf)
      call ctqmc_symm_grnf(symm, frnf_err)
 
-! symmetrize the self-energy function over spin or over bands
+     ! symmetrize the self-energy function over spin or over bands
      call ctqmc_symm_grnf(symm, sig2)
      call ctqmc_symm_grnf(symm, sig2_err)
 
      call cpu_time(time_end) ! record ending time
 
-! print the time information
+     ! print the time information
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a,f10.3,a)') 'time:', time_end - time_begin, 's'
          write(mystd,*)
@@ -797,14 +801,14 @@
 !!>>> writing final results                                            <<<
 !!========================================================================
 
-! start to write data
+     ! start to write data
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a)') 'quantum impurity solver writing'
      endif ! back if ( myid == master ) block
 
      call cpu_time(time_begin) ! record starting time
 
-! write out the final data to external files
+     ! write out the final data to external files
      if ( myid == master ) then ! only master node can do it
          call ctqmc_dump_hist(hist, hist_err)
          call ctqmc_dump_prob(prob, prob_err)
@@ -832,7 +836,7 @@
 
      call cpu_time(time_end) ! record ending time
 
-! print the time information
+     ! print the time information
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a,f10.3,a)') 'time:', time_end - time_begin, 's'
          write(mystd,*)
@@ -842,21 +846,21 @@
 !!>>> saving quantum impurity solver                                   <<<
 !!========================================================================
 
-! start to save the diagrammatic information
+     ! start to save the diagrammatic information
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a)') 'quantum impurity solver saving'
      endif ! back if ( myid == master ) block
 
      call cpu_time(time_begin) ! record starting time
 
-! save the perturbation expansion series information to the disk file
+     ! save the perturbation expansion series information to the disk file
      if ( myid == master ) then ! only master node can do it
          call ctqmc_save_status()
      endif ! back if ( myid == master ) block
 
      call cpu_time(time_end) ! record ending time
 
-! print the time information
+     ! print the time information
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(4X,a,f10.3,a)') 'time:', time_end - time_begin, 's'
          write(mystd,*)
@@ -866,14 +870,14 @@
 !!>>> finishing quantum impurity solver                                <<<
 !!========================================================================
 
-! print the footer of continuous time quantum Monte Carlo quantum impurity
-! solver. to tell the user it is over
+     ! print the footer of continuous time quantum Monte Carlo quantum
+     ! impurity solver. to tell the user it is over
      if ( myid == master ) then ! only master node can do it
          write(mystd,'(2X,a)') cname//' >>> CTQMC quantum impurity solver shutdown'
          write(mystd,*)
      endif ! back if ( myid == master ) block
 
-! deallocate memory
+     ! deallocate memory
      deallocate(hist_mpi)
      deallocate(hist_err)
      deallocate(prob_mpi)
@@ -931,6 +935,8 @@
      deallocate(h2pp_mpi)
      deallocate(h2pp_err)
 
+!! body]
+
      return
   end subroutine ctqmc_impurity_solver
 
@@ -951,12 +957,16 @@
 
      implicit none
 
-!-------------------------------------------------------------------------
-! please insert your debug code here
-!-------------------------------------------------------------------------
+!! [body
+
+     !--------------------------------------------------------------------
+     ! please insert your debug code here
+     !--------------------------------------------------------------------
 
      call cat_disp_diagrams(2)
      call s_print_error('ctqmc_impurity_tester','in debug mode')
+
+!! body]
 
      return
   end subroutine ctqmc_impurity_tester

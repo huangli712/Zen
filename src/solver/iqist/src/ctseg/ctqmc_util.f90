@@ -1,30 +1,30 @@
 !!!-----------------------------------------------------------------------
-!!! project : narcissus
+!!! project : iqist @ narcissus
 !!! program : ctqmc_four_htau
-!!!           ctqmc_four_hybf <<<---
+!!!           ctqmc_four_hybf
 !!!           ctqmc_eval_htau
-!!!           ctqmc_eval_hsed <<<---
+!!!           ctqmc_eval_hsed
 !!!           ctqmc_eval_ktau
-!!!           ctqmc_eval_ksed <<<---
+!!!           ctqmc_eval_ksed
 !!!           ctqmc_symm_gtau
 !!!           ctqmc_symm_grnf
-!!!           ctqmc_symm_nimp <<<---
+!!!           ctqmc_symm_nimp
 !!!           ctqmc_tran_gtau
 !!!           ctqmc_tran_grnf
-!!!           ctqmc_tran_twop <<<---
-!!!           ctqmc_make_fock <<<---
-!!!           ctqmc_make_umat <<<---
-!!!           ctqmc_make_lift <<<---
+!!!           ctqmc_tran_twop
+!!!           ctqmc_make_fock
+!!!           ctqmc_make_umat
+!!!           ctqmc_make_lift
 !!!           ctqmc_make_iret
-!!!           ctqmc_make_pref <<<---
+!!!           ctqmc_make_pref
 !!!           ctqmc_make_fexp
-!!!           ctqmc_make_bexp <<<---
-!!!           ctqmc_make_hub2 <<<---
+!!!           ctqmc_make_bexp
+!!!           ctqmc_make_hub2
 !!! source  : ctqmc_util.f90
 !!! type    : functions & subroutines
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 10/01/2008 by li huang (created)
-!!!           08/17/2017 by li huang (last modified)
+!!!           07/05/2023 by li huang (last modified)
 !!! purpose : provide utility functions and subroutines for hybridization
 !!!           expansion version continuous time quantum Monte Carlo (CTQMC)
 !!!           quantum impurity solver.
@@ -62,40 +62,44 @@
 
      implicit none
 
-! external arguments
-! hybridization function on imaginary time axis
+!! external arguments
+     ! hybridization function on imaginary time axis
      real(dp), intent(in) :: htau(ntime,norbs,norbs)
 
-! hybridization function on matsubara frequency axis
+     ! hybridization function on matsubara frequency axis
      complex(dp), intent(out) :: hybf(mfreq,norbs,norbs)
 
-! local variables
-! loop index over orbitals
+!! local variables
+     ! loop index over orbitals
      integer  :: i
      integer  :: j
 
-! dummy arrays
+     ! dummy arrays
      real(dp) :: raux(ntime)
      complex(dp) :: caux(mfreq)
 
-! initialize them
+!! [body
+
+     ! initialize them
      raux = zero
      caux = czero
 
      do i=1,norbs
          do j=1,norbs
 
-! copy the imaginary time data to raux
+             ! copy the imaginary time data to raux
              raux = htau(:,j,i)
 
-! call the service layer
+             ! call the service layer
              call s_fft_forward(ntime, tmesh, raux, mfreq, rmesh, caux)
 
-! copy the matsubara frequency data to hybf
+             ! copy the matsubara frequency data to hybf
              hybf(:,j,i) = caux
 
          enddo ! over j={1,norbs} loop
      enddo ! over i={1,norbs} loop
+
+!! body]
 
      return
   end subroutine ctqmc_four_htau
@@ -119,51 +123,53 @@
 
      implicit none
 
-! external arguments
-! hybridization function on imaginary time axis
+!! external arguments
+     ! hybridization function on imaginary time axis
      real(dp), intent(out) :: htau(ntime,norbs,norbs)
 
-! hybridization function on matsubara frequency axis
+     ! hybridization function on matsubara frequency axis
      complex(dp), intent(in) :: hybf(mfreq,norbs,norbs)
 
-! local variables
-! loop index over orbitals
+!! local variables
+     ! loop index over orbitals
      integer  :: i
      integer  :: j
 
-! used to determine the bottom region of hybridiaztion function
+     ! used to determine the bottom region of hybridiaztion function
      integer  :: start
      integer  :: last
 
-! dummy arrays
+     ! dummy arrays
      real(dp) :: raux(ntime)
      complex(dp) :: caux(mfreq)
 
-! initialize them
+!! [body
+
+     ! initialize them
      raux = zero
      caux = czero
 
      do i=1,norbs
          do j=1,norbs
 
-! copy matsubara frequency data to caux
+             ! copy matsubara frequency data to caux
              caux = hybf(:,j,i)
 
-! call the service layer
+             ! call the service layer
              call s_fft_backward(mfreq, rmesh, caux, ntime, tmesh, raux, beta)
 
-! copy imaginary time data to htau
+             ! copy imaginary time data to htau
              htau(:,j,i) = raux
 
          enddo ! over j={1,norbs} loop
      enddo ! over i={1,norbs} loop
 
-! checks for diagonal htau to be causal. htau should be concave. hence,
-! if it becomes very small at two points, it should remain zero in all
-! points between the two points. this is very important in insulators,
-! because htau can overshoot to positive values multiple times and kinks
-! can be trapped in the range between the two crossing points, where htau
-! is causal, but should be zero.
+     ! checks for diagonal htau to be causal. htau should be concave.
+     ! hence, if it becomes very small at two points, it should remain
+     ! zero in all points between the two points. this is very important
+     ! in insulators, because htau can overshoot to positive values
+     ! multiple times and kinks can be trapped in the range between the
+     ! two crossing points, where htau is causal, but should be zero.
      start = 1
      last = 1
      do i=1,norbs
@@ -179,21 +185,23 @@
              endif ! back if ( htau(j,i,i) > -eps6 ) block
          enddo ! over j={ntime,1,-1} loop
 
-!-------------------------------------------------------------------------
-!<         if ( start > 1 .and. last > 1 ) then
-!<             do j=start,last
-!<                 htau(j,i,i) = -eps6
-!<             enddo ! over j={start,last} loop
-!<         endif ! back if ( start > 1 .and. last > 1 ) block
-!-------------------------------------------------------------------------
+!<!-----------------------------------------------------------------------
+!<       if ( start > 1 .and. last > 1 ) then
+!<           do j=start,last
+!<               htau(j,i,i) = -eps6
+!<           enddo ! over j={start,last} loop
+!<       endif ! back if ( start > 1 .and. last > 1 ) block
+!<!-----------------------------------------------------------------------
      enddo ! over i={1,norbs} loop
 
-! enforce hybridization function less than zero to ensure the causality
+     ! enforce hybridization function less than zero to ensure the causality
      do i=1,norbs
          do j=1,ntime
              if ( htau(j,i,i) > zero ) htau(j,i,i) = -eps6
          enddo ! over j={1,ntime} loop
      enddo ! over i={1,norbs} loop
+
+!! body]
 
      return
   end subroutine ctqmc_four_hybf
@@ -225,22 +233,26 @@
 
      implicit none
 
-! external arguments
-! current flavor channel
+!! external arguments
+     ! current flavor channel
      integer, intent(in)  :: flvr
 
-! delta imaginary time
+     ! delta imaginary time
      real(dp), intent(in) :: dtau
 
-! external functions
-! internal interpolation engine
+!! external functions
+     ! internal interpolation engine
      procedure( real(dp) ) :: s_spl_funct
 
-! local variables
-! return value
+!! local variables
+     ! return value
      real(dp) :: val
 
+!! [body
+
      val = s_spl_funct(ntime, tmesh, htau(:, flvr, flvr), hsed(:, flvr, flvr), dtau)
+
+!! body]
 
      return
   end function ctqmc_eval_htau
@@ -263,65 +275,69 @@
 
      implicit none
 
-! external arguments
-! hybridization function on imaginary time axis
+!! external arguments
+     ! hybridization function on imaginary time axis
      real(dp), intent(in)  :: htau(ntime,norbs,norbs)
 
-! second order derivates of hybridization function
+     ! second order derivates of hybridization function
      real(dp), intent(out) :: hsed(ntime,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
 
-! first derivate at start point
+     ! first derivate at start point
      real(dp) :: startu
 
-! first derivate at end   point
+     ! first derivate at end   point
      real(dp) :: startd
 
-! \delta \tau
+     ! \delta \tau
      real(dp) :: deltau
 
-! second-order derivates
+     ! second-order derivates
      real(dp) :: d2y(ntime)
 
-! calculate deltau
+!! [body
+
+     ! calculate deltau
      deltau = beta / real(ntime - 1)
 
-! initialize hsed
+     ! initialize hsed
      hsed = zero
 
-! calculate it
+     ! calculate it
      do j=1,norbs
          do i=1,norbs
 
-! calculate first-order derivate of \Delta(0): startu
+             ! calculate first-order derivate of \Delta(0): startu
              startu = (-25.0_dp*htau(1,       i, j) + &
                         48.0_dp*htau(2,       i, j) - &
                         36.0_dp*htau(3,       i, j) + &
                         16.0_dp*htau(4,       i, j) - &
                          3.0_dp*htau(5,       i, j)) / 12.0_dp / deltau
 
-! calculate first-order derivate of \Delta(\beta): startd
+             ! calculate first-order derivate of \Delta(\beta): startd
              startd = ( 25.0_dp*htau(ntime-0, i, j) - &
                         48.0_dp*htau(ntime-1, i, j) + &
                         36.0_dp*htau(ntime-2, i, j) - &
                         16.0_dp*htau(ntime-3, i, j) + &
                          3.0_dp*htau(ntime-4, i, j)) / 12.0_dp / deltau
 
-! reinitialize d2y to zero
+             ! reinitialize d2y to zero
              d2y = zero
 
-! call the service layer
+             ! call the service layer
              call s_spl_deriv2(ntime, tmesh, htau(:,i,j), startu, startd, d2y)
 
-! copy the results to hsed
+             ! copy the results to hsed
              hsed(:,i,j) = d2y
 
          enddo ! over i={1,norbs} loop
      enddo ! over j={1,norbs} loop
+
+!! body]
 
      return
   end subroutine ctqmc_eval_hsed
@@ -355,30 +371,36 @@
 
      implicit none
 
-! external arguments
-! order for derivates
-! if mode = 1, K(\tau), ktau is considered
-! if mode = 2, K'(\tau), ptau is considered
+!! external arguments
+     ! order for derivates
+     ! if mode = 1, K(\tau), ktau is considered
+     ! if mode = 2, K'(\tau), ptau is considered
      integer, intent(in)  :: mode
 
-! current imaginary time
+     ! current imaginary time
      real(dp), intent(in) :: dtau
 
-! external functions
-! internal interpolation engine
+!! external functions
+     ! internal interpolation engine
      procedure( real(dp) ) :: s_spl_funct
 
-! local variables
-! return value
+!! local variables
+     ! return value
      real(dp) :: val
 
-! using cubic spline interpolation for K(\tau)
+!! [body
+
+     ! using cubic spline interpolation for K(\tau)
      if ( mode == 1 ) then
          val = s_spl_funct(ntime, tmesh, ktau, ksed, dtau)
-! using cubic spline interpolation for K'(\tau)
+     !
+     ! using cubic spline interpolation for K'(\tau)
      else
          val = s_spl_funct(ntime, tmesh, ptau, psed, dtau)
+     !
      endif ! back if ( mode == 1 ) block
+
+!! body]
 
      return
   end function ctqmc_eval_ktau
@@ -402,46 +424,50 @@
 
      implicit none
 
-! external arguments
-! screening function on imaginary time axis
+!! external arguments
+     ! screening function on imaginary time axis
      real(dp), intent(in)  :: ktau(ntime)
 
-! second order derivates of screening function
+     ! second order derivates of screening function
      real(dp), intent(out) :: ksed(ntime)
 
-! local variables
-! first derivate at start point
+!! local variables
+     ! first derivate at start point
      real(dp) :: startu
 
-! first derivate at end   point
+     ! first derivate at end   point
      real(dp) :: startd
 
-! \delta \tau
+     ! \delta \tau
      real(dp) :: deltau
 
-! calculate deltau
+!! [body
+
+     ! calculate deltau
      deltau = beta / real(ntime - 1)
 
-! initialize ksed
+     ! initialize ksed
      ksed = zero
 
-! calculate it
-! calculate first-order derivate of K(0): startu
+     ! calculate it
+     ! calculate first-order derivate of K(0): startu
      startu = (-25.0_dp*ktau(1      ) + &
                 48.0_dp*ktau(2      ) - &
                 36.0_dp*ktau(3      ) + &
                 16.0_dp*ktau(4      ) - &
                  3.0_dp*ktau(5      )) / 12.0_dp / deltau
 
-! calculate first-order derivate of K(\beta): startd
+     ! calculate first-order derivate of K(\beta): startd
      startd = ( 25.0_dp*ktau(ntime-0) - &
                 48.0_dp*ktau(ntime-1) + &
                 36.0_dp*ktau(ntime-2) - &
                 16.0_dp*ktau(ntime-3) + &
                  3.0_dp*ktau(ntime-4)) / 12.0_dp / deltau
 
-! call the service layer
+     ! call the service layer
      call s_spl_deriv2(ntime, tmesh, ktau, startu, startd, ksed)
+
+!! body]
 
      return
   end subroutine ctqmc_eval_ksed
@@ -466,35 +492,37 @@
 
      implicit none
 
-! external arguments
-! symmetry vector
+!! external arguments
+     ! symmetry vector
      integer, intent(in) :: symm(norbs)
 
-! impurity green's function
+     ! impurity green's function
      real(dp), intent(inout) :: gtau(ntime,norbs,norbs)
 
-! local variables
-! loop index over bands
+!! local variables
+     ! loop index over bands
      integer  :: ibnd
      integer  :: jbnd
 
-! loop index over imaginary time points
+     ! loop index over imaginary time points
      integer  :: ktau
 
-! dummy variables
+     ! dummy variables
      real(dp) :: raux
 
-! histogram vector
-! note: it is NOT the global one
+     ! histogram vector
+     ! note: it is NOT the global one
      integer  :: hist(norbs)
 
-! build histogram
+!! [body
+
+     ! build histogram
      hist = 0
      do ibnd=1,norbs
          hist(symm(ibnd)) = hist(symm(ibnd)) + 1
      enddo ! over ibnd={1,norbs} loop
 
-! perform symmetrization for those orbitals with the same symmetry
+     ! perform symmetrization for those orbitals with the same symmetry
      if ( isbnd == 2 ) then
          do ktau=1,ntime
              do ibnd=1,norbs
@@ -519,7 +547,7 @@
          enddo ! over ktau={1,ntime} loop
      endif ! back if ( isbnd == 2 ) block
 
-! symmetrize gtau over spin
+     ! symmetrize gtau over spin
      if ( isspn == 2 ) then
          do ktau=1,ntime
              do jbnd=1,nband
@@ -529,6 +557,8 @@
              enddo ! over jbnd={1,nband} loop
          enddo ! over ktau={1,ntime} loop
      endif ! back if ( isspn == 2 ) block
+
+!! body]
 
      return
   end subroutine ctqmc_symm_gtau
@@ -549,35 +579,37 @@
 
      implicit none
 
-! external arguments
-! symmetry vector
+!! external arguments
+     ! symmetry vector
      integer, intent(in) :: symm(norbs)
 
-! impurity green's function
+     ! impurity green's function
      complex(dp), intent(inout) :: grnf(mfreq,norbs,norbs)
 
-! local variables
-! loop index over bands
+!! local variables
+     ! loop index over bands
      integer :: ibnd
      integer :: jbnd
 
-! loop index over matsubara frequencies
+     ! loop index over matsubara frequencies
      integer :: kfrq
 
-! dummy variables
+     ! dummy variables
      complex(dp) :: caux
 
-! histogram vector
-! note: it is NOT the global one
+     ! histogram vector
+     ! note: it is NOT the global one
      integer :: hist(norbs)
 
-! build histogram
+!! [body
+
+     ! build histogram
      hist = 0
      do ibnd=1,norbs
          hist(symm(ibnd)) = hist(symm(ibnd)) + 1
      enddo ! over ibnd={1,norbs} loop
 
-! perform symmetrization for those orbitals with the same symmetry
+     ! perform symmetrization for those orbitals with the same symmetry
      if ( isbnd == 2 ) then
          do kfrq=1,mfreq
              do ibnd=1,norbs
@@ -602,7 +634,7 @@
          enddo ! over kfrq={1,mfreq} loop
      endif ! back if ( isbnd == 2 ) block
 
-! symmetrize grnf over spin
+     ! symmetrize grnf over spin
      if ( isspn == 2 ) then
          do kfrq=1,mfreq
              do jbnd=1,nband
@@ -612,6 +644,8 @@
              enddo ! over jbnd={1,nband} loop
          enddo ! over kfrq={1,mfreq} loop
      endif ! back if ( isspn == 2 ) block
+
+!! body]
 
      return
   end subroutine ctqmc_symm_grnf
@@ -630,32 +664,34 @@
 
      implicit none
 
-! external arguments
-! symmetry vector
+!! external arguments
+     ! symmetry vector
      integer, intent(in) :: symm(norbs)
 
-! occupation number
+     ! occupation number
      real(dp), intent(inout) :: nimp(norbs)
 
-! local variables
-! loop index over bands
+!! local variables
+     ! loop index over bands
      integer  :: ibnd
      integer  :: jbnd
 
-! dummy variables
+     ! dummy variables
      real(dp) :: raux
 
-! histogram vector
-! note: it is NOT the global one
+     ! histogram vector
+     ! note: it is NOT the global one
      integer  :: hist(norbs)
 
-! build histogram
+!! [body
+
+     ! build histogram
      hist = 0
      do ibnd=1,norbs
          hist(symm(ibnd)) = hist(symm(ibnd)) + 1
      enddo ! over ibnd={1,norbs} loop
 
-! perform symmetrization for those orbitals with the same symmetry
+     ! perform symmetrization for those orbitals with the same symmetry
      if ( isbnd == 2 ) then
          do ibnd=1,norbs
              if ( hist(ibnd) > 0 ) then         ! need to enforce symmetry
@@ -678,7 +714,7 @@
          enddo ! over ibnd={1,norbs} loop
      endif ! back if ( isbnd == 2 ) block
 
-! symmetrize nimp over spin
+     ! symmetrize nimp over spin
      if ( isspn == 2 ) then
          do jbnd=1,nband
              raux = ( nimp(jbnd) + nimp(jbnd+nband) ) / two
@@ -686,6 +722,8 @@
              nimp(jbnd+nband) = raux
          enddo ! over jbnd={1,nband} loop
      endif ! back if ( isspn == 2 ) block
+
+!! body]
 
      return
   end subroutine ctqmc_symm_nimp
@@ -715,37 +753,39 @@
 
      implicit none
 
-! external arguments
-! impurity green's function/orthogonal polynomial coefficients
+!! external arguments
+     ! impurity green's function/orthogonal polynomial coefficients
      real(dp), intent(in)  :: gaux(ntime,norbs,norbs)
 
-! calculated impurity green's function
+     ! calculated impurity green's function
      real(dp), intent(out) :: gtau(ntime,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
 
-! loop index for orthogonal polynomial
+     ! loop index for orthogonal polynomial
      integer  :: fleg
      integer  :: fsvd
 
-! index for imaginary time \tau
+     ! index for imaginary time \tau
      integer  :: curr
 
-! interval for imaginary time slice
+     ! interval for imaginary time slice
      real(dp) :: step
 
-! dummy variables
+     ! dummy variables
      real(dp) :: raux
 
-! initialize gtau
+!! [body
+
+     ! initialize gtau
      gtau = zero
 
-!-------------------------------------------------------------------------
-! using normal representation
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
+     ! using normal representation
+     !--------------------------------------------------------------------
      STD_BLOCK: if ( isort == 1 ) then
          raux = real(ntime) / (beta * beta)
          do i=1,norbs
@@ -754,11 +794,11 @@
              enddo ! over j={1,ntime} loop
          enddo ! over i={1,norbs} loop
      endif STD_BLOCK ! back if ( isort == 1 ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-!-------------------------------------------------------------------------
-! using legendre orthogonal polynomial representation
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
+     ! using legendre orthogonal polynomial representation
+     !--------------------------------------------------------------------
      LEG_BLOCK: if ( isort == 2 ) then
          step = real(legrd - 1) / two
          do i=1,norbs
@@ -772,11 +812,11 @@
              enddo ! over j={1,ntime} loop
          enddo ! over i={1,norbs} loop
      endif LEG_BLOCK ! back if ( isort == 2 ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-!-------------------------------------------------------------------------
-! using svd orthogonal polynomial representation
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
+     ! using svd orthogonal polynomial representation
+     !--------------------------------------------------------------------
      SVD_BLOCK: if ( isort == 3 ) then
          step = real(svgrd - 1) / two
          do i=1,norbs
@@ -790,7 +830,9 @@
              enddo ! over j={1,ntime} loop
          enddo ! over i={1,norbs} loop
      endif SVD_BLOCK ! back if ( isort == 3 ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+!! body]
 
      return
   end subroutine ctqmc_tran_gtau
@@ -821,46 +863,48 @@
 
      implicit none
 
-! external arguments
-! orthogonal polynomial coefficients for impurity green's function
+!! external arguments
+     ! orthogonal polynomial coefficients for impurity green's function
      real(dp), intent(in) :: gaux(ntime,norbs,norbs)
 
-! calculated impurity green's function
+     ! calculated impurity green's function
      complex(dp), intent(out) :: grnf(mfreq,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
      integer  :: k
 
-! index for imaginary time \tau
+     ! index for imaginary time \tau
      integer  :: curr
 
-! status flag
+     ! status flag
      integer  :: istat
 
-! dummy real(dp) variable
+     ! dummy real(dp) variable
      real(dp) :: raux
 
-! step for the linear frequency mesh
+     ! step for the linear frequency mesh
      real(dp) :: step
 
-! j_n(x), for legendre orthogonal polynomial representation
+     ! j_n(x), for legendre orthogonal polynomial representation
      real(dp), allocatable :: pfun(:,:)
 
-! u_l(x(\tau)), for svd orthogonal polynomial representation
+     ! u_l(x(\tau)), for svd orthogonal polynomial representation
      real(dp), allocatable :: ufun(:,:)
 
-! calculated impurity green's function, imaginary time axis
+     ! calculated impurity green's function, imaginary time axis
      real(dp), allocatable :: gtau(:,:,:)
 
-! unitary transformation matrix for orthogonal polynomials
+     ! unitary transformation matrix for orthogonal polynomials
      complex(dp), allocatable :: tleg(:,:)
      complex(dp), allocatable :: tsvd(:,:)
      complex(dp), allocatable :: tmpi(:,:)
 
-! allocate memory
+!! [body
+
+     ! allocate memory
      allocate(pfun(mfreq,lemax), stat=istat)
      allocate(ufun(ntime,svmax), stat=istat)
 
@@ -874,27 +918,27 @@
          call s_print_error('ctqmc_tran_grnf','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-!-------------------------------------------------------------------------
-! using normal representation
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
+     ! using normal representation
+     !--------------------------------------------------------------------
      STD_BLOCK: if ( isort == 1 ) then
          call ctqmc_tran_gtau(gaux, gtau)
          call ctqmc_four_htau(gtau, grnf)
      endif STD_BLOCK ! back if ( isort == 1 ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-!-------------------------------------------------------------------------
-! using legendre orthogonal polynomial representation
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
+     ! using legendre orthogonal polynomial representation
+     !--------------------------------------------------------------------
      LEG_BLOCK: if ( isort == 2 ) then
 
-! calculate spherical Bessel functions at first
+         ! calculate spherical Bessel functions at first
          pfun = zero
          do k=1,mfreq
              call s_sph_jl(lemax-1, rmesh(k) * beta / two, pfun(k,:))
          enddo ! over k={1,mfreq} loop
 
-! build unitary transformation matrix: tleg
+         ! build unitary transformation matrix: tleg
          tleg = czero
          do i=1,lemax
              raux = sqrt(two * i - one)
@@ -903,12 +947,12 @@
              enddo ! over k={1,mfreq} loop
          enddo ! over i={1,lemax} loop
 
-! normalize tleg
-! note: the beta is from Eq. (C19) in Phys. Rev. B 84, 075145 (2011)
+         ! normalize tleg
+         ! note: the beta is from Eq. (C19) in Phys. Rev. B 84, 075145 (2011)
          tleg = tleg / beta
 
-! build impurity green's function on matsubara frequency using orthogonal
-! polynomial representation: grnf
+         ! build impurity green's function on matsubara frequency using
+         ! orthogonal polynomial representation: grnf
          grnf = czero
          do i=1,norbs
              do j=1,lemax
@@ -919,14 +963,14 @@
          enddo ! over i={1,norbs} loop
 
      endif LEG_BLOCK ! back if ( isort == 2 ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-!-------------------------------------------------------------------------
-! using svd orthogonal polynomial representation
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
+     ! using svd orthogonal polynomial representation
+     !--------------------------------------------------------------------
      SVD_BLOCK: if ( isort == 3 ) then
 
-! copy rep_s to ufun, prepare u_l(x(\tau))
+         ! copy rep_s to ufun, prepare u_l(x(\tau))
          step = real(svgrd - 1) / two
          do i=1,ntime
              raux = two * tmesh(i) / beta - one
@@ -934,8 +978,8 @@
              ufun(i,:) = rep_s(curr,:)
          enddo ! over i={1,ntime} loop
 
-! build unitary transformation matrix: tsvd
-! actually, we do the fourier transformation
+         ! build unitary transformation matrix: tsvd
+         ! actually, we do the fourier transformation
          tmpi = czero
          do i=1+myid,svmax,nprocs
              call s_fft_forward(ntime, tmesh, ufun(:,i), mfreq, rmesh, tmpi(:,i))
@@ -944,10 +988,10 @@
 ! build tsvd, collect data from children processes
 # if defined (MPI)
 
-! collect data
+         ! collect data
          call mp_allreduce(tmpi, tsvd)
 
-! block until all processes have reached here
+         ! block until all processes have reached here
          call mp_barrier()
 
 # else  /* MPI */
@@ -956,13 +1000,13 @@
 
 # endif /* MPI */
 
-! normalize tsvd
-! note: the first beta is from Eq. (C19), while the second beta is from
-! Eq. (E1) in Phys. Rev. B 84, 075145 (2011)
+         ! normalize tsvd
+         ! note: the first beta is from Eq. (C19), while the second beta
+         ! is from Eq. (E1) in Phys. Rev. B 84, 075145 (2011)
          tsvd = tsvd * (two / beta / beta)
 
-! build impurity green's function on matsubara frequency using orthogonal
-! polynomial representation: grnf
+         ! build impurity green's function on matsubara frequency using
+         ! orthogonal polynomial representation: grnf
          grnf = czero
          do i=1,norbs
              do j=1,svmax
@@ -973,9 +1017,11 @@
          enddo ! over i={1,norbs} loop
 
      endif SVD_BLOCK ! back if ( isort == 3 ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-! deallocate memory
+!! body]
+
+     ! deallocate memory
      deallocate(pfun)
      deallocate(ufun)
      deallocate(gtau)
@@ -1012,47 +1058,49 @@
 
      implicit none
 
-! external arguments
-! orthogonal polynomial coefficients for two-particle green's function
+!! external arguments
+     ! orthogonal polynomial coefficients for two-particle green's function
      complex(dp), intent(in)  :: gaux(nffrq,nffrq,nbfrq,norbs,norbs)
 
-! calculated two-particle green's function
+     ! calculated two-particle green's function
      complex(dp), intent(out) :: grnf(nffrq,nffrq,nbfrq,norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
      integer  :: k
      integer  :: l
 
-! index for imaginary time \tau
+     ! index for imaginary time \tau
      integer  :: curr
 
-! status flag
+     ! status flag
      integer  :: istat
 
-! dummy real(dp) variable
+     ! dummy real(dp) variable
      real(dp) :: raux
 
-! step for the linear frequency mesh
+     ! step for the linear frequency mesh
      real(dp) :: step
 
-! symmetric fermionic matsubara frequency mesh
+     ! symmetric fermionic matsubara frequency mesh
      real(dp), allocatable :: fmesh(:)
 
-! p_l(x(\tau)), for legendre orthogonal polynomial representation
+     ! p_l(x(\tau)), for legendre orthogonal polynomial representation
      real(dp), allocatable :: pfun(:,:)
 
-! u_l(x(\tau)), for svd orthogonal polynomial representation
+     ! u_l(x(\tau)), for svd orthogonal polynomial representation
      real(dp), allocatable :: ufun(:,:)
 
-! unitary transformation matrix for orthogonal polynomials
+     ! unitary transformation matrix for orthogonal polynomials
      complex(dp), allocatable :: tleg(:,:)
      complex(dp), allocatable :: tsvd(:,:)
      complex(dp), allocatable :: tmpi(:,:)
 
-! allocate memory
+!! [body
+
+     ! allocate memory
      allocate(fmesh(nffrq),      stat=istat)
      allocate(pfun(ntime,lemax), stat=istat)
      allocate(ufun(ntime,svmax), stat=istat)
@@ -1063,27 +1111,27 @@
          call s_print_error('ctqmc_tran_twop','can not allocate enough memory')
      endif ! back if ( istat /= 0 ) block
 
-! build symmetric fermionic matsubara frequency mesh
+     ! build symmetric fermionic matsubara frequency mesh
      do i=nffrq/2+1,nffrq
          fmesh(i) = rmesh(i-nffrq/2)  ! > 0
          fmesh(nffrq-i+1) = -fmesh(i) ! < 0
      enddo ! over i={nffrq/2+1,nffrq} loop
 
-!-------------------------------------------------------------------------
-! using normal representation
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
+     ! using normal representation
+     !--------------------------------------------------------------------
      STD_BLOCK: if ( isort == 1 ) then
          allocate(tmpi(  1  ,  1  ), stat=istat); tmpi = czero
          grnf = gaux
      endif STD_BLOCK ! back if ( isort == 1 ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-!-------------------------------------------------------------------------
-! using legendre orthogonal polynomial representation
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
+     ! using legendre orthogonal polynomial representation
+     !--------------------------------------------------------------------
      LEG_BLOCK: if ( isort == 2 ) then
 
-! copy rep_l to pfun, prepare p_l(x(\tau))
+         ! copy rep_l to pfun, prepare p_l(x(\tau))
          step = real(legrd - 1) / two
          do i=1,ntime
              raux = two * tmesh(i) / beta
@@ -1091,10 +1139,10 @@
              pfun(i,:) = rep_l(curr,:)
          enddo ! over i={1,ntime} loop
 
-! build unitary transformation matrix: tleg
-! we do the fourier transformation directly using Eq. (E1) in Phys. Rev.
-! B 84, 075145 (2011). the advantage is that it doesn't depend on the
-! spherical Bessel functions any more
+         ! build unitary transformation matrix: tleg
+         ! we do the fourier transformation directly using Eq. (E1) in
+         ! Phys. Rev. B 84, 075145 (2011). the advantage is that it
+         ! doesn't depend on the spherical Bessel functions any more
          allocate(tmpi(nffrq,lemax), stat=istat); tmpi = czero
          do i=1+myid,lemax,nprocs
              call s_fft_forward(ntime, tmesh, pfun(:,i), nffrq, fmesh, tmpi(:,i))
@@ -1104,10 +1152,10 @@
 ! build tleg, collect data from children processes
 # if defined (MPI)
 
-! collect data
+         ! collect data
          call mp_allreduce(tmpi, tleg)
 
-! block until all processes have reached here
+         ! block until all processes have reached here
          call mp_barrier()
 
 # else  /* MPI */
@@ -1116,12 +1164,12 @@
 
 # endif /* MPI */
 
-! normalize tleg
-! note: the beta is from Eq. (E1) in Phys. Rev. B 84, 075145 (2011)
+         ! normalize tleg
+         ! note: the beta is from Eq. (E1) in Phys. Rev. B 84, 075145 (2011)
          tleg = tleg / beta
 
-! build two-particle green's function on matsubara frequency using
-! orthogonal polynomial representation: grnf
+         ! build two-particle green's function on matsubara frequency
+         ! using orthogonal polynomial representation: grnf
          grnf = czero
          do i=1,nffrq             ! for v' index
              do j=1,nffrq         ! for v  index
@@ -1137,14 +1185,14 @@
          enddo ! over i={1,nffrq} loop
 
      endif LEG_BLOCK ! back if ( isort == 2 ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-!-------------------------------------------------------------------------
-! using svd orthogonal polynomial representation
-!-------------------------------------------------------------------------
+     !--------------------------------------------------------------------
+     ! using svd orthogonal polynomial representation
+     !--------------------------------------------------------------------
      SVD_BLOCK: if ( isort == 3 ) then
 
-! copy rep_s to ufun, prepare u_l(x(\tau))
+         ! copy rep_s to ufun, prepare u_l(x(\tau))
          step = real(svgrd - 1) / two
          do i=1,ntime
              raux = two * tmesh(i) / beta - one
@@ -1152,8 +1200,8 @@
              ufun(i,:) = rep_s(curr,:)
          enddo ! over i={1,ntime} loop
 
-! build unitary transformation matrix: tsvd
-! actually, we do the fourier transformation
+         ! build unitary transformation matrix: tsvd
+         ! actually, we do the fourier transformation
          allocate(tmpi(nffrq,svmax), stat=istat); tmpi = czero
          do i=1+myid,svmax,nprocs
              call s_fft_forward(ntime, tmesh, ufun(:,i), nffrq, fmesh, tmpi(:,i))
@@ -1162,10 +1210,10 @@
 ! build tsvd, collect data from children processes
 # if defined (MPI)
 
-! collect data
+         ! collect data
          call mp_allreduce(tmpi, tsvd)
 
-! block until all processes have reached here
+         ! block until all processes have reached here
          call mp_barrier()
 
 # else  /* MPI */
@@ -1174,11 +1222,11 @@
 
 # endif /* MPI */
 
-! normalize tsvd
+         ! normalize tsvd
          tsvd = tsvd * (two / beta)
 
-! build two-particle green's function on matsubara frequency using
-! orthogonal polynomial representation: grnf
+         ! build two-particle green's function on matsubara frequency
+         ! using svd orthogonal polynomial representation: grnf
          grnf = czero
          do i=1,nffrq             ! for v' index
              do j=1,nffrq         ! for v  index
@@ -1194,15 +1242,17 @@
          enddo ! over i={1,nffrq} loop
 
      endif SVD_BLOCK ! back if ( isort == 3 ) block
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-! deallocate memory
+     ! deallocate memory
      deallocate(fmesh)
      deallocate(pfun)
      deallocate(ufun)
      deallocate(tleg)
      deallocate(tsvd)
      deallocate(tmpi)
+
+!! body]
 
      return
   end subroutine ctqmc_tran_twop
@@ -1219,27 +1269,31 @@
   subroutine ctqmc_make_fock(norbs, pstat, state)
      implicit none
 
-! external arguments
-! index of atomic state
+!! external arguments
+     ! index of atomic state
      integer, intent(out) :: pstat
 
-! number of orbitals
+     ! number of orbitals
      integer, intent(in)  :: norbs
 
-! atomic state array
+     ! atomic state array
      integer, intent(in)  :: state(norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer :: i
 
-! init pstat
+!! [body
+
+     ! init pstat
      pstat = 1
 
-! evaluate pstat, for example, 0101 = 0*2^0 + 1*2^1 + 0*2^2 + 1*2^3 = 10
+     ! evaluate pstat, for example, 0101 = 0*2^0 + 1*2^1 + 0*2^2 + 1*2^3 = 10
      do i=1,norbs
          if ( state(i) > 0 ) pstat = pstat + ishft(1, i-1)
      enddo ! over i={1,norbs} loop
+
+!! body]
 
      return
   end subroutine ctqmc_make_fock
@@ -1270,24 +1324,26 @@
 
      implicit none
 
-! external arguments
-! Coulomb interaction matrix
+!! external arguments
+     ! Coulomb interaction matrix
      real(dp), intent(out) :: umat(norbs,norbs)
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
      integer  :: k
      integer  :: m
 
-! dummy u vector
+     ! dummy u vector
      real(dp) :: ut(nband*(norbs-1))
 
-! initialize it
+!! [body
+
+     ! initialize it
      umat = zero
 
-! calculate it
+     ! calculate it
      k = 0
      do i=1,norbs-1
          do j=i+1,norbs
@@ -1307,6 +1363,8 @@
              umat(j,i) = ut(k)
          enddo ! over j={i+1,norbs} loop
      enddo ! over i={1,norbs-1} loop
+
+!! body]
 
      return
   end subroutine ctqmc_make_umat
@@ -1334,22 +1392,24 @@
 
      implicit none
 
-! external arguments
-! Coulomb interaction matrix
+!! external arguments
+     ! Coulomb interaction matrix
      real(dp), intent(inout) :: umat(norbs,norbs)
 
-! sign for the shift, it should be 1.0_dp or -1.0_dp
+     ! sign for the shift, it should be 1.0_dp or -1.0_dp
      real(dp), intent(in)    :: ssign
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: j
 
-! Coulomb interaction shift introduced by dynamic screening effect
+     ! Coulomb interaction shift introduced by dynamic screening effect
      real(dp) :: shift
 
-! evaluate Coulomb interaction shift
+!! [body
+
+     ! evaluate Coulomb interaction shift
      DYNAMIC_MODEL: select case ( isscr )
 
          case (1) ! static interaction
@@ -1366,10 +1426,10 @@
 
      end select DYNAMIC_MODEL
 
-! multiple the shift with sign
+     ! multiple the shift with sign
      shift = shift * ssign
 
-! shift the Coulomb interaction matrix (skip the diagonal elements)
+     ! shift the Coulomb interaction matrix (skip the diagonal elements)
      do i=1,norbs-1
          do j=i+1,norbs
              umat(i,j) = umat(i,j) - shift
@@ -1377,8 +1437,10 @@
          enddo ! over j={i+1,norbs} loop
      enddo ! over i={1,norbs-1} loop
 
-! shift chemical potential as a byproduct
+     ! shift chemical potential as a byproduct
      mune = mune - shift / two
+
+!! body]
 
      return
   end subroutine ctqmc_make_lift
@@ -1406,31 +1468,33 @@
 
      implicit none
 
-! external arguments
-! imaginary time point, in principle, it is \tau_end
+!! external arguments
+     ! imaginary time point, in principle, it is \tau_end
      real(dp), intent(in)  :: time
 
-! integral value for I(\tau_end)
+     ! integral value for I(\tau_end)
      real(dp), intent(out) :: iret
 
-! local variables
-! loop index for start and end points
+!! local variables
+     ! loop index for start and end points
      integer  :: it
 
-! loop index for flavor channel
+     ! loop index for flavor channel
      integer  :: flvr
 
-! length betweem two time points
+     ! length betweem two time points
      real(dp) :: dtau
      real(dp) :: daux
 
-! init integral I(\tau_end)
+!! [body
+
+     ! init integral I(\tau_end)
      iret = zero
 
      FLVR_CYCLE: do flvr=1,norbs
          do it=1,rank(flvr)
 
-! contribution from creation operators
+             ! contribution from creation operators
              dtau = time_s( index_s(it, flvr), flvr ) - time
              if ( dtau >= zero ) then
                  call cat_weight_kernel(2, +dtau, daux)
@@ -1440,7 +1504,7 @@
                  iret = iret - daux
              endif ! back if ( dtau >= zero ) block
 
-! contribution from annihilation operators
+             ! contribution from annihilation operators
              dtau = time_e( index_e(it, flvr), flvr ) - time
              if ( dtau >= zero ) then
                  call cat_weight_kernel(2, +dtau, daux)
@@ -1453,12 +1517,14 @@
          enddo ! over it={1,rank(flvr)} loop
      enddo FLVR_CYCLE ! over flvr={1,norbs} loop
 
-! add additional term: -2K'(0^+)
-! note: this static contribution should already be accounted for by the
-! renormalization of the static U
-!<     call cat_weight_kernel(2, zero, daux)
-!<     iret = -iret - two * daux
+!<   ! add additional term: -2K'(0^+)
+!<   ! note: this static contribution should already be accounted for by the
+!<   ! renormalization of the static U
+!<   call cat_weight_kernel(2, zero, daux)
+!<   iret = -iret - two * daux
      iret = -iret
+
+!! body]
 
      return
   end subroutine ctqmc_make_iret
@@ -1483,39 +1549,43 @@
 
      implicit none
 
-! local variables
-! loop index for start and end points
+!! local variables
+     ! loop index for start and end points
      integer  :: it
 
-! loop index for flavor channel
+     ! loop index for flavor channel
      integer  :: f1
      integer  :: f2
 
-! occupation number at \tau_end
+     ! occupation number at \tau_end
      real(dp) :: occu
 
-! integral value for I(\tau_end)
+     ! integral value for I(\tau_end)
      real(dp) :: iret
+
+!! [body
 
      FLVR_CYCLE: do f1=1,norbs
          do it=1,rank(f1)
 
-! reset the prefactor
+             ! reset the prefactor
              pref(it,f1) = zero
 
-! calculate contribution from static interaction
+             ! calculate contribution from static interaction
              do f2=1,norbs
                  call cat_occupy_status(f2, time_e( index_e(it, f1), f1 ), occu)
                  pref(it,f1) = pref(it,f1) + half * ( umat(f1,f2) + umat(f2,f1) ) * occu
              enddo ! over f2={1,norbs} loop
 
-! calculate contribution from retarded (dynamic) interaction
+             ! calculate contribution from retarded (dynamic) interaction
              if ( isscr > 1 ) then
                  call ctqmc_make_iret(time_e( index_e(it, f1), f1 ), iret)
                  pref(it,f1) = pref(it,f1) + iret
              endif ! back if ( isscr > 1 ) block
          enddo ! over it={1,rank(f1)} loop
      enddo FLVR_CYCLE ! over f1={1,norbs} loop
+
+!! body]
 
      return
   end subroutine ctqmc_make_pref
@@ -1553,45 +1623,47 @@
 
      implicit none
 
-! external arguments
-! current flavor channel
+!! external arguments
+     ! current flavor channel
      integer, intent(in) :: flvr
 
-! combination of nffrq and nbfrq
+     ! combination of nffrq and nbfrq
      integer, intent(in) :: nfaux
 
-! maximum number of operators in different flavor channels
+     ! maximum number of operators in different flavor channels
      integer, intent(in) :: mrank
 
-! matsubara frequency exponents for creation operators
+     ! matsubara frequency exponents for creation operators
      complex(dp), intent(out) :: caux1(nfaux,mrank)
 
-! matsubara frequency exponents for annihilation operators
+     ! matsubara frequency exponents for annihilation operators
      complex(dp), intent(out) :: caux2(nfaux,mrank)
 
-! local variables
-! loop indices for start and end points
+!! local variables
+     ! loop indices for start and end points
      integer :: is
      integer :: ie
 
-! loop index for frequency
+     ! loop index for frequency
      integer :: ix
 
-! index for frequency
+     ! index for frequency
      integer :: ir
 
-! make sure nfreq is larger than nfaux, or else this subroutine will fail
+!! [body
+
+     ! make sure nfreq is larger than nfaux, or else this subroutine will fail
      call s_assert2( nfreq > nfaux, 'in ctqmc_make_fexp' )
 
-! creation operators
-!-------------------------------------------------------------------------
-! for each \tau_s, we try to calculate
-!     exp ( i \omega_n \tau_s ) where n \in [1,nfaux]
-!     \omega_n = -(v + w), v: -v ---> +v, w: -0 ---> +w
-! so,
-!     \omega_n = +v,   when n = 1
-!     \omega_n = -v-w, when n = nfaux
-!
+     ! creation operators
+     !--------------------------------------------------------------------
+     ! for each \tau_s, we try to calculate
+     !     exp ( i \omega_n \tau_s ) where n \in [1,nfaux]
+     !     \omega_n = -(v + w), v: -v ---> +v, w: -0 ---> +w
+     ! so,
+     !     \omega_n = +v,   when n = 1
+     !     \omega_n = -v-w, when n = nfaux
+     !
      do is=1,rank(flvr)
          do ix=1,nffrq/2
              ir = nffrq / 2 + 1 - ix
@@ -1604,15 +1676,15 @@
          enddo ! over ix={nffrq/2+1,nfaux} loop
      enddo ! over is={1,rank(flvr)} loop
 
-! annihilation operators
-!-------------------------------------------------------------------------
-! for each \tau_e, we try to calculate
-!     exp ( i \omega_n \tau_e ) where n \in [1,nfaux]
-!     \omega_n = +(v + w), v: -v ---> +v, w: -0 ---> +w
-! so,
-!     \omega_n = -v,   when n = 1
-!     \omega_n = +v+w, when n = nfaux
-!
+     ! annihilation operators
+     !--------------------------------------------------------------------
+     ! for each \tau_e, we try to calculate
+     !     exp ( i \omega_n \tau_e ) where n \in [1,nfaux]
+     !     \omega_n = +(v + w), v: -v ---> +v, w: -0 ---> +w
+     ! so,
+     !     \omega_n = -v,   when n = 1
+     !     \omega_n = +v+w, when n = nfaux
+     !
      do ie=1,rank(flvr)
          do ix=1,nffrq/2
              ir = -nffrq/2 + ix
@@ -1624,6 +1696,8 @@
              caux2(ix,ie) = exp_e(ir, index_e(ie, flvr), flvr)
          enddo ! over ix={nffrq/2+1,nfaux} loop
      enddo ! over ie={1,rank(flvr)} loop
+
+!! body]
 
      return
   end subroutine ctqmc_make_fexp
@@ -1658,41 +1732,43 @@
 !<
 !<     implicit none
 !<
-!<! external arguments
-!<! current flavor channel
+!<!! external arguments
+!<     ! current flavor channel
 !<     integer, intent(in) :: flvr
 !<
-!<! combination of nffrq and nbfrq
+!<     ! combination of nffrq and nbfrq
 !<     integer, intent(in) :: nfaux
 !<
-!<! maximum number of operators in different flavor channels
+!<     ! maximum number of operators in different flavor channels
 !<     integer, intent(in) :: mrank
 !<
-!<! matsubara frequency exponents for creation operators
+!<     ! matsubara frequency exponents for creation operators
 !<     complex(dp), intent(out) :: caux1(nfaux,mrank)
 !<
-!<! matsubara frequency exponents for annihilation operators
+!<     ! matsubara frequency exponents for annihilation operators
 !<     complex(dp), intent(out) :: caux2(nfaux,mrank)
 !<
-!<! local variables
-!<! loop indices for start and end points
+!<!! local variables
+!<     ! loop indices for start and end points
 !<     integer :: is
 !<     integer :: ie
 !<
-!<! imaginary time for start and end points
-!<! actually, they are i\pi\tau_s/\beta and i\pi\tau_e/\beta
+!<     ! imaginary time for start and end points
+!<     ! actually, they are i\pi\tau_s/\beta and i\pi\tau_e/\beta
 !<     complex(dp) :: zs
 !<     complex(dp) :: ze
 !<
-!<! creation operators
-!<!-------------------------------------------------------------------------
-!<! for each \tau_s, we try to calculate
-!<!     exp ( i \omega_n \tau_s ) where n \in [1,nfaux]
-!<!     \omega_n = -(v + w), v: -v ---> +v, w: -0 ---> +w
-!<! so,
-!<!     \omega_n = +v,   when n = 1
-!<!     \omega_n = -v-w, when n = nfaux
-!<!
+!<!! [body
+!<
+!<     ! creation operators
+!<     !------------------------------------------------------------------
+!<     ! for each \tau_s, we try to calculate
+!<     !     exp ( i \omega_n \tau_s ) where n \in [1,nfaux]
+!<     !     \omega_n = -(v + w), v: -v ---> +v, w: -0 ---> +w
+!<     ! so,
+!<     !     \omega_n = +v,   when n = 1
+!<     !     \omega_n = -v-w, when n = nfaux
+!<     !
 !<     do is=1,rank(flvr)
 !<         zs = czi * pi * time_s( index_s(is, flvr), flvr ) / beta
 !<         caux1(:,is) = exp(-two * zs)
@@ -1700,21 +1776,23 @@
 !<         caux1(:,is) = caux1(:,is) * exp(+(nffrq + 1) * zs)
 !<     enddo ! over is={1,rank(flvr)} loop
 !<
-!<! annihilation operators
-!<!-------------------------------------------------------------------------
-!<! for each \tau_e, we try to calculate
-!<!     exp ( i \omega_n \tau_e ) where n \in [1,nfaux]
-!<!     \omega_n = +(v + w), v: -v ---> +v, w: -0 ---> +w
-!<! so,
-!<!     \omega_n = -v,   when n = 1
-!<!     \omega_n = +v+w, when n = nfaux
-!<!
+!<     ! annihilation operators
+!<     !------------------------------------------------------------------
+!<     ! for each \tau_e, we try to calculate
+!<     !     exp ( i \omega_n \tau_e ) where n \in [1,nfaux]
+!<     !     \omega_n = +(v + w), v: -v ---> +v, w: -0 ---> +w
+!<     ! so,
+!<     !     \omega_n = -v,   when n = 1
+!<     !     \omega_n = +v+w, when n = nfaux
+!<     !
 !<     do ie=1,rank(flvr)
 !<         ze = czi * pi * time_e( index_e(ie, flvr), flvr ) / beta
 !<         caux2(:,ie) = exp(+two * ze)
 !<         call s_cumprod_z(nfaux, caux2(:,ie), caux2(:,ie))
 !<         caux2(:,ie) = caux2(:,ie) * exp(-(nffrq + 1) * ze)
 !<     enddo ! over ie={1,rank(flvr)} loop
+!<
+!<!! body]
 !<
 !<     return
 !<  end subroutine ctqmc_make_fexp
@@ -1743,41 +1821,43 @@
 
      implicit none
 
-! external arguments
-! current flavor channel
+!! external arguments
+     ! current flavor channel
      integer, intent(in) :: flvr
 
-! number of frequency points, usually it is equal to nbfrq
+     ! number of frequency points, usually it is equal to nbfrq
      integer, intent(in) :: nfaux
 
-! maximum number of operators in different flavor channels
+     ! maximum number of operators in different flavor channels
      integer, intent(in) :: mrank
 
-! matsubara frequency exponents for creation operators
+     ! matsubara frequency exponents for creation operators
      complex(dp), intent(out) :: caux1(nfaux,mrank)
 
-! matsubara frequency exponents for annihilation operators
+     ! matsubara frequency exponents for annihilation operators
      complex(dp), intent(out) :: caux2(nfaux,mrank)
 
-! local variables
-! loop indices for start and end points
+!! local variables
+     ! loop indices for start and end points
      integer :: is
      integer :: ie
 
-! loop index for matsubara frequency
+     ! loop index for matsubara frequency
      integer :: iw
 
-! imaginary time for start and end points
-! actually, they are i\pi\tau_s/\beta and i\pi\tau_e/\beta
+     ! imaginary time for start and end points
+     ! actually, they are i\pi\tau_s/\beta and i\pi\tau_e/\beta
      complex(dp) :: zs
      complex(dp) :: ze
 
-! creation operators
-!-------------------------------------------------------------------------
-! for each \tau_s, we try to calculate
-!     exp ( i \omega_n \tau_s ) where n \in [1,nfaux]
-!     \omega_n = - 2 (n - 1) \pi / beta
-!
+!! [body
+
+     ! creation operators
+     !--------------------------------------------------------------------
+     ! for each \tau_s, we try to calculate
+     !     exp ( i \omega_n \tau_s ) where n \in [1,nfaux]
+     !     \omega_n = - 2 (n - 1) \pi / beta
+     !
      do is=1,rank(flvr)
          zs = czi * pi * time_s( index_s(is, flvr), flvr ) / beta
          do iw=1,nfaux
@@ -1785,18 +1865,20 @@
          enddo ! over iw={1,nfaux} loop
      enddo ! over is={1,rank(flvr)} loop
 
-! annihilation operators
-!-------------------------------------------------------------------------
-! for each \tau_e, we try to calculate
-!     exp ( i \omega_n \tau_e ) where n \in [1,nfaux]
-!     \omega_n = + 2 (n - 1) \pi / beta
-!
+     ! annihilation operators
+     !--------------------------------------------------------------------
+     ! for each \tau_e, we try to calculate
+     !     exp ( i \omega_n \tau_e ) where n \in [1,nfaux]
+     !     \omega_n = + 2 (n - 1) \pi / beta
+     !
      do ie=1,rank(flvr)
          ze = czi * pi * time_e( index_e(ie, flvr), flvr ) / beta
          do iw=1,nfaux
              caux2(iw,ie) = exp( +two * float(iw - 1) * ze )
          enddo ! over iw={1,nfaux} loop
      enddo ! over ie={1,rank(flvr)} loop
+
+!! body]
 
      return
   end subroutine ctqmc_make_bexp
@@ -1826,39 +1908,43 @@
 
      implicit none
 
-! local variables
-! loop index
+!! local variables
+     ! loop index
      integer  :: i
      integer  :: k
 
-! status flag
+     ! status flag
      integer  :: istat
 
-! it is used to backup the sampled impurity green's function
+     ! it is used to backup the sampled impurity green's function
      complex(dp), allocatable :: gtmp(:,:,:)
 
-! allocate memory
+!! [body
+
+     ! allocate memory
      allocate(gtmp(nfreq,norbs,norbs), stat=istat)
 
-! backup the sampled impurity green's function
+     ! backup the sampled impurity green's function
      gtmp = grnf(1:nfreq,:,:)
 
-! build impurity green's function and auxiliary correlation function
+     ! build impurity green's function and auxiliary correlation function
      call ctqmc_tran_grnf(gtau, grnf)
      call ctqmc_tran_grnf(ftau, frnf)
 
-! build final self-energy function by using improved estimator
+     ! build final self-energy function by using improved estimator
      do i=1,norbs
          do k=1,mfreq
              sig2(k,i,i) = frnf(k,i,i) / grnf(k,i,i)
          enddo ! over k={1,nfreq} loop
      enddo ! over i={1,norbs} loop
 
-! restore the sampled impurity green's function
+     ! restore the sampled impurity green's function
      grnf(1:nfreq,:,:) = gtmp(1:nfreq,:,:)
 
-! deallocate memory
+     ! deallocate memory
      deallocate(gtmp)
+
+!! body]
 
      return
   end subroutine ctqmc_make_hub2

@@ -1,12 +1,12 @@
 !!!-----------------------------------------------------------------------
-!!! project : narcissus
-!!! program : control    module
-!!!           version    module
+!!! project : iqist @ narcissus
+!!! program : control module
+!!!           version module
 !!! source  : ctqmc_control.f90
 !!! type    : module
-!!! author  : li huang (email:lihuang.dmft@gmail.com)
+!!! author  : li huang (email:huangli@caep.cn)
 !!! history : 09/15/2009 by li huang (created)
-!!!           05/09/2021 by li huang (last modified)
+!!!           07/02/2023 by li huang (last modified)
 !!! purpose : define global control parameters for hybridization expansion
 !!!           version continuous time quantum Monte Carlo (CTQMC) quantum
 !!!           impurity solver and dynamical mean field theory (DMFT) self-
@@ -15,6 +15,15 @@
 !!! comment :
 !!!-----------------------------------------------------------------------
 
+!!========================================================================
+!!>>> module control                                                   <<<
+!!========================================================================
+
+!!
+!! @mod control
+!!
+!! define the control parameters and dimensional parameters.
+!!
   module control
      use constants, only : dp
 
@@ -597,8 +606,15 @@
 
   end module control
 
+!!========================================================================
+!!>>> module version                                                   <<<
+!!========================================================================
 
-
+!!
+!! @mod version
+!!
+!! define the semantic version string.
+!!
   module version
      implicit none
 
@@ -607,21 +623,21 @@
 !!
 !! version string, version number + date info. + status info.
 !!
-     character(len=20), public, parameter :: V_FULL = 'v0.8.1 @ 2021.05.09D'
+     character(len=20), public, parameter :: V_FULL = 'v0.8.2 @ 2023.07.06D'
 
 !!
 !! @var V_CURR
 !!
 !! version string, only version number
 !!
-     character(len=06), public, parameter :: V_CURR = 'v0.8.1'
+     character(len=06), public, parameter :: V_CURR = 'v0.8.2'
 
 !!
 !! @var V_DATE
 !!
 !! version string, only date info.
 !!
-     character(len=11), public, parameter :: V_DATE = '2021.05.09'
+     character(len=11), public, parameter :: V_DATE = '2023.07.06'
 
 !!
 !! @var V_STAT
@@ -649,7 +665,7 @@
 !!
 !! version string, email info.
 !!
-     character(len=22), public, parameter :: V_MAIL = 'lihuang.dmft@gmail.com'
+     character(len=22), public, parameter :: V_MAIL = 'huangli@caep.cn'
 
 !!
 !! @var V_GPL3
