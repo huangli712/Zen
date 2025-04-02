@@ -101,11 +101,11 @@ clean-libs:
 # targets for quantum impurity solvers
 solver:
 	@echo 'building solver: ctseg'
-	cd ../src/solver/ctseg/src; pwd; make
+	cd ../src/solver/iqist/src/ctseg; pwd; make
 
 clean-solver:
 	@echo 'cleaning solver: ctseg'
-	cd ../src/solver/ctseg/src; pwd; make clean
+	cd ../src/solver/iqist/src/ctseg; pwd; make clean
 
 # targets for dynamical mean-field theory codes
 dmft:
