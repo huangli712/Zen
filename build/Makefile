@@ -90,21 +90,21 @@ all: libs solver dmft docs
 clean: clean-libs clean-solver clean-dmft clean-docs
 
 # targets for internal library
-deps:
+libs:
 	@echo 'building libs'
 	cd ../src/libs/; pwd; make
 
-clean-deps:
-	@echo 'cleaning deps'
-	cd ../src/deps/; pwd; make clean
+clean-libs:
+	@echo 'cleaning libs'
+	cd ../src/libs/; pwd; make clean
 
 # targets for quantum impurity solvers
 solver:
-	@echo 'building solvers / ct_hyb1'
+	@echo 'building quantum impurity solver iqist / ctseg'
 	cd ../src/solver/ct_hyb1/; pwd; make
 
 clean-solver:
-	@echo 'cleaning solvers / ct_hyb1'
+	@echo 'cleaning quantum impurity solver iqist / ctseg'
 	cd ../src/solver/ct_hyb1/; pwd; make clean
 
 # targets for dynamical mean-field engine
