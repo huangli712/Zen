@@ -3,7 +3,7 @@
 ## Introduction
 ## ============
 ##
-## Makefile for src/deps directory.
+## Makefile for flink/src directory.
 ##
 ## Usage
 ## =====
@@ -27,7 +27,7 @@
 
 .SUFFIXES: .f90
 
-include ../../build/make.inc
+include ../../../../build/make.inc
 
 mods1 = m_constants.o
 mods2 = m_linkedlist.o m_stack.o
