@@ -20,8 +20,8 @@
 ##
 ## 'make all'
 ##
-## 3. build libs library
-## ---------------------
+## 3. build internal library
+## -------------------------
 ##
 ## 'make libs'
 ##
@@ -71,8 +71,8 @@ help:
 	@echo '  all           build all components and tools    '
 	@echo '  clean         clean all directories             '
 	@echo
-	@echo '  libs          build essential library           '
-	@echo '  clean-libs    clean essential library           '
+	@echo '  libs          build internal library            '
+	@echo '  clean-libs    clean internal library            '
 	@echo
 	@echo '  solver        build quantum impurity solvers    '
 	@echo '  clean-solver  clean quantum impurity solvers    '
@@ -91,30 +91,30 @@ clean: clean-libs clean-solver clean-dmft clean-docs
 
 # targets for internal library
 libs:
-	@echo 'building libs'
-	cd ../src/libs/; pwd; make
+	@echo 'building library'
+	cd ../src/libs/flink; pwd; make
 
 clean-libs:
-	@echo 'cleaning libs'
-	cd ../src/libs/; pwd; make clean
+	@echo 'cleaning library'
+	cd ../src/libs/flink; pwd; make clean
 
 # targets for quantum impurity solvers
 solver:
-	@echo 'building quantum impurity solver iqist / ctseg'
-	cd ../src/solver/ct_hyb1/; pwd; make
+	@echo 'building quantum impurity solver: iqist / ctseg'
+	cd ../src/solver/ctseg/; pwd; make
 
 clean-solver:
-	@echo 'cleaning quantum impurity solver iqist / ctseg'
-	cd ../src/solver/ct_hyb1/; pwd; make clean
+	@echo 'cleaning quantum impurity solver: iqist / ctseg'
+	cd ../src/solver/ctseg/; pwd; make clean
 
 # targets for dynamical mean-field engine
 dmft:
 	@echo 'building dmft'
-	cd ../src/dmft/; pwd; make
+	cd ../src/dmft/dyson; pwd; make
 
 clean-dmft:
 	@echo 'cleaning dmft'
-	cd ../src/dmft/; pwd; make clean
+	cd ../src/dmft/dyson; pwd; make clean
 
 # targets for documentations
 docs:
