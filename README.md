@@ -21,19 +21,11 @@ Zen is a modern DFT + DMFT (namely the density functional theory in combination 
 * Tests and tutorials
     * **ZenTests**
 
-* **ZenApps** (v0.9.1-devel.210622)
-* **ZenTools** (v0.0.6-devel.211116)
-* **ZenCore** (0.8.3-devel.230202)
-* **Dyson** (v0.7.4-devel.210922)
-* **iQIST** (v0.8.1-devel.210509)
-* **Flink** (v1.2.0-devel.250116)
-* **ACFlow** (v1.3.6-devel.230129)
-
-Now this package is currently under developement. **IT DOESN'T WORK NOW!**
+Now this package is currently under developement. **PLEASE USE IT AT YOUR OWN RISK!**
 
 ## Version
 
-v0.4.20-devel.211116
+v0.5.0-devel.250402
 
 ## License
 
@@ -41,4 +33,6 @@ GNU General Public License Version 3
 
 ## Documentation
 
-The reference guide is placed in the `docs` folder.
+Source: See `zen/docs`.
+
+Online: https://huangli712.github.io/projects/zen/index.html
