@@ -8,7 +8,7 @@ Zen is a modern DFT + DMFT (namely the density functional theory in combination 
     * **ZenGui** (v0.3.0-devel.250401)
     * **ZenTools** (v0.1.0-devel.250327)
 * Documentation
-    * **ZenDocs** (v0.1.1-devel.250327)
+    * **ZenDocs** (v0.1.2-devel.250402)
 * Tests and tutorials
     * **ZenTests** (v0.2.0-devel.250402)
 * Dynamical mean-field theory codes
