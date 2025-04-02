@@ -27,7 +27,7 @@
 
 .SUFFIXES: .f90
 
-include ../../build/make.inc
+include ../../../../../build/make.inc
 
 modc = ctqmc_control.o ctqmc_context.o
 dmft = ctqmc_dmft.o
