@@ -66,22 +66,22 @@ help:
 	@echo
 	@echo
 	@echo 'targets:'
-	@echo '  help          print full help information       '
+	@echo '  help          print full help information            '
 	@echo
-	@echo '  all           build all components and tools    '
-	@echo '  clean         clean all directories             '
+	@echo '  all           build all components and tools         '
+	@echo '  clean         clean all directories                  '
 	@echo
-	@echo '  libs          build internal library            '
-	@echo '  clean-libs    clean internal library            '
+	@echo '  libs          build internal libraries               '
+	@echo '  clean-libs    clean internal libraries               '
 	@echo
-	@echo '  solver        build quantum impurity solvers    '
-	@echo '  clean-solver  clean quantum impurity solvers    '
+	@echo '  solver        build quantum impurity solvers         '
+	@echo '  clean-solver  clean quantum impurity solvers         '
 	@echo
-	@echo '  dmft          build dynamical mean-field engine '
-	@echo '  clean-dmft    clean dynamical mean-field engine '
+	@echo '  dmft          build dynamical mean-field theory codes'
+	@echo '  clean-dmft    clean dynamical mean-field theory codes'
 	@echo
-	@echo '  docs          build documentations              '
-	@echo '  clean-docs    clean documentations              '
+	@echo '  docs          build documentation                    '
+	@echo '  clean-docs    clean documentation                    '
 
 # all-in-one building target
 all: libs solver dmft docs
@@ -89,34 +89,34 @@ all: libs solver dmft docs
 # all-in-one cleaning target
 clean: clean-libs clean-solver clean-dmft clean-docs
 
-# targets for internal library
+# targets for internal libraries
 libs:
-	@echo 'building library'
+	@echo 'building libs: flink'
 	cd ../src/libs/flink; pwd; make
 
 clean-libs:
-	@echo 'cleaning library'
+	@echo 'cleaning libs: flink'
 	cd ../src/libs/flink; pwd; make clean
 
 # targets for quantum impurity solvers
 solver:
-	@echo 'building quantum impurity solver: iqist / ctseg'
+	@echo 'building solver: ctseg'
 	cd ../src/solver/ctseg/; pwd; make
 
 clean-solver:
-	@echo 'cleaning quantum impurity solver: iqist / ctseg'
+	@echo 'cleaning solver: ctseg'
 	cd ../src/solver/ctseg/; pwd; make clean
 
-# targets for dynamical mean-field engine
+# targets for dynamical mean-field theory codes
 dmft:
-	@echo 'building dmft'
+	@echo 'building dmft: dyson'
 	cd ../src/dmft/dyson; pwd; make
 
 clean-dmft:
-	@echo 'cleaning dmft'
+	@echo 'cleaning dmft: dyson'
 	cd ../src/dmft/dyson; pwd; make clean
 
-# targets for documentations
+# targets for documentation
 docs:
 	@echo 'building docs'
 	cd ../docs/; pwd; julia make.jl
