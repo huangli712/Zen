@@ -1,103 +1,103 @@
 ## case: SrVO<sub>3</sub>
 
-* **A00_SrVO<sub>3</sub>**
+* **A00**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * one-shot calculation
 
-* **A01_SrVO<sub>3</sub>**
+* **A01**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals + O-*2p* orbitals
     * one-shot calculation
 
-* **A02_SrVO<sub>3</sub>**
+* **A02**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* *t<sub>2g</sub>* orbitals
     * one-shot calculation
 
-* **A03_SrVO<sub>3</sub>**
+* **A03**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* *t<sub>2g</sub>* orbitals + O-*2p* orbitals
     * one-shot calculation
 
-* **A04_SrVO<sub>3</sub>**
+* **A04**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * self-consistent calculation
 
-* **A05_SrVO<sub>3</sub>**
+* **A05**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* *t<sub>2g</sub>* orbitals
     * self-consistent calculation
 
-* **A06_SrVO<sub>3</sub>**
+* **A06**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * dc = fll1
     * self-consistent calculation
 
-* **A07_SrVO<sub>3</sub>**
+* **A07**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * dc = amf
     * self-consistent calculation
 
-* **A08_SrVO<sub>3</sub>**
+* **A08**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * dc = held
     * self-consistent calculation
 
-* **A09_SrVO<sub>3</sub>**
+* **A09**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * spin polarization (but up = down)
     * one-shot calculation
 
-* **A10_SrVO<sub>3</sub>**
+* **A10**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * spin polarization (but up = down)
     * self-consistent calculation
 
-* **A11_SrVO<sub>3</sub>**
+* **A11**
 
     * QE + WANNIER + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * one-shot calculation
 
-* **A12_SrVO<sub>3</sub>**
+* **A12**
 
     * QE + WANNIER + CT-HYB<sub>1</sub>
     * V-*3d* orbitals + O-*2p* orbitals
     * one-shot calculation
     * **FAILED**
 
-* **A13_SrVO<sub>3</sub>**
+* **A13**
 
     * QE + WANNIER + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * spin polarization (but up = down)
     * one-shot calculation
 
-* **A14_SrVO<sub>3</sub>**
+* **A14**
 
     * QE + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * one-shot calculation
 
-* **A15_SrVO<sub>3</sub>**
+* **A15**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
@@ -105,27 +105,27 @@
     * enlarge window
     * **FAILED**
 
-* **A16_SrVO<sub>3</sub>**
+* **A16**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals + O-*2p* orbitals
     * self-consistent calculation
 
-* **A17_SrVO<sub>3</sub>**
+* **A17**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
     * one-shot calculation
     * auto window
 
-* **A18_SrVO<sub>3</sub>**
+* **A18**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals + O-*2p* orbitals
     * self-consistent calculation
     * auto window
 
-* **A19_SrVO<sub>3</sub>**
+* **A19**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* orbitals
@@ -133,7 +133,7 @@
     * self-consistent calculation
     * auto window
 
-* **A20_SrVO<sub>3</sub>**
+* **A20**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * V-*3d* *t<sub>2g</sub>* orbitals
@@ -144,21 +144,21 @@
 
 ## case: FeSe
 
-* **B00_FeSe**
+* **B00**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * Fe-*3d* orbitals
     * two Fe sites (degenerated)
     * one-shot calculation
 
-* **B01_FeSe**
+* **B01**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * Fe-*3d* orbitals
     * two Fe sites
     * one-shot calculation
 
-* **B02_FeSe**
+* **B02**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * Fe-*3d* orbitals
@@ -169,21 +169,21 @@
 
 ## case: Ni
 
-* **C00_Ni**
+* **C00**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * Ni-*3d* orbitals
     * paramagnetic
     * one-shot calculation
 
-* **C01_Ni**
+* **C01**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * Ni-*3d* orbitals
     * paramagnetic
     * self-consistent calculation
 
-* **C02_Ni**
+* **C02**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * Ni-*3d* orbitals
@@ -194,21 +194,21 @@
 
 ## case: NiO
 
-* **D00_NiO**
+* **D00**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * Ni-*3d* orbitals + O-*2p* orbitals
     * paramagnetic
     * one-shot calculation
 
-* **D01_NiO**
+* **D01**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * Ni-*3d* orbitals + O-*2p* orbitals
     * paramagnetic
     * self-consistent calculation
 
-* **D02_NiO**
+* **D02**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * Ni-*3d* orbitals + O-*2p* orbitals
@@ -219,14 +219,14 @@
 
 ## case: Ce
 
-* **E00_Ce**
+* **E00**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * Ce-``4f`` orbitals
     * without spin-orbit coupling
     * one-shot calculation
 
-* **E01_Ce**
+* **E01**
 
     * VASP + PLO + CT-HYB<sub>1</sub>
     * Ce-``4f`` orbitals
