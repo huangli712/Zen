@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/10/01
+# Last modified: 2025/03/21
 #
 
 """
@@ -18,7 +18,7 @@ toolkit is under heavy development. **PLEASE USE IT AT YOUR OWN RISK**.
 Nowadays the ACFlow toolkit supports the following algorithms:
 
 * Maximum Entropy Method (`MaxEnt` solver, `recommended`)
-* Barycentric Rational Function Method (`BarRat` solver, `recommended`)
+* Barycentric Rational Function Approximation (`BarRat` solver, `recommended`)
 * Nevanlinna Analytical Continuation (`NevanAC` solver, `experimental`)
 * Stochastic Analytic Continuation (`StochAC` and `StochSK` solvers)
 * Stochastic Optimization Method (`StochOM` solver)
@@ -663,8 +663,8 @@ prony_omega     -> Evaluate Ωₚ for Prony approximation.
 BarRatContext   -> Essential struct for the BarRat solver.
 #
 solve           -> Wrapper function for the BarRat solver.
-init            -> Initialize barycentric rational function simulation.
-run             -> Perform barycentric rational function simulation.
+init            -> Initialize barycentric rational function approximation.
+run             -> Perform barycentric rational function approximation.
 last            -> Postprocess the calculated results and write them.
 poles!          -> Get pole representation for the Matsubara Green's function.
 ```
