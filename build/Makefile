@@ -20,10 +20,10 @@
 ##
 ## 'make all'
 ##
-## 3. build deps library
+## 3. build libs library
 ## ---------------------
 ##
-## 'make deps'
+## 'make libs'
 ##
 ## 4. build impurity solver
 ## ------------------------
@@ -50,13 +50,13 @@
 ##
 ## This building system is designed, created, and maintained by
 ##
-## Li Huang // email: lihuang.dmft@gmail.com
+## Li Huang // email: huangli@caep.cn
 ##
 ## History
 ## =======
 ##
 ## 08/06/2021 by li huang (created)
-## 08/06/2021 by li huang (last modified)
+## 04/02/2025 by li huang (last modified)
 ##
 ##
 
@@ -71,8 +71,8 @@ help:
 	@echo '  all           build all components and tools    '
 	@echo '  clean         clean all directories             '
 	@echo
-	@echo '  deps          build essential library           '
-	@echo '  clean-deps    clean essential library           '
+	@echo '  libs          build essential library           '
+	@echo '  clean-libs    clean essential library           '
 	@echo
 	@echo '  solver        build quantum impurity solvers    '
 	@echo '  clean-solver  clean quantum impurity solvers    '
@@ -84,15 +84,15 @@ help:
 	@echo '  clean-docs    clean documentations              '
 
 # all-in-one building target
-all: deps solver dmft docs
+all: libs solver dmft docs
 
 # all-in-one cleaning target
-clean: clean-deps clean-solver clean-dmft clean-docs
+clean: clean-libs clean-solver clean-dmft clean-docs
 
 # targets for internal library
 deps:
-	@echo 'building deps'
-	cd ../src/deps/; pwd; make
+	@echo 'building libs'
+	cd ../src/libs/; pwd; make
 
 clean-deps:
 	@echo 'cleaning deps'
