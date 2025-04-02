@@ -3,10 +3,10 @@
 #
 # Project : Begonia
 # Source  : wannband.jl
-# Author  : Li Huang (lihuang.dmft@gmail.com)
+# Author  : Li Huang (huangli@caep.cn)
 # Status  : Testing
 #
-# Last modified: 2021/11/15
+# Last modified: 2025/03/27
 #
 
 #=
