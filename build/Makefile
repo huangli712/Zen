@@ -92,29 +92,29 @@ clean: clean-libs clean-solver clean-dmft clean-docs
 # targets for internal libraries
 libs:
 	@echo 'building libs: flink'
-	cd ../src/libs/flink; pwd; make
+	cd ../src/libs/flink/src; pwd; make
 
 clean-libs:
 	@echo 'cleaning libs: flink'
-	cd ../src/libs/flink; pwd; make clean
+	cd ../src/libs/flink/src; pwd; make clean
 
 # targets for quantum impurity solvers
 solver:
 	@echo 'building solver: ctseg'
-	cd ../src/solver/ctseg/; pwd; make
+	cd ../src/solver/ctseg/src; pwd; make
 
 clean-solver:
 	@echo 'cleaning solver: ctseg'
-	cd ../src/solver/ctseg/; pwd; make clean
+	cd ../src/solver/ctseg/src; pwd; make clean
 
 # targets for dynamical mean-field theory codes
 dmft:
 	@echo 'building dmft: dyson'
-	cd ../src/dmft/dyson; pwd; make
+	cd ../src/dmft/dyson/src; pwd; make
 
 clean-dmft:
 	@echo 'cleaning dmft: dyson'
-	cd ../src/dmft/dyson; pwd; make clean
+	cd ../src/dmft/dyson/src; pwd; make clean
 
 # targets for documentation
 docs:
