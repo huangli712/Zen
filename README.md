@@ -1,6 +1,25 @@
 # Zen
 
-Zen is a modern DFT + DMFT (namely, density functional theory plus dynamical mean-field theory) computation framework, which can be employed to study the exotic properties of strongly correlated systems. It is an all-in-one package, including the following components:
+Zen is a modern DFT + DMFT (namely the density functional theory in combination with the dynamical mean-field theory) computation framework, which can be employed to study the exotic properties of strongly correlated materials. It is an all-in-one package, including the following components:
+
+* Core framework
+    * **ZenCore**
+* Dynamical mean-field theory codes
+    * **Dyson**
+    * **DFermion**
+* Quantum impurity solvers
+    * **iQIST**
+* Analytic continuation tools
+    * **ACFlow**
+    * **ACGui**
+    * **ACTest**
+* Auxiliary tools
+    * **ZenGui**
+    * **ZenTools**
+* Documentation
+    * **ZenDocs**
+* Tests and tutorials
+    * **ZenTests**
 
 * **ZenApps** (v0.9.1-devel.210622)
 * **ZenTools** (v0.0.6-devel.211116)
