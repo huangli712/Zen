@@ -4,13 +4,14 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/10/26
+# Last modified: 2025/03/24
 #
 
 """
     acg_layout!(app::Dash.DashApp)
 
-Global layout for the ACGui app.
+Global layout for the ACGui app. There are five tabs, namely `Data`,
+`General`, `Solver`, `Run`, and `About`.
 """
 function acg_layout!(app::Dash.DashApp)
     app.layout = html_div() do
@@ -29,9 +30,12 @@ function acg_layout!(app::Dash.DashApp)
             ),
             dcc_tab(
                 label = "Solver",
-                children = [
+                children = [ # For six analytic continuation solvers
                     layout_maxent_block(),
                     layout_barrat_block(),
+                    layout_stochac_block(),
+                    layout_stochsk_block(),
+                    layout_stochom_block(),
                     layout_stochpx_block(),
                 ],
                 className = "custom-tab",
@@ -79,6 +83,7 @@ function layout_data_block()
             html_caption(
                 html_b("Basic Information About the Uploaded File")
             ),
+            #
             html_thead(
                 html_tr([
                     html_th("Filename"),
@@ -149,7 +154,7 @@ function layout_base_block()
                     )
                 ),
             ]),
-            # Now ACGui only supports three solvers.
+            # Now ACGui only supports six analytic continuation solvers.
             html_tr([
                 html_th(html_label("Solver for the analytic continuation problem")),
                 html_td(html_label("solver")),
@@ -159,6 +164,9 @@ function layout_base_block()
                         options = [
                             (label = "MaxEnt", value = "MaxEnt"),
                             (label = "BarRat", value = "BarRat"),
+                            (label = "StochAC", value = "StochAC"),
+                            (label = "StochSK", value = "StochSK"),
+                            (label = "StochOM", value = "StochOM"),
                             (label = "StochPX", value = "StochPX"),
                         ],
                         value = "MaxEnt",
@@ -358,7 +366,7 @@ function layout_maxent_block()
                 ),
             ]),
             html_tr([
-                html_th(html_label("Type of the entropy term")),
+                html_th(html_label("Type of the entropic term")),
                 html_td(html_label("stype")),
                 html_td(
                     dcc_dropdown(
@@ -502,6 +510,322 @@ function layout_barrat_block()
 end
 
 """
+    layout_stochac_block()
+
+Layout for the `solver` tab. It is the panel for the `StochAC` solver. Note
+that this panel can be hidden, if `solver` in `general` tab is not equal
+to `StochAC`.
+"""
+function layout_stochac_block()
+    html_table([
+        html_thead(
+            html_tr(
+                html_th(html_label("[StochAC] block"), colSpan = 3)
+            )
+        ),
+        #
+        html_tbody([
+            html_tr([
+                html_th(html_label("Number of points of a very fine linear mesh")),
+                html_td(html_label("nfine")),
+                html_td(
+                    dcc_input(
+                        id = "stochac-nfine",
+                        type = "text",
+                        value = "10000"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Number of δ functions")),
+                html_td(html_label("ngamm")),
+                html_td(
+                    dcc_input(
+                        id = "stochac-ngamm",
+                        type = "text",
+                        value = "512"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Number of Monte Carlo thermalization steps")),
+                html_td(html_label("nwarm")),
+                html_td(
+                    dcc_input(
+                        id = "stochac-nwarm",
+                        type = "text",
+                        value = "4000"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Number of Monte Carlo sweeping steps")),
+                html_td(html_label("nstep")),
+                html_td(
+                    dcc_input(
+                        id = "stochac-nstep",
+                        type = "text",
+                        value = "4000000"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Intervals for monitoring Monte Carlo sweeps")),
+                html_td(html_label("ndump")),
+                html_td(
+                    dcc_input(
+                        id = "stochac-ndump",
+                        type = "text",
+                        value = "40000"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Total number of the chosen α parameters")),
+                html_td(html_label("nalph")),
+                html_td(
+                    dcc_input(
+                        id = "stochac-nalph",
+                        type = "text",
+                        value = "20"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Starting value for the α parameter")),
+                html_td(html_label("alpha")),
+                html_td(
+                    dcc_input(
+                        id = "stochac-alpha",
+                        type = "text",
+                        value = "1.00"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Scaling factor for the α parameter")),
+                html_td(html_label("ratio")),
+                html_td(
+                    dcc_input(
+                        id = "stochac-ratio",
+                        type = "text",
+                        value = "1.20"
+                    )
+                ),
+            ]),
+        ]),
+    ], id = "stochac-block", hidden = true)
+end
+
+"""
+    layout_stochsk_block()
+
+Layout for the `solver` tab. It is the panel for the `StochSK` solver. Note
+that this panel can be hidden, if `solver` in `general` tab is not equal
+to `StochSK`.
+"""
+function layout_stochsk_block()
+    html_table([
+        html_thead(
+            html_tr(
+                html_th(html_label("[StochSK] block"), colSpan = 3)
+            )
+        ),
+        #
+        html_tbody([
+            html_tr([
+                html_th(html_label("How to determine the optimized Θ parameter")),
+                html_td(html_label("method")),
+                html_td(
+                    dcc_dropdown(
+                        id = "stochsk-method",
+                        options = [
+                            (label = "chi2min", value = "chi2min"),
+                            (label = "chi2kink", value = "chi2kink"),
+                        ],
+                        value = "chi2min",
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Number of points of a very fine linear mesh")),
+                html_td(html_label("nfine")),
+                html_td(
+                    dcc_input(
+                        id = "stochsk-nfine",
+                        type = "text",
+                        value = "100000"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Number of δ functions")),
+                html_td(html_label("ngamm")),
+                html_td(
+                    dcc_input(
+                        id = "stochsk-ngamm",
+                        type = "text",
+                        value = "1000"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Number of Monte Carlo thermalization steps")),
+                html_td(html_label("nwarm")),
+                html_td(
+                    dcc_input(
+                        id = "stochsk-nwarm",
+                        type = "text",
+                        value = "1000"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Number of Monte Carlo sweeping steps")),
+                html_td(html_label("nstep")),
+                html_td(
+                    dcc_input(
+                        id = "stochsk-nstep",
+                        type = "text",
+                        value = "20000"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Intervals for monitoring Monte Carlo sweeps")),
+                html_td(html_label("ndump")),
+                html_td(
+                    dcc_input(
+                        id = "stochsk-ndump",
+                        type = "text",
+                        value = "200"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("How often to recalculate the goodness function")),
+                html_td(html_label("retry")),
+                html_td(
+                    dcc_input(
+                        id = "stochsk-retry",
+                        type = "text",
+                        value = "10"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Starting value for the Θ parameter")),
+                html_td(html_label("theta")),
+                html_td(
+                    dcc_input(
+                        id = "stochsk-theta",
+                        type = "text",
+                        value = "1e+6"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Scaling factor for the Θ parameter")),
+                html_td(html_label("ratio")),
+                html_td(
+                    dcc_input(
+                        id = "stochsk-ratio",
+                        type = "text",
+                        value = "0.90"
+                    )
+                ),
+            ]),
+        ]),
+    ], id = "stochsk-block", hidden = true)
+end
+
+"""
+    layout_stochom_block()
+
+Layout for the `solver` tab. It is the panel for the `StochOM` solver. Note
+that this panel can be hidden, if `solver` in `general` tab is not equal
+to `StochOM`.
+"""
+function layout_stochom_block()
+    html_table([
+        html_thead(
+            html_tr(
+                html_th(html_label("[StochOM] block"), colSpan = 3)
+            )
+        ),
+        #
+        html_tbody([
+            html_tr([
+                html_th(html_label("Number of attempts (tries) to seek the solution")),
+                html_td(html_label("ntry")),
+                html_td(
+                    dcc_input(
+                        id = "stochom-ntry",
+                        type = "text",
+                        value = "2000"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Number of Monte Carlo steps per attempt / try")),
+                html_td(html_label("nstep")),
+                html_td(
+                    dcc_input(
+                        id = "stochom-nstep",
+                        type = "text",
+                        value = "1000"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Number of boxes to construct the spectrum")),
+                html_td(html_label("nbox")),
+                html_td(
+                    dcc_input(
+                        id = "stochom-nbox",
+                        type = "text",
+                        value = "100"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Minimum area of the randomly generated boxes")),
+                html_td(html_label("sbox")),
+                html_td(
+                    dcc_input(
+                        id = "stochom-sbox",
+                        type = "text",
+                        value = "0.005"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Minimum width of the randomly generated boxes")),
+                html_td(html_label("wbox")),
+                html_td(
+                    dcc_input(
+                        id = "stochom-wbox",
+                        type = "text",
+                        value = "0.02"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Is the norm calculated")),
+                html_td(html_label("norm")),
+                html_td(
+                    dcc_input(
+                        id = "stochom-norm",
+                        type = "text",
+                        value = "-1.0"
+                    )
+                ),
+            ]),
+        ]),
+    ], id = "stochom-block", hidden = true)
+end
+
+"""
     layout_stochpx_block()
 
 Layout for the `solver` tab. It is the panel for the `StochPX` solver. Note
@@ -610,8 +934,8 @@ simulations and visualize the calculated results via this tab.
 function layout_calc_block()
     html_div([
         html_br(),
-        # The following four labels are always invisible. They are used to
-        # collect the configuration parameters for ACFlow.
+        # The following seven labels are always invisible. They are used
+        # to collect the configuration parameters for ACFlow.
         html_label(
             children = "N/A",
             id = "dict-base",
@@ -625,6 +949,21 @@ function layout_calc_block()
         html_label(
             children = "N/A",
             id = "dict-barrat",
+            hidden = true,
+        ),
+        html_label(
+            children = "N/A",
+            id = "dict-stochac",
+            hidden = true,
+        ),
+        html_label(
+            children = "N/A",
+            id = "dict-stochsk",
+            hidden = true,
+        ),
+        html_label(
+            children = "N/A",
+            id = "dict-stochom",
             hidden = true,
         ),
         html_label(
@@ -674,8 +1013,8 @@ author of ACGui.
 """
 function layout_about_block()
     html_div([
-        html_h4("Version : v0.5.0-devel.241030"),
-        html_h4("Release : 2024/10"),
-        html_h4("Developed by Li Huang (hungli@caep.cn)"),
+        html_h4("Version : v0.7.0-devel.250324"),
+        html_h4("Release : 2025/03"),
+        html_h4("Developed by Li Huang (hungli at caep.cn)"),
     ])
 end

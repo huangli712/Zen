@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/10/25
+# Last modified: 2025/03/24
 #
 
 # The following global arrays are used to define the configure parameters
@@ -44,6 +44,41 @@ const _PBarRat = [
     "epsilon",
     "pcut",
     "eta"
+]
+#
+# For the [StochAC] block
+const _PStochAC = [
+    "nfine",
+    "ngamm",
+    "nwarm",
+    "nstep",
+    "ndump",
+    "nalph",
+    "alpha",
+    "ratio"
+]
+#
+# For the [StochSK] block
+const _PStochSK = [
+    "method",
+    "nfine",
+    "ngamm",
+    "nwarm",
+    "nstep",
+    "ndump",
+    "retry",
+    "theta",
+    "ratio"
+]
+#
+# For the [StochOM] block
+const _PStochOM = [
+    "ntry",
+    "nstep",
+    "nbox",
+    "sbox",
+    "wbox",
+    "norm"
 ]
 #
 # For the [StochPX] block
@@ -150,22 +185,40 @@ function callbacks_in_general_tab(app::Dash.DashApp)
         app,
         Output("maxent-block", "hidden"),
         Output("barrat-block", "hidden"),
+        Output("stochac-block", "hidden"),
+        Output("stochsk-block", "hidden"),
+        Output("stochom-block", "hidden"),
         Output("stochpx-block", "hidden"),
         Input("base-solver", "value"),
     ) do solver
         # Enable `MaxEnt` solver
         if solver == "MaxEnt"
-            return (false, true, true)
+            return (false, true, true, true, true, true)
         end
 
         # Enable `BarRat` solver
         if solver == "BarRat"
-            return (true, false, true)
+            return (true, false, true, true, true, true)
+        end
+
+        # Enable `StochAC` solver
+        if solver == "StochAC"
+            return (true, true, false, true, true, true)
+        end
+
+        # Enable `StochSK` solver
+        if solver == "StochSK"
+            return (true, true, true, false, true, true)
+        end
+
+        # Enable `StochOM` solver
+        if solver == "StochOM"
+            return (true, true, true, true, false, true)
         end
 
         # Enable `StochPX` solver
         if solver == "StochPX"
-            return (true, true, false)
+            return (true, true, true, true, true, false)
         end
     end
 
@@ -185,7 +238,7 @@ end
 """
     callbacks_in_solver_tab(app::Dash.DashApp)
 
-Callbacks for the `solver` tab. It includes three callbacks. All of them
+Callbacks for the `solver` tab. It includes six callbacks. All of them
 are used to collect parameters that are relevant to analytic continuation
 solvers.
 """
@@ -215,6 +268,42 @@ function callbacks_in_solver_tab(app::Dash.DashApp)
     end
 
     # Callback 3
+    #
+    # Collect parameters from the `StochAC` panel. Then `dict-stochac` in
+    # `run` tab will be updated. Note that `dict-stochac` is hidden.
+    callback!(
+        app,
+        Output("dict-stochac", "children"),
+        [Input("stochac-$i", "value") for i in _PStochAC],
+    ) do vals...
+        return join(vals, "|")
+    end
+
+    # Callback 4
+    #
+    # Collect parameters from the `StochSK` panel. Then `dict-stochsk` in
+    # `run` tab will be updated. Note that `dict-stochsk` is hidden.
+    callback!(
+        app,
+        Output("dict-stochsk", "children"),
+        [Input("stochsk-$i", "value") for i in _PStochSK],
+    ) do vals...
+        return join(vals, "|")
+    end
+
+    # Callback 5
+    #
+    # Collect parameters from the `StochOM` panel. Then `dict-stochom` in
+    # `run` tab will be updated. Note that `dict-stochom` is hidden.
+    callback!(
+        app,
+        Output("dict-stochom", "children"),
+        [Input("stochom-$i", "value") for i in _PStochOM],
+    ) do vals...
+        return join(vals, "|")
+    end
+
+    # Callback 6
     #
     # Collect parameters from the `StochPX` panel. Then `dict-stochpx` in
     # `run` tab will be updated. Note that `dict-stochpx` is hidden.
@@ -249,11 +338,22 @@ function callbacks_in_run_tab(app::Dash.DashApp)
         State("dict-base", "children"),
         State("dict-maxent", "children"),
         State("dict-barrat", "children"),
+        State("dict-stochac", "children"),
+        State("dict-stochsk", "children"),
+        State("dict-stochom", "children"),
         State("dict-stochpx", "children"),
-    ) do btn, pbase, pmaxent, pbarrat, pstochpx
+    ) do btn, pbase, pmaxent, pbarrat, pstochac, pstochsk, pstochom, pstochpx
         if btn > 0
             # Convert parameters to dictionary
-            B, S, solver = parse_parameters(pbase, pmaxent, pbarrat, pstochpx)
+            B, S, solver = parse_parameters(
+                pbase,
+                pmaxent,
+                pbarrat,
+                pstochac,
+                pstochsk,
+                pstochom,
+                pstochpx
+            )
 
             # Print the resulting TOML file in terminal
             X = Dict("BASE"=>B, solver=>S)
@@ -288,11 +388,22 @@ function callbacks_in_run_tab(app::Dash.DashApp)
         State("dict-base", "children"),
         State("dict-maxent", "children"),
         State("dict-barrat", "children"),
+        State("dict-stochac", "children"),
+        State("dict-stochsk", "children"),
+        State("dict-stochom", "children"),
         State("dict-stochpx", "children"),
-    ) do btn, pbase, pmaxent, pbarrat, pstochpx
+    ) do btn, pbase, pmaxent, pbarrat, pstochac, pstochsk, pstochom, pstochpx
         if btn > 0
             # Convert parameters to dictionary
-            B, S, solver = parse_parameters(pbase, pmaxent, pbarrat, pstochpx)
+            B, S, solver = parse_parameters(
+                pbase,
+                pmaxent,
+                pbarrat,
+                pstochac,
+                pstochsk,
+                pstochom,
+                pstochpx
+            )
 
             # Print it to a TOML file
             X = Dict("BASE"=>B, solver=>S)
@@ -348,6 +459,9 @@ end
         pbase::String,
         pmaxent::String,
         pbarrat::String,
+        pstochac::String,
+        pstochsk::String,
+        pstochom::String,
         pstochpx::String
     )
 
@@ -357,6 +471,9 @@ function parse_parameters(
     pbase::String,
     pmaxent::String,
     pbarrat::String,
+    pstochac::String,
+    pstochsk::String,
+    pstochom::String,
     pstochpx::String
 )
     # For [BASE] block, it is necessary.
@@ -399,6 +516,50 @@ function parse_parameters(
             "epsilon" => parse(F64, array_barrat[3]),
             "pcut"    => parse(F64, array_barrat[4]),
             "eta"     => parse(F64, array_barrat[5]),
+        )
+    end
+
+    # For [StochAC] block, it is optional.
+    if array_base[2] == "StochAC"
+        array_stochac = split(pstochac,"|")
+        S = Dict{String,Any}(
+            "nfine"  => parse(I64, array_stochac[1]),
+            "ngamm"  => parse(I64, array_stochac[2]),
+            "nwarm"  => parse(I64, array_stochac[3]),
+            "nstep"  => parse(I64, array_stochac[4]),
+            "ndump"  => parse(I64, array_stochac[5]),
+            "nalph"  => parse(I64, array_stochac[6]),
+            "alpha"  => parse(F64, array_stochac[7]),
+            "ratio"  => parse(F64, array_stochac[8]),
+        )
+    end
+
+    # For [StochSK] block, it is optional.
+    if array_base[2] == "StochSK"
+        array_stochsk = split(pstochsk,"|")
+        S = Dict{String,Any}(
+            "method" => string(array_stochsk[1]),
+            "nfine"  => parse(I64, array_stochsk[2]),
+            "ngamm"  => parse(I64, array_stochsk[3]),
+            "nwarm"  => parse(I64, array_stochsk[4]),
+            "nstep"  => parse(I64, array_stochsk[5]),
+            "ndump"  => parse(I64, array_stochsk[6]),
+            "retry"  => parse(I64, array_stochsk[7]),
+            "theta"  => parse(F64, array_stochsk[8]),
+            "ratio"  => parse(F64, array_stochsk[9]),
+        )
+    end
+
+    # For [StochOM] block, it is optional.
+    if array_base[2] == "StochOM"
+        array_stochom = split(pstochom,"|")
+        S = Dict{String,Any}(
+            "ntry"   => parse(I64, array_stochom[1]),
+            "nstep"  => parse(I64, array_stochom[2]),
+            "nbox"   => parse(I64, array_stochom[3]),
+            "sbox"   => parse(F64, array_stochom[4]),
+            "wbox"   => parse(F64, array_stochom[5]),
+            "norm"   => parse(F64, array_stochom[6]),
         )
     end
 

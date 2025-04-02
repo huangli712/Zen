@@ -10,7 +10,7 @@
 """
     acg_run()
 
-It is the main entry of the ACGui app. It will create a webui, register
+It is the main entry of the ACGui app. It will create a web ui, register
 some callbacks, and start the web server. By default, the web server will
 provide services at http://127.0.0.1:8848.
 """
