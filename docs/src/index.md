@@ -4,7 +4,7 @@
 
 !!! info
 
-    Thank you for using Zen. This documentation will help you to be familiar with and explore the Zen software package. It is just compatible with Zen v0.4.20-devel.211116.
+    Thank you for using Zen. This documentation will help you to be familiar with and explore the Zen software package. It is just compatible with Zen v0.5.0-devel.250402.
 
 !!! warning
 

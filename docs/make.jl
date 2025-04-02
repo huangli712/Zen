@@ -14,7 +14,7 @@ makedocs(
         size_threshold = 409600, # 400kb
         assets = ["assets/zen.css"],
         collapselevel = 1,
-        inventory_version = "0.1.1",
+        inventory_version = "0.1.2",
     ),
     remotes = nothing,
     modules = [ZenCore],
