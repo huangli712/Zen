@@ -4,6 +4,8 @@ Zen is a modern DFT + DMFT (namely the density functional theory in combination 
 
 * Core framework
     * **ZenCore**
+* Numerical library
+    * **Flink**
 * Dynamical mean-field theory codes
     * **Dyson**
     * **DFermion**
