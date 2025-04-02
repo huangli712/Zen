@@ -1,10 +1,10 @@
 #
 # Project : Pansy
 # Source  : types.jl
-# Author  : Li Huang (lihuang.dmft@gmail.com)
+# Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/02/01
+# Last modified: 2025/03/26
 #
 
 #=

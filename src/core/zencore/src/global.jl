@@ -1,10 +1,10 @@
 #
 # Project : Pansy
 # Source  : global.jl
-# Author  : Li Huang (lihuang.dmft@gmail.com)
+# Author  : Li Huang (huangli@caep.cn)
 # Status  : Stable
 #
-# Last modified: 2023/02/02
+# Last modified: 2025/03/26
 #
 
 #=
@@ -121,7 +121,7 @@ Version of this julia package.
 
 See also: [`__RELEASE__`](@ref).
 """
-const __VERSION__ = v"0.8.3-devel.230202"
+const __VERSION__ = v"0.8.4-devel.250326"
 
 """
     __RELEASE__
@@ -130,7 +130,7 @@ Release date of this julia package.
 
 See also: [`__AUTHORS__`](@ref).
 """
-const __RELEASE__ = "2023/02"
+const __RELEASE__ = "2025/03"
 
 #=
 *Remarks* :
@@ -150,7 +150,7 @@ Core authors of this julia package.
 
 See also: [`__LIBNAME__`](@ref).
 """
-const __AUTHORS__ = [(name = "Li Huang", email = "lihuang.dmft@gmail.com")]
+const __AUTHORS__ = [(name = "Li Huang", email = "huangli@caep.cn")]
 
 """
     authors()

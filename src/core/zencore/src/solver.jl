@@ -1,10 +1,10 @@
 #
 # Project : Pansy
 # Source  : solver.jl
-# Author  : Li Huang (lihuang.dmft@gmail.com)
+# Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/02/02
+# Last modified: 2025/03/26
 #
 
 #=

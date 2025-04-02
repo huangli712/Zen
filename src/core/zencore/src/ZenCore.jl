@@ -1,10 +1,10 @@
 #
 # Project : Pansy
 # Source  : ZenCore.jl
-# Author  : Li Huang (lihuang.dmft@gmail.com)
+# Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2023/01/23
+# Last modified: 2025/03/26
 #
 
 """
@@ -1019,6 +1019,12 @@ export ctqmc_eimpx
 export ctqmc_sigma
 export ctqmc_nimpx
 export ctqmc_edmft
+export norg_setup
+export norg_delta
+export norg_eimpx
+export norg_sigma
+export norg_nimpx
+export norg_edmft
 export GetSigma
 export GetNimpx
 export GetEdmft

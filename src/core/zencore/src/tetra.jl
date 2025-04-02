@@ -1,10 +1,10 @@
 #
 # Project : Pansy
 # Source  : tetra.jl
-# Author  : Li Huang (lihuang.dmft@gmail.com)
+# Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2021/10/02
+# Last modified: 2025/03/26
 #
 
 #=
