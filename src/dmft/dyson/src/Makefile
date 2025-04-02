@@ -27,7 +27,7 @@
 
 .SUFFIXES: .f90
 
-include ../build/make.inc
+include ../../../../build/make.inc
 
 modc = dmft_control.o dmft_context.o
 core = dmft_task.o dmft_flow.o dmft_core.o
