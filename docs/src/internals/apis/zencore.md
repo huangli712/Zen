@@ -26,4 +26,5 @@ ZenCore
 
 ```@docs
 _precompile
+ZenCore.__init__
 ```

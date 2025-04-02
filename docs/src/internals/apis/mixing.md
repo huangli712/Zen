@@ -1,4 +1,4 @@
-# Mixer
+# Mixing
 
 *Tools for mixing the self-energy functions ``\Sigma``, hybridization functions ``\Delta``, and local impurity levels ``\epsilon_i``. They adopted the linear mixing algorithm. We also implement the so-called Kerker algorithm to mix the correlation-induced correction for density matrix ``\Gamma``.*
 

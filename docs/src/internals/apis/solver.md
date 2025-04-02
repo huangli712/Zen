@@ -1,4 +1,4 @@
-# Quantum impurity solvers
+# Quantum Impurity Solvers
 
 *Wrapper for various quantum impurity solvers. Now only the CT-HYB₁, CT-HYB₂, HIA, and NORG quantum impurity solvers are supported.*
 
@@ -47,10 +47,17 @@ ctqmc_eimpx
 ctqmc_sigma
 ctqmc_nimpx
 ctqmc_edmft
+norg_setup
+norg_delta
+norg_eimpx
+norg_sigma
+norg_nimpx
+norg_edmft
 GetSigma
 GetNimpx
 GetEdmft
 GetSymmetry
 GetImpurity
 CatImpurity
+FixImpurity
 ```

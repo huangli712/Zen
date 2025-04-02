@@ -1,4 +1,4 @@
-# Self-energy functions
+# Self-Energy Functions
 
 *Tools for treating the self-energy functions ``\Sigma``, double counting terms ``\Sigma_{\text{dc}}``. Note that the function `sigma_split()` is designed for the hybridization functions ``\Delta`` and local impurity levels ``\epsilon_i``, instead of the self-energy functions.*
 

@@ -20,7 +20,9 @@ Pages = ["config.md"]
 
 ```@docs
 setup
+renew
 inp_toml
+fil_dict
 rev_dict
 chk_dict
 exhibit

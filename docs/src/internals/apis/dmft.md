@@ -1,4 +1,4 @@
-# DMFT
+# Dynamical Mean-Field Theory
 
 *Wrapper for dynamical mean-field theory engine. It also provides some essential tools to deal with (read and write) the fermi level ``\mu``, hybridization functions ``\Delta``, local impurity levels ``\epsilon_i``, and correlation-induced correction for density matrix ``\Gamma``.*
 

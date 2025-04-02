@@ -22,6 +22,7 @@ Pages = ["base.md"]
 ready
 go
 final
+refresh
 cycle1
 cycle2
 try_dft

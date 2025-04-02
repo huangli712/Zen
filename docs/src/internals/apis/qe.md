@@ -1,4 +1,4 @@
-# QUANTUM ESPRESSO
+# Quantum ESPRESSO
 
 *Tools for the quantum espresso software package (adaptor). It provide a lot of functions to deal with the qe-related files.*
 
@@ -36,6 +36,7 @@ qeio_lattice
 qeio_kmesh
 qeio_eigen
 qeio_fermi
+qeio_band
 ReciprocalPoint
 MonkhorstPackGrid
 AtomicSpecies

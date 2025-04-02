@@ -1,4 +1,4 @@
-# Analytical tetrahedron method
+# Analytical Tetrahedron Method
 
 *Implementation of the analytical tetrahedron method.*
 

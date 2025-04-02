@@ -19,6 +19,7 @@ Pages = ["types.md"]
 ## Customized Types
 
 ```@docs
+ADT
 DType
 ```
 

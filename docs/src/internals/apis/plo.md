@@ -1,4 +1,4 @@
-# Projected local orbitals
+# Projected Local Orbitals
 
 *Tools for the projection on localized orbitals scheme (adaptor).*
 
@@ -20,6 +20,7 @@ Pages = ["plo.md"]
 
 ```@docs
 plo_adaptor
+plo_check
 plo_map
 plo_fermi
 plo_group
@@ -27,7 +28,6 @@ plo_window
 plo_rotate
 plo_filter
 plo_orthog
-plo_monitor
 get_win1
 get_win2
 get_win3
