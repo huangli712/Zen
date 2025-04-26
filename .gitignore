@@ -23,6 +23,6 @@ test/*/ovlp.*
 test/*/kpath.*
 test/*/hamk.*
 test/_*
-ctqmc
-dyson/dmft
+ctseg/ctqmc
+Dyson/dmft
 docs/build
