@@ -1,14 +1,14 @@
-
+#
 # Project : Tulip
 # Source  : callback.jl
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/03/24
+# Last modified: 2025/04/05
 #
 
 # The following global arrays are used to define the configure parameters
-# for the ACFlow package.
+# for the ACFlow toolkit.
 #
 # For the [BASE] block
 const _PBASE = [
@@ -43,6 +43,15 @@ const _PBarRat = [
     "denoise",
     "epsilon",
     "pcut",
+    "eta"
+]
+#
+# For the [NevanAC] block
+const _PNevanAC = [
+    "pick",
+    "hardy",
+    "hmax",
+    "alpha",
     "eta"
 ]
 #
@@ -185,6 +194,7 @@ function callbacks_in_general_tab(app::Dash.DashApp)
         app,
         Output("maxent-block", "hidden"),
         Output("barrat-block", "hidden"),
+        Output("nevanac-block", "hidden"),
         Output("stochac-block", "hidden"),
         Output("stochsk-block", "hidden"),
         Output("stochom-block", "hidden"),
@@ -193,32 +203,37 @@ function callbacks_in_general_tab(app::Dash.DashApp)
     ) do solver
         # Enable `MaxEnt` solver
         if solver == "MaxEnt"
-            return (false, true, true, true, true, true)
+            return (false, true, true, true, true, true, true)
         end
 
         # Enable `BarRat` solver
         if solver == "BarRat"
-            return (true, false, true, true, true, true)
+            return (true, false, true, true, true, true, true)
+        end
+
+        # Enable `NevanAC` solver
+        if solver == "NevanAC"
+            return (true, true, false, true, true, true, true)
         end
 
         # Enable `StochAC` solver
         if solver == "StochAC"
-            return (true, true, false, true, true, true)
+            return (true, true, true, false, true, true, true)
         end
 
         # Enable `StochSK` solver
         if solver == "StochSK"
-            return (true, true, true, false, true, true)
+            return (true, true, true, true, false, true, true)
         end
 
         # Enable `StochOM` solver
         if solver == "StochOM"
-            return (true, true, true, true, false, true)
+            return (true, true, true, true, true, false, true)
         end
 
         # Enable `StochPX` solver
         if solver == "StochPX"
-            return (true, true, true, true, true, false)
+            return (true, true, true, true, true, true, false)
         end
     end
 
@@ -238,7 +253,7 @@ end
 """
     callbacks_in_solver_tab(app::Dash.DashApp)
 
-Callbacks for the `solver` tab. It includes six callbacks. All of them
+Callbacks for the `solver` tab. It includes seven callbacks. All of them
 are used to collect parameters that are relevant to analytic continuation
 solvers.
 """
@@ -269,6 +284,18 @@ function callbacks_in_solver_tab(app::Dash.DashApp)
 
     # Callback 3
     #
+    # Collect parameters from the `NevanAC` panel. Then `dict-nevanac` in
+    # `run` tab will be updated. Note that `dict-nevanac` is hidden.
+    callback!(
+        app,
+        Output("dict-nevanac", "children"),
+        [Input("nevanac-$i", "value") for i in _PNevanAC],
+    ) do vals...
+        return join(vals, "|")
+    end
+
+    # Callback 4
+    #
     # Collect parameters from the `StochAC` panel. Then `dict-stochac` in
     # `run` tab will be updated. Note that `dict-stochac` is hidden.
     callback!(
@@ -279,7 +306,7 @@ function callbacks_in_solver_tab(app::Dash.DashApp)
         return join(vals, "|")
     end
 
-    # Callback 4
+    # Callback 5
     #
     # Collect parameters from the `StochSK` panel. Then `dict-stochsk` in
     # `run` tab will be updated. Note that `dict-stochsk` is hidden.
@@ -291,7 +318,7 @@ function callbacks_in_solver_tab(app::Dash.DashApp)
         return join(vals, "|")
     end
 
-    # Callback 5
+    # Callback 6
     #
     # Collect parameters from the `StochOM` panel. Then `dict-stochom` in
     # `run` tab will be updated. Note that `dict-stochom` is hidden.
@@ -303,7 +330,7 @@ function callbacks_in_solver_tab(app::Dash.DashApp)
         return join(vals, "|")
     end
 
-    # Callback 6
+    # Callback 7
     #
     # Collect parameters from the `StochPX` panel. Then `dict-stochpx` in
     # `run` tab will be updated. Note that `dict-stochpx` is hidden.
@@ -328,7 +355,7 @@ function callbacks_in_run_tab(app::Dash.DashApp)
     # Callback 1
     #
     # For the `Start Analytic Continuation` button. It will collect key
-    # parameters, construct Dict structs, and launch the `ACFlow` package
+    # parameters, construct Dict structs, and launch the `ACFlow` toolkit
     # to do the simulation. Finally, it will show the calculated results
     # in `canvas`.
     callback!(
@@ -338,17 +365,19 @@ function callbacks_in_run_tab(app::Dash.DashApp)
         State("dict-base", "children"),
         State("dict-maxent", "children"),
         State("dict-barrat", "children"),
+        State("dict-nevanac", "children"),
         State("dict-stochac", "children"),
         State("dict-stochsk", "children"),
         State("dict-stochom", "children"),
         State("dict-stochpx", "children"),
-    ) do btn, pbase, pmaxent, pbarrat, pstochac, pstochsk, pstochom, pstochpx
+    ) do btn, pbase, pmaxent, pbarrat, pnevanac, pstochac, pstochsk, pstochom, pstochpx
         if btn > 0
             # Convert parameters to dictionary
             B, S, solver = parse_parameters(
                 pbase,
                 pmaxent,
                 pbarrat,
+                pnevanac,
                 pstochac,
                 pstochsk,
                 pstochom,
@@ -359,7 +388,7 @@ function callbacks_in_run_tab(app::Dash.DashApp)
             X = Dict("BASE"=>B, solver=>S)
             TOML.print(X)
 
-            # Launch the `ACFlow` package to do analytic continuation.
+            # Launch the `ACFlow` toolkit to do analytic continuation.
             welcome()
             setup_param(B,S)
             mesh, Aout, _ = ACFlow.solve(ACFlow.read_data())
@@ -388,17 +417,19 @@ function callbacks_in_run_tab(app::Dash.DashApp)
         State("dict-base", "children"),
         State("dict-maxent", "children"),
         State("dict-barrat", "children"),
+        State("dict-nevanac", "children"),
         State("dict-stochac", "children"),
         State("dict-stochsk", "children"),
         State("dict-stochom", "children"),
         State("dict-stochpx", "children"),
-    ) do btn, pbase, pmaxent, pbarrat, pstochac, pstochsk, pstochom, pstochpx
+    ) do btn, pbase, pmaxent, pbarrat, pnevanac, pstochac, pstochsk, pstochom, pstochpx
         if btn > 0
             # Convert parameters to dictionary
             B, S, solver = parse_parameters(
                 pbase,
                 pmaxent,
                 pbarrat,
+                pnevanac,
                 pstochac,
                 pstochsk,
                 pstochom,
@@ -459,6 +490,7 @@ end
         pbase::String,
         pmaxent::String,
         pbarrat::String,
+        pnevanac::String,
         pstochac::String,
         pstochsk::String,
         pstochom::String,
@@ -471,6 +503,7 @@ function parse_parameters(
     pbase::String,
     pmaxent::String,
     pbarrat::String,
+    pnevanac::String,
     pstochac::String,
     pstochsk::String,
     pstochom::String,
@@ -516,6 +549,18 @@ function parse_parameters(
             "epsilon" => parse(F64, array_barrat[3]),
             "pcut"    => parse(F64, array_barrat[4]),
             "eta"     => parse(F64, array_barrat[5]),
+        )
+    end
+
+    # For [NevanAC] block, it is optional.
+    if array_base[2] == "NevanAC"
+        array_barrat = split(pnevanac,"|")
+        S = Dict{String,Any}(
+            "pick"  => parse(Bool, array_barrat[1]),
+            "hardy" => parse(Bool, array_barrat[2]),
+            "hmax"  => parse(I64, array_barrat[3]),
+            "alpha" => parse(F64, array_barrat[4]),
+            "eta"   => parse(F64, array_barrat[5]),
         )
     end
 

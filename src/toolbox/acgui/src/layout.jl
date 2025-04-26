@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/03/24
+# Last modified: 2025/04/05
 #
 
 """
@@ -33,6 +33,7 @@ function acg_layout!(app::Dash.DashApp)
                 children = [ # For six analytic continuation solvers
                     layout_maxent_block(),
                     layout_barrat_block(),
+                    layout_nevanac_block(),
                     layout_stochac_block(),
                     layout_stochsk_block(),
                     layout_stochom_block(),
@@ -65,7 +66,7 @@ Layout for the header part.
 function layout_header_block()
     html_center([
         html_h2("ACGui"),
-        html_h3("A Graphic User Interface For ACFlow"),
+        html_h3("A Web-Based Graphic User Interface For ACFlow"),
     ])
 end
 
@@ -164,6 +165,7 @@ function layout_base_block()
                         options = [
                             (label = "MaxEnt", value = "MaxEnt"),
                             (label = "BarRat", value = "BarRat"),
+                            (label = "NevanAC", value = "NevanAC"),
                             (label = "StochAC", value = "StochAC"),
                             (label = "StochSK", value = "StochSK"),
                             (label = "StochOM", value = "StochOM"),
@@ -507,6 +509,89 @@ function layout_barrat_block()
             ]),
         ]),
     ], id = "barrat-block", hidden = true)
+end
+
+"""
+    layout_nevanac_block()
+
+Layout for the `solver` tab. It is the panel for the `NevanAC` solver. Note
+that this panel can be hidden, if `solver` in `general` tab is not equal
+to `NevanAC`.
+"""
+function layout_nevanac_block()
+    html_table([
+        html_thead(
+            html_tr(
+                html_th(html_label("[NevanAC] block"), colSpan = 3)
+            )
+        ),
+        #
+        html_tbody([
+            html_tr([
+                html_th(html_label("Check the Pick criterion or not")),
+                html_td(html_label("pick")),
+                html_td(
+                    dcc_radioitems(
+                        id = "nevanac-pick",
+                        options = [
+                            (label = "Yes", value = "true"),
+                            (label = "No", value = "false"),
+                        ],
+                        value = "true",
+                        labelStyle = Dict("display" => "inline-block")
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Perform Hardy basis optimization or not")),
+                html_td(html_label("hardy")),
+                html_td(
+                    dcc_radioitems(
+                        id = "nevanac-hardy",
+                        options = [
+                            (label = "Yes", value = "true"),
+                            (label = "No", value = "false"),
+                        ],
+                        value = "true",
+                        labelStyle = Dict("display" => "inline-block")
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Upper cut off of Hardy order")),
+                html_td(html_label("hmax")),
+                html_td(
+                    dcc_input(
+                        id = "nevanac-hmax",
+                        type = "text",
+                        value = "50"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Regulation parameter for smooth norm")),
+                html_td(html_label("alpha")),
+                html_td(
+                    dcc_input(
+                        id = "nevanac-alpha",
+                        type = "text",
+                        value = "1e-4"
+                    )
+                ),
+            ]),
+            html_tr([
+                html_th(html_label("Tiny distance from the real axis")),
+                html_td(html_label("eta")),
+                html_td(
+                    dcc_input(
+                        id = "nevanac-eta",
+                        type = "text",
+                        value = "1e-2"
+                    )
+                ),
+            ]),
+        ]),
+    ], id = "nevanac-block", hidden = true)
 end
 
 """
@@ -934,7 +1019,7 @@ simulations and visualize the calculated results via this tab.
 function layout_calc_block()
     html_div([
         html_br(),
-        # The following seven labels are always invisible. They are used
+        # The following eight labels are always invisible. They are used
         # to collect the configuration parameters for ACFlow.
         html_label(
             children = "N/A",
@@ -949,6 +1034,11 @@ function layout_calc_block()
         html_label(
             children = "N/A",
             id = "dict-barrat",
+            hidden = true,
+        ),
+        html_label(
+            children = "N/A",
+            id = "dict-nevanac",
             hidden = true,
         ),
         html_label(
@@ -1013,8 +1103,8 @@ author of ACGui.
 """
 function layout_about_block()
     html_div([
-        html_h4("Version : v0.7.0-devel.250324"),
-        html_h4("Release : 2025/03"),
+        html_h4("Version : v1.0.0-devel.250405"),
+        html_h4("Release : 2025/04"),
         html_h4("Developed by Li Huang (hungli at caep.cn)"),
     ])
 end

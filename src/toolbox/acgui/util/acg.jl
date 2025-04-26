@@ -8,14 +8,17 @@
 #    http://127.0.0.1:8848
 #
 # This app provides a simple yet userful graphic user interface for the
-# `ACFlow` package. The users can use it to do analytic continuations
-# and visualize the calculated results online. Note that this app suits
-# short analytic continuation simulations.
+# `ACFlow` toolkit. The users can use it to do analytic continuations
+# and visualize the calculated results on the fly. Notice that this app
+# suits short analytic continuation simulations.
 #
 # Usage:
 #
-#     $ acg.jl
+#     $ ./acg.jl
 #
+
+haskey(ENV,"ACFLOW_HOME") && pushfirst!(LOAD_PATH, ENV["ACFLOW_HOME"])
+haskey(ENV,"ACGUI_HOME") && pushfirst!(LOAD_PATH, ENV["ACGUI_HOME"])
 
 using ACGui
 
