@@ -10,6 +10,8 @@
 #     $ acrun.jl ac.toml
 #
 
+haskey(ENV,"ACFLOW_HOME") && pushfirst!(LOAD_PATH, ENV["ACFLOW_HOME"])
+
 using ACFlow
 
 welcome()

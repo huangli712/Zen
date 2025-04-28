@@ -8,10 +8,15 @@
 # fine structure of the spectrum automatically. This script will launch
 # only 1 process.
 #
+# The `Aout.data` file could be generated manually, or collected from
+# previously analytic continuation calculations.
+#
 # Usage:
 #
 #     $ gmesh.jl ac.toml
 #
+
+haskey(ENV,"ACFLOW_HOME") && pushfirst!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
 using Printf
 using ACFlow
