@@ -6,7 +6,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Testing
 #
-# Last modified: 2025/04/02
+# Last modified: 2025/04/03
 #
 
 #=
@@ -25,7 +25,7 @@ Basically, you can execute the following codes in `REPL`. They work.
 =#
 
 # Update LOAD_PATH
-push!(LOAD_PATH, ENV["ZEN_CORE"])
+haskey(ENV,"ZEN_CORE") && pushfirst!(LOAD_PATH, ENV["ZEN_CORE"])
 
 # Use the ZEN Framework
 using ZenCore

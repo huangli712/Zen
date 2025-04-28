@@ -6,7 +6,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Testing
 #
-# Last modified: 2025/03/27
+# Last modified: 2025/04/03
 #
 
 #=
@@ -19,7 +19,7 @@ we can determine the `window` entry in the `case.toml` file.
 =#
 
 # Update LOAD_PATH
-push!(LOAD_PATH, ENV["ZEN_CORE"])
+haskey(ENV,"ZEN_CORE") && pushfirst!(LOAD_PATH, ENV["ZEN_CORE"])
 
 # Using standard library
 using Printf

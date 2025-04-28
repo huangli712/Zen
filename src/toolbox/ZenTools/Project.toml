@@ -1,0 +1,4 @@
+name = "ZenTools"
+uuid = "18db07e6-b8f5-49f9-8a53-ac9206e51d2a"
+authors = ["Li Huang <huangli@caep.cn>"]
+version = "0.3.0"
