@@ -1,0 +1,24 @@
+name = "ZenGui"
+uuid = "c7096293-a4f9-42aa-88ab-d9ebdeb23c9e"
+authors = ["Li Huang <huangli@caep.cn>"]
+version = "1.0.1"
+
+[deps]
+CImGui = "5d785b6c-b76f-510e-a07c-3070796c7e87"
+FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
+GLFW = "f7f18e0c-5ee9-5ccd-a5bf-e8befd85ed98"
+Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
+ModernGL = "66fc600b-dfda-50eb-8b99-91cfa97b1301"
+OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+
+[compat]
+CImGui = "5.1.1"
+FileIO = "1.17.0"
+GLFW = "3.4.3"
+Images = "0.26.2"
+ModernGL = "1.1.8"
+OrderedCollections = "1.8.0"
+Random = "1.11.0"
+TOML = "1.0.3"

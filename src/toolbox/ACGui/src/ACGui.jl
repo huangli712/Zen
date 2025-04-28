@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/05
+# Last modified: 2025/04/27
 #
 
 """
@@ -16,7 +16,7 @@ calculations. Now ACGui supports seven analytic continuation solvers:
 
 * Maximum Entropy Method (`MaxEnt` solver, `recommended`)
 * Barycentric Rational Function Method (`BarRat` solver, `recommended`)
-*  Nevanlinna Analytical Continuation (`NevanAC` solver)
+* Nevanlinna Analytical Continuation (`NevanAC` solver)
 * Stochastic Analytic Continuation (`StochAC` solver, Beach's algorithm)
 * Stochastic Analytic Continuation (`StochSK` solver, Sandvik's algorithm)
 * Stochastic Optimization Method (`StochOM` solver)
