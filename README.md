@@ -5,7 +5,7 @@ Zen is a modern DFT + DMFT (namely the density functional theory in combination 
 * Core framework
     * **ZenCore** (v0.8.4-devel.250326)
 * Graphic user interface
-    * **ZenGui** (v1.0.1-devel.250426)
+    * **ZenGui** (v1.0.2-devel.250429)
 * Auxiliary tools
     * **ZenTools** (v0.3.0-devel.250428)
 * Documentation
@@ -28,7 +28,7 @@ Now this package is currently under developement. **PLEASE USE IT AT YOUR OWN RI
 
 ## Version
 
-v0.5.2-devel.250429
+v0.5.3-devel.250429
 
 ## License
 
