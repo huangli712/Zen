@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/26
+# Last modified: 2025/04/29
 #
 
 """
@@ -28,7 +28,7 @@ function create_app_actest(p_open::Ref{Bool})
 
     # Fix size of the window
     window_width = 600.0
-    window_height = 600.0
+    window_height = 625.0
     CImGui.SetWindowSize(ImVec2(window_width, window_height))
 
     # For the widgets in the top of this window
@@ -155,7 +155,7 @@ function _actest_general_block()
     #
     # Input: ptype
     CImGui.SetNextItemWidth(widget_combo_width)
-    ptype_list = ["gauss", "lorentz", "delta", "rectangle", "risedecay"]
+    ptype_list = ["gauss", "lorentz", "delta", "rectangle", "risedecay", "random1", "random2"]
     @cstatic id = Cint(0) begin
         @c CImGui.Combo(" Type of peaks in the spectrum", &id, ptype_list)
         PTEST.ptype = ptype_list[id + 1]
@@ -274,9 +274,32 @@ function _actest_general_block()
     CImGui.SameLine()
     CImGui.TextColored(COL_MAGENTA, "(noise)$(PTEST.noise)")
     #
+    # Input: lcorr
+    CImGui.SetNextItemWidth(widget_input_width)
+    @cstatic _f = Cdouble(0.5) begin
+        @c CImGui.InputDouble(" Correlation length associated with the noise", &_f)
+        PTEST.lcorr = _f
+    end
+    CImGui.SameLine()
+    CImGui.TextColored(COL_MAGENTA, "(lcorr)$(PTEST.lcorr)")
+    #
+    # Input: tcorr
+    CImGui.SetNextItemWidth(widget_combo_width)
+    tcorr_list = ["yes", "no"]
+    @cstatic id = Cint(1) begin
+        @c CImGui.Combo(" Is the noise correlated in imaginary time axis", &id, tcorr_list)
+        if id == 0
+            PTEST.tcorr = true
+        else
+            PTEST.tcorr = false
+        end
+    end
+    CImGui.SameLine()
+    CImGui.TextColored(COL_MAGENTA, "(tcorr)$(PTEST.tcorr)")
+    #
     # Input: offdiag
     CImGui.SetNextItemWidth(widget_combo_width)
-    offdiag_list = ["Yes", "No"]
+    offdiag_list = ["yes", "no"]
     @cstatic id = Cint(1) begin
         @c CImGui.Combo(" Is it the offdiagonal correlation function", &id, offdiag_list)
         if id == 0

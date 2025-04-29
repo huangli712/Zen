@@ -365,7 +365,7 @@ function _zen_dft_block()
         #
         # Input: lsymm
         CImGui.SetNextItemWidth(widget_combo_width)
-        lsymm_list = ["Yes", "No"]
+        lsymm_list = ["yes", "no"]
         @cstatic id = Cint(1) begin
             @c CImGui.Combo(" Is the symmetry turned on or off", &id, lsymm_list)
             if id == 0
@@ -379,7 +379,7 @@ function _zen_dft_block()
         #
         # Input: lspins
         CImGui.SetNextItemWidth(widget_combo_width)
-        lspins_list = ["Yes", "No"]
+        lspins_list = ["yes", "no"]
         @cstatic id = Cint(1) begin
             @c CImGui.Combo(" Are the spin orientations polarized or not", &id, lspins_list)
             if id == 0
@@ -393,7 +393,7 @@ function _zen_dft_block()
         #
         # Input: lspinorb
         CImGui.SetNextItemWidth(widget_combo_width)
-        lspinorb_list = ["Yes", "No"]
+        lspinorb_list = ["yes", "no"]
         @cstatic id = Cint(1) begin
             @c CImGui.Combo(" Is the spin-orbit coupling considered or not", &id, lspinorb_list)
             if id == 0
@@ -407,7 +407,7 @@ function _zen_dft_block()
         #
         # Input: lproj
         CImGui.SetNextItemWidth(widget_combo_width)
-        lproj_list = ["Yes", "No"]
+        lproj_list = ["yes", "no"]
         @cstatic id = Cint(0) begin
             @c CImGui.Combo(" Are the projectors generated or not", &id, lproj_list)
             if id == 0
@@ -604,7 +604,7 @@ function _zen_dmft_block()
         #
         # Input: lfermi
         CImGui.SetNextItemWidth(widget_combo_width)
-        lfermi_list = ["Yes", "No"]
+        lfermi_list = ["yes", "no"]
         @cstatic id = Cint(0) begin
             @c CImGui.Combo(" Whether chemical potential should be updated", &id, lfermi_list)
             if id == 0

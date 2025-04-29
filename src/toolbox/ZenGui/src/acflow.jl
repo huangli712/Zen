@@ -249,7 +249,7 @@ function _acflow_general_block()
     #
     # Input: offdiag
     CImGui.SetNextItemWidth(widget_combo_width)
-    offdiag_list = ["Yes", "No"]
+    offdiag_list = ["yes", "no"]
     @cstatic id = Cint(1) begin
         @c CImGui.Combo(" Is it the offdiagonal correlation function", &id, offdiag_list)
         if id == 0
@@ -263,7 +263,7 @@ function _acflow_general_block()
     #
     # Input: fwrite
     CImGui.SetNextItemWidth(widget_combo_width)
-    fwrite_list = ["Yes", "No"]
+    fwrite_list = ["yes", "no"]
     @cstatic id = Cint(0) begin
         @c CImGui.Combo(" Are the calculated results written into files", &id, fwrite_list)
         if id == 0
@@ -459,7 +459,7 @@ function _acflow_nevanac_block()
 
     # Input: pick
     CImGui.SetNextItemWidth(widget_combo_width)
-    pick_list = ["Yes", "No"]
+    pick_list = ["yes", "no"]
     @cstatic id = Cint(1) begin
         @c CImGui.Combo(" Check the Pick criterion or not", &id, pick_list)
         if id == 0
@@ -473,7 +473,7 @@ function _acflow_nevanac_block()
     #
     # Input: pick
     CImGui.SetNextItemWidth(widget_combo_width)
-    hardy_list = ["Yes", "No"]
+    hardy_list = ["yes", "no"]
     @cstatic id = Cint(0) begin
         @c CImGui.Combo(" Perform Hardy basis optimization or not", &id, hardy_list)
         if id == 0

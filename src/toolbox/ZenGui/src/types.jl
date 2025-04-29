@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/26
+# Last modified: 2025/04/29
 #
 
 #=
@@ -1506,7 +1506,7 @@ end
 *Remarks* :
 
 The official configuration file for the ACTest toolkit is `act.toml`. It
-includes `[Test]` and `[Solver]` blocks.
+includes two blocks: `[Test]` and `[Solver]`.
 =#
 
 """
@@ -1529,6 +1529,8 @@ mutable struct ACTEST_PTEST
     pmin    :: F64
     beta    :: F64
     noise   :: F64
+    lcorr   :: F64
+    tcorr   :: Bool
     offdiag :: Bool
     lpeak   :: Array
 end
@@ -1555,6 +1557,8 @@ PTEST = ACTEST_PTEST(
     -4.0,     # pmin
     10.0,     # beta
     1.0e-6,   # noise
+    0.5,      # lcorr
+    false,    # tcorr
     false,    # offdiag
     [1,2,3]   # lpeak
 )
@@ -1582,6 +1586,8 @@ function struct_to_dict(s::ACTEST_PTEST)
         "pmin"    => s.pmin,
         "beta"    => s.beta,
         "noise"   => s.noise,
+        "lcorr"   => s.lcorr,
+        "tcorr"   => s.tcorr,
         "offdiag" => s.offdiag,
         "lpeak"   => s.lpeak,
     )
