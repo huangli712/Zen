@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/01/21
+# Last modified: 2025/04/28
 #
 
 """
@@ -47,7 +47,7 @@ using TOML
 #=
 *Summary* :
 
-Define some type aliases and string constants for the ACFlow toolkit.
+Define some type aliases and string constants for the ACTest toolkit.
 
 *Members* :
 
@@ -63,7 +63,7 @@ __VERSION__   -> Version of this julia toolkit.
 __RELEASE__   -> Released date of this julia toolkit.
 __AUTHORS__   -> Authors of this julia toolkit.
 #
-authors       -> Print the authors of ACFlow to screen.
+authors       -> Print the authors of ACTest to screen.
 ```
 =#
 
@@ -421,7 +421,7 @@ export STD_BRD
 #=
 *Summary* :
 
-To provide basic workflow for the users of the ACFlow toolkit.
+To provide basic workflow for the users of the ACTest toolkit.
 
 *Members* :
 
@@ -435,6 +435,7 @@ make_data_std -> Generate standard dataset (namely ACT100).
 make_data   -> Generate spectral functions and corresponding correlators.
 make_peak   -> Generate various peaks.
 make_spectrum -> Generate spectral function by peaks.
+make_noise  -> Generate noise.
 make_green  -> Generate Green's functions at imaginary axis.
 make_grid   -> Generate grid for the Green's function data.
 make_mesh   -> Generate mesh for the calculated spectrum.
@@ -454,6 +455,7 @@ export make_data_std
 export make_data
 export make_peak
 export make_spectrum
+export make_noise
 export make_green
 export make_grid
 export make_mesh

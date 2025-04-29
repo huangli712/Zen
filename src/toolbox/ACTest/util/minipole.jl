@@ -91,6 +91,8 @@
 # See actest/test/B01 and B02.
 #
 
+haskey(ENV,"ACTEST_HOME") && pushfirst!(LOAD_PATH, ENV["ACTEST_HOME"])
+
 using ACTest
 
 using PyCall

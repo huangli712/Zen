@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/01/18
+# Last modified: 2025/04/28
 #
 
 """
@@ -17,7 +17,7 @@ Parse the configuration file (in toml format). It reads the whole file.
 * necessary -> If it is true and configuration is absent, raise an error.
 
 ### Returns
-* dict -> A Dictionary struct that contains all the key-value pairs.
+* dict -> A dictionary that contains all the key-value pairs.
 """
 function inp_toml(f::String, necessary::Bool)
     if isfile(f)
@@ -40,7 +40,7 @@ other words, all the relevant internal dicts should be filled / updated
 in this function.
 
 ### Arguments
-* cfg -> A dict struct that contains all the configurations (from act.toml).
+* cfg -> A dict that contains all the configurations (from act.toml).
 
 ### Returns
 N/A
@@ -86,6 +86,8 @@ function see_dict()
     println("pmin    : ", get_t("pmin")   )
     println("beta    : ", get_t("beta")   )
     println("noise   : ", get_t("noise")  )
+    println("lcorr   : ", get_t("lcorr")  )
+    println("tcorr   : ", get_t("tcorr")  )
     println("offdiag : ", get_t("offdiag"))
     println("lpeak   : ", get_t("lpeak")  )
     println("pmesh   : ", get_t("pmesh")  )
@@ -99,7 +101,7 @@ end
 Setup the configuration dictionary: `PTEST`.
 
 ### Arguments
-* TEST -> A dict struct that contains configurations from the [Test] block.
+* TEST -> A dict that contains configurations from the [Test] block.
 
 ### Returns
 N/A
@@ -123,7 +125,7 @@ end
 Setup the configuration dictionary: `PTEST`.
 
 ### Arguments
-* TEST -> A dict struct that contains configurations from the [Test] block.
+* TEST -> A dict that contains configurations from the [Test] block.
 
 ### Returns
 N/A
@@ -157,8 +159,8 @@ See also: [`fil_dict`](@ref), [`_v`](@ref).
 function chk_dict()
     #
     # The MiniPole solver implements the minimal pole method (MPM), which
-    # is provided by the MiniPole code. Please see the following webs and
-    # references for more details:
+    # is provided by the MiniPole code. Please see the following pages
+    # and references for more details:
     #
     # https://github.com/Green-Phys/MiniPole
     # Phys. Rev. B 110, 235131 (2024)
@@ -172,7 +174,10 @@ function chk_dict()
         "StochAC", "StochSK", "StochOM", "StochPX",
         "MiniPole"
     )
-    @assert get_t("ptype") in ("gauss", "lorentz", "delta", "rectangle", "risedecay")
+    @assert get_t("ptype") in (
+        "gauss", "lorentz", "delta", "rectangle", "risedecay",
+        "random1", "random2"
+    )
     @assert get_t("ktype") in ("fermi", "boson", "bsymm")
     @assert get_t("grid") in ("ftime", "btime", "ffreq", "bfreq")
     @assert get_t("mesh") in ("linear", "tangent", "lorentz", "halflorentz")
@@ -182,6 +187,8 @@ function chk_dict()
     @assert get_t("wmax") > get_t("wmin")
     @assert get_t("pmax") > get_t("pmin")
     @assert get_t("beta") ≥ 0.0
+    @assert get_t("noise") ≥ 0.0
+    @assert get_t("lcorr") > 0.0
     @assert length(get_t("lpeak")) ≥ 1
     @assert all(x -> x > 0, get_t("lpeak"))
 

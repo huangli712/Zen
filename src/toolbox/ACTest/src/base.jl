@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/11/14
+# Last modified: 2025/04/28
 #
 
 """
@@ -94,6 +94,8 @@ N/A
 
 ### Returns
 N/A
+
+See also: [`make_data`](@ref).
 """
 function make_data_std()
     # Get dicts for the standard test (ACT100)
@@ -153,13 +155,15 @@ N/A
 
 ### Returns
 N/A
+
+See also: [`make_data_std`](@ref).
 """
 function make_data()
     # Get number of tests
     ntest = get_t("ntest")
 
     # Initialize the random number generator
-    seed = 2002 #rand(1:10000) * myid() + 1981
+    seed = rand(1:10000) * myid() + 1981
     rng = MersenneTwister(seed)
     println("Random number seed: ", seed)
 
@@ -208,9 +212,21 @@ Generate peak to build the final spectral function.
 See also: [`AbstractPeak`](@ref).
 """
 function make_peak(rng::AbstractRNG)
+    # Get essential parameters
     ptype = get_t("ptype")
     pmax  = get_t("pmax")
     pmin  = get_t("pmin")
+
+    # Special treatment for ptype
+    if ptype in ["random1", "random2"]
+        if ptype == "random1"
+            plist = ["gauss", "lorentz", "risedecay"]
+        else
+            plist = ["gauss", "lorentz", "delta", "rectangle", "risedecay"]
+        end
+        ptype, = rand(plist, 1)
+        println("ptype is randomized to: $ptype")
+    end
 
     @cswitch ptype begin
         @case "gauss"
@@ -388,6 +404,83 @@ function make_spectrum(
     return SpectralFunction(mesh, image)
 end
 
+#=
+*Remarks* :
+
+For the correlation function ``G(\tau_i)``, the corresponding noisy
+correlation function is given by
+
+```math
+G_{\rm noisy}(\tau_i) = G_{\rm exact}(\tau_i) +
+    \frac{\sum_j e^{-|\tau_j-\tau_i|/\xi}R_j}
+         {\sqrt{\sum_j e^{-2|\tau_j-\tau_i|/\xi}}},
+```
+where the sum is performed assuming periodic boundary conditions, ``\xi``
+denotes the correlation length, and ``R_j \sim {\rm Normal}(0,\sigma)``.
+Note that in the case that a normal distribution is used it is possible
+for ``G_{\rm noisy}(\tau_i)`` to have a different sign to ``G(\tau_i)``.
+
+See Phys. Rev. X 7, 041072 (2017) for more details.
+=#
+
+"""
+    make_noise(rng::AbstractRNG, τ::Vector{F64}, δ::F64, ξ::F64)
+
+Generate noise for an imaginary time correlation function ``G(\tau)``.
+The noise is exponentially correlated in imaginary time. This function is
+adopted from https://github.com/SmoQySuite/SmoQySynthAC.jl.
+
+### Arguments
+* rng -> Random number generator.
+* τ -> Vector specifying the imaginary time ``\tau`` grid.
+* δ -> Standard deviation of the noise; controls the typical amplitude of the error.
+* ξ -> Correlation length associated with the noise in imaginary time.
+
+By default, the last element of ``\tau`` is assumed to be equal to the
+inverse temperature, i.e., ``\tau[end] = \beta``.
+"""
+function make_noise(rng::AbstractRNG, τ::Vector{F64}, δ::F64, ξ::F64)
+    # Evaluate length of imaginary time axis
+    Lτ = length(τ) - 1
+
+    # Initialize noise to zero
+    Gnoisy = zeros(F64, Lτ+1)
+
+    # Evaluate normal distribution
+    R = δ * randn(rng, Lτ+1)
+
+    # Get the inverse temperature
+    β = τ[end]
+
+    # Setup R and τ arrays on interval τ ∈ [0, β-Δτ]
+    τ′ = @view τ[1:Lτ]
+    R′ = @view R[1:Lτ]
+
+    # Iterate over imaginary time: Outer
+    @inbounds for i in eachindex(R′)
+        # Initialize normalization factor
+        V = 0.0
+
+        # Iterate over imaginary time: Inner
+        for j in eachindex(R′)
+            # Calculate weight
+            Δτ = abs(τ′[j] - τ′[i])
+            Wᵢⱼ = exp(-min(Δτ, β - Δτ) / ξ)
+            #
+            # Update noise
+            Gnoisy[i] += R′[j] * Wᵢⱼ
+            #
+            # Update normalization
+            V += (Wᵢⱼ) ^ 2
+        end
+
+        # Normalize noise
+        Gnoisy[i] /= sqrt(V)
+    end
+
+    return Gnoisy
+end
+
 """
     make_green(
         rng::AbstractRNG,
@@ -418,6 +511,18 @@ function make_green(
     # If δ < 0, it means noise-free.
     δ = get_t("noise")
 
+    # Get correlation length of noise
+    ξ = get_t("lcorr")
+
+    # Get type of noise
+    # Now only imaginary time Green's function supports correlated noise.
+    tcorr = get_t("tcorr")
+    if get_t("grid") in ("ffreq", "bfreq")
+        if tcorr
+            error("Matsubara data does not support this type of noise")
+        end
+    end
+
     # Calculate Green's function
     green = reprod(sf.mesh, kernel, sf.image)
 
@@ -425,15 +530,19 @@ function make_green(
     ngrid = length(green)
     if δ < 0.0
         δ = 0.0
-        error = fill(1.0e-4, ngrid)
+        err = fill(1.0e-4, ngrid)
     else
-        error = fill(δ, ngrid)
+        err = fill(δ, ngrid)
     end
 
     # Setup random noise
-    noise = randn(rng, F64, ngrid) * δ
+    if tcorr
+        noise = make_noise(rng, grid.τ, δ, ξ)
+    else
+        noise = randn(rng, F64, ngrid) * δ
+    end
 
-    return GreenFunction(grid, green .+ noise, error)
+    return GreenFunction(grid, green .+ noise, err)
 end
 
 """

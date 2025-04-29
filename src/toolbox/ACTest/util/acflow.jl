@@ -9,26 +9,29 @@
 #
 # Usage:
 #
-#     $ acflow.jl act.toml std=false inds=[]
+#     $ ./acflow.jl act.toml std=false inds=[]
 #
 # The arguments `std` and `inds` are optional.
 #
 # (1) Perform normal test.
 #
-#     $ acflow.jl act.toml
+#     $ ./acflow.jl act.toml
 #
 # (2) Perform standard test (using ACT100 dataset).
 #
-#     $ acflow.jl act.toml std=true
+#     $ ./acflow.jl act.toml std=true
 #
 # (3) Perform normal test, only tests 11, 12, and 13 are treated.
 #
-#     $ acflow.jl act.toml std=false inds=[11,12,13]
+#     $ ./acflow.jl act.toml std=false inds=[11,12,13]
 #
 # (4) Perform standard test (using ACT100 dataset), only tests 1~40 are used.
 #
-#     $ acflow.jl act.toml std=true inds=1:40
+#     $ ./acflow.jl act.toml std=true inds=1:40
 #
+
+haskey(ENV,"ACTEST_HOME") && pushfirst!(LOAD_PATH, ENV["ACTEST_HOME"])
+haskey(ENV,"ACFLOW_HOME") && pushfirst!(LOAD_PATH, ENV["ACFLOW_HOME"])
 
 using ACTest
 using ACFlow:setup_param

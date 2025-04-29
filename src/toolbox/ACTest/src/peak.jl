@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/18
+# Last modified: 2025/04/28
 #
 
 #=
@@ -71,6 +71,8 @@ Evaluate the gaussian peak at ω.
 
 ### Returns
 * val -> 𝑝(ω).
+
+See also: [`GaussianPeak`](@ref).
 """
 function (𝑝::GaussianPeak)(ω::F64)
     return 𝑝.A * exp( -(ω - 𝑝.ϵ) ^ 2.0 / (2.0 * 𝑝.Γ ^ 2.0) )
@@ -86,6 +88,8 @@ Evaluate the gaussian peak at real mesh.
 
 ### Returns
 * val -> 𝑝(ω).
+
+See also: [`GaussianPeak`](@ref).
 """
 function (𝑝::GaussianPeak)(ω::Vector{F64})
     return @. 𝑝.A * exp( -(ω - 𝑝.ϵ) ^ 2.0 / (2.0 * 𝑝.Γ ^ 2.0) )
@@ -101,6 +105,8 @@ Evaluate the lorentzian peak at ω.
 
 ### Returns
 * val -> 𝑝(ω).
+
+See also: [`LorentzianPeak`](@ref).
 """
 function (𝑝::LorentzianPeak)(ω::F64)
     return 𝑝.A / π * 𝑝.Γ / ((ω - 𝑝.ϵ) ^ 2.0 + 𝑝.Γ ^ 2.0)
@@ -116,6 +122,8 @@ Evaluate the lorentzian peak at real mesh.
 
 ### Returns
 * val -> 𝑝(ω).
+
+See also: [`LorentzianPeak`](@ref).
 """
 function (𝑝::LorentzianPeak)(ω::Vector{F64})
     return @. 𝑝.A / π * 𝑝.Γ / ((ω - 𝑝.ϵ) ^ 2.0 + 𝑝.Γ ^ 2.0)
@@ -131,6 +139,8 @@ Evaluate the δ-like peak at ω.
 
 ### Returns
 * val -> 𝑝(ω).
+
+See also: [`DeltaPeak`](@ref).
 """
 function (𝑝::DeltaPeak)(ω::F64)
     return 𝑝.A * exp( -(ω - 𝑝.ϵ) ^ 2.0 / (2.0 * 𝑝.Γ ^ 2.0) )
@@ -146,6 +156,8 @@ Evaluate the δ-like peak at real mesh.
 
 ### Returns
 * val -> 𝑝(ω).
+
+See also: [`DeltaPeak`](@ref).
 """
 function (𝑝::DeltaPeak)(ω::Vector{F64})
     return @. 𝑝.A * exp( -(ω - 𝑝.ϵ) ^ 2.0 / (2.0 * 𝑝.Γ ^ 2.0) )
@@ -161,6 +173,8 @@ Evaluate the rectangle peak at ω.
 
 ### Returns
 * val -> 𝑝(ω).
+
+See also: [`RectanglePeak`](@ref).
 """
 function (𝑝::RectanglePeak)(ω::F64)
     function f(x)
@@ -179,6 +193,8 @@ Evaluate the rectangle peak at real mesh.
 
 ### Returns
 * val -> 𝑝(ω).
+
+See also: [`RectanglePeak`](@ref).
 """
 function (𝑝::RectanglePeak)(ω::Vector{F64})
     function f(x)
@@ -197,6 +213,8 @@ Evaluate the rise-and-decay peak at ω.
 
 ### Returns
 * val -> 𝑝(ω).
+
+See also: [`RiseDecayPeak`](@ref).
 """
 function (𝑝::RiseDecayPeak)(ω::F64)
     return 𝑝.h * exp( - ( abs(ω - 𝑝.c) ) ^ 𝑝.γ )
@@ -212,6 +230,8 @@ Evaluate the rise-and-decay peak at real mesh.
 
 ### Returns
 * val -> 𝑝(ω).
+
+See also: [`RiseDecayPeak`](@ref).
 """
 function (𝑝::RiseDecayPeak)(ω::Vector{F64})
     return @. 𝑝.h * exp( - ( abs(ω - 𝑝.c) ) ^ 𝑝.γ )

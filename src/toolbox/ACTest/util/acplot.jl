@@ -14,32 +14,34 @@
 #
 # Usage:
 #
-#     $ acplot.jl act.toml std=false only=false inds=[]
+#     $ ./acplot.jl act.toml std=false only=false inds=[]
 #
 # The arguments `std`, `only`, and `inds` are optional.
 #
 # (1) Perform normal visualization.
 #
-#     $ acplot.jl act.toml
+#     $ ./acplot.jl act.toml
 #
 # (2) Perform standard visualization (using ACT100 dataset).
 #
-#     $ acplot.jl act.toml std=true
+#     $ ./acplot.jl act.toml std=true
 #
 # (3) Perform normal visualization, only true spectrum is plotted.
 #
-#     $ acplot.jl act.toml std=false only=true
+#     $ ./acplot.jl act.toml std=false only=true
 #
 # (4) Perform standard visualization (using ACT100 dataset), only tests
 #     11, 12, and 13 are treated.
 #
-#     $ acplot.jl act.toml std=true only=false inds=[11,12,13]
+#     $ ./acplot.jl act.toml std=true only=false inds=[11,12,13]
 #
 # (5) Perform standard visualization (using ACT100 dataset), only tests
 #     1~40 are used.
 #
-#     $ acplot.jl act.toml std=true only=false inds=1:40
+#     $ ./acplot.jl act.toml std=true only=false inds=1:40
 #
+
+haskey(ENV,"ACTEST_HOME") && pushfirst!(LOAD_PATH, ENV["ACTEST_HOME"])
 
 using ACTest
 

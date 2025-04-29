@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/19
+# Last modified: 2025/04/28
 #
 
 #=
@@ -55,6 +55,8 @@ const PTEST    = Dict{String,ADT}(
     "pmin"    => [missing, 1, :F64   , "Left boundary (minimum value) for possible peaks"],
     "beta"    => [missing, 1, :F64   , "Inverse temperature"],
     "noise"   => [missing, 1, :F64   , "Noise level"],
+    "lcorr"   => [missing, 1, :F64   , "Correlation length associated with the noise"],
+    "tcorr"   => [missing, 1, :Bool  , "Is the noise correlated in imaginary time axis"],
     "offdiag" => [missing, 1, :Bool  , "Is it the offdiagonal part in matrix-valued function"],
     "lpeak"   => [missing, 1, :Array , "Number of peaks in the spectrum"],
     "pmesh"   => [missing, 0, :Array , "Additional parameters for customizing the mesh"],
@@ -76,6 +78,8 @@ const _PTEST   = Dict{String,Any}(
     "pmin"    => -4.0,
     "beta"    => 10.0,
     "noise"   => 1.0e-6,
+    "lcorr"   => 0.5,
+    "tcorr"   => false,
     "offdiag" => false,
     "lpeak"   => [1,2,3],
 )

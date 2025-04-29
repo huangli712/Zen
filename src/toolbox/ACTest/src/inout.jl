@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/18
+# Last modified: 2025/04/28
 #
 
 """
@@ -42,6 +42,8 @@ function is included in `sf`.
 
 ### Returns
 N/A
+
+See also: [`SpectralFunction`](@ref).
 """
 function write_spectrum(ind::I64, sf::SpectralFunction)
     @assert ind ≥ 1
@@ -142,6 +144,8 @@ end
     Base.show(io::IO, 𝑝::GaussianPeak)
 
 Write a GaussianPeak struct.
+
+See also: [`GaussianPeak`](@ref).
 """
 function Base.show(io::IO, 𝑝::GaussianPeak)
     println("peak type : gaussian")
@@ -154,6 +158,8 @@ end
     Base.show(io::IO, 𝑝::LorentzianPeak)
 
 Write a LorentzianPeak struct.
+
+See also: [`LorentzianPeak`](@ref).
 """
 function Base.show(io::IO, 𝑝::LorentzianPeak)
     println("peak type : lorentzian")
@@ -166,6 +172,8 @@ end
     Base.show(io::IO, 𝑝::DeltaPeak)
 
 Write a DeltaPeak struct.
+
+See also: [`DeltaPeak`](@ref).
 """
 function Base.show(io::IO, 𝑝::DeltaPeak)
     println("peak type : delta")
@@ -178,6 +186,8 @@ end
     Base.show(io::IO, 𝑝::RectanglePeak)
 
 Write a RectanglePeak struct.
+
+See also: [`RectanglePeak`](@ref).
 """
 function Base.show(io::IO, 𝑝::RectanglePeak)
     println("peak type : rectangle")
@@ -190,6 +200,8 @@ end
     Base.show(io::IO, 𝑝::RiseDecayPeak)
 
 Write a RiseDecayPeak struct.
+
+See also: [`RiseDecayPeak`](@ref).
 """
 function Base.show(io::IO, 𝑝::RiseDecayPeak)
     println("peak type : risedecay")

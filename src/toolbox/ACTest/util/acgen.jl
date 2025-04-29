@@ -6,8 +6,10 @@
 #
 # Usage:
 #
-#     $ acgen.jl act.toml
+#     $ ./acgen.jl act.toml
 #
+
+haskey(ENV,"ACTEST_HOME") && pushfirst!(LOAD_PATH, ENV["ACTEST_HOME"])
 
 using ACTest
 
