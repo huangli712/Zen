@@ -56,7 +56,7 @@
 ## =======
 ##
 ## 08/06/2021 by li huang (created)
-## 04/02/2025 by li huang (last modified)
+## 04/30/2025 by li huang (last modified)
 ##
 ##
 
@@ -92,29 +92,29 @@ clean: clean-libs clean-solver clean-dmft clean-docs
 # targets for internal libraries
 libs:
 	@echo 'building libs: flink'
-	cd ../src/libs/flink/src; pwd; make
+	cd ../src/libs/Flink/src; pwd; make
 
 clean-libs:
 	@echo 'cleaning libs: flink'
-	cd ../src/libs/flink/src; pwd; make clean
+	cd ../src/libs/Flink/src; pwd; make clean
 
 # targets for quantum impurity solvers
 solver:
 	@echo 'building solver: ctseg'
-	cd ../src/solver/iqist/src/ctseg; pwd; make
+	cd ../src/solver/iQIST/src/ctseg; pwd; make
 
 clean-solver:
 	@echo 'cleaning solver: ctseg'
-	cd ../src/solver/iqist/src/ctseg; pwd; make clean
+	cd ../src/solver/iQIST/src/ctseg; pwd; make clean
 
 # targets for dynamical mean-field theory codes
 dmft:
 	@echo 'building dmft: dyson'
-	cd ../src/dmft/dyson/src; pwd; make
+	cd ../src/dmft/Dyson/src; pwd; make
 
 clean-dmft:
 	@echo 'cleaning dmft: dyson'
-	cd ../src/dmft/dyson/src; pwd; make clean
+	cd ../src/dmft/Dyson/src; pwd; make clean
 
 # targets for documentation
 docs:
