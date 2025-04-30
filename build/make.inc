@@ -19,7 +19,7 @@
 ## =======
 ##
 ## 05/11/2015 by li huang (created)
-## 04/02/2025 by li huang (last modified)
+## 04/30/2025 by li huang (last modified)
 ##
 ##
 
@@ -49,4 +49,4 @@ LFLAGS = $(OMP)
 # External linear algebra library
 #-------------------------------------------------------------------------
 LIBS   = -L/Users/lihuang/opt/intel/mkl/lib -lmkl_core -lmkl_sequential -lmkl_rt
-FLINK  = /Users/lihuang/Working/devel/Zen/src/libs/flink/src
+FLINK  = /Users/lihuang/Working/devel/Zen/src/libs/Flink/src
