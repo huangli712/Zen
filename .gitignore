@@ -23,7 +23,6 @@ test/*/ovlp.*
 test/*/kpath.*
 test/*/hamk.*
 test/_*
-src/ctqmc
-src/atomic
+src/ctseg/ctqmc
 src/dmft
 docs/build
