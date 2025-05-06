@@ -1,0 +1,4 @@
+name = "ZenDocs"
+uuid = "18c5a8e9-d3cb-4a0e-b87b-87284c4a7a7d"
+authors = ["Li Huang <huangli@caep.cn>"]
+version = "0.2.4"

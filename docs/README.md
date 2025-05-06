@@ -1,21 +1,19 @@
-## About
+# ZenDocs
 
-This is the documentation for the *Zen* package. It is developed with the `Markdown` + `Documenter.jl`.
+ZenDocs is the documentation project of the Zen DFT + DMFT computation framework. In other words, it should not be used separately.
 
-## Prerequisites
+This project is currently under heavy developement. **PLEASE USE IT AT YOUR OWN RISK!**
 
-Make sure that the [`Julia programming language`](https://julialang.org/) was installed in your system and the [`Documenter.jl`](https://github.com/JuliaDocs/Documenter.jl) package was ready. The latest versions of them are always preferred.
+## Version
 
-## Compile the docs
+v0.2.4-devel.250506
 
-Just type the following command in your terminal. Here `$` is only the prompt.
+## License
 
-```sh
-$ julia make.jl
-```
+GNU General Public License Version 3
 
-The `Documenter.jl` will automatically generate some static webs for the documentation.
+## Documentation
 
-## Read the docs
+Source: See `zendocs/docs`.
 
-If everything is OK, you will find a new directory `build` under the `docs` folder. Get in it and then double click the `index.html` file to open it with browser (`Chrome` or `Firefox`). Enjoy it!
+Online: https://huangli712.github.io/projects/zen/index.html

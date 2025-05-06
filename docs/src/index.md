@@ -20,15 +20,8 @@
 Pages = [
     "intro/outline.md",
     "intro/sces.md",
-    "intro/dft.md",
-    "intro/dmft.md",
-    "intro/dft_dmft.md",
-    "intro/codes.md",
-    "intro/motivation.md",
-    "intro/design.md",
-    "intro/features.md",
-    "intro/future.md",
-    "intro/cite.md",
+    "intro/methods.md",
+    "intro/about.md",
 ]
 Depth = 1
 ```
@@ -38,6 +31,7 @@ Depth = 1
 ```@contents
 Pages = [
     "start/outline.md",
+    "start/components.md",
     "start/obtain.md",
     "start/uncompress.md",
     "start/directory.md",
@@ -45,6 +39,7 @@ Pages = [
     "start/install.md",
     "start/configure.md",
     "start/run.md",
+    "start/upgrade.md",
 ]
 Depth = 1
 ```
@@ -72,61 +67,20 @@ Pages = [
     "guide/input.md",
     "guide/output.md",
     "guide/parameters.md",
-    "guide/dft.md",
-    "guide/wannier.md",
-    "guide/dmft.md",
-    "guide/df.md",
-    "guide/qim.md",
-    "guide/apawlib.md",
-    "guide/docs.md",
-    "guide/gui.md",
-    "guide/tests.md",
-    "guide/tools.md",
+    "guide/core.md",
+    "guide/auxiliary.md",
     "guide/tips.md",
 ]
 Depth = 1
 ```
 
-## Inside The ZenCore Library
+## Internals
 
 ```@contents
 Pages = [
-    "internals/framework/outline.md",
-    "internals/framework/arch.md",
-    "internals/framework/dft.md",
-    "internals/framework/dmft.md",
-    "internals/framework/qim.md",
-    "internals/framework/adaptor.md",
-    "internals/framework/ir.md",
-    "internals/framework/selfenergy.md",
-    "internals/framework/mixing.md",
+    "internals/outline.md",
+    "internals/arch.md",
+    "internals/summary.md",
 ]
 Depth = 1
 ```
-
-## The ZenCore APIs
-
-```@contents
-Pages = [
-    "internals/apis/outline.md",
-    "internals/apis/zencore.md",
-    "internals/apis/global.md",
-    "internals/apis/util.md",
-    "internals/apis/tetra.md",
-    "internals/apis/types.md",
-    "internals/apis/config.md",
-    "internals/apis/base.md",
-    "internals/apis/vasp.md",
-    "internals/apis/qe.md",
-    "internals/apis/plo.md",
-    "internals/apis/wannier.md",
-    "internals/apis/ir.md",
-    "internals/apis/dmft.md",
-    "internals/apis/solver.md",
-    "internals/apis/sigma.md",
-    "internals/apis/mixing.md",
-]
-Depth = 1
-```
-
-## Theory
