@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/29
+# Last modified: 2025/05/08
 #
 
 """
@@ -28,7 +28,7 @@ function create_app_actest(p_open::Ref{Bool})
 
     # Fix size of the window
     window_width = 600.0
-    window_height = 625.0
+    window_height = 650.0
     CImGui.SetWindowSize(ImVec2(window_width, window_height))
 
     # For the widgets in the top of this window
@@ -219,6 +219,15 @@ function _actest_general_block()
     end
     CImGui.SameLine()
     CImGui.TextColored(COL_MAGENTA, "(ntest)$(PTEST.ntest)")
+    #
+    # Input: nbins
+    CImGui.SetNextItemWidth(widget_input_width)
+    @cstatic _i = Cint(1) begin
+        @c CImGui.InputInt(" Number of data bins per test", &_i)
+        PTEST.nbins = _i
+    end
+    CImGui.SameLine()
+    CImGui.TextColored(COL_MAGENTA, "(nbins)$(PTEST.nbins)")
     #
     # Input: wmax
     CImGui.SetNextItemWidth(widget_input_width)

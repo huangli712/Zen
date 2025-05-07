@@ -46,8 +46,8 @@ haskey(ENV,"ACTEST_HOME") && pushfirst!(LOAD_PATH, ENV["ACTEST_HOME"])
 using ACTest
 
 using DelimitedFiles
-using CairoMakie
 using Printf
+using CairoMakie
 
 """
     read_image(ind::I64, std::Bool)
@@ -283,8 +283,12 @@ function make_figures(
     end
 end
 
-# Entry of this script. It will parse the command line arguments and call
-# the corresponding functions.
+"""
+    main()
+
+Entry of this script. It will parse the command line arguments and call
+the corresponding functions.
+"""
 function main()
     nargs = length(ARGS)
 

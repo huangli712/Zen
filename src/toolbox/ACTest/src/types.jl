@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/28
+# Last modified: 2025/05/07
 #
 
 #=
@@ -49,6 +49,7 @@ const PTEST    = Dict{String,ADT}(
     "ngrid"   => [missing, 1, :I64   , "Number of grid points"],
     "nmesh"   => [missing, 1, :I64   , "Number of mesh points"],
     "ntest"   => [missing, 1, :I64   , "Number of tests"],
+    "nbins"   => [missing, 1, :I64   , "Number of data bins per test"],
     "wmax"    => [missing, 1, :F64   , "Right boundary (maximum value) of real mesh"],
     "wmin"    => [missing, 1, :F64   , "Left boundary (minimum value) of real mesh"],
     "pmax"    => [missing, 1, :F64   , "Right boundary (maximum value) for possible peaks"],
@@ -72,6 +73,7 @@ const _PTEST   = Dict{String,Any}(
     "ngrid"   => 10,
     "nmesh"   => 501,
     "ntest"   => 100,
+    "nbins"   => 1,
     "wmax"    => 5.0,
     "wmin"    => -5.0,
     "pmax"    => 4.0,

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/28
+# Last modified: 2025/05/07
 #
 
 """
@@ -80,6 +80,7 @@ function see_dict()
     println("ngrid   : ", get_t("ngrid")  )
     println("nmesh   : ", get_t("nmesh")  )
     println("ntest   : ", get_t("ntest")  )
+    println("nbins   : ", get_t("nbins")  )
     println("wmax    : ", get_t("wmax")   )
     println("wmin    : ", get_t("wmin")   )
     println("pmax    : ", get_t("pmax")   )
@@ -184,6 +185,7 @@ function chk_dict()
     @assert get_t("ngrid") ≥ 1
     @assert get_t("nmesh") ≥ 1
     @assert get_t("ntest") ≥ 1
+    @assert get_t("nbins") ≥ 1
     @assert get_t("wmax") > get_t("wmin")
     @assert get_t("pmax") > get_t("pmin")
     @assert get_t("beta") ≥ 0.0

@@ -7,6 +7,8 @@
 # This script can be easily modified to support the other analytic
 # configuration tools / methods, or support parallel calculations.
 #
+# This script won't work when the green.data.* files are unavailable.
+#
 # Usage:
 #
 #     $ ./acflow.jl act.toml std=false inds=[]
@@ -41,7 +43,15 @@ using ACFlow:solve
 using Printf
 using DelimitedFiles
 
-# Prepare configurations for the ACFlow toolkit
+"""
+    get_dict()
+
+Prepare configurations for the ACFlow toolkit.
+
+### Returns
+* B -> A dict containing basic parameters for the test.
+* S -> A dict containing basic parameters for analytic continuation solver.
+"""
 function get_dict()
     # General setup
     B = Dict{String,Any}(
@@ -67,10 +77,21 @@ function get_dict()
     return B, S
 end
 
-# Fix configuration dynamically. This is essential for standard test.
-# Note that for standard test, the correlation functions could be
-# fermionic or bosonic, diagonal or non-diagonal. We have to make sure
-# the configurations are consistent with the original setups.
+"""
+    fix_dict!(i::I64, B::Dict{String,Any})
+
+Fix configuration dynamically. This is essential for standard test. Note
+that for standard test, the correlation functions could be fermionic or
+bosonic, diagonal or non-diagonal. We have to make sure the configurations
+are consistent with the original setups.
+
+### Arguments
+* i -> Index for the current test.
+* B -> A dict containing basic parameters for the test.
+
+### Returns
+`B` will be modified.
+"""
 function fix_dict!(i::I64, B::Dict{String,Any})
     # Get dicts for the standard test (ACT100)
     ACT100 = union(STD_FG, STD_FD, STD_FRD, STD_BG, STD_BD, STD_BRD)
@@ -86,8 +107,24 @@ function fix_dict!(i::I64, B::Dict{String,Any})
     B["offdiag"] = ACT100[i]["offdiag"]
 end
 
-# Evaluate error for the current test. It just calculates the distance
-# between the true and calculated spectral function.
+"""
+    get_error(
+        i::I64,
+        mesh::Vector{F64},
+        Aout::Vector{F64},
+        B::Dict{String,Any}
+    )
+
+Evaluate error for the current test. It just calculates the distance
+between the true and calculated spectral function. Note that the exact
+spectral function should be read from the image.data.i file.
+
+### Arguments
+* i -> Index for the current test.
+* mesh -> Real frequency mesh, ω.
+* Aout -> Calculated spectral function by the ACFlow toolkit, A(ω).
+* B -> A dict containing basic parameters for the test.
+"""
 function get_error(
     i::I64,
     mesh::Vector{F64},
@@ -122,7 +159,20 @@ function get_error(
     return error
 end
 
-# Write summary for the tests to external file `summary.data`
+"""
+    write_summary(
+        inds::Vector{I64},
+        error::Vector{F64},
+        ctime::Vector{F64}
+    )
+
+Write summary for the tests to external file `summary.data`.
+
+### Arguments
+* inds -> Indices for the tests.
+* error -> Errors for the tests.
+* ctime -> Elapsed times for the tests.
+"""
 function write_summary(
     inds::Vector{I64},
     error::Vector{F64},
@@ -149,9 +199,17 @@ function write_summary(
     end
 end
 
-# Perform analytic continuation simulations using the ACFlow toolkit.
-# if `std` is true, then the ACT100 dataset is considered.
-# if `inds` is not empty, then only the selected tests are handled.
+"""
+    make_test(std::Bool = false, inds::Vector{I64} = I64[])
+
+Perform analytic continuation simulations using the ACFlow toolkit. if
+`std` is true, then the ACT100 dataset is considered. if `inds` is not
+empty, then only the selected tests are handled.
+
+### Arguments
+* std -> Is the ACT100 dataset is adopted?
+* inds -> A collection of indices for the tests.
+"""
 function make_test(std::Bool = false, inds::Vector{I64} = I64[])
     # Get number of tests (ntest).
     # cinds is used to store the indices of tests.
@@ -225,8 +283,12 @@ function make_test(std::Bool = false, inds::Vector{I64} = I64[])
     write_summary(cinds, error, ctime)
 end
 
-# Entry of this script. It will parse the command line arguments and call
-# the corresponding functions.
+"""
+    main()
+
+Entry of this script. It will parse the command line arguments and call
+the corresponding functions.
+"""
 function main()
     nargs = length(ARGS)
 

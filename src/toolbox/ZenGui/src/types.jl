@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/29
+# Last modified: 2025/05/08
 #
 
 #=
@@ -1523,6 +1523,7 @@ mutable struct ACTEST_PTEST
     ngrid   :: I64
     nmesh   :: I64
     ntest   :: I64
+    nbins   :: I64
     wmax    :: F64
     wmin    :: F64
     pmax    :: F64
@@ -1551,6 +1552,7 @@ PTEST = ACTEST_PTEST(
     10,       # ngrid
     501,      # nmesh
     100,      # ntest
+    1,        # nbins
     5.0,      # wmax
     -5.0,     # wmin
     4.0,      # pmax
@@ -1580,6 +1582,7 @@ function struct_to_dict(s::ACTEST_PTEST)
         "ngrid"   => s.ngrid,
         "nmesh"   => s.nmesh,
         "ntest"   => s.ntest,
+        "nbins"   => s.nbins,
         "wmax"    => s.wmax,
         "wmin"    => s.wmin,
         "pmax"    => s.pmax,

@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/28
+# Last modified: 2025/05/07
 #
 
 """
@@ -136,6 +136,53 @@ function write_backward(ind::I64, gf::GreenFunction)
                 @printf(fout, "%16.12f %16.12f ", G[i], G[i+ngrid])
                 @printf(fout, "%16.12f %16.12f\n", err[i], err[i+ngrid])
             end
+        end
+    end
+end
+
+"""
+    write_backward(ind::I64, gf::Vector{GreenFunction})
+
+Write the Green's function data to `green.bin.i`. All information about
+the Green's function is included in `gf`. Note that `gf` contains multiple
+data bins. The number of data bins is `length(gf)`. A GreenFunction struct
+is related to a data bin.
+
+### Arguments
+* ind -> Index for the Green's function.
+* gf -> A vector of GreenFunction struct.
+
+### Returns
+N/A
+
+See also: [`reprod`](@ref).
+"""
+function write_backward(ind::I64, gf::Vector{GreenFunction})
+    @assert ind ≥ 1
+    nbins = length(gf)
+    @assert nbins > 1
+
+    # The reproduced data must be defined in imaginary time axis.
+    open("green.bin." * string(ind), "w") do fout
+        for i = 1:nbins
+            # Unpack the GreenFunction struct
+            ag = gf[i].grid
+            G = gf[i].green
+            err = gf[i].error
+            #
+            # Check the dimensional parameters
+            ngrid = length(ag)
+            ng = length(G)
+            @assert ngrid == ng
+            #
+            # Write data bin
+            @printf(fout, "# data bin : %6i\n", i)
+            for i in eachindex(ag)
+                @printf(fout, "%16.12f ", ag[i])
+                @printf(fout, "%16.12f %16.12f\n", G[i], err[i])
+            end
+            println(fout)
+            println(fout)
         end
     end
 end

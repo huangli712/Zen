@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/28
+# Last modified: 2025/05/07
 #
 
 """
@@ -114,7 +114,7 @@ function make_data_std()
     # Start the loop
     println()
     for i = 1:ntest
-        @printf("Test -> %4i / %4i\n", i, ntest)
+        @printf("Test -> %6i / %6i\n", i, ntest)
 
         # Get dict for current test
         dict = ACT100[i]
@@ -182,7 +182,7 @@ function make_data()
     # Start the loop
     println()
     for i = 1:ntest
-        @printf("Test -> %4i / %4i\n", i, ntest)
+        @printf("Test -> %6i / %6i\n", i, ntest)
         #
         # Generate spectral functions
         sf = make_spectrum(rng, mesh)
@@ -444,7 +444,7 @@ function make_noise(rng::AbstractRNG, τ::Vector{F64}, δ::F64, ξ::F64)
     Lτ = length(τ) - 1
 
     # Initialize noise to zero
-    Gnoisy = zeros(F64, Lτ+1)
+    noise = zeros(F64, Lτ+1)
 
     # Evaluate normal distribution
     R = δ * randn(rng, Lτ+1)
@@ -468,17 +468,17 @@ function make_noise(rng::AbstractRNG, τ::Vector{F64}, δ::F64, ξ::F64)
             Wᵢⱼ = exp(-min(Δτ, β - Δτ) / ξ)
             #
             # Update noise
-            Gnoisy[i] += R′[j] * Wᵢⱼ
+            noise[i] += R′[j] * Wᵢⱼ
             #
             # Update normalization
             V += (Wᵢⱼ) ^ 2
         end
 
         # Normalize noise
-        Gnoisy[i] /= sqrt(V)
+        noise[i] /= sqrt(V)
     end
 
-    return Gnoisy
+    return noise
 end
 
 """
@@ -507,6 +507,14 @@ function make_green(
     kernel::Matrix{F64},
     grid::AbstractGrid
     )
+    # Get the number of data bins per test
+    # Now only imaginary time Green's function supports multiple data bins.
+    nbins = get_t("nbins")
+    if nbins > 1
+        @assert get_t("grid") in ("ftime", "btime")
+    end
+    @printf("number of data bins : %6i\n", nbins)
+
     # Get the noise level
     # If δ < 0, it means noise-free.
     δ = get_t("noise")
@@ -517,10 +525,8 @@ function make_green(
     # Get type of noise
     # Now only imaginary time Green's function supports correlated noise.
     tcorr = get_t("tcorr")
-    if get_t("grid") in ("ffreq", "bfreq")
-        if tcorr
-            error("Matsubara data does not support this type of noise")
-        end
+    if tcorr
+        @assert get_t("grid") in ("ftime", "btime")
     end
 
     # Calculate Green's function
@@ -537,12 +543,23 @@ function make_green(
 
     # Setup random noise
     if tcorr
-        noise = make_noise(rng, grid.τ, δ, ξ)
+        if nbins == 1 # Single data bin
+            noise = make_noise(rng, grid.τ, δ, ξ)
+            return GreenFunction(grid, green .+ noise, err)
+        else         # Multiple data bins
+            GFArray = GreenFunction[]
+            # For each data bin, the noise is different.
+            for _ = 1:nbins
+                noise = make_noise(rng, grid.τ, δ, ξ)
+                push!(GFArray, GreenFunction(grid, green .+ noise, err))
+            end
+            @assert length(GFArray) == nbins
+            return GFArray
+        end
     else
         noise = randn(rng, F64, ngrid) * δ
+        return GreenFunction(grid, green .+ noise, err)
     end
-
-    return GreenFunction(grid, green .+ noise, err)
 end
 
 """
