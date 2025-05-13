@@ -67,20 +67,27 @@ Pages = [
     "guide/input.md",
     "guide/output.md",
     "guide/parameters.md",
-    "guide/core.md",
-    "guide/auxiliary.md",
     "guide/tips.md",
 ]
 Depth = 1
 ```
 
-## Internals
+## Components
 
 ```@contents
 Pages = [
-    "internals/outline.md",
-    "internals/arch.md",
-    "internals/summary.md",
+    "components/outline.md",
+    "components/arch.md",
+    "components/dft.md",
+    "components/wannier.md",
+    "components/dmft.md",
+    "components/df.md",
+    "components/qim.md",
+    "components/gui.md",
+    "components/tools.md",
+    "components/test.md",
+    "components/docs.md",
+    "components/apawlib.md",
 ]
 Depth = 1
 ```

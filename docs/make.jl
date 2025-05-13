@@ -1,7 +1,4 @@
-haskey(ENV,"ZEN_CORE") && pushfirst!(LOAD_PATH, ENV["ZEN_CORE"])
-
 using Documenter
-using ZenCore
 
 makedocs(
     sitename = "Zen",
@@ -16,7 +13,6 @@ makedocs(
         collapselevel = 1,
     ),
     remotes = nothing,
-    modules = [ZenCore],
     pages = [
         "Home" => "index.md",
         "Introduction" => Any[
@@ -106,46 +102,21 @@ makedocs(
                 "Block [imp]" => "guide/block_impurity.md",
                 "Block [solver]" => "guide/block_solver.md",
             ],
-            "Core Components" => Any[
-                "Summary" => "guide/core.md",
-                "Density Functional Theory Code" => "guide/dft.md",
-                "Wannier Function Code" => "guide/wannier.md",
-                "Dynamical Mean-Field Theory Code" => "guide/dmft.md",
-                "Dual Fermion Code" => "guide/df.md",
-                "Quantum Impurity Solvers" => "guide/qim.md",
-            ],
-            "Auxliary Components" => Any[
-                "Summary" => "guide/auxiliary.md",
-                "Graphic User Interface" => "guide/gui.md",
-                "Auxiliary Tools" => "guide/tools.md",
-                "Tests And Examples" => "guide/tests.md",
-                "Documentation" => "guide/docs.md",
-                "Projector Augmented Wave Datasets" => "guide/apawlib.md",
-            ],
             "Tips And Tricks" => "guide/tips.md",
         ],
-        "Internals" => Any[
-            "Outline" => "internals/outline.md",
-            "Software Architecture" => "internals/arch.md",
-            "Inside The ZenCore Library" => Any[
-                "Summary" => "internals/summary.md",
-                "ZenCore" => "internals/zencore.md",
-                "Global" => "internals/global.md",
-                "Util" => "internals/util.md",
-                "Tetra" => "internals/tetra.md",
-                "Types" => "internals/types.md",
-                "Config" => "internals/config.md",
-                "Base" => "internals/base.md",
-                "VASP" => "internals/vasp.md",
-                "QE" => "internals/qe.md",
-                "PLO" => "internals/plo.md",
-                "Wannier" => "internals/wannier.md",
-                "IR" => "internals/ir.md",
-                "DMFT" => "internals/dmft.md",
-                "Solver" => "internals/solver.md",
-                "Sigma" => "internals/sigma.md",
-                "Mixing" => "internals/mixing.md",
-            ],
+        "Components" => Any[
+            "Outline" => "components/outline.md",
+            "Software Architecture" => "components/arch.md",
+            "Density Functional Theory Code" => "components/dft.md",
+            "Wannier Function Code" => "components/wannier.md",
+            "Dynamical Mean-Field Theory Code" => "components/dmft.md",
+            "Dual Fermion Code" => "components/df.md",
+            "Quantum Impurity Solvers" => "components/qim.md",
+            "Graphic User Interface" => "components/gui.md",
+            "Auxiliary Tools" => "components/tools.md",
+            "Tests And Examples" => "components/tests.md",
+            "Documentation" => "components/docs.md",
+            "Projector Augmented Wave Datasets" => "components/apawlib.md",
         ],
     ],
 )
