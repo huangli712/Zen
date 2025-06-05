@@ -21,7 +21,7 @@
 ## =======
 ##
 ## 09/18/2014 by li huang (created)
-## 05/23/2025 by li huang (last modified)
+## 06/06/2025 by li huang (last modified)
 ##
 ##
 
@@ -32,11 +32,13 @@ define searchconfig
     $(eval INC_FILE=$(wildcard $(INC_DIR)/$(2)))
     $(info searchconfig scanned: $(INC_DIR))
     $(if $(INC_FILE),
-	     $(info searchconfig found: $(INC_FILE)),
-		 $(call searchconfig,$(dir $(INC_DIR)),$(2)))
+        $(info searchconfig found: $(INC_FILE)),
+            $(call searchconfig,$(dir $(INC_DIR)),$(2)))
 endef
 
-$(eval $(call searchconfig,$(CURDIR),build/make.inc))
+$(if $(INC_FILE), \
+    $(info INC_FILE: $(INC_FILE)), \
+        $(eval $(call searchconfig,$(CURDIR),build/make.inc)))
 
 include $(INC_FILE)
 
