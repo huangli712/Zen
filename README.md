@@ -21,7 +21,7 @@ Now this package is currently under developement. **PLEASE USE IT AT YOUR OWN RI
 
 ## Version
 
-v0.5.8-devel.250606
+v0.6.0-devel.251002
 
 ## License
 

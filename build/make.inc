@@ -25,9 +25,9 @@
 
 # Fortran compiler, linker, and archiver
 #-------------------------------------------------------------------------
-F90    = mpif90
+F90    = mpiifx
 LINKER = $(F90)
-ARCHIVER = ar -ruv
+ARCHIVER = ar -rv
 
 # Fortran preprocessor options
 #-------------------------------------------------------------------------
@@ -38,7 +38,7 @@ CPP    = $(FPP) $(MPI) $(OMP)
 
 # Machine tuning options
 #-------------------------------------------------------------------------
-CHECK  = -nogen-interfaces -warn all #-check all -traceback -g
+CHECK  = -nogen-interfaces -warn all,noexternal #-check all -traceback -g
 MTUNE  = -O3 -xHost
 
 # Flags for fortran compiler and linker
@@ -48,5 +48,4 @@ LFLAGS = $(OMP)
 
 # External linear algebra library
 #-------------------------------------------------------------------------
-LIBS   = -L/Users/lihuang/opt/intel/mkl/lib -lmkl_core -lmkl_sequential -lmkl_rt
-FLINK  = /Users/lihuang/Working/devel/Zen/src/libs/Flink/src
+LIBS   = -L$(MKLROOT)/lib -qmkl
