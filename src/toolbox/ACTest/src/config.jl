@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/05/07
+# Last modified: 2025/07/11
 #
 
 """
@@ -72,26 +72,27 @@ See also: [`fil_dict`](@ref).
 function see_dict()
     println("[ Test ]")
     #
-    println("solver  : ", get_t("solver") )
-    println("ptype   : ", get_t("ptype")  )
-    println("ktype   : ", get_t("ktype")  )
-    println("grid    : ", get_t("grid")   )
-    println("mesh    : ", get_t("mesh")   )
-    println("ngrid   : ", get_t("ngrid")  )
-    println("nmesh   : ", get_t("nmesh")  )
-    println("ntest   : ", get_t("ntest")  )
-    println("nbins   : ", get_t("nbins")  )
-    println("wmax    : ", get_t("wmax")   )
-    println("wmin    : ", get_t("wmin")   )
-    println("pmax    : ", get_t("pmax")   )
-    println("pmin    : ", get_t("pmin")   )
-    println("beta    : ", get_t("beta")   )
-    println("noise   : ", get_t("noise")  )
-    println("lcorr   : ", get_t("lcorr")  )
-    println("tcorr   : ", get_t("tcorr")  )
-    println("offdiag : ", get_t("offdiag"))
-    println("lpeak   : ", get_t("lpeak")  )
-    println("pmesh   : ", get_t("pmesh")  )
+    println("solver : ", get_t("solver") )
+    println("ptype  : ", get_t("ptype")  )
+    println("ktype  : ", get_t("ktype")  )
+    println("grid   : ", get_t("grid")   )
+    println("mesh   : ", get_t("mesh")   )
+    println("ngrid  : ", get_t("ngrid")  )
+    println("nmesh  : ", get_t("nmesh")  )
+    println("ntest  : ", get_t("ntest")  )
+    println("nbins  : ", get_t("nbins")  )
+    println("wmax   : ", get_t("wmax")   )
+    println("wmin   : ", get_t("wmin")   )
+    println("pmax   : ", get_t("pmax")   )
+    println("pmin   : ", get_t("pmin")   )
+    println("beta   : ", get_t("beta")   )
+    println("noise  : ", get_t("noise")  )
+    println("lcorr  : ", get_t("lcorr")  )
+    println("tcorr  : ", get_t("tcorr")  )
+    println("fnpd   : ", get_t("fnpd")   )
+    println("fpbc   : ", get_t("fpbc")   )
+    println("lpeak  : ", get_t("lpeak")  )
+    println("pmesh  : ", get_t("pmesh")  )
     #
     println()
 end

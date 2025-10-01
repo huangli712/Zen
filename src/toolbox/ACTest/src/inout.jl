@@ -63,6 +63,8 @@ function data in imaginary axis. This function will write the data to
 `green.data`, which can be fed into the analytic continuation tools.
 Here, `G` is the constructed Green's function data.
 
+Actually, this function is not used.
+
 ### Arguments
 * ag -> Grid for input data.
 * G  -> Constructed Green's function.
@@ -107,7 +109,7 @@ the Green's function is included in `gf`.
 ### Returns
 N/A
 
-See also: [`reprod`](@ref).
+See also: [`reprod`](@ref), [`GreenFunction`](@ref).
 """
 function write_backward(ind::I64, gf::GreenFunction)
     @assert ind ≥ 1
@@ -155,7 +157,7 @@ is related to a data bin.
 ### Returns
 N/A
 
-See also: [`reprod`](@ref).
+See also: [`reprod`](@ref), [`GreenFunction`](@ref).
 """
 function write_backward(ind::I64, gf::Vector{GreenFunction})
     @assert ind ≥ 1

@@ -122,7 +122,7 @@ function get_dict()
         "wmax"   => get_t("wmax"),
         "wmin"   => get_t("wmin"),
         "beta"   => get_t("beta"),
-        "offdiag" => get_t("offdiag"),
+        "offdiag" => get_t("fnpd"),
         "pmesh" => get_t("pmesh"),
     )
 
@@ -162,7 +162,7 @@ function fix_dict!(i::I64, B::Dict{String,Any})
     B["ktype"] = ACT100[i]["ktype"]
     B["grid"] = ACT100[i]["grid"]
     B["mesh"] = ACT100[i]["mesh"]
-    B["offdiag"] = ACT100[i]["offdiag"]
+    B["offdiag"] = ACT100[i]["fnpd"]
 end
 
 """

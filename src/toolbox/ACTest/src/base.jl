@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/05/07
+# Last modified: 2025/09/25
 #
 
 """
@@ -82,6 +82,118 @@ function read_param()
 end
 
 """
+    make_seed()
+
+Read random number seed from terminal input.
+
+See also: [`query_args`](@ref).
+"""
+function make_seed()
+    # Default random number seed
+    seed = rand(1:10000) * myid() + 1981
+
+    # The second argument is the seed
+    nargs = length(ARGS)
+    if nargs == 2
+        seed = parse(I64, ARGS[2])
+    end
+
+    return seed
+end
+
+"""
+    make_data_mat()
+
+Try to generate spectral functions and the corresponding Green's functions.
+However, the spectral functions are with negative weights, and the Green's
+functions are off-diagonal elements of matrix-valued Green's functions.
+
+This function is called by the `util/acmat.jl` script only.
+
+### Arguments
+N/A
+
+### Returns
+N/A
+
+See also: [`make_data_std`](@ref).
+"""
+function make_data_mat()
+    # We have to make sure the diagonal spectra are positive definite.
+    @assert get_t("fnpd") == false
+
+    # We have to make sure the physical boundary condition is disabled.
+    @assert get_t("fpbc") == false
+
+    # Get number of mesh points
+    nmesh = get_t("nmesh")
+
+    # Get number of tests
+    ntest = get_t("ntest")
+
+    # Initialize the random number generator
+    seed = make_seed()
+    rng = MersenneTwister(seed)
+    println("Random number seed: ", seed)
+
+    # Prepare grid for input data
+    grid = make_grid()
+    println("Build grid for input data: ", length(grid), " points")
+
+    # Prepare mesh for output spectrum
+    mesh = make_mesh()
+    println("Build mesh for spectrum: ", length(mesh), " points")
+
+    # Prepare kernel function
+    kernel = make_kernel(mesh, grid)
+    println("Build default kernel: ", get_t("ktype"))
+
+    # Set rotation angle
+    θ = 0.1234
+    #
+    # Build rotation matrix
+    ℝ = [cos(θ) sin(θ); -sin(θ) cos(θ)]
+
+    # Prepare memories for spectral functions
+    # 𝔸 : diagonal spectral function
+    # 𝒜 : full matrix-valued spectral function
+    @assert nmesh == length(mesh)
+    𝔸 = zeros(F64, (2, 2, nmesh))
+    𝒜 = zeros(F64, (2, 2, nmesh))
+
+    # Start the loop
+    println()
+    for i = 1:ntest
+        @printf("Test -> %6i / %6i\n", i, ntest)
+        #
+        # Generate spectral functions
+        sf₁ = make_spectrum(rng, mesh)
+        sf₂ = make_spectrum(rng, mesh)
+        #
+        # Build diagonal spectral function
+        𝔸[1,1,:] .= sf₁.image
+        𝔸[2,2,:] .= sf₂.image
+        #
+        # Rotation
+        for w = 1:nmesh
+            𝒜[:,:,w] = ℝ * 𝔸[:,:,w] * ℝ'
+        end
+        #
+        # Extract off-diagonal spectral function
+        sf = SpectralFunction(mesh, 𝒜[1,2,:])
+        #
+        # Generate Green's functions
+        green = make_green(rng, sf, kernel, grid)
+        #
+        # Write generated data
+        write_spectrum(i, sf)
+        write_backward(i, green)
+        #
+        println()
+    end
+end
+
+"""
     make_data_std()
 
 Try to build a standard dataset (`ACT100`), which contains 100 typical
@@ -107,7 +219,7 @@ function make_data_std()
 
     # Initialize the random number generator
     # It is used to generate random noise only.
-    seed = rand(1:10000) * myid() + 1981
+    seed = make_seed()
     rng = MersenneTwister(seed)
     println("Random number seed: ", seed)
 
@@ -163,7 +275,7 @@ function make_data()
     ntest = get_t("ntest")
 
     # Initialize the random number generator
-    seed = rand(1:10000) * myid() + 1981
+    seed = make_seed()
     rng = MersenneTwister(seed)
     println("Random number seed: ", seed)
 
@@ -224,7 +336,7 @@ function make_peak(rng::AbstractRNG)
         else
             plist = ["gauss", "lorentz", "delta", "rectangle", "risedecay"]
         end
-        ptype, = rand(plist, 1)
+        ptype, = rand(rng, plist, 1)
         println("ptype is randomized to: $ptype")
     end
 
@@ -291,7 +403,7 @@ See also: [`make_data`](@ref).
 function make_spectrum(rng::AbstractRNG, mesh::AbstractMesh)
     # Extract essential parameters
     ktype = get_t("ktype")
-    offdiag = get_t("offdiag")
+    fnpd = get_t("fnpd")
     lpeak = get_t("lpeak")
 
     # Get number of peaks
@@ -300,7 +412,7 @@ function make_spectrum(rng::AbstractRNG, mesh::AbstractMesh)
 
     # Determine signs for all peaks
     signs = ones(F64, npeak)
-    if offdiag
+    if fnpd
         # How many negative signs are there?
         # We have to make sure that at least one sign is negative.
         nsign = rand(rng, 1:npeak)
@@ -323,7 +435,7 @@ function make_spectrum(rng::AbstractRNG, mesh::AbstractMesh)
     end
     #
     # Normalize the spectrum
-    if !offdiag
+    if !fnpd
         image = image ./ trapz(mesh,image)
     else
         # We have to make sure that A(ω) should exhibit negative weights
@@ -396,7 +508,7 @@ function make_spectrum(
     #
     # Normalize the spectrum
     if count(x -> x > 0.0, sv) == npeak
-        # All signs are positive. It is not for off-diagonal element.
+        # All signs are positive. It is positive definite spectrum.
         # We have to normalize the spectrum.
         image = image ./ trapz(mesh,image)
     end
@@ -426,18 +538,18 @@ See Phys. Rev. X 7, 041072 (2017) for more details.
 """
     make_noise(rng::AbstractRNG, τ::Vector{F64}, δ::F64, ξ::F64)
 
-Generate noise for an imaginary time correlation function ``G(\tau)``.
+Generate noise for an imaginary time correlation function `G(τ)`.
 The noise is exponentially correlated in imaginary time. This function is
 adopted from https://github.com/SmoQySuite/SmoQySynthAC.jl.
 
 ### Arguments
 * rng -> Random number generator.
-* τ -> Vector specifying the imaginary time ``\tau`` grid.
+* τ -> Vector specifying the imaginary time `τ` grid.
 * δ -> Standard deviation of the noise; controls the typical amplitude of the error.
 * ξ -> Correlation length associated with the noise in imaginary time.
 
-By default, the last element of ``\tau`` is assumed to be equal to the
-inverse temperature, i.e., ``\tau[end] = \beta``.
+By default, the last element of `τ` is assumed to be equal to the
+inverse temperature, i.e., `τ[end] = β`.
 """
 function make_noise(rng::AbstractRNG, τ::Vector{F64}, δ::F64, ξ::F64)
     # Evaluate length of imaginary time axis
@@ -495,8 +607,8 @@ corresponding correlation function G (note that G ≡ KA).
 ### Arguments
 * rng -> Random number generator.
 * sf -> A SpectralFunction struct, A(ω).
-* kernel -> Kernel matrix.
-* grid -> Grid for correlation function.
+* kernel -> Kernel matrix, K(τ,ω) or K(iωₙ,ω).
+* grid -> Grid for correlation function, τ or iωₙ.
 
 ### Returns
 * gf -> A GreenFunction struct.
@@ -507,6 +619,12 @@ function make_green(
     kernel::Matrix{F64},
     grid::AbstractGrid
     )
+    # Calculate Green's function at first
+    green = reprod(sf.mesh, kernel, sf.image)
+
+    # Next we should prepare error bar and artifical noise for Green's
+    # function to mimic realistic situation.
+
     # Get the number of data bins per test
     # Now only imaginary time Green's function supports multiple data bins.
     nbins = get_t("nbins")
@@ -529,20 +647,44 @@ function make_green(
         @assert get_t("grid") in ("ftime", "btime")
     end
 
-    # Calculate Green's function
-    green = reprod(sf.mesh, kernel, sf.image)
+    # Apply physical boundary condition: G(0) + G(β) = 1
+    # Now only imaginary time Green's function supports boundary condition.
+    #
+    # For off-diagonal Green's function, the boundary condition becomes
+    # G(0) + G(β) = 0. So, if the script `util/acmat.jl` is used to build
+    # the off-diagonal Green's function, please make sure fpbc = false.
+    #
+    fpbc = get_t("fpbc")
+    if fpbc
+        @assert get_t("grid") in ("ftime", "btime")
+        #
+        Δ = green[1] + green[end] - 1.0
+        green[1] = green[1] - Δ / 2.0
+        green[end] = green[end] - Δ / 2.0
+    end
 
     # Setup standard deviation
     ngrid = length(green)
+    β = get_t("beta")
     if δ < 0.0
         δ = 0.0
         err = fill(1.0e-4, ngrid)
     else
-        err = fill(δ, ngrid)
+        # Only for imaginary time Green's function
+        #     err(τ) = δ * 4 * τ/β ( 1 - τ/β )
+        # Note that err(0) = err(β) = 0, and err(β/2) = 1
+        if get_t("grid") in ("ftime", "btime")
+            ampl = map(x -> 4.0 * x / β * (1.0 - x / β), grid)
+            err = 100 * δ * (ampl .+ 100 * δ)
+        else
+            err = fill(100 * δ, ngrid)
+        end
     end
 
     # Setup random noise
     if tcorr
+        # Imaginary time correlated noise only suits for imaginary time
+        # Green's function. So here we use grid.τ directly.
         if nbins == 1 # Single data bin
             noise = make_noise(rng, grid.τ, δ, ξ)
             return GreenFunction(grid, green .+ noise, err)

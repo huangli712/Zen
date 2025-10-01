@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/05/07
+# Last modified: 2025/07/11
 #
 
 #=
@@ -40,50 +40,52 @@ The following dictionaries are used as global variables.
 
 Dictionary for configuration parameters: general setup.
 """
-const PTEST    = Dict{String,ADT}(
-    "solver"  => [missing, 1, :String, "Analytic continuation solver"],
-    "ptype"   => [missing, 1, :String, "Type of peaks in the spectrum"],
-    "ktype"   => [missing, 1, :String, "Type of kernel function"],
-    "grid"    => [missing, 1, :String, "Grid for correlation function"],
-    "mesh"    => [missing, 1, :String, "Mesh for spectral function"],
-    "ngrid"   => [missing, 1, :I64   , "Number of grid points"],
-    "nmesh"   => [missing, 1, :I64   , "Number of mesh points"],
-    "ntest"   => [missing, 1, :I64   , "Number of tests"],
-    "nbins"   => [missing, 1, :I64   , "Number of data bins per test"],
-    "wmax"    => [missing, 1, :F64   , "Right boundary (maximum value) of real mesh"],
-    "wmin"    => [missing, 1, :F64   , "Left boundary (minimum value) of real mesh"],
-    "pmax"    => [missing, 1, :F64   , "Right boundary (maximum value) for possible peaks"],
-    "pmin"    => [missing, 1, :F64   , "Left boundary (minimum value) for possible peaks"],
-    "beta"    => [missing, 1, :F64   , "Inverse temperature"],
-    "noise"   => [missing, 1, :F64   , "Noise level"],
-    "lcorr"   => [missing, 1, :F64   , "Correlation length associated with the noise"],
-    "tcorr"   => [missing, 1, :Bool  , "Is the noise correlated in imaginary time axis"],
-    "offdiag" => [missing, 1, :Bool  , "Is it the offdiagonal part in matrix-valued function"],
-    "lpeak"   => [missing, 1, :Array , "Number of peaks in the spectrum"],
-    "pmesh"   => [missing, 0, :Array , "Additional parameters for customizing the mesh"],
+const PTEST = Dict{String,ADT}(
+    "solver" => [missing, 1, :String, "Analytic continuation solver"],
+    "ptype"  => [missing, 1, :String, "Type of peaks in the spectrum"],
+    "ktype"  => [missing, 1, :String, "Type of kernel function"],
+    "grid"   => [missing, 1, :String, "Grid for correlation function"],
+    "mesh"   => [missing, 1, :String, "Mesh for spectral function"],
+    "ngrid"  => [missing, 1, :I64   , "Number of grid points"],
+    "nmesh"  => [missing, 1, :I64   , "Number of mesh points"],
+    "ntest"  => [missing, 1, :I64   , "Number of tests"],
+    "nbins"  => [missing, 1, :I64   , "Number of data bins per test"],
+    "wmax"   => [missing, 1, :F64   , "Right boundary (maximum value) of real mesh"],
+    "wmin"   => [missing, 1, :F64   , "Left boundary (minimum value) of real mesh"],
+    "pmax"   => [missing, 1, :F64   , "Right boundary (maximum value) for possible peaks"],
+    "pmin"   => [missing, 1, :F64   , "Left boundary (minimum value) for possible peaks"],
+    "beta"   => [missing, 1, :F64   , "Inverse temperature"],
+    "noise"  => [missing, 1, :F64   , "Noise level"],
+    "lcorr"  => [missing, 1, :F64   , "Correlation length associated with the noise"],
+    "tcorr"  => [missing, 1, :Bool  , "Is the noise correlated in imaginary time axis"],
+    "fnpd"   => [missing, 1, :Bool  , "Is the spectral function non-positive definite"],
+    "fpbc"   => [missing, 1, :Bool  , "Is the physical boundary condition applied"],
+    "lpeak"  => [missing, 1, :Array , "Number of peaks in the spectrum"],
+    "pmesh"  => [missing, 0, :Array , "Additional parameters for customizing the mesh"],
 )
 
 # Default parameters for PTEST
-const _PTEST   = Dict{String,Any}(
-    "solver"  => "MaxEnt",
-    "ptype"   => "gauss",
-    "ktype"   => "fermi",
-    "grid"    => "ffreq",
-    "mesh"    => "linear",
-    "ngrid"   => 10,
-    "nmesh"   => 501,
-    "ntest"   => 100,
-    "nbins"   => 1,
-    "wmax"    => 5.0,
-    "wmin"    => -5.0,
-    "pmax"    => 4.0,
-    "pmin"    => -4.0,
-    "beta"    => 10.0,
-    "noise"   => 1.0e-6,
-    "lcorr"   => 0.5,
-    "tcorr"   => false,
-    "offdiag" => false,
-    "lpeak"   => [1,2,3],
+const _PTEST = Dict{String,Any}(
+    "solver" => "MaxEnt",
+    "ptype"  => "gauss",
+    "ktype"  => "fermi",
+    "grid"   => "ffreq",
+    "mesh"   => "linear",
+    "ngrid"  => 10,
+    "nmesh"  => 501,
+    "ntest"  => 100,
+    "nbins"  => 1,
+    "wmax"   => 5.0,
+    "wmin"   => -5.0,
+    "pmax"   => 4.0,
+    "pmin"   => -4.0,
+    "beta"   => 10.0,
+    "noise"  => 1.0e-6,
+    "lcorr"  => 0.5,
+    "tcorr"  => false,
+    "fnpd"   => false,
+    "fpbc"   => false,
+    "lpeak"  => [1,2,3],
 )
 
 #=
