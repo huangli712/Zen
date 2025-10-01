@@ -1,0 +1,4 @@
+name = "Flink"
+uuid = "d04bf061-4f78-407e-a963-1c2fe0a74be4"
+authors = ["Li Huang <huangli@caep.cn>"]
+version = "1.2.3"
