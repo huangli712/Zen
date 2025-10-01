@@ -247,15 +247,15 @@
              if ( stts(i) == 0 ) then
                  if ( rank(i) /= 0 ) cflag = 99
              endif ! back if ( stts(i) == 0 ) block
-
+             !
              if ( stts(i) == 1 ) then
                  if ( rank(i) == 0 ) cflag = 99
              endif ! back if ( stts(i) == 1 ) block
-
+             !
              if ( stts(i) == 2 ) then
                  if ( rank(i) == 0 ) cflag = 99
              endif ! back if ( stts(i) == 2 ) block
-
+             !
              if ( stts(i) == 3 ) then
                  if ( rank(i) /= 0 ) cflag = 99
              endif ! back if ( stts(i) == 3 ) block
@@ -266,10 +266,11 @@
              do j=1,rank(i)-1
                  if ( time_s( index_s(j, i), i ) > time_s( index_s(j+1, i), i ) ) then
                      cflag = 99
-                 endif ! back if ( time_s( index_s(j, i), i ) > time_s( index_s(j+1, i), i ) ) block
+                 endif ! back if block
+                 !
                  if ( time_e( index_e(j, i), i ) > time_e( index_e(j+1, i), i ) ) then
                      cflag = 99
-                 endif ! back if ( time_e( index_e(j, i), i ) > time_e( index_e(j+1, i), i ) ) block
+                 endif ! back if block
              enddo ! over j={1,rank(i)-1} loop
          enddo ! over i={1,norbs} loop
 
@@ -278,13 +279,13 @@
              if ( stts(i) == 1 ) then
                  if ( time_s( index_s(1, i), i ) > time_e( index_e(1, i), i ) ) then
                      cflag = 99
-                 endif ! back if ( time_s( index_s(1, i), i ) > time_e( index_e(1, i), i ) ) block
+                 endif ! back if block
              endif ! back if ( stts(i) == 1 ) block
-
+             !
              if ( stts(i) == 2 ) then
                  if ( time_s( index_s(1, i), i ) < time_e( index_e(1, i), i ) ) then
                      cflag = 99
-                 endif ! back if ( time_s( index_s(1, i), i ) < time_e( index_e(1, i), i ) ) block
+                 endif ! back if block
              endif ! back if ( stts(i) == 2 ) block
          enddo ! over i={1,norbs} loop
 
@@ -637,8 +638,8 @@
      ! try to generate new configuration
      ! (1) at first, we select iso randomly
      ! (2) obtain tau_start1 according to iso
-     ! (3) based on the existing configuration, we determine tau_start2 and
-     !     related index isn
+     ! (3) based on the existing configuration, we determine tau_start2
+     !     and related index isn
      ! (4) finally ring is evaluated
      call try_lshift_colour(flvr, iso, isn, ring, tau_start1, tau_start2)
 
@@ -747,8 +748,8 @@
      ! try to generate new configuration
      ! (1) at first, we select ieo randomly
      ! (2) obtain tau_end1 according to ieo
-     ! (3) based on the existing configuration, we determine tau_end2 and
-     !     related index ien
+     ! (3) based on the existing configuration, we determine tau_end2
+     !     and related index ien
      ! (4) finally ring is evaluated
      call try_rshift_colour(flvr, ieo, ien, ring, tau_end1, tau_end2)
 
@@ -810,6 +811,7 @@
 
 !! external arguments
      ! control flag
+     !
      ! if cflip = 1, flip intra-orbital spins one by one
      ! if cflip = 2, flip intra-orbital spins globally
      integer, intent(in) :: cflip
@@ -871,7 +873,8 @@
                  ! get maximum rank order in spin up and spin down states
                  kmax = max( rank(fup), rank(fdn) )
 
-                 ! exchange global variables between spin up and spin down states
+                 ! exchange global variables between
+                 ! spin up and spin down states
                  call cat_reflip_matrix(fup, fdn, kmax)
 
              endif ! back if ( pass .eqv. .true. ) block
@@ -922,7 +925,8 @@
                  ! get maximum rank order in spin up and spin down states
                  kmax = max( rank(fup), rank(fdn) )
 
-                 ! exchange global variables between spin up and spin down states
+                 ! exchange global variables between
+                 ! spin up and spin down states
                  call cat_reflip_matrix(fup, fdn, kmax)
 
              enddo ! over flvr={1,nband} loop
@@ -964,7 +968,8 @@
 
      do flvr=1,norbs
 
-         ! check the perturbation expansion order for current flavor channel
+         ! check the perturbation expansion order for
+         ! current flavor channel
          if ( rank(flvr) == 0 ) CYCLE
 
          ! generate the mmat matrix and gmat matrix from scratch
