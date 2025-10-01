@@ -15,7 +15,7 @@ Zen is a modern DFT + DMFT (namely the density functional theory in combination 
 | **ACFlow**   | Analytic continuation tools       | v2.1.5-devel.250605 |
 | **ACGui**    | Analytic continuation tools       | v1.0.0-devel.250405 |
 | **ACTest**   | Analytic continuation tools       | v1.1.5-devel.250507 |
-| **Flink**    | Numerical library                 | v1.2.2-devel.250606 |
+| **Flink**    | Numerical library                 | v1.2.3-devel.250923 |
 
 Now this package is currently under developement. **PLEASE USE IT AT YOUR OWN RISK!**
 
