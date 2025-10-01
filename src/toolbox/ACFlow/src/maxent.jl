@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2024/09/30
+# Last modified: 2025/08/18
 #
 
 #=
@@ -703,6 +703,7 @@ function precompute(
 
     # Compute the Hessian matrix
     @einsum hess[i,j] = Δ[i] * Δ[j] * K[k,i] * K[k,j] * σ²[k]
+    @. hess = (hess + hess') / 2.0
 
     return V, W₂, W₃, Bₘ, hess
 end
@@ -1367,7 +1368,9 @@ function calc_bayes(
     end
     Λ = (T * T') .* mec.hess
 
-    λ = eigvals(Hermitian(Λ))
+    nsvd = size(mec.Vₛ, 2)
+    λ = eigvals(Hermitian(Λ))[end - nsvd + 1 : end]
+    filter!(x -> x > 0.0, λ)
     ng = -2.0 * α * S
     tr = sum(λ ./ (α .+ λ))
     conv = tr / ng
@@ -1428,7 +1431,9 @@ function calc_bayes_od(
     end
     Λ = (T * T') .* mec.hess
 
-    λ = eigvals(Hermitian(Λ))
+    nsvd = size(mec.Vₛ, 2)
+    λ = eigvals(Hermitian(Λ))[end - nsvd + 1 : end]
+    filter!(x -> x > 0.0, λ)
     ng = -2.0 * α * S
     tr = sum(λ ./ (α .+ λ))
     conv = tr / ng
