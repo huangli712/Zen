@@ -14,7 +14,7 @@ Zen is a modern DFT + DMFT (namely the density functional theory in combination 
 | **iQIST**    | Quantum impurity solvers          | v0.8.2-devel.230706 |
 | **ACFlow**   | Analytic continuation tools       | v2.2.0-devel.250911 |
 | **ACGui**    | Analytic continuation tools       | v1.1.0-devel.250912 |
-| **ACTest**   | Analytic continuation tools       | v1.1.5-devel.250507 |
+| **ACTest**   | Analytic continuation tools       | v1.3.2-devel.250925 |
 | **Flink**    | Numerical library                 | v1.2.3-devel.250923 |
 
 Now this package is currently under developement. **PLEASE USE IT AT YOUR OWN RISK!**
