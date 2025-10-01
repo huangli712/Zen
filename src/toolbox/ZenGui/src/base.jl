@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/25
+# Last modified: 2025/06/27
 #
 
 # Basic algebraic operation for ImVec2.
@@ -42,14 +42,26 @@ function zeng_run()
     # Load special fonts if available
     setup_fonts()
 
-    # Global id for texture.
-    # When texture_id is nothing, it means that the texture has not been loaded.
+    # Global id for texture
+    # If texture_id is nothing, it means that the texture has not been loaded.
     texture_id = nothing
+
+    # Global id for logo image
+    # If logo_id is nothing, it means that the logo image has not been loaded.
+    logo_id = nothing
+
+    # Main Event Loop
     CImGui.render(ctx; window_title = "ZenGui") do
         # If texture_id is nothing, we should try to load the image and
         # setup the texture's id.
         if isnothing(texture_id)
             texture_id = load_texture()
+        end
+
+        # If logo_id is nothing, we should try to load the image and
+        # setup the logo's id.
+        if isnothing(logo_id)
+            logo_id = load_logo()
         end
 
         # Setup global menu in the main window
@@ -90,9 +102,9 @@ function zeng_run()
         FMENU.H_DFERMION && @c handle_menu_dfermion(&FMENU.H_DFERMION)
         FMENU.H_IQIST    && @c handle_menu_iqist(&FMENU.H_IQIST)
         FMENU.H_ACFLOW   && @c handle_menu_acflow(&FMENU.H_ACFLOW)
-        FMENU.H_ACTEST   && @c handle_menu_actest(&FMENU.H_ZENGUI)
+        FMENU.H_ACTEST   && @c handle_menu_actest(&FMENU.H_ACTEST)
         FMENU.H_ZENGUI   && @c handle_menu_zengui(&FMENU.H_ZENGUI)
-        FMENU.H_ABOUT    && @c create_app_about(&FMENU.H_ABOUT)
+        FMENU.H_ABOUT    && @c create_app_about(&FMENU.H_ABOUT, logo_id)
     end
 end
 
@@ -127,6 +139,41 @@ function load_texture()
     # Setup directory and path for the selected image
     img_dir = joinpath(ENV["ZEN_GUI"], ".images")
     img_path = joinpath(img_dir, img_list[img_indx])
+
+    # Load the selected image by the FileIO and Images packages.
+    img = RGBA.(rotr90(FileIO.load(img_path)))
+    width, height = size(img)
+
+    # Setup texture and the related properties by opengl
+    texture_id = GLuint(0)
+    @c glGenTextures(1, &texture_id)
+    glBindTexture(GL_TEXTURE_2D, texture_id)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, reinterpret(UInt8, img))
+
+    # Return an ImTextureID object
+    return CImGui.ImTextureID(texture_id)
+end
+
+"""
+    load_logo()
+
+Load logo image from the ZenGui/src/.images directory. It will return an
+`ImTextureID` object which is associted with the logo image. Note that the
+logo image will be displayed in the `About` window.
+
+See also: [`load_texture`](@ref).
+"""
+function load_logo()
+    # Prepare images
+    #
+    # Setup directory and path for the selected image
+    img_dir = joinpath(ENV["ZEN_GUI"], ".images")
+    img_path = joinpath(img_dir, "logo.png")
 
     # Load the selected image by the FileIO and Images packages.
     img = RGBA.(rotr90(FileIO.load(img_path)))
@@ -411,7 +458,7 @@ Respond the menu event: iqist. Try to open documentation for the iQIST
 package.
 """
 function handle_menu_iqist(p_open::Ref{Bool})
-    url = "https://huangli712.github.io/projects/iqist_new/index.html"
+    url = "https://huangli712.github.io/projects/iqist/index.html"
     open_url(url)
     p_open[] = false
 end

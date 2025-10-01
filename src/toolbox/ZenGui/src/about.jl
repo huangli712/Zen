@@ -4,16 +4,16 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/25
+# Last modified: 2025/06/27
 #
 
 """
-    create_app_about(p_open::Ref{Bool})
+    create_app_about(p_open::Ref{Bool}, logo_id)
 
 Display the `About` window, which is used to show some userful information
 about this ZenGui app.
 """
-function create_app_about(p_open::Ref{Bool})
+function create_app_about(p_open::Ref{Bool}, logo_id)
     # Create the About window, which is modal and can not be resized.
     CImGui.Begin(
         "About ZenGui",
@@ -23,20 +23,24 @@ function create_app_about(p_open::Ref{Bool})
 
     # Fix size of the window
     window_width = 400.0
-    window_height = 300.0
+    window_height = 360.0
     CImGui.SetWindowSize(ImVec2(window_width, window_height))
 
     # Show header
     #
-    # We want to make sure `ZenGui` is shown in the middle of the window.
-    text_width = CImGui.CalcTextSize("ZenGui").x
-    offset = (window_width - text_width) / 2.0
+    # Setup the logo image, which is already loaded in load_logo().
+    scale = 20.0
+    logo_width = 4188.0 / scale
+    logo_height = 1372.0 / scale
+    #
+    # We want to make sure the logo is shown in the middle of the window.
+    offset = (window_width - logo_width) / 2.0
     CImGui.SameLine(offset)
-    CImGui.TextColored(COL_MAGENTA, "ZenGui")
+    CImGui.Image(logo_id, (logo_width, logo_height), (0.0, 1.0), (1.0, 0.0))
     #
     CImGui.Spacing()
-    CImGui.TextWrapped("A general-purposed graphic user interface for " *
-        "ab initio dynamical mean-field theory codes")
+    CImGui.TextWrapped("A general-purposed graphic user interface " *
+        "for ab initio dynamical mean-field theory codes")
 
     # Vertical space
     CImGui.Spacing()

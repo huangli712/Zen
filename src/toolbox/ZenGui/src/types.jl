@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/05/08
+# Last modified: 2025/07/16
 #
 
 #=
@@ -1515,25 +1515,26 @@ includes two blocks: `[Test]` and `[Solver]`.
 This struct represents the `[Test]` block in the `act.toml` file.
 """
 mutable struct ACTEST_PTEST
-    solver  :: String
-    ptype   :: String
-    ktype   :: String
-    grid    :: String
-    mesh    :: String
-    ngrid   :: I64
-    nmesh   :: I64
-    ntest   :: I64
-    nbins   :: I64
-    wmax    :: F64
-    wmin    :: F64
-    pmax    :: F64
-    pmin    :: F64
-    beta    :: F64
-    noise   :: F64
-    lcorr   :: F64
-    tcorr   :: Bool
-    offdiag :: Bool
-    lpeak   :: Array
+    solver :: String
+    ptype  :: String
+    ktype  :: String
+    grid   :: String
+    mesh   :: String
+    ngrid  :: I64
+    nmesh  :: I64
+    ntest  :: I64
+    nbins  :: I64
+    wmax   :: F64
+    wmin   :: F64
+    pmax   :: F64
+    pmin   :: F64
+    beta   :: F64
+    noise  :: F64
+    lcorr  :: F64
+    tcorr  :: Bool
+    fnpd   :: Bool
+    fpbc   :: Bool
+    lpeak  :: Array
 end
 
 """
@@ -1561,7 +1562,8 @@ PTEST = ACTEST_PTEST(
     1.0e-6,   # noise
     0.5,      # lcorr
     false,    # tcorr
-    false,    # offdiag
+    false,    # fnpd
+    false,    # fpbc
     [1,2,3]   # lpeak
 )
 
@@ -1574,25 +1576,26 @@ See [`ACTEST_PTEST`](@ref).
 """
 function struct_to_dict(s::ACTEST_PTEST)
     return OrderedDict{String,Any}(
-        "solver"  => s.solver,
-        "ptype"   => s.ptype,
-        "ktype"   => s.ktype,
-        "grid"    => s.grid,
-        "mesh"    => s.mesh,
-        "ngrid"   => s.ngrid,
-        "nmesh"   => s.nmesh,
-        "ntest"   => s.ntest,
-        "nbins"   => s.nbins,
-        "wmax"    => s.wmax,
-        "wmin"    => s.wmin,
-        "pmax"    => s.pmax,
-        "pmin"    => s.pmin,
-        "beta"    => s.beta,
-        "noise"   => s.noise,
-        "lcorr"   => s.lcorr,
-        "tcorr"   => s.tcorr,
-        "offdiag" => s.offdiag,
-        "lpeak"   => s.lpeak,
+        "solver" => s.solver,
+        "ptype"  => s.ptype,
+        "ktype"  => s.ktype,
+        "grid"   => s.grid,
+        "mesh"   => s.mesh,
+        "ngrid"  => s.ngrid,
+        "nmesh"  => s.nmesh,
+        "ntest"  => s.ntest,
+        "nbins"  => s.nbins,
+        "wmax"   => s.wmax,
+        "wmin"   => s.wmin,
+        "pmax"   => s.pmax,
+        "pmin"   => s.pmin,
+        "beta"   => s.beta,
+        "noise"  => s.noise,
+        "lcorr"  => s.lcorr,
+        "tcorr"  => s.tcorr,
+        "fnpd"   => s.fnpd,
+        "fpbc"   => s.fpbc,
+        "lpeak"  => s.lpeak,
     )
 end
 

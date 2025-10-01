@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/26
+# Last modified: 2025/06/27
 #
 
 """
@@ -715,6 +715,8 @@ To create main window and respond to users inputs for the ZenGui app.
 zeng_run         -> Main function for the ZenGui app.
 #
 load_texture     -> Load figures from the ZenGui/src/.images directory.
+load_logo        -> Load logo image from the ZenGui/src/.images directory.
+#
 setup_flags      -> Setup configuration flags for the Dear ImGui library.
 setup_fonts      -> Setup fonts for this graphic user interface.
 setup_window     -> Tweak the window's style in this graphic user interface.
@@ -741,6 +743,8 @@ include("base.jl")
 export zeng_run
 #
 export load_texture
+export load_logo
+#
 export setup_flags
 export setup_fonts
 export setup_window
