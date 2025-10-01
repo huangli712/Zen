@@ -1,15 +1,5 @@
-# PSOLVER block
-
-## Contents
-
-```@contents
-Pages = ["solver.md"]
-```
-
-## Index
-
 ```@index
-Pages = ["solver.md"]
+Pages = ["block_solver.md"]
 ```
 
 ## Parameters

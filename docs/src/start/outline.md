@@ -1,5 +1,3 @@
-# Outline
-
 * [Components](components.md)
 * [Get The Code](obtain.md)
 * [Uncompress](uncompress.md)

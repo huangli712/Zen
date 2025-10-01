@@ -1,1 +1,0 @@
-# The DFT + DMFT Method

@@ -1,15 +1,5 @@
-# PIMP block
-
-## Contents
-
-```@contents
-Pages = ["impurity.md"]
-```
-
-## Index
-
 ```@index
-Pages = ["impurity.md"]
+Pages = ["block_impurity.md"]
 ```
 
 ## Parameters

@@ -1,5 +1,3 @@
-# The DFT + DMFT Codes
-
 Now there are some DFT + DMFT codes available in the internet. Most of them are open source softwares. They are listed as follows:
 
 * eDMFT

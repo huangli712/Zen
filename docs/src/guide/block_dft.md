@@ -1,15 +1,5 @@
-# PDFT block
-
-## Contents
-
-```@contents
-Pages = ["dft.md"]
-```
-
-## Index
-
 ```@index
-Pages = ["dft.md"]
+Pages = ["block_dft.md"]
 ```
 
 ## Parameters

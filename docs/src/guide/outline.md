@@ -1,5 +1,3 @@
-# Outline
-
 * [Running Modes](modes.md)
 * [Detailed Recipes](recipes.md)
 * [Input Files](input.md)

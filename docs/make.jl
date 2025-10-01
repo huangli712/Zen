@@ -1,8 +1,8 @@
 using Documenter
 
 makedocs(
-    sitename = "Zen",
-    clean = false,
+    sitename = "Zen: The User Guide",
+    clean = true,
     authors = "Li Huang <huangli@caep.cn> and contributors",
     format = Documenter.HTML(
         prettyurls = false,
@@ -12,9 +12,11 @@ makedocs(
         assets = ["assets/zen.css"],
         collapselevel = 1,
     ),
+    #format = Documenter.LaTeX(platform = "none"),
     remotes = nothing,
+    modules = Module[],
     pages = [
-        "Home" => "index.md",
+        "Welcome" => "index.md",
         "Introduction" => Any[
             "Outline" => "intro/outline.md",
             "Strongly Correlated Materials" => "intro/sces.md",

@@ -1,5 +1,3 @@
-# Team
-
 The Zen computation framework is developed by the following contributors:
 
 **Developers**:

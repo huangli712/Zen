@@ -1,5 +1,3 @@
-# Documentation
-
 The documentation for the Zen computation framework is developed in the ZenDocs project. It is written by the **Julia** language and the **Documenter.jl** package. The source codes can be found in
 ```text
 zen/docs
@@ -21,12 +19,12 @@ Besides ZenDocs, there are also comprehensive documentation for the internal com
 
 | Components | Documentation |
 | :--------- | :------------ |
-| **ZenCore**  | https://huangli712.github.io/projects/zen/index.html |
+| **ZenCore**  | https://huangli712.github.io/projects/zencore/index.html |
 | **ZenGui**   | https://huangli712.github.io/projects/zengui/index.html |
 | **ZenTools** | N/A |
 | **ZenDocs**  | N/A |
 | **ZenTests** | N/A |
-| **Dyson**    | N/A |
+| **Dyson**    | https://huangli712.github.io/projects/dyson/index.html |
 | **DFermion** | N/A |
 | **iQIST**    | https://huangli712.github.io/projects/iqist_new/index.html |
 | **ACFlow**   | https://huangli712.github.io/projects/acflow/index.html |

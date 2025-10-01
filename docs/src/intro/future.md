@@ -1,5 +1,3 @@
-# Future Plans
-
 In the near future, the following features will be preferentially added to the Zen package:
 
 * New quantum impurity solvers that based on new principles.

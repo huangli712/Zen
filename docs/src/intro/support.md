@@ -1,5 +1,3 @@
-# Technical Support
-
 If you meet troubles or bugs when using the Zen computation framework, or request new features, please consult the developer team:
 
 !!! info

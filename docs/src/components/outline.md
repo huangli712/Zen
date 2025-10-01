@@ -1,5 +1,3 @@
-# Outline
-
 * [Software Architecture](arch.md)
 
 Core components:

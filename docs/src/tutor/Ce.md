@@ -1,1 +1,0 @@
-# Ce: ``f``-Electron Metal

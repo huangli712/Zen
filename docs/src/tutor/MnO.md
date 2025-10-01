@@ -1,1 +1,0 @@
-# MnO: Mott Insulator
