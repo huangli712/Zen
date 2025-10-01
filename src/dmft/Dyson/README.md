@@ -14,4 +14,6 @@ GNU General Public License Version 3
 
 ## Documentation
 
-It doesn't have independent documentation. Please see the documentation for [**Zen**](https://huangli712.github.io/projects/zen/index.html).
+Source: See `dyson/docs`.
+
+Online: https://huangli712.github.io/projects/dyson/index.html

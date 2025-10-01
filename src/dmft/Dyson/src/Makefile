@@ -21,13 +21,26 @@
 ## =======
 ##
 ## 02/23/2021 by li huang (created)
-## 03/26/2025 by li huang (last modified)
+## 09/28/2025 by li huang (last modified)
 ##
 ##
 
 .SUFFIXES: .f90
 
-include ../../../../build/make.inc
+define searchconfig
+    $(eval INC_DIR=$(patsubst %/,%,$(1)))
+    $(eval INC_FILE=$(wildcard $(INC_DIR)/$(2)))
+    $(info searchconfig scanned: $(INC_DIR))
+    $(if $(INC_FILE),
+        $(info searchconfig found: $(INC_FILE)),
+            $(call searchconfig,$(dir $(INC_DIR)),$(2)))
+endef
+
+$(if $(INC_FILE), \
+    $(info INC_FILE: $(INC_FILE)), \
+        $(eval $(call searchconfig,$(CURDIR),build/make.inc)))
+
+include $(INC_FILE)
 
 modc = dmft_control.o dmft_context.o
 core = dmft_task.o dmft_flow.o dmft_core.o
@@ -36,7 +49,6 @@ lev2 = dmft_stream.o dmft_dump.o dmft_print.o
 lev3 = dmft_util.o
 main = dmft_main.o
 mlib = libflink.a
-
 objects = $(modc) $(core) $(lev1) $(lev2) $(lev3) $(main) $(mlib)
 
 default: all
