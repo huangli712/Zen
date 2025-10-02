@@ -1,7 +1,7 @@
 name = "ZenGui"
 uuid = "c7096293-a4f9-42aa-88ab-d9ebdeb23c9e"
 authors = ["Li Huang <huangli@caep.cn>"]
-version = "1.0.6"
+version = "1.0.7"
 
 [deps]
 CImGui = "5d785b6c-b76f-510e-a07c-3070796c7e87"

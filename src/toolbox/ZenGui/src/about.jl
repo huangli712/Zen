@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/06/27
+# Last modified: 2025/10/02
 #
 
 """
@@ -22,21 +22,21 @@ function create_app_about(p_open::Ref{Bool}, logo_id)
     )
 
     # Fix size of the window
-    window_width = 400.0
-    window_height = 360.0
+    window_width = 1000
+    window_height = 720
     CImGui.SetWindowSize(ImVec2(window_width, window_height))
 
     # Show header
     #
     # Setup the logo image, which is already loaded in load_logo().
-    scale = 20.0
+    scale = 10.0
     logo_width = 4188.0 / scale
     logo_height = 1372.0 / scale
     #
     # We want to make sure the logo is shown in the middle of the window.
     offset = (window_width - logo_width) / 2.0
     CImGui.SameLine(offset)
-    CImGui.Image(logo_id, (logo_width, logo_height), (0.0, 1.0), (1.0, 0.0))
+    CImGui.Image(ImTextureRef(logo_id), (logo_width, logo_height), (0.0, 1.0), (1.0, 0.0))
     #
     CImGui.Spacing()
     CImGui.TextWrapped("A general-purposed graphic user interface " *
@@ -81,8 +81,8 @@ function create_app_about(p_open::Ref{Bool}, logo_id)
     # Create a `OK` button. It will reset `p_open`.
     #
     # Set button's geometry
-    button_width = 80.0
-    button_height = 25.0
+    button_width = 120.0
+    button_height = 60.0
     #
     if CImGui.Button("OK", ImVec2(button_width, button_height))
         p_open[] = false

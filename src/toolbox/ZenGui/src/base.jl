@@ -218,9 +218,9 @@ function setup_fonts()
     CImGui.AddFontFromFileTTF(
         fonts,
         joinpath(fonts_dir, "FiraCode-Regular.ttf"),
-        16,
+        40,
         C_NULL,
-        CImGui.GetGlyphRangesGreek(fonts) # To display the Greek letters
+        CImGui.GetGlyphRangesDefault(fonts) # To display the Greek letters
     )
 end
 
@@ -275,7 +275,7 @@ function setup_background(texture_id)
     drawlist = CImGui.GetBackgroundDrawList()
 
     # Draw the image
-    CImGui.AddImage(drawlist, texture_id, pos, pos + size, (0.0, 1.0), (1.0, 0.0))
+    CImGui.AddImage(drawlist, ImTextureRef(texture_id), pos, pos + size, (0.0, 1.0), (1.0, 0.0))
 end
 
 #=

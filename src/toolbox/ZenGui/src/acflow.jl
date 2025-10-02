@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/26
+# Last modified: 2025/10/02
 #
 
 """
@@ -27,8 +27,8 @@ function create_app_acflow(p_open::Ref{Bool})
     end
 
     # Fix size of the window
-    window_width = 600.0
-    window_height = 600.0
+    window_width = 1400.0
+    window_height = 1000.0
     CImGui.SetWindowSize(ImVec2(window_width, window_height))
 
     # For the widgets in the top of this window
@@ -101,8 +101,8 @@ Setup widgets in the bottom of the window for the ACFlow toolkit.
 """
 function _acflow_bottom_block(p_open::Ref{Bool})
     # Define default size for widgets
-    widget_button_width = 80.0
-    widget_button_height = 25.0
+    widget_button_width = 120.0
+    widget_button_height = 60.0
 
     # For the buttons
     if CImGui.Button("View", ImVec2(widget_button_width, widget_button_height))
@@ -114,7 +114,7 @@ function _acflow_bottom_block(p_open::Ref{Bool})
             text = dict_to_toml(build_acflow_dict())
             flags = CImGui.ImGuiInputTextFlags_ReadOnly
             flags = CImGui.ImGuiInputTextFlags_AllowTabInput | flags
-            CImGui.InputTextMultiline("##source", text, 10000, ImVec2(400, 600), flags)
+            CImGui.InputTextMultiline("##source", text, 10000, ImVec2(600, 1000), flags)
         end
         #
         if CImGui.Button("OK", ImVec2(widget_button_width, widget_button_height))
@@ -138,8 +138,8 @@ Setup widgets for the `general` tab.
 """
 function _acflow_general_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     CImGui.Text("Configure [BASE] Block")
 
@@ -329,8 +329,8 @@ Setup widgets for the [MaxEnt] block in the ac.toml file.
 """
 function _acflow_maxent_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     # Input: method
     CImGui.SetNextItemWidth(widget_combo_width)
@@ -396,8 +396,8 @@ Setup widgets for the [BarRat] block in the ac.toml file.
 """
 function _acflow_barrat_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     # Input: atype
     CImGui.SetNextItemWidth(widget_combo_width)
@@ -454,8 +454,8 @@ Setup widgets for the [NevanAC] block in the ac.toml file.
 """
 function _acflow_nevanac_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     # Input: pick
     CImGui.SetNextItemWidth(widget_combo_width)
@@ -520,8 +520,8 @@ Setup widgets for the [StochAC] block in the ac.toml file.
 """
 function _acflow_stochac_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     # Input: nfine
     CImGui.SetNextItemWidth(widget_input_width)
@@ -603,8 +603,8 @@ Setup widgets for the [StochSK] block in the ac.toml file.
 """
 function _acflow_stochsk_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     # Input: method
     CImGui.SetNextItemWidth(widget_combo_width)
@@ -696,8 +696,8 @@ Setup widgets for the [StochOM] block in the ac.toml file.
 """
 function _acflow_stochom_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     # Input: ntry
     CImGui.SetNextItemWidth(widget_input_width)
@@ -761,8 +761,8 @@ Setup widgets for the [StochPX] block in the ac.toml file.
 """
 function _acflow_stochpx_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     # Input: method
     CImGui.SetNextItemWidth(widget_combo_width)

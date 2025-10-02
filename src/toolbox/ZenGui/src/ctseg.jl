@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/26
+# Last modified: 2025/10/02
 #
 
 """
@@ -27,8 +27,8 @@ function create_app_ctseg(p_open::Ref{Bool})
     end
 
     # Fix size of the window
-    window_width = 600.0
-    window_height = 600.0
+    window_width = 1500.0
+    window_height = 900.0
     CImGui.SetWindowSize(ImVec2(window_width, window_height))
 
     # For the widgets in the top of this window
@@ -118,8 +118,8 @@ Setup widgets in the bottom of the window for the iQIST/ctseg code.
 """
 function _ctseg_bottom_block(p_open::Ref{Bool})
     # Define default size for widgets
-    widget_button_width = 80.0
-    widget_button_height = 25.0
+    widget_button_width = 120.0
+    widget_button_height = 60.0
 
     # For the buttons
     if CImGui.Button("View", ImVec2(widget_button_width, widget_button_height))
@@ -131,7 +131,7 @@ function _ctseg_bottom_block(p_open::Ref{Bool})
             text = dict_to_ini(build_iqist_dict("ctseg"))
             flags = CImGui.ImGuiInputTextFlags_ReadOnly
             flags = CImGui.ImGuiInputTextFlags_AllowTabInput | flags
-            CImGui.InputTextMultiline("##source", text, 10000, ImVec2(400, 600), flags)
+            CImGui.InputTextMultiline("##source", text, 10000, ImVec2(600, 800), flags)
         end
         #
         if CImGui.Button("OK", ImVec2(widget_button_width, widget_button_height))
@@ -155,8 +155,8 @@ Setup widgets for the `model` tab.
 """
 function _ctseg_model_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("model")
         CImGui.Text("Configure [model] Part")
@@ -305,8 +305,8 @@ Setup widgets for the `dimension` tab.
 """
 function _ctseg_dimension_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("dimension")
         CImGui.Text("Configure [dimension] Part")
@@ -377,8 +377,8 @@ Setup widgets for the `symmetry` tab.
 """
 function _ctseg_symmetry_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("symmetry")
         CImGui.Text("Configure [symmetry] Part")
@@ -418,8 +418,8 @@ Setup widgets for the `representation` tab.
 """
 function _ctseg_represent_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("representation")
         CImGui.Text("Configure [representation] Part")
@@ -491,8 +491,8 @@ Setup widgets for the `monte carlo` tab.
 """
 function _ctseg_monte_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("monte carlo")
         CImGui.Text("Configure [monte carlo] Part")
@@ -596,8 +596,8 @@ Setup widgets for the `measurement` tab.
 """
 function _ctseg_measure_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("measurement")
         CImGui.Text("Configure [measurement] Part")
@@ -670,8 +670,8 @@ Setup widgets for the `cycle` tab.
 """
 function _ctseg_cycle_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("cycle")
         CImGui.Text("Configure [cycle] Part")

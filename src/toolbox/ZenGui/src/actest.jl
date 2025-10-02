@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/07/16
+# Last modified: 2025/10/02
 #
 
 """
@@ -27,8 +27,8 @@ function create_app_actest(p_open::Ref{Bool})
     end
 
     # Fix size of the window
-    window_width = 600.0
-    window_height = 680.0
+    window_width = 1450.0
+    window_height = 1300.0
     CImGui.SetWindowSize(ImVec2(window_width, window_height))
 
     # For the widgets in the top of this window
@@ -101,8 +101,8 @@ Setup widgets in the bottom of the window for the ACTest toolkit.
 """
 function _actest_bottom_block(p_open::Ref{Bool})
     # Define default size for widgets
-    widget_button_width = 80.0
-    widget_button_height = 25.0
+    widget_button_width = 120.0
+    widget_button_height = 60.0
 
     # For the buttons
     if CImGui.Button("View", ImVec2(widget_button_width, widget_button_height))
@@ -114,7 +114,7 @@ function _actest_bottom_block(p_open::Ref{Bool})
             text = dict_to_toml(build_actest_dict())
             flags = CImGui.ImGuiInputTextFlags_ReadOnly
             flags = CImGui.ImGuiInputTextFlags_AllowTabInput | flags
-            CImGui.InputTextMultiline("##source", text, 10000, ImVec2(400, 600), flags)
+            CImGui.InputTextMultiline("##source", text, 10000, ImVec2(600, 1200), flags)
         end
         #
         if CImGui.Button("OK", ImVec2(widget_button_width, widget_button_height))
@@ -138,8 +138,8 @@ Setup widgets for the `general` tab.
 """
 function _actest_general_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     CImGui.Text("Configure [Test] Block")
 

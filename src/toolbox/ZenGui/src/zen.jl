@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/4/26
+# Last modified: 2025/10/02
 #
 
 """
@@ -155,8 +155,8 @@ function create_app_zen(p_open::Ref{Bool})
     end
 
     # Fix size of the window
-    window_width = 600.0
-    window_height = 600.0
+    window_width = 1600.0
+    window_height = 1000.0
     CImGui.SetWindowSize(ImVec2(window_width, window_height))
 
     # For the widgets in the top of this window
@@ -236,8 +236,8 @@ Setup widgets in the bottom of the window for the Zen package.
 """
 function _zen_bottom_block(p_open::Ref{Bool})
     # Define default size for widgets
-    widget_button_width = 80.0
-    widget_button_height = 25.0
+    widget_button_width = 120.0
+    widget_button_height = 60.0
 
     # For the buttons
     if CImGui.Button("View", ImVec2(widget_button_width, widget_button_height))
@@ -249,7 +249,7 @@ function _zen_bottom_block(p_open::Ref{Bool})
             text = dict_to_toml(build_zen_dict())
             flags = CImGui.ImGuiInputTextFlags_ReadOnly
             flags = CImGui.ImGuiInputTextFlags_AllowTabInput | flags
-            CImGui.InputTextMultiline("##source", text, 10000, ImVec2(400, 600), flags)
+            CImGui.InputTextMultiline("##source", text, 10000, ImVec2(1000, 1600), flags)
         end
         #
         if CImGui.Button("OK", ImVec2(widget_button_width, widget_button_height))
@@ -273,8 +273,8 @@ Setup widgets for the `case` tab.
 """
 function _zen_case_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("case")
         CImGui.Text("Configure [case] Block")
@@ -299,8 +299,8 @@ Setup widgets for the `dft` tab.
 """
 function _zen_dft_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("dft")
         CImGui.Text("Configure [dft] Block")
@@ -489,8 +489,8 @@ Setup widgets for the `dmft` tab.
 """
 function _zen_dmft_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("dmft")
         CImGui.Text("Configure [dmft] Block")
@@ -627,8 +627,8 @@ Setup widgets for the `impurity` tab.
 """
 function _zen_impurity_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("impurity")
         CImGui.Text("Configure [impurity] Block")
@@ -692,8 +692,8 @@ function _zen_solver_block()
     function _layout_norg() end
 
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("solver")
         CImGui.Text("Configure [solver] Block")

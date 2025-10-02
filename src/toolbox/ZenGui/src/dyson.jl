@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/26
+# Last modified: 2025/10/02
 #
 
 """
@@ -27,7 +27,7 @@ function create_app_dyson(p_open::Ref{Bool})
     end
 
     # Fix size of the window
-    window_width = 600.0
+    window_width = 1500.0
     window_height = 600.0
     CImGui.SetWindowSize(ImVec2(window_width, window_height))
 
@@ -70,8 +70,8 @@ Setup widgets associated with the parameters in the `dmft.in` file.
 """
 function _dyson_main_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     # Input: task
     CImGui.SetNextItemWidth(widget_combo_width)
@@ -158,8 +158,8 @@ Setup widgets in the bottom of the window for the Dyson code.
 """
 function _dyson_bottom_block(p_open::Ref{Bool})
     # Define default size for widgets
-    widget_button_width = 80.0
-    widget_button_height = 25.0
+    widget_button_width = 120.0
+    widget_button_height = 60.0
 
     # For the buttons
     if CImGui.Button("View", ImVec2(widget_button_width, widget_button_height))
@@ -171,7 +171,7 @@ function _dyson_bottom_block(p_open::Ref{Bool})
             text = dict_to_ini(build_dyson_dict())
             flags = CImGui.ImGuiInputTextFlags_ReadOnly
             flags = CImGui.ImGuiInputTextFlags_AllowTabInput | flags
-            CImGui.InputTextMultiline("##source", text, 10000, ImVec2(400, 600), flags)
+            CImGui.InputTextMultiline("##source", text, 10000, ImVec2(600, 600), flags)
         end
         #
         if CImGui.Button("OK", ImVec2(widget_button_width, widget_button_height))

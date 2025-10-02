@@ -4,7 +4,7 @@
 # Author  : Li Huang (huangli@caep.cn)
 # Status  : Unstable
 #
-# Last modified: 2025/04/26
+# Last modified: 2025/10/02
 #
 
 """
@@ -27,8 +27,8 @@ function create_app_atomic(p_open::Ref{Bool})
     end
 
     # Fix size of the window
-    window_width = 600.0
-    window_height = 600.0
+    window_width = 1400.0
+    window_height = 700.0
     CImGui.SetWindowSize(ImVec2(window_width, window_height))
 
     # For the widgets in the top of this window
@@ -103,8 +103,8 @@ Setup widgets in the bottom of the window for the iQIST/atomic code.
 """
 function _atomic_bottom_block(p_open::Ref{Bool})
     # Define default size for widgets
-    widget_button_width = 80.0
-    widget_button_height = 25.0
+    widget_button_width = 120.0
+    widget_button_height = 60.0
 
     # For the buttons
     if CImGui.Button("View", ImVec2(widget_button_width, widget_button_height))
@@ -116,7 +116,7 @@ function _atomic_bottom_block(p_open::Ref{Bool})
             text = dict_to_ini(build_iqist_dict("atomic"))
             flags = CImGui.ImGuiInputTextFlags_ReadOnly
             flags = CImGui.ImGuiInputTextFlags_AllowTabInput | flags
-            CImGui.InputTextMultiline("##source", text, 10000, ImVec2(400, 600), flags)
+            CImGui.InputTextMultiline("##source", text, 10000, ImVec2(600, 600), flags)
         end
         #
         if CImGui.Button("OK", ImVec2(widget_button_width, widget_button_height))
@@ -140,8 +140,8 @@ Setup widgets for the `model` tab.
 """
 function _atomic_model_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("model")
         CImGui.Text("Configure [model] Part")
@@ -201,8 +201,8 @@ Setup widgets for the `interaction` tab.
 """
 function _atomic_interaction_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("interaction")
         CImGui.Text("Configure [interaction] Part")
@@ -307,8 +307,8 @@ Setup widgets for the `natural eigenbasis` tab.
 """
 function _atomic_natural_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("natural eigenbasis")
         CImGui.Text("Configure [natural eigenbasis] Part")
@@ -382,8 +382,8 @@ Setup widgets for the `algorithm` tab.
 """
 function _atomic_algorithm_block()
     # Define default size for widgets
-    widget_input_width = 100
-    widget_combo_width = 100
+    widget_input_width = 180
+    widget_combo_width = 180
 
     if CImGui.BeginTabItem("algorithm")
         CImGui.Text("Configure [algorithm] Part")
