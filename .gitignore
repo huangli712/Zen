@@ -24,5 +24,5 @@ test/*/kpath.*
 test/*/hamk.*
 test/_*
 src/solver/iQIST/src/ctseg/ctqmc
-Dyson/src/dmft
+src/dmft/Dyson/src/dmft
 docs/build
