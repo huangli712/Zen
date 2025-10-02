@@ -6,7 +6,7 @@
 !!! type    : modules
 !!! author  : li huang (email:huangli@caep.cn)
 !!! history : 02/23/2021 by li huang (created)
-!!!           03/26/2025 by li huang (last modified)
+!!!           10/02/2025 by li huang (last modified)
 !!! purpose : define the global control variables.
 !!! status  : unstable
 !!! comment :
@@ -332,21 +332,21 @@
 !!
 !! version string, version number + date info. + status info.
 !!
-     character(len=20), public, parameter :: V_FULL = 'v0.7.5 @ 2025.03.26D'
+     character(len=20), public, parameter :: V_FULL = 'v0.7.6 @ 2025.10.02D'
 
 !!
 !! @var V_CURR
 !!
 !! version string, only version number
 !!
-     character(len=06), public, parameter :: V_CURR = 'v0.7.5'
+     character(len=06), public, parameter :: V_CURR = 'v0.7.6'
 
 !!
 !! @var V_DATE
 !!
 !! version string, only date info.
 !!
-     character(len=11), public, parameter :: V_DATE = '2025.03.26'
+     character(len=11), public, parameter :: V_DATE = '2025.10.02'
 
 !!
 !! @var V_STAT

@@ -6,7 +6,7 @@
 
 !!! info
 
-    Thank you for using Dyson. This documentation will help you to be familiar with and explore the Dyson code. It is just compatible with Dyson v0.7.5-devel.250326.
+    Thank you for using Dyson. This documentation will help you to be familiar with and explore the Dyson code. It is just compatible with Dyson v0.7.6-devel.251002.
 
 !!! warning
 

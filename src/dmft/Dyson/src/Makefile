@@ -21,7 +21,7 @@
 ## =======
 ##
 ## 02/23/2021 by li huang (created)
-## 09/28/2025 by li huang (last modified)
+## 10/02/2025 by li huang (last modified)
 ##
 ##
 
@@ -42,6 +42,19 @@ $(if $(INC_FILE), \
 
 include $(INC_FILE)
 
+define searchflink
+    $(eval INP_DIR=$(patsubst %/,%,$(1)))
+    $(eval FLINK=$(wildcard $(INP_DIR)/$(2)))
+    $(info searchflink scanned: $(INP_DIR))
+    $(if $(FLINK),
+        $(info searchflink found: $(FLINK)),
+            $(call searchflink,$(dir $(INP_DIR)),$(2)))
+endef
+
+$(if $(FLINK), \
+    $(info FLINK: $(FLINK)), \
+        $(eval $(call searchflink,$(CURDIR),*/Flink/src)))
+
 modc = dmft_control.o dmft_context.o
 core = dmft_task.o dmft_flow.o dmft_core.o
 lev1 = dmft_psichi.o
@@ -49,6 +62,7 @@ lev2 = dmft_stream.o dmft_dump.o dmft_print.o
 lev3 = dmft_util.o
 main = dmft_main.o
 mlib = libflink.a
+
 objects = $(modc) $(core) $(lev1) $(lev2) $(lev3) $(main) $(mlib)
 
 default: all
